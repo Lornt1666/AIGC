@@ -1,12 +1,12 @@
 {
-  "release_id": "AIGC-REL-62460809E9D7E9F0",
-  "created_at": "2026-07-02T22:38:19.939514+00:00",
+  "release_id": "AIGC-REL-3F239D882B4BB578",
+  "created_at": "2026-07-02T22:50:09.546269+00:00",
   "phase": "phase18_scaling_productization",
-  "version": "0.10.0-milestone-j",
+  "version": "0.11.0-milestone-k",
   "status": "internal_release_candidate",
   "release_type": "internal_private_kernel",
-  "branch": "codex/milestone-j-quantum-aware-quality-kernel",
-  "commit": "ffa333a",
+  "branch": "codex/milestone-k-ascended-work-order-governor",
+  "commit": "c78791b",
   "required_files_present": true,
   "missing_required_files": [],
   "checked_files": [
@@ -46,6 +46,11 @@
       "kind": "file"
     },
     {
+      "path": "prompts/phase23_ascended_work_order_governor.md",
+      "present": true,
+      "kind": "file"
+    },
+    {
       "path": "config/phase10_connector_registry.json",
       "present": true,
       "kind": "file"
@@ -81,6 +86,11 @@
       "kind": "file"
     },
     {
+      "path": "config/phase23_work_order_governor.json",
+      "present": true,
+      "kind": "file"
+    },
+    {
       "path": "schemas/connector_record.schema.json",
       "present": true,
       "kind": "file"
@@ -107,6 +117,11 @@
     },
     {
       "path": "schemas/subagent_team_plan.schema.json",
+      "present": true,
+      "kind": "file"
+    },
+    {
+      "path": "schemas/work_order_governance_record.schema.json",
       "present": true,
       "kind": "file"
     },
@@ -166,6 +181,11 @@
       "kind": "file"
     },
     {
+      "path": "src/phase23_work_order_governor.py",
+      "present": true,
+      "kind": "file"
+    },
+    {
       "path": "docs/PRIVATE_BRANCH_WORKFLOW.md",
       "present": true,
       "kind": "file"
@@ -199,11 +219,14 @@
     "data/reports/phase18_signature_update.md",
     "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
     "data/reports/phase22_signature_update.md",
+    "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+    "data/reports/phase23_signature_update.md",
     "reports/milestone_f_productization_report.md",
     "reports/milestone_g_subagent_forge_report.md",
     "reports/milestone_h_fidelity_forge_report.md",
     "reports/milestone_i_customer_satisfaction_report.md",
     "reports/milestone_j_quantum_quality_kernel_report.md",
+    "reports/milestone_k_work_order_governor_report.md",
     "docs/PRODUCTIZATION_RUNBOOK.md"
   ],
   "license_status": "all_rights_reserved_present",

@@ -25,6 +25,7 @@ Permanent laws:
 - Treat generated proposals, execution receipts, audit packets, and evolution patches as governed artifacts with schemas and hashes.
 - Treat quantum-aware quality as deterministic uncertainty-aware quality-state modeling, never as literal quantum cognition or unsupported capability claims.
 - Keep Phase 22 quality-kernel outputs internal until every legal, ethical, security, compliance, and Phase 5 approval condition is satisfied.
+- Force governed work orders through Perfect Draft v1, Ontological Self-Audit, and Ascended Output v2 before any external execution can be considered.
 
 Default runtime posture:
 
@@ -43,3 +44,4 @@ Definition of done:
 - No unapproved external action occurred.
 - The operator can inspect the artifact, audit trail, and next required approval gate.
 - Quality-state uncertainty is explicit, audited, and reduced before action instead of hidden behind confident language.
+- Every work-order governance record keeps blocked actions visible until scoped approval and compliance gates resolve.
