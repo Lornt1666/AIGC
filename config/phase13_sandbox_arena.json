@@ -1,0 +1,36 @@
+{
+  "phase": "Phase 13 - Simulation and Sandbox Arena",
+  "operating_mode": "synthetic_and_real_read_only_sandbox",
+  "external_actions_allowed": false,
+  "phase13a": {
+    "mode": "synthetic_non_production",
+    "output_file": "data/phase13_simulation/synthetic_simulation_result.json",
+    "report_file": "reports/phase13_synthetic_simulation_report.md",
+    "audit_file": "data/audit/phase13_synthetic_simulation_audit.jsonl"
+  },
+  "phase13b": {
+    "mode": "real_data_replay_read_only",
+    "allowed_sources": [
+      "remoteok",
+      "remotive",
+      "weworkremotely",
+      "github_issues"
+    ],
+    "output_file": "data/phase13_real_data_replay/latest_real_data_replay.json",
+    "report_file": "reports/phase13_real_data_replay_report.md",
+    "audit_file": "data/audit/phase13_real_data_replay_audit.jsonl",
+    "max_per_source": 10,
+    "timeout_seconds": 20,
+    "user_agent": "AIGC-Phase13B-RealDataReplay/0.1 read-only"
+  },
+  "forbidden_actions": [
+    "apply",
+    "message_employer",
+    "bid",
+    "submit_proposal",
+    "submit_deliverable",
+    "use_credentials",
+    "contact_employer",
+    "external_execution"
+  ]
+}

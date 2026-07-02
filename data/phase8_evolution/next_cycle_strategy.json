@@ -1,0 +1,13 @@
+{
+  "report_id": "AIGC-EVO-REPORT-04BDF0FCB16591",
+  "outcome_id": "AIGC-OUTCOME-F203BA4191A1AF",
+  "cycle_score": 83,
+  "cycle_quality": "good",
+  "next_cycle_strategy": [
+    "Review pending Phase 5 authorization packets and accept, deny, or revise one action ID.",
+    "Keep Phase 6 in manual_handoff mode until a connector is explicitly approved.",
+    "Do not optimize employer-response scoring until at least one external outcome is captured.",
+    "Restart at Phase 2 after approval decisions or new source criteria are available."
+  ],
+  "pending_patch_ids": []
+}

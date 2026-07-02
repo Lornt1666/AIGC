@@ -1,0 +1,49 @@
+{
+  "phase": "Phase 7 - Employer Audit Packet",
+  "operating_mode": "employer_safe_audit_generation",
+  "external_sharing_allowed_without_approval": false,
+  "default_status": "internal_draft_only",
+  "input_files": {
+    "phase4_proposals": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+    "phase5_authorizations": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+    "phase6_receipts": "data/phase6_execution/aigc_phase6_execution_receipts.json"
+  },
+  "output_file": "data/phase7_audit_packets/aigc_phase7_employer_audit_packets.json",
+  "markdown_output_dir": "data/phase7_audit_packets",
+  "required_sections": [
+    "packet_identity",
+    "project_identity",
+    "scope_of_work",
+    "deliverables",
+    "methodology_summary",
+    "ai_assistance_disclosure",
+    "human_approval_summary",
+    "execution_summary",
+    "quality_checks",
+    "assumptions",
+    "limitations",
+    "privacy_security",
+    "revision_availability",
+    "acceptance_request"
+  ],
+  "redaction_required": true,
+  "quality_thresholds": {
+    "ready_for_operator_review": 15,
+    "ready_with_caution": 12,
+    "revise_before_delivery": 8,
+    "blocked_needs_revision": 0
+  },
+  "forbidden_employer_packet_content": [
+    "raw_credentials",
+    "api_keys",
+    "passwords",
+    "private_tokens",
+    "unrelated_private_data",
+    "other_client_records",
+    "raw_internal_logs",
+    "hidden_reasoning",
+    "unapproved_system_prompts",
+    "false_claims",
+    "unverified_certifications"
+  ]
+}

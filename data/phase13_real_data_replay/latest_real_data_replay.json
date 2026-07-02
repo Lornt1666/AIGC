@@ -1,0 +1,464 @@
+{
+  "phase": "Phase 13B - Real Data Replay Sandbox",
+  "generated_at": "2026-07-02T13:01:16.133618+00:00",
+  "source": "remoteok",
+  "source_platform": "RemoteOK",
+  "raw_records": 100,
+  "processed_records": 5,
+  "external_action_performed": false,
+  "forbidden_actions_confirmed": [
+    "apply",
+    "message_employer",
+    "bid",
+    "submit_proposal",
+    "submit_deliverable",
+    "use_credentials",
+    "contact_employer",
+    "external_execution"
+  ],
+  "records": [
+    {
+      "opportunity_id": "8c364b94ae98b79622dfd3d0",
+      "source_platform": "RemoteOK",
+      "source_type": "api",
+      "source_url": "https://remoteOK.com/remote-jobs/remote-asistente-administrativa-syntepro-s-a-de-c-v-1134334",
+      "source_attribution_required": true,
+      "discovered_at": "2026-07-02T13:01:16.113624+00:00",
+      "title": "Asistente administrativa",
+      "employer": "Syntepro S.A de C.V.",
+      "client": "",
+      "location": "San Salvador,",
+      "remote_status": "remote",
+      "work_type": "job",
+      "employment_type": "unknown",
+      "pay_min": null,
+      "pay_max": null,
+      "pay_currency": "",
+      "pay_interval": "unknown",
+      "deadline": "",
+      "posted_at": "2026-07-01T01:46:07+00:00",
+      "updated_at": "",
+      "description_plain": "Experiencia en control de gastos\nReportes\nSeguimiento de Tickets\nDominio de Office\nExcelentes relaciones interpersonales\nBuena comunicaciÃ³n\nDisponibilidad y proactividad\nProyecto de 6 meses\nModalidad de servicios profesionales\nTrabajo remoto\nHorario de lunes a viernes de 7:00 am a 4:00 pm\nPlease mention the word **BEAUTIFULLLY** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "description_html": "Experiencia en control de gastos<br><br>Reportes<br><br>Seguimiento de Tickets<br><br>Dominio de Office<br><br>Excelentes relaciones interpersonales<br><br>Buena comunicaciÃ³n<br><br>Disponibilidad y proactividad<br><br>Proyecto de 6 meses<br><br>Modalidad de servicios profesionales<br><br>Trabajo remoto<br><br>Horario de lunes a viernes de 7:00 am a 4:00 pm<br/><br/>Please mention the word **BEAUTIFULLLY** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "requirements": [],
+      "responsibilities": [],
+      "deliverables": [],
+      "skills_detected": [
+        "c"
+      ],
+      "tools_detected": [
+        "excel"
+      ],
+      "discipline_taxonomy": [
+        "data_analysis",
+        "design_ui_ux"
+      ],
+      "automation_signals": {
+        "api_related": false,
+        "documentation_related": false,
+        "research_related": false,
+        "coding_related": false,
+        "data_related": false,
+        "writing_related": false,
+        "repetitive_workflow": false,
+        "clear_deliverable": true
+      },
+      "ai_use_signals": {
+        "ai_allowed_explicit": false,
+        "ai_forbidden_explicit": false,
+        "ai_unclear": true,
+        "disclosure_needed": true
+      },
+      "platform_policy_status": "yellow",
+      "risk_flags": [
+        "unclear_pay",
+        "location_constrained_role"
+      ],
+      "forbidden_flags": [
+        "spam"
+      ],
+      "approval_required_before": [
+        "message_employer",
+        "apply",
+        "submit_proposal",
+        "submit_deliverable",
+        "use_credentials",
+        "use_operator_identity"
+      ],
+      "radar_score": 15,
+      "radar_decision": "reject",
+      "audit_notes": "Read-only API ingestion. Attribution/direct link-back required. Blind applying is forbidden."
+    },
+    {
+      "opportunity_id": "f5cb3d5e9a9628d6ef84f6d8",
+      "source_platform": "RemoteOK",
+      "source_type": "api",
+      "source_url": "https://remoteOK.com/remote-jobs/remote-tutor-profesor-clases-particulares-multiples-actividades-apprentus-1134317",
+      "source_attribution_required": true,
+      "discovered_at": "2026-07-02T13:01:16.115620+00:00",
+      "title": "Tutor profesor clases particulares mÃºltiples actividades",
+      "employer": "Apprentus",
+      "client": "",
+      "location": "CÃ¡diz,",
+      "remote_status": "remote",
+      "work_type": "job",
+      "employment_type": "unknown",
+      "pay_min": null,
+      "pay_max": null,
+      "pay_currency": "",
+      "pay_interval": "unknown",
+      "deadline": "",
+      "posted_at": "2026-07-01T01:45:54+00:00",
+      "updated_at": "",
+      "description_plain": "Si eres profe, enseÃ±ar es tu vocaciÃ³n, y quieres ganar dinero haciendo lo que te apasiona, Apprentus es el lugar idÃ³neo para ti.\nÂ¿No tienes experiencia dando clases? Â¿Quieres compartir tus conocimientos? Apprentus incluye a todos los que aman la educaciÃ³n y la superaciÃ³n personal.\nPuedes ser un profesor con aÃ±os de experiencia o ya jubilado, puedes ser un joven reciÃ©n graduado y con mucho que enseÃ±ar, o alguien con mucho talento en la cocinaâ¦ En Apprentus hay oportunidades para ti.\nBuscamos profesores comprometidos y responsables. Solo debes registrarte y publicar tu clase, Â¡es gratis! Nosotros nos encargamos de promocionar tus servicios a estudiantes en tu Ã¡rea.\nEnseÃ±a a tu ritmo, segÃºn tu experiencia profesional o tus talentos. En Apprentus puedes ofrecer clases de apoyo escolar, de cocina, de idiomas, de ciencias, de danza, entre otras muchas mÃ¡s actividades.\nElige tu propio horario de trabajo.\nEstablece tus tarifas por horas de clases impartidas.\nDecide en quÃ© lugar prefieres dar tus clases: presenciales o en lÃ­nea.\nSelecciona a tus estudiantes.\nRecibe tu remuneraciÃ³n directamente en tu cuenta bancaria.\nCrea una buena reputaciÃ³n como profesor(a) y recibe solicitudes cerca de tu casa o desde cualquier lugar del mundo.\nPlease mention the word **SHARP** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "description_html": "Si eres profe, enseÃ±ar es tu vocaciÃ³n, y quieres ganar dinero haciendo lo que te apasiona, Apprentus es el lugar idÃ³neo para ti.<br><br>Â¿No tienes experiencia dando clases? Â¿Quieres compartir tus conocimientos? Apprentus incluye a todos los que aman la educaciÃ³n y la superaciÃ³n personal.<br><br>Puedes ser un profesor con aÃ±os de experiencia o ya jubilado, puedes ser un joven reciÃ©n graduado y con mucho que enseÃ±ar, o alguien con mucho talento en la cocinaâ¦ En Apprentus hay oportunidades para ti.<br><br>Buscamos profesores comprometidos y responsables. Solo debes registrarte y publicar tu clase, Â¡es gratis! Nosotros nos encargamos de promocionar tus servicios a estudiantes en tu Ã¡rea.<br><br>EnseÃ±a a tu ritmo, segÃºn tu experiencia profesional o tus talentos. En Apprentus puedes ofrecer clases de apoyo escolar, de cocina, de idiomas, de ciencias, de danza, entre otras muchas mÃ¡s actividades.<br><br>Elige tu propio horario de trabajo.<br><br>Establece tus tarifas por horas de clases impartidas.<br><br>Decide en quÃ© lugar prefieres dar tus clases: presenciales o en lÃ­nea.<br><br>Selecciona a tus estudiantes.<br><br>Recibe tu remuneraciÃ³n directamente en tu cuenta bancaria.<br><br>Crea una buena reputaciÃ³n como profesor(a) y recibe solicitudes cerca de tu casa o desde cualquier lugar del mundo.<br/><br/>Please mention the word **SHARP** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "requirements": [],
+      "responsibilities": [],
+      "deliverables": [],
+      "skills_detected": [
+        "teaching"
+      ],
+      "tools_detected": [],
+      "discipline_taxonomy": [
+        "design_ui_ux"
+      ],
+      "automation_signals": {
+        "api_related": false,
+        "documentation_related": false,
+        "research_related": false,
+        "coding_related": false,
+        "data_related": false,
+        "writing_related": false,
+        "repetitive_workflow": false,
+        "clear_deliverable": false
+      },
+      "ai_use_signals": {
+        "ai_allowed_explicit": false,
+        "ai_forbidden_explicit": false,
+        "ai_unclear": true,
+        "disclosure_needed": true
+      },
+      "platform_policy_status": "yellow",
+      "risk_flags": [
+        "unclear_pay",
+        "weak_aigc_preferred_fit",
+        "location_constrained_role"
+      ],
+      "forbidden_flags": [
+        "spam"
+      ],
+      "approval_required_before": [
+        "message_employer",
+        "apply",
+        "submit_proposal",
+        "submit_deliverable",
+        "use_credentials",
+        "use_operator_identity"
+      ],
+      "radar_score": 0,
+      "radar_decision": "reject",
+      "audit_notes": "Read-only API ingestion. Attribution/direct link-back required. Blind applying is forbidden."
+    },
+    {
+      "opportunity_id": "2d5eac6edc05a1a2a77f3b20",
+      "source_platform": "RemoteOK",
+      "source_type": "api",
+      "source_url": "https://remoteOK.com/remote-jobs/remote-growth-amp-success-manager-medida-ai-1134356",
+      "source_attribution_required": true,
+      "discovered_at": "2026-07-02T13:01:16.117610+00:00",
+      "title": "Growth &amp; Success Manager",
+      "employer": "Medida AI",
+      "client": "",
+      "location": "New York, New York, New York, United States",
+      "remote_status": "remote",
+      "work_type": "job",
+      "employment_type": "unknown",
+      "pay_min": null,
+      "pay_max": null,
+      "pay_currency": "",
+      "pay_interval": "unknown",
+      "deadline": "",
+      "posted_at": "2026-07-01T01:22:43+00:00",
+      "updated_at": "",
+      "description_plain": "About Medida \nWeâre rebuilding how the physical world gets measured, designed, and transformed.\nWe spend nearly 60% of our lives inside our homes.\nAnd yet, the systems used to measure, plan, and renovate those spaces are still manual, fragmented, and error-prone.\nMedida is building the spatial intelligence layer for the home.\nWindows and doors to kitchens, bathrooms, and more. Weâre enabling a fully digital, AI-powered workflow that turns the physical world into precise, actionable data.\nWeâve gone from 0 â $3m in ARR in under a year, and are pacing to triple this year.\nTo support this growth, weâre looking for a Growth and Success Manager who is a highly resourceful, execution-oriented operator who thrives at the intersection of go-to-market, operations, and people.\nThe Role \nThis is a high-ownership, high-exposure role working directly with leadership across sales and operations. Helping us scale how we sell, how we operate, and how we build our team.\nYou will directly impact:\nHow fast we grow\nHow efficiently we operate\nThe quality of our team and culture\nWhat Youâll Do \nLaunch new customers and supporting strategic accounts\nDevelop content and manage accounts on Medida's new product offerings\nCreate processes to streamline customer onboarding and product adoption\nWork directly with the CEO on special projects for GTM\nWho You Are \nA builder who doesnât wait for instructions, you see whatâs needed and make it happen\nHighly organized and detail-oriented, with strong follow-through\nComfortable operating in ambiguity and rapid change\nStrong communicator with a bias toward being resourceful and action\nEnergized by working across multiple domains (sales, ops, product, brand)\nExcited to travel to meet our clients face-to-face 25% of the time\n+4 years of experience in a customer facing role in a high growth tech, early stage tech, consulting, VC, PE or IB role\nWhy Join Medida \nWork on cutting-edge AI + computer vision technology, transforming a massive industry\nWe are growing fast which means you can have a huge impact. We went from 0 to 50 customers in one year and are not slowing down\nBe part of a rapidly scaling company with real traction\nGet exposure to every part of the business\nHelp shape the future of how homes are designed and built\nPlease mention the word **WHOOOA** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "description_html": "<p><strong>About Medida</strong></p><p>Weâre rebuilding how the physical world gets measured, designed, and transformed.</p><p><br></p><p>We spend nearly 60% of our lives inside our homes.</p><p>And yet, the systems used to measure, plan, and renovate those spaces are still manual, fragmented, and error-prone.</p><p><br></p><p>Medida is building the spatial intelligence layer for the home.</p><p>Windows and doors to kitchens, bathrooms, and more. Weâre enabling a fully digital, AI-powered workflow that turns the physical world into precise, actionable data.</p><p>Weâve gone from 0 â $3m in ARR in under a year, and are pacing to triple this year.</p><p><br></p><p>To support this growth, weâre looking for a Growth and Success Manager who is a highly resourceful, execution-oriented operator who thrives at the intersection of go-to-market, operations, and people.</p><p><br></p><p><strong>The Role</strong></p><p>This is a high-ownership, high-exposure role working directly with leadership across sales and operations. Helping us scale how we sell, how we operate, and how we build our team.</p><p><br></p><p>You will directly impact:</p><ul><li>How fast we grow</li><li>How efficiently we operate</li><li>The quality of our team and culture</li></ul><p><br></p><p><strong>What Youâll Do</strong></p><ul><li>Launch new customers and supporting strategic accounts</li><li>Develop content and manage accounts on Medida's new product offerings</li><li>Create processes to streamline customer onboarding and product adoption</li><li>Work directly with the CEO on special projects for GTM</li></ul><p><br></p><p><strong>Who You Are</strong></p><ul><li>A builder who doesnât wait for instructions, you see whatâs needed and make it happen</li><li>Highly organized and detail-oriented, with strong follow-through</li><li>Comfortable operating in ambiguity and rapid change</li><li>Strong communicator with a bias toward being resourceful and action</li><li>Energized by working across multiple domains (sales, ops, product, brand)</li><li>Excited to travel to meet our clients face-to-face 25% of the time</li><li>+4 years of experience in a customer facing role in a high growth tech, early stage tech, consulting, VC, PE or IB role</li></ul><p><br></p><p><strong>Why Join Medida</strong></p><ul><li>Work on cutting-edge AI + computer vision technology, transforming a massive industry</li><li>We are growing fast which means you can have a huge impact. We went from 0 to 50 customers in one year and are not slowing down</li><li>Be part of a rapidly scaling company with real traction</li><li>Get exposure to every part of the business</li><li>Help shape the future of how homes are designed and built</li></ul><p><br></p><br/><br/>Please mention the word **WHOOOA** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "requirements": [],
+      "responsibilities": [
+        "About Medida Weâre rebuilding how the physical world gets measured, designed, and transformed",
+        "Medida is building the spatial intelligence layer for the home",
+        "Helping us scale how we sell, how we operate, and how we build our team"
+      ],
+      "deliverables": [],
+      "skills_detected": [
+        "cloud",
+        "consulting",
+        "content writing",
+        "coordinator",
+        "customer support",
+        "design",
+        "designer",
+        "dev",
+        "digital nomad",
+        "education",
+        "excel",
+        "exec",
+        "finance",
+        "full time",
+        "golang",
+        "marketing",
+        "medical",
+        "ops",
+        "sales",
+        "senior",
+        "shopify",
+        "travel",
+        "video"
+      ],
+      "tools_detected": [
+        "excel"
+      ],
+      "discipline_taxonomy": [
+        "business_operations",
+        "customer_support",
+        "data_analysis",
+        "design_ui_ux",
+        "regulated_sensitive",
+        "software_coding",
+        "writing_content"
+      ],
+      "automation_signals": {
+        "api_related": true,
+        "documentation_related": false,
+        "research_related": false,
+        "coding_related": false,
+        "data_related": true,
+        "writing_related": true,
+        "repetitive_workflow": true,
+        "clear_deliverable": false
+      },
+      "ai_use_signals": {
+        "ai_allowed_explicit": false,
+        "ai_forbidden_explicit": false,
+        "ai_unclear": true,
+        "disclosure_needed": true
+      },
+      "platform_policy_status": "yellow",
+      "risk_flags": [
+        "regulated_or_sensitive_domain",
+        "unclear_pay",
+        "job_board_employment_role",
+        "broad_management_role",
+        "sales_support_or_admin_role"
+      ],
+      "forbidden_flags": [
+        "spam"
+      ],
+      "approval_required_before": [
+        "message_employer",
+        "apply",
+        "submit_proposal",
+        "submit_deliverable",
+        "use_credentials",
+        "use_operator_identity"
+      ],
+      "radar_score": 0,
+      "radar_decision": "reject",
+      "audit_notes": "Read-only API ingestion. Attribution/direct link-back required. Blind applying is forbidden."
+    },
+    {
+      "opportunity_id": "7058745ecfdbd6cb8324a1d6",
+      "source_platform": "RemoteOK",
+      "source_type": "api",
+      "source_url": "https://remoteOK.com/remote-jobs/remote-template-justworks-1134315",
+      "source_attribution_required": true,
+      "discovered_at": "2026-07-02T13:01:16.118618+00:00",
+      "title": "Template",
+      "employer": "Justworks",
+      "client": "",
+      "location": "Toronto,",
+      "remote_status": "remote",
+      "work_type": "job",
+      "employment_type": "unknown",
+      "pay_min": null,
+      "pay_max": null,
+      "pay_currency": "",
+      "pay_interval": "unknown",
+      "deadline": "",
+      "posted_at": "2026-06-30T23:53:40+00:00",
+      "updated_at": "",
+      "description_plain": "Who We Are\nAt Justworks, youâll enjoy a welcoming and casual environment, great benefits, wellness program offerings, company retreats, and the ability to interact with and learn from leaders in the startup community. We work hard and care about our most prized asset - our people.\nWeâre helping businesses get off the ground by enabling them to focus on running their business. We solve HR issues. Weâre data-driven and never stop iterating. If youâd like to work in a supportive, entrepreneurial environment, are interested in building something meaningful and having fun while doing it, weâd love to hear from you.\nWe're united by shared goals and shared motivations at Justworks. These are best summed up in our company values, which are reflected in our product and in our team.\nOur Values\nIf this sounds like you, youâll fit right in.\nInsert Posting and LI Wrapping Tags\nActual compensation is based on multiple factors that are unique to each candidate, including and not limited to skill set, level of relevant experience, and specific work location. Salary ranges for positions based in other locations may differ based on the cost of labor in that location.\nFor more information about Justworksâ Total Reward Philosophy, including all of the perks and benefits we are proud to offer our team members, please visit Total Rewards @ Justworks.\nDiversity At Justworks\nJustworks is committed to maintaining a workplace where diversity of identity, culture, and life experience is the norm and is celebrated authentically and respected consistently. Diversity in our work, our people, and our product drives creativity and innovation, entrepreneurial leadership and integrity, competitiveness, and collaboration throughout our business and in the market. We depend on our differences to make our team stronger, our workplace more dynamic, and our product accessible to all of our customers.\nWeâre proud to be an equal opportunity employer open to all qualified applicants regardless of race, color, ancestry, religion, sex, national origin, sexual orientation, age, citizenship, marital or familial status, disability, pregnancy, gender identity or expression, veteran status, genetic information, or any other legally protected status. Justworks is fully dedicated to providing necessary support to candidates with disabilities who may require reasonable accommodations. We also provide reasonable accommodations to employees based on their sincerely held religious beliefs, as well as for other covered reasons consistent with applicable federal, state, and local laws. If you're in need of a reasonable accommodation, please reach out to us at accommodations@justworks.com. Your comfort and success matter to us, and we're here to ensure an inclusive experience.\nOur DEIB Report\nPlease mention the word **ACHIEVEMENTS** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "description_html": "<strong>Who We Are<br><br></strong>At Justworks, youâll enjoy a welcoming and casual environment, great benefits, wellness program offerings, company retreats, and the ability to interact with and learn from leaders in the startup community. We work hard and care about our most prized asset - our people.<br><br>Weâre helping businesses get off the ground by enabling them to focus on running their business. We solve HR issues. Weâre data-driven and never stop iterating. If youâd like to work in a supportive, entrepreneurial environment, are interested in building something meaningful and having fun while doing it, weâd love to hear from you.<br><br>We're united by shared goals and shared motivations at Justworks. These are best summed up in our company values, which are reflected in our product and in our team.<br><br>Our Values<br><br>If this sounds like you, youâll fit right in.<br><br>Insert Posting and LI Wrapping Tags<br><br>Actual compensation is based on multiple factors that are unique to each candidate, including and not limited to skill set, level of relevant experience, and specific work location. Salary ranges for positions based in other locations may differ based on the cost of labor in that location.<br><br>For more information about Justworksâ Total Reward Philosophy, including all of the perks and benefits we are proud to offer our team members, please visit Total Rewards @ Justworks.<br><br><strong>Diversity At Justworks<br><br></strong>Justworks is committed to maintaining a workplace where diversity of identity, culture, and life experience is the norm and is celebrated authentically and respected consistently. Diversity in our work, our people, and our product drives creativity and innovation, entrepreneurial leadership and integrity, competitiveness, and collaboration throughout our business and in the market. We depend on our differences to make our team stronger, our workplace more dynamic, and our product accessible to all of our customers.<br><br>Weâre proud to be an equal opportunity employer open to all qualified applicants regardless of race, color, ancestry, religion, sex, national origin, sexual orientation, age, citizenship, marital or familial status, disability, pregnancy, gender identity or expression, veteran status, genetic information, or any other legally protected status. Justworks is fully dedicated to providing necessary support to candidates with disabilities who may require reasonable accommodations. We also provide reasonable accommodations to employees based on their sincerely held religious beliefs, as well as for other covered reasons consistent with applicable federal, state, and local laws. If you're in need of a reasonable accommodation, please reach out to us at accommodations@justworks.com. Your comfort and success matter to us, and we're here to ensure an inclusive experience.<br><br>Our DEIB Report<br/><br/>Please mention the word **ACHIEVEMENTS** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "requirements": [
+        "Insert Posting and LI Wrapping Tags Actual compensation is based on multiple factors that are unique to each candidate, including and not limited to skill set, level of relevant experience, and specific work location",
+        "Diversity At Justworks Justworks is committed to maintaining a workplace where diversity of identity, culture, and life experience is the norm and is celebrated authentically and respected consistently",
+        "Justworks is fully dedicated to providing necessary support to candidates with disabilities who may require reasonable accommodations",
+        "Your comfort and success matter to us, and we're here to ensure an inclusive experience"
+      ],
+      "responsibilities": [
+        "If youâd like to work in a supportive, entrepreneurial environment, are interested in building something meaningful and having fun while doing it, weâd love to hear from you",
+        "Diversity At Justworks Justworks is committed to maintaining a workplace where diversity of identity, culture, and life experience is the norm and is celebrated authentically and respected consistently"
+      ],
+      "deliverables": [
+        "Our DEIB Report Please mention the word **ACHIEVEMENTS** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==)"
+      ],
+      "skills_detected": [
+        "customer support",
+        "hr",
+        "non tech"
+      ],
+      "tools_detected": [],
+      "discipline_taxonomy": [
+        "business_operations",
+        "customer_support",
+        "data_analysis",
+        "design_ui_ux"
+      ],
+      "automation_signals": {
+        "api_related": false,
+        "documentation_related": false,
+        "research_related": false,
+        "coding_related": false,
+        "data_related": true,
+        "writing_related": false,
+        "repetitive_workflow": false,
+        "clear_deliverable": true
+      },
+      "ai_use_signals": {
+        "ai_allowed_explicit": false,
+        "ai_forbidden_explicit": false,
+        "ai_unclear": true,
+        "disclosure_needed": true
+      },
+      "platform_policy_status": "yellow",
+      "risk_flags": [
+        "unclear_pay",
+        "weak_aigc_preferred_fit",
+        "sales_support_or_admin_role",
+        "location_constrained_role"
+      ],
+      "forbidden_flags": [
+        "spam"
+      ],
+      "approval_required_before": [
+        "message_employer",
+        "apply",
+        "submit_proposal",
+        "submit_deliverable",
+        "use_credentials",
+        "use_operator_identity"
+      ],
+      "radar_score": 0,
+      "radar_decision": "reject",
+      "audit_notes": "Read-only API ingestion. Attribution/direct link-back required. Blind applying is forbidden."
+    },
+    {
+      "opportunity_id": "9043cf6e21ef58f58e115616",
+      "source_platform": "RemoteOK",
+      "source_type": "api",
+      "source_url": "https://remoteOK.com/remote-jobs/remote-class-1-shunt-driver-coca-cola-canada-bottling-limited-1134349",
+      "source_attribution_required": true,
+      "discovered_at": "2026-07-02T13:01:16.119615+00:00",
+      "title": "Class 1 Shunt Driver",
+      "employer": "Coca-Cola Canada Bottling Limited",
+      "client": "",
+      "location": "Regina,",
+      "remote_status": "remote",
+      "work_type": "job",
+      "employment_type": "unknown",
+      "pay_min": null,
+      "pay_max": null,
+      "pay_currency": "",
+      "pay_interval": "unknown",
+      "deadline": "",
+      "posted_at": "2026-06-30T23:50:10+00:00",
+      "updated_at": "",
+      "description_plain": "30 Jun 2026\nCoke Canada Bottling is Canadaâs Local Bottler. Weâre Made Local.\nRole Details\nWork Location â Regina \nShift - Monday to Friday 1pm -9:30pm\nHourly Rate â $23.70 - $29.26 (Graduated wage increase over 3 years)\nInitial Posting Close Date â July 12th, 2026\nProudly independent, we are a Canadian, family-owned business. Coke Canada Bottling makes, distributes, merchandises, and sells the most-loved beverages Canadians enjoy. With over 6,000 diverse employees coast-to-coast, we operate in every province through 50+ sales and distribution centres, and five manufacturing facilities.\nCoke Canada supplies some of Canadaâs favourite beverage brands, and we want to continue to be the leading beverage partner in Canada, creating a better future and delivering optimism by bringing sustainable value to our employees, customers, consumers, and communities.\nAdvancing a high-performing, collaborative and inclusive culture is at the core of our vision to be the Worldâs Greatest Bottler, Built by the Best People, and weâre looking for exceptional talent to help get us there.\nFor more information about Coke Canada Bottling and our products, visit cokecanada.com/our-product.\nResponsibilities\nAbout This Opportunity\nQualifications\nWhy work with us?\nJoin a local, family-owned business thatâs part of a globally recognized brand, where you can develop your capabilities, competencies, and career.\nCoke Canada has a culture of learning, and we offer several channels to support your development, including on-the-job training and a library of free courses for just-in-time learning.\nWe have generous referral rewards and recognition programs you can participate in.\nWe have close, local connections with the communities in which we operate across Canada. Weâre determined to make a positive difference in our communities; this includes opportunities for employee volunteerism.\nWeâre building our business responsibly and our mission is to work Toward a Better Future Together. We have a plan that outlines how we are reducing, reusing, recycling, decreasing our carbon footprint, and using water responsibly. For more information visit cokecanada.com/sustainability/\nCoke Canada has been recognized as one of Canadaâs Best Employers for Diversity, and weâre committed to fostering a diverse, equitable and inclusive workplace. Together we are creating a workplace culture that values diversity, enables inclusivity and ensures everyone feels like they belong. We are aiming to ensure our diverse workforce is reflective of the communities in which we operate. Research shows that women-identifying and other marginalized individuals often hesitate to apply unless they meet 100% of the listed qualifications. If this role excites you, even if you donât check every box, we encourage you to apply. Your unique experience and perspective could be what weâre looking for. Unless otherwise specified, this job post is for an existing vacancy.\nOur hiring process is human-driven and does not involve AI tools for screening, assessment, or selection. For individuals requiring accommodations or support throughout the recruitment process please call 1-844-383-2653 or email HR@cokecanada.com\nImportant\nAll offers of employment at Coke Canada Bottling are conditional upon a successful background clearance obtained through our contracted third-party vendor. The standard clearance requirements depend on the position and may include some, or all, of the following: criminal clearance, employment verification, education verification and driver's abstract review. Please advise the Talent Acquisition team if you have any questions or concerns once you are contacted for further consideration.\nPlease mention the word **VICTORIOUS** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "description_html": "30 Jun 2026<br><br><strong>Coke Canada Bottling is Canadaâs Local Bottler. Weâre Made Local.<br><br></strong><strong>Role Details<br><br></strong><ul><li>Work Location â Regina </li><li>Shift - Monday to Friday 1pm -9:30pm</li><li>Hourly Rate â $23.70 - $29.26 (Graduated wage increase over 3 years)</li><li>Initial Posting Close Date â July 12th, 2026<br><br><br></li></ul>Proudly independent, we are a Canadian, family-owned business. Coke Canada Bottling makes, distributes, merchandises, and sells the most-loved beverages Canadians enjoy. With over 6,000 diverse employees coast-to-coast, we operate in every province through 50+ sales and distribution centres, and five manufacturing facilities.<br><br>Coke Canada supplies some of Canadaâs favourite beverage brands, and we want to continue to be the leading beverage partner in Canada, creating a better future and delivering optimism by bringing sustainable value to our employees, customers, consumers, and communities.<br><br>Advancing a high-performing, collaborative and inclusive culture is at the core of our vision to be the Worldâs Greatest Bottler, Built by the Best People, and weâre looking for exceptional talent to help get us there.<br><br>For more information about Coke Canada Bottling and our products, visit cokecanada.com/our-product.<br><br><strong>Responsibilities<br><br></strong><strong>About This Opportunity<br><br></strong><strong>Qualifications<br><br></strong><strong>Why work with us?<br><br></strong><ul><li>Join a local, family-owned business thatâs part of a globally recognized brand, where you can develop your capabilities, competencies, and career.</li><li>Coke Canada has a culture of learning, and we offer several channels to support your development, including on-the-job training and a library of free courses for just-in-time learning.</li><li>We have generous referral rewards and recognition programs you can participate in.</li><li>We have close, local connections with the communities in which we operate across Canada. Weâre determined to make a positive difference in our communities; this includes opportunities for employee volunteerism.</li><li>Weâre building our business responsibly and our mission is to work Toward a Better Future Together. We have a plan that outlines how we are reducing, reusing, recycling, decreasing our carbon footprint, and using water responsibly. For more information visit cokecanada.com/sustainability/<br><br><br></li></ul>Coke Canada has been recognized as one of Canadaâs Best Employers for Diversity, and weâre committed to fostering a diverse, equitable and inclusive workplace. Together we are creating a workplace culture that values diversity, enables inclusivity and ensures everyone feels like they belong. We are aiming to ensure our diverse workforce is reflective of the communities in which we operate. Research shows that women-identifying and other marginalized individuals often hesitate to apply unless they meet 100% of the listed qualifications. If this role excites you, even if you donât check every box, we encourage you to apply. Your unique experience and perspective could be what weâre looking for. Unless otherwise specified, this job post is for an existing vacancy.<br><br>Our hiring process is human-driven and does not involve AI tools for screening, assessment, or selection. For individuals requiring accommodations or support throughout the recruitment process please call 1-844-383-2653 or email HR@cokecanada.com<br><br><strong>Important<br><br></strong>All offers of employment at Coke Canada Bottling are conditional upon a successful background clearance obtained through our contracted third-party vendor. The standard clearance requirements depend on the position and may include some, or all, of the following: criminal clearance, employment verification, education verification and driver's abstract review. Please advise the Talent Acquisition team if you have any questions or concerns once you are contacted for further consideration.<br/><br/>Please mention the word **VICTORIOUS** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "requirements": [
+        "Your unique experience and perspective could be what weâre looking for",
+        "The standard clearance requirements depend on the position and may include some, or all, of the following: criminal clearance, employment verification, education verification and driver's abstract review"
+      ],
+      "responsibilities": [
+        "Responsibilities About This Opportunity Qualifications Why work with us? Join a local, family-owned business thatâs part of a globally recognized brand, where you can develop your capabilities, competencies, and career",
+        "Weâre building our business responsibly and our mission is to work Toward a Better Future Together"
+      ],
+      "deliverables": [],
+      "skills_detected": [
+        "assembly",
+        "customer support",
+        "design",
+        "digital nomad",
+        "ecommerce",
+        "education",
+        "exec",
+        "full time",
+        "game dev",
+        "golang",
+        "hr",
+        "infosec",
+        "legal",
+        "marketing",
+        "medical",
+        "non tech",
+        "ops",
+        "part time",
+        "payroll",
+        "recruiter",
+        "sales",
+        "speech",
+        "sys admin",
+        "technical",
+        "testing",
+        "travel"
+      ],
+      "tools_detected": [],
+      "discipline_taxonomy": [
+        "business_operations",
+        "customer_support",
+        "cybersecurity_bug_bounty",
+        "design_ui_ux",
+        "qa_testing",
+        "regulated_sensitive",
+        "research"
+      ],
+      "automation_signals": {
+        "api_related": false,
+        "documentation_related": false,
+        "research_related": true,
+        "coding_related": false,
+        "data_related": false,
+        "writing_related": false,
+        "repetitive_workflow": true,
+        "clear_deliverable": false
+      },
+      "ai_use_signals": {
+        "ai_allowed_explicit": false,
+        "ai_forbidden_explicit": false,
+        "ai_unclear": true,
+        "disclosure_needed": true
+      },
+      "platform_policy_status": "yellow",
+      "risk_flags": [
+        "regulated_or_sensitive_domain",
+        "unclear_pay",
+        "weak_aigc_preferred_fit",
+        "sales_support_or_admin_role",
+        "location_constrained_role"
+      ],
+      "forbidden_flags": [
+        "spam"
+      ],
+      "approval_required_before": [
+        "message_employer",
+        "apply",
+        "submit_proposal",
+        "submit_deliverable",
+        "use_credentials",
+        "use_operator_identity"
+      ],
+      "radar_score": 0,
+      "radar_decision": "reject",
+      "audit_notes": "Read-only API ingestion. Attribution/direct link-back required. Blind applying is forbidden."
+    }
+  ]
+}

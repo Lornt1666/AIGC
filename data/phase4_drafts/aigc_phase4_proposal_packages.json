@@ -1,0 +1,2811 @@
+[
+  {
+    "package_id": "phase4_129ed5d3aa518bb047452f79",
+    "dossier_id": "phase3_47dd6beb8015306878a69814",
+    "opportunity_id": "eda6a258a34d417ac4895a99",
+    "title": "[integrations] Env-var reference doc",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3561",
+    "phase3_score": 91,
+    "phase3_decision": "proceed_to_phase_4",
+    "employer_intent_summary": "The requester likely needs a focused contribution for '[integrations] Env-var reference doc'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi cognee maintainers,\n\nI can help with '[integrations] Env-var reference doc' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Inspect the implementation context before proposing code.",
+      "Draft a minimal patch or implementation plan.",
+      "Identify tests or validation steps before delivery."
+    ],
+    "deliverables": [
+      "Implementation plan or small patch proposal.",
+      "Test/validation checklist.",
+      "Risk notes for maintainers or employer review.",
+      "Handoff summary."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Context review: 30-60 minutes.",
+      "Implementation plan or small patch draft: 1-2 focused work sessions.",
+      "Validation pass: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4.",
+      "Phase 3 score: 91.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_47dd6beb8015306878a69814",
+      "opportunity_id": "eda6a258a34d417ac4895a99",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/topoteretes/cognee/issues/3561",
+      "phase3_score": 91,
+      "phase3_decision": "proceed_to_phase_4",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Ready for Justice review as a Phase 5 approval candidate.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.475193+00:00"
+  },
+  {
+    "package_id": "phase4_82bb62946d8a47ce81bcca6d",
+    "dossier_id": "phase3_69c59b490a028e417add2c85",
+    "opportunity_id": "48ff2350d71e32d32183dc30",
+    "title": "AI Engineers",
+    "employer": "Toptal",
+    "source_platform": "We Work Remotely",
+    "source_url": "https://weworkremotely.com/remote-jobs/toptal-ai-engineers",
+    "phase3_score": 91,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The employer likely needs help with 'AI Engineers' through a scoped, reviewable deliverable. Primary value: Research synthesis and decision support.",
+    "employer_facing_message": "Hello Toptal team,\n\nI can help with 'AI Engineers' by turning the requirements into a concrete, reviewable work plan and deliverable.\n\nThe value I would focus on is: Research synthesis and decision support.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Collect source-backed facts from approved public sources.",
+      "Synthesize findings into a concise report.",
+      "Separate known facts, assumptions, and unresolved questions."
+    ],
+    "deliverables": [
+      "Research brief.",
+      "Source table.",
+      "Findings summary.",
+      "Open questions and verification notes."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Context review: 30-60 minutes.",
+      "Implementation plan or small patch draft: 1-2 focused work sessions.",
+      "Validation pass: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Is this a one-time deliverable, trial task, contract, or employment process?",
+      "What budget or compensation structure applies to the scoped work?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 91.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_69c59b490a028e417add2c85",
+      "opportunity_id": "48ff2350d71e32d32183dc30",
+      "source_platform": "We Work Remotely",
+      "source_url": "https://weworkremotely.com/remote-jobs/toptal-ai-engineers",
+      "phase3_score": 91,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.476192+00:00"
+  },
+  {
+    "package_id": "phase4_59cde5610aa64d7391c89898",
+    "dossier_id": "phase3_6e3eb03e77a4488f252eb284",
+    "opportunity_id": "fd1c0de42c4f53acba40f34b",
+    "title": "[integrations] Troubleshooting guide",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3562",
+    "phase3_score": 90,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The requester likely needs a focused contribution for '[integrations] Troubleshooting guide'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi cognee maintainers,\n\nI can help with '[integrations] Troubleshooting guide' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Inspect the implementation context before proposing code.",
+      "Draft a minimal patch or implementation plan.",
+      "Identify tests or validation steps before delivery."
+    ],
+    "deliverables": [
+      "Implementation plan or small patch proposal.",
+      "Test/validation checklist.",
+      "Risk notes for maintainers or employer review.",
+      "Handoff summary."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Context review: 30-60 minutes.",
+      "Implementation plan or small patch draft: 1-2 focused work sessions.",
+      "Validation pass: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 90.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_6e3eb03e77a4488f252eb284",
+      "opportunity_id": "fd1c0de42c4f53acba40f34b",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/topoteretes/cognee/issues/3562",
+      "phase3_score": 90,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.477194+00:00"
+  },
+  {
+    "package_id": "phase4_c4a28db5c40631315048704b",
+    "dossier_id": "phase3_841d4d2574bd51c789ed15ae",
+    "opportunity_id": "b62bc7f1caf7a27c588a6d6a",
+    "title": "[integrations] Consistent \"three modes\" README section across integrations",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3550",
+    "phase3_score": 90,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The requester likely needs a focused contribution for '[integrations] Consistent \"three modes\" README section across integrations'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi cognee maintainers,\n\nI can help with '[integrations] Consistent \"three modes\" README section across integrations' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Audit the relevant documentation or issue context.",
+      "Draft concise technical content with examples where useful.",
+      "Produce a change summary and review checklist."
+    ],
+    "deliverables": [
+      "Clarified documentation draft or README section.",
+      "Examples, environment-variable notes, or troubleshooting content as applicable.",
+      "Change summary with assumptions and unresolved questions.",
+      "Quality review checklist."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Draft content in plain technical language.",
+      "Review for developer usability.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Scope confirmation: 15-30 minutes.",
+      "Initial draft: 1 focused work session.",
+      "Review and revision: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 90.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Review for clarity, examples, and missing assumptions.",
+      "Check links, commands, and terminology.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_841d4d2574bd51c789ed15ae",
+      "opportunity_id": "b62bc7f1caf7a27c588a6d6a",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/topoteretes/cognee/issues/3550",
+      "phase3_score": 90,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.477194+00:00"
+  },
+  {
+    "package_id": "phase4_6bf8f3b4f446d9bb6e635d18",
+    "dossier_id": "phase3_4fa2cca73952fc8debdb13cb",
+    "opportunity_id": "9d7bb4d37968940e7f9738d5",
+    "title": "[integrations] Add COGNEE_REMEMBER_TIMEOUT / COGNEE_REGISTER_TIMEOUT env vars",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3543",
+    "phase3_score": 88,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The requester likely needs a focused contribution for '[integrations] Add COGNEE_REMEMBER_TIMEOUT / COGNEE_REGISTER_TIMEOUT env vars'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi cognee maintainers,\n\nI can help with '[integrations] Add COGNEE_REMEMBER_TIMEOUT / COGNEE_REGISTER_TIMEOUT env vars' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Audit the relevant documentation or issue context.",
+      "Draft concise technical content with examples where useful.",
+      "Produce a change summary and review checklist."
+    ],
+    "deliverables": [
+      "Clarified documentation draft or README section.",
+      "Examples, environment-variable notes, or troubleshooting content as applicable.",
+      "Change summary with assumptions and unresolved questions.",
+      "Quality review checklist."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Draft content in plain technical language.",
+      "Review for developer usability.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Scope confirmation: 15-30 minutes.",
+      "Initial draft: 1 focused work session.",
+      "Review and revision: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 88.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Review for clarity, examples, and missing assumptions.",
+      "Check links, commands, and terminology.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_4fa2cca73952fc8debdb13cb",
+      "opportunity_id": "9d7bb4d37968940e7f9738d5",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/topoteretes/cognee/issues/3543",
+      "phase3_score": 88,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.478195+00:00"
+  },
+  {
+    "package_id": "phase4_817f9a8ede8b80d3aeefbb12",
+    "dossier_id": "phase3_17f0706230561b4c15e01a8d",
+    "opportunity_id": "c8c4ba85f90c5b86890d806d",
+    "title": "[integrations] Cloud cold-start warmup ping for plugin sessions",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3541",
+    "phase3_score": 88,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The requester likely needs a focused contribution for '[integrations] Cloud cold-start warmup ping for plugin sessions'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi cognee maintainers,\n\nI can help with '[integrations] Cloud cold-start warmup ping for plugin sessions' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Audit the relevant documentation or issue context.",
+      "Draft concise technical content with examples where useful.",
+      "Produce a change summary and review checklist."
+    ],
+    "deliverables": [
+      "Clarified documentation draft or README section.",
+      "Examples, environment-variable notes, or troubleshooting content as applicable.",
+      "Change summary with assumptions and unresolved questions.",
+      "Quality review checklist."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Draft content in plain technical language.",
+      "Review for developer usability.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Scope confirmation: 15-30 minutes.",
+      "Initial draft: 1 focused work session.",
+      "Review and revision: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 88.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Review for clarity, examples, and missing assumptions.",
+      "Check links, commands, and terminology.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_17f0706230561b4c15e01a8d",
+      "opportunity_id": "c8c4ba85f90c5b86890d806d",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/topoteretes/cognee/issues/3541",
+      "phase3_score": 88,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.479196+00:00"
+  },
+  {
+    "package_id": "phase4_2ff3d6fd1a91ab8f7167254d",
+    "dossier_id": "phase3_5f964f158f62e2ec0054f77e",
+    "opportunity_id": "3795782df71592e3c47e76b7",
+    "title": "Federal BIM Design Associate",
+    "employer": "Olsson",
+    "source_platform": "We Work Remotely",
+    "source_url": "https://weworkremotely.com/remote-jobs/olsson-federal-bim-design-associate",
+    "phase3_score": 87,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The employer likely needs help with 'Federal BIM Design Associate' through a scoped, reviewable deliverable. Primary value: Research synthesis and decision support.",
+    "employer_facing_message": "Hello Olsson team,\n\nI can help with 'Federal BIM Design Associate' by turning the requirements into a concrete, reviewable work plan and deliverable.\n\nThe value I would focus on is: Research synthesis and decision support.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Collect source-backed facts from approved public sources.",
+      "Synthesize findings into a concise report.",
+      "Separate known facts, assumptions, and unresolved questions."
+    ],
+    "deliverables": [
+      "Research brief.",
+      "Source table.",
+      "Findings summary.",
+      "Open questions and verification notes."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Context review: 30-60 minutes.",
+      "Implementation plan or small patch draft: 1-2 focused work sessions.",
+      "Validation pass: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Is this a one-time deliverable, trial task, contract, or employment process?",
+      "What budget or compensation structure applies to the scoped work?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 87.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_5f964f158f62e2ec0054f77e",
+      "opportunity_id": "3795782df71592e3c47e76b7",
+      "source_platform": "We Work Remotely",
+      "source_url": "https://weworkremotely.com/remote-jobs/olsson-federal-bim-design-associate",
+      "phase3_score": 87,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.480192+00:00"
+  },
+  {
+    "package_id": "phase4_a0c0eb6104cbdcc1c08d2f49",
+    "dossier_id": "phase3_b312a648bdec6cee27f392f0",
+    "opportunity_id": "f17580421d45bc56fbb3323d",
+    "title": "[integrations] Config-precedence tests (env > config > defaults)",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3559",
+    "phase3_score": 87,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The requester likely needs a focused contribution for '[integrations] Config-precedence tests (env > config > defaults)'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi cognee maintainers,\n\nI can help with '[integrations] Config-precedence tests (env > config > defaults)' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Inspect the implementation context before proposing code.",
+      "Draft a minimal patch or implementation plan.",
+      "Identify tests or validation steps before delivery."
+    ],
+    "deliverables": [
+      "Implementation plan or small patch proposal.",
+      "Test/validation checklist.",
+      "Risk notes for maintainers or employer review.",
+      "Handoff summary."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Context review: 30-60 minutes.",
+      "Implementation plan or small patch draft: 1-2 focused work sessions.",
+      "Validation pass: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 87.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_b312a648bdec6cee27f392f0",
+      "opportunity_id": "f17580421d45bc56fbb3323d",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/topoteretes/cognee/issues/3559",
+      "phase3_score": 87,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.481193+00:00"
+  },
+  {
+    "package_id": "phase4_298d569fd92600e3865c3ab4",
+    "dossier_id": "phase3_a02f48f1738064947044d9d1",
+    "opportunity_id": "315f658a9364057a86cabcbe",
+    "title": "[integrations] n8n: expose remember/recall verbs",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3560",
+    "phase3_score": 87,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The requester likely needs a focused contribution for '[integrations] n8n: expose remember/recall verbs'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi cognee maintainers,\n\nI can help with '[integrations] n8n: expose remember/recall verbs' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Inspect the implementation context before proposing code.",
+      "Draft a minimal patch or implementation plan.",
+      "Identify tests or validation steps before delivery."
+    ],
+    "deliverables": [
+      "Implementation plan or small patch proposal.",
+      "Test/validation checklist.",
+      "Risk notes for maintainers or employer review.",
+      "Handoff summary."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Context review: 30-60 minutes.",
+      "Implementation plan or small patch draft: 1-2 focused work sessions.",
+      "Validation pass: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 87.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_a02f48f1738064947044d9d1",
+      "opportunity_id": "315f658a9364057a86cabcbe",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/topoteretes/cognee/issues/3560",
+      "phase3_score": 87,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.481193+00:00"
+  },
+  {
+    "package_id": "phase4_ad3173750b0c97f03fa3eed3",
+    "dossier_id": "phase3_c106d36cc9f54c232f73e5b8",
+    "opportunity_id": "bbc2efb9c274d0221aa447b8",
+    "title": "Productionize the Helm chart (deployment/helm)",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3602",
+    "phase3_score": 86,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The requester likely needs a focused contribution for 'Productionize the Helm chart (deployment/helm)'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi cognee maintainers,\n\nI can help with 'Productionize the Helm chart (deployment/helm)' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Audit the relevant documentation or issue context.",
+      "Draft concise technical content with examples where useful.",
+      "Produce a change summary and review checklist."
+    ],
+    "deliverables": [
+      "Clarified documentation draft or README section.",
+      "Examples, environment-variable notes, or troubleshooting content as applicable.",
+      "Change summary with assumptions and unresolved questions.",
+      "Quality review checklist."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Draft content in plain technical language.",
+      "Review for developer usability.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Scope confirmation: 15-30 minutes.",
+      "Initial draft: 1 focused work session.",
+      "Review and revision: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 86.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Review for clarity, examples, and missing assumptions.",
+      "Check links, commands, and terminology.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_c106d36cc9f54c232f73e5b8",
+      "opportunity_id": "bbc2efb9c274d0221aa447b8",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/topoteretes/cognee/issues/3602",
+      "phase3_score": 86,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.482194+00:00"
+  },
+  {
+    "package_id": "phase4_c36264be20bfb858ee9bcd7c",
+    "dossier_id": "phase3_a7c133873e2a33b37279c969",
+    "opportunity_id": "5cf46914d492ec92f9c9d72d",
+    "title": "[integrations] OpenClaw: cold-start warmup + first-recall retry in the TS client",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3546",
+    "phase3_score": 85,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The requester likely needs a focused contribution for '[integrations] OpenClaw: cold-start warmup + first-recall retry in the TS client'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi cognee maintainers,\n\nI can help with '[integrations] OpenClaw: cold-start warmup + first-recall retry in the TS client' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Inspect the implementation context before proposing code.",
+      "Draft a minimal patch or implementation plan.",
+      "Identify tests or validation steps before delivery."
+    ],
+    "deliverables": [
+      "Implementation plan or small patch proposal.",
+      "Test/validation checklist.",
+      "Risk notes for maintainers or employer review.",
+      "Handoff summary."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Context review: 30-60 minutes.",
+      "Implementation plan or small patch draft: 1-2 focused work sessions.",
+      "Validation pass: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 85.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_a7c133873e2a33b37279c969",
+      "opportunity_id": "5cf46914d492ec92f9c9d72d",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/topoteretes/cognee/issues/3546",
+      "phase3_score": 85,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.483193+00:00"
+  },
+  {
+    "package_id": "phase4_8e810fe9f8a35f40e3846269",
+    "dossier_id": "phase3_2ffe86069c1a8a84c09715e2",
+    "opportunity_id": "1a3aad74c4db7e62c8704d92",
+    "title": "[integrations] OpenClaw: circuit breaker + per-op timeouts in the TS client",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3545",
+    "phase3_score": 85,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The requester likely needs a focused contribution for '[integrations] OpenClaw: circuit breaker + per-op timeouts in the TS client'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi cognee maintainers,\n\nI can help with '[integrations] OpenClaw: circuit breaker + per-op timeouts in the TS client' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Inspect the implementation context before proposing code.",
+      "Draft a minimal patch or implementation plan.",
+      "Identify tests or validation steps before delivery."
+    ],
+    "deliverables": [
+      "Implementation plan or small patch proposal.",
+      "Test/validation checklist.",
+      "Risk notes for maintainers or employer review.",
+      "Handoff summary."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Context review: 30-60 minutes.",
+      "Implementation plan or small patch draft: 1-2 focused work sessions.",
+      "Validation pass: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 85.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_2ffe86069c1a8a84c09715e2",
+      "opportunity_id": "1a3aad74c4db7e62c8704d92",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/topoteretes/cognee/issues/3545",
+      "phase3_score": 85,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.484194+00:00"
+  },
+  {
+    "package_id": "phase4_e6f0729949d9a3867cc46ca7",
+    "dossier_id": "phase3_afce44453b6a11c9a0d03492",
+    "opportunity_id": "a368e5083373c9ab1e57e991",
+    "title": "Feature: new environment variable PIP_AUDIT_IGNORE_VULN",
+    "employer": "pip-audit",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/pypa/pip-audit/issues/948",
+    "phase3_score": 85,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The requester likely needs a focused contribution for 'Feature: new environment variable PIP_AUDIT_IGNORE_VULN'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi pip-audit maintainers,\n\nI can help with 'Feature: new environment variable PIP_AUDIT_IGNORE_VULN' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Collect source-backed facts from approved public sources.",
+      "Synthesize findings into a concise report.",
+      "Separate known facts, assumptions, and unresolved questions."
+    ],
+    "deliverables": [
+      "Research brief.",
+      "Source table.",
+      "Findings summary.",
+      "Open questions and verification notes."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Context review: 30-60 minutes.",
+      "Implementation plan or small patch draft: 1-2 focused work sessions.",
+      "Validation pass: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 85.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_afce44453b6a11c9a0d03492",
+      "opportunity_id": "a368e5083373c9ab1e57e991",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/pypa/pip-audit/issues/948",
+      "phase3_score": 85,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.484194+00:00"
+  },
+  {
+    "package_id": "phase4_ed034ea44d3dbd45def8837f",
+    "dossier_id": "phase3_b2b6b0c7917fe9f738e641fe",
+    "opportunity_id": "2987871ab0bc70b14c25741e",
+    "title": "[integrations] Surface cognify lag instead of silent empty recall",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3553",
+    "phase3_score": 85,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The requester likely needs a focused contribution for '[integrations] Surface cognify lag instead of silent empty recall'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi cognee maintainers,\n\nI can help with '[integrations] Surface cognify lag instead of silent empty recall' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Inspect the implementation context before proposing code.",
+      "Draft a minimal patch or implementation plan.",
+      "Identify tests or validation steps before delivery."
+    ],
+    "deliverables": [
+      "Implementation plan or small patch proposal.",
+      "Test/validation checklist.",
+      "Risk notes for maintainers or employer review.",
+      "Handoff summary."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Context review: 30-60 minutes.",
+      "Implementation plan or small patch draft: 1-2 focused work sessions.",
+      "Validation pass: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 85.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_b2b6b0c7917fe9f738e641fe",
+      "opportunity_id": "2987871ab0bc70b14c25741e",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/topoteretes/cognee/issues/3553",
+      "phase3_score": 85,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.485195+00:00"
+  },
+  {
+    "package_id": "phase4_e69e7924b59871538b1d8593",
+    "dossier_id": "phase3_9bf0abc513fa5836c595a009",
+    "opportunity_id": "0cb519bbb35b8e0ddc832b34",
+    "title": "[integrations] E2E: session registers and appears via /agents/connections/me",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3558",
+    "phase3_score": 85,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The requester likely needs a focused contribution for '[integrations] E2E: session registers and appears via /agents/connections/me'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi cognee maintainers,\n\nI can help with '[integrations] E2E: session registers and appears via /agents/connections/me' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Inspect the implementation context before proposing code.",
+      "Draft a minimal patch or implementation plan.",
+      "Identify tests or validation steps before delivery."
+    ],
+    "deliverables": [
+      "Implementation plan or small patch proposal.",
+      "Test/validation checklist.",
+      "Risk notes for maintainers or employer review.",
+      "Handoff summary."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Context review: 30-60 minutes.",
+      "Implementation plan or small patch draft: 1-2 focused work sessions.",
+      "Validation pass: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 85.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_9bf0abc513fa5836c595a009",
+      "opportunity_id": "0cb519bbb35b8e0ddc832b34",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/topoteretes/cognee/issues/3558",
+      "phase3_score": 85,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.486193+00:00"
+  },
+  {
+    "package_id": "phase4_85ce43bf406da7ca7e72ccca",
+    "dossier_id": "phase3_f5daf7f348132ae409ba04b9",
+    "opportunity_id": "f57143f07e5ab9e64974239d",
+    "title": "[integrations] cognee-plugin status one-liner",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3552",
+    "phase3_score": 85,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The requester likely needs a focused contribution for '[integrations] cognee-plugin status one-liner'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi cognee maintainers,\n\nI can help with '[integrations] cognee-plugin status one-liner' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Inspect the implementation context before proposing code.",
+      "Draft a minimal patch or implementation plan.",
+      "Identify tests or validation steps before delivery."
+    ],
+    "deliverables": [
+      "Implementation plan or small patch proposal.",
+      "Test/validation checklist.",
+      "Risk notes for maintainers or employer review.",
+      "Handoff summary."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Context review: 30-60 minutes.",
+      "Implementation plan or small patch draft: 1-2 focused work sessions.",
+      "Validation pass: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 85.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_f5daf7f348132ae409ba04b9",
+      "opportunity_id": "f57143f07e5ab9e64974239d",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/topoteretes/cognee/issues/3552",
+      "phase3_score": 85,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.486193+00:00"
+  },
+  {
+    "package_id": "phase4_58c805c1b3dda1f6aa25ba29",
+    "dossier_id": "phase3_e61fdeeb9f7177248e5cd7ac",
+    "opportunity_id": "80dbe8c9e366e4b8e63f8c65",
+    "title": "[integrations] Embedding-dimension mismatch: clear error instead of silent empty recall",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3547",
+    "phase3_score": 85,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The requester likely needs a focused contribution for '[integrations] Embedding-dimension mismatch: clear error instead of silent empty recall'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi cognee maintainers,\n\nI can help with '[integrations] Embedding-dimension mismatch: clear error instead of silent empty recall' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Inspect the implementation context before proposing code.",
+      "Draft a minimal patch or implementation plan.",
+      "Identify tests or validation steps before delivery."
+    ],
+    "deliverables": [
+      "Implementation plan or small patch proposal.",
+      "Test/validation checklist.",
+      "Risk notes for maintainers or employer review.",
+      "Handoff summary."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Context review: 30-60 minutes.",
+      "Implementation plan or small patch draft: 1-2 focused work sessions.",
+      "Validation pass: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 85.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_e61fdeeb9f7177248e5cd7ac",
+      "opportunity_id": "80dbe8c9e366e4b8e63f8c65",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/topoteretes/cognee/issues/3547",
+      "phase3_score": 85,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.487193+00:00"
+  },
+  {
+    "package_id": "phase4_82fce1f8f3fe899e64abff5d",
+    "dossier_id": "phase3_d8d4436cb5be74fef832bf85",
+    "opportunity_id": "533db66d2318bf2bc0dd4abd",
+    "title": "[integrations] Dataset-name sanitization parity across integrations",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3549",
+    "phase3_score": 85,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The requester likely needs a focused contribution for '[integrations] Dataset-name sanitization parity across integrations'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi cognee maintainers,\n\nI can help with '[integrations] Dataset-name sanitization parity across integrations' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Collect source-backed facts from approved public sources.",
+      "Synthesize findings into a concise report.",
+      "Separate known facts, assumptions, and unresolved questions."
+    ],
+    "deliverables": [
+      "Research brief.",
+      "Source table.",
+      "Findings summary.",
+      "Open questions and verification notes."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Context review: 30-60 minutes.",
+      "Implementation plan or small patch draft: 1-2 focused work sessions.",
+      "Validation pass: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 85.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_d8d4436cb5be74fef832bf85",
+      "opportunity_id": "533db66d2318bf2bc0dd4abd",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/topoteretes/cognee/issues/3549",
+      "phase3_score": 85,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.488193+00:00"
+  },
+  {
+    "package_id": "phase4_2cc717f1098738dc3eeae2fc",
+    "dossier_id": "phase3_00bf245cf82f290a1ece1323",
+    "opportunity_id": "0e36363038add3b5915f1b84",
+    "title": "[integrations] Live add→cognify→search smoke test",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3557",
+    "phase3_score": 85,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The requester likely needs a focused contribution for '[integrations] Live add→cognify→search smoke test'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi cognee maintainers,\n\nI can help with '[integrations] Live add→cognify→search smoke test' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Inspect the implementation context before proposing code.",
+      "Draft a minimal patch or implementation plan.",
+      "Identify tests or validation steps before delivery."
+    ],
+    "deliverables": [
+      "Implementation plan or small patch proposal.",
+      "Test/validation checklist.",
+      "Risk notes for maintainers or employer review.",
+      "Handoff summary."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Context review: 30-60 minutes.",
+      "Implementation plan or small patch draft: 1-2 focused work sessions.",
+      "Validation pass: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 85.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_00bf245cf82f290a1ece1323",
+      "opportunity_id": "0e36363038add3b5915f1b84",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/topoteretes/cognee/issues/3557",
+      "phase3_score": 85,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.489192+00:00"
+  },
+  {
+    "package_id": "phase4_2f5eeee5f967b51e0c3f27fa",
+    "dossier_id": "phase3_3ddb385019d1e23a42a3b535",
+    "opportunity_id": "ab4ac8a8d497c0cf8adb58c4",
+    "title": "[integrations] OpenClaw tests for scope routing + cogneeSessionId",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3555",
+    "phase3_score": 85,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The requester likely needs a focused contribution for '[integrations] OpenClaw tests for scope routing + cogneeSessionId'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi cognee maintainers,\n\nI can help with '[integrations] OpenClaw tests for scope routing + cogneeSessionId' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Inspect the implementation context before proposing code.",
+      "Draft a minimal patch or implementation plan.",
+      "Identify tests or validation steps before delivery."
+    ],
+    "deliverables": [
+      "Implementation plan or small patch proposal.",
+      "Test/validation checklist.",
+      "Risk notes for maintainers or employer review.",
+      "Handoff summary."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Context review: 30-60 minutes.",
+      "Implementation plan or small patch draft: 1-2 focused work sessions.",
+      "Validation pass: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 85.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_3ddb385019d1e23a42a3b535",
+      "opportunity_id": "ab4ac8a8d497c0cf8adb58c4",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/topoteretes/cognee/issues/3555",
+      "phase3_score": 85,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.489192+00:00"
+  },
+  {
+    "package_id": "phase4_13f9f7ffe445c278d57f9f6a",
+    "dossier_id": "phase3_75c4589052e49373dd5d06a3",
+    "opportunity_id": "bd706e8c410ea414b213cd01",
+    "title": "[integrations] Port the claude-code test suite to Codex",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3554",
+    "phase3_score": 85,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The requester likely needs a focused contribution for '[integrations] Port the claude-code test suite to Codex'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi cognee maintainers,\n\nI can help with '[integrations] Port the claude-code test suite to Codex' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Inspect the implementation context before proposing code.",
+      "Draft a minimal patch or implementation plan.",
+      "Identify tests or validation steps before delivery."
+    ],
+    "deliverables": [
+      "Implementation plan or small patch proposal.",
+      "Test/validation checklist.",
+      "Risk notes for maintainers or employer review.",
+      "Handoff summary."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Context review: 30-60 minutes.",
+      "Implementation plan or small patch draft: 1-2 focused work sessions.",
+      "Validation pass: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 85.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_75c4589052e49373dd5d06a3",
+      "opportunity_id": "bd706e8c410ea414b213cd01",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/topoteretes/cognee/issues/3554",
+      "phase3_score": 85,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.490191+00:00"
+  },
+  {
+    "package_id": "phase4_a690460fc33e1ded08f7ae61",
+    "dossier_id": "phase3_0bfe0d26f9d4919f6ea67139",
+    "opportunity_id": "67ed35084445d65a8241e5bf",
+    "title": "[integrations] cognee-plugin doctor command",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3551",
+    "phase3_score": 85,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The requester likely needs a focused contribution for '[integrations] cognee-plugin doctor command'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi cognee maintainers,\n\nI can help with '[integrations] cognee-plugin doctor command' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Inspect the implementation context before proposing code.",
+      "Draft a minimal patch or implementation plan.",
+      "Identify tests or validation steps before delivery."
+    ],
+    "deliverables": [
+      "Implementation plan or small patch proposal.",
+      "Test/validation checklist.",
+      "Risk notes for maintainers or employer review.",
+      "Handoff summary."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Context review: 30-60 minutes.",
+      "Implementation plan or small patch draft: 1-2 focused work sessions.",
+      "Validation pass: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 85.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_0bfe0d26f9d4919f6ea67139",
+      "opportunity_id": "67ed35084445d65a8241e5bf",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/topoteretes/cognee/issues/3551",
+      "phase3_score": 85,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.491194+00:00"
+  },
+  {
+    "package_id": "phase4_ad020f580bc22642c8caf9b5",
+    "dossier_id": "phase3_54c918e70841062a62db7bf9",
+    "opportunity_id": "b79351d868e5311a2ed7db55",
+    "title": "[integrations] Shared session-id sanitization conformance test",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3548",
+    "phase3_score": 85,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The requester likely needs a focused contribution for '[integrations] Shared session-id sanitization conformance test'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi cognee maintainers,\n\nI can help with '[integrations] Shared session-id sanitization conformance test' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Inspect the implementation context before proposing code.",
+      "Draft a minimal patch or implementation plan.",
+      "Identify tests or validation steps before delivery."
+    ],
+    "deliverables": [
+      "Implementation plan or small patch proposal.",
+      "Test/validation checklist.",
+      "Risk notes for maintainers or employer review.",
+      "Handoff summary."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Context review: 30-60 minutes.",
+      "Implementation plan or small patch draft: 1-2 focused work sessions.",
+      "Validation pass: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 85.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_54c918e70841062a62db7bf9",
+      "opportunity_id": "b79351d868e5311a2ed7db55",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/topoteretes/cognee/issues/3548",
+      "phase3_score": 85,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.492192+00:00"
+  },
+  {
+    "package_id": "phase4_25fd062345700a1e3a08d0d2",
+    "dossier_id": "phase3_4e0124ee189be10d77c76b12",
+    "opportunity_id": "e86bbd3a4c9c7c08eb27da18",
+    "title": "[integrations] Re-register agent session on mid-session mode change",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3544",
+    "phase3_score": 85,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The requester likely needs a focused contribution for '[integrations] Re-register agent session on mid-session mode change'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi cognee maintainers,\n\nI can help with '[integrations] Re-register agent session on mid-session mode change' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Inspect the implementation context before proposing code.",
+      "Draft a minimal patch or implementation plan.",
+      "Identify tests or validation steps before delivery."
+    ],
+    "deliverables": [
+      "Implementation plan or small patch proposal.",
+      "Test/validation checklist.",
+      "Risk notes for maintainers or employer review.",
+      "Handoff summary."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Context review: 30-60 minutes.",
+      "Implementation plan or small patch draft: 1-2 focused work sessions.",
+      "Validation pass: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 85.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_4e0124ee189be10d77c76b12",
+      "opportunity_id": "e86bbd3a4c9c7c08eb27da18",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/topoteretes/cognee/issues/3544",
+      "phase3_score": 85,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.492192+00:00"
+  },
+  {
+    "package_id": "phase4_c473c8af591b5b81ccf4d486",
+    "dossier_id": "phase3_70043a5b987259a54c8b6566",
+    "opportunity_id": "7f44a2bfe1bde725327f8e99",
+    "title": "[integrations] Retry first recall on cold-start timeout",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3542",
+    "phase3_score": 85,
+    "phase3_decision": "proceed_to_phase_4_with_caution",
+    "employer_intent_summary": "The requester likely needs a focused contribution for '[integrations] Retry first recall on cold-start timeout'. Primary value: Open-source contribution value with portfolio and learning potential.",
+    "employer_facing_message": "Hi cognee maintainers,\n\nI can help with '[integrations] Retry first recall on cold-start timeout' by producing a focused, reviewable contribution aligned with the issue scope.\n\nThe value I would focus on is: Open-source contribution value with portfolio and learning potential.\n\nMy proposed approach is to confirm scope first, produce a small initial draft or patch, review it against your stated criteria, and revise based on feedback.\n\nBefore starting, I would want to clarify: AI-use permission is unclear and must be checked before proposal or execution.\n\nAI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "scope_of_work": [
+      "Review the original opportunity source and preserve its requirements.",
+      "Confirm the exact deliverable and acceptance criteria before any external commitment.",
+      "Prepare a scoped internal work plan for Justice review.",
+      "Inspect the implementation context before proposing code.",
+      "Draft a minimal patch or implementation plan.",
+      "Identify tests or validation steps before delivery."
+    ],
+    "deliverables": [
+      "Implementation plan or small patch proposal.",
+      "Test/validation checklist.",
+      "Risk notes for maintainers or employer review.",
+      "Handoff summary."
+    ],
+    "methodology": [
+      "Re-check source listing before use.",
+      "Translate request into explicit deliverables.",
+      "Identify constraints, unknowns, and approval gates.",
+      "Review repository contribution rules before any proposal or patch.",
+      "Prefer a small issue-specific contribution path.",
+      "Identify test surface.",
+      "Validate implementation approach before external delivery.",
+      "Stop before sending, submitting, or contacting anyone."
+    ],
+    "timeline": [
+      "Context review: 30-60 minutes.",
+      "Implementation plan or small patch draft: 1-2 focused work sessions.",
+      "Validation pass: 1 focused work session."
+    ],
+    "clarifying_questions": [
+      "What is the exact acceptance criterion for this work?",
+      "What format should the final deliverable use?",
+      "Are there any platform, employer, or repository rules that constrain AI-assisted work?",
+      "Should contributors open an issue comment before drafting a pull request?",
+      "Are there contribution guidelines, tests, or maintainer preferences to follow?"
+    ],
+    "assumptions": [
+      "The source listing is current and accurately captured in the Phase 3 dossier.",
+      "No external action is authorized by this draft.",
+      "Any AI-assisted work will be disclosed where required.",
+      "No private credentials, private data, or operator identity will be used without explicit approval.",
+      "The package is for Justice review only until a later approval phase."
+    ],
+    "ai_use_disclosure": "AI-use disclosure: I use AI-assisted research, drafting, and review workflows with human oversight. I can disclose this explicitly and adapt to your platform or project rules.",
+    "risk_notes": [
+      "AI-use permission is unclear and must be checked before proposal or execution.",
+      "Phase 3 decision: proceed_to_phase_4_with_caution.",
+      "Phase 3 score: 85.",
+      "Caution status must be reviewed before any proposal is sent.",
+      "Repository contribution rules must be reviewed before any issue comment or pull request.",
+      "No employer contact is permitted in Phase 4."
+    ],
+    "quality_assurance_plan": [
+      "Verify the source URL and original requirements before use.",
+      "Check the proposal against the Phase 3 risk notes.",
+      "Confirm no claims exceed verified evidence.",
+      "Run human review before any external action.",
+      "Identify tests before implementation.",
+      "Avoid unreviewed code delivery."
+    ],
+    "audit_summary": {
+      "dossier_id": "phase3_70043a5b987259a54c8b6566",
+      "opportunity_id": "7f44a2bfe1bde725327f8e99",
+      "source_platform": "GitHub",
+      "source_url": "https://github.com/topoteretes/cognee/issues/3542",
+      "phase3_score": 85,
+      "phase3_decision": "proceed_to_phase_4_with_caution",
+      "drafting_mode": "internal_only"
+    },
+    "human_approval_preview": [
+      "Justice must review the employer-facing message before any use.",
+      "Justice must approve whether this opportunity should enter Phase 5.",
+      "Justice must approve any use of identity, credentials, portfolio, or external account.",
+      "Justice must approve final wording before sending, submitting, or posting."
+    ],
+    "external_action_classification": {
+      "classification": "internal_draft_only",
+      "external_actions_allowed": false,
+      "requires_explicit_justice_approval_before_send": true,
+      "send_ready": false
+    },
+    "final_recommendation": "Review caution notes and clarifying questions before any Phase 5 approval decision.",
+    "approval_required_before": [
+      "send_message",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "send_without_approval",
+      "submit_without_approval",
+      "contact_employer_without_approval",
+      "claim_unverified_credentials",
+      "hide_ai_use_where_disclosure_is_required",
+      "bypass_platform_limits"
+    ],
+    "created_at": "2026-07-01T13:58:19.493195+00:00"
+  }
+]

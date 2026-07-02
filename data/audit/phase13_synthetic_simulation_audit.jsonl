@@ -1,0 +1,3 @@
+{"timestamp": "2026-07-02T13:01:06.530464+00:00", "event_type": "synthetic_record_processed", "data": {"opportunity_id": "phase13a_synthetic_85c1c16028d8", "title": "Synthetic API Documentation Cleanup", "score": 77, "decision": "queue_with_caution", "risk_flags": ["unclear_pay"]}}
+{"timestamp": "2026-07-02T13:01:06.531460+00:00", "event_type": "synthetic_record_processed", "data": {"opportunity_id": "phase13a_synthetic_9afd6186d228", "title": "Synthetic Blind Apply Request", "score": 19, "decision": "reject", "risk_flags": ["unclear_pay", "weak_aigc_preferred_fit"]}}
+{"timestamp": "2026-07-02T13:01:06.535464+00:00", "event_type": "phase13a_synthetic_simulation_complete", "data": {"records": 2, "external_action_performed": false}}

@@ -1,0 +1,4882 @@
+[
+  {
+    "dossier_id": "phase3_47dd6beb8015306878a69814",
+    "opportunity_id": "eda6a258a34d417ac4895a99",
+    "title": "[integrations] Env-var reference doc",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3561",
+    "radar_score": 85,
+    "discovered_taxonomy": [
+      "open_source_contribution",
+      "software_coding",
+      "writing_content"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Work appears compatible with a structured AI-assisted method.",
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: open_source_contribution. Complexity: beginner. Deliverable type: document. Automation compatibility: high.",
+      "strengths": [
+        "Detected taxonomy: open_source_contribution, software_coding, writing_content.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: cognee needs document using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [
+        "Purpose can be inferred from task/action language.",
+        "Likely success condition is deliverable-based."
+      ],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 79
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Proceed. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [
+        "High radar score from Phase 2.",
+        "Matches AIGC preferred heuristic profile."
+      ],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 83
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 87
+    },
+    "master_assessment": {
+      "confidence": 9,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 9,
+      "impact_value": 8,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 8,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 91,
+    "final_decision": "proceed_to_phase_4",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Trans-Architectural Agent",
+      "Neo-Algorithmic Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent",
+      "Trans-Lingual Agent",
+      "Meta-Semantic Agent",
+      "Hyper-Coherence Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.904010+00:00"
+  },
+  {
+    "dossier_id": "phase3_6e3eb03e77a4488f252eb284",
+    "opportunity_id": "fd1c0de42c4f53acba40f34b",
+    "title": "[integrations] Troubleshooting guide",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3562",
+    "radar_score": 83,
+    "discovered_taxonomy": [
+      "design_ui_ux",
+      "open_source_contribution",
+      "software_coding",
+      "writing_content"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Work appears compatible with a structured AI-assisted method.",
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: design_ui_ux. Complexity: beginner. Deliverable type: document. Automation compatibility: medium.",
+      "strengths": [
+        "Detected taxonomy: design_ui_ux, open_source_contribution, software_coding, writing_content.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: cognee needs document using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [
+        "Purpose can be inferred from task/action language.",
+        "Likely success condition is deliverable-based."
+      ],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 79
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [
+        "Matches AIGC preferred heuristic profile."
+      ],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 73
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 86
+    },
+    "master_assessment": {
+      "confidence": 9,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 9,
+      "impact_value": 8,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 7,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 90,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Trans-Architectural Agent",
+      "Neo-Algorithmic Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent",
+      "Trans-Lingual Agent",
+      "Meta-Semantic Agent",
+      "Hyper-Coherence Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.905009+00:00"
+  },
+  {
+    "dossier_id": "phase3_841d4d2574bd51c789ed15ae",
+    "opportunity_id": "b62bc7f1caf7a27c588a6d6a",
+    "title": "[integrations] Consistent \"three modes\" README section across integrations",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3550",
+    "radar_score": 83,
+    "discovered_taxonomy": [
+      "api_documentation",
+      "open_source_contribution",
+      "software_coding",
+      "writing_content"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Work appears compatible with a structured AI-assisted method.",
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: api_documentation. Complexity: beginner. Deliverable type: document. Automation compatibility: medium.",
+      "strengths": [
+        "Detected taxonomy: api_documentation, open_source_contribution, software_coding, writing_content.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: cognee needs document using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [
+        "Purpose can be inferred from task/action language.",
+        "Likely success condition is deliverable-based."
+      ],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 79
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [
+        "Matches AIGC preferred heuristic profile."
+      ],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 73
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 86
+    },
+    "master_assessment": {
+      "confidence": 9,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 9,
+      "impact_value": 8,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 7,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 90,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Trans-Lingual Agent",
+      "Trans-Modal Agent",
+      "Omni-Generative Agent",
+      "Hyper-Coherence Agent",
+      "Trans-Architectural Agent",
+      "Neo-Algorithmic Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent",
+      "Meta-Semantic Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.905009+00:00"
+  },
+  {
+    "dossier_id": "phase3_4fa2cca73952fc8debdb13cb",
+    "opportunity_id": "9d7bb4d37968940e7f9738d5",
+    "title": "[integrations] Add COGNEE_REMEMBER_TIMEOUT / COGNEE_REGISTER_TIMEOUT env vars",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3543",
+    "radar_score": 81,
+    "discovered_taxonomy": [
+      "api_documentation",
+      "open_source_contribution",
+      "software_coding"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Work appears compatible with a structured AI-assisted method.",
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: api_documentation. Complexity: beginner. Deliverable type: document. Automation compatibility: medium.",
+      "strengths": [
+        "Detected taxonomy: api_documentation, open_source_contribution, software_coding.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: cognee needs document using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [
+        "Purpose can be inferred from task/action language.",
+        "Likely success condition is deliverable-based."
+      ],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 79
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [
+        "Matches AIGC preferred heuristic profile."
+      ],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 73
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 86
+    },
+    "master_assessment": {
+      "confidence": 9,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 7,
+      "impact_value": 8,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 6,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 88,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Trans-Lingual Agent",
+      "Trans-Modal Agent",
+      "Omni-Generative Agent",
+      "Hyper-Coherence Agent",
+      "Trans-Architectural Agent",
+      "Neo-Algorithmic Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.906008+00:00"
+  },
+  {
+    "dossier_id": "phase3_17f0706230561b4c15e01a8d",
+    "opportunity_id": "c8c4ba85f90c5b86890d806d",
+    "title": "[integrations] Cloud cold-start warmup ping for plugin sessions",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3541",
+    "radar_score": 81,
+    "discovered_taxonomy": [
+      "api_documentation",
+      "open_source_contribution",
+      "software_coding"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Work appears compatible with a structured AI-assisted method.",
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: api_documentation. Complexity: beginner. Deliverable type: document. Automation compatibility: medium.",
+      "strengths": [
+        "Detected taxonomy: api_documentation, open_source_contribution, software_coding.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: cognee needs document using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [
+        "Purpose can be inferred from task/action language.",
+        "Likely success condition is deliverable-based."
+      ],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 79
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [
+        "Matches AIGC preferred heuristic profile."
+      ],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 73
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 86
+    },
+    "master_assessment": {
+      "confidence": 9,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 7,
+      "impact_value": 8,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 6,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 88,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Trans-Lingual Agent",
+      "Trans-Modal Agent",
+      "Omni-Generative Agent",
+      "Hyper-Coherence Agent",
+      "Trans-Architectural Agent",
+      "Neo-Algorithmic Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.907008+00:00"
+  },
+  {
+    "dossier_id": "phase3_a7c133873e2a33b37279c969",
+    "opportunity_id": "5cf46914d492ec92f9c9d72d",
+    "title": "[integrations] OpenClaw: cold-start warmup + first-recall retry in the TS client",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3546",
+    "radar_score": 79,
+    "discovered_taxonomy": [
+      "open_source_contribution",
+      "software_coding"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Work appears compatible with a structured AI-assisted method.",
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: open_source_contribution. Complexity: intermediate. Deliverable type: code. Automation compatibility: low.",
+      "strengths": [
+        "Detected taxonomy: open_source_contribution, software_coding.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: cognee needs code using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [
+        "Likely success condition is deliverable-based."
+      ],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 72
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [
+        "Matches AIGC preferred heuristic profile."
+      ],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 73
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 85
+    },
+    "master_assessment": {
+      "confidence": 8,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 7,
+      "impact_value": 5,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 5,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 85,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Trans-Architectural Agent",
+      "Neo-Algorithmic Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.908012+00:00"
+  },
+  {
+    "dossier_id": "phase3_2ffe86069c1a8a84c09715e2",
+    "opportunity_id": "1a3aad74c4db7e62c8704d92",
+    "title": "[integrations] OpenClaw: circuit breaker + per-op timeouts in the TS client",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3545",
+    "radar_score": 79,
+    "discovered_taxonomy": [
+      "design_ui_ux",
+      "open_source_contribution",
+      "software_coding"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Work appears compatible with a structured AI-assisted method.",
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: design_ui_ux. Complexity: intermediate. Deliverable type: code. Automation compatibility: low.",
+      "strengths": [
+        "Detected taxonomy: design_ui_ux, open_source_contribution, software_coding.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: cognee needs code using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [
+        "Likely success condition is deliverable-based."
+      ],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 72
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [
+        "Matches AIGC preferred heuristic profile."
+      ],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 73
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 85
+    },
+    "master_assessment": {
+      "confidence": 8,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 7,
+      "impact_value": 5,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 5,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 85,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Trans-Architectural Agent",
+      "Neo-Algorithmic Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.909008+00:00"
+  },
+  {
+    "dossier_id": "phase3_afce44453b6a11c9a0d03492",
+    "opportunity_id": "a368e5083373c9ab1e57e991",
+    "title": "Feature: new environment variable PIP_AUDIT_IGNORE_VULN",
+    "employer": "pip-audit",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/pypa/pip-audit/issues/948",
+    "radar_score": 79,
+    "discovered_taxonomy": [
+      "cybersecurity_bug_bounty",
+      "data_analysis",
+      "open_source_contribution",
+      "software_coding"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Work appears compatible with a structured AI-assisted method.",
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: cybersecurity_bug_bounty. Complexity: beginner. Deliverable type: code. Automation compatibility: low.",
+      "strengths": [
+        "Detected taxonomy: cybersecurity_bug_bounty, data_analysis, open_source_contribution, software_coding.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: pip-audit needs code using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [
+        "Likely success condition is deliverable-based."
+      ],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 72
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [
+        "Matches AIGC preferred heuristic profile."
+      ],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 73
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 85
+    },
+    "master_assessment": {
+      "confidence": 8,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 7,
+      "impact_value": 5,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 5,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 85,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Omni-Contextual Agent",
+      "Neo-Algorithmic Agent",
+      "Hyper-Synthetic Agent",
+      "Trans-Architectural Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.910009+00:00"
+  },
+  {
+    "dossier_id": "phase3_b2b6b0c7917fe9f738e641fe",
+    "opportunity_id": "2987871ab0bc70b14c25741e",
+    "title": "[integrations] Surface cognify lag instead of silent empty recall",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3553",
+    "radar_score": 76,
+    "discovered_taxonomy": [
+      "design_ui_ux",
+      "open_source_contribution",
+      "software_coding",
+      "writing_content"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 85
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: design_ui_ux. Complexity: intermediate. Deliverable type: code. Automation compatibility: medium.",
+      "strengths": [
+        "Detected taxonomy: design_ui_ux, open_source_contribution, software_coding, writing_content.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: cognee needs code using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [
+        "Likely success condition is deliverable-based."
+      ],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 72
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 63
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [
+        "Weak layers: Heuristics."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 83
+    },
+    "master_assessment": {
+      "confidence": 8,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 7,
+      "impact_value": 5,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 6,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 85,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Trans-Architectural Agent",
+      "Neo-Algorithmic Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent",
+      "Trans-Lingual Agent",
+      "Meta-Semantic Agent",
+      "Hyper-Coherence Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.910009+00:00"
+  },
+  {
+    "dossier_id": "phase3_69c59b490a028e417add2c85",
+    "opportunity_id": "48ff2350d71e32d32183dc30",
+    "title": "AI Engineers",
+    "employer": "Toptal",
+    "source_platform": "We Work Remotely",
+    "source_url": "https://weworkremotely.com/remote-jobs/toptal-ai-engineers",
+    "radar_score": 75,
+    "discovered_taxonomy": [
+      "business_operations",
+      "data_analysis",
+      "design_ui_ux",
+      "prompt_engineering",
+      "qa_testing",
+      "software_coding"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Work appears compatible with a structured AI-assisted method.",
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: business_operations. Complexity: advanced. Deliverable type: code. Automation compatibility: high.",
+      "strengths": [
+        "Detected taxonomy: business_operations, data_analysis, design_ui_ux, prompt_engineering, qa_testing, software_coding.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: Toptal needs code using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [
+        "Purpose can be inferred from task/action language.",
+        "Likely success condition is deliverable-based."
+      ],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 79
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [
+        "Matches AIGC preferred heuristic profile."
+      ],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 73
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 86
+    },
+    "master_assessment": {
+      "confidence": 9,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 9,
+      "impact_value": 8,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 8,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 91,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Omni-Contextual Agent",
+      "Omni-Research Agent",
+      "Para-Logical Agent",
+      "Hyper-Synthetic Agent",
+      "Neo-Algorithmic Agent",
+      "Trans-Architectural Agent",
+      "Hyper-Optimization Agent",
+      "Ultra-Robust Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Research synthesis and decision support.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.911010+00:00"
+  },
+  {
+    "dossier_id": "phase3_9bf0abc513fa5836c595a009",
+    "opportunity_id": "0cb519bbb35b8e0ddc832b34",
+    "title": "[integrations] E2E: session registers and appears via /agents/connections/me",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3558",
+    "radar_score": 74,
+    "discovered_taxonomy": [
+      "open_source_contribution",
+      "qa_testing",
+      "software_coding"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 85
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: open_source_contribution. Complexity: intermediate. Deliverable type: code. Automation compatibility: low.",
+      "strengths": [
+        "Detected taxonomy: open_source_contribution, qa_testing, software_coding.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: cognee needs code using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [
+        "Purpose can be inferred from task/action language."
+      ],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 72
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 63
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [
+        "Weak layers: Heuristics."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 83
+    },
+    "master_assessment": {
+      "confidence": 8,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 7,
+      "impact_value": 5,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 5,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 85,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Trans-Architectural Agent",
+      "Neo-Algorithmic Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.912043+00:00"
+  },
+  {
+    "dossier_id": "phase3_f5daf7f348132ae409ba04b9",
+    "opportunity_id": "f57143f07e5ab9e64974239d",
+    "title": "[integrations] cognee-plugin status one-liner",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3552",
+    "radar_score": 74,
+    "discovered_taxonomy": [
+      "open_source_contribution",
+      "software_coding"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 85
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: open_source_contribution. Complexity: beginner. Deliverable type: code. Automation compatibility: low.",
+      "strengths": [
+        "Detected taxonomy: open_source_contribution, software_coding.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: cognee needs code using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 65
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 63
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [
+        "Weak layers: Teleology, Heuristics."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 82
+    },
+    "master_assessment": {
+      "confidence": 8,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 7,
+      "impact_value": 5,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 5,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 85,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Trans-Architectural Agent",
+      "Neo-Algorithmic Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.913043+00:00"
+  },
+  {
+    "dossier_id": "phase3_e61fdeeb9f7177248e5cd7ac",
+    "opportunity_id": "80dbe8c9e366e4b8e63f8c65",
+    "title": "[integrations] Embedding-dimension mismatch: clear error instead of silent empty recall",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3547",
+    "radar_score": 74,
+    "discovered_taxonomy": [
+      "open_source_contribution",
+      "qa_testing",
+      "software_coding"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 85
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: open_source_contribution. Complexity: intermediate. Deliverable type: code. Automation compatibility: low.",
+      "strengths": [
+        "Detected taxonomy: open_source_contribution, qa_testing, software_coding.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: cognee needs code using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 65
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 63
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [
+        "Weak layers: Teleology, Heuristics."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 82
+    },
+    "master_assessment": {
+      "confidence": 8,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 7,
+      "impact_value": 5,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 5,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 85,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Trans-Architectural Agent",
+      "Neo-Algorithmic Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.914011+00:00"
+  },
+  {
+    "dossier_id": "phase3_d8d4436cb5be74fef832bf85",
+    "opportunity_id": "533db66d2318bf2bc0dd4abd",
+    "title": "[integrations] Dataset-name sanitization parity across integrations",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3549",
+    "radar_score": 72,
+    "discovered_taxonomy": [
+      "data_analysis",
+      "open_source_contribution",
+      "software_coding"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Work appears compatible with a structured AI-assisted method.",
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: data_analysis. Complexity: intermediate. Deliverable type: code. Automation compatibility: medium.",
+      "strengths": [
+        "Detected taxonomy: data_analysis, open_source_contribution, software_coding.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: cognee needs code using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 65
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [
+        "Matches AIGC preferred heuristic profile."
+      ],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 73
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [
+        "Weak layers: Teleology."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 84
+    },
+    "master_assessment": {
+      "confidence": 8,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 7,
+      "impact_value": 5,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 6,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 85,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Omni-Contextual Agent",
+      "Neo-Algorithmic Agent",
+      "Hyper-Synthetic Agent",
+      "Trans-Architectural Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.915008+00:00"
+  },
+  {
+    "dossier_id": "phase3_5f964f158f62e2ec0054f77e",
+    "opportunity_id": "3795782df71592e3c47e76b7",
+    "title": "Federal BIM Design Associate",
+    "employer": "Olsson",
+    "source_platform": "We Work Remotely",
+    "source_url": "https://weworkremotely.com/remote-jobs/olsson-federal-bim-design-associate",
+    "radar_score": 71,
+    "discovered_taxonomy": [
+      "business_operations",
+      "data_analysis",
+      "design_ui_ux",
+      "qa_testing",
+      "software_coding"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Work appears compatible with a structured AI-assisted method.",
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: business_operations. Complexity: advanced. Deliverable type: code. Automation compatibility: medium.",
+      "strengths": [
+        "Detected taxonomy: business_operations, data_analysis, design_ui_ux, qa_testing, software_coding.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: Olsson needs code using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [
+        "Purpose can be inferred from task/action language.",
+        "Likely success condition is deliverable-based."
+      ],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 79
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [
+        "Matches AIGC preferred heuristic profile."
+      ],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 73
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 86
+    },
+    "master_assessment": {
+      "confidence": 9,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 9,
+      "impact_value": 8,
+      "deliverable_clarity": 6,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 7,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 9,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 87,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Omni-Contextual Agent",
+      "Omni-Research Agent",
+      "Para-Logical Agent",
+      "Hyper-Synthetic Agent",
+      "Neo-Algorithmic Agent",
+      "Trans-Architectural Agent",
+      "Hyper-Optimization Agent",
+      "Ultra-Robust Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Research synthesis and decision support.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.916008+00:00"
+  },
+  {
+    "dossier_id": "phase3_c106d36cc9f54c232f73e5b8",
+    "opportunity_id": "bbc2efb9c274d0221aa447b8",
+    "title": "Productionize the Helm chart (deployment/helm)",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3602",
+    "radar_score": 70,
+    "discovered_taxonomy": [
+      "api_documentation",
+      "cybersecurity_bug_bounty",
+      "data_analysis",
+      "design_ui_ux",
+      "open_source_contribution",
+      "prompt_engineering",
+      "software_coding"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Work appears compatible with a structured AI-assisted method.",
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: api_documentation. Complexity: intermediate. Deliverable type: document. Automation compatibility: high.",
+      "strengths": [
+        "Detected taxonomy: api_documentation, cybersecurity_bug_bounty, data_analysis, design_ui_ux, open_source_contribution, prompt_engineering, software_coding.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: cognee needs document using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [
+        "Purpose can be inferred from task/action language.",
+        "Likely success condition is deliverable-based."
+      ],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 79
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [
+        "Opportunity may involve privacy/security-sensitive data."
+      ],
+      "unknowns": [],
+      "required_checks": [
+        "Review data handling requirements before proposal drafting."
+      ],
+      "score": 67
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [
+        "Matches AIGC preferred heuristic profile."
+      ],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 73
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [
+        "Weak layers: Axiology."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 82
+    },
+    "master_assessment": {
+      "confidence": 8,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 9,
+      "impact_value": 8,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 4,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 8,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 86,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Trans-Lingual Agent",
+      "Trans-Modal Agent",
+      "Omni-Generative Agent",
+      "Hyper-Coherence Agent",
+      "Omni-Contextual Agent",
+      "Neo-Algorithmic Agent",
+      "Hyper-Synthetic Agent",
+      "Trans-Architectural Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.917008+00:00"
+  },
+  {
+    "dossier_id": "phase3_b312a648bdec6cee27f392f0",
+    "opportunity_id": "f17580421d45bc56fbb3323d",
+    "title": "[integrations] Config-precedence tests (env > config > defaults)",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3559",
+    "radar_score": 70,
+    "discovered_taxonomy": [
+      "open_source_contribution",
+      "software_coding"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 85
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: open_source_contribution. Complexity: intermediate. Deliverable type: code. Automation compatibility: low.",
+      "strengths": [
+        "Detected taxonomy: open_source_contribution, software_coding.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: cognee needs code using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [
+        "Purpose can be inferred from task/action language."
+      ],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 72
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 63
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [
+        "Weak layers: Heuristics."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 83
+    },
+    "master_assessment": {
+      "confidence": 8,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 7,
+      "impact_value": 8,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 5,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 87,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Trans-Architectural Agent",
+      "Neo-Algorithmic Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.918009+00:00"
+  },
+  {
+    "dossier_id": "phase3_00bf245cf82f290a1ece1323",
+    "opportunity_id": "0e36363038add3b5915f1b84",
+    "title": "[integrations] Live add→cognify→search smoke test",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3557",
+    "radar_score": 70,
+    "discovered_taxonomy": [
+      "open_source_contribution",
+      "software_coding"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 85
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: open_source_contribution. Complexity: intermediate. Deliverable type: code. Automation compatibility: low.",
+      "strengths": [
+        "Detected taxonomy: open_source_contribution, software_coding.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: cognee needs code using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 65
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 63
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [
+        "Weak layers: Teleology, Heuristics."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 82
+    },
+    "master_assessment": {
+      "confidence": 8,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 7,
+      "impact_value": 5,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 5,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 85,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Trans-Architectural Agent",
+      "Neo-Algorithmic Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.918009+00:00"
+  },
+  {
+    "dossier_id": "phase3_3ddb385019d1e23a42a3b535",
+    "opportunity_id": "ab4ac8a8d497c0cf8adb58c4",
+    "title": "[integrations] OpenClaw tests for scope routing + cogneeSessionId",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3555",
+    "radar_score": 70,
+    "discovered_taxonomy": [
+      "open_source_contribution",
+      "software_coding"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 85
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: open_source_contribution. Complexity: intermediate. Deliverable type: code. Automation compatibility: low.",
+      "strengths": [
+        "Detected taxonomy: open_source_contribution, software_coding.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: cognee needs code using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 65
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 63
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [
+        "Weak layers: Teleology, Heuristics."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 82
+    },
+    "master_assessment": {
+      "confidence": 8,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 7,
+      "impact_value": 5,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 5,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 85,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Trans-Architectural Agent",
+      "Neo-Algorithmic Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.919012+00:00"
+  },
+  {
+    "dossier_id": "phase3_75c4589052e49373dd5d06a3",
+    "opportunity_id": "bd706e8c410ea414b213cd01",
+    "title": "[integrations] Port the claude-code test suite to Codex",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3554",
+    "radar_score": 70,
+    "discovered_taxonomy": [
+      "design_ui_ux",
+      "open_source_contribution",
+      "software_coding"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 85
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: design_ui_ux. Complexity: intermediate. Deliverable type: code. Automation compatibility: low.",
+      "strengths": [
+        "Detected taxonomy: design_ui_ux, open_source_contribution, software_coding.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: cognee needs code using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 65
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 63
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [
+        "Weak layers: Teleology, Heuristics."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 82
+    },
+    "master_assessment": {
+      "confidence": 8,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 7,
+      "impact_value": 5,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 5,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 85,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Trans-Architectural Agent",
+      "Neo-Algorithmic Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.920010+00:00"
+  },
+  {
+    "dossier_id": "phase3_0bfe0d26f9d4919f6ea67139",
+    "opportunity_id": "67ed35084445d65a8241e5bf",
+    "title": "[integrations] cognee-plugin doctor command",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3551",
+    "radar_score": 70,
+    "discovered_taxonomy": [
+      "design_ui_ux",
+      "open_source_contribution",
+      "software_coding"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 85
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: design_ui_ux. Complexity: intermediate. Deliverable type: code. Automation compatibility: low.",
+      "strengths": [
+        "Detected taxonomy: design_ui_ux, open_source_contribution, software_coding.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: cognee needs code using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 65
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 63
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [
+        "Weak layers: Teleology, Heuristics."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 82
+    },
+    "master_assessment": {
+      "confidence": 8,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 7,
+      "impact_value": 5,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 5,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 85,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Trans-Architectural Agent",
+      "Neo-Algorithmic Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.921046+00:00"
+  },
+  {
+    "dossier_id": "phase3_54c918e70841062a62db7bf9",
+    "opportunity_id": "b79351d868e5311a2ed7db55",
+    "title": "[integrations] Shared session-id sanitization conformance test",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3548",
+    "radar_score": 70,
+    "discovered_taxonomy": [
+      "open_source_contribution",
+      "software_coding"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 85
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: open_source_contribution. Complexity: advanced. Deliverable type: code. Automation compatibility: low.",
+      "strengths": [
+        "Detected taxonomy: open_source_contribution, software_coding.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: cognee needs code using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 65
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 63
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [
+        "Weak layers: Teleology, Heuristics."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 82
+    },
+    "master_assessment": {
+      "confidence": 8,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 7,
+      "impact_value": 5,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 5,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 85,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Trans-Architectural Agent",
+      "Neo-Algorithmic Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.922008+00:00"
+  },
+  {
+    "dossier_id": "phase3_a02f48f1738064947044d9d1",
+    "opportunity_id": "315f658a9364057a86cabcbe",
+    "title": "[integrations] n8n: expose remember/recall verbs",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3560",
+    "radar_score": 70,
+    "discovered_taxonomy": [
+      "open_source_contribution",
+      "software_coding"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 85
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: open_source_contribution. Complexity: intermediate. Deliverable type: code. Automation compatibility: low.",
+      "strengths": [
+        "Detected taxonomy: open_source_contribution, software_coding.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: cognee needs code using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [
+        "Purpose can be inferred from task/action language."
+      ],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 72
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 63
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [
+        "Weak layers: Heuristics."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 83
+    },
+    "master_assessment": {
+      "confidence": 8,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 7,
+      "impact_value": 8,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 5,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 87,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Trans-Architectural Agent",
+      "Neo-Algorithmic Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.923009+00:00"
+  },
+  {
+    "dossier_id": "phase3_4e0124ee189be10d77c76b12",
+    "opportunity_id": "e86bbd3a4c9c7c08eb27da18",
+    "title": "[integrations] Re-register agent session on mid-session mode change",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3544",
+    "radar_score": 70,
+    "discovered_taxonomy": [
+      "open_source_contribution",
+      "software_coding"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 85
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: open_source_contribution. Complexity: intermediate. Deliverable type: code. Automation compatibility: low.",
+      "strengths": [
+        "Detected taxonomy: open_source_contribution, software_coding.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: cognee needs code using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [
+        "Purpose can be inferred from task/action language."
+      ],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 72
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 63
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [
+        "Weak layers: Heuristics."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 83
+    },
+    "master_assessment": {
+      "confidence": 8,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 7,
+      "impact_value": 5,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 5,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 85,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Trans-Architectural Agent",
+      "Neo-Algorithmic Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.924007+00:00"
+  },
+  {
+    "dossier_id": "phase3_70043a5b987259a54c8b6566",
+    "opportunity_id": "7f44a2bfe1bde725327f8e99",
+    "title": "[integrations] Retry first recall on cold-start timeout",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3542",
+    "radar_score": 70,
+    "discovered_taxonomy": [
+      "open_source_contribution",
+      "software_coding"
+    ],
+    "methodology": {
+      "name": "Methodology",
+      "question": "How should this work be done?",
+      "summary": "Recommended method: inspect the listing, clarify the deliverable, prepare an internal plan, and require human review before external action.",
+      "strengths": [
+        "Source description exists for planning and review."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 85
+    },
+    "taxonomy": {
+      "name": "Taxonomy",
+      "question": "What kind of work is this?",
+      "summary": "Primary category: open_source_contribution. Complexity: intermediate. Deliverable type: code. Automation compatibility: low.",
+      "strengths": [
+        "Detected taxonomy: open_source_contribution, software_coding.",
+        "Opportunity matches AIGC-preferred work categories."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "ontology": {
+      "name": "Ontology",
+      "question": "What entities and relationships exist?",
+      "summary": "Entity map: cognee needs code using methods inferred from source data; AIGC may assess internally, but only Justice can approve external action.",
+      "strengths": [
+        "Employer/client entity is identified.",
+        "Source URL exists for traceability.",
+        "Work object/title is identified."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 90
+    },
+    "epistemology": {
+      "name": "Epistemology",
+      "question": "How do we know what is true?",
+      "summary": "Known facts come from the source listing and Phase 2 extraction. Unknowns must not be filled by assumption.",
+      "strengths": [
+        "Traceable source platform and URL exist.",
+        "Source was classified as usable for read-only discovery."
+      ],
+      "weaknesses": [],
+      "unknowns": [
+        "AI-use permission is unclear."
+      ],
+      "required_checks": [
+        "Check listing, employer, and platform instructions before proposal or execution.",
+        "Review risk flags before moving into Phase 4."
+      ],
+      "score": 83
+    },
+    "teleology": {
+      "name": "Teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "summary": "Purpose: satisfy the requester with a concrete deliverable while preserving auditability, transparent AI use where needed, and operator approval gates.",
+      "strengths": [],
+      "weaknesses": [
+        "Payment/reward is not clearly visible."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 65
+    },
+    "axiology": {
+      "name": "Axiology",
+      "question": "Is this valuable, ethical, and professionally worthwhile?",
+      "summary": "Ethical status depends on transparent approval gates, no deception, no spam, and no hidden AI use where disclosure is required.",
+      "strengths": [
+        "No explicit forbidden flags detected."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 92
+    },
+    "praxeology": {
+      "name": "Praxeology",
+      "question": "What actions must be taken?",
+      "summary": "Action sequence: assess internally, prepare review material if justified, stop before any employer/platform interaction, then wait for explicit approval.",
+      "strengths": [
+        "Internal assessment can proceed without external action."
+      ],
+      "weaknesses": [],
+      "unknowns": [],
+      "required_checks": [
+        "Proposal drafting must remain internal in Phase 4.",
+        "External outreach requires Justice approval.",
+        "Submission requires Justice approval.",
+        "Employer delivery requires Justice approval."
+      ],
+      "score": 88
+    },
+    "heuristics": {
+      "name": "Heuristics",
+      "question": "What practical rules guide fast judgment?",
+      "summary": "Fast decision: Caution. Positive and negative heuristics are weighted before Phase 4.",
+      "strengths": [],
+      "weaknesses": [
+        "Pay is unclear."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 63
+    },
+    "meta_ontology": {
+      "name": "Meta-Ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "summary": "Unified interpretation: opportunity may advance only if source facts, deliverable clarity, risk status, and approval gates remain coherent.",
+      "strengths": [
+        "All ology layers produced an internal-only judgment artifact."
+      ],
+      "weaknesses": [
+        "Weak layers: Teleology, Heuristics."
+      ],
+      "unknowns": [],
+      "required_checks": [],
+      "score": 82
+    },
+    "master_assessment": {
+      "confidence": 8,
+      "legal_platform_alignment": 10,
+      "suitability": 10,
+      "feasibility": 10,
+      "pay_reward_potential": 5,
+      "effort_efficiency": 7,
+      "impact_value": 5,
+      "deliverable_clarity": 10,
+      "privacy_security_safety": 10,
+      "ethical_professional_quality": 10,
+      "reputation_safety": 7,
+      "automation_compatibility": 5,
+      "human_approval_clarity": 10,
+      "employer_acceptance_likelihood": 10,
+      "auditability": 10
+    },
+    "phase3_assessment_score": 85,
+    "final_decision": "proceed_to_phase_4_with_caution",
+    "recommended_agents": [
+      "Meta-Coordinational Agent",
+      "Ultra-Aligned Agent",
+      "Ultra-Audit Agent",
+      "Trans-Architectural Agent",
+      "Neo-Algorithmic Agent",
+      "Ultra-Robust Agent",
+      "Hyper-Optimization Agent"
+    ],
+    "autonomous_next_actions": [
+      "Draft internal proposal outline",
+      "Generate clarifying questions",
+      "Prepare Phase 4 proposal package for review"
+    ],
+    "approval_required_future_actions": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_operator_identity",
+      "use_credentials"
+    ],
+    "forbidden_actions": [
+      "spam",
+      "impersonation",
+      "fake_qualifications",
+      "forbidden_scraping",
+      "hidden_ai_use_where_disclosure_required",
+      "bypass_platform_limits"
+    ],
+    "primary_value": "Open-source contribution value with portfolio and learning potential.",
+    "primary_risk": "AI-use permission is unclear and must be checked before proposal or execution.",
+    "recommended_next_step": "Proceed to Phase 4 internal proposal drafting with caution notes; stop before outreach.",
+    "created_at": "2026-07-01T07:05:13.925008+00:00"
+  }
+]

@@ -1,0 +1,138 @@
+{
+  "phase": "Phase 2 - Opportunity Discovery Engine",
+  "operating_mode": "lawful_opportunity_radar",
+  "external_actions_allowed": false,
+  "run": {
+    "max_per_source": 25,
+    "timeout_seconds": 20,
+    "user_agent": "AIGC-Opportunity-Radar/0.1 read-only"
+  },
+  "sources": [
+    {
+      "name": "We Work Remotely",
+      "slug": "weworkremotely",
+      "connector": "wwr_rss",
+      "type": "rss",
+      "status": "green",
+      "enabled": true,
+      "attribution_required": true,
+      "urls": [
+        "https://weworkremotely.com/remote-jobs.rss"
+      ],
+      "allowed_actions": ["read_feed", "normalize", "classify", "score"],
+      "forbidden_actions": ["auto_apply", "message_employer", "hide_attribution"]
+    },
+    {
+      "name": "Remotive",
+      "slug": "remotive",
+      "connector": "remotive",
+      "type": "api",
+      "status": "green",
+      "enabled": true,
+      "attribution_required": true,
+      "url": "https://remotive.com/api/remote-jobs",
+      "allowed_actions": ["read_feed", "normalize", "classify", "score"],
+      "forbidden_actions": ["redistribute_to_prohibited_sites", "hide_attribution", "auto_apply"]
+    },
+    {
+      "name": "RemoteOK",
+      "slug": "remoteok",
+      "connector": "remoteok",
+      "type": "api",
+      "status": "yellow",
+      "enabled": true,
+      "attribution_required": true,
+      "url": "https://remoteok.com/api",
+      "allowed_actions": ["read_api", "normalize", "classify", "score"],
+      "forbidden_actions": ["blind_apply", "ignore_anti_spam_instructions", "hide_attribution"]
+    },
+    {
+      "name": "GitHub",
+      "slug": "github",
+      "connector": "github_search",
+      "type": "api",
+      "status": "green",
+      "enabled": true,
+      "attribution_required": false,
+      "url": "https://api.github.com/search/issues",
+      "queries": [
+        "label:\"help wanted\" state:open language:python is:issue",
+        "label:documentation state:open is:issue"
+      ],
+      "allowed_actions": ["search_public_issues", "normalize", "classify", "score"],
+      "forbidden_actions": ["spam_issues", "spam_pull_requests", "ignore_repo_contribution_rules"]
+    },
+    {
+      "name": "USAJOBS",
+      "slug": "usajobs",
+      "connector": "usajobs",
+      "type": "api",
+      "status": "green",
+      "enabled": false,
+      "attribution_required": false,
+      "requires_api_key": true,
+      "allowed_actions": ["search_jobs", "normalize", "classify", "score"],
+      "forbidden_actions": ["auto_apply", "misuse_api_key", "impersonate"]
+    },
+    {
+      "name": "Adzuna",
+      "slug": "adzuna",
+      "connector": "adzuna",
+      "type": "api",
+      "status": "green",
+      "enabled": false,
+      "attribution_required": true,
+      "requires_api_key": true,
+      "allowed_actions": ["search_jobs", "normalize", "classify", "score"],
+      "forbidden_actions": ["auto_apply", "misrepresent_source"]
+    },
+    {
+      "name": "The Muse",
+      "slug": "themuse",
+      "connector": "themuse",
+      "type": "api",
+      "status": "green",
+      "enabled": false,
+      "attribution_required": true,
+      "requires_app_registration": true,
+      "allowed_actions": ["search_jobs", "normalize", "classify", "score"],
+      "forbidden_actions": ["auto_apply", "misrepresent_source"]
+    },
+    {
+      "name": "Greenhouse",
+      "slug": "greenhouse",
+      "connector": "greenhouse",
+      "type": "employer_job_board_api",
+      "status": "green",
+      "enabled": false,
+      "attribution_required": false,
+      "requires_board_token": true,
+      "allowed_actions": ["read_public_jobs", "normalize", "classify", "score"],
+      "forbidden_actions": ["submit_application_without_approval", "use_application_post_endpoint_without_authorization"]
+    },
+    {
+      "name": "Lever",
+      "slug": "lever",
+      "connector": "lever",
+      "type": "employer_postings_api",
+      "status": "green",
+      "enabled": false,
+      "attribution_required": false,
+      "requires_site_name": true,
+      "allowed_actions": ["read_public_postings", "normalize", "classify", "score"],
+      "forbidden_actions": ["programmatic_apply_without_approval", "ignore_rate_limits"]
+    },
+    {
+      "name": "Ashby",
+      "slug": "ashby",
+      "connector": "ashby",
+      "type": "employer_job_postings_api",
+      "status": "green",
+      "enabled": false,
+      "attribution_required": false,
+      "requires_job_board_name": true,
+      "allowed_actions": ["read_public_postings", "normalize", "classify", "score"],
+      "forbidden_actions": ["submit_application_without_approval"]
+    }
+  ]
+}

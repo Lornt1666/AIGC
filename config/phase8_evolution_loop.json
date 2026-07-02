@@ -1,0 +1,66 @@
+{
+  "phase": "Phase 8 - Evolution Loop",
+  "operating_mode": "governed_memory_and_improvement",
+  "external_actions_allowed": false,
+  "self_modification_allowed_without_approval": false,
+  "input_files": {
+    "phase2_queue": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+    "phase3_dossiers": "data/phase3_processed/aigc_phase3_assessment_dossiers.json",
+    "phase4_proposals": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+    "phase5_authorizations": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+    "phase6_receipts": "data/phase6_execution/aigc_phase6_execution_receipts.json",
+    "phase7_packets": "data/phase7_audit_packets/aigc_phase7_employer_audit_packets.json"
+  },
+  "output_files": {
+    "outcome_records": "data/phase8_evolution/outcome_records.jsonl",
+    "agent_performance": "data/phase8_evolution/agent_performance.jsonl",
+    "reports": "data/phase8_evolution/evolution_cycle_reports.jsonl",
+    "patches": "data/phase8_evolution/evolution_patches.jsonl",
+    "next_cycle_strategy": "data/phase8_evolution/next_cycle_strategy.json"
+  },
+  "allowed_autonomous_actions": [
+    "record_outcome",
+    "classify_outcome",
+    "score_cycle",
+    "score_agent_performance",
+    "detect_patterns",
+    "generate_patch_proposals",
+    "write_internal_audit_log",
+    "prepare_next_cycle_strategy"
+  ],
+  "approval_required_actions": [
+    "apply_patch",
+    "change_scoring_weights",
+    "change_agent_prompt",
+    "change_safety_rule",
+    "change_domain_status",
+    "add_connector",
+    "enable_live_execution",
+    "change_approval_protocol",
+    "change_disclosure_template",
+    "change_privacy_redaction_rules"
+  ],
+  "forbidden_evolution_actions": [
+    "remove_human_approval_gate",
+    "disable_audit_logging",
+    "disable_privacy_checks",
+    "disable_security_checks",
+    "permit_spam",
+    "permit_impersonation",
+    "permit_forbidden_scraping",
+    "permit_hidden_ai_use_where_disclosure_required",
+    "delete_negative_outcomes",
+    "rewrite_history",
+    "auto_apply_without_approval"
+  ],
+  "approval_phrase_template": "I, Justice Gray Maciocha, accept evolution patch {patch_id}.",
+  "denial_phrase_template": "I, Justice Gray Maciocha, deny evolution patch {patch_id}.",
+  "revision_phrase_template": "Revise evolution patch {patch_id}: {revision_instructions}",
+  "cycle_score_thresholds": {
+    "excellent": 90,
+    "strong": 75,
+    "mixed": 60,
+    "weak": 40,
+    "failed": 0
+  }
+}

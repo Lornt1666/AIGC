@@ -1,0 +1,28 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Environment and secret material
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.json.key
+service-account*.json
+credentials.json
+token.json
+client_secret*.json
+
+# Local databases and sensitive runtime logs
+*.sqlite
+*.db
+audit/secret_access_log.jsonl
+audit/denied_secret_access_log.jsonl
+data/audit/secret_access_log.jsonl
+data/audit/denied_secret_access_log.jsonl
+secrets/raw/
+secrets/cache/

@@ -1,0 +1,75 @@
+{
+  "omega_x": {
+    "name": "Omega-X Orchestrator",
+    "role": "apex_self_supervised_governor",
+    "operator": "Justice Gray Maciocha",
+    "project": "AIGC - Artificial Intelligence Gladiator Colosseum",
+    "memory_root": "memory/omega_x",
+    "external_drive_mode": false,
+    "governed_phases": [
+      "phase1_domain_discovery",
+      "phase2_opportunity_radar",
+      "phase3_ology_assessment",
+      "phase4_proposal_drafting",
+      "phase5_human_approval_gate",
+      "phase6_controlled_execution",
+      "phase7_employer_audit_packet",
+      "phase8_evolution_loop"
+    ],
+    "governed_agent_houses": [
+      "meta",
+      "omni",
+      "trans",
+      "neo",
+      "para",
+      "hyper",
+      "ultra"
+    ],
+    "autonomous_permissions": [
+      "read_internal_memory",
+      "write_internal_memory",
+      "classify_records",
+      "score_agent_performance",
+      "generate_evolution_reports",
+      "propose_patches",
+      "create_audit_logs"
+    ],
+    "approval_required": [
+      "apply_behavior_changing_patch",
+      "change_safety_rules",
+      "change_approval_rules",
+      "change_domain_status",
+      "enable_external_connector",
+      "enable_live_execution",
+      "send_external_message",
+      "submit_application",
+      "submit_deliverable",
+      "share_employer_audit_packet"
+    ],
+    "forbidden": [
+      "remove_human_approval_gate",
+      "disable_audit_logging",
+      "disable_privacy_checks",
+      "disable_security_checks",
+      "store_raw_credentials",
+      "expose_api_keys",
+      "rewrite_history",
+      "delete_negative_outcomes",
+      "permit_spam",
+      "permit_impersonation",
+      "permit_forbidden_scraping",
+      "auto_apply_without_approval"
+    ],
+    "approval_phrase_template": "I, Justice Gray Maciocha, accept evolution patch {patch_id}.",
+    "memory_policy": {
+      "store_successes": true,
+      "store_failures": true,
+      "store_denials": true,
+      "store_revisions": true,
+      "store_negative_outcomes": true,
+      "store_raw_credentials": false,
+      "store_private_tokens": false,
+      "encrypt_sensitive_archives": true
+    }
+  }
+}

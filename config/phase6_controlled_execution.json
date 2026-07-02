@@ -1,0 +1,51 @@
+{
+  "phase": "Phase 6 - Controlled Execution Engine",
+  "operating_mode": "exact_action_only_execution",
+  "default_execution_mode": "manual_handoff",
+  "live_execution_allowed": false,
+  "batch_execution_allowed": false,
+  "external_actions_allowed_only_if_phase5_approved": true,
+  "artifact_change_invalidates_execution": true,
+  "recipient_change_invalidates_execution": true,
+  "platform_change_invalidates_execution": true,
+  "approval_expiration_enforced": true,
+  "input_files": {
+    "phase4_proposals": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+    "phase5_authorizations": "data/phase5_authorizations/aigc_phase5_authorization_packets.json"
+  },
+  "output_file": "data/phase6_execution/aigc_phase6_execution_receipts.json",
+  "allowed_execution_modes": [
+    "dry_run",
+    "manual_handoff",
+    "approved_api",
+    "approved_platform_ui"
+  ],
+  "allowed_action_types": [
+    "send_proposal",
+    "apply",
+    "message",
+    "bid",
+    "submit_deliverable",
+    "share_audit_packet"
+  ],
+  "forbidden_execution_behaviors": [
+    "bulk_send",
+    "mass_apply",
+    "spam",
+    "credential_misuse",
+    "unauthorized_scraping",
+    "bypass_platform_limits",
+    "remove_required_ai_disclosure",
+    "modify_artifact_after_approval",
+    "send_to_unapproved_recipient",
+    "use_unapproved_platform",
+    "accept_contract_without_specific_approval",
+    "perform_unrelated_action"
+  ],
+  "post_execution_required": [
+    "capture_confirmation",
+    "write_execution_receipt",
+    "write_audit_log",
+    "prepare_phase7_handoff"
+  ]
+}

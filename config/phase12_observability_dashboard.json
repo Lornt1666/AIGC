@@ -1,0 +1,45 @@
+{
+  "phase": "Phase 12 - Observability Dashboard",
+  "operating_mode": "internal_monitoring_only",
+  "external_actions_allowed": false,
+  "root_relative": true,
+  "inputs": {
+    "audit_dir": "data/audit",
+    "reports_dir": "data/reports",
+    "omega_memory_events": "memory/omega_x/memory/omega_events.jsonl",
+    "phase2_queue": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+    "phase3_dossiers": "data/phase3_processed/aigc_phase3_assessment_dossiers.json",
+    "phase4_proposals": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+    "phase5_authorizations": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+    "phase6_receipts": "data/phase6_execution/aigc_phase6_execution_receipts.json",
+    "phase7_packets": "data/phase7_audit_packets/aigc_phase7_employer_audit_packets.json",
+    "phase8_strategy": "data/phase8_evolution/next_cycle_strategy.json",
+    "phase8_patches": "data/phase8_evolution/evolution_patches.jsonl",
+    "phase13_synthetic": "data/phase13_simulation/synthetic_simulation_result.json",
+    "phase13_real_replay": "data/phase13_real_data_replay/latest_real_data_replay.json",
+    "secret_manifest": "config/secret_manifest.json",
+    "external_secret_manifest": "../AIGC_MEMORY_CORE/config/secret_manifest.json"
+  },
+  "secret_scan_paths": [
+    "src",
+    "config",
+    "docs",
+    "prompts",
+    "README.md",
+    "AGENTS.md",
+    "../AIGC_MEMORY_CORE/config/secret_manifest.json",
+    "../AIGC_MEMORY_CORE/AGENTS.md"
+  ],
+  "outputs": {
+    "snapshot": "data/phase12_observability/system_snapshot.json",
+    "report": "reports/phase12_system_health.md"
+  },
+  "health_rules": {
+    "red_if_secret_findings": true,
+    "red_if_required_manifest_missing": true,
+    "yellow_if_no_audit_events": true,
+    "yellow_if_no_memory_events": true,
+    "yellow_if_pending_approvals": true,
+    "yellow_if_pending_patches": true
+  }
+}

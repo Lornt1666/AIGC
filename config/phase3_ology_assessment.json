@@ -1,0 +1,89 @@
+{
+  "phase": "Phase 3 - Ology Assessment Engine",
+  "operating_mode": "internal_judgment_only",
+  "external_actions_allowed": false,
+  "approval_required_before_external_action": true,
+  "input_queue": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+  "output_dossiers": "data/phase3_processed/aigc_phase3_assessment_dossiers.json",
+  "max_records": 100,
+  "ologies": [
+    {
+      "name": "methodology",
+      "question": "How should this work be done?",
+      "score_weight": 1.0
+    },
+    {
+      "name": "taxonomy",
+      "question": "What kind of work is this?",
+      "score_weight": 1.0
+    },
+    {
+      "name": "ontology",
+      "question": "What entities and relationships exist?",
+      "score_weight": 1.0
+    },
+    {
+      "name": "epistemology",
+      "question": "How do we know what is true?",
+      "score_weight": 1.2
+    },
+    {
+      "name": "teleology",
+      "question": "What purpose or end-goal does this work serve?",
+      "score_weight": 1.0
+    },
+    {
+      "name": "axiology",
+      "question": "Is this work valuable, ethical, and professionally worthwhile?",
+      "score_weight": 1.2
+    },
+    {
+      "name": "praxeology",
+      "question": "What actions must be taken?",
+      "score_weight": 1.1
+    },
+    {
+      "name": "heuristics",
+      "question": "What practical rules guide the decision?",
+      "score_weight": 0.8
+    },
+    {
+      "name": "meta_ontology",
+      "question": "How do all reasoning systems connect into one judgment?",
+      "score_weight": 1.3
+    }
+  ],
+  "master_assessment_factors": [
+    "confidence",
+    "legal_platform_alignment",
+    "suitability",
+    "feasibility",
+    "pay_reward_potential",
+    "effort_efficiency",
+    "impact_value",
+    "deliverable_clarity",
+    "privacy_security_safety",
+    "ethical_professional_quality",
+    "reputation_safety",
+    "automation_compatibility",
+    "human_approval_clarity",
+    "employer_acceptance_likelihood",
+    "auditability"
+  ],
+  "decision_bands": {
+    "90_100": "proceed_to_phase_4",
+    "80_89": "proceed_to_phase_4_with_caution",
+    "70_79": "hold_for_human_review",
+    "60_69": "weak_hold",
+    "0_59": "reject"
+  },
+  "forbidden_phase3_outcomes": [
+    "apply",
+    "message_employer",
+    "submit_proposal",
+    "submit_deliverable",
+    "use_credentials",
+    "use_operator_identity_externally",
+    "publish"
+  ]
+}

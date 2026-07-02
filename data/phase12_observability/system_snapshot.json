@@ -1,0 +1,205 @@
+{
+  "generated_at": "2026-07-02T13:01:51.506048+00:00",
+  "operator": "Justice Gray Maciocha",
+  "phase": "Phase 12 - Observability Dashboard",
+  "system_health": "yellow",
+  "health_reasons": [
+    "25 approval packets pending."
+  ],
+  "phase_health": [
+    {
+      "phase": "phase0_genesis_constitution",
+      "status": "yellow",
+      "signal_count": 0,
+      "notes": [
+        "No baseline telemetry found yet."
+      ]
+    },
+    {
+      "phase": "phase1_domain_discovery",
+      "status": "yellow",
+      "signal_count": 0,
+      "notes": [
+        "No baseline telemetry found yet."
+      ]
+    },
+    {
+      "phase": "phase2_opportunity_radar",
+      "status": "green",
+      "signal_count": 98,
+      "notes": [
+        "Telemetry present."
+      ]
+    },
+    {
+      "phase": "phase3_ology_assessment",
+      "status": "green",
+      "signal_count": 25,
+      "notes": [
+        "Telemetry present."
+      ]
+    },
+    {
+      "phase": "phase4_proposal_drafting",
+      "status": "green",
+      "signal_count": 25,
+      "notes": [
+        "Telemetry present."
+      ]
+    },
+    {
+      "phase": "phase5_human_approval_gate",
+      "status": "green",
+      "signal_count": 25,
+      "notes": [
+        "Telemetry present."
+      ]
+    },
+    {
+      "phase": "phase6_controlled_execution",
+      "status": "yellow",
+      "signal_count": 0,
+      "notes": [
+        "Phase exists in architecture; no current output signal found."
+      ]
+    },
+    {
+      "phase": "phase7_employer_audit_packet",
+      "status": "yellow",
+      "signal_count": 0,
+      "notes": [
+        "Phase exists in architecture; no current output signal found."
+      ]
+    },
+    {
+      "phase": "phase8_evolution_loop",
+      "status": "green",
+      "signal_count": 1,
+      "notes": [
+        "Telemetry present."
+      ]
+    },
+    {
+      "phase": "phase9_omega_x_memory_core",
+      "status": "green",
+      "signal_count": 1,
+      "notes": [
+        "Telemetry present."
+      ]
+    },
+    {
+      "phase": "phase10_connector_api_layer",
+      "status": "yellow",
+      "signal_count": 0,
+      "notes": [
+        "No baseline telemetry found yet."
+      ]
+    },
+    {
+      "phase": "phase11_security_vault",
+      "status": "green",
+      "signal_count": 1,
+      "notes": [
+        "Telemetry present."
+      ]
+    },
+    {
+      "phase": "phase12_observability_dashboard",
+      "status": "green",
+      "signal_count": 1,
+      "notes": [
+        "Observability snapshot generated."
+      ]
+    },
+    {
+      "phase": "phase13_simulation_arena",
+      "status": "green",
+      "signal_count": 7,
+      "notes": [
+        "Telemetry present."
+      ]
+    },
+    {
+      "phase": "phase14_deployment_runtime",
+      "status": "yellow",
+      "signal_count": 0,
+      "notes": [
+        "No baseline telemetry found yet."
+      ]
+    },
+    {
+      "phase": "phase15_finance_contracts_asset_ledger",
+      "status": "yellow",
+      "signal_count": 0,
+      "notes": [
+        "No baseline telemetry found yet."
+      ]
+    },
+    {
+      "phase": "phase16_compliance_legal_review",
+      "status": "yellow",
+      "signal_count": 0,
+      "notes": [
+        "No baseline telemetry found yet."
+      ]
+    },
+    {
+      "phase": "phase17_incident_response",
+      "status": "yellow",
+      "signal_count": 0,
+      "notes": [
+        "No baseline telemetry found yet."
+      ]
+    },
+    {
+      "phase": "phase18_scaling_productization",
+      "status": "yellow",
+      "signal_count": 0,
+      "notes": [
+        "No baseline telemetry found yet."
+      ]
+    }
+  ],
+  "pipeline_metrics": {
+    "audit_events": 612,
+    "memory_events": 1,
+    "phase2_opportunities": 98,
+    "phase3_dossiers": 25,
+    "phase4_proposals": 25,
+    "phase5_authorizations": 25,
+    "phase6_receipts": 0,
+    "phase7_packets": 0,
+    "phase8_patch_records": 1,
+    "phase13_synthetic_records": 2,
+    "phase13_real_replay_records": 5
+  },
+  "approval_metrics": {
+    "pending": 25,
+    "approved_for_phase6": 0,
+    "denied": 0,
+    "revision_required": 0,
+    "blocked": 0
+  },
+  "patch_metrics": {
+    "pending": 0,
+    "accepted": 1,
+    "denied": 0,
+    "revision_required": 0,
+    "blocked": 0
+  },
+  "secrets_privacy": {
+    "repo_secret_manifest_present": true,
+    "external_secret_manifest_present": true,
+    "secret_like_findings": 0,
+    "findings": []
+  },
+  "audit_integrity": {
+    "audit_dir_exists": true,
+    "audit_events": 612,
+    "memory_events": 1,
+    "missing_audit_baseline": false,
+    "missing_memory_baseline": false
+  },
+  "next_recommended_action": "Review pending Phase 5 approval packets before Phase 6 handoff.",
+  "external_action_performed": false
+}

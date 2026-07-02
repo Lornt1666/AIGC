@@ -1,0 +1,62 @@
+{
+  "phase": "Phase 5 - Human Approval Gate",
+  "operating_mode": "authorization_only_no_execution",
+  "external_actions_allowed_in_phase5": false,
+  "input_file": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+  "output_file": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+  "eligible_phase4_readiness_decisions": [
+    "ready_for_phase_5",
+    "strong_minor_review"
+  ],
+  "approval_phrase_template": "I, Justice Gray Maciocha, accept action {action_id}.",
+  "denial_phrase_template": "I, Justice Gray Maciocha, deny action {action_id}.",
+  "revision_phrase_template": "Revise action {action_id}: {revision_instructions}",
+  "action_classes": [
+    "autonomous_allowed",
+    "approval_required",
+    "enhanced_approval_required",
+    "blocked_by_safety"
+  ],
+  "approval_required_actions": [
+    "send_proposal",
+    "apply",
+    "message_employer",
+    "bid",
+    "accept_contract",
+    "submit_deliverable",
+    "use_credentials",
+    "use_operator_identity_externally",
+    "publish",
+    "share_audit_packet"
+  ],
+  "sensitive_actions": [
+    "use_api_credentials",
+    "handle_personal_data",
+    "handle_payment_details",
+    "accept_legal_terms",
+    "security_testing",
+    "regulated_domain_work",
+    "access_private_repository",
+    "sign_agreement"
+  ],
+  "forbidden_actions": [
+    "spam",
+    "impersonation",
+    "fake_qualifications",
+    "credential_misuse",
+    "bypass_platform_restrictions",
+    "scrape_forbidden_websites",
+    "evade_bans",
+    "hidden_ai_use_where_disclosure_required",
+    "fraud",
+    "malware",
+    "unauthorized_access",
+    "privacy_invasion",
+    "harassment",
+    "illegal_work"
+  ],
+  "approval_expiration_hours": 24,
+  "artifact_change_invalidates_approval": true,
+  "blanket_approval_allowed": false,
+  "blocked_action_override_allowed": false
+}

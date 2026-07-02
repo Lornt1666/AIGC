@@ -1,0 +1,49 @@
+{
+  "phase": "Phase 11 - Security, Privacy, and Secrets Vault",
+  "primary_secret_provider": "google_cloud_secret_manager",
+  "encryption_key_provider": "google_cloud_kms",
+  "secret_manager_role": "store_api_keys_passwords_tokens_certificates_oauth_webhook_and_database_secrets",
+  "kms_role": "manage_cryptographic_encryption_keys_only",
+  "external_drive_stores_raw_secrets": false,
+  "repo_stores_raw_secrets": false,
+  "secret_values_allowed_in_logs": false,
+  "secret_values_allowed_in_prompts": false,
+  "secret_values_allowed_in_employer_packets": false,
+  "service_account_key_policy": {
+    "avoid_long_lived_downloaded_keys": true,
+    "do_not_store_service_account_key_json_in_repo": true,
+    "do_not_store_service_account_key_json_on_external_drive": true,
+    "do_not_store_service_account_key_json_in_secret_manager": true,
+    "preferred_authentication": "google_managed_identity_or_user_application_default_credentials"
+  },
+  "allowed_secret_operations": [
+    "read_secret_reference",
+    "request_secret_access",
+    "retrieve_secret_at_runtime",
+    "inject_secret_into_runtime_memory_only",
+    "audit_secret_access_without_value"
+  ],
+  "forbidden_secret_operations": [
+    "store_raw_secret_on_external_drive",
+    "commit_secret_to_git",
+    "print_secret_to_console",
+    "log_secret_value",
+    "send_secret_to_employer",
+    "include_secret_in_prompt",
+    "write_secret_to_audit_packet",
+    "store_secret_in_plaintext_cache"
+  ],
+  "approval_required_for": [
+    "new_secret_creation",
+    "secret_rotation",
+    "new_agent_secret_access",
+    "new_connector_secret_access",
+    "live_external_api_execution",
+    "credential_export",
+    "credential_deletion"
+  ],
+  "default_cache_policy": "no_plaintext_cache",
+  "offline_mode_policy": "manual_reauthentication_or_encrypted_cache_only",
+  "audit_required": true,
+  "redaction_required": true
+}

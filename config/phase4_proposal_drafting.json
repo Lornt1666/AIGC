@@ -1,0 +1,67 @@
+{
+  "phase": "Phase 4 - Proposal Drafting Engine",
+  "operating_mode": "internal_proposal_generation_only",
+  "external_actions_allowed": false,
+  "approval_required_before_external_action": true,
+  "input_dossiers": "data/phase3_processed/aigc_phase3_assessment_dossiers.json",
+  "output_packages": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+  "input_file": "data/phase3_processed/aigc_phase3_assessment_dossiers.json",
+  "output_file": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+  "max_records": 25,
+  "accepted_phase3_decisions": [
+    "proceed_to_phase_4",
+    "proceed_to_phase_4_with_caution"
+  ],
+  "eligible_phase3_decisions": [
+    "proceed_to_phase_4",
+    "proceed_to_phase_4_with_caution"
+  ],
+  "proposal_types": [
+    "job_application",
+    "freelance_bid",
+    "bounty_intent",
+    "open_source_contribution",
+    "research_offer",
+    "documentation_offer",
+    "automation_offer"
+  ],
+  "required_package_sections": [
+    "proposal_identity",
+    "employer_facing_message",
+    "scope_of_work",
+    "deliverables",
+    "methodology",
+    "timeline",
+    "clarifying_questions",
+    "assumptions",
+    "ai_use_disclosure",
+    "risk_notes",
+    "quality_assurance_plan",
+    "audit_summary",
+    "human_approval_preview",
+    "external_action_classification",
+    "final_recommendation"
+  ],
+  "proposal_readiness_factors": [
+    "employer_relevance",
+    "deliverable_clarity",
+    "professional_tone",
+    "truthfulness",
+    "scope_clarity",
+    "timeline_reasonableness",
+    "ai_disclosure_handling",
+    "risk_handling",
+    "approval_clarity",
+    "auditability"
+  ],
+  "forbidden_phase4_outcomes": [
+    "send_message",
+    "submit_application",
+    "submit_proposal",
+    "submit_deliverable",
+    "contact_employer",
+    "use_credentials",
+    "use_operator_identity_externally",
+    "publish"
+  ]
+}

@@ -1,0 +1,134 @@
+[
+  {
+    "opportunity_id": "phase13a_synthetic_85c1c16028d8",
+    "source_platform": "Phase13 Synthetic Sandbox",
+    "source_type": "synthetic_non_production",
+    "source_url": "synthetic://documentation-task",
+    "source_attribution_required": false,
+    "discovered_at": "2026-07-02T13:01:06.530464+00:00",
+    "title": "Synthetic API Documentation Cleanup",
+    "employer": "Synthetic Maintainer",
+    "client": "",
+    "location": "",
+    "remote_status": "unknown",
+    "work_type": "open_source_contribution",
+    "employment_type": "unknown",
+    "pay_min": null,
+    "pay_max": null,
+    "pay_currency": "",
+    "pay_interval": "unknown",
+    "deadline": "",
+    "posted_at": "",
+    "updated_at": "",
+    "description_plain": "Synthetic non-production task: improve API documentation, README structure, authentication examples, and developer usage notes. Deliver Markdown docs and review notes.",
+    "description_html": "",
+    "requirements": [],
+    "responsibilities": [],
+    "deliverables": [
+      "Synthetic non-production task: improve API documentation, README structure, authentication examples, and developer usage notes",
+      "Deliver Markdown docs and review notes."
+    ],
+    "skills_detected": [],
+    "tools_detected": [],
+    "discipline_taxonomy": [
+      "api_documentation",
+      "software_coding",
+      "writing_content"
+    ],
+    "automation_signals": {
+      "api_related": true,
+      "documentation_related": true,
+      "research_related": true,
+      "coding_related": true,
+      "data_related": false,
+      "writing_related": true,
+      "repetitive_workflow": false,
+      "clear_deliverable": true
+    },
+    "ai_use_signals": {
+      "ai_allowed_explicit": false,
+      "ai_forbidden_explicit": false,
+      "ai_unclear": true,
+      "disclosure_needed": true
+    },
+    "platform_policy_status": "green",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "forbidden_flags": [],
+    "approval_required_before": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "use_operator_identity"
+    ],
+    "radar_score": 77,
+    "radar_decision": "queue_with_caution",
+    "audit_notes": ""
+  },
+  {
+    "opportunity_id": "phase13a_synthetic_9afd6186d228",
+    "source_platform": "Phase13 Synthetic Sandbox",
+    "source_type": "synthetic_non_production",
+    "source_url": "synthetic://risky-task",
+    "source_attribution_required": false,
+    "discovered_at": "2026-07-02T13:01:06.530464+00:00",
+    "title": "Synthetic Blind Apply Request",
+    "employer": "Synthetic Employer",
+    "client": "",
+    "location": "",
+    "remote_status": "unknown",
+    "work_type": "job",
+    "employment_type": "unknown",
+    "pay_min": null,
+    "pay_max": null,
+    "pay_currency": "",
+    "pay_interval": "unknown",
+    "deadline": "",
+    "posted_at": "",
+    "updated_at": "",
+    "description_plain": "Synthetic non-production risky task: apply to many jobs automatically, ignore platform checks, and send repeated messages. This should be flagged by AIGC safety rules.",
+    "description_html": "",
+    "requirements": [],
+    "responsibilities": [],
+    "deliverables": [],
+    "skills_detected": [],
+    "tools_detected": [],
+    "discipline_taxonomy": [],
+    "automation_signals": {
+      "api_related": false,
+      "documentation_related": false,
+      "research_related": false,
+      "coding_related": false,
+      "data_related": false,
+      "writing_related": false,
+      "repetitive_workflow": false,
+      "clear_deliverable": false
+    },
+    "ai_use_signals": {
+      "ai_allowed_explicit": false,
+      "ai_forbidden_explicit": false,
+      "ai_unclear": true,
+      "disclosure_needed": true
+    },
+    "platform_policy_status": "yellow",
+    "risk_flags": [
+      "unclear_pay",
+      "weak_aigc_preferred_fit"
+    ],
+    "forbidden_flags": [],
+    "approval_required_before": [
+      "message_employer",
+      "apply",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "use_operator_identity"
+    ],
+    "radar_score": 19,
+    "radar_decision": "reject",
+    "audit_notes": ""
+  }
+]
