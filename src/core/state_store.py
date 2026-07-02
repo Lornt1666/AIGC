@@ -28,6 +28,7 @@ ARTIFACT_TABLES = [
     "agent_scores",
     "customer_satisfaction",
     "finance_ledger",
+    "compliance_reviews",
     "secret_access_events",
     "incident_events",
 ]

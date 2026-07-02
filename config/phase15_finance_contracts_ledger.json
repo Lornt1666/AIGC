@@ -1,0 +1,24 @@
+{
+  "phase": "Phase 15 - Finance, Contracts, and Asset Ledger",
+  "operating_mode": "internal_finance_tracking_only",
+  "external_actions_allowed": false,
+  "auto_accept_contracts_allowed": false,
+  "auto_invoice_allowed": false,
+  "input_files": {
+    "opportunities": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+    "proposals": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+    "authorizations": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+    "executions": "data/phase6_execution/aigc_phase6_execution_receipts.json"
+  },
+  "output_file": "data/phase15_finance/aigc_phase15_finance_ledger.json",
+  "currency_fallback": "unknown",
+  "forbidden_behaviors": [
+    "accept_contract",
+    "send_invoice",
+    "request_payment",
+    "change_payment_terms_externally",
+    "store_payment_credentials",
+    "make_tax_or_legal_claims"
+  ]
+}
+

@@ -1,0 +1,42 @@
+{
+  "phase": "Phase 16 - Compliance and Legal Review Layer",
+  "operating_mode": "internal_compliance_review_only",
+  "external_actions_allowed": false,
+  "input_files": {
+    "opportunities": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+    "proposals": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+    "authorizations": "data/phase5_authorizations/aigc_phase5_authorization_packets.json"
+  },
+  "output_file": "data/phase16_compliance/aigc_phase16_compliance_reviews.json",
+  "blocked_statuses": [
+    "red"
+  ],
+  "enhanced_review_statuses": [
+    "orange"
+  ],
+  "regulated_terms": [
+    "medical",
+    "patient",
+    "healthcare",
+    "legal",
+    "law",
+    "tax",
+    "finance",
+    "banking",
+    "investment",
+    "insurance",
+    "security testing",
+    "penetration",
+    "crypto"
+  ],
+  "forbidden_behaviors": [
+    "give_legal_advice",
+    "give_medical_advice",
+    "give_financial_advice",
+    "bypass_platform_terms",
+    "hide_ai_use",
+    "handle_private_data_without_approval",
+    "use_credentials_without_approval"
+  ]
+}
+

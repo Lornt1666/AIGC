@@ -1,0 +1,25 @@
+{
+  "milestone": "Milestone D - Finance, Compliance, and Incident Response",
+  "operating_mode": "internal_control_layers_only",
+  "phases": [
+    "phase15_finance_contracts_ledger",
+    "phase16_compliance_review",
+    "phase17_incident_response"
+  ],
+  "external_actions_allowed": false,
+  "live_connectors_allowed": false,
+  "approval_required_before": [
+    "contract_acceptance",
+    "invoice_sending",
+    "payment_request",
+    "employer_contact",
+    "credential_use",
+    "legal_or_regulated_work"
+  ],
+  "outputs": {
+    "finance_ledger": "data/phase15_finance/aigc_phase15_finance_ledger.json",
+    "compliance_reviews": "data/phase16_compliance/aigc_phase16_compliance_reviews.json",
+    "incident_summary": "data/phase17_incidents/incident_response_summary.json"
+  }
+}
+

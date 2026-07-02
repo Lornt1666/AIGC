@@ -23,6 +23,7 @@ from src.core.contract_validator import (  # noqa: E402
 from src.core.phase_registry import build_phase_registry  # noqa: E402
 from src.core.pipeline_closure import PipelineClosureRunner  # noqa: E402
 from src.core.state_store import AIGCStateStore, DEFAULT_DB_PATH  # noqa: E402
+from src.phase17_incident_response import Phase17IncidentResponse  # noqa: E402
 from src.security.approval_tokens import ApprovalTokenStore  # noqa: E402
 
 
@@ -59,6 +60,24 @@ def main(argv: List[str] | None = None) -> int:
         result = runner.run(execution_mode=args.execution_mode)
         print(json.dumps(asdict(result), indent=2))
         return 1 if result.validation_failures else 0
+    if args.command == "create-incident":
+        payload = Phase17IncidentResponse(root).run_from_config(
+            config_path=root / "config" / "phase17_incident_response.json",
+            incident_type=args.incident_type,
+            severity=args.severity,
+            summary=args.summary,
+            evidence=json.loads(args.evidence_json),
+        )
+        store.insert_event(
+            event_type="incident_report_created",
+            phase="phase17_incident_response",
+            status="open_internal_review",
+            summary=args.summary,
+            data=payload,
+            external_action_performed=False,
+        )
+        print(json.dumps(payload, indent=2))
+        return 0
     if args.command == "emergency-stop":
         store.set_flag("emergency_stop", "true")
         store.insert_event(
@@ -131,10 +150,13 @@ def command_validate(args: argparse.Namespace, root: Path, store: AIGCStateStore
             (registry["phase5"].schema_name, root / registry["phase5"].output_path),
             (registry["phase6"].schema_name, root / registry["phase6"].output_path),
             (registry["phase7"].schema_name, root / registry["phase7"].output_path),
+            (registry["phase15"].schema_name, root / registry["phase15"].output_path),
+            (registry["phase16"].schema_name, root / registry["phase16"].output_path),
         ]
         jsonl_targets = [
             ("outcome_record", root / "data" / "phase8_evolution" / "outcome_records.jsonl"),
             ("evolution_patch", root / "data" / "phase8_evolution" / "evolution_patches.jsonl"),
+            ("incident_report", root / "data" / "phase17_incidents" / "incident_reports.jsonl"),
         ]
 
     for schema_name, path in jsonl_targets:
@@ -477,7 +499,7 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     validate_parser.add_argument("--path", default="")
 
     run_parser = subparsers.add_parser("run", help="Run an internal AIGC phase command.")
-    run_parser.add_argument("phase", choices=["phase2", "phase3", "phase4", "phase5", "phase6", "phase7", "phase8", "phase11", "phase12", "phase13", "phase14", "pipeline"])
+    run_parser.add_argument("phase", choices=["phase2", "phase3", "phase4", "phase5", "phase6", "phase7", "phase8", "phase11", "phase12", "phase13", "phase14", "phase15", "phase16", "phase17", "pipeline"])
     run_parser.add_argument("--mode", choices=["synthetic", "real", "real_data_read_only"], default="synthetic")
     run_parser.add_argument("--source", choices=["remoteok", "remotive", "weworkremotely", "github_issues"], default="remoteok")
     run_parser.add_argument("--limit", type=int, default=10)
@@ -488,6 +510,12 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
 
     close_loop_parser = subparsers.add_parser("close-loop", help="Run internal Phase 5 to Phase 7 closure without external execution.")
     close_loop_parser.add_argument("--execution-mode", choices=["dry_run", "manual_handoff"], default="manual_handoff")
+
+    incident_parser = subparsers.add_parser("create-incident", help="Create an internal Phase 17 incident report.")
+    incident_parser.add_argument("--incident-type", required=True)
+    incident_parser.add_argument("--severity", choices=["low", "medium", "high", "critical"], default="medium")
+    incident_parser.add_argument("--summary", required=True)
+    incident_parser.add_argument("--evidence-json", default="{}")
 
     token_parser = subparsers.add_parser("issue-approval-token", help="Issue a scoped approval token and store only its hash.")
     token_parser.add_argument("--scope", required=True)

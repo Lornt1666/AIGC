@@ -1,0 +1,815 @@
+[
+  {
+    "review_id": "AIGC-COMP-5326C9D0347235E4EF",
+    "created_at": "2026-07-02T16:05:23.217350+00:00",
+    "opportunity_id": "eda6a258a34d417ac4895a99",
+    "proposal_id": "phase4_129ed5d3aa518bb047452f79",
+    "employer": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3561",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "law",
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-8357d5016ba0a35ba7"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-4D99F7D2231CFA560B",
+    "created_at": "2026-07-02T16:05:23.217350+00:00",
+    "opportunity_id": "48ff2350d71e32d32183dc30",
+    "proposal_id": "phase4_82bb62946d8a47ce81bcca6d",
+    "employer": "Toptal",
+    "platform": "We Work Remotely",
+    "source_url": "https://weworkremotely.com/remote-jobs/toptal-ai-engineers",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay",
+      "job_board_employment_role"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "manually_review_platform_terms_before_external_action"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "manual_terms_review_required",
+    "regulated_domain_flags": [
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-70c8a1454548cba8e1"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-AD7050F14BD6DBD1AE",
+    "created_at": "2026-07-02T16:05:23.218348+00:00",
+    "opportunity_id": "fd1c0de42c4f53acba40f34b",
+    "proposal_id": "phase4_59cde5610aa64d7391c89898",
+    "employer": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3562",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "law",
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-e6f33c3ef4f78a44d5"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-BA61DFC1873667F79D",
+    "created_at": "2026-07-02T16:05:23.219350+00:00",
+    "opportunity_id": "b62bc7f1caf7a27c588a6d6a",
+    "proposal_id": "phase4_c4a28db5c40631315048704b",
+    "employer": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3550",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "law",
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-5ea02454ff109c1959"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-CB33943091D7CB1CD8",
+    "created_at": "2026-07-02T16:05:23.219350+00:00",
+    "opportunity_id": "9d7bb4d37968940e7f9738d5",
+    "proposal_id": "phase4_6bf8f3b4f446d9bb6e635d18",
+    "employer": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3543",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-b013216e3c55fb47a5"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-2F81949F100C344EBB",
+    "created_at": "2026-07-02T16:05:23.221347+00:00",
+    "opportunity_id": "c8c4ba85f90c5b86890d806d",
+    "proposal_id": "phase4_817f9a8ede8b80d3aeefbb12",
+    "employer": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3541",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-c5dfb1152dd6b59f02"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-0A6A62911C3BB8583B",
+    "created_at": "2026-07-02T16:05:23.222347+00:00",
+    "opportunity_id": "3795782df71592e3c47e76b7",
+    "proposal_id": "phase4_2ff3d6fd1a91ab8f7167254d",
+    "employer": "Olsson",
+    "platform": "We Work Remotely",
+    "source_url": "https://weworkremotely.com/remote-jobs/olsson-federal-bim-design-associate",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay",
+      "job_board_employment_role"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "manually_review_platform_terms_before_external_action"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "manual_terms_review_required",
+    "regulated_domain_flags": [
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-5b146e3bc90d53962f"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-6F759881E3DF2FFFF9",
+    "created_at": "2026-07-02T16:05:23.223349+00:00",
+    "opportunity_id": "f17580421d45bc56fbb3323d",
+    "proposal_id": "phase4_a0c0eb6104cbdcc1c08d2f49",
+    "employer": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3559",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "law",
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-1fe7f97c06d8899721"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-1A8D8330DC7A9219EC",
+    "created_at": "2026-07-02T16:05:23.223349+00:00",
+    "opportunity_id": "315f658a9364057a86cabcbe",
+    "proposal_id": "phase4_298d569fd92600e3865c3ab4",
+    "employer": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3560",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-3ffa779bf10d8ff763"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-40A3557B59F8EE4C8E",
+    "created_at": "2026-07-02T16:05:23.224347+00:00",
+    "opportunity_id": "bbc2efb9c274d0221aa447b8",
+    "proposal_id": "phase4_ad3173750b0c97f03fa3eed3",
+    "employer": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3602",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "privacy_or_security_sensitive",
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-75e0dc157d306b6dc7"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-8B20F2EB71BC388D60",
+    "created_at": "2026-07-02T16:05:23.225350+00:00",
+    "opportunity_id": "5cf46914d492ec92f9c9d72d",
+    "proposal_id": "phase4_c36264be20bfb858ee9bcd7c",
+    "employer": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3546",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "law",
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-b549b7e88976609380"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-C0D2083A73EB8B8987",
+    "created_at": "2026-07-02T16:05:23.225350+00:00",
+    "opportunity_id": "1a3aad74c4db7e62c8704d92",
+    "proposal_id": "phase4_8e810fe9f8a35f40e3846269",
+    "employer": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3545",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "law",
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-3f265e09b4890df0f5"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-E109A030648B3EA0BD",
+    "created_at": "2026-07-02T16:05:23.226347+00:00",
+    "opportunity_id": "a368e5083373c9ab1e57e991",
+    "proposal_id": "phase4_e6f0729949d9a3867cc46ca7",
+    "employer": "pip-audit",
+    "platform": "GitHub",
+    "source_url": "https://github.com/pypa/pip-audit/issues/948",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-6bae261cc8c7d167c4"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-E3C2728401366B5AA1",
+    "created_at": "2026-07-02T16:05:23.226347+00:00",
+    "opportunity_id": "2987871ab0bc70b14c25741e",
+    "proposal_id": "phase4_ed034ea44d3dbd45def8837f",
+    "employer": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3553",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-a5b73451017d8bc2b6"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-DD119CF114F74CECF8",
+    "created_at": "2026-07-02T16:05:23.227346+00:00",
+    "opportunity_id": "0cb519bbb35b8e0ddc832b34",
+    "proposal_id": "phase4_e69e7924b59871538b1d8593",
+    "employer": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3558",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "law",
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-525570beec57bc6412"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-60B619A311BE43253B",
+    "created_at": "2026-07-02T16:05:23.228346+00:00",
+    "opportunity_id": "f57143f07e5ab9e64974239d",
+    "proposal_id": "phase4_85ce43bf406da7ca7e72ccca",
+    "employer": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3552",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-130dcb5e8b85aa00fa"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-745EC41CB133CCE395",
+    "created_at": "2026-07-02T16:05:23.228346+00:00",
+    "opportunity_id": "80dbe8c9e366e4b8e63f8c65",
+    "proposal_id": "phase4_58c805c1b3dda1f6aa25ba29",
+    "employer": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3547",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-9bc909c4af614d5d60"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-7A79A86B820DB643EB",
+    "created_at": "2026-07-02T16:05:23.229349+00:00",
+    "opportunity_id": "533db66d2318bf2bc0dd4abd",
+    "proposal_id": "phase4_82fce1f8f3fe899e64abff5d",
+    "employer": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3549",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "law",
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-29d3e4cdd639b2d9bc"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-E19EADBAA291786658",
+    "created_at": "2026-07-02T16:05:23.229349+00:00",
+    "opportunity_id": "0e36363038add3b5915f1b84",
+    "proposal_id": "phase4_2cc717f1098738dc3eeae2fc",
+    "employer": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3557",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-788f17b9ccdbd493ab"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-D3E9C828084B4298B2",
+    "created_at": "2026-07-02T16:05:23.230347+00:00",
+    "opportunity_id": "ab4ac8a8d497c0cf8adb58c4",
+    "proposal_id": "phase4_2f5eeee5f967b51e0c3f27fa",
+    "employer": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3555",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "law",
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-361e77ad9f77b7bc94"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-0954B2D8E778143B97",
+    "created_at": "2026-07-02T16:05:23.231350+00:00",
+    "opportunity_id": "bd706e8c410ea414b213cd01",
+    "proposal_id": "phase4_13f9f7ffe445c278d57f9f6a",
+    "employer": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3554",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-cf172f93401841e536"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-DBACB74C154E998161",
+    "created_at": "2026-07-02T16:05:23.231350+00:00",
+    "opportunity_id": "67ed35084445d65a8241e5bf",
+    "proposal_id": "phase4_a690460fc33e1ded08f7ae61",
+    "employer": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3551",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-358ead099c2775bb82"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-9FFF4650BC99024693",
+    "created_at": "2026-07-02T16:05:23.232353+00:00",
+    "opportunity_id": "b79351d868e5311a2ed7db55",
+    "proposal_id": "phase4_ad020f580bc22642c8caf9b5",
+    "employer": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3548",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "law",
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-39d2858df03f1de116"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-95149CB6C2B72C8963",
+    "created_at": "2026-07-02T16:05:23.233353+00:00",
+    "opportunity_id": "e86bbd3a4c9c7c08eb27da18",
+    "proposal_id": "phase4_25fd062345700a1e3a08d0d2",
+    "employer": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3544",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-11110c7f38dc614a91"
+    ],
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-COMP-39EA9D30935397A542",
+    "created_at": "2026-07-02T16:05:23.234353+00:00",
+    "opportunity_id": "7f44a2bfe1bde725327f8e99",
+    "proposal_id": "phase4_c473c8af591b5b81ccf4d486",
+    "employer": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3542",
+    "status": "requires_operator_review",
+    "compliance_status": "orange",
+    "risk_flags": [
+      "unclear_pay"
+    ],
+    "required_actions": [
+      "review_opportunity_risk_flags",
+      "operator_review_required_for_regulated_domain",
+      "clarify_payment_terms_before_contract",
+      "confirm_no_credentials_or_private_data_are_used_without_approval",
+      "review_platform_specific_submission_rules"
+    ],
+    "ai_disclosure_status": "required_included",
+    "platform_policy_status": "public_issue_or_repo_review_required",
+    "regulated_domain_flags": [
+      "tax"
+    ],
+    "payment_risk": "unclear_payment_terms",
+    "credential_or_private_data_risk": "review_required",
+    "linked_authorization_ids": [
+      "AIGC-AUTH-0309292be2f5e4e505"
+    ],
+    "external_action_performed": false
+  }
+]

@@ -1,0 +1,36 @@
+{
+  "phase": "Phase 17 - Incident Response and Recovery",
+  "operating_mode": "internal_incident_readiness_and_reporting",
+  "external_actions_allowed": false,
+  "incident_log": "data/phase17_incidents/incident_reports.jsonl",
+  "summary_file": "data/phase17_incidents/incident_response_summary.json",
+  "report_file": "reports/phase17_incident_response_report.md",
+  "incident_types": [
+    "secret_leak_suspicion",
+    "wrong_recipient",
+    "bad_proposal_sent",
+    "platform_warning",
+    "api_failure",
+    "prompt_injection",
+    "malicious_job_listing",
+    "audit_corruption",
+    "approval_bypass_attempt",
+    "memory_poisoning",
+    "payment_dispute"
+  ],
+  "severity_levels": [
+    "low",
+    "medium",
+    "high",
+    "critical"
+  ],
+  "required_controls": [
+    "emergency_stop",
+    "log_preservation",
+    "secret_rotation_plan",
+    "external_action_block",
+    "postmortem",
+    "evolution_patch_if_needed"
+  ]
+}
+

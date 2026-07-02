@@ -232,6 +232,9 @@ python .\src\aigc.py validate
 python .\src\aigc.py run phase12
 python .\src\aigc.py run phase13
 python .\src\aigc.py run phase14
+python .\src\aigc.py run phase15
+python .\src\aigc.py run phase16
+python .\src\aigc.py run phase17
 python .\src\aigc.py run pipeline --mode synthetic
 python .\src\aigc.py run pipeline --mode real_data_read_only --source remoteok --limit 10
 python .\src\aigc.py close-loop --execution-mode manual_handoff
@@ -266,6 +269,33 @@ Outputs:
 - `reports/milestone_c_pipeline_closure_report.md`
 
 The closure runner does not approve actions, contact recipients, use credentials, or perform external execution.
+
+## Milestone D Finance, Compliance, and Incident Response
+
+Milestone D adds internal-only controls for finance tracking, compliance screening, and incident response readiness.
+
+Commands:
+
+```powershell
+python .\src\aigc.py run phase15
+python .\src\aigc.py run phase16
+python .\src\aigc.py run phase17
+python .\src\aigc.py create-incident --incident-type prompt_injection --severity medium --summary "Suspicious listing instructions detected."
+```
+
+Outputs:
+
+- `data/phase15_finance/aigc_phase15_finance_ledger.json`
+- `data/phase16_compliance/aigc_phase16_compliance_reviews.json`
+- `data/phase17_incidents/incident_response_summary.json`
+- `data/phase17_incidents/incident_reports.jsonl`
+- `reports/phase17_incident_response_report.md`
+- `data/reports/phase15_signature_update.md`
+- `data/reports/phase16_signature_update.md`
+
+Phase 15 does not accept contracts, send invoices, request payment, or make tax/legal claims.
+Phase 16 does not provide legal advice or approve regulated work.
+Phase 17 creates internal incident records only and does not notify external parties.
 
 ## Milestone B Security Hardening
 

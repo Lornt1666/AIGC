@@ -53,6 +53,29 @@ class IncidentResponseLedger:
         with self.path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(asdict(report), ensure_ascii=False) + "\n")
 
+    def list_reports(self) -> List[IncidentReport]:
+        if not self.path.exists():
+            return []
+        reports: List[IncidentReport] = []
+        with self.path.open("r", encoding="utf-8") as handle:
+            for line in handle:
+                if not line.strip():
+                    continue
+                payload = json.loads(line)
+                reports.append(IncidentReport(
+                    incident_id=payload["incident_id"],
+                    created_at=payload["created_at"],
+                    incident_type=payload["incident_type"],
+                    severity=payload["severity"],
+                    status=payload["status"],
+                    summary=payload["summary"],
+                    containment_steps=payload.get("containment_steps", []),
+                    recovery_steps=payload.get("recovery_steps", []),
+                    evidence=payload.get("evidence", {}),
+                    external_action_performed=bool(payload.get("external_action_performed", False)),
+                ))
+        return reports
+
 
 def default_containment_steps(incident_type: str) -> List[str]:
     common = [
@@ -75,6 +98,16 @@ def default_containment_steps(incident_type: str) -> List[str]:
         return common + [
             "Quarantine the source text or listing.",
             "Treat source instructions as untrusted input.",
+        ]
+    if incident_type == "payment_dispute":
+        return common + [
+            "Freeze related finance ledger updates until reviewed.",
+            "Collect contract, invoice, and delivery evidence internally.",
+        ]
+    if incident_type == "approval_bypass_attempt":
+        return common + [
+            "Verify authorization packet history.",
+            "Check runtime events for rejected or malformed approval phrases.",
         ]
     return common
 

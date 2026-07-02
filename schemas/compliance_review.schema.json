@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Compliance Review",
+  "type": "object",
+  "required": [
+    "review_id",
+    "created_at",
+    "opportunity_id",
+    "proposal_id",
+    "status",
+    "compliance_status",
+    "risk_flags",
+    "required_actions",
+    "external_action_performed"
+  ],
+  "properties": {
+    "review_id": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "opportunity_id": {
+      "type": "string"
+    },
+    "proposal_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "compliance_status": {
+      "type": "string",
+      "enum": [
+        "green",
+        "yellow",
+        "orange",
+        "red"
+      ]
+    },
+    "risk_flags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "required_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "external_action_performed": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}
+
