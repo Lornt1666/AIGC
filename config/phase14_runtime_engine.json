@@ -1,0 +1,38 @@
+{
+  "phase": "Phase 14 - Runtime Engine",
+  "operating_mode": "local_contract_first_runtime_preflight",
+  "external_actions_allowed": false,
+  "live_connectors_allowed": false,
+  "default_runtime_mode": "internal_preflight",
+  "emergency_stop_file": "memory/emergency_stop.flag",
+  "state_database": "memory/aigc_state.sqlite",
+  "required_preflight_checks": [
+    "state_database_initialized",
+    "phase_registry_loaded",
+    "secret_manifest_validated",
+    "emergency_stop_checked",
+    "external_actions_blocked"
+  ],
+  "allowed_commands": [
+    "status",
+    "init-db",
+    "validate",
+    "run phase12",
+    "run phase13",
+    "run phase14",
+    "run pipeline",
+    "approve",
+    "deny",
+    "emergency-stop",
+    "clear-emergency-stop",
+    "report"
+  ],
+  "forbidden_runtime_behaviors": [
+    "send_external_message",
+    "submit_application",
+    "submit_deliverable",
+    "use_unapproved_credentials",
+    "apply_behavior_changing_patch_without_approval",
+    "bypass_approval_gate"
+  ]
+}

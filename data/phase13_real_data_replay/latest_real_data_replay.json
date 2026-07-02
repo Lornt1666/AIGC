@@ -1,10 +1,10 @@
 {
   "phase": "Phase 13B - Real Data Replay Sandbox",
-  "generated_at": "2026-07-02T13:01:16.133618+00:00",
+  "generated_at": "2026-07-02T14:53:08.911911+00:00",
   "source": "remoteok",
   "source_platform": "RemoteOK",
   "raw_records": 100,
-  "processed_records": 5,
+  "processed_records": 10,
   "external_action_performed": false,
   "forbidden_actions_confirmed": [
     "apply",
@@ -18,12 +18,483 @@
   ],
   "records": [
     {
+      "opportunity_id": "73571ef9fd89552a81f87ea3",
+      "source_platform": "RemoteOK",
+      "source_type": "api",
+      "source_url": "https://remoteOK.com/remote-jobs/remote-events-amp-experiences-coordinator-blinkrx-1134354",
+      "source_attribution_required": true,
+      "discovered_at": "2026-07-02T14:53:08.872923+00:00",
+      "title": "Events &amp; Experiences Coordinator",
+      "employer": "BlinkRx",
+      "client": "",
+      "location": "New York, New York, New York, United States",
+      "remote_status": "remote",
+      "work_type": "job",
+      "employment_type": "unknown",
+      "pay_min": null,
+      "pay_max": null,
+      "pay_currency": "",
+      "pay_interval": "unknown",
+      "deadline": "",
+      "posted_at": "2026-07-01T14:39:59+00:00",
+      "updated_at": "",
+      "description_plain": "Company Overview:\nBlink Health is the fastest growing healthcare technology company that builds products to make prescriptions accessible and affordable to everybody.Â  Our two primary products â BlinkRx and Quick Save â remove traditional roadblocks within the current prescription supply chain, resulting in better access to critical medications and improved health outcomes for patients.Â \nBlinkRx is the worldâs first pharma-to-patient cloud that offers a digital concierge service for patients who are prescribed branded medications. Patients benefit from transparent low prices, free home delivery, and world-class support on this first-of-its-kind centralized platform. With BlinkRx, never again will a patient show up at the pharmacy only to discover that they canât afford their medication, their doctor needs to fill out a form for them, or the pharmacy doesnât have the medication in stock.Â \nWe are a highly collaborative team of builders and operators who invent new ways of working in an industry that historically has resisted innovation. Join us!\nThe Role \nWe're looking for an Events & Experiences Coordinator to support the execution of BlinkRx's portfolio of biopharma trade shows, provider conferences, and BlinkRx-hosted executive programs. This role works directly with our Senior Events & Experiences Manager and is the operational backbone of every event we run â coordinating on-site logistics, attendee and travel coordination, and the pre- and post-event execution that makes each moment land.\nThe ideal candidate is highly organized, proactive, and energized by the fast-moving reality of live events. You're the person who shows up prepared, manages the details so others don't have to, and keeps things running smoothly when plans change on the ground.\nThis role can be remote with a preference for the Eastern or Central time zone, and requires approximately 20 to 30% travel for on-site event execution, including occasional evenings and weekends.\nResponsibilities \nEvent Execution and On-Site Support\nServe as on-site logistics lead at BlinkRx's priority events, including biopharma trade shows (Asembia, JPM Healthcare), provider conferences (Vision Expo), and BlinkRx-hosted executive programs\nManage day-of coordination across staffing, booth setup, AV, signage, and attendee flow to ensure smooth execution\nAct as the primary point of contact for vendors and venue teams during events, troubleshooting in real time\nTravel and Attendee Logistics\nCoordinate hotel blocks, room assignments, and attendee travel arrangements for BlinkRx staff attending major conferences\nManage rooming lists and reservations, with attention to last-minute changes and competing priorities\nBuild and maintain logistics trackers, run-of-show documents, and attendee briefings ahead of each event\nPre-Event Planning Support\nSupport the Senior Manager on venue sourcing, vendor outreach, and materials production timelines\nTrack project milestones and flag risks to keep deliverables on schedule\nAssist with booth design coordination, swag and collateral ordering, and shipping logistics\nMaintain organized documentation across events: contracts, vendor contacts, shipping records, and post-event notes\nPost-Event Operations\nConduct post-event inventory and materials returns\nCompile attendance, spend, and logistics notes to support the Senior Manager's post-event analysis\nIdentify recurring pain points and suggest process improvements for future events\nQualifications \n2-4 years experience in event coordination, marketing operations, or a similar role; healthcare or pharma industry experience is a plus but not required\nDemonstrated ability to manage multiple logistics workstreams simultaneously without dropping details\nStrong communicator who can coordinate across vendors, venues, and internal teams with low friction\nComfortable with ambiguity and a fast-moving calendar; things change and you adapt without drama\nProficiency in standard project management and coordination tools (Google Workspace, Asana or similar, Excel or Sheets)\nWillingness to travel 20 to 30% and support on-site execution including evenings and weekends\nPreferred Qualifications \nPrior experience managing hotel blocks, group travel logistics, or attendee registration platforms\nExperience supporting executive-level events or programs\nFamiliarity with event ops tooling (Cvent, Splash, or similar)\nWhy Join Us:\nIt is rare to have a company that both deeply impacts its customers and is able to provide its services across a massive population.Â  At Blink, we have a huge impact on people when they are most vulnerable: at the intersection of their healthcare and finances. We are also the fastest growing healthcare company in the country and are driving that impact across millions of new patients every year.Â  Our business model not only helps people, but drives economics that allow us to build a generational company. We are a relentlessly learning, constantly curious, and aggressively collaborative cross-functional team dedicated to inventing new ways to improve the lives of our customers.\nWe are an equal opportunity employer and value diversity of all kinds. We do not discriminate on the basis of race, religion, color, national origin, gender, sexual orientation, age, marital status, veteran status, or disability status.\nApplicants who provide their phone number and consent to receive text messages may receive SMS or MMS updates from Blink Health regarding their application.\nPlease mention the word **ACUMEN** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "description_html": "<p><strong>Company Overview:<br><br></strong>Blink Health is the fastest growing healthcare technology company that builds products to make prescriptions accessible and affordable to everybody.Â  Our two primary products â BlinkRx and Quick Save â remove traditional roadblocks within the current prescription supply chain, resulting in better access to critical medications and improved health outcomes for patients.Â <br><br>BlinkRx is the worldâs first pharma-to-patient cloud that offers a digital concierge service for patients who are prescribed branded medications. Patients benefit from transparent low prices, free home delivery, and world-class support on this first-of-its-kind centralized platform. With BlinkRx, never again will a patient show up at the pharmacy only to discover that they canât afford their medication, their doctor needs to fill out a form for them, or the pharmacy doesnât have the medication in stock.Â <br><br>We are a highly collaborative team of builders and operators who invent new ways of working in an industry that historically has resisted innovation. Join us!</p> <p><strong>The Role</strong></p><p>We're looking for an Events &amp; Experiences Coordinator to support the execution of BlinkRx's portfolio of biopharma trade shows, provider conferences, and BlinkRx-hosted executive programs. This role works directly with our Senior Events &amp; Experiences Manager and is the operational backbone of every event we run â coordinating on-site logistics, attendee and travel coordination, and the pre- and post-event execution that makes each moment land.</p><p>The ideal candidate is highly organized, proactive, and energized by the fast-moving reality of live events. You're the person who shows up prepared, manages the details so others don't have to, and keeps things running smoothly when plans change on the ground.</p><p>This role can be remote with a preference for the Eastern or Central time zone, and requires approximately 20 to 30% travel for on-site event execution, including occasional evenings and weekends.</p><p><strong>Responsibilities</strong></p><p>Event Execution and On-Site Support</p><ul><li>Serve as on-site logistics lead at BlinkRx's priority events, including biopharma trade shows (Asembia, JPM Healthcare), provider conferences (Vision Expo), and BlinkRx-hosted executive programs</li><li>Manage day-of coordination across staffing, booth setup, AV, signage, and attendee flow to ensure smooth execution</li><li>Act as the primary point of contact for vendors and venue teams during events, troubleshooting in real time</li></ul><p>Travel and Attendee Logistics</p><ul><li>Coordinate hotel blocks, room assignments, and attendee travel arrangements for BlinkRx staff attending major conferences</li><li>Manage rooming lists and reservations, with attention to last-minute changes and competing priorities</li><li>Build and maintain logistics trackers, run-of-show documents, and attendee briefings ahead of each event</li></ul><p>Pre-Event Planning Support</p><ul><li>Support the Senior Manager on venue sourcing, vendor outreach, and materials production timelines</li><li>Track project milestones and flag risks to keep deliverables on schedule</li><li>Assist with booth design coordination, swag and collateral ordering, and shipping logistics</li><li>Maintain organized documentation across events: contracts, vendor contacts, shipping records, and post-event notes</li></ul><p>Post-Event Operations</p><ul><li>Conduct post-event inventory and materials returns</li><li>Compile attendance, spend, and logistics notes to support the Senior Manager's post-event analysis</li><li>Identify recurring pain points and suggest process improvements for future events</li></ul><p><strong>Qualifications</strong></p><ul><li>2-4 years experience in event coordination, marketing operations, or a similar role; healthcare or pharma industry experience is a plus but not required</li><li>Demonstrated ability to manage multiple logistics workstreams simultaneously without dropping details</li><li>Strong communicator who can coordinate across vendors, venues, and internal teams with low friction</li><li>Comfortable with ambiguity and a fast-moving calendar; things change and you adapt without drama</li><li>Proficiency in standard project management and coordination tools (Google Workspace, Asana or similar, Excel or Sheets)</li><li>Willingness to travel 20 to 30% and support on-site execution including evenings and weekends</li></ul><p><strong>Preferred Qualifications</strong></p><ul><li>Prior experience managing hotel blocks, group travel logistics, or attendee registration platforms</li><li>Experience supporting executive-level events or programs</li><li>Familiarity with event ops tooling (Cvent, Splash, or similar)</li></ul> <p><strong>Why Join Us:<br><br></strong>It is rare to have a company that both deeply impacts its customers and is able to provide its services across a massive population.Â  At Blink, we have a huge impact on people when they are most vulnerable: at the intersection of their healthcare and finances. We are also the fastest growing healthcare company in the country and are driving that impact across millions of new patients every year.Â  Our business model not only helps people, but drives economics that allow us to build a generational company. We are a relentlessly learning, constantly curious, and aggressively collaborative cross-functional team dedicated to inventing new ways to improve the lives of our customers.<br><br>We are an equal opportunity employer and value diversity of all kinds. We do not discriminate on the basis of race, religion, color, national origin, gender, sexual orientation, age, marital status, veteran status, or disability status.<br><br>Applicants who provide their phone number and consent to receive text messages may receive SMS or MMS updates from Blink Health regarding their application.</p><br/><br/>Please mention the word **ACUMEN** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "requirements": [
+        "Join us! The Role We're looking for an Events & Experiences Coordinator to support the execution of BlinkRx's portfolio of biopharma trade shows, provider conferences, and BlinkRx-hosted executive programs",
+        "This role can be remote with a preference for the Eastern or Central time zone, and requires approximately 20 to 30% travel for on-site event execution, including occasional evenings and weekends"
+      ],
+      "responsibilities": [],
+      "deliverables": [
+        "Patients benefit from transparent low prices, free home delivery, and world-class support on this first-of-its-kind centralized platform"
+      ],
+      "skills_detected": [
+        "cloud",
+        "content writing",
+        "coordinator",
+        "customer support",
+        "design",
+        "designer",
+        "dev",
+        "digital nomad",
+        "education",
+        "excel",
+        "exec",
+        "finance",
+        "marketing",
+        "medical",
+        "ops",
+        "senior",
+        "travel",
+        "video"
+      ],
+      "tools_detected": [
+        "excel"
+      ],
+      "discipline_taxonomy": [
+        "business_operations",
+        "customer_support",
+        "data_analysis",
+        "design_ui_ux",
+        "regulated_sensitive",
+        "research",
+        "software_coding",
+        "writing_content"
+      ],
+      "automation_signals": {
+        "api_related": false,
+        "documentation_related": true,
+        "research_related": true,
+        "coding_related": false,
+        "data_related": false,
+        "writing_related": true,
+        "repetitive_workflow": true,
+        "clear_deliverable": true
+      },
+      "ai_use_signals": {
+        "ai_allowed_explicit": false,
+        "ai_forbidden_explicit": false,
+        "ai_unclear": true,
+        "disclosure_needed": true
+      },
+      "platform_policy_status": "yellow",
+      "risk_flags": [
+        "regulated_or_sensitive_domain",
+        "privacy_or_security_sensitive",
+        "unclear_pay",
+        "job_board_employment_role",
+        "sales_support_or_admin_role"
+      ],
+      "forbidden_flags": [
+        "spam"
+      ],
+      "approval_required_before": [
+        "message_employer",
+        "apply",
+        "submit_proposal",
+        "submit_deliverable",
+        "use_credentials",
+        "use_operator_identity"
+      ],
+      "radar_score": 0,
+      "radar_decision": "reject",
+      "audit_notes": "Read-only API ingestion. Attribution/direct link-back required. Blind applying is forbidden."
+    },
+    {
+      "opportunity_id": "7c7aa527e52343bfc01fa711",
+      "source_platform": "RemoteOK",
+      "source_type": "api",
+      "source_url": "https://remoteOK.com/remote-jobs/remote-agency-core-1-caterpillar-inc-1134350",
+      "source_attribution_required": true,
+      "discovered_at": "2026-07-02T14:53:08.874923+00:00",
+      "title": "Agency Core 1",
+      "employer": "Caterpillar Inc.",
+      "client": "",
+      "location": "Peterlee,",
+      "remote_status": "remote",
+      "work_type": "job",
+      "employment_type": "unknown",
+      "pay_min": null,
+      "pay_max": null,
+      "pay_currency": "",
+      "pay_interval": "unknown",
+      "deadline": "",
+      "posted_at": "2026-07-01T14:33:27+00:00",
+      "updated_at": "",
+      "description_plain": "Career Area\nOperations\nJob Description\nYour Work Shapes the World at Caterpillar Inc. \nWhen you join Caterpillar, you're joining a global team who cares not just about the work we do â but also about each other. We are the makers, problem solvers, and future world builders who are creating stronger, more sustainable communities. We don't just talk about progress and innovation here â we make it happen, with our customers, where we work and live. Together, we are building a better world, so we can all enjoy living in it.\nPosting Dates\nJuly 1, 2026 - July 1, 2026\nCaterpillar is an Equal Opportunity Employer. Qualified applicants of any age are encouraged to apply\nNot ready to apply? Join our Talent Community.\nPlease mention the word **GLORY** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "description_html": "<strong>Career Area<br><br></strong>Operations<br><br><strong>Job Description<br><br></strong><strong>Your Work Shapes the World at Caterpillar Inc. <br><br></strong>When you join Caterpillar, you're joining a global team who cares not just about the work we do â but also about each other. We are the makers, problem solvers, and future world builders who are creating stronger, more sustainable communities. We don't just talk about progress and innovation here â we make it happen, with our customers, where we work and live. Together, we are building a better world, so we can all enjoy living in it.<br><br><strong>Posting Dates<br><br></strong>July 1, 2026 - July 1, 2026<br><br>Caterpillar is an Equal Opportunity Employer. Qualified applicants of any age are encouraged to apply<br><br>Not ready to apply? Join our Talent Community.<br/><br/>Please mention the word **GLORY** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "requirements": [],
+      "responsibilities": [
+        "We are the makers, problem solvers, and future world builders who are creating stronger, more sustainable communities",
+        "Together, we are building a better world, so we can all enjoy living in it"
+      ],
+      "deliverables": [],
+      "skills_detected": [
+        "ops"
+      ],
+      "tools_detected": [],
+      "discipline_taxonomy": [
+        "business_operations",
+        "design_ui_ux",
+        "software_coding"
+      ],
+      "automation_signals": {
+        "api_related": false,
+        "documentation_related": false,
+        "research_related": false,
+        "coding_related": false,
+        "data_related": false,
+        "writing_related": false,
+        "repetitive_workflow": false,
+        "clear_deliverable": false
+      },
+      "ai_use_signals": {
+        "ai_allowed_explicit": false,
+        "ai_forbidden_explicit": false,
+        "ai_unclear": true,
+        "disclosure_needed": true
+      },
+      "platform_policy_status": "yellow",
+      "risk_flags": [
+        "unclear_pay",
+        "location_constrained_role"
+      ],
+      "forbidden_flags": [
+        "spam"
+      ],
+      "approval_required_before": [
+        "message_employer",
+        "apply",
+        "submit_proposal",
+        "submit_deliverable",
+        "use_credentials",
+        "use_operator_identity"
+      ],
+      "radar_score": 3,
+      "radar_decision": "reject",
+      "audit_notes": "Read-only API ingestion. Attribution/direct link-back required. Blind applying is forbidden."
+    },
+    {
+      "opportunity_id": "88fde9f8f82cfb889bd3d824",
+      "source_platform": "RemoteOK",
+      "source_type": "api",
+      "source_url": "https://remoteOK.com/remote-jobs/remote-registrar-department-of-justice-qld-1134376",
+      "source_attribution_required": true,
+      "discovered_at": "2026-07-02T14:53:08.875919+00:00",
+      "title": "Registrar",
+      "employer": "Department of Justice QLD",
+      "client": "",
+      "location": "Rockhampton,",
+      "remote_status": "remote",
+      "work_type": "job",
+      "employment_type": "unknown",
+      "pay_min": null,
+      "pay_max": null,
+      "pay_currency": "",
+      "pay_interval": "unknown",
+      "deadline": "",
+      "posted_at": "2026-07-01T14:25:47+00:00",
+      "updated_at": "",
+      "description_plain": "The Registrar role presents an exciting opportunity to actively contribute to the modernisation and improvement of the court system, emphasising safety, innovation, efficiency, and enhanced access to justice.\nThe Registrar role presents an exciting opportunity to actively contribute to the modernisation and improvement of the court system, emphasising safety, innovation, efficiency, and enhanced access to justice. In this position, you become an integral part of a dynamic team dedicated to shaping a more responsive and user-friendly court experience in Queensland.\nApplications to remain current for 12 months.\nJob Ad Reference: QLD/694134/26\nClosing Date: Thursday, 16th July 2026\nPlease mention the word **AUSPICIOUS** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "description_html": "The Registrar role presents an exciting opportunity to actively contribute to the modernisation and improvement of the court system, emphasising safety, innovation, efficiency, and enhanced access to justice.<br><br>The Registrar role presents an exciting opportunity to actively contribute to the modernisation and improvement of the court system, emphasising safety, innovation, efficiency, and enhanced access to justice. In this position, you become an integral part of a dynamic team dedicated to shaping a more responsive and user-friendly court experience in Queensland.<br><br>Applications to remain current for 12 months.<br><br>Job Ad Reference: QLD/694134/26<br><br>Closing Date: Thursday, 16th July 2026<br/><br/>Please mention the word **AUSPICIOUS** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "requirements": [
+        "In this position, you become an integral part of a dynamic team dedicated to shaping a more responsive and user-friendly court experience in Queensland"
+      ],
+      "responsibilities": [],
+      "deliverables": [],
+      "skills_detected": [
+        "sys admin"
+      ],
+      "tools_detected": [],
+      "discipline_taxonomy": [
+        "software_coding"
+      ],
+      "automation_signals": {
+        "api_related": true,
+        "documentation_related": false,
+        "research_related": false,
+        "coding_related": false,
+        "data_related": false,
+        "writing_related": false,
+        "repetitive_workflow": false,
+        "clear_deliverable": false
+      },
+      "ai_use_signals": {
+        "ai_allowed_explicit": false,
+        "ai_forbidden_explicit": false,
+        "ai_unclear": true,
+        "disclosure_needed": true
+      },
+      "platform_policy_status": "yellow",
+      "risk_flags": [
+        "unclear_pay",
+        "weak_aigc_preferred_fit",
+        "location_constrained_role"
+      ],
+      "forbidden_flags": [
+        "spam"
+      ],
+      "approval_required_before": [
+        "message_employer",
+        "apply",
+        "submit_proposal",
+        "submit_deliverable",
+        "use_credentials",
+        "use_operator_identity"
+      ],
+      "radar_score": 0,
+      "radar_decision": "reject",
+      "audit_notes": "Read-only API ingestion. Attribution/direct link-back required. Blind applying is forbidden."
+    },
+    {
+      "opportunity_id": "81ae76e2ff80e5bb7589d4a9",
+      "source_platform": "RemoteOK",
+      "source_type": "api",
+      "source_url": "https://remoteOK.com/remote-jobs/remote-india-posts-require-17-staff-car-drivers-fast-track-your-application-the-kashmir-monitor-1134373",
+      "source_attribution_required": true,
+      "discovered_at": "2026-07-02T14:53:08.875919+00:00",
+      "title": "India posts require 17 Staff Car Drivers Fast track your application",
+      "employer": "The Kashmir Monitor",
+      "client": "",
+      "location": "Behat,",
+      "remote_status": "remote",
+      "work_type": "job",
+      "employment_type": "unknown",
+      "pay_min": null,
+      "pay_max": null,
+      "pay_currency": "",
+      "pay_interval": "unknown",
+      "deadline": "",
+      "posted_at": "2026-07-01T13:29:30+00:00",
+      "updated_at": "",
+      "description_plain": "Srinagar: Chief Minister Omar Abdullah on Monday said Jammu and Kashmir must create a new generation of exporters and diversify its export basket to achieve the ambitious target of doubling exports by\nGeographic Reference\nPlease mention the word **RESPONSIBLY** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "description_html": "Srinagar: Chief Minister Omar Abdullah on Monday said Jammu and Kashmir must create a new generation of exporters and diversify its export basket to achieve the ambitious target of doubling exports by<br><br>Geographic Reference<br/><br/>Please mention the word **RESPONSIBLY** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "requirements": [],
+      "responsibilities": [],
+      "deliverables": [],
+      "skills_detected": [
+        "engineer",
+        "finance",
+        "non tech"
+      ],
+      "tools_detected": [],
+      "discipline_taxonomy": [
+        "design_ui_ux",
+        "software_coding"
+      ],
+      "automation_signals": {
+        "api_related": false,
+        "documentation_related": false,
+        "research_related": false,
+        "coding_related": true,
+        "data_related": false,
+        "writing_related": false,
+        "repetitive_workflow": false,
+        "clear_deliverable": false
+      },
+      "ai_use_signals": {
+        "ai_allowed_explicit": false,
+        "ai_forbidden_explicit": false,
+        "ai_unclear": true,
+        "disclosure_needed": true
+      },
+      "platform_policy_status": "yellow",
+      "risk_flags": [
+        "unclear_pay",
+        "weak_aigc_preferred_fit",
+        "broad_management_role",
+        "senior_full_time_role",
+        "location_constrained_role"
+      ],
+      "forbidden_flags": [
+        "spam"
+      ],
+      "approval_required_before": [
+        "message_employer",
+        "apply",
+        "submit_proposal",
+        "submit_deliverable",
+        "use_credentials",
+        "use_operator_identity"
+      ],
+      "radar_score": 0,
+      "radar_decision": "reject",
+      "audit_notes": "Read-only API ingestion. Attribution/direct link-back required. Blind applying is forbidden."
+    },
+    {
+      "opportunity_id": "ae0540f6df281bc3d5b0e0c9",
+      "source_platform": "RemoteOK",
+      "source_type": "api",
+      "source_url": "https://remoteOK.com/remote-jobs/remote-brentwood-chaguanas-tommys-brewing-company-1134374",
+      "source_attribution_required": true,
+      "discovered_at": "2026-07-02T14:53:08.876918+00:00",
+      "title": "BRENTWOOD CHAGUANAS",
+      "employer": "Tommy's Brewing Company",
+      "client": "",
+      "location": "Chaguanas,",
+      "remote_status": "remote",
+      "work_type": "job",
+      "employment_type": "unknown",
+      "pay_min": null,
+      "pay_max": null,
+      "pay_currency": "",
+      "pay_interval": "unknown",
+      "deadline": "",
+      "posted_at": "2026-07-01T13:27:06+00:00",
+      "updated_at": "",
+      "description_plain": "cAREERS AT tommy's brentwood\nTommyâs Brentwood is our first stand-alone taproom and a big step forward for us.\nBuilt with space to breathe and room to grow, the location features a large outdoor beer garden, a full-service bar, 24 taps of craft beer and cocktails, and fresh pizza with exclusive menu items. Like our East Gates taproom, we use Duotank technology to serve beer brewery-freshâunfiltered, unpasteurized, and straight from tank to tap.\nAs we continue to build out Brentwood, weâre looking for passionate people who want to be part of something growing, hands-on, and proudly local.\nJoin our team, and help us bring the Tommyâs experience to Centralâand raise a few glasses along the way.\nCURRENT VACANCIES\nfront of house (foh)\nFloor Supervisor\nBACK OF HOUSE (BOH)\nKitchen Supervisor\nSous Chef\nPlease mention the word **BENEFIT** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "description_html": "cAREERS AT tommy's brentwood<br><br><strong>Tommyâs Brentwood is our first stand-alone taproom and a big step forward for us.<br><br></strong>Built with space to breathe and room to grow, the location features a large outdoor beer garden, a full-service bar, 24 taps of craft beer and cocktails, and fresh pizza with exclusive menu items. Like our East Gates taproom, we use Duotank technology to serve beer brewery-freshâunfiltered, unpasteurized, and straight from tank to tap.<br><br>As we continue to build out Brentwood, weâre looking for passionate people who want to be part of something growing, hands-on, and proudly local.<br><br>Join our team, and help us bring the Tommyâs experience to Centralâand raise a few glasses along the way.<br><br>CURRENT VACANCIES<br><br>front of house (foh)<br><br>Floor Supervisor<br><br>BACK OF HOUSE (BOH)<br><br>Kitchen Supervisor<br><br>Sous Chef<br/><br/>Please mention the word **BENEFIT** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "requirements": [
+        "Join our team, and help us bring the Tommyâs experience to Centralâand raise a few glasses along the way"
+      ],
+      "responsibilities": [
+        "As we continue to build out Brentwood, weâre looking for passionate people who want to be part of something growing, hands-on, and proudly local"
+      ],
+      "deliverables": [],
+      "skills_detected": [
+        "supervisor"
+      ],
+      "tools_detected": [],
+      "discipline_taxonomy": [
+        "design_ui_ux"
+      ],
+      "automation_signals": {
+        "api_related": false,
+        "documentation_related": false,
+        "research_related": false,
+        "coding_related": false,
+        "data_related": false,
+        "writing_related": false,
+        "repetitive_workflow": false,
+        "clear_deliverable": false
+      },
+      "ai_use_signals": {
+        "ai_allowed_explicit": false,
+        "ai_forbidden_explicit": false,
+        "ai_unclear": true,
+        "disclosure_needed": true
+      },
+      "platform_policy_status": "yellow",
+      "risk_flags": [
+        "unclear_pay",
+        "weak_aigc_preferred_fit",
+        "location_constrained_role"
+      ],
+      "forbidden_flags": [
+        "spam"
+      ],
+      "approval_required_before": [
+        "message_employer",
+        "apply",
+        "submit_proposal",
+        "submit_deliverable",
+        "use_credentials",
+        "use_operator_identity"
+      ],
+      "radar_score": 0,
+      "radar_decision": "reject",
+      "audit_notes": "Read-only API ingestion. Attribution/direct link-back required. Blind applying is forbidden."
+    },
+    {
+      "opportunity_id": "580ddbda418de933ca2bb8a5",
+      "source_platform": "RemoteOK",
+      "source_type": "api",
+      "source_url": "https://remoteOK.com/remote-jobs/remote-docente-tiempo-parcial-derecho-remoto-universidad-privada-del-norte-1134390",
+      "source_attribution_required": true,
+      "discovered_at": "2026-07-02T14:53:08.877919+00:00",
+      "title": "Docente Tiempo Parcial Derecho Remoto",
+      "employer": "Universidad Privada del Norte",
+      "client": "",
+      "location": "Santiago de Surco, Santiago de Surco, PerÃº",
+      "remote_status": "remote",
+      "work_type": "job",
+      "employment_type": "unknown",
+      "pay_min": null,
+      "pay_max": null,
+      "pay_currency": "",
+      "pay_interval": "unknown",
+      "deadline": "",
+      "posted_at": "2026-07-01T13:08:17+00:00",
+      "updated_at": "",
+      "description_plain": "NUESTRA OFERTA TE PROPONE IMPACTAR E INSPIRAR A LOS FUTUROS PROFESIONALES DEL PAIS.\nLa UPN cuenta con mÃ¡s de 100 mil estudiantes, te invitamos a formar parte del cambio y sumarte a nuestra comunidad docente\nDOCENTE A TIEMPO PARCIAL - FACULTAD DE DERECHO Y CIENCIAS POLÃTICAS\n2026-II\nCursos a Dictar\nDERECHO PENAL\nDERECHO CIVIL\nDERECHO TRIBUTARIO\nTus funciones estarÃ¡n relacionadas a transmitir tus conocimientos y experiencia, entre ellas estÃ¡n:\nCumplir con una jornada a tiempo parcial.\nDiseÃ±ar y elaborar el sÃ­labo y material de clases para las sesiones de aprendizaje, elaborar y calificar exÃ¡menes para cada unidad de aprendizaje.\nAsegurar el proceso de enseÃ±anza-aprendizaje para que los estudiantes alcancen los logros acadÃ©micos de sus cursos.\nRealizar actividades acadÃ©micas programadas por el jefe inmediato y cualquier otra labor inherente a su condiciÃ³n de docente universitario.\nNuestro sistema de calidad requiere que cuentes con los siguientes requisitos:\nBachiller/TÃ­tulo de Abogado registrado en SUNEDU.\nMaestrÃ­a registrado en SUNEDU\nExperiencia profesional en su especialidad de mÃ­nimo 3 aÃ±os.\nExperiencia en docencia (deseable)\nEspecialista en Derecho Penal, Derecho Civil o Derecho Tributario\nDisponibilidad para laborar por horas en modalidad Remoto.\nDesde nuestra gestiÃ³n docente potenciaremos tus habilidades para que puedas crecer con nosotros, por ello te brindaremos:\nFormaciÃ³n en metodologÃ­as educativas y acompaÃ±amiento permanente para profesionales que deseen formarse como docentes.\nCapacitaciones tÃ©cnicas y en herramientas digitales.\nActividades de investigaciÃ³n y colaboraciÃ³n internacional.\nPor favor, anexar su CV al momento de realizar su postulaciÃ³n. Â¡Muchas gracias!\nEn funciÃ³n a tu desempeÃ±o, puedes acceder a nuestra lÃ­nea de carrera. \nPlease mention the word **ENVIOUSNESS** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "description_html": "<strong>NUESTRA OFERTA TE PROPONE IMPACTAR E INSPIRAR A LOS FUTUROS PROFESIONALES DEL PAIS.<br><br></strong><strong>La UPN cuenta con mÃ¡s de 100 mil estudiantes, te invitamos a formar parte del cambio y sumarte a nuestra comunidad docente<br><br></strong><strong>DOCENTE A TIEMPO PARCIAL - FACULTAD DE DERECHO Y CIENCIAS POLÃTICAS<br><br></strong><strong>2026-II<br><br></strong><strong>Cursos a Dictar<br><br></strong><ul><li>DERECHO PENAL</li><li>DERECHO CIVIL</li><li>DERECHO TRIBUTARIO<br><br></li></ul><strong>Tus funciones estarÃ¡n relacionadas a transmitir tus conocimientos y experiencia, entre ellas estÃ¡n:<br><br></strong><ul><li> Cumplir con una jornada a tiempo parcial.</li><li> DiseÃ±ar y elaborar el sÃ­labo y material de clases para las sesiones de aprendizaje, elaborar y calificar exÃ¡menes para cada unidad de aprendizaje.</li><li> Asegurar el proceso de enseÃ±anza-aprendizaje para que los estudiantes alcancen los logros acadÃ©micos de sus cursos.</li><li>Realizar actividades acadÃ©micas programadas por el jefe inmediato y cualquier otra labor inherente a su condiciÃ³n de docente universitario.<br><br></li></ul><strong>Nuestro sistema de calidad requiere que cuentes con los siguientes requisitos:<br><br></strong><ul><li> Bachiller/TÃ­tulo de Abogado registrado en SUNEDU.</li><li> MaestrÃ­a registrado en SUNEDU</li><li> Experiencia profesional en su especialidad de mÃ­nimo 3 aÃ±os.</li><li> Experiencia en docencia (deseable)</li><li> Especialista en Derecho Penal, Derecho Civil o Derecho Tributario</li><li> Disponibilidad para laborar por horas en modalidad Remoto.<br><br></li></ul><strong>Desde nuestra gestiÃ³n docente potenciaremos tus habilidades para que puedas crecer con nosotros, por ello te brindaremos:<br><br></strong><ul><li>FormaciÃ³n en metodologÃ­as educativas y acompaÃ±amiento permanente para profesionales que deseen formarse como docentes.</li><li>Capacitaciones tÃ©cnicas y en herramientas digitales.</li><li>Actividades de investigaciÃ³n y colaboraciÃ³n internacional.</li><li>Por favor, anexar su CV al momento de realizar su postulaciÃ³n. Â¡Muchas gracias!<br><br></li></ul><strong><em>En funciÃ³n a tu desempeÃ±o, puedes acceder a nuestra lÃ­nea de carrera.</em></strong><br/><br/>Please mention the word **ENVIOUSNESS** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "requirements": [],
+      "responsibilities": [],
+      "deliverables": [],
+      "skills_detected": [
+        "excel",
+        "non tech"
+      ],
+      "tools_detected": [
+        "excel"
+      ],
+      "discipline_taxonomy": [
+        "data_analysis",
+        "design_ui_ux"
+      ],
+      "automation_signals": {
+        "api_related": false,
+        "documentation_related": false,
+        "research_related": false,
+        "coding_related": false,
+        "data_related": false,
+        "writing_related": false,
+        "repetitive_workflow": false,
+        "clear_deliverable": false
+      },
+      "ai_use_signals": {
+        "ai_allowed_explicit": false,
+        "ai_forbidden_explicit": false,
+        "ai_unclear": true,
+        "disclosure_needed": true
+      },
+      "platform_policy_status": "yellow",
+      "risk_flags": [
+        "unclear_pay",
+        "location_constrained_role"
+      ],
+      "forbidden_flags": [
+        "spam"
+      ],
+      "approval_required_before": [
+        "message_employer",
+        "apply",
+        "submit_proposal",
+        "submit_deliverable",
+        "use_credentials",
+        "use_operator_identity"
+      ],
+      "radar_score": 3,
+      "radar_decision": "reject",
+      "audit_notes": "Read-only API ingestion. Attribution/direct link-back required. Blind applying is forbidden."
+    },
+    {
       "opportunity_id": "8c364b94ae98b79622dfd3d0",
       "source_platform": "RemoteOK",
       "source_type": "api",
       "source_url": "https://remoteOK.com/remote-jobs/remote-asistente-administrativa-syntepro-s-a-de-c-v-1134334",
       "source_attribution_required": true,
-      "discovered_at": "2026-07-02T13:01:16.113624+00:00",
+      "discovered_at": "2026-07-02T14:53:08.878918+00:00",
       "title": "Asistente administrativa",
       "employer": "Syntepro S.A de C.V.",
       "client": "",
@@ -95,7 +566,7 @@
       "source_type": "api",
       "source_url": "https://remoteOK.com/remote-jobs/remote-tutor-profesor-clases-particulares-multiples-actividades-apprentus-1134317",
       "source_attribution_required": true,
-      "discovered_at": "2026-07-02T13:01:16.115620+00:00",
+      "discovered_at": "2026-07-02T14:53:08.878918+00:00",
       "title": "Tutor profesor clases particulares mÃºltiples actividades",
       "employer": "Apprentus",
       "client": "",
@@ -165,7 +636,7 @@
       "source_type": "api",
       "source_url": "https://remoteOK.com/remote-jobs/remote-growth-amp-success-manager-medida-ai-1134356",
       "source_attribution_required": true,
-      "discovered_at": "2026-07-02T13:01:16.117610+00:00",
+      "discovered_at": "2026-07-02T14:53:08.880918+00:00",
       "title": "Growth &amp; Success Manager",
       "employer": "Medida AI",
       "client": "",
@@ -271,7 +742,7 @@
       "source_type": "api",
       "source_url": "https://remoteOK.com/remote-jobs/remote-template-justworks-1134315",
       "source_attribution_required": true,
-      "discovered_at": "2026-07-02T13:01:16.118618+00:00",
+      "discovered_at": "2026-07-02T14:53:08.882918+00:00",
       "title": "Template",
       "employer": "Justworks",
       "client": "",
@@ -331,115 +802,6 @@
       },
       "platform_policy_status": "yellow",
       "risk_flags": [
-        "unclear_pay",
-        "weak_aigc_preferred_fit",
-        "sales_support_or_admin_role",
-        "location_constrained_role"
-      ],
-      "forbidden_flags": [
-        "spam"
-      ],
-      "approval_required_before": [
-        "message_employer",
-        "apply",
-        "submit_proposal",
-        "submit_deliverable",
-        "use_credentials",
-        "use_operator_identity"
-      ],
-      "radar_score": 0,
-      "radar_decision": "reject",
-      "audit_notes": "Read-only API ingestion. Attribution/direct link-back required. Blind applying is forbidden."
-    },
-    {
-      "opportunity_id": "9043cf6e21ef58f58e115616",
-      "source_platform": "RemoteOK",
-      "source_type": "api",
-      "source_url": "https://remoteOK.com/remote-jobs/remote-class-1-shunt-driver-coca-cola-canada-bottling-limited-1134349",
-      "source_attribution_required": true,
-      "discovered_at": "2026-07-02T13:01:16.119615+00:00",
-      "title": "Class 1 Shunt Driver",
-      "employer": "Coca-Cola Canada Bottling Limited",
-      "client": "",
-      "location": "Regina,",
-      "remote_status": "remote",
-      "work_type": "job",
-      "employment_type": "unknown",
-      "pay_min": null,
-      "pay_max": null,
-      "pay_currency": "",
-      "pay_interval": "unknown",
-      "deadline": "",
-      "posted_at": "2026-06-30T23:50:10+00:00",
-      "updated_at": "",
-      "description_plain": "30 Jun 2026\nCoke Canada Bottling is Canadaâs Local Bottler. Weâre Made Local.\nRole Details\nWork Location â Regina \nShift - Monday to Friday 1pm -9:30pm\nHourly Rate â $23.70 - $29.26 (Graduated wage increase over 3 years)\nInitial Posting Close Date â July 12th, 2026\nProudly independent, we are a Canadian, family-owned business. Coke Canada Bottling makes, distributes, merchandises, and sells the most-loved beverages Canadians enjoy. With over 6,000 diverse employees coast-to-coast, we operate in every province through 50+ sales and distribution centres, and five manufacturing facilities.\nCoke Canada supplies some of Canadaâs favourite beverage brands, and we want to continue to be the leading beverage partner in Canada, creating a better future and delivering optimism by bringing sustainable value to our employees, customers, consumers, and communities.\nAdvancing a high-performing, collaborative and inclusive culture is at the core of our vision to be the Worldâs Greatest Bottler, Built by the Best People, and weâre looking for exceptional talent to help get us there.\nFor more information about Coke Canada Bottling and our products, visit cokecanada.com/our-product.\nResponsibilities\nAbout This Opportunity\nQualifications\nWhy work with us?\nJoin a local, family-owned business thatâs part of a globally recognized brand, where you can develop your capabilities, competencies, and career.\nCoke Canada has a culture of learning, and we offer several channels to support your development, including on-the-job training and a library of free courses for just-in-time learning.\nWe have generous referral rewards and recognition programs you can participate in.\nWe have close, local connections with the communities in which we operate across Canada. Weâre determined to make a positive difference in our communities; this includes opportunities for employee volunteerism.\nWeâre building our business responsibly and our mission is to work Toward a Better Future Together. We have a plan that outlines how we are reducing, reusing, recycling, decreasing our carbon footprint, and using water responsibly. For more information visit cokecanada.com/sustainability/\nCoke Canada has been recognized as one of Canadaâs Best Employers for Diversity, and weâre committed to fostering a diverse, equitable and inclusive workplace. Together we are creating a workplace culture that values diversity, enables inclusivity and ensures everyone feels like they belong. We are aiming to ensure our diverse workforce is reflective of the communities in which we operate. Research shows that women-identifying and other marginalized individuals often hesitate to apply unless they meet 100% of the listed qualifications. If this role excites you, even if you donât check every box, we encourage you to apply. Your unique experience and perspective could be what weâre looking for. Unless otherwise specified, this job post is for an existing vacancy.\nOur hiring process is human-driven and does not involve AI tools for screening, assessment, or selection. For individuals requiring accommodations or support throughout the recruitment process please call 1-844-383-2653 or email HR@cokecanada.com\nImportant\nAll offers of employment at Coke Canada Bottling are conditional upon a successful background clearance obtained through our contracted third-party vendor. The standard clearance requirements depend on the position and may include some, or all, of the following: criminal clearance, employment verification, education verification and driver's abstract review. Please advise the Talent Acquisition team if you have any questions or concerns once you are contacted for further consideration.\nPlease mention the word **VICTORIOUS** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
-      "description_html": "30 Jun 2026<br><br><strong>Coke Canada Bottling is Canadaâs Local Bottler. Weâre Made Local.<br><br></strong><strong>Role Details<br><br></strong><ul><li>Work Location â Regina </li><li>Shift - Monday to Friday 1pm -9:30pm</li><li>Hourly Rate â $23.70 - $29.26 (Graduated wage increase over 3 years)</li><li>Initial Posting Close Date â July 12th, 2026<br><br><br></li></ul>Proudly independent, we are a Canadian, family-owned business. Coke Canada Bottling makes, distributes, merchandises, and sells the most-loved beverages Canadians enjoy. With over 6,000 diverse employees coast-to-coast, we operate in every province through 50+ sales and distribution centres, and five manufacturing facilities.<br><br>Coke Canada supplies some of Canadaâs favourite beverage brands, and we want to continue to be the leading beverage partner in Canada, creating a better future and delivering optimism by bringing sustainable value to our employees, customers, consumers, and communities.<br><br>Advancing a high-performing, collaborative and inclusive culture is at the core of our vision to be the Worldâs Greatest Bottler, Built by the Best People, and weâre looking for exceptional talent to help get us there.<br><br>For more information about Coke Canada Bottling and our products, visit cokecanada.com/our-product.<br><br><strong>Responsibilities<br><br></strong><strong>About This Opportunity<br><br></strong><strong>Qualifications<br><br></strong><strong>Why work with us?<br><br></strong><ul><li>Join a local, family-owned business thatâs part of a globally recognized brand, where you can develop your capabilities, competencies, and career.</li><li>Coke Canada has a culture of learning, and we offer several channels to support your development, including on-the-job training and a library of free courses for just-in-time learning.</li><li>We have generous referral rewards and recognition programs you can participate in.</li><li>We have close, local connections with the communities in which we operate across Canada. Weâre determined to make a positive difference in our communities; this includes opportunities for employee volunteerism.</li><li>Weâre building our business responsibly and our mission is to work Toward a Better Future Together. We have a plan that outlines how we are reducing, reusing, recycling, decreasing our carbon footprint, and using water responsibly. For more information visit cokecanada.com/sustainability/<br><br><br></li></ul>Coke Canada has been recognized as one of Canadaâs Best Employers for Diversity, and weâre committed to fostering a diverse, equitable and inclusive workplace. Together we are creating a workplace culture that values diversity, enables inclusivity and ensures everyone feels like they belong. We are aiming to ensure our diverse workforce is reflective of the communities in which we operate. Research shows that women-identifying and other marginalized individuals often hesitate to apply unless they meet 100% of the listed qualifications. If this role excites you, even if you donât check every box, we encourage you to apply. Your unique experience and perspective could be what weâre looking for. Unless otherwise specified, this job post is for an existing vacancy.<br><br>Our hiring process is human-driven and does not involve AI tools for screening, assessment, or selection. For individuals requiring accommodations or support throughout the recruitment process please call 1-844-383-2653 or email HR@cokecanada.com<br><br><strong>Important<br><br></strong>All offers of employment at Coke Canada Bottling are conditional upon a successful background clearance obtained through our contracted third-party vendor. The standard clearance requirements depend on the position and may include some, or all, of the following: criminal clearance, employment verification, education verification and driver's abstract review. Please advise the Talent Acquisition team if you have any questions or concerns once you are contacted for further consideration.<br/><br/>Please mention the word **VICTORIOUS** and tag RMTk4LjE2Ni4yMDcuMA== when applying to show you read the job post completely (#RMTk4LjE2Ni4yMDcuMA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
-      "requirements": [
-        "Your unique experience and perspective could be what weâre looking for",
-        "The standard clearance requirements depend on the position and may include some, or all, of the following: criminal clearance, employment verification, education verification and driver's abstract review"
-      ],
-      "responsibilities": [
-        "Responsibilities About This Opportunity Qualifications Why work with us? Join a local, family-owned business thatâs part of a globally recognized brand, where you can develop your capabilities, competencies, and career",
-        "Weâre building our business responsibly and our mission is to work Toward a Better Future Together"
-      ],
-      "deliverables": [],
-      "skills_detected": [
-        "assembly",
-        "customer support",
-        "design",
-        "digital nomad",
-        "ecommerce",
-        "education",
-        "exec",
-        "full time",
-        "game dev",
-        "golang",
-        "hr",
-        "infosec",
-        "legal",
-        "marketing",
-        "medical",
-        "non tech",
-        "ops",
-        "part time",
-        "payroll",
-        "recruiter",
-        "sales",
-        "speech",
-        "sys admin",
-        "technical",
-        "testing",
-        "travel"
-      ],
-      "tools_detected": [],
-      "discipline_taxonomy": [
-        "business_operations",
-        "customer_support",
-        "cybersecurity_bug_bounty",
-        "design_ui_ux",
-        "qa_testing",
-        "regulated_sensitive",
-        "research"
-      ],
-      "automation_signals": {
-        "api_related": false,
-        "documentation_related": false,
-        "research_related": true,
-        "coding_related": false,
-        "data_related": false,
-        "writing_related": false,
-        "repetitive_workflow": true,
-        "clear_deliverable": false
-      },
-      "ai_use_signals": {
-        "ai_allowed_explicit": false,
-        "ai_forbidden_explicit": false,
-        "ai_unclear": true,
-        "disclosure_needed": true
-      },
-      "platform_policy_status": "yellow",
-      "risk_flags": [
-        "regulated_or_sensitive_domain",
         "unclear_pay",
         "weak_aigc_preferred_fit",
         "sales_support_or_admin_role",

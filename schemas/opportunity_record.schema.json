@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Opportunity Record",
+  "type": "object",
+  "required": [
+    "opportunity_id",
+    "source_platform",
+    "source_url",
+    "title",
+    "employer",
+    "radar_score",
+    "radar_decision"
+  ],
+  "properties": {
+    "opportunity_id": {
+      "type": "string"
+    },
+    "source_platform": {
+      "type": "string"
+    },
+    "source_type": {
+      "type": "string"
+    },
+    "source_url": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "employer": {
+      "type": "string"
+    },
+    "description_plain": {
+      "type": "string"
+    },
+    "risk_flags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "forbidden_flags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "approval_required_before": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "radar_score": {
+      "type": "integer"
+    },
+    "radar_decision": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

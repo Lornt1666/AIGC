@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Outcome Record",
+  "type": "object",
+  "required": [
+    "outcome_id",
+    "created_at",
+    "operator",
+    "linked_records",
+    "opportunity",
+    "status",
+    "quality",
+    "metrics",
+    "lessons"
+  ],
+  "properties": {
+    "outcome_id": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "operator": {
+      "type": "string"
+    },
+    "linked_records": {
+      "type": "object"
+    },
+    "opportunity": {
+      "type": "object"
+    },
+    "status": {
+      "type": "string"
+    },
+    "quality": {
+      "type": "string"
+    },
+    "metrics": {
+      "type": "object"
+    },
+    "lessons": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

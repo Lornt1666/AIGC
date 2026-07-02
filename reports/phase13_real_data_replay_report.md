@@ -1,9 +1,9 @@
 # AIGC Phase 13B Real Data Replay Report
 
-Generated At: 2026-07-02T13:01:16.133618+00:00
+Generated At: 2026-07-02T14:53:08.911911+00:00
 Source: RemoteOK
 Raw Records: 100
-Processed Records: 5
+Processed Records: 10
 
 External Action Performed: No
 
@@ -17,6 +17,48 @@ Safety Boundary:
 
 Top Records:
 [
+  {
+    "title": "Events &amp; Experiences Coordinator",
+    "employer": "BlinkRx",
+    "score": 0,
+    "decision": "reject",
+    "url": "https://remoteOK.com/remote-jobs/remote-events-amp-experiences-coordinator-blinkrx-1134354"
+  },
+  {
+    "title": "Agency Core 1",
+    "employer": "Caterpillar Inc.",
+    "score": 3,
+    "decision": "reject",
+    "url": "https://remoteOK.com/remote-jobs/remote-agency-core-1-caterpillar-inc-1134350"
+  },
+  {
+    "title": "Registrar",
+    "employer": "Department of Justice QLD",
+    "score": 0,
+    "decision": "reject",
+    "url": "https://remoteOK.com/remote-jobs/remote-registrar-department-of-justice-qld-1134376"
+  },
+  {
+    "title": "India posts require 17 Staff Car Drivers Fast track your application",
+    "employer": "The Kashmir Monitor",
+    "score": 0,
+    "decision": "reject",
+    "url": "https://remoteOK.com/remote-jobs/remote-india-posts-require-17-staff-car-drivers-fast-track-your-application-the-kashmir-monitor-1134373"
+  },
+  {
+    "title": "BRENTWOOD CHAGUANAS",
+    "employer": "Tommy's Brewing Company",
+    "score": 0,
+    "decision": "reject",
+    "url": "https://remoteOK.com/remote-jobs/remote-brentwood-chaguanas-tommys-brewing-company-1134374"
+  },
+  {
+    "title": "Docente Tiempo Parcial Derecho Remoto",
+    "employer": "Universidad Privada del Norte",
+    "score": 3,
+    "decision": "reject",
+    "url": "https://remoteOK.com/remote-jobs/remote-docente-tiempo-parcial-derecho-remoto-universidad-privada-del-norte-1134390"
+  },
   {
     "title": "Asistente administrativa",
     "employer": "Syntepro S.A de C.V.",
@@ -44,12 +86,5 @@ Top Records:
     "score": 0,
     "decision": "reject",
     "url": "https://remoteOK.com/remote-jobs/remote-template-justworks-1134315"
-  },
-  {
-    "title": "Class 1 Shunt Driver",
-    "employer": "Coca-Cola Canada Bottling Limited",
-    "score": 0,
-    "decision": "reject",
-    "url": "https://remoteOK.com/remote-jobs/remote-class-1-shunt-driver-coca-cola-canada-bottling-limited-1134349"
   }
 ]

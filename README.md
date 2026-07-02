@@ -213,6 +213,42 @@ Outputs:
 
 Phase 13B retrieves real public/API/RSS data in read-only mode and stops before any external action.
 
+## Milestone A Kernel CLI
+
+Milestone A adds a contract-first local runtime surface:
+
+- `schemas/` contains JSON contracts for core phase artifacts.
+- `src/core/contract_validator.py` validates artifacts before downstream use.
+- `src/core/state_store.py` initializes `memory/aigc_state.sqlite`.
+- `src/core/phase_registry.py` maps phase inputs, outputs, schemas, commands, modes, and risk.
+- `src/aigc.py` provides the unified CLI.
+
+Commands:
+
+```powershell
+python .\src\aigc.py init-db
+python .\src\aigc.py status
+python .\src\aigc.py validate
+python .\src\aigc.py run phase12
+python .\src\aigc.py run phase13
+python .\src\aigc.py run phase14
+python .\src\aigc.py run pipeline --mode synthetic
+python .\src\aigc.py run pipeline --mode real_data_read_only --source remoteok --limit 10
+python .\src\aigc.py emergency-stop
+python .\src\aigc.py clear-emergency-stop
+```
+
+Phase 14 is an internal runtime preflight. It does not perform external actions.
+
+Scoped approval packet decisions can be recorded internally only with exact phrases:
+
+```powershell
+python .\src\aigc.py approve --action-id AIGC-ACT-... --phrase "I, Justice Gray Maciocha, accept action AIGC-ACT-...."
+python .\src\aigc.py deny --action-id AIGC-ACT-... --phrase "I, Justice Gray Maciocha, deny action AIGC-ACT-...."
+```
+
+Approving a packet authorizes Phase 6 eligibility only. It does not send, submit, message, bid, or perform external execution.
+
 ## Publish Private GitHub Repo
 
 Authenticate first:

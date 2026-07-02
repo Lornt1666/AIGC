@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-02T13:01:51.506048+00:00",
+  "generated_at": "2026-07-02T14:53:09.357279+00:00",
   "operator": "Justice Gray Maciocha",
   "phase": "Phase 12 - Observability Dashboard",
   "system_health": "yellow",
@@ -114,7 +114,7 @@
     {
       "phase": "phase13_simulation_arena",
       "status": "green",
-      "signal_count": 7,
+      "signal_count": 12,
       "notes": [
         "Telemetry present."
       ]
@@ -161,7 +161,7 @@
     }
   ],
   "pipeline_metrics": {
-    "audit_events": 612,
+    "audit_events": 617,
     "memory_events": 1,
     "phase2_opportunities": 98,
     "phase3_dossiers": 25,
@@ -171,7 +171,7 @@
     "phase7_packets": 0,
     "phase8_patch_records": 1,
     "phase13_synthetic_records": 2,
-    "phase13_real_replay_records": 5
+    "phase13_real_replay_records": 10
   },
   "approval_metrics": {
     "pending": 25,
@@ -195,7 +195,7 @@
   },
   "audit_integrity": {
     "audit_dir_exists": true,
-    "audit_events": 612,
+    "audit_events": 617,
     "memory_events": 1,
     "missing_audit_baseline": false,
     "missing_memory_baseline": false

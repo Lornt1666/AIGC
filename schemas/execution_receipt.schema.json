@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Execution Receipt",
+  "type": "object",
+  "required": [
+    "execution_id",
+    "authorization_id",
+    "action_id",
+    "proposal_id",
+    "status",
+    "execution_mode",
+    "artifact_hash"
+  ],
+  "properties": {
+    "execution_id": {
+      "type": "string"
+    },
+    "authorization_id": {
+      "type": "string"
+    },
+    "action_id": {
+      "type": "string"
+    },
+    "proposal_id": {
+      "type": "string"
+    },
+    "opportunity_id": {
+      "type": "string"
+    },
+    "recipient": {
+      "type": "string"
+    },
+    "platform": {
+      "type": "string"
+    },
+    "execution_mode": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "artifact_hash": {
+      "type": "string"
+    },
+    "external_action_performed": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}

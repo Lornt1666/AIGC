@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Employer Audit Packet",
+  "type": "object",
+  "required": [
+    "packet_id",
+    "status",
+    "created_at",
+    "operator",
+    "project",
+    "linked_records",
+    "scope_of_work",
+    "deliverables",
+    "privacy_security"
+  ],
+  "properties": {
+    "packet_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "operator": {
+      "type": "string"
+    },
+    "project": {
+      "type": "object"
+    },
+    "linked_records": {
+      "type": "object"
+    },
+    "scope_of_work": {
+      "type": "object"
+    },
+    "deliverables": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "privacy_security": {
+      "type": "object"
+    },
+    "employer_facing_text": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

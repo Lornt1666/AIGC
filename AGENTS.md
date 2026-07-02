@@ -15,6 +15,7 @@ Rules:
 - Do not weaken safety protocols.
 - Do not modify accepted audit history.
 - Store memory updates in JSONL or SQLite.
+- Validate phase artifacts against schemas before downstream runtime use.
 - Create patches for behavior-changing changes.
 - Require Justice Gray Maciocha approval before applying behavior-changing patches.
 

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Finance Ledger Record",
+  "type": "object",
+  "required": [
+    "record_id",
+    "created_at",
+    "opportunity_id",
+    "status",
+    "currency",
+    "external_action_performed"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "opportunity_id": {
+      "type": "string"
+    },
+    "proposal_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "currency": {
+      "type": "string"
+    },
+    "proposed_amount": {
+      "type": "number"
+    },
+    "accepted_amount": {
+      "type": "number"
+    },
+    "payment_status": {
+      "type": "string"
+    },
+    "external_action_performed": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}

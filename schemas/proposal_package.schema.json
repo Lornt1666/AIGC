@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Proposal Package",
+  "type": "object",
+  "required": [
+    "proposal_id",
+    "opportunity_id",
+    "status",
+    "employer_facing_message",
+    "scope_of_work",
+    "deliverables",
+    "readiness_decision"
+  ],
+  "properties": {
+    "proposal_id": {
+      "type": "string"
+    },
+    "opportunity_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "employer_facing_message": {
+      "type": "string"
+    },
+    "scope_of_work": {
+      "type": "object"
+    },
+    "deliverables": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "ai_use_disclosure": {
+      "type": "object"
+    },
+    "readiness_decision": {
+      "type": "string"
+    },
+    "approval_required_before": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": true
+}

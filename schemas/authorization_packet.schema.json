@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Authorization Packet",
+  "type": "object",
+  "required": [
+    "authorization_id",
+    "action_id",
+    "proposal_id",
+    "opportunity_id",
+    "operator",
+    "proposed_external_action",
+    "artifact",
+    "classification",
+    "approval",
+    "phase6_status",
+    "decision"
+  ],
+  "properties": {
+    "authorization_id": {
+      "type": "string"
+    },
+    "action_id": {
+      "type": "string"
+    },
+    "proposal_id": {
+      "type": "string"
+    },
+    "opportunity_id": {
+      "type": "string"
+    },
+    "operator": {
+      "type": "string"
+    },
+    "proposed_external_action": {
+      "type": "string"
+    },
+    "recipient": {
+      "type": "string"
+    },
+    "platform": {
+      "type": "string"
+    },
+    "artifact": {
+      "type": "object",
+      "required": [
+        "artifact_type",
+        "artifact_hash"
+      ]
+    },
+    "classification": {
+      "type": "object"
+    },
+    "approval": {
+      "type": "object"
+    },
+    "phase6_status": {
+      "type": "object"
+    },
+    "decision": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

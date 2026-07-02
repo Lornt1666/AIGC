@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Evolution Patch",
+  "type": "object",
+  "required": [
+    "patch_id",
+    "patch_type",
+    "created_at",
+    "reason",
+    "proposed_change",
+    "safety_impact",
+    "approval_required",
+    "decision"
+  ],
+  "properties": {
+    "patch_id": {
+      "type": "string"
+    },
+    "patch_type": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "proposed_change": {
+      "type": "object"
+    },
+    "safety_impact": {
+      "type": "string"
+    },
+    "approval_required": {
+      "type": "boolean"
+    },
+    "decision": {
+      "type": "string"
+    },
+    "applied": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}

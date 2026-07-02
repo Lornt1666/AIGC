@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Assessment Dossier",
+  "type": "object",
+  "required": [
+    "dossier_id",
+    "opportunity_id",
+    "title",
+    "employer",
+    "phase3_assessment_score",
+    "final_decision"
+  ],
+  "properties": {
+    "dossier_id": {
+      "type": "string"
+    },
+    "opportunity_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "employer": {
+      "type": "string"
+    },
+    "source_platform": {
+      "type": "string"
+    },
+    "source_url": {
+      "type": "string"
+    },
+    "phase3_assessment_score": {
+      "type": "integer"
+    },
+    "final_decision": {
+      "type": "string"
+    },
+    "recommended_agents": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "forbidden_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": true
+}

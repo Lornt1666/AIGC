@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Customer Satisfaction Record",
+  "type": "object",
+  "required": [
+    "record_id",
+    "created_at",
+    "opportunity_id",
+    "phase",
+    "chi_score",
+    "scores"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "opportunity_id": {
+      "type": "string"
+    },
+    "phase": {
+      "type": "string"
+    },
+    "chi_score": {
+      "type": "integer"
+    },
+    "scores": {
+      "type": "object"
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": true
+}
