@@ -1,0 +1,22 @@
+{
+  "phase": "Phase 17 - Incident Response and Recovery",
+  "status": "ready",
+  "incident_count": 0,
+  "open_incidents": 0,
+  "by_status": {},
+  "by_severity": {},
+  "created_incident_id": "",
+  "required_controls": [
+    "emergency_stop",
+    "log_preservation",
+    "secret_rotation_plan",
+    "external_action_block",
+    "postmortem",
+    "evolution_patch_if_needed"
+  ],
+  "external_action_performed": false,
+  "notes": [
+    "Incident response is internal-only.",
+    "Emergency stop, containment, recovery, postmortem, and patch proposal remain operator-governed."
+  ]
+}

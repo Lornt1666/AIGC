@@ -135,6 +135,36 @@ def build_phase_registry(root: Path = PROJECT_ROOT) -> Dict[str, PhaseDefinition
             allowed_runtime_modes=["internal_preflight"],
             external_action_risk="none_preflight_only",
         ),
+        "phase15": PhaseDefinition(
+            name="phase15",
+            display_name="Phase 15 - Finance, Contracts, and Asset Ledger",
+            input_path="data/phase4_proposals/aigc_phase4_proposal_packages.json",
+            output_path="data/phase15_finance/aigc_phase15_finance_ledger.json",
+            schema_name="finance_ledger_record",
+            command=[py, str(src / "phase15_finance_contracts_ledger.py")],
+            allowed_runtime_modes=["internal_finance_tracking_only"],
+            external_action_risk="none_internal_ledger_only",
+        ),
+        "phase16": PhaseDefinition(
+            name="phase16",
+            display_name="Phase 16 - Compliance and Legal Review",
+            input_path="data/phase4_proposals/aigc_phase4_proposal_packages.json",
+            output_path="data/phase16_compliance/aigc_phase16_compliance_reviews.json",
+            schema_name="compliance_review",
+            command=[py, str(src / "phase16_compliance_review.py")],
+            allowed_runtime_modes=["internal_compliance_review_only"],
+            external_action_risk="none_internal_review_only",
+        ),
+        "phase17": PhaseDefinition(
+            name="phase17",
+            display_name="Phase 17 - Incident Response and Recovery",
+            input_path="config/phase17_incident_response.json",
+            output_path="data/phase17_incidents/incident_reports.jsonl",
+            schema_name="incident_report",
+            command=[py, str(src / "phase17_incident_response.py")],
+            allowed_runtime_modes=["internal_incident_response_only"],
+            external_action_risk="none_internal_incident_reporting_only",
+        ),
     }
 
 
