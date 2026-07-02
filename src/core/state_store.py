@@ -135,7 +135,7 @@ class AIGCStateStore:
                 INSERT OR REPLACE INTO {table}
                 (id, created_at, updated_at, phase, status, source_file, hash, risk_level,
                  approval_status, audit_event_id, data_json)
-                VALUES (?, COALESCE((SELECT created_at FROM {table} WHERE id = ?), ?), ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, COALESCE((SELECT created_at FROM {table} WHERE id = ?), ?), ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 record_id,
                 record_id,

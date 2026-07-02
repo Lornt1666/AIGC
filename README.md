@@ -234,6 +234,7 @@ python .\src\aigc.py run phase13
 python .\src\aigc.py run phase14
 python .\src\aigc.py run pipeline --mode synthetic
 python .\src\aigc.py run pipeline --mode real_data_read_only --source remoteok --limit 10
+python .\src\aigc.py close-loop --execution-mode manual_handoff
 python .\src\aigc.py emergency-stop
 python .\src\aigc.py clear-emergency-stop
 ```
@@ -245,9 +246,26 @@ Scoped approval packet decisions can be recorded internally only with exact phra
 ```powershell
 python .\src\aigc.py approve --action-id AIGC-ACT-... --phrase "I, Justice Gray Maciocha, accept action AIGC-ACT-...."
 python .\src\aigc.py deny --action-id AIGC-ACT-... --phrase "I, Justice Gray Maciocha, deny action AIGC-ACT-...."
+python .\src\aigc.py revise --action-id AIGC-ACT-... --phrase "Revise action AIGC-ACT-...: revision instructions"
 ```
 
 Approving a packet authorizes Phase 6 eligibility only. It does not send, submit, message, bid, or perform external execution.
+
+Expired authorization packets cannot be approved through the CLI. Regenerate Phase 5 packets before approving expired actions.
+
+Milestone C closes the internal loop from approved Phase 5 packets into Phase 6 manual handoffs or dry runs, then Phase 7 internal audit drafts:
+
+```powershell
+python .\src\aigc.py close-loop --execution-mode dry_run
+python .\src\aigc.py close-loop --execution-mode manual_handoff
+```
+
+Outputs:
+
+- `data/phase14_pipeline_closure/latest_pipeline_closure.json`
+- `reports/milestone_c_pipeline_closure_report.md`
+
+The closure runner does not approve actions, contact recipients, use credentials, or perform external execution.
 
 ## Milestone B Security Hardening
 

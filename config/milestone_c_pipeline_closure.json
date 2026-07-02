@@ -1,0 +1,25 @@
+{
+  "milestone": "Milestone C - Pipeline Closure",
+  "operating_mode": "internal_phase5_to_phase7_closure",
+  "default_execution_mode": "manual_handoff",
+  "allowed_execution_modes": [
+    "dry_run",
+    "manual_handoff"
+  ],
+  "external_actions_allowed": false,
+  "approval_required_before_phase6": true,
+  "approval_expiration_enforced": true,
+  "outputs": {
+    "summary": "data/phase14_pipeline_closure/latest_pipeline_closure.json",
+    "report": "reports/milestone_c_pipeline_closure_report.md"
+  },
+  "forbidden_behaviors": [
+    "approve_actions_automatically",
+    "contact_employers",
+    "submit_applications",
+    "send_messages",
+    "use_credentials",
+    "perform_live_api_execution",
+    "share_employer_audit_packets_externally"
+  ]
+}
