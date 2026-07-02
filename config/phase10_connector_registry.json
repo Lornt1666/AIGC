@@ -1,0 +1,69 @@
+{
+  "phase": "Phase 10 - Connector / API Integration Layer",
+  "operating_mode": "read_only_connector_maturity_registry",
+  "external_actions_allowed": false,
+  "live_write_connectors_allowed": false,
+  "input_files": {
+    "phase2_sources": "config/phase2_sources.json"
+  },
+  "output_file": "data/phase10_connectors/aigc_phase10_connector_registry.json",
+  "report_file": "data/reports/phase10_signature_update.md",
+  "audit_log": "data/audit/aigc_phase10_audit.jsonl",
+  "default_capability": "opportunity_discovery",
+  "allowed_runtime_modes": [
+    "read_only_connector_registry",
+    "real_data_read_only",
+    "synthetic"
+  ],
+  "allowed_read_only_actions": [
+    "read_feed",
+    "read_api",
+    "read_public_jobs",
+    "read_public_postings",
+    "search_jobs",
+    "search_public_issues",
+    "normalize",
+    "classify",
+    "score"
+  ],
+  "forbidden_write_action_terms": [
+    "apply",
+    "submit",
+    "message",
+    "send",
+    "bid",
+    "post",
+    "write",
+    "upload",
+    "delete",
+    "patch",
+    "contract",
+    "invoice",
+    "payment"
+  ],
+  "terms_notes_by_slug": {
+    "weworkremotely": [
+      "Use public RSS feed in read-only mode.",
+      "Preserve source attribution."
+    ],
+    "remotive": [
+      "Use public jobs API in read-only mode.",
+      "Preserve source attribution and platform terms."
+    ],
+    "remoteok": [
+      "Use public API in read-only mode.",
+      "Respect listing instructions and anti-spam text."
+    ],
+    "github": [
+      "Use public issue search in read-only mode.",
+      "Respect repository contribution rules before any future external action."
+    ]
+  },
+  "rate_limit_policy": "single_read_only_run_with_no_retry_storms",
+  "maturity_levels": {
+    "enabled_read_only": "read_only_validated",
+    "disabled_reference": "configured_reference_only",
+    "needs_review": "needs_connector_review",
+    "blocked": "blocked_by_connector_policy"
+  }
+}

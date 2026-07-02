@@ -1,0 +1,456 @@
+[
+  {
+    "connector_id": "AIGC-CONN-980C09E3DBA0D1E6",
+    "created_at": "2026-07-02T16:21:22.953352+00:00",
+    "slug": "weworkremotely",
+    "name": "We Work Remotely",
+    "provider": "wwr_rss",
+    "phase": "phase10_connector_api_layer",
+    "capability": "opportunity_discovery",
+    "mode": "read_only",
+    "status": "ready_read_only",
+    "maturity_level": "read_only_validated",
+    "enabled": true,
+    "source_type": "rss",
+    "source_url": "https://weworkremotely.com/remote-jobs.rss",
+    "allowed_actions": [
+      "read_feed",
+      "normalize",
+      "classify",
+      "score"
+    ],
+    "forbidden_actions": [
+      "auto_apply",
+      "message_employer",
+      "hide_attribution"
+    ],
+    "allowed_runtime_modes": [
+      "read_only_connector_registry",
+      "real_data_read_only",
+      "synthetic"
+    ],
+    "read_only": true,
+    "live_execution_allowed": false,
+    "external_write_allowed": false,
+    "external_action_performed": false,
+    "requires_secret": false,
+    "secret_key": "",
+    "credential_policy": "no_secret_required",
+    "attribution_required": true,
+    "terms_notes": [
+      "Use public RSS feed in read-only mode.",
+      "Preserve source attribution."
+    ],
+    "rate_limit_policy": "single_read_only_run_with_no_retry_storms",
+    "risk_flags": [],
+    "safety_status": "cleared",
+    "audit_required": true
+  },
+  {
+    "connector_id": "AIGC-CONN-76F5661AB43C5766",
+    "created_at": "2026-07-02T16:21:22.953352+00:00",
+    "slug": "remotive",
+    "name": "Remotive",
+    "provider": "remotive",
+    "phase": "phase10_connector_api_layer",
+    "capability": "opportunity_discovery",
+    "mode": "read_only",
+    "status": "ready_read_only",
+    "maturity_level": "read_only_validated",
+    "enabled": true,
+    "source_type": "api",
+    "source_url": "https://remotive.com/api/remote-jobs",
+    "allowed_actions": [
+      "read_feed",
+      "normalize",
+      "classify",
+      "score"
+    ],
+    "forbidden_actions": [
+      "redistribute_to_prohibited_sites",
+      "hide_attribution",
+      "auto_apply"
+    ],
+    "allowed_runtime_modes": [
+      "read_only_connector_registry",
+      "real_data_read_only",
+      "synthetic"
+    ],
+    "read_only": true,
+    "live_execution_allowed": false,
+    "external_write_allowed": false,
+    "external_action_performed": false,
+    "requires_secret": false,
+    "secret_key": "",
+    "credential_policy": "no_secret_required",
+    "attribution_required": true,
+    "terms_notes": [
+      "Use public jobs API in read-only mode.",
+      "Preserve source attribution and platform terms."
+    ],
+    "rate_limit_policy": "single_read_only_run_with_no_retry_storms",
+    "risk_flags": [],
+    "safety_status": "cleared",
+    "audit_required": true
+  },
+  {
+    "connector_id": "AIGC-CONN-54BC186EBF11D140",
+    "created_at": "2026-07-02T16:21:22.953352+00:00",
+    "slug": "remoteok",
+    "name": "RemoteOK",
+    "provider": "remoteok",
+    "phase": "phase10_connector_api_layer",
+    "capability": "opportunity_discovery",
+    "mode": "read_only",
+    "status": "ready_read_only",
+    "maturity_level": "read_only_validated",
+    "enabled": true,
+    "source_type": "api",
+    "source_url": "https://remoteok.com/api",
+    "allowed_actions": [
+      "read_api",
+      "normalize",
+      "classify",
+      "score"
+    ],
+    "forbidden_actions": [
+      "blind_apply",
+      "ignore_anti_spam_instructions",
+      "hide_attribution"
+    ],
+    "allowed_runtime_modes": [
+      "read_only_connector_registry",
+      "real_data_read_only",
+      "synthetic"
+    ],
+    "read_only": true,
+    "live_execution_allowed": false,
+    "external_write_allowed": false,
+    "external_action_performed": false,
+    "requires_secret": false,
+    "secret_key": "",
+    "credential_policy": "no_secret_required",
+    "attribution_required": true,
+    "terms_notes": [
+      "Use public API in read-only mode.",
+      "Respect listing instructions and anti-spam text."
+    ],
+    "rate_limit_policy": "single_read_only_run_with_no_retry_storms",
+    "risk_flags": [],
+    "safety_status": "cleared",
+    "audit_required": true
+  },
+  {
+    "connector_id": "AIGC-CONN-DC3331C853F668CD",
+    "created_at": "2026-07-02T16:21:22.953352+00:00",
+    "slug": "github",
+    "name": "GitHub",
+    "provider": "github_search",
+    "phase": "phase10_connector_api_layer",
+    "capability": "opportunity_discovery",
+    "mode": "read_only",
+    "status": "ready_read_only",
+    "maturity_level": "read_only_validated",
+    "enabled": true,
+    "source_type": "api",
+    "source_url": "https://api.github.com/search/issues",
+    "allowed_actions": [
+      "search_public_issues",
+      "normalize",
+      "classify",
+      "score"
+    ],
+    "forbidden_actions": [
+      "spam_issues",
+      "spam_pull_requests",
+      "ignore_repo_contribution_rules"
+    ],
+    "allowed_runtime_modes": [
+      "read_only_connector_registry",
+      "real_data_read_only",
+      "synthetic"
+    ],
+    "read_only": true,
+    "live_execution_allowed": false,
+    "external_write_allowed": false,
+    "external_action_performed": false,
+    "requires_secret": false,
+    "secret_key": "",
+    "credential_policy": "no_secret_required",
+    "attribution_required": false,
+    "terms_notes": [
+      "Use public issue search in read-only mode.",
+      "Respect repository contribution rules before any future external action."
+    ],
+    "rate_limit_policy": "single_read_only_run_with_no_retry_storms",
+    "risk_flags": [],
+    "safety_status": "cleared",
+    "audit_required": true
+  },
+  {
+    "connector_id": "AIGC-CONN-E7FFBB08A5DD44FD",
+    "created_at": "2026-07-02T16:21:22.953352+00:00",
+    "slug": "usajobs",
+    "name": "USAJOBS",
+    "provider": "usajobs",
+    "phase": "phase10_connector_api_layer",
+    "capability": "opportunity_discovery",
+    "mode": "read_only",
+    "status": "disabled_reference_only",
+    "maturity_level": "configured_reference_only",
+    "enabled": false,
+    "source_type": "api",
+    "source_url": "",
+    "allowed_actions": [
+      "search_jobs",
+      "normalize",
+      "classify",
+      "score"
+    ],
+    "forbidden_actions": [
+      "auto_apply",
+      "misuse_api_key",
+      "impersonate"
+    ],
+    "allowed_runtime_modes": [
+      "read_only_connector_registry",
+      "real_data_read_only",
+      "synthetic"
+    ],
+    "read_only": true,
+    "live_execution_allowed": false,
+    "external_write_allowed": false,
+    "external_action_performed": false,
+    "requires_secret": true,
+    "secret_key": "",
+    "credential_policy": "secret_required_before_enablement",
+    "attribution_required": false,
+    "terms_notes": [],
+    "rate_limit_policy": "single_read_only_run_with_no_retry_storms",
+    "risk_flags": [
+      "disabled_secret_connector_reference_only"
+    ],
+    "safety_status": "caution",
+    "audit_required": true
+  },
+  {
+    "connector_id": "AIGC-CONN-001FFD39D92A2CC4",
+    "created_at": "2026-07-02T16:21:22.953352+00:00",
+    "slug": "adzuna",
+    "name": "Adzuna",
+    "provider": "adzuna",
+    "phase": "phase10_connector_api_layer",
+    "capability": "opportunity_discovery",
+    "mode": "read_only",
+    "status": "disabled_reference_only",
+    "maturity_level": "configured_reference_only",
+    "enabled": false,
+    "source_type": "api",
+    "source_url": "",
+    "allowed_actions": [
+      "search_jobs",
+      "normalize",
+      "classify",
+      "score"
+    ],
+    "forbidden_actions": [
+      "auto_apply",
+      "misrepresent_source"
+    ],
+    "allowed_runtime_modes": [
+      "read_only_connector_registry",
+      "real_data_read_only",
+      "synthetic"
+    ],
+    "read_only": true,
+    "live_execution_allowed": false,
+    "external_write_allowed": false,
+    "external_action_performed": false,
+    "requires_secret": true,
+    "secret_key": "",
+    "credential_policy": "secret_required_before_enablement",
+    "attribution_required": true,
+    "terms_notes": [],
+    "rate_limit_policy": "single_read_only_run_with_no_retry_storms",
+    "risk_flags": [
+      "disabled_secret_connector_reference_only"
+    ],
+    "safety_status": "caution",
+    "audit_required": true
+  },
+  {
+    "connector_id": "AIGC-CONN-4079E41083263346",
+    "created_at": "2026-07-02T16:21:22.953352+00:00",
+    "slug": "themuse",
+    "name": "The Muse",
+    "provider": "themuse",
+    "phase": "phase10_connector_api_layer",
+    "capability": "opportunity_discovery",
+    "mode": "read_only",
+    "status": "disabled_reference_only",
+    "maturity_level": "configured_reference_only",
+    "enabled": false,
+    "source_type": "api",
+    "source_url": "",
+    "allowed_actions": [
+      "search_jobs",
+      "normalize",
+      "classify",
+      "score"
+    ],
+    "forbidden_actions": [
+      "auto_apply",
+      "misrepresent_source"
+    ],
+    "allowed_runtime_modes": [
+      "read_only_connector_registry",
+      "real_data_read_only",
+      "synthetic"
+    ],
+    "read_only": true,
+    "live_execution_allowed": false,
+    "external_write_allowed": false,
+    "external_action_performed": false,
+    "requires_secret": true,
+    "secret_key": "",
+    "credential_policy": "secret_required_before_enablement",
+    "attribution_required": true,
+    "terms_notes": [],
+    "rate_limit_policy": "single_read_only_run_with_no_retry_storms",
+    "risk_flags": [
+      "disabled_secret_connector_reference_only"
+    ],
+    "safety_status": "caution",
+    "audit_required": true
+  },
+  {
+    "connector_id": "AIGC-CONN-AB544E046ABD0A11",
+    "created_at": "2026-07-02T16:21:22.953352+00:00",
+    "slug": "greenhouse",
+    "name": "Greenhouse",
+    "provider": "greenhouse",
+    "phase": "phase10_connector_api_layer",
+    "capability": "opportunity_discovery",
+    "mode": "read_only",
+    "status": "disabled_reference_only",
+    "maturity_level": "configured_reference_only",
+    "enabled": false,
+    "source_type": "employer_job_board_api",
+    "source_url": "",
+    "allowed_actions": [
+      "read_public_jobs",
+      "normalize",
+      "classify",
+      "score"
+    ],
+    "forbidden_actions": [
+      "submit_application_without_approval",
+      "use_application_post_endpoint_without_authorization"
+    ],
+    "allowed_runtime_modes": [
+      "read_only_connector_registry",
+      "real_data_read_only",
+      "synthetic"
+    ],
+    "read_only": true,
+    "live_execution_allowed": false,
+    "external_write_allowed": false,
+    "external_action_performed": false,
+    "requires_secret": true,
+    "secret_key": "",
+    "credential_policy": "secret_required_before_enablement",
+    "attribution_required": false,
+    "terms_notes": [],
+    "rate_limit_policy": "single_read_only_run_with_no_retry_storms",
+    "risk_flags": [
+      "disabled_secret_connector_reference_only"
+    ],
+    "safety_status": "caution",
+    "audit_required": true
+  },
+  {
+    "connector_id": "AIGC-CONN-50A3C8FE172C3CC4",
+    "created_at": "2026-07-02T16:21:22.953352+00:00",
+    "slug": "lever",
+    "name": "Lever",
+    "provider": "lever",
+    "phase": "phase10_connector_api_layer",
+    "capability": "opportunity_discovery",
+    "mode": "read_only",
+    "status": "disabled_reference_only",
+    "maturity_level": "configured_reference_only",
+    "enabled": false,
+    "source_type": "employer_postings_api",
+    "source_url": "",
+    "allowed_actions": [
+      "read_public_postings",
+      "normalize",
+      "classify",
+      "score"
+    ],
+    "forbidden_actions": [
+      "programmatic_apply_without_approval",
+      "ignore_rate_limits"
+    ],
+    "allowed_runtime_modes": [
+      "read_only_connector_registry",
+      "real_data_read_only",
+      "synthetic"
+    ],
+    "read_only": true,
+    "live_execution_allowed": false,
+    "external_write_allowed": false,
+    "external_action_performed": false,
+    "requires_secret": false,
+    "secret_key": "",
+    "credential_policy": "no_secret_required",
+    "attribution_required": false,
+    "terms_notes": [],
+    "rate_limit_policy": "single_read_only_run_with_no_retry_storms",
+    "risk_flags": [],
+    "safety_status": "cleared",
+    "audit_required": true
+  },
+  {
+    "connector_id": "AIGC-CONN-9635150D26CBF08B",
+    "created_at": "2026-07-02T16:21:22.953352+00:00",
+    "slug": "ashby",
+    "name": "Ashby",
+    "provider": "ashby",
+    "phase": "phase10_connector_api_layer",
+    "capability": "opportunity_discovery",
+    "mode": "read_only",
+    "status": "disabled_reference_only",
+    "maturity_level": "configured_reference_only",
+    "enabled": false,
+    "source_type": "employer_job_postings_api",
+    "source_url": "",
+    "allowed_actions": [
+      "read_public_postings",
+      "normalize",
+      "classify",
+      "score"
+    ],
+    "forbidden_actions": [
+      "submit_application_without_approval"
+    ],
+    "allowed_runtime_modes": [
+      "read_only_connector_registry",
+      "real_data_read_only",
+      "synthetic"
+    ],
+    "read_only": true,
+    "live_execution_allowed": false,
+    "external_write_allowed": false,
+    "external_action_performed": false,
+    "requires_secret": false,
+    "secret_key": "",
+    "credential_policy": "no_secret_required",
+    "attribution_required": false,
+    "terms_notes": [],
+    "rate_limit_policy": "single_read_only_run_with_no_retry_storms",
+    "risk_flags": [],
+    "safety_status": "cleared",
+    "audit_required": true
+  }
+]

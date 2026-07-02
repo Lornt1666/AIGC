@@ -150,6 +150,7 @@ def command_validate(args: argparse.Namespace, root: Path, store: AIGCStateStore
             (registry["phase5"].schema_name, root / registry["phase5"].output_path),
             (registry["phase6"].schema_name, root / registry["phase6"].output_path),
             (registry["phase7"].schema_name, root / registry["phase7"].output_path),
+            (registry["phase10"].schema_name, root / registry["phase10"].output_path),
             (registry["phase15"].schema_name, root / registry["phase15"].output_path),
             (registry["phase16"].schema_name, root / registry["phase16"].output_path),
         ]
@@ -223,6 +224,16 @@ def command_run(args: argparse.Namespace, root: Path, store: AIGCStateStore) -> 
         status = run_subprocess(command, root)
     elif phase == "phase14":
         return run_phase14_preflight(root, store)
+    elif phase == "phase10":
+        command = [
+            sys.executable,
+            str(PROJECT_ROOT / "src" / "phase10_connector_registry.py"),
+            "--project-root",
+            str(root),
+            "--config",
+            str(root / "config" / "phase10_connector_registry.json"),
+        ]
+        status = run_subprocess(command, root)
     else:
         registry = build_phase_registry(root)
         if phase not in registry:
@@ -499,7 +510,7 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     validate_parser.add_argument("--path", default="")
 
     run_parser = subparsers.add_parser("run", help="Run an internal AIGC phase command.")
-    run_parser.add_argument("phase", choices=["phase2", "phase3", "phase4", "phase5", "phase6", "phase7", "phase8", "phase11", "phase12", "phase13", "phase14", "phase15", "phase16", "phase17", "pipeline"])
+    run_parser.add_argument("phase", choices=["phase2", "phase3", "phase4", "phase5", "phase6", "phase7", "phase8", "phase10", "phase11", "phase12", "phase13", "phase14", "phase15", "phase16", "phase17", "pipeline"])
     run_parser.add_argument("--mode", choices=["synthetic", "real", "real_data_read_only"], default="synthetic")
     run_parser.add_argument("--source", choices=["remoteok", "remotive", "weworkremotely", "github_issues"], default="remoteok")
     run_parser.add_argument("--limit", type=int, default=10)

@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Connector Record",
+  "type": "object",
+  "required": [
+    "connector_id",
+    "created_at",
+    "slug",
+    "name",
+    "status",
+    "mode",
+    "maturity_level",
+    "read_only",
+    "live_execution_allowed",
+    "external_write_allowed",
+    "external_action_performed"
+  ],
+  "properties": {
+    "connector_id": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "provider": {
+      "type": "string"
+    },
+    "phase": {
+      "type": "string"
+    },
+    "capability": {
+      "type": "string"
+    },
+    "mode": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "maturity_level": {
+      "type": "string"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "source_type": {
+      "type": "string"
+    },
+    "source_url": {
+      "type": "string"
+    },
+    "allowed_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "forbidden_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "allowed_runtime_modes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "read_only": {
+      "type": "boolean"
+    },
+    "live_execution_allowed": {
+      "type": "boolean"
+    },
+    "external_write_allowed": {
+      "type": "boolean"
+    },
+    "external_action_performed": {
+      "type": "boolean"
+    },
+    "requires_secret": {
+      "type": "boolean"
+    },
+    "secret_key": {
+      "type": "string"
+    },
+    "credential_policy": {
+      "type": "string"
+    },
+    "attribution_required": {
+      "type": "boolean"
+    },
+    "terms_notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "rate_limit_policy": {
+      "type": "string"
+    },
+    "risk_flags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "safety_status": {
+      "type": "string"
+    },
+    "audit_required": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}
