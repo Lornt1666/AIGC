@@ -1,0 +1,1955 @@
+[
+  {
+    "record_id": "AIGC-CHI-D33A5C4FE822427A",
+    "created_at": "2026-07-02T22:19:43.181522+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "eda6a258a34d417ac4895a99",
+    "proposal_id": "phase4_129ed5d3aa518bb047452f79",
+    "fidelity_review_id": "AIGC-FID-9D5EDB3B956F2E29",
+    "title": "[integrations] Env-var reference doc",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3561",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-A372B09CF07AF152",
+    "created_at": "2026-07-02T22:19:43.181522+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "48ff2350d71e32d32183dc30",
+    "proposal_id": "phase4_82bb62946d8a47ce81bcca6d",
+    "fidelity_review_id": "AIGC-FID-C051067E69CD1AA8",
+    "title": "AI Engineers",
+    "employer": "Toptal",
+    "source_platform": "We Work Remotely",
+    "source_url": "https://weworkremotely.com/remote-jobs/toptal-ai-engineers",
+    "chi_score": 85,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 8,
+      "employer_trust": 9,
+      "over_delivery_value": 8,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Automation Workflow Plan",
+        "Implementation Artifact"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Are there platform, API, authentication, rate-limit, or security constraints I need to follow?",
+        "Should the output be a working script, prototype, workflow plan, or documentation?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after technical requirements, inputs, and constraints are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "job_board_employment_role",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-4D93370448ECDFDC",
+    "created_at": "2026-07-02T22:19:43.181522+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "fd1c0de42c4f53acba40f34b",
+    "proposal_id": "phase4_59cde5610aa64d7391c89898",
+    "fidelity_review_id": "AIGC-FID-527D4D0A82EF1072",
+    "title": "[integrations] Troubleshooting guide",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3562",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-948DE26212884CED",
+    "created_at": "2026-07-02T22:19:43.182523+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "b62bc7f1caf7a27c588a6d6a",
+    "proposal_id": "phase4_c4a28db5c40631315048704b",
+    "fidelity_review_id": "AIGC-FID-872F24FAFBA5C5DE",
+    "title": "[integrations] Consistent \"three modes\" README section across integrations",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3550",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-2D8345AE01A01B57",
+    "created_at": "2026-07-02T22:19:43.182523+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "9d7bb4d37968940e7f9738d5",
+    "proposal_id": "phase4_6bf8f3b4f446d9bb6e635d18",
+    "fidelity_review_id": "AIGC-FID-EAC5E29DE13F8299",
+    "title": "[integrations] Add COGNEE_REMEMBER_TIMEOUT / COGNEE_REGISTER_TIMEOUT env vars",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3543",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-4AD0C692C9315E1D",
+    "created_at": "2026-07-02T22:19:43.182523+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "c8c4ba85f90c5b86890d806d",
+    "proposal_id": "phase4_817f9a8ede8b80d3aeefbb12",
+    "fidelity_review_id": "AIGC-FID-4763F037C0262A0D",
+    "title": "[integrations] Cloud cold-start warmup ping for plugin sessions",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3541",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-A6F744F6E5C87E9F",
+    "created_at": "2026-07-02T22:19:43.182523+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "3795782df71592e3c47e76b7",
+    "proposal_id": "phase4_2ff3d6fd1a91ab8f7167254d",
+    "fidelity_review_id": "AIGC-FID-456625B5ABA016DF",
+    "title": "Federal BIM Design Associate",
+    "employer": "Olsson",
+    "source_platform": "We Work Remotely",
+    "source_url": "https://weworkremotely.com/remote-jobs/olsson-federal-bim-design-associate",
+    "chi_score": 85,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 8,
+      "employer_trust": 9,
+      "over_delivery_value": 8,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Automation Workflow Plan",
+        "Implementation Artifact"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Are there platform, API, authentication, rate-limit, or security constraints I need to follow?",
+        "Should the output be a working script, prototype, workflow plan, or documentation?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after technical requirements, inputs, and constraints are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "job_board_employment_role",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-24643F04A052077F",
+    "created_at": "2026-07-02T22:19:43.182523+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "f17580421d45bc56fbb3323d",
+    "proposal_id": "phase4_a0c0eb6104cbdcc1c08d2f49",
+    "fidelity_review_id": "AIGC-FID-C13B4A746A381057",
+    "title": "[integrations] Config-precedence tests (env > config > defaults)",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3559",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-0A6EAA53CCB9F2BB",
+    "created_at": "2026-07-02T22:19:43.182523+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "315f658a9364057a86cabcbe",
+    "proposal_id": "phase4_298d569fd92600e3865c3ab4",
+    "fidelity_review_id": "AIGC-FID-89A62CF8EF1F5899",
+    "title": "[integrations] n8n: expose remember/recall verbs",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3560",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-607FCCE8141EB384",
+    "created_at": "2026-07-02T22:19:43.183522+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "bbc2efb9c274d0221aa447b8",
+    "proposal_id": "phase4_ad3173750b0c97f03fa3eed3",
+    "fidelity_review_id": "AIGC-FID-4BD50FF8071D34FF",
+    "title": "Productionize the Helm chart (deployment/helm)",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3602",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "privacy_or_security_sensitive",
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-D01CD3407C26F3EB",
+    "created_at": "2026-07-02T22:19:43.183522+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "5cf46914d492ec92f9c9d72d",
+    "proposal_id": "phase4_c36264be20bfb858ee9bcd7c",
+    "fidelity_review_id": "AIGC-FID-452DDB4D57C161AF",
+    "title": "[integrations] OpenClaw: cold-start warmup + first-recall retry in the TS client",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3546",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-DC71786A63006FF9",
+    "created_at": "2026-07-02T22:19:43.183522+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "1a3aad74c4db7e62c8704d92",
+    "proposal_id": "phase4_8e810fe9f8a35f40e3846269",
+    "fidelity_review_id": "AIGC-FID-B24D90C0E55245CE",
+    "title": "[integrations] OpenClaw: circuit breaker + per-op timeouts in the TS client",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3545",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-383CD754E8F24394",
+    "created_at": "2026-07-02T22:19:43.183522+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "a368e5083373c9ab1e57e991",
+    "proposal_id": "phase4_e6f0729949d9a3867cc46ca7",
+    "fidelity_review_id": "AIGC-FID-A1C2E643C3B6D8A0",
+    "title": "Feature: new environment variable PIP_AUDIT_IGNORE_VULN",
+    "employer": "pip-audit",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/pypa/pip-audit/issues/948",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-2F243D71DDA8CC97",
+    "created_at": "2026-07-02T22:19:43.183522+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "2987871ab0bc70b14c25741e",
+    "proposal_id": "phase4_ed034ea44d3dbd45def8837f",
+    "fidelity_review_id": "AIGC-FID-71B355425BFFCF41",
+    "title": "[integrations] Surface cognify lag instead of silent empty recall",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3553",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-65A5BDF30D6598EE",
+    "created_at": "2026-07-02T22:19:43.183522+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "0cb519bbb35b8e0ddc832b34",
+    "proposal_id": "phase4_e69e7924b59871538b1d8593",
+    "fidelity_review_id": "AIGC-FID-3B89EDC1029BFB71",
+    "title": "[integrations] E2E: session registers and appears via /agents/connections/me",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3558",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-F467459D18748395",
+    "created_at": "2026-07-02T22:19:43.184522+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "f57143f07e5ab9e64974239d",
+    "proposal_id": "phase4_85ce43bf406da7ca7e72ccca",
+    "fidelity_review_id": "AIGC-FID-22AAEAF0DC87D607",
+    "title": "[integrations] cognee-plugin status one-liner",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3552",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-3AADE0607B1CFE16",
+    "created_at": "2026-07-02T22:19:43.184522+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "80dbe8c9e366e4b8e63f8c65",
+    "proposal_id": "phase4_58c805c1b3dda1f6aa25ba29",
+    "fidelity_review_id": "AIGC-FID-9F916344EA64770B",
+    "title": "[integrations] Embedding-dimension mismatch: clear error instead of silent empty recall",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3547",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-96346D3B399C0F96",
+    "created_at": "2026-07-02T22:19:43.184522+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "533db66d2318bf2bc0dd4abd",
+    "proposal_id": "phase4_82fce1f8f3fe899e64abff5d",
+    "fidelity_review_id": "AIGC-FID-06126818D2AB0FD3",
+    "title": "[integrations] Dataset-name sanitization parity across integrations",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3549",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-25490778EA79D466",
+    "created_at": "2026-07-02T22:19:43.184522+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "0e36363038add3b5915f1b84",
+    "proposal_id": "phase4_2cc717f1098738dc3eeae2fc",
+    "fidelity_review_id": "AIGC-FID-BEACD6B0DDD45291",
+    "title": "[integrations] Live add→cognify→search smoke test",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3557",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-53B841C3B51DDA18",
+    "created_at": "2026-07-02T22:19:43.184522+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "ab4ac8a8d497c0cf8adb58c4",
+    "proposal_id": "phase4_2f5eeee5f967b51e0c3f27fa",
+    "fidelity_review_id": "AIGC-FID-4272C1BC771FB191",
+    "title": "[integrations] OpenClaw tests for scope routing + cogneeSessionId",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3555",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-22FC59E8624D5055",
+    "created_at": "2026-07-02T22:19:43.185522+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "bd706e8c410ea414b213cd01",
+    "proposal_id": "phase4_13f9f7ffe445c278d57f9f6a",
+    "fidelity_review_id": "AIGC-FID-B5DAC374050BC1E1",
+    "title": "[integrations] Port the claude-code test suite to Codex",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3554",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-6AFDD5031F5A37F6",
+    "created_at": "2026-07-02T22:19:43.185522+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "67ed35084445d65a8241e5bf",
+    "proposal_id": "phase4_a690460fc33e1ded08f7ae61",
+    "fidelity_review_id": "AIGC-FID-75E6A26704FF3C8E",
+    "title": "[integrations] cognee-plugin doctor command",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3551",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-3A9CF8F52E885684",
+    "created_at": "2026-07-02T22:19:43.185522+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "b79351d868e5311a2ed7db55",
+    "proposal_id": "phase4_ad020f580bc22642c8caf9b5",
+    "fidelity_review_id": "AIGC-FID-1CCF1B12E536CDBA",
+    "title": "[integrations] Shared session-id sanitization conformance test",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3548",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-B132B9F82B6A13FC",
+    "created_at": "2026-07-02T22:19:43.185522+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "e86bbd3a4c9c7c08eb27da18",
+    "proposal_id": "phase4_25fd062345700a1e3a08d0d2",
+    "fidelity_review_id": "AIGC-FID-9DD5F6C61F4D9A7B",
+    "title": "[integrations] Re-register agent session on mid-session mode change",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3544",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CHI-DAA39B32B05E8740",
+    "created_at": "2026-07-02T22:19:43.185522+00:00",
+    "phase": "phase21_customer_satisfaction_continuum",
+    "status": "strong_customer_fit_ready_for_approval_review",
+    "measurement_stage": "pre_external_action",
+    "opportunity_id": "7f44a2bfe1bde725327f8e99",
+    "proposal_id": "phase4_c473c8af591b5b81ccf4d486",
+    "fidelity_review_id": "AIGC-FID-DAFC3A3A62547674",
+    "title": "[integrations] Retry first recall on cold-start timeout",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3542",
+    "chi_score": 87,
+    "scores": {
+      "requirement_clarity": 10,
+      "communication_quality": 9,
+      "response_speed": 7,
+      "deliverable_quality": 9,
+      "professional_tone": 10,
+      "scope_alignment": 9,
+      "revision_handling": 9,
+      "employer_trust": 9,
+      "over_delivery_value": 9,
+      "acceptance_likelihood": 6
+    },
+    "confidence": "medium_pre_external_action_estimate",
+    "customer_expectation_profile": {
+      "expected_deliverables": [
+        "Documentation or Contribution Draft",
+        "Review Notes"
+      ],
+      "clarifying_questions": [
+        "What exact final format would you prefer for the deliverable?",
+        "Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?",
+        "What deadline or turnaround time are you aiming for?",
+        "Should I comment before drafting a pull request, or is a PR welcome directly?",
+        "Are there contribution guidelines, tests, or maintainer preferences I should follow?",
+        "Are AI-assisted research, drafting, analysis, or coding workflows acceptable if the final output is reviewed before delivery?"
+      ],
+      "timeline": {
+        "estimated_duration": "To be confirmed after scope and length are clarified.",
+        "milestones": [
+          "Requirement confirmation",
+          "Draft preparation",
+          "Quality review",
+          "Final delivery after approval"
+        ]
+      },
+      "fidelity_score": 92,
+      "quality_status": "high_fidelity_ready_for_approval_review",
+      "compliance_status": "orange",
+      "payment_status": "not_started",
+      "contract_status": "not_started"
+    },
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present",
+      "pay_or_budget_not_visible",
+      "pay_interval_unknown",
+      "phase5_approval_pending",
+      "low_acceptance_likelihood"
+    ],
+    "improvement_actions": [
+      "Resolve approval, compliance, and payment blockers before external action.",
+      "Resolve or explicitly review compliance risks before customer contact.",
+      "Keep Phase 5 approval pending status visible before any Phase 6 handoff.",
+      "Clarify payment terms before contract or delivery commitments."
+    ],
+    "notes": [
+      "CHI is an internal pre-external-action estimate, not a customer outcome.",
+      "Actual customer satisfaction must be updated after employer response and delivery/revision events.",
+      "Phase 5 approval remains required before any external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  }
+]

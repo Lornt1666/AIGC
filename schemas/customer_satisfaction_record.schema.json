@@ -8,7 +8,8 @@
     "opportunity_id",
     "phase",
     "chi_score",
-    "scores"
+    "scores",
+    "external_action_performed"
   ],
   "properties": {
     "record_id": {
@@ -20,7 +21,31 @@
     "opportunity_id": {
       "type": "string"
     },
+    "proposal_id": {
+      "type": "string"
+    },
+    "fidelity_review_id": {
+      "type": "string"
+    },
     "phase": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "measurement_stage": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "employer": {
+      "type": "string"
+    },
+    "source_platform": {
+      "type": "string"
+    },
+    "source_url": {
       "type": "string"
     },
     "chi_score": {
@@ -28,6 +53,30 @@
     },
     "scores": {
       "type": "object"
+    },
+    "confidence": {
+      "type": "string"
+    },
+    "customer_expectation_profile": {
+      "type": "object"
+    },
+    "risk_flags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "improvement_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "approval_required_before_external_action": {
+      "type": "boolean"
+    },
+    "external_action_performed": {
+      "type": "boolean"
     },
     "notes": {
       "type": "array",

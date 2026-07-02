@@ -1,7 +1,7 @@
 {
   "phase": "Phase 18 - Scaling, Replication, and Productization",
   "operating_mode": "internal_private_release_readiness",
-  "version": "0.8.0-milestone-h",
+  "version": "0.9.0-milestone-i",
   "release_type": "internal_private_kernel",
   "external_actions_allowed": false,
   "deployment_allowed": false,
@@ -21,7 +21,9 @@
     "config/phase14_runtime_engine.json",
     "config/phase17_incident_response.json",
     "config/phase20_fidelity_forge.json",
+    "config/phase21_customer_satisfaction_continuum.json",
     "schemas/connector_record.schema.json",
+    "schemas/customer_satisfaction_record.schema.json",
     "schemas/fidelity_review.schema.json",
     "schemas/productization_release_record.schema.json",
     "schemas/subagent_team_plan.schema.json",
@@ -34,6 +36,7 @@
     "src/phase18_productization.py",
     "src/phase19_subagent_forge.py",
     "src/phase20_fidelity_forge.py",
+    "src/phase21_customer_satisfaction_continuum.py",
     "docs/PRIVATE_BRANCH_WORKFLOW.md"
   ],
   "validation_commands": [
@@ -65,6 +68,7 @@
     "reports/milestone_f_productization_report.md",
     "reports/milestone_g_subagent_forge_report.md",
     "reports/milestone_h_fidelity_forge_report.md",
+    "reports/milestone_i_customer_satisfaction_report.md",
     "docs/PRODUCTIZATION_RUNBOOK.md"
   ]
 }
