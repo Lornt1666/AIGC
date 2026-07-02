@@ -235,6 +235,16 @@ def build_phase_registry(root: Path = PROJECT_ROOT) -> Dict[str, PhaseDefinition
             allowed_runtime_modes=["internal_work_order_governance_only"],
             external_action_risk="none_internal_work_order_governance_only",
         ),
+        "phase24": PhaseDefinition(
+            name="phase24",
+            display_name="Phase 24 - Truth-First Procurement Governance",
+            input_path="data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+            output_path="data/phase24_procurement/aigc_phase24_procurement_records.json",
+            schema_name="procurement_record",
+            command=[py, str(src / "phase24_procurement_governance.py")],
+            allowed_runtime_modes=["internal_procurement_truth_ledger"],
+            external_action_risk="none_internal_procurement_truth_ledger_only",
+        ),
     }
 
 

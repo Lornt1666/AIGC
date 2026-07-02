@@ -237,6 +237,7 @@ python .\src\aigc.py run phase16
 python .\src\aigc.py run phase17
 python .\src\aigc.py run phase22
 python .\src\aigc.py run phase23
+python .\src\aigc.py run phase24
 python .\src\aigc.py run pipeline --mode synthetic
 python .\src\aigc.py run pipeline --mode real_data_read_only --source remoteok --limit 10
 python .\src\aigc.py close-loop --execution-mode manual_handoff
@@ -405,6 +406,27 @@ Outputs:
 - `reports/milestone_k_work_order_governor_report.md`
 
 Phase 23 applies the quality doctrine to work orders, but it still performs no external action. It does not approve work, contact customers, submit applications, submit deliverables, accept contracts, request payment, use credentials, or bypass Phase 5 and Phase 6 gates.
+
+## Milestone L Truth-First Procurement Governance
+
+Milestone L adds Phase 24 as an internal procurement truth ledger. It classifies each work candidate by source truth, generated-artifact status, Phase 5 approval state, stale or expired status, and cleanup recommendation.
+
+Command:
+
+```powershell
+python .\src\aigc.py run phase24
+```
+
+Outputs:
+
+- `data/phase24_procurement/aigc_phase24_procurement_records.json`
+- `data/reports/phase24_signature_update.md`
+- `data/audit/aigc_phase24_audit.jsonl`
+- `reports/milestone_l_procurement_governance_report.md`
+
+Phase 24 preserves real read-only source snapshots as evidence and marks Phase 4+ artifacts as generated internal derivatives. Expired pending Phase 5 packets are classified as stale generated action candidates that should be archived or regenerated before any future approval attempt.
+
+Phase 24 does not delete files, approve actions, contact external parties, submit applications, submit proposals, submit deliverables, accept contracts, request payment, use credentials, or bypass Phase 5 and Phase 6 gates.
 
 ## Milestone D Finance, Compliance, and Incident Response
 

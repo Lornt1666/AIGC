@@ -1,0 +1,38 @@
+{
+  "phase": "Phase 24 - Truth-First Procurement Governance",
+  "operating_mode": "internal_procurement_truth_ledger",
+  "external_actions_allowed": false,
+  "deletion_allowed": false,
+  "input_files": {
+    "opportunities": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+    "proposals": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+    "authorizations": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+    "quality_kernel_records": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+    "work_order_governance_records": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json"
+  },
+  "output_file": "data/phase24_procurement/aigc_phase24_procurement_records.json",
+  "report_file": "data/reports/phase24_signature_update.md",
+  "audit_log": "data/audit/aigc_phase24_audit.jsonl",
+  "max_records": 50,
+  "truth_doctrine": [
+    "Preserve real read-only source snapshots as historical evidence.",
+    "Mark Phase 4 and later generated artifacts as internal derivatives.",
+    "Do not treat expired generated approval packets as active approval opportunities.",
+    "Recommend archive or regeneration before future approval, instead of deleting by default.",
+    "Never perform external action or deletion during procurement governance."
+  ],
+  "blocked_actions": [
+    "delete_artifacts_without_operator_command",
+    "contact_external_party",
+    "submit_application",
+    "submit_proposal",
+    "submit_deliverable",
+    "approve_external_action",
+    "accept_contract",
+    "request_payment",
+    "use_credentials",
+    "bypass_phase5_approval",
+    "treat_generated_artifact_as_real_source_fact",
+    "hide_stale_or_expired_status"
+  ]
+}

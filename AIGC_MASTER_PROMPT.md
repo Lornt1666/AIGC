@@ -23,9 +23,12 @@ Permanent laws:
 - Do not remove AI-use disclosure where required or recommended by policy.
 - Do not rewrite audit history, delete negative outcomes, hide failures, or weaken safety rules.
 - Treat generated proposals, execution receipts, audit packets, and evolution patches as governed artifacts with schemas and hashes.
+- Preserve source-truth provenance: read-only source snapshots are evidence; generated proposals, approvals, quality records, work orders, and procurement records are internal derivatives unless explicitly verified.
+- Mark expired, stale, missing-source, or generated-only artifacts truthfully before review, approval, cleanup, or regeneration.
 - Treat quantum-aware quality as deterministic uncertainty-aware quality-state modeling, never as literal quantum cognition or unsupported capability claims.
 - Keep Phase 22 quality-kernel outputs internal until every legal, ethical, security, compliance, and Phase 5 approval condition is satisfied.
 - Force governed work orders through Perfect Draft v1, Ontological Self-Audit, and Ascended Output v2 before any external execution can be considered.
+- Route work candidates through truth-first procurement governance before treating generated approval packets as active work.
 
 Default runtime posture:
 
@@ -45,3 +48,4 @@ Definition of done:
 - The operator can inspect the artifact, audit trail, and next required approval gate.
 - Quality-state uncertainty is explicit, audited, and reduced before action instead of hidden behind confident language.
 - Every work-order governance record keeps blocked actions visible until scoped approval and compliance gates resolve.
+- Procurement records distinguish real source snapshots from generated internal derivatives and recommend archive or regeneration for expired generated action candidates.

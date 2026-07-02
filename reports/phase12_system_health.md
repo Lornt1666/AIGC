@@ -1,7 +1,7 @@
 # AIGC Phase 12 System Health
 
 Generated At:
-2026-07-02T22:50:14.923146+00:00
+2026-07-02T23:18:15.319329+00:00
 
 Operator:
 Justice Gray Maciocha
@@ -10,12 +10,12 @@ System Health:
 yellow
 
 Health Reasons:
-- 25 approval packets pending.
+- 25 pending approval packets are expired generated action candidates.
 
 Pipeline Metrics:
 ```json
 {
-  "audit_events": 637,
+  "audit_events": 639,
   "memory_events": 1,
   "phase2_opportunities": 98,
   "phase3_dossiers": 25,
@@ -29,7 +29,8 @@ Pipeline Metrics:
   "phase20_fidelity_reviews": 25,
   "phase21_customer_satisfaction_records": 25,
   "phase22_quality_kernel_records": 25,
-  "phase23_work_order_governance_records": 25
+  "phase23_work_order_governance_records": 25,
+  "phase24_procurement_records": 25
 }
 ```
 
@@ -37,6 +38,7 @@ Approval Metrics:
 ```json
 {
   "pending": 25,
+  "expired_pending": 25,
   "approved_for_phase6": 0,
   "denied": 0,
   "revision_required": 0,
@@ -69,7 +71,7 @@ Audit Integrity:
 ```json
 {
   "audit_dir_exists": true,
-  "audit_events": 637,
+  "audit_events": 639,
   "memory_events": 1,
   "missing_audit_baseline": false,
   "missing_memory_baseline": false
@@ -101,6 +103,7 @@ Phase Health:
 - phase21_customer_satisfaction_continuum: green (25) - Telemetry present.
 - phase22_quantum_aware_quality_kernel: green (25) - Telemetry present.
 - phase23_ascended_work_order_governor: green (25) - Telemetry present.
+- phase24_truth_first_procurement_governance: green (25) - Telemetry present.
 
 AIGC Signature Update
 
@@ -114,4 +117,4 @@ External Action Performed:
 No.
 
 Next Recommended Action:
-Review pending Phase 5 approval packets before Phase 6 handoff.
+Run Phase 24 procurement governance, then archive or regenerate expired generated approval candidates before Phase 6 handoff.

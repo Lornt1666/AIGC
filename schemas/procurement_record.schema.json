@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Truth-First Procurement Record",
+  "type": "object",
+  "required": [
+    "record_id",
+    "created_at",
+    "phase",
+    "status",
+    "opportunity_id",
+    "proposal_id",
+    "authorization_id",
+    "action_id",
+    "title",
+    "employer",
+    "source_platform",
+    "source_url",
+    "source_truth_status",
+    "artifact_chain",
+    "procurement_classification",
+    "procurement_decision",
+    "current_action_state",
+    "truth_controls",
+    "recommended_cleanup_actions",
+    "blocked_actions",
+    "approval_required_before_external_action",
+    "deletion_performed",
+    "external_action_performed"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "phase": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "opportunity_id": {
+      "type": "string"
+    },
+    "proposal_id": {
+      "type": "string"
+    },
+    "authorization_id": {
+      "type": "string"
+    },
+    "action_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "employer": {
+      "type": "string"
+    },
+    "source_platform": {
+      "type": "string"
+    },
+    "source_url": {
+      "type": "string"
+    },
+    "source_truth_status": {
+      "type": "string"
+    },
+    "artifact_chain": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "phase",
+          "artifact_id",
+          "path",
+          "truth_role",
+          "status"
+        ],
+        "properties": {
+          "phase": {
+            "type": "string"
+          },
+          "artifact_id": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "truth_role": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "procurement_classification": {
+      "type": "string"
+    },
+    "procurement_decision": {
+      "type": "string"
+    },
+    "current_action_state": {
+      "type": "object"
+    },
+    "truth_controls": {
+      "type": "object"
+    },
+    "recommended_cleanup_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "blocked_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "approval_required_before_external_action": {
+      "type": "boolean"
+    },
+    "deletion_performed": {
+      "type": "boolean"
+    },
+    "external_action_performed": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}

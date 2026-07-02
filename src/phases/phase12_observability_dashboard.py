@@ -61,6 +61,7 @@ class Phase12ObservabilityDashboard:
         "phase21_customer_satisfaction_continuum",
         "phase22_quantum_aware_quality_kernel",
         "phase23_ascended_work_order_governor",
+        "phase24_truth_first_procurement_governance",
     ]
 
     def __init__(self, root: Path, config_path: Path):
@@ -87,6 +88,7 @@ class Phase12ObservabilityDashboard:
         phase21_count = count_json_list(self.resolve(inputs.get("phase21_customer_satisfaction", "")))
         phase22_count = count_json_list(self.resolve(inputs.get("phase22_quality_records", "")))
         phase23_count = count_json_list(self.resolve(inputs.get("phase23_work_order_governance", "")))
+        phase24_count = count_json_list(self.resolve(inputs.get("phase24_procurement_records", "")))
         secret_manifest_exists = self.resolve(inputs.get("secret_manifest", "")).exists()
         external_secret_manifest_exists = self.resolve(inputs.get("external_secret_manifest", "")).exists()
         secret_findings = self.scan_secret_paths()
@@ -108,6 +110,7 @@ class Phase12ObservabilityDashboard:
             "phase21_customer_satisfaction_records": phase21_count,
             "phase22_quality_kernel_records": phase22_count,
             "phase23_work_order_governance_records": phase23_count,
+            "phase24_procurement_records": phase24_count,
         }
         audit_integrity = {
             "audit_dir_exists": audit_dir.exists(),
@@ -167,6 +170,7 @@ class Phase12ObservabilityDashboard:
     def approval_metrics(self, packets: List[Dict[str, Any]]) -> Dict[str, int]:
         return {
             "pending": sum(1 for item in packets if item.get("decision") == "pending"),
+            "expired_pending": sum(1 for item in packets if item.get("decision") == "pending" and authorization_expired(item)),
             "approved_for_phase6": sum(1 for item in packets if item.get("decision") == "approved_for_phase_6"),
             "denied": sum(1 for item in packets if item.get("decision") == "denied"),
             "revision_required": sum(1 for item in packets if item.get("decision") == "revision_required"),
@@ -204,6 +208,7 @@ class Phase12ObservabilityDashboard:
             "phase21_customer_satisfaction_continuum": pipeline_metrics["phase21_customer_satisfaction_records"],
             "phase22_quantum_aware_quality_kernel": pipeline_metrics["phase22_quality_kernel_records"],
             "phase23_ascended_work_order_governor": pipeline_metrics["phase23_work_order_governance_records"],
+            "phase24_truth_first_procurement_governance": pipeline_metrics["phase24_procurement_records"],
         }
         results: List[PhaseHealth] = []
         for phase in self.PHASES:
@@ -214,7 +219,7 @@ class Phase12ObservabilityDashboard:
             elif count > 0:
                 status = "green"
                 notes = ["Telemetry present."]
-            elif phase in {"phase0_genesis_constitution", "phase1_domain_discovery", "phase10_connector_api_layer", "phase13_simulation_arena", "phase14_deployment_runtime", "phase15_finance_contracts_asset_ledger", "phase16_compliance_legal_review", "phase17_incident_response", "phase18_scaling_productization", "phase19_subagent_generation_forge", "phase20_fidelity_forge", "phase21_customer_satisfaction_continuum", "phase22_quantum_aware_quality_kernel", "phase23_ascended_work_order_governor"}:
+            elif phase in {"phase0_genesis_constitution", "phase1_domain_discovery", "phase10_connector_api_layer", "phase13_simulation_arena", "phase14_deployment_runtime", "phase15_finance_contracts_asset_ledger", "phase16_compliance_legal_review", "phase17_incident_response", "phase18_scaling_productization", "phase19_subagent_generation_forge", "phase20_fidelity_forge", "phase21_customer_satisfaction_continuum", "phase22_quantum_aware_quality_kernel", "phase23_ascended_work_order_governor", "phase24_truth_first_procurement_governance"}:
                 status = "yellow"
                 notes = ["No baseline telemetry found yet."]
             else:
@@ -242,7 +247,9 @@ class Phase12ObservabilityDashboard:
             reasons.append("No baseline audit events found.")
         if audit_integrity["missing_memory_baseline"]:
             reasons.append("No Omega-X memory events found.")
-        if approval_metrics["pending"] > 0:
+        if approval_metrics.get("expired_pending", 0) > 0:
+            reasons.append(f"{approval_metrics['expired_pending']} pending approval packets are expired generated action candidates.")
+        elif approval_metrics["pending"] > 0:
             reasons.append(f"{approval_metrics['pending']} approval packets pending.")
         if patch_metrics["pending"] > 0:
             reasons.append(f"{patch_metrics['pending']} evolution patches pending.")
@@ -256,6 +263,8 @@ class Phase12ObservabilityDashboard:
             return "Resolve red health findings before running additional phases."
         if secrets_privacy["secret_like_findings"] > 0:
             return "Redact secret-like findings and rerun Phase 12."
+        if approval_metrics.get("expired_pending", 0) > 0:
+            return "Run Phase 24 procurement governance, then archive or regenerate expired generated approval candidates before Phase 6 handoff."
         if approval_metrics["pending"] > 0:
             return "Review pending Phase 5 approval packets before Phase 6 handoff."
         return "Run Phase 13 simulation or continue the next internal AIGC cycle."
@@ -387,6 +396,19 @@ def load_json_list_if_exists(path: Path) -> List[Dict[str, Any]]:
 
 def load_json_dict(path: Path) -> Dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def authorization_expired(packet: Dict[str, Any]) -> bool:
+    value = packet.get("expires_at", "")
+    if not value:
+        return False
+    try:
+        expires_at = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    except ValueError:
+        return True
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+    return datetime.now(timezone.utc) > expires_at.astimezone(timezone.utc)
 
 
 def utc_now() -> str:

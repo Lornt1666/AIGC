@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-07-02T22:50:14.923146+00:00",
+  "generated_at": "2026-07-02T23:18:15.319329+00:00",
   "operator": "Justice Gray Maciocha",
   "phase": "Phase 12 - Observability Dashboard",
   "system_health": "yellow",
   "health_reasons": [
-    "25 approval packets pending."
+    "25 pending approval packets are expired generated action candidates."
   ],
   "phase_health": [
     {
@@ -198,10 +198,18 @@
       "notes": [
         "Telemetry present."
       ]
+    },
+    {
+      "phase": "phase24_truth_first_procurement_governance",
+      "status": "green",
+      "signal_count": 25,
+      "notes": [
+        "Telemetry present."
+      ]
     }
   ],
   "pipeline_metrics": {
-    "audit_events": 637,
+    "audit_events": 639,
     "memory_events": 1,
     "phase2_opportunities": 98,
     "phase3_dossiers": 25,
@@ -215,10 +223,12 @@
     "phase20_fidelity_reviews": 25,
     "phase21_customer_satisfaction_records": 25,
     "phase22_quality_kernel_records": 25,
-    "phase23_work_order_governance_records": 25
+    "phase23_work_order_governance_records": 25,
+    "phase24_procurement_records": 25
   },
   "approval_metrics": {
     "pending": 25,
+    "expired_pending": 25,
     "approved_for_phase6": 0,
     "denied": 0,
     "revision_required": 0,
@@ -239,11 +249,11 @@
   },
   "audit_integrity": {
     "audit_dir_exists": true,
-    "audit_events": 637,
+    "audit_events": 639,
     "memory_events": 1,
     "missing_audit_baseline": false,
     "missing_memory_baseline": false
   },
-  "next_recommended_action": "Review pending Phase 5 approval packets before Phase 6 handoff.",
+  "next_recommended_action": "Run Phase 24 procurement governance, then archive or regenerate expired generated approval candidates before Phase 6 handoff.",
   "external_action_performed": false
 }

@@ -1,7 +1,7 @@
 {
   "phase": "Phase 18 - Scaling, Replication, and Productization",
   "operating_mode": "internal_private_release_readiness",
-  "version": "0.11.0-milestone-k",
+  "version": "0.12.0-milestone-l",
   "release_type": "internal_private_kernel",
   "external_actions_allowed": false,
   "deployment_allowed": false,
@@ -18,6 +18,7 @@
     ".github/workflows/aigc-ci.yml",
     "prompts/phase22_quantum_quality_kernel.md",
     "prompts/phase23_ascended_work_order_governor.md",
+    "prompts/phase24_truthful_procurement_process.md",
     "config/phase10_connector_registry.json",
     "config/phase11_security_config.json",
     "config/phase14_runtime_engine.json",
@@ -26,11 +27,13 @@
     "config/phase21_customer_satisfaction_continuum.json",
     "config/phase22_quantum_quality_kernel.json",
     "config/phase23_work_order_governor.json",
+    "config/phase24_procurement_governance.json",
     "schemas/connector_record.schema.json",
     "schemas/customer_satisfaction_record.schema.json",
     "schemas/fidelity_review.schema.json",
     "schemas/productization_release_record.schema.json",
     "schemas/quality_kernel_record.schema.json",
+    "schemas/procurement_record.schema.json",
     "schemas/subagent_team_plan.schema.json",
     "schemas/work_order_governance_record.schema.json",
     "src/aigc.py",
@@ -45,6 +48,7 @@
     "src/phase21_customer_satisfaction_continuum.py",
     "src/phase22_quantum_quality_kernel.py",
     "src/phase23_work_order_governor.py",
+    "src/phase24_procurement_governance.py",
     "docs/PRIVATE_BRANCH_WORKFLOW.md"
   ],
   "validation_commands": [
@@ -77,12 +81,15 @@
     "data/reports/phase22_signature_update.md",
     "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
     "data/reports/phase23_signature_update.md",
+    "data/phase24_procurement/aigc_phase24_procurement_records.json",
+    "data/reports/phase24_signature_update.md",
     "reports/milestone_f_productization_report.md",
     "reports/milestone_g_subagent_forge_report.md",
     "reports/milestone_h_fidelity_forge_report.md",
     "reports/milestone_i_customer_satisfaction_report.md",
     "reports/milestone_j_quantum_quality_kernel_report.md",
     "reports/milestone_k_work_order_governor_report.md",
+    "reports/milestone_l_procurement_governance_report.md",
     "docs/PRODUCTIZATION_RUNBOOK.md"
   ]
 }

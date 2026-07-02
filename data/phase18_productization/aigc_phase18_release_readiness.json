@@ -1,12 +1,12 @@
 {
-  "release_id": "AIGC-REL-3F239D882B4BB578",
-  "created_at": "2026-07-02T22:50:09.546269+00:00",
+  "release_id": "AIGC-REL-2C64D9439708F2CC",
+  "created_at": "2026-07-02T23:17:43.446308+00:00",
   "phase": "phase18_scaling_productization",
-  "version": "0.11.0-milestone-k",
+  "version": "0.12.0-milestone-l",
   "status": "internal_release_candidate",
   "release_type": "internal_private_kernel",
-  "branch": "codex/milestone-k-ascended-work-order-governor",
-  "commit": "c78791b",
+  "branch": "codex/milestone-l-truth-first-procurement-governance",
+  "commit": "d15400e",
   "required_files_present": true,
   "missing_required_files": [],
   "checked_files": [
@@ -51,6 +51,11 @@
       "kind": "file"
     },
     {
+      "path": "prompts/phase24_truthful_procurement_process.md",
+      "present": true,
+      "kind": "file"
+    },
+    {
       "path": "config/phase10_connector_registry.json",
       "present": true,
       "kind": "file"
@@ -91,6 +96,11 @@
       "kind": "file"
     },
     {
+      "path": "config/phase24_procurement_governance.json",
+      "present": true,
+      "kind": "file"
+    },
+    {
       "path": "schemas/connector_record.schema.json",
       "present": true,
       "kind": "file"
@@ -112,6 +122,11 @@
     },
     {
       "path": "schemas/quality_kernel_record.schema.json",
+      "present": true,
+      "kind": "file"
+    },
+    {
+      "path": "schemas/procurement_record.schema.json",
       "present": true,
       "kind": "file"
     },
@@ -186,6 +201,11 @@
       "kind": "file"
     },
     {
+      "path": "src/phase24_procurement_governance.py",
+      "present": true,
+      "kind": "file"
+    },
+    {
       "path": "docs/PRIVATE_BRANCH_WORKFLOW.md",
       "present": true,
       "kind": "file"
@@ -221,12 +241,15 @@
     "data/reports/phase22_signature_update.md",
     "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
     "data/reports/phase23_signature_update.md",
+    "data/phase24_procurement/aigc_phase24_procurement_records.json",
+    "data/reports/phase24_signature_update.md",
     "reports/milestone_f_productization_report.md",
     "reports/milestone_g_subagent_forge_report.md",
     "reports/milestone_h_fidelity_forge_report.md",
     "reports/milestone_i_customer_satisfaction_report.md",
     "reports/milestone_j_quantum_quality_kernel_report.md",
     "reports/milestone_k_work_order_governor_report.md",
+    "reports/milestone_l_procurement_governance_report.md",
     "docs/PRODUCTIZATION_RUNBOOK.md"
   ],
   "license_status": "all_rights_reserved_present",
