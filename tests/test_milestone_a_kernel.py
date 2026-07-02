@@ -30,6 +30,7 @@ REQUIRED_SCHEMAS = [
     "runtime_event",
     "customer_satisfaction_record",
     "finance_ledger_record",
+    "incident_report",
 ]
 
 
@@ -197,3 +198,50 @@ def test_cli_approve_updates_temp_authorization_only(tmp_path: Path) -> None:
     assert packets[0]["decision"] == "approved_for_phase_6"
     assert packets[0]["phase6_status"]["authorized_for_phase6"] is True
     assert packets[0]["phase6_status"]["external_action_performed"] is False
+
+
+def test_enhanced_secret_scanner_detects_runtime_secret_like_text() -> None:
+    from src.security.redaction_scanner import RedactionScanner
+
+    token = "s" + "k-" + ("a" * 24)
+    findings = RedactionScanner().scan_text(f"api_key = '{token}'", path="<test>")
+    assert findings
+    assert findings[0].line_number == 1
+
+
+def test_approval_token_store_hashes_raw_token(tmp_path: Path) -> None:
+    from src.security.approval_tokens import ApprovalTokenStore
+
+    store_path = tmp_path / "approval_tokens.jsonl"
+    store = ApprovalTokenStore(store_path)
+    issued = store.issue_token(
+        scope="secret:OPENAI_API_KEY",
+        phase="phase4_proposal_drafting",
+        reason="unit test",
+        ttl_minutes=5,
+    )
+    raw_text = store_path.read_text(encoding="utf-8")
+    assert issued.token not in raw_text
+    validated = store.validate_token(
+        issued.token,
+        required_scope="secret:OPENAI_API_KEY",
+        phase="phase4_proposal_drafting",
+    )
+    assert validated.used_at
+
+
+def test_incident_report_validates(tmp_path: Path) -> None:
+    from dataclasses import asdict
+
+    from src.incidents.incident_response import IncidentResponseLedger
+
+    ledger = IncidentResponseLedger(tmp_path / "incidents.jsonl")
+    report = ledger.create_report(
+        incident_type="secret_leak_suspicion",
+        severity="high",
+        summary="Unit-test incident report.",
+        evidence={"source": "unit_test"},
+    )
+    validate_artifact("incident_report", asdict(report))
+    assert report.external_action_performed is False
+    assert report.containment_steps

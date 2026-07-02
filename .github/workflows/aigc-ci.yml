@@ -1,0 +1,38 @@
+name: AIGC CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependency
+        run: python -m pip install pytest
+
+      - name: Validate contracts
+        run: python src/aigc.py validate
+
+      - name: Run tests
+        run: python -m pytest
+
+      - name: Scan for secret-like content
+        run: >
+          python src/security/redaction_scanner.py
+          --paths src config docs README.md AGENTS.md OMEGA_X_CONSTITUTION.md schemas tests reports

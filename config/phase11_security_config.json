@@ -43,6 +43,13 @@
     "credential_deletion"
   ],
   "default_cache_policy": "no_plaintext_cache",
+  "approval_token_policy": {
+    "enabled": true,
+    "store_path": "memory/approval_tokens.jsonl",
+    "store_raw_tokens": false,
+    "default_ttl_minutes": 30,
+    "one_time_by_default": true
+  },
   "offline_mode_policy": "manual_reauthentication_or_encrypted_cache_only",
   "audit_required": true,
   "redaction_required": true

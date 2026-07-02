@@ -36,9 +36,16 @@ class UltraSecretsAgent:
         "private_key",
     }
 
-    def __init__(self, manifest_path: Path, audit_log_path: Path, enable_live_retrieval: bool = False):
+    def __init__(
+        self,
+        manifest_path: Path,
+        audit_log_path: Path,
+        enable_live_retrieval: bool = False,
+        approval_token_store_path: Path | None = None,
+    ):
         self.manifest_path = manifest_path
         self.audit_log_path = audit_log_path
+        self.approval_token_store_path = approval_token_store_path
         self.redactor = Redactor()
         self.scanner = RedactionScanner(self.redactor)
         self.enable_live_retrieval = enable_live_retrieval
@@ -107,6 +114,7 @@ class UltraSecretsAgent:
             audit_log_path=self.audit_log_path,
             enable_live_retrieval=self.enable_live_retrieval,
             google_client=google_client,
+            approval_token_store_path=self.approval_token_store_path,
         )
         return broker.get_secret(request)
 

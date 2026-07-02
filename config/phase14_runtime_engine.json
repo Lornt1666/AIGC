@@ -23,6 +23,7 @@
     "run pipeline",
     "approve",
     "deny",
+    "issue-approval-token",
     "emergency-stop",
     "clear-emergency-stop",
     "report"

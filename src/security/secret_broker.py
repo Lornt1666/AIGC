@@ -29,10 +29,11 @@ class SecretBroker:
         audit_log_path: Path,
         enable_live_retrieval: bool = False,
         google_client: Optional[GoogleSecretManagerClient] = None,
+        approval_token_store_path: Optional[Path] = None,
     ):
         self.manifest_path = manifest_path
         self.audit = SecretAuditLedger(audit_log_path)
-        self.policy = SecretPolicyGate()
+        self.policy = SecretPolicyGate(approval_token_store_path=approval_token_store_path)
         self.enable_live_retrieval = enable_live_retrieval
         self.google_client = google_client
         self.manifest = json.loads(self.manifest_path.read_text(encoding="utf-8"))

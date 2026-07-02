@@ -249,6 +249,31 @@ python .\src\aigc.py deny --action-id AIGC-ACT-... --phrase "I, Justice Gray Mac
 
 Approving a packet authorizes Phase 6 eligibility only. It does not send, submit, message, bid, or perform external execution.
 
+## Milestone B Security Hardening
+
+Milestone B adds stronger local security controls:
+
+- Real secret-scanner CLI with nonzero exit on findings.
+- Hash-stored approval tokens for approval-required secret access.
+- Internal incident-response stubs.
+- GitHub Actions validation workflow.
+- Branch-protection scripts for use after `gh auth login`.
+
+Commands:
+
+```powershell
+python .\src\security\redaction_scanner.py --paths src config docs README.md AGENTS.md OMEGA_X_CONSTITUTION.md schemas tests reports
+python .\src\aigc.py issue-approval-token --scope secret:OPENAI_API_KEY --phase phase4_proposal_drafting --reason "approved internal test"
+python -m pytest
+```
+
+Apply GitHub branch protection only after authenticating:
+
+```powershell
+gh auth login
+.\scripts\apply_github_branch_protection.ps1 -Owner Lornt1666 -RepoName AIGC -Branch main
+```
+
 ## Publish Private GitHub Repo
 
 Authenticate first:

@@ -22,6 +22,7 @@ from src.core.contract_validator import (  # noqa: E402
 )
 from src.core.phase_registry import build_phase_registry  # noqa: E402
 from src.core.state_store import AIGCStateStore, DEFAULT_DB_PATH  # noqa: E402
+from src.security.approval_tokens import ApprovalTokenStore  # noqa: E402
 
 
 def main(argv: List[str] | None = None) -> int:
@@ -72,6 +73,37 @@ def main(argv: List[str] | None = None) -> int:
         return 0
     if args.command == "report":
         return run_subprocess([sys.executable, str(root / "src" / "phase12_observability_dashboard.py"), "--root", str(root), "--export"], root)
+    if args.command == "issue-approval-token":
+        token_store = ApprovalTokenStore(root / args.token_store)
+        issued = token_store.issue_token(
+            scope=args.scope,
+            phase=args.phase,
+            reason=args.reason,
+            ttl_minutes=args.ttl_minutes,
+            one_time=not args.reusable,
+        )
+        store.insert_event(
+            event_type="approval_token_issued",
+            phase=args.phase,
+            status="created",
+            summary=f"Issued scoped approval token for {args.scope}.",
+            data={
+                "token_id": issued.record.token_id,
+                "scope": issued.record.scope,
+                "expires_at": issued.record.expires_at,
+                "raw_token_logged": False,
+            },
+        )
+        print(json.dumps({
+            "token": issued.token,
+            "token_id": issued.record.token_id,
+            "scope": issued.record.scope,
+            "phase": issued.record.phase,
+            "expires_at": issued.record.expires_at,
+            "store": str(root / args.token_store),
+            "raw_token_stored": False,
+        }, indent=2))
+        return 0
     raise ValueError(f"Unhandled command: {args.command}")
 
 
@@ -399,6 +431,14 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     subparsers.add_parser("emergency-stop", help="Enable the runtime emergency stop.")
     subparsers.add_parser("clear-emergency-stop", help="Clear the runtime emergency stop.")
     subparsers.add_parser("report", help="Refresh the Phase 12 observability report.")
+
+    token_parser = subparsers.add_parser("issue-approval-token", help="Issue a scoped approval token and store only its hash.")
+    token_parser.add_argument("--scope", required=True)
+    token_parser.add_argument("--phase", required=True)
+    token_parser.add_argument("--reason", required=True)
+    token_parser.add_argument("--ttl-minutes", type=int, default=30)
+    token_parser.add_argument("--reusable", action="store_true")
+    token_parser.add_argument("--token-store", default="memory/approval_tokens.jsonl")
 
     approve_parser = subparsers.add_parser("approve", help="Approve one Phase 5 authorization packet by exact phrase.")
     approve_parser.add_argument("--action-id", required=True)

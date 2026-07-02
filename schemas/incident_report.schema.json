@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Incident Report",
+  "type": "object",
+  "required": [
+    "incident_id",
+    "created_at",
+    "incident_type",
+    "severity",
+    "status",
+    "summary",
+    "external_action_performed",
+    "containment_steps",
+    "recovery_steps"
+  ],
+  "properties": {
+    "incident_id": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "incident_type": {
+      "type": "string"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "status": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "containment_steps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "recovery_steps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "external_action_performed": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}

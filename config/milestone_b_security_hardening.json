@@ -1,0 +1,37 @@
+{
+  "milestone": "Milestone B - Security Hardening",
+  "external_actions_allowed": false,
+  "secret_scanner": {
+    "required": true,
+    "paths": [
+      "src",
+      "config",
+      "docs",
+      "README.md",
+      "AGENTS.md",
+      "OMEGA_X_CONSTITUTION.md",
+      "schemas",
+      "tests",
+      "reports"
+    ]
+  },
+  "approval_tokens": {
+    "enabled": true,
+    "store_path": "memory/approval_tokens.jsonl",
+    "store_raw_tokens": false,
+    "default_ttl_minutes": 30,
+    "default_one_time": true
+  },
+  "incident_response": {
+    "enabled": true,
+    "ledger_path": "data/incidents/incident_reports.jsonl",
+    "external_notifications_allowed": false
+  },
+  "github_protection": {
+    "script": "scripts/apply_github_branch_protection.ps1",
+    "requires_gh_auth": true,
+    "default_owner": "Lornt1666",
+    "default_repo": "AIGC",
+    "default_branch": "main"
+  }
+}
