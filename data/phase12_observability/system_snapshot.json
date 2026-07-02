@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-02T14:53:09.357279+00:00",
+  "generated_at": "2026-07-02T22:09:10.093148+00:00",
   "operator": "Justice Gray Maciocha",
   "phase": "Phase 12 - Observability Dashboard",
   "system_health": "yellow",
@@ -158,10 +158,26 @@
       "notes": [
         "No baseline telemetry found yet."
       ]
+    },
+    {
+      "phase": "phase19_subagent_generation_forge",
+      "status": "yellow",
+      "signal_count": 0,
+      "notes": [
+        "No baseline telemetry found yet."
+      ]
+    },
+    {
+      "phase": "phase20_fidelity_forge",
+      "status": "green",
+      "signal_count": 25,
+      "notes": [
+        "Telemetry present."
+      ]
     }
   ],
   "pipeline_metrics": {
-    "audit_events": 617,
+    "audit_events": 630,
     "memory_events": 1,
     "phase2_opportunities": 98,
     "phase3_dossiers": 25,
@@ -171,7 +187,8 @@
     "phase7_packets": 0,
     "phase8_patch_records": 1,
     "phase13_synthetic_records": 2,
-    "phase13_real_replay_records": 10
+    "phase13_real_replay_records": 10,
+    "phase20_fidelity_reviews": 25
   },
   "approval_metrics": {
     "pending": 25,
@@ -195,7 +212,7 @@
   },
   "audit_integrity": {
     "audit_dir_exists": true,
-    "audit_events": 617,
+    "audit_events": 630,
     "memory_events": 1,
     "missing_audit_baseline": false,
     "missing_memory_baseline": false

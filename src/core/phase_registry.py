@@ -195,6 +195,16 @@ def build_phase_registry(root: Path = PROJECT_ROOT) -> Dict[str, PhaseDefinition
             allowed_runtime_modes=["internal_subagent_team_planning_only"],
             external_action_risk="subagents_cannot_execute_externally",
         ),
+        "phase20": PhaseDefinition(
+            name="phase20",
+            display_name="Phase 20 - Fidelity Forge",
+            input_path="data/phase19_subagents/aigc_phase19_subagent_team_plans.json",
+            output_path="data/phase20_fidelity/aigc_phase20_fidelity_reviews.json",
+            schema_name="fidelity_review",
+            command=[py, str(src / "phase20_fidelity_forge.py")],
+            allowed_runtime_modes=["internal_quality_review_only"],
+            external_action_risk="none_internal_quality_review_only",
+        ),
     }
 
 

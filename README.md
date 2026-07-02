@@ -328,6 +328,25 @@ Outputs:
 
 Phase 19 does not create autonomous external actors. Generated sub-agents are internal planning records only and cannot contact employers, submit applications, open pull requests, post comments, bid, use credentials, or bypass approval gates.
 
+## Milestone H Fidelity Forge
+
+Milestone H adds Phase 20 as an internal quality, traceability, and readiness review layer. It reviews eligible proposal packages, Phase 19 sub-agent team plans, and Phase 16 compliance records before anything can be considered for external approval.
+
+Command:
+
+```powershell
+python .\src\aigc.py run phase20
+```
+
+Outputs:
+
+- `data/phase20_fidelity/aigc_phase20_fidelity_reviews.json`
+- `data/reports/phase20_signature_update.md`
+- `data/audit/aigc_phase20_audit.jsonl`
+- `reports/milestone_h_fidelity_forge_report.md`
+
+Phase 20 does not approve actions, contact employers, submit applications, submit deliverables, open pull requests, post comments, bid, use credentials, or bypass Phase 5. It only produces internal fidelity review records and revision recommendations.
+
 ## Milestone D Finance, Compliance, and Incident Response
 
 Milestone D adds internal-only controls for finance tracking, compliance screening, and incident response readiness.

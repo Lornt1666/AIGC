@@ -1,0 +1,50 @@
+{
+  "phase": "Phase 20 - Fidelity Forge",
+  "operating_mode": "internal_quality_review_only",
+  "external_actions_allowed": false,
+  "input_files": {
+    "assessments": "data/phase3_processed/aigc_phase3_assessment_dossiers.json",
+    "proposals": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+    "subagent_team_plans": "data/phase19_subagents/aigc_phase19_subagent_team_plans.json",
+    "compliance_reviews": "data/phase16_compliance/aigc_phase16_compliance_reviews.json"
+  },
+  "output_file": "data/phase20_fidelity/aigc_phase20_fidelity_reviews.json",
+  "report_file": "data/reports/phase20_signature_update.md",
+  "audit_log": "data/audit/aigc_phase20_audit.jsonl",
+  "eligible_readiness_decisions": [
+    "ready_for_phase_5",
+    "strong_minor_review"
+  ],
+  "max_reviews": 25,
+  "expected_min_subagents": 5,
+  "thresholds": {
+    "high_fidelity": 90,
+    "ready_with_minor_review": 80,
+    "revision_recommended": 65
+  },
+  "required_checks": [
+    "source_traceability",
+    "proposal_message_present",
+    "ai_disclosure_preserved",
+    "deliverables_present",
+    "scope_boundaries_present",
+    "clarifying_questions_present",
+    "subagent_team_present",
+    "compliance_review_present",
+    "external_action_blocked",
+    "auditability_present"
+  ],
+  "forbidden_fidelity_behaviors": [
+    "approve_external_action",
+    "send_external_message",
+    "submit_application",
+    "submit_deliverable",
+    "open_pull_request",
+    "post_issue_comment",
+    "bid",
+    "use_credentials",
+    "bypass_phase5_approval",
+    "weaken_ai_disclosure",
+    "hide_compliance_risk"
+  ]
+}

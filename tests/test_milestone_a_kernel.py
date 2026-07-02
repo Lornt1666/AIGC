@@ -35,6 +35,7 @@ REQUIRED_SCHEMAS = [
     "connector_record",
     "productization_release_record",
     "subagent_team_plan",
+    "fidelity_review",
 ]
 
 
@@ -75,6 +76,7 @@ def test_state_db_initializes(tmp_path: Path) -> None:
     assert "connectors" in summary["artifact_counts"]
     assert "productization_releases" in summary["artifact_counts"]
     assert "subagent_team_plans" in summary["artifact_counts"]
+    assert "fidelity_reviews" in summary["artifact_counts"]
     assert "customer_satisfaction" in summary["artifact_counts"]
 
 

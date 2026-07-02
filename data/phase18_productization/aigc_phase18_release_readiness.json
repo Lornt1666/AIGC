@@ -1,12 +1,12 @@
 {
-  "release_id": "AIGC-REL-BA128B7DF45AE5AA",
-  "created_at": "2026-07-02T16:39:29.096912+00:00",
+  "release_id": "AIGC-REL-8160A774020227A7",
+  "created_at": "2026-07-02T22:08:57.866462+00:00",
   "phase": "phase18_scaling_productization",
-  "version": "0.7.0-milestone-g",
+  "version": "0.8.0-milestone-h",
   "status": "internal_release_candidate",
   "release_type": "internal_private_kernel",
-  "branch": "codex/milestone-g-subagent-forge",
-  "commit": "c14e100",
+  "branch": "codex/milestone-h-fidelity-forge",
+  "commit": "abace3d",
   "required_files_present": true,
   "missing_required_files": [],
   "checked_files": [
@@ -61,7 +61,17 @@
       "kind": "file"
     },
     {
+      "path": "config/phase20_fidelity_forge.json",
+      "present": true,
+      "kind": "file"
+    },
+    {
       "path": "schemas/connector_record.schema.json",
+      "present": true,
+      "kind": "file"
+    },
+    {
+      "path": "schemas/fidelity_review.schema.json",
       "present": true,
       "kind": "file"
     },
@@ -116,6 +126,11 @@
       "kind": "file"
     },
     {
+      "path": "src/phase20_fidelity_forge.py",
+      "present": true,
+      "kind": "file"
+    },
+    {
       "path": "docs/PRIVATE_BRANCH_WORKFLOW.md",
       "present": true,
       "kind": "file"
@@ -149,6 +164,7 @@
     "data/reports/phase18_signature_update.md",
     "reports/milestone_f_productization_report.md",
     "reports/milestone_g_subagent_forge_report.md",
+    "reports/milestone_h_fidelity_forge_report.md",
     "docs/PRODUCTIZATION_RUNBOOK.md"
   ],
   "license_status": "all_rights_reserved_present",

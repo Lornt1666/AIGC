@@ -32,6 +32,7 @@ ARTIFACT_TABLES = [
     "connectors",
     "productization_releases",
     "subagent_team_plans",
+    "fidelity_reviews",
     "secret_access_events",
     "incident_events",
 ]

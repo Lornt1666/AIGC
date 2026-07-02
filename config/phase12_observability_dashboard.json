@@ -17,6 +17,7 @@
     "phase8_patches": "data/phase8_evolution/evolution_patches.jsonl",
     "phase13_synthetic": "data/phase13_simulation/synthetic_simulation_result.json",
     "phase13_real_replay": "data/phase13_real_data_replay/latest_real_data_replay.json",
+    "phase20_fidelity_reviews": "data/phase20_fidelity/aigc_phase20_fidelity_reviews.json",
     "secret_manifest": "config/secret_manifest.json",
     "external_secret_manifest": "../AIGC_MEMORY_CORE/config/secret_manifest.json"
   },
