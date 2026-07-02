@@ -36,6 +36,7 @@ REQUIRED_SCHEMAS = [
     "productization_release_record",
     "subagent_team_plan",
     "fidelity_review",
+    "quality_kernel_record",
 ]
 
 
@@ -78,6 +79,7 @@ def test_state_db_initializes(tmp_path: Path) -> None:
     assert "subagent_team_plans" in summary["artifact_counts"]
     assert "fidelity_reviews" in summary["artifact_counts"]
     assert "customer_satisfaction" in summary["artifact_counts"]
+    assert "quality_kernel_records" in summary["artifact_counts"]
 
 
 def test_cli_status_works(tmp_path: Path) -> None:

@@ -1,7 +1,7 @@
 {
   "phase": "Phase 18 - Scaling, Replication, and Productization",
   "operating_mode": "internal_private_release_readiness",
-  "version": "0.9.0-milestone-i",
+  "version": "0.10.0-milestone-j",
   "release_type": "internal_private_kernel",
   "external_actions_allowed": false,
   "deployment_allowed": false,
@@ -16,16 +16,19 @@
     "LICENSE",
     "README.md",
     ".github/workflows/aigc-ci.yml",
+    "prompts/phase22_quantum_quality_kernel.md",
     "config/phase10_connector_registry.json",
     "config/phase11_security_config.json",
     "config/phase14_runtime_engine.json",
     "config/phase17_incident_response.json",
     "config/phase20_fidelity_forge.json",
     "config/phase21_customer_satisfaction_continuum.json",
+    "config/phase22_quantum_quality_kernel.json",
     "schemas/connector_record.schema.json",
     "schemas/customer_satisfaction_record.schema.json",
     "schemas/fidelity_review.schema.json",
     "schemas/productization_release_record.schema.json",
+    "schemas/quality_kernel_record.schema.json",
     "schemas/subagent_team_plan.schema.json",
     "src/aigc.py",
     "src/core/contract_validator.py",
@@ -37,6 +40,7 @@
     "src/phase19_subagent_forge.py",
     "src/phase20_fidelity_forge.py",
     "src/phase21_customer_satisfaction_continuum.py",
+    "src/phase22_quantum_quality_kernel.py",
     "docs/PRIVATE_BRANCH_WORKFLOW.md"
   ],
   "validation_commands": [
@@ -65,10 +69,13 @@
   "release_artifacts": [
     "data/phase18_productization/aigc_phase18_release_readiness.json",
     "data/reports/phase18_signature_update.md",
+    "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+    "data/reports/phase22_signature_update.md",
     "reports/milestone_f_productization_report.md",
     "reports/milestone_g_subagent_forge_report.md",
     "reports/milestone_h_fidelity_forge_report.md",
     "reports/milestone_i_customer_satisfaction_report.md",
+    "reports/milestone_j_quantum_quality_kernel_report.md",
     "docs/PRODUCTIZATION_RUNBOOK.md"
   ]
 }

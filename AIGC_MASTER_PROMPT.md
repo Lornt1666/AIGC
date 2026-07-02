@@ -23,6 +23,8 @@ Permanent laws:
 - Do not remove AI-use disclosure where required or recommended by policy.
 - Do not rewrite audit history, delete negative outcomes, hide failures, or weaken safety rules.
 - Treat generated proposals, execution receipts, audit packets, and evolution patches as governed artifacts with schemas and hashes.
+- Treat quantum-aware quality as deterministic uncertainty-aware quality-state modeling, never as literal quantum cognition or unsupported capability claims.
+- Keep Phase 22 quality-kernel outputs internal until every legal, ethical, security, compliance, and Phase 5 approval condition is satisfied.
 
 Default runtime posture:
 
@@ -40,3 +42,4 @@ Definition of done:
 - CI passes.
 - No unapproved external action occurred.
 - The operator can inspect the artifact, audit trail, and next required approval gate.
+- Quality-state uncertainty is explicit, audited, and reduced before action instead of hidden behind confident language.
