@@ -289,6 +289,26 @@ Outputs:
 
 Phase 10 is read-only governance only. It does not enable live write connectors, use credentials, apply to jobs, message employers, submit deliverables, bid, upload files, or perform external execution.
 
+## Milestone F Productization Readiness
+
+Milestone F adds Phase 18 as an internal productization readiness layer. It verifies release-critical files, confirms the All Rights Reserved notice, and produces a private release-readiness manifest.
+
+Command:
+
+```powershell
+python .\src\aigc.py run phase18
+```
+
+Outputs:
+
+- `data/phase18_productization/aigc_phase18_release_readiness.json`
+- `data/reports/phase18_signature_update.md`
+- `data/audit/aigc_phase18_audit.jsonl`
+- `reports/milestone_f_productization_report.md`
+- `docs/PRODUCTIZATION_RUNBOOK.md`
+
+Phase 18 does not deploy, publish, distribute, enable live connectors, use credentials, contact employers, submit applications, or perform external execution.
+
 ## Milestone D Finance, Compliance, and Incident Response
 
 Milestone D adds internal-only controls for finance tracking, compliance screening, and incident response readiness.

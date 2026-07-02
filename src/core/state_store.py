@@ -30,6 +30,7 @@ ARTIFACT_TABLES = [
     "finance_ledger",
     "compliance_reviews",
     "connectors",
+    "productization_releases",
     "secret_access_events",
     "incident_events",
 ]

@@ -175,6 +175,16 @@ def build_phase_registry(root: Path = PROJECT_ROOT) -> Dict[str, PhaseDefinition
             allowed_runtime_modes=["internal_incident_response_only"],
             external_action_risk="none_internal_incident_reporting_only",
         ),
+        "phase18": PhaseDefinition(
+            name="phase18",
+            display_name="Phase 18 - Scaling, Replication, and Productization",
+            input_path="config/phase18_productization.json",
+            output_path="data/phase18_productization/aigc_phase18_release_readiness.json",
+            schema_name="productization_release_record",
+            command=[py, str(src / "phase18_productization.py")],
+            allowed_runtime_modes=["internal_release_readiness_only"],
+            external_action_risk="deployment_and_public_release_require_approval",
+        ),
     }
 
 
