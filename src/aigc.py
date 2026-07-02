@@ -21,6 +21,7 @@ from src.core.contract_validator import (  # noqa: E402
     validate_jsonl_file,
 )
 from src.core.phase_registry import build_phase_registry  # noqa: E402
+from src.core.pipeline_closure import PipelineClosureRunner  # noqa: E402
 from src.core.state_store import AIGCStateStore, DEFAULT_DB_PATH  # noqa: E402
 from src.security.approval_tokens import ApprovalTokenStore  # noqa: E402
 
@@ -51,6 +52,13 @@ def main(argv: List[str] | None = None) -> int:
         return command_authorization_decision(args, root, store, "approve")
     if args.command == "deny":
         return command_authorization_decision(args, root, store, "deny")
+    if args.command == "revise":
+        return command_authorization_decision(args, root, store, "revise")
+    if args.command == "close-loop":
+        runner = PipelineClosureRunner(root, store)
+        result = runner.run(execution_mode=args.execution_mode)
+        print(json.dumps(asdict(result), indent=2))
+        return 1 if result.validation_failures else 0
     if args.command == "emergency-stop":
         store.set_flag("emergency_stop", "true")
         store.insert_event(
@@ -266,16 +274,38 @@ def command_authorization_decision(
         print(f"Action ID not found: {args.action_id}")
         return 2
     approval = target.setdefault("approval", {})
-    expected_phrase = approval.get("required_phrase" if decision == "approve" else "denial_phrase", "")
-    if args.phrase.strip() != expected_phrase:
+    if decision == "revise":
+        expected_prefix = f"Revise action {args.action_id}:"
+        if not args.phrase.strip().startswith(expected_prefix) or not args.phrase.strip()[len(expected_prefix):].strip():
+            store.insert_event(
+                event_type="authorization_decision_rejected",
+                phase="phase5_human_approval_gate",
+                status="blocked",
+                summary=f"Rejected revision for action {args.action_id}; revision phrase mismatch.",
+            )
+            print("Revision phrase mismatch. No authorization state changed.")
+            print(f"Required prefix: {expected_prefix}")
+            return 2
+    else:
+        expected_phrase = approval.get("required_phrase" if decision == "approve" else "denial_phrase", "")
+        if args.phrase.strip() != expected_phrase:
+            store.insert_event(
+                event_type="authorization_decision_rejected",
+                phase="phase5_human_approval_gate",
+                status="blocked",
+                summary=f"Rejected {decision} for action {args.action_id}; exact phrase mismatch.",
+            )
+            print("Decision phrase mismatch. No authorization state changed.")
+            print(f"Required phrase: {expected_phrase}")
+            return 2
+    if decision == "approve" and authorization_expired(target):
         store.insert_event(
             event_type="authorization_decision_rejected",
             phase="phase5_human_approval_gate",
             status="blocked",
-            summary=f"Rejected {decision} for action {args.action_id}; exact phrase mismatch.",
+            summary=f"Rejected approval for action {args.action_id}; authorization expired.",
         )
-        print("Decision phrase mismatch. No authorization state changed.")
-        print(f"Required phrase: {expected_phrase}")
+        print("Authorization expired. Return to Phase 5 for a fresh approval packet.")
         return 2
     approval["received_phrase"] = args.phrase.strip()
     if decision == "approve":
@@ -290,7 +320,7 @@ def command_authorization_decision(
         phase6_status["external_action_performed"] = False
         event_type = "authorization_approved_for_phase6"
         status = "approved_for_phase_6"
-    else:
+    elif decision == "deny":
         approval["approved"] = False
         approval["denied"] = True
         approval["revision_required"] = False
@@ -301,6 +331,17 @@ def command_authorization_decision(
         phase6_status["external_action_performed"] = False
         event_type = "authorization_denied"
         status = "denied"
+    else:
+        approval["approved"] = False
+        approval["denied"] = False
+        approval["revision_required"] = True
+        approval["decision_notes"] = args.phrase.strip().split(":", 1)[1].strip()
+        target["decision"] = "revision_required"
+        phase6_status = target.setdefault("phase6_status", {})
+        phase6_status["authorized_for_phase6"] = False
+        phase6_status["external_action_performed"] = False
+        event_type = "authorization_revision_required"
+        status = "revision_required"
     packet_path.write_text(json.dumps(packets, ensure_ascii=False, indent=2), encoding="utf-8")
     validate_file("authorization_packet", packet_path)
     event = store.insert_event(
@@ -409,6 +450,19 @@ def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def authorization_expired(packet: Dict[str, Any]) -> bool:
+    value = packet.get("expires_at", "")
+    if not value:
+        return False
+    try:
+        expires_at = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    except ValueError:
+        return True
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+    return datetime.now(timezone.utc) > expires_at.astimezone(timezone.utc)
+
+
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="AIGC unified local runtime CLI.")
     parser.add_argument("--root", type=Path, default=PROJECT_ROOT)
@@ -432,6 +486,9 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     subparsers.add_parser("clear-emergency-stop", help="Clear the runtime emergency stop.")
     subparsers.add_parser("report", help="Refresh the Phase 12 observability report.")
 
+    close_loop_parser = subparsers.add_parser("close-loop", help="Run internal Phase 5 to Phase 7 closure without external execution.")
+    close_loop_parser.add_argument("--execution-mode", choices=["dry_run", "manual_handoff"], default="manual_handoff")
+
     token_parser = subparsers.add_parser("issue-approval-token", help="Issue a scoped approval token and store only its hash.")
     token_parser.add_argument("--scope", required=True)
     token_parser.add_argument("--phase", required=True)
@@ -449,6 +506,11 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     deny_parser.add_argument("--action-id", required=True)
     deny_parser.add_argument("--phrase", required=True)
     deny_parser.add_argument("--authorizations-path", default="data/phase5_authorizations/aigc_phase5_authorization_packets.json")
+
+    revise_parser = subparsers.add_parser("revise", help="Mark one Phase 5 authorization packet as revision-required.")
+    revise_parser.add_argument("--action-id", required=True)
+    revise_parser.add_argument("--phrase", required=True)
+    revise_parser.add_argument("--authorizations-path", default="data/phase5_authorizations/aigc_phase5_authorization_packets.json")
     return parser.parse_args(argv)
 
 

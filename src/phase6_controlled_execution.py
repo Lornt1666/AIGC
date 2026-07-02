@@ -315,13 +315,13 @@ class ControlledExecutionEngine:
         result.audit_event_ids.append(self.ledger.record("phase6_execution_result", asdict(result)))
         return result
 
-    def run_from_config(self, config_path: Path) -> List[ExecutionResult]:
+    def run_from_config(self, config_path: Path, execution_mode_override: str | None = None) -> List[ExecutionResult]:
         config = load_json_dict(config_path)
         inputs = config.get("input_files", {})
         auth_path = resolve_project_path(self.project_root, inputs.get("phase5_authorizations", ""))
         proposal_path = resolve_project_path(self.project_root, inputs.get("phase4_proposals", ""))
         output_path = resolve_project_path(self.project_root, config.get("output_file", "data/phase6_execution/aigc_phase6_execution_receipts.json"))
-        mode = str(config.get("default_execution_mode", ExecutionMode.MANUAL_HANDOFF.value))
+        mode = execution_mode_override or str(config.get("default_execution_mode", ExecutionMode.MANUAL_HANDOFF.value))
         if mode == ExecutionMode.APPROVED_API.value and not config.get("live_execution_allowed", False):
             mode = ExecutionMode.MANUAL_HANDOFF.value
         authorizations = load_json_list(auth_path) if auth_path.exists() else []

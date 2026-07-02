@@ -23,6 +23,8 @@
     "run pipeline",
     "approve",
     "deny",
+    "revise",
+    "close-loop",
     "issue-approval-token",
     "emergency-stop",
     "clear-emergency-stop",
