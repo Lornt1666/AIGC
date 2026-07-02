@@ -56,6 +56,7 @@ class Phase12ObservabilityDashboard:
         "phase16_compliance_legal_review",
         "phase17_incident_response",
         "phase18_scaling_productization",
+        "phase19_subagent_generation_forge",
     ]
 
     def __init__(self, root: Path, config_path: Path):
@@ -197,7 +198,7 @@ class Phase12ObservabilityDashboard:
             elif count > 0:
                 status = "green"
                 notes = ["Telemetry present."]
-            elif phase in {"phase0_genesis_constitution", "phase1_domain_discovery", "phase10_connector_api_layer", "phase13_simulation_arena", "phase14_deployment_runtime", "phase15_finance_contracts_asset_ledger", "phase16_compliance_legal_review", "phase17_incident_response", "phase18_scaling_productization"}:
+            elif phase in {"phase0_genesis_constitution", "phase1_domain_discovery", "phase10_connector_api_layer", "phase13_simulation_arena", "phase14_deployment_runtime", "phase15_finance_contracts_asset_ledger", "phase16_compliance_legal_review", "phase17_incident_response", "phase18_scaling_productization", "phase19_subagent_generation_forge"}:
                 status = "yellow"
                 notes = ["No baseline telemetry found yet."]
             else:
