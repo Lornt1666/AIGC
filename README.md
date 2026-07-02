@@ -224,7 +224,7 @@ gh auth login
 Then publish:
 
 ```powershell
-.\scripts\create_private_github_repo_gh.ps1 -RepoName AIGC
+.\scripts\create_private_github_repo_gh.ps1 -Owner Lornt1666 -RepoName AIGC
 ```
 
 The repository includes an All Rights Reserved license notice in `LICENSE`, `README.md`, and `AGENTS.md`.
