@@ -258,6 +258,7 @@ Milestone B adds stronger local security controls:
 - Internal incident-response stubs.
 - GitHub Actions validation workflow.
 - Branch-protection scripts for use after `gh auth login`.
+- Local Git guards for private-repo branch discipline while GitHub branch protection is unavailable.
 
 Commands:
 
@@ -266,6 +267,24 @@ python .\src\security\redaction_scanner.py --paths src config docs README.md AGE
 python .\src\aigc.py issue-approval-token --scope secret:OPENAI_API_KEY --phase phase4_proposal_drafting --reason "approved internal test"
 python -m pytest
 ```
+
+Install local Git guards:
+
+```powershell
+.\scripts\install_local_git_guards.ps1
+```
+
+Daily private-repo workflow:
+
+```powershell
+git switch main
+git pull --ff-only
+git switch -c codex/my-change
+git push -u origin codex/my-change
+gh pr create --draft --base main --head codex/my-change --title "[codex] my change"
+```
+
+See `docs/PRIVATE_BRANCH_WORKFLOW.md` for the full branch discipline policy.
 
 Apply GitHub branch protection only after authenticating:
 

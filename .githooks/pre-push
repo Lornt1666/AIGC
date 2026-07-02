@@ -1,0 +1,39 @@
+#!/usr/bin/env sh
+set -eu
+
+blocked_ref=""
+
+while read local_ref local_sha remote_ref remote_sha
+do
+  case "$remote_ref" in
+    refs/heads/main|refs/heads/master)
+      blocked_ref="$remote_ref"
+      ;;
+  esac
+done
+
+if [ -n "$blocked_ref" ] && [ "${AIGC_ALLOW_MAIN_PUSH:-}" != "1" ]; then
+  cat >&2 <<'MSG'
+AIGC local guard blocked a direct push to main.
+
+Use the private-repo workflow:
+  git switch -c codex/<short-description>
+  git push -u origin codex/<short-description>
+  gh pr create --draft --base main --head codex/<short-description>
+
+Emergency override, if you intentionally accept the risk:
+  AIGC_ALLOW_MAIN_PUSH=1 git push origin main
+MSG
+  exit 1
+fi
+
+if [ "${AIGC_SKIP_LOCAL_CHECKS:-}" = "1" ]; then
+  echo "AIGC local checks skipped by AIGC_SKIP_LOCAL_CHECKS=1."
+  exit 0
+fi
+
+echo "AIGC local guard running validation before push..."
+python src/aigc.py validate
+python -m pytest
+python src/security/redaction_scanner.py --paths src config docs README.md AGENTS.md OMEGA_X_CONSTITUTION.md schemas tests reports
+
