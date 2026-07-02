@@ -185,6 +185,16 @@ def build_phase_registry(root: Path = PROJECT_ROOT) -> Dict[str, PhaseDefinition
             allowed_runtime_modes=["internal_release_readiness_only"],
             external_action_risk="deployment_and_public_release_require_approval",
         ),
+        "phase19": PhaseDefinition(
+            name="phase19",
+            display_name="Phase 19 - Sub-Agent Generation Forge",
+            input_path="data/phase4_proposals/aigc_phase4_proposal_packages.json",
+            output_path="data/phase19_subagents/aigc_phase19_subagent_team_plans.json",
+            schema_name="subagent_team_plan",
+            command=[py, str(src / "phase19_subagent_forge.py")],
+            allowed_runtime_modes=["internal_subagent_team_planning_only"],
+            external_action_risk="subagents_cannot_execute_externally",
+        ),
     }
 
 

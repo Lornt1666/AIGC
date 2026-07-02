@@ -309,6 +309,25 @@ Outputs:
 
 Phase 18 does not deploy, publish, distribute, enable live connectors, use credentials, contact employers, submit applications, or perform external execution.
 
+## Milestone G Sub-Agent Generation Forge
+
+Milestone G adds Phase 19 as an internal specialist-team planning layer. It turns eligible proposal packages into governed sub-agent team plans with explicit roles, input contracts, output contracts, allowed actions, forbidden actions, quality criteria, and handoff targets.
+
+Command:
+
+```powershell
+python .\src\aigc.py run phase19
+```
+
+Outputs:
+
+- `data/phase19_subagents/aigc_phase19_subagent_team_plans.json`
+- `data/reports/phase19_signature_update.md`
+- `data/audit/aigc_phase19_audit.jsonl`
+- `reports/milestone_g_subagent_forge_report.md`
+
+Phase 19 does not create autonomous external actors. Generated sub-agents are internal planning records only and cannot contact employers, submit applications, open pull requests, post comments, bid, use credentials, or bypass approval gates.
+
 ## Milestone D Finance, Compliance, and Incident Response
 
 Milestone D adds internal-only controls for finance tracking, compliance screening, and incident response readiness.

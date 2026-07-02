@@ -154,6 +154,7 @@ def command_validate(args: argparse.Namespace, root: Path, store: AIGCStateStore
             (registry["phase15"].schema_name, root / registry["phase15"].output_path),
             (registry["phase16"].schema_name, root / registry["phase16"].output_path),
             (registry["phase18"].schema_name, root / registry["phase18"].output_path),
+            (registry["phase19"].schema_name, root / registry["phase19"].output_path),
         ]
         jsonl_targets = [
             ("outcome_record", root / "data" / "phase8_evolution" / "outcome_records.jsonl"),
@@ -243,6 +244,16 @@ def command_run(args: argparse.Namespace, root: Path, store: AIGCStateStore) -> 
             str(root),
             "--config",
             str(root / "config" / "phase18_productization.json"),
+        ]
+        status = run_subprocess(command, root)
+    elif phase == "phase19":
+        command = [
+            sys.executable,
+            str(PROJECT_ROOT / "src" / "phase19_subagent_forge.py"),
+            "--project-root",
+            str(root),
+            "--config",
+            str(root / "config" / "phase19_subagent_forge.json"),
         ]
         status = run_subprocess(command, root)
     else:
@@ -521,7 +532,7 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     validate_parser.add_argument("--path", default="")
 
     run_parser = subparsers.add_parser("run", help="Run an internal AIGC phase command.")
-    run_parser.add_argument("phase", choices=["phase2", "phase3", "phase4", "phase5", "phase6", "phase7", "phase8", "phase10", "phase11", "phase12", "phase13", "phase14", "phase15", "phase16", "phase17", "phase18", "pipeline"])
+    run_parser.add_argument("phase", choices=["phase2", "phase3", "phase4", "phase5", "phase6", "phase7", "phase8", "phase10", "phase11", "phase12", "phase13", "phase14", "phase15", "phase16", "phase17", "phase18", "phase19", "pipeline"])
     run_parser.add_argument("--mode", choices=["synthetic", "real", "real_data_read_only"], default="synthetic")
     run_parser.add_argument("--source", choices=["remoteok", "remotive", "weworkremotely", "github_issues"], default="remoteok")
     run_parser.add_argument("--limit", type=int, default=10)

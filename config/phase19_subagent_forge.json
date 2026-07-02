@@ -1,0 +1,106 @@
+{
+  "phase": "Phase 19 - Sub-Agent Generation Forge",
+  "operating_mode": "internal_subagent_team_planning",
+  "external_actions_allowed": false,
+  "input_files": {
+    "assessments": "data/phase3_processed/aigc_phase3_assessment_dossiers.json",
+    "proposals": "data/phase4_proposals/aigc_phase4_proposal_packages.json"
+  },
+  "output_file": "data/phase19_subagents/aigc_phase19_subagent_team_plans.json",
+  "report_file": "data/reports/phase19_signature_update.md",
+  "audit_log": "data/audit/aigc_phase19_audit.jsonl",
+  "eligible_readiness_decisions": [
+    "ready_for_phase_5",
+    "strong_minor_review"
+  ],
+  "max_team_plans": 25,
+  "default_role_templates": [
+    {
+      "role": "Task Architect",
+      "purpose": "Break the approved internal work object into bounded steps, dependencies, and acceptance criteria.",
+      "output_artifact": "task_architecture_brief",
+      "handoff_target": "Requirement Extractor"
+    },
+    {
+      "role": "Requirement Extractor",
+      "purpose": "Extract explicit requirements, unknowns, constraints, and clarifying questions from the source and proposal.",
+      "output_artifact": "requirement_matrix",
+      "handoff_target": "Skill Synthesizer"
+    },
+    {
+      "role": "Skill Synthesizer",
+      "purpose": "Map the work to required capabilities, tools, research needs, and quality criteria.",
+      "output_artifact": "skill_map",
+      "handoff_target": "Execution Specialist"
+    },
+    {
+      "role": "Execution Specialist",
+      "purpose": "Draft the internal execution plan for the approved work while staying inside approved scope.",
+      "output_artifact": "internal_execution_plan",
+      "handoff_target": "Quality Sentinel"
+    },
+    {
+      "role": "Quality Sentinel",
+      "purpose": "Review internal artifacts for completeness, correctness, clarity, and acceptance criteria alignment.",
+      "output_artifact": "quality_review",
+      "handoff_target": "Compliance Sentinel"
+    },
+    {
+      "role": "Customer Liaison",
+      "purpose": "Prepare customer-facing questions, expectations, and communication notes for human review only.",
+      "output_artifact": "communication_brief",
+      "handoff_target": "Compliance Sentinel"
+    },
+    {
+      "role": "Compliance Sentinel",
+      "purpose": "Check platform, disclosure, privacy, regulated-domain, and scope concerns before approval.",
+      "output_artifact": "compliance_brief",
+      "handoff_target": "Audit Scribe"
+    },
+    {
+      "role": "Audit Scribe",
+      "purpose": "Record assumptions, hashes, approvals, handoffs, and evidence for later audit packets.",
+      "output_artifact": "audit_notes",
+      "handoff_target": "Optimization Oracle"
+    },
+    {
+      "role": "Optimization Oracle",
+      "purpose": "Recommend internal improvements, reusable patterns, and future patch candidates without applying them.",
+      "output_artifact": "optimization_notes",
+      "handoff_target": "Phase 20 Fidelity Forge"
+    }
+  ],
+  "allowed_internal_actions": [
+    "read_internal_artifacts",
+    "extract_requirements",
+    "draft_internal_notes",
+    "score_quality",
+    "prepare_handoff",
+    "write_audit_notes"
+  ],
+  "forbidden_team_behaviors": [
+    "send_external_message",
+    "submit_application",
+    "submit_deliverable",
+    "open_pull_request",
+    "post_issue_comment",
+    "bid",
+    "accept_contract",
+    "use_credentials",
+    "expand_scope_without_approval",
+    "modify_approved_artifact_without_reapproval"
+  ],
+  "required_approval_gates": [
+    "phase5_human_approval_gate",
+    "phase6_controlled_execution_for_any_external_action",
+    "phase16_compliance_review_for_orange_or_red_risk"
+  ],
+  "quality_bar": [
+    "requirements_traceable_to_source",
+    "scope_is_bounded",
+    "unknowns_are_explicit",
+    "ai_disclosure_preserved",
+    "external_action_blocked_until_approval",
+    "handoffs_are_auditable"
+  ]
+}

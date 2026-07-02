@@ -1,12 +1,12 @@
 {
-  "release_id": "AIGC-REL-C7AB14DEA811D4DA",
-  "created_at": "2026-07-02T16:30:29.305719+00:00",
+  "release_id": "AIGC-REL-BA128B7DF45AE5AA",
+  "created_at": "2026-07-02T16:39:29.096912+00:00",
   "phase": "phase18_scaling_productization",
-  "version": "0.6.0-milestone-f",
+  "version": "0.7.0-milestone-g",
   "status": "internal_release_candidate",
   "release_type": "internal_private_kernel",
-  "branch": "codex/milestone-f-productization-readiness",
-  "commit": "f2df7d8",
+  "branch": "codex/milestone-g-subagent-forge",
+  "commit": "c14e100",
   "required_files_present": true,
   "missing_required_files": [],
   "checked_files": [
@@ -71,6 +71,11 @@
       "kind": "file"
     },
     {
+      "path": "schemas/subagent_team_plan.schema.json",
+      "present": true,
+      "kind": "file"
+    },
+    {
       "path": "src/aigc.py",
       "present": true,
       "kind": "file"
@@ -102,6 +107,11 @@
     },
     {
       "path": "src/phase18_productization.py",
+      "present": true,
+      "kind": "file"
+    },
+    {
+      "path": "src/phase19_subagent_forge.py",
       "present": true,
       "kind": "file"
     },
@@ -138,6 +148,7 @@
     "data/phase18_productization/aigc_phase18_release_readiness.json",
     "data/reports/phase18_signature_update.md",
     "reports/milestone_f_productization_report.md",
+    "reports/milestone_g_subagent_forge_report.md",
     "docs/PRODUCTIZATION_RUNBOOK.md"
   ],
   "license_status": "all_rights_reserved_present",
