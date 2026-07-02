@@ -205,6 +205,16 @@ def build_phase_registry(root: Path = PROJECT_ROOT) -> Dict[str, PhaseDefinition
             allowed_runtime_modes=["internal_quality_review_only"],
             external_action_risk="none_internal_quality_review_only",
         ),
+        "phase21": PhaseDefinition(
+            name="phase21",
+            display_name="Phase 21 - Customer Satisfaction Continuum",
+            input_path="data/phase20_fidelity/aigc_phase20_fidelity_reviews.json",
+            output_path="data/phase21_customer_satisfaction/aigc_phase21_customer_satisfaction_records.json",
+            schema_name="customer_satisfaction_record",
+            command=[py, str(src / "phase21_customer_satisfaction_continuum.py")],
+            allowed_runtime_modes=["internal_customer_fit_scoring_only"],
+            external_action_risk="none_internal_customer_scoring_only",
+        ),
     }
 
 

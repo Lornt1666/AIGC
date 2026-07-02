@@ -347,6 +347,25 @@ Outputs:
 
 Phase 20 does not approve actions, contact employers, submit applications, submit deliverables, open pull requests, post comments, bid, use credentials, or bypass Phase 5. It only produces internal fidelity review records and revision recommendations.
 
+## Milestone I Customer Satisfaction Continuum
+
+Milestone I adds Phase 21 as an internal Customer Happiness Index layer. It scores expected customer satisfaction before any external action using proposal quality, fidelity reviews, compliance posture, finance blockers, and Phase 5 approval state.
+
+Command:
+
+```powershell
+python .\src\aigc.py run phase21
+```
+
+Outputs:
+
+- `data/phase21_customer_satisfaction/aigc_phase21_customer_satisfaction_records.json`
+- `data/reports/phase21_signature_update.md`
+- `data/audit/aigc_phase21_audit.jsonl`
+- `reports/milestone_i_customer_satisfaction_report.md`
+
+Phase 21 does not contact customers, promise outcomes, accept contracts, request payment, submit deliverables, or bypass approval gates. CHI is an internal estimate until real employer response, delivery, and revision outcomes exist.
+
 ## Milestone D Finance, Compliance, and Incident Response
 
 Milestone D adds internal-only controls for finance tracking, compliance screening, and incident response readiness.

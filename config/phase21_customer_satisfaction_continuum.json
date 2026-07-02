@@ -1,0 +1,44 @@
+{
+  "phase": "Phase 21 - Customer Satisfaction Continuum",
+  "operating_mode": "internal_customer_fit_scoring_only",
+  "external_actions_allowed": false,
+  "input_files": {
+    "proposals": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+    "authorizations": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+    "finance_records": "data/phase15_finance/aigc_phase15_finance_ledger.json",
+    "compliance_reviews": "data/phase16_compliance/aigc_phase16_compliance_reviews.json",
+    "fidelity_reviews": "data/phase20_fidelity/aigc_phase20_fidelity_reviews.json"
+  },
+  "output_file": "data/phase21_customer_satisfaction/aigc_phase21_customer_satisfaction_records.json",
+  "report_file": "data/reports/phase21_signature_update.md",
+  "audit_log": "data/audit/aigc_phase21_audit.jsonl",
+  "max_records": 25,
+  "measurement_stage": "pre_external_action",
+  "score_dimensions": [
+    "requirement_clarity",
+    "communication_quality",
+    "response_speed",
+    "deliverable_quality",
+    "professional_tone",
+    "scope_alignment",
+    "revision_handling",
+    "employer_trust",
+    "over_delivery_value",
+    "acceptance_likelihood"
+  ],
+  "thresholds": {
+    "strong_customer_fit": 85,
+    "good_fit_with_review": 75,
+    "revision_recommended": 65
+  },
+  "forbidden_behaviors": [
+    "contact_employer",
+    "send_customer_message",
+    "promise_acceptance",
+    "accept_contract",
+    "request_payment",
+    "submit_deliverable",
+    "bypass_phase5_approval",
+    "hide_customer_risk"
+  ]
+}
