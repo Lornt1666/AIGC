@@ -32,4 +32,11 @@ $body | gh api `
   "/repos/$Owner/$RepoName/branches/$Branch/protection" `
   --input -
 
+if ($LASTEXITCODE -ne 0) {
+  Write-Host "GitHub branch protection was not applied."
+  Write-Host "For private repositories, GitHub may require GitHub Pro or a public repository."
+  Write-Host "Use scripts/install_local_git_guards.ps1 and PR-based CI until branch protection is available."
+  exit $LASTEXITCODE
+}
+
 Write-Host "Applied branch protection to ${Owner}/${RepoName}:${Branch}"

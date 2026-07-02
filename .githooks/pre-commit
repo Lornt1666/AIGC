@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+set -eu
+
+branch="$(git symbolic-ref --quiet --short HEAD || true)"
+
+case "$branch" in
+  main|master)
+    if [ "${AIGC_ALLOW_MAIN_COMMIT:-}" != "1" ]; then
+      cat >&2 <<'MSG'
+AIGC local guard blocked a direct commit on main.
+
+Use a feature branch:
+  git switch -c codex/<short-description>
+
+Emergency override, if you intentionally accept the risk:
+  AIGC_ALLOW_MAIN_COMMIT=1 git commit
+MSG
+      exit 1
+    fi
+    ;;
+esac
+
