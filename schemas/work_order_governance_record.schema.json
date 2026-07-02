@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Ascended Work Order Governance Record",
+  "type": "object",
+  "required": [
+    "record_id",
+    "created_at",
+    "phase",
+    "status",
+    "source_quality_record_id",
+    "work_order_id",
+    "title",
+    "mission",
+    "perfect_draft_v1",
+    "ontological_self_audit",
+    "ascended_output_v2",
+    "ology_matrix",
+    "agent_orchestration",
+    "quantum_quality_state",
+    "legal_ethical_superstructure",
+    "capability_procurements",
+    "required_next_actions",
+    "blocked_actions",
+    "approval_required_before_external_action",
+    "external_action_performed"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "phase": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "source_quality_record_id": {
+      "type": "string"
+    },
+    "work_order_id": {
+      "type": "string"
+    },
+    "opportunity_id": {
+      "type": "string"
+    },
+    "proposal_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "employer": {
+      "type": "string"
+    },
+    "source_platform": {
+      "type": "string"
+    },
+    "source_url": {
+      "type": "string"
+    },
+    "mission": {
+      "type": "string"
+    },
+    "perfect_draft_v1": {
+      "type": "object"
+    },
+    "ontological_self_audit": {
+      "type": "object"
+    },
+    "ascended_output_v2": {
+      "type": "object"
+    },
+    "ology_matrix": {
+      "type": "object"
+    },
+    "agent_orchestration": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "quantum_quality_state": {
+      "type": "object"
+    },
+    "legal_ethical_superstructure": {
+      "type": "object"
+    },
+    "capability_procurements": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "required_next_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "blocked_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "approval_required_before_external_action": {
+      "type": "boolean"
+    },
+    "external_action_performed": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}

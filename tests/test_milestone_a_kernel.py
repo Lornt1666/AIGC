@@ -37,6 +37,7 @@ REQUIRED_SCHEMAS = [
     "subagent_team_plan",
     "fidelity_review",
     "quality_kernel_record",
+    "work_order_governance_record",
 ]
 
 
@@ -80,6 +81,7 @@ def test_state_db_initializes(tmp_path: Path) -> None:
     assert "fidelity_reviews" in summary["artifact_counts"]
     assert "customer_satisfaction" in summary["artifact_counts"]
     assert "quality_kernel_records" in summary["artifact_counts"]
+    assert "work_order_governance_records" in summary["artifact_counts"]
 
 
 def test_cli_status_works(tmp_path: Path) -> None:

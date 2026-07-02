@@ -225,6 +225,16 @@ def build_phase_registry(root: Path = PROJECT_ROOT) -> Dict[str, PhaseDefinition
             allowed_runtime_modes=["internal_quality_consciousness_only"],
             external_action_risk="none_internal_quality_state_model_only",
         ),
+        "phase23": PhaseDefinition(
+            name="phase23",
+            display_name="Phase 23 - Ascended Work Order Governor",
+            input_path="data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+            output_path="data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+            schema_name="work_order_governance_record",
+            command=[py, str(src / "phase23_work_order_governor.py")],
+            allowed_runtime_modes=["internal_work_order_governance_only"],
+            external_action_risk="none_internal_work_order_governance_only",
+        ),
     }
 
 

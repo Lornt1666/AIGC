@@ -1,0 +1,73 @@
+{
+  "phase": "Phase 23 - Ascended Work Order Governor",
+  "operating_mode": "internal_work_order_quality_application",
+  "external_actions_allowed": false,
+  "literal_quantum_claims_allowed": false,
+  "input_files": {
+    "quality_kernel_records": "data/phase22_quality/aigc_phase22_quality_kernel_records.json"
+  },
+  "output_file": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+  "report_file": "data/reports/phase23_signature_update.md",
+  "audit_log": "data/audit/aigc_phase23_audit.jsonl",
+  "max_records": 25,
+  "work_order_output_contract": [
+    "perfect_draft_v1",
+    "ontological_self_audit",
+    "ascended_output_v2"
+  ],
+  "ology_matrix": [
+    "ontology",
+    "epistemology",
+    "methodology",
+    "praxeology",
+    "axiology",
+    "teleology",
+    "semiotics",
+    "cybernetics",
+    "systems_theory",
+    "hermeneutics",
+    "phenomenology",
+    "logic",
+    "ethics",
+    "jurisprudence",
+    "linguistics",
+    "information_theory",
+    "computational_theory",
+    "design_theory",
+    "decision_theory",
+    "risk_theory"
+  ],
+  "agent_orchestration": [
+    "Meta-Cognition Agent",
+    "Technical-Fidelity Agent",
+    "Ethics-Compliance Agent",
+    "Optimization-Architect Agent",
+    "Risk Mitigation Agent",
+    "Ontological-Mapping Agent",
+    "Praxeological-Efficiency Agent"
+  ],
+  "capability_procurements": [
+    "contract_validation",
+    "schema_bound_output",
+    "source_traceability",
+    "disciplinary_best_practice_review",
+    "security_secret_isolation",
+    "legal_ethical_compliance_gate",
+    "human_approval_gate",
+    "telemetry_and_auditability",
+    "uncertainty_reduction",
+    "continuous_quality_improvement"
+  ],
+  "blocked_actions": [
+    "contact_external_party",
+    "submit_application",
+    "submit_deliverable",
+    "approve_external_action",
+    "accept_contract",
+    "request_payment",
+    "use_credentials",
+    "bypass_phase5_approval",
+    "claim_literal_quantum_cognition",
+    "hide_risk_or_uncertainty"
+  ]
+}

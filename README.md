@@ -236,6 +236,7 @@ python .\src\aigc.py run phase15
 python .\src\aigc.py run phase16
 python .\src\aigc.py run phase17
 python .\src\aigc.py run phase22
+python .\src\aigc.py run phase23
 python .\src\aigc.py run pipeline --mode synthetic
 python .\src\aigc.py run pipeline --mode real_data_read_only --source remoteok --limit 10
 python .\src\aigc.py close-loop --execution-mode manual_handoff
@@ -385,6 +386,25 @@ Outputs:
 - `reports/milestone_j_quantum_quality_kernel_report.md`
 
 Quantum-aware means deterministic uncertainty-aware quality-state modeling. Phase 22 does not claim literal quantum cognition, approve actions, contact customers, accept contracts, use credentials, submit work, or bypass legal, ethical, compliance, security, and Phase 5 approval gates.
+
+## Milestone K Ascended Work Order Governor
+
+Milestone K adds Phase 23 as an internal work-order quality application layer. It consumes Phase 22 quality-kernel records and forces each governed work order through `Perfect Draft v1`, `Ontological Self-Audit`, and `Ascended Output v2`.
+
+Command:
+
+```powershell
+python .\src\aigc.py run phase23
+```
+
+Outputs:
+
+- `data/phase23_work_orders/aigc_phase23_work_order_governance_records.json`
+- `data/reports/phase23_signature_update.md`
+- `data/audit/aigc_phase23_audit.jsonl`
+- `reports/milestone_k_work_order_governor_report.md`
+
+Phase 23 applies the quality doctrine to work orders, but it still performs no external action. It does not approve work, contact customers, submit applications, submit deliverables, accept contracts, request payment, use credentials, or bypass Phase 5 and Phase 6 gates.
 
 ## Milestone D Finance, Compliance, and Incident Response
 

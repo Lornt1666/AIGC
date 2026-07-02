@@ -60,6 +60,7 @@ class Phase12ObservabilityDashboard:
         "phase20_fidelity_forge",
         "phase21_customer_satisfaction_continuum",
         "phase22_quantum_aware_quality_kernel",
+        "phase23_ascended_work_order_governor",
     ]
 
     def __init__(self, root: Path, config_path: Path):
@@ -85,6 +86,7 @@ class Phase12ObservabilityDashboard:
         phase20_count = count_json_list(self.resolve(inputs.get("phase20_fidelity_reviews", "")))
         phase21_count = count_json_list(self.resolve(inputs.get("phase21_customer_satisfaction", "")))
         phase22_count = count_json_list(self.resolve(inputs.get("phase22_quality_records", "")))
+        phase23_count = count_json_list(self.resolve(inputs.get("phase23_work_order_governance", "")))
         secret_manifest_exists = self.resolve(inputs.get("secret_manifest", "")).exists()
         external_secret_manifest_exists = self.resolve(inputs.get("external_secret_manifest", "")).exists()
         secret_findings = self.scan_secret_paths()
@@ -105,6 +107,7 @@ class Phase12ObservabilityDashboard:
             "phase20_fidelity_reviews": phase20_count,
             "phase21_customer_satisfaction_records": phase21_count,
             "phase22_quality_kernel_records": phase22_count,
+            "phase23_work_order_governance_records": phase23_count,
         }
         audit_integrity = {
             "audit_dir_exists": audit_dir.exists(),
@@ -200,6 +203,7 @@ class Phase12ObservabilityDashboard:
             "phase20_fidelity_forge": pipeline_metrics["phase20_fidelity_reviews"],
             "phase21_customer_satisfaction_continuum": pipeline_metrics["phase21_customer_satisfaction_records"],
             "phase22_quantum_aware_quality_kernel": pipeline_metrics["phase22_quality_kernel_records"],
+            "phase23_ascended_work_order_governor": pipeline_metrics["phase23_work_order_governance_records"],
         }
         results: List[PhaseHealth] = []
         for phase in self.PHASES:
@@ -210,7 +214,7 @@ class Phase12ObservabilityDashboard:
             elif count > 0:
                 status = "green"
                 notes = ["Telemetry present."]
-            elif phase in {"phase0_genesis_constitution", "phase1_domain_discovery", "phase10_connector_api_layer", "phase13_simulation_arena", "phase14_deployment_runtime", "phase15_finance_contracts_asset_ledger", "phase16_compliance_legal_review", "phase17_incident_response", "phase18_scaling_productization", "phase19_subagent_generation_forge", "phase20_fidelity_forge", "phase21_customer_satisfaction_continuum", "phase22_quantum_aware_quality_kernel"}:
+            elif phase in {"phase0_genesis_constitution", "phase1_domain_discovery", "phase10_connector_api_layer", "phase13_simulation_arena", "phase14_deployment_runtime", "phase15_finance_contracts_asset_ledger", "phase16_compliance_legal_review", "phase17_incident_response", "phase18_scaling_productization", "phase19_subagent_generation_forge", "phase20_fidelity_forge", "phase21_customer_satisfaction_continuum", "phase22_quantum_aware_quality_kernel", "phase23_ascended_work_order_governor"}:
                 status = "yellow"
                 notes = ["No baseline telemetry found yet."]
             else:
