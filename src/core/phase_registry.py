@@ -95,6 +95,16 @@ def build_phase_registry(root: Path = PROJECT_ROOT) -> Dict[str, PhaseDefinition
             allowed_runtime_modes=["internal_evolution_only"],
             external_action_risk="behavior_changes_require_approval",
         ),
+        "phase10": PhaseDefinition(
+            name="phase10",
+            display_name="Phase 10 - Connector / API Integration Layer",
+            input_path="config/phase10_connector_registry.json",
+            output_path="data/phase10_connectors/aigc_phase10_connector_registry.json",
+            schema_name="connector_record",
+            command=[py, str(src / "phase10_connector_registry.py")],
+            allowed_runtime_modes=["read_only_connector_registry"],
+            external_action_risk="no_live_write_connectors",
+        ),
         "phase11": PhaseDefinition(
             name="phase11",
             display_name="Phase 11 - Security Vault",

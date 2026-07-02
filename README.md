@@ -270,6 +270,25 @@ Outputs:
 
 The closure runner does not approve actions, contact recipients, use credentials, or perform external execution.
 
+## Milestone E Connector Maturity
+
+Milestone E adds Phase 10 as a connector governance layer. It converts configured discovery sources into connector capability records and blocks unsafe drift before any connector can become live.
+
+Command:
+
+```powershell
+python .\src\aigc.py run phase10
+```
+
+Outputs:
+
+- `data/phase10_connectors/aigc_phase10_connector_registry.json`
+- `data/reports/phase10_signature_update.md`
+- `data/audit/aigc_phase10_audit.jsonl`
+- `reports/milestone_e_connector_maturity_report.md`
+
+Phase 10 is read-only governance only. It does not enable live write connectors, use credentials, apply to jobs, message employers, submit deliverables, bid, upload files, or perform external execution.
+
 ## Milestone D Finance, Compliance, and Incident Response
 
 Milestone D adds internal-only controls for finance tracking, compliance screening, and incident response readiness.

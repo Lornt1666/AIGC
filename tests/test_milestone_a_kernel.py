@@ -32,6 +32,7 @@ REQUIRED_SCHEMAS = [
     "finance_ledger_record",
     "incident_report",
     "compliance_review",
+    "connector_record",
 ]
 
 
@@ -69,6 +70,7 @@ def test_state_db_initializes(tmp_path: Path) -> None:
     assert summary["runtime_events"] == 1
     assert "finance_ledger" in summary["artifact_counts"]
     assert "compliance_reviews" in summary["artifact_counts"]
+    assert "connectors" in summary["artifact_counts"]
     assert "customer_satisfaction" in summary["artifact_counts"]
 
 
