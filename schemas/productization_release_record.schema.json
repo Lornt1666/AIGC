@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Productization Release Record",
+  "type": "object",
+  "required": [
+    "release_id",
+    "created_at",
+    "phase",
+    "version",
+    "status",
+    "release_type",
+    "branch",
+    "commit",
+    "required_files_present",
+    "missing_required_files",
+    "validation_commands",
+    "external_action_performed"
+  ],
+  "properties": {
+    "release_id": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "phase": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "release_type": {
+      "type": "string"
+    },
+    "branch": {
+      "type": "string"
+    },
+    "commit": {
+      "type": "string"
+    },
+    "required_files_present": {
+      "type": "boolean"
+    },
+    "missing_required_files": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "checked_files": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "validation_commands": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "manual_release_gates": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "forbidden_productization_behaviors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "release_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "license_status": {
+      "type": "string"
+    },
+    "all_rights_reserved": {
+      "type": "boolean"
+    },
+    "deployment_performed": {
+      "type": "boolean"
+    },
+    "public_release_allowed": {
+      "type": "boolean"
+    },
+    "external_action_performed": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,63 @@
+{
+  "phase": "Phase 18 - Scaling, Replication, and Productization",
+  "operating_mode": "internal_private_release_readiness",
+  "version": "0.6.0-milestone-f",
+  "release_type": "internal_private_kernel",
+  "external_actions_allowed": false,
+  "deployment_allowed": false,
+  "public_release_allowed": false,
+  "output_file": "data/phase18_productization/aigc_phase18_release_readiness.json",
+  "report_file": "data/reports/phase18_signature_update.md",
+  "audit_log": "data/audit/aigc_phase18_audit.jsonl",
+  "required_files": [
+    "AGENTS.md",
+    "AIGC_MASTER_PROMPT.md",
+    "OMEGA_X_CONSTITUTION.md",
+    "LICENSE",
+    "README.md",
+    ".github/workflows/aigc-ci.yml",
+    "config/phase10_connector_registry.json",
+    "config/phase11_security_config.json",
+    "config/phase14_runtime_engine.json",
+    "config/phase17_incident_response.json",
+    "schemas/connector_record.schema.json",
+    "schemas/productization_release_record.schema.json",
+    "src/aigc.py",
+    "src/core/contract_validator.py",
+    "src/core/phase_registry.py",
+    "src/core/state_store.py",
+    "src/phase10_connector_registry.py",
+    "src/phase17_incident_response.py",
+    "src/phase18_productization.py",
+    "docs/PRIVATE_BRANCH_WORKFLOW.md"
+  ],
+  "validation_commands": [
+    "python .\\src\\aigc.py validate",
+    "python -m pytest",
+    "python .\\src\\security\\redaction_scanner.py --paths src config docs README.md AGENTS.md AIGC_MASTER_PROMPT.md OMEGA_X_CONSTITUTION.md schemas tests reports"
+  ],
+  "manual_release_gates": [
+    "confirm_github_repo_private",
+    "confirm_all_rights_reserved_notice_present",
+    "confirm_no_raw_secrets_in_release",
+    "confirm_ci_green_on_main",
+    "confirm_operator_approval_before_public_distribution",
+    "confirm_no_live_external_connectors_enabled"
+  ],
+  "forbidden_productization_behaviors": [
+    "publish_public_release_without_operator_approval",
+    "deploy_runtime_without_phase14_preflight",
+    "enable_live_connectors_without_phase5_approval",
+    "package_raw_secrets",
+    "package_local_sqlite_memory",
+    "package_approval_tokens",
+    "weaken_all_rights_reserved_notice",
+    "disable_ci_or_local_git_guards"
+  ],
+  "release_artifacts": [
+    "data/phase18_productization/aigc_phase18_release_readiness.json",
+    "data/reports/phase18_signature_update.md",
+    "reports/milestone_f_productization_report.md",
+    "docs/PRODUCTIZATION_RUNBOOK.md"
+  ]
+}

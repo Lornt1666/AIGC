@@ -35,4 +35,4 @@ jobs:
       - name: Scan for secret-like content
         run: >
           python src/security/redaction_scanner.py
-          --paths src config docs README.md AGENTS.md OMEGA_X_CONSTITUTION.md schemas tests reports
+          --paths src config docs README.md AGENTS.md AIGC_MASTER_PROMPT.md OMEGA_X_CONSTITUTION.md schemas tests reports

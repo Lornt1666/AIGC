@@ -35,5 +35,5 @@ fi
 echo "AIGC local guard running validation before push..."
 python src/aigc.py validate
 python -m pytest
-python src/security/redaction_scanner.py --paths src config docs README.md AGENTS.md OMEGA_X_CONSTITUTION.md schemas tests reports
+python src/security/redaction_scanner.py --paths src config docs README.md AGENTS.md AIGC_MASTER_PROMPT.md OMEGA_X_CONSTITUTION.md schemas tests reports
 
