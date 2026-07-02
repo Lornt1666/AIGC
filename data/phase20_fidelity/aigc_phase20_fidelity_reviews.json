@@ -1,0 +1,2530 @@
+[
+  {
+    "review_id": "AIGC-FID-9D5EDB3B956F2E29",
+    "created_at": "2026-07-02T22:08:52.593855+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "eda6a258a34d417ac4895a99",
+    "proposal_id": "phase4_129ed5d3aa518bb047452f79",
+    "dossier_id": "phase3_47dd6beb8015306878a69814",
+    "team_id": "AIGC-TEAM-20067F47D3D7B6C0",
+    "compliance_review_id": "AIGC-COMP-5326C9D0347235E4EF",
+    "title": "[integrations] Env-var reference doc",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3561",
+    "readiness_decision": "ready_for_phase_5",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-C051067E69CD1AA8",
+    "created_at": "2026-07-02T22:08:52.594858+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "48ff2350d71e32d32183dc30",
+    "proposal_id": "phase4_82bb62946d8a47ce81bcca6d",
+    "dossier_id": "phase3_69c59b490a028e417add2c85",
+    "team_id": "AIGC-TEAM-F668E95C7A9A9C76",
+    "compliance_review_id": "AIGC-COMP-4D99F7D2231CFA560B",
+    "title": "AI Engineers",
+    "employer": "Toptal",
+    "source_platform": "We Work Remotely",
+    "source_url": "https://weworkremotely.com/remote-jobs/toptal-ai-engineers",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "job_board_employment_role",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-527D4D0A82EF1072",
+    "created_at": "2026-07-02T22:08:52.594858+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "fd1c0de42c4f53acba40f34b",
+    "proposal_id": "phase4_59cde5610aa64d7391c89898",
+    "dossier_id": "phase3_6e3eb03e77a4488f252eb284",
+    "team_id": "AIGC-TEAM-EBA7594E70B1E5D9",
+    "compliance_review_id": "AIGC-COMP-AD7050F14BD6DBD1AE",
+    "title": "[integrations] Troubleshooting guide",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3562",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-872F24FAFBA5C5DE",
+    "created_at": "2026-07-02T22:08:52.594858+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "b62bc7f1caf7a27c588a6d6a",
+    "proposal_id": "phase4_c4a28db5c40631315048704b",
+    "dossier_id": "phase3_841d4d2574bd51c789ed15ae",
+    "team_id": "AIGC-TEAM-DEE3C348846EBB95",
+    "compliance_review_id": "AIGC-COMP-BA61DFC1873667F79D",
+    "title": "[integrations] Consistent \"three modes\" README section across integrations",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3550",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-EAC5E29DE13F8299",
+    "created_at": "2026-07-02T22:08:52.594858+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "9d7bb4d37968940e7f9738d5",
+    "proposal_id": "phase4_6bf8f3b4f446d9bb6e635d18",
+    "dossier_id": "phase3_4fa2cca73952fc8debdb13cb",
+    "team_id": "AIGC-TEAM-A4083F6B45AF76CB",
+    "compliance_review_id": "AIGC-COMP-CB33943091D7CB1CD8",
+    "title": "[integrations] Add COGNEE_REMEMBER_TIMEOUT / COGNEE_REGISTER_TIMEOUT env vars",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3543",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-4763F037C0262A0D",
+    "created_at": "2026-07-02T22:08:52.594858+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "c8c4ba85f90c5b86890d806d",
+    "proposal_id": "phase4_817f9a8ede8b80d3aeefbb12",
+    "dossier_id": "phase3_17f0706230561b4c15e01a8d",
+    "team_id": "AIGC-TEAM-3CEEFA01830B4323",
+    "compliance_review_id": "AIGC-COMP-2F81949F100C344EBB",
+    "title": "[integrations] Cloud cold-start warmup ping for plugin sessions",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3541",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-456625B5ABA016DF",
+    "created_at": "2026-07-02T22:08:52.594858+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "3795782df71592e3c47e76b7",
+    "proposal_id": "phase4_2ff3d6fd1a91ab8f7167254d",
+    "dossier_id": "phase3_5f964f158f62e2ec0054f77e",
+    "team_id": "AIGC-TEAM-6B3C4AF6B1508548",
+    "compliance_review_id": "AIGC-COMP-0A6A62911C3BB8583B",
+    "title": "Federal BIM Design Associate",
+    "employer": "Olsson",
+    "source_platform": "We Work Remotely",
+    "source_url": "https://weworkremotely.com/remote-jobs/olsson-federal-bim-design-associate",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "job_board_employment_role",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-C13B4A746A381057",
+    "created_at": "2026-07-02T22:08:52.594858+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "f17580421d45bc56fbb3323d",
+    "proposal_id": "phase4_a0c0eb6104cbdcc1c08d2f49",
+    "dossier_id": "phase3_b312a648bdec6cee27f392f0",
+    "team_id": "AIGC-TEAM-D48D189ABCBEA599",
+    "compliance_review_id": "AIGC-COMP-6F759881E3DF2FFFF9",
+    "title": "[integrations] Config-precedence tests (env > config > defaults)",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3559",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-89A62CF8EF1F5899",
+    "created_at": "2026-07-02T22:08:52.594858+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "315f658a9364057a86cabcbe",
+    "proposal_id": "phase4_298d569fd92600e3865c3ab4",
+    "dossier_id": "phase3_a02f48f1738064947044d9d1",
+    "team_id": "AIGC-TEAM-5B3AB002CF7487EE",
+    "compliance_review_id": "AIGC-COMP-1A8D8330DC7A9219EC",
+    "title": "[integrations] n8n: expose remember/recall verbs",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3560",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-4BD50FF8071D34FF",
+    "created_at": "2026-07-02T22:08:52.594858+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "bbc2efb9c274d0221aa447b8",
+    "proposal_id": "phase4_ad3173750b0c97f03fa3eed3",
+    "dossier_id": "phase3_c106d36cc9f54c232f73e5b8",
+    "team_id": "AIGC-TEAM-C3E6147A1320A1A0",
+    "compliance_review_id": "AIGC-COMP-40A3557B59F8EE4C8E",
+    "title": "Productionize the Helm chart (deployment/helm)",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3602",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "privacy_or_security_sensitive",
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-452DDB4D57C161AF",
+    "created_at": "2026-07-02T22:08:52.594858+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "5cf46914d492ec92f9c9d72d",
+    "proposal_id": "phase4_c36264be20bfb858ee9bcd7c",
+    "dossier_id": "phase3_a7c133873e2a33b37279c969",
+    "team_id": "AIGC-TEAM-ABF91CF08B7DE449",
+    "compliance_review_id": "AIGC-COMP-8B20F2EB71BC388D60",
+    "title": "[integrations] OpenClaw: cold-start warmup + first-recall retry in the TS client",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3546",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-B24D90C0E55245CE",
+    "created_at": "2026-07-02T22:08:52.594858+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "1a3aad74c4db7e62c8704d92",
+    "proposal_id": "phase4_8e810fe9f8a35f40e3846269",
+    "dossier_id": "phase3_2ffe86069c1a8a84c09715e2",
+    "team_id": "AIGC-TEAM-2ACD813CAF548734",
+    "compliance_review_id": "AIGC-COMP-C0D2083A73EB8B8987",
+    "title": "[integrations] OpenClaw: circuit breaker + per-op timeouts in the TS client",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3545",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-A1C2E643C3B6D8A0",
+    "created_at": "2026-07-02T22:08:52.594858+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "a368e5083373c9ab1e57e991",
+    "proposal_id": "phase4_e6f0729949d9a3867cc46ca7",
+    "dossier_id": "phase3_afce44453b6a11c9a0d03492",
+    "team_id": "AIGC-TEAM-3F1CC2D12CE8053A",
+    "compliance_review_id": "AIGC-COMP-E109A030648B3EA0BD",
+    "title": "Feature: new environment variable PIP_AUDIT_IGNORE_VULN",
+    "employer": "pip-audit",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/pypa/pip-audit/issues/948",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-71B355425BFFCF41",
+    "created_at": "2026-07-02T22:08:52.594858+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "2987871ab0bc70b14c25741e",
+    "proposal_id": "phase4_ed034ea44d3dbd45def8837f",
+    "dossier_id": "phase3_b2b6b0c7917fe9f738e641fe",
+    "team_id": "AIGC-TEAM-1C931AFA2E510180",
+    "compliance_review_id": "AIGC-COMP-E3C2728401366B5AA1",
+    "title": "[integrations] Surface cognify lag instead of silent empty recall",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3553",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-3B89EDC1029BFB71",
+    "created_at": "2026-07-02T22:08:52.594858+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "0cb519bbb35b8e0ddc832b34",
+    "proposal_id": "phase4_e69e7924b59871538b1d8593",
+    "dossier_id": "phase3_9bf0abc513fa5836c595a009",
+    "team_id": "AIGC-TEAM-7AF438272BC5CF01",
+    "compliance_review_id": "AIGC-COMP-DD119CF114F74CECF8",
+    "title": "[integrations] E2E: session registers and appears via /agents/connections/me",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3558",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-22AAEAF0DC87D607",
+    "created_at": "2026-07-02T22:08:52.594858+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "f57143f07e5ab9e64974239d",
+    "proposal_id": "phase4_85ce43bf406da7ca7e72ccca",
+    "dossier_id": "phase3_f5daf7f348132ae409ba04b9",
+    "team_id": "AIGC-TEAM-724CE7AFBB945B39",
+    "compliance_review_id": "AIGC-COMP-60B619A311BE43253B",
+    "title": "[integrations] cognee-plugin status one-liner",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3552",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-9F916344EA64770B",
+    "created_at": "2026-07-02T22:08:52.594858+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "80dbe8c9e366e4b8e63f8c65",
+    "proposal_id": "phase4_58c805c1b3dda1f6aa25ba29",
+    "dossier_id": "phase3_e61fdeeb9f7177248e5cd7ac",
+    "team_id": "AIGC-TEAM-A84AE7AA1F3C1DB0",
+    "compliance_review_id": "AIGC-COMP-745EC41CB133CCE395",
+    "title": "[integrations] Embedding-dimension mismatch: clear error instead of silent empty recall",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3547",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-06126818D2AB0FD3",
+    "created_at": "2026-07-02T22:08:52.594858+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "533db66d2318bf2bc0dd4abd",
+    "proposal_id": "phase4_82fce1f8f3fe899e64abff5d",
+    "dossier_id": "phase3_d8d4436cb5be74fef832bf85",
+    "team_id": "AIGC-TEAM-450D632EC8F44E19",
+    "compliance_review_id": "AIGC-COMP-7A79A86B820DB643EB",
+    "title": "[integrations] Dataset-name sanitization parity across integrations",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3549",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-BEACD6B0DDD45291",
+    "created_at": "2026-07-02T22:08:52.610863+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "0e36363038add3b5915f1b84",
+    "proposal_id": "phase4_2cc717f1098738dc3eeae2fc",
+    "dossier_id": "phase3_00bf245cf82f290a1ece1323",
+    "team_id": "AIGC-TEAM-14B47EC9A55C390B",
+    "compliance_review_id": "AIGC-COMP-E19EADBAA291786658",
+    "title": "[integrations] Live add→cognify→search smoke test",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3557",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-4272C1BC771FB191",
+    "created_at": "2026-07-02T22:08:52.610863+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "ab4ac8a8d497c0cf8adb58c4",
+    "proposal_id": "phase4_2f5eeee5f967b51e0c3f27fa",
+    "dossier_id": "phase3_3ddb385019d1e23a42a3b535",
+    "team_id": "AIGC-TEAM-E854F2B4DA803D85",
+    "compliance_review_id": "AIGC-COMP-D3E9C828084B4298B2",
+    "title": "[integrations] OpenClaw tests for scope routing + cogneeSessionId",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3555",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-B5DAC374050BC1E1",
+    "created_at": "2026-07-02T22:08:52.610863+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "bd706e8c410ea414b213cd01",
+    "proposal_id": "phase4_13f9f7ffe445c278d57f9f6a",
+    "dossier_id": "phase3_75c4589052e49373dd5d06a3",
+    "team_id": "AIGC-TEAM-3376BC879E4630DD",
+    "compliance_review_id": "AIGC-COMP-0954B2D8E778143B97",
+    "title": "[integrations] Port the claude-code test suite to Codex",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3554",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-75E6A26704FF3C8E",
+    "created_at": "2026-07-02T22:08:52.610863+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "67ed35084445d65a8241e5bf",
+    "proposal_id": "phase4_a690460fc33e1ded08f7ae61",
+    "dossier_id": "phase3_0bfe0d26f9d4919f6ea67139",
+    "team_id": "AIGC-TEAM-A8A1A0DEE991C765",
+    "compliance_review_id": "AIGC-COMP-DBACB74C154E998161",
+    "title": "[integrations] cognee-plugin doctor command",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3551",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-1CCF1B12E536CDBA",
+    "created_at": "2026-07-02T22:08:52.610863+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "b79351d868e5311a2ed7db55",
+    "proposal_id": "phase4_ad020f580bc22642c8caf9b5",
+    "dossier_id": "phase3_54c918e70841062a62db7bf9",
+    "team_id": "AIGC-TEAM-A4FE583D347B2FD2",
+    "compliance_review_id": "AIGC-COMP-9FFF4650BC99024693",
+    "title": "[integrations] Shared session-id sanitization conformance test",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3548",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-9DD5F6C61F4D9A7B",
+    "created_at": "2026-07-02T22:08:52.610863+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "e86bbd3a4c9c7c08eb27da18",
+    "proposal_id": "phase4_25fd062345700a1e3a08d0d2",
+    "dossier_id": "phase3_4e0124ee189be10d77c76b12",
+    "team_id": "AIGC-TEAM-CF8A65450E434257",
+    "compliance_review_id": "AIGC-COMP-95149CB6C2B72C8963",
+    "title": "[integrations] Re-register agent session on mid-session mode change",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3544",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "review_id": "AIGC-FID-DAFC3A3A62547674",
+    "created_at": "2026-07-02T22:08:52.610863+00:00",
+    "phase": "phase20_fidelity_forge",
+    "status": "internal_review_only",
+    "opportunity_id": "7f44a2bfe1bde725327f8e99",
+    "proposal_id": "phase4_c473c8af591b5b81ccf4d486",
+    "dossier_id": "phase3_70043a5b987259a54c8b6566",
+    "team_id": "AIGC-TEAM-928214FDB0749532",
+    "compliance_review_id": "AIGC-COMP-39EA9D30935397A542",
+    "title": "[integrations] Retry first recall on cold-start timeout",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3542",
+    "readiness_decision": "strong_minor_review",
+    "compliance_status": "orange",
+    "fidelity_score": 92,
+    "quality_status": "high_fidelity_ready_for_approval_review",
+    "checks": [
+      {
+        "name": "source_traceability",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Source URL is present and traceable.",
+        "recommendation": ""
+      },
+      {
+        "name": "proposal_message_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Employer-facing proposal message is present.",
+        "recommendation": ""
+      },
+      {
+        "name": "ai_disclosure_preserved",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "AI-use disclosure language is preserved in proposal text.",
+        "recommendation": ""
+      },
+      {
+        "name": "deliverables_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Deliverables and acceptance criteria are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "scope_boundaries_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Scope, forbidden actions, and approval boundary are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "clarifying_questions_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Clarifying questions are present.",
+        "recommendation": ""
+      },
+      {
+        "name": "subagent_team_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Phase 19 team contains 9 internal-only sub-agent roles.",
+        "recommendation": ""
+      },
+      {
+        "name": "compliance_review_present",
+        "status": "warning",
+        "score_delta": -8,
+        "evidence": "Compliance review is orange and requires operator review.",
+        "recommendation": "Operator must review orange compliance concerns before external action."
+      },
+      {
+        "name": "external_action_blocked",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "External action remains blocked behind approval gates.",
+        "recommendation": ""
+      },
+      {
+        "name": "auditability_present",
+        "status": "passed",
+        "score_delta": 0,
+        "evidence": "Audit summary and Phase 19 team ID are present.",
+        "recommendation": ""
+      }
+    ],
+    "risk_flags": [
+      "unclear_pay",
+      "compliance_orange",
+      "warning_compliance_review_present"
+    ],
+    "revision_recommendations": [
+      "Operator must review orange compliance concerns before external action."
+    ],
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  }
+]
