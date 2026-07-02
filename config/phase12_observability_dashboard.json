@@ -19,6 +19,7 @@
     "phase13_real_replay": "data/phase13_real_data_replay/latest_real_data_replay.json",
     "phase20_fidelity_reviews": "data/phase20_fidelity/aigc_phase20_fidelity_reviews.json",
     "phase21_customer_satisfaction": "data/phase21_customer_satisfaction/aigc_phase21_customer_satisfaction_records.json",
+    "phase22_quality_records": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
     "secret_manifest": "config/secret_manifest.json",
     "external_secret_manifest": "../AIGC_MEMORY_CORE/config/secret_manifest.json"
   },

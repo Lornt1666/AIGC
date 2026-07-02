@@ -235,6 +235,7 @@ python .\src\aigc.py run phase14
 python .\src\aigc.py run phase15
 python .\src\aigc.py run phase16
 python .\src\aigc.py run phase17
+python .\src\aigc.py run phase22
 python .\src\aigc.py run pipeline --mode synthetic
 python .\src\aigc.py run pipeline --mode real_data_read_only --source remoteok --limit 10
 python .\src\aigc.py close-loop --execution-mode manual_handoff
@@ -365,6 +366,25 @@ Outputs:
 - `reports/milestone_i_customer_satisfaction_report.md`
 
 Phase 21 does not contact customers, promise outcomes, accept contracts, request payment, submit deliverables, or bypass approval gates. CHI is an internal estimate until real employer response, delivery, and revision outcomes exist.
+
+## Milestone J Quantum-Aware Quality Kernel
+
+Milestone J adds Phase 22 as an internal quality-state, ology, and uncertainty-aware review layer. It applies the Proto-Omni Perfection Cycle to governed AIGC artifacts so the worker can recognize work quality, surface uncertainty, and produce improvement directives before any external action.
+
+Command:
+
+```powershell
+python .\src\aigc.py run phase22
+```
+
+Outputs:
+
+- `data/phase22_quality/aigc_phase22_quality_kernel_records.json`
+- `data/reports/phase22_signature_update.md`
+- `data/audit/aigc_phase22_audit.jsonl`
+- `reports/milestone_j_quantum_quality_kernel_report.md`
+
+Quantum-aware means deterministic uncertainty-aware quality-state modeling. Phase 22 does not claim literal quantum cognition, approve actions, contact customers, accept contracts, use credentials, submit work, or bypass legal, ethical, compliance, security, and Phase 5 approval gates.
 
 ## Milestone D Finance, Compliance, and Incident Response
 

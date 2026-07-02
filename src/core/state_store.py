@@ -33,6 +33,7 @@ ARTIFACT_TABLES = [
     "productization_releases",
     "subagent_team_plans",
     "fidelity_reviews",
+    "quality_kernel_records",
     "secret_access_events",
     "incident_events",
 ]

@@ -215,6 +215,16 @@ def build_phase_registry(root: Path = PROJECT_ROOT) -> Dict[str, PhaseDefinition
             allowed_runtime_modes=["internal_customer_fit_scoring_only"],
             external_action_risk="none_internal_customer_scoring_only",
         ),
+        "phase22": PhaseDefinition(
+            name="phase22",
+            display_name="Phase 22 - Quantum-Aware Quality Kernel",
+            input_path="data/phase21_customer_satisfaction/aigc_phase21_customer_satisfaction_records.json",
+            output_path="data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+            schema_name="quality_kernel_record",
+            command=[py, str(src / "phase22_quantum_quality_kernel.py")],
+            allowed_runtime_modes=["internal_quality_consciousness_only"],
+            external_action_risk="none_internal_quality_state_model_only",
+        ),
     }
 
 
