@@ -1,0 +1,3852 @@
+[
+  {
+    "record_id": "AIGC-FRESH-DA8D4748B12C0EAA",
+    "created_at": "2026-07-03T01:47:49.692869+00:00",
+    "updated_at": "2026-07-03T01:47:49.692869+00:00",
+    "expires_at": "2026-07-04T01:47:49.692869+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-977415708E75E8B6",
+    "source_procurement_record_id": "AIGC-PROC-E89FAE279DB47D7D",
+    "opportunity_id": "eda6a258a34d417ac4895a99",
+    "proposal_id": "phase4_129ed5d3aa518bb047452f79",
+    "authorization_id": "AIGC-AUTH-8357d5016ba0a35ba7",
+    "action_id": "AIGC-ACT-20260701-0001",
+    "title": "[integrations] Env-var reference doc",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3561",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0001",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for [integrations] Env-var reference doc?",
+        "What technical acceptance criteria are explicit or missing for [integrations] Env-var reference doc?",
+        "What value would cognee recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "eda6a258a34d417ac4895a99",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_for_phase_3"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_129ed5d3aa518bb047452f79",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-8357d5016ba0a35ba7",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-46067B5B76285708",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-98769A3476EA60F5",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-DA8D4748B12C0EAA.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-DA8D4748B12C0EAA.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-DA8D4748B12C0EAA: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-89762EB4632A656D",
+    "created_at": "2026-07-03T01:47:49.692869+00:00",
+    "updated_at": "2026-07-03T01:47:49.692869+00:00",
+    "expires_at": "2026-07-04T01:47:49.692869+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-23ADB84143DF778C",
+    "source_procurement_record_id": "AIGC-PROC-5BBF353538CB3148",
+    "opportunity_id": "48ff2350d71e32d32183dc30",
+    "proposal_id": "phase4_82bb62946d8a47ce81bcca6d",
+    "authorization_id": "AIGC-AUTH-70c8a1454548cba8e1",
+    "action_id": "AIGC-ACT-20260701-0002",
+    "title": "AI Engineers",
+    "employer": "Toptal",
+    "source_platform": "We Work Remotely",
+    "source_url": "https://weworkremotely.com/remote-jobs/toptal-ai-engineers",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0002",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for AI Engineers?",
+        "What technical acceptance criteria are explicit or missing for AI Engineers?",
+        "What value would Toptal recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "48ff2350d71e32d32183dc30",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_82bb62946d8a47ce81bcca6d",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-70c8a1454548cba8e1",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-E78140557F0AC573",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-AA8F97C8B5FF6FF9",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-89762EB4632A656D.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-89762EB4632A656D.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-89762EB4632A656D: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-78B29C2CA810CB33",
+    "created_at": "2026-07-03T01:47:49.693868+00:00",
+    "updated_at": "2026-07-03T01:47:49.693868+00:00",
+    "expires_at": "2026-07-04T01:47:49.693868+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-7728C1C3384964C6",
+    "source_procurement_record_id": "AIGC-PROC-7EF596A58CE1509C",
+    "opportunity_id": "fd1c0de42c4f53acba40f34b",
+    "proposal_id": "phase4_59cde5610aa64d7391c89898",
+    "authorization_id": "AIGC-AUTH-e6f33c3ef4f78a44d5",
+    "action_id": "AIGC-ACT-20260701-0003",
+    "title": "[integrations] Troubleshooting guide",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3562",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0003",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for [integrations] Troubleshooting guide?",
+        "What technical acceptance criteria are explicit or missing for [integrations] Troubleshooting guide?",
+        "What value would cognee recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "fd1c0de42c4f53acba40f34b",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_59cde5610aa64d7391c89898",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-e6f33c3ef4f78a44d5",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-4C12A77067875397",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-A0A33DC55212FD23",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-78B29C2CA810CB33.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-78B29C2CA810CB33.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-78B29C2CA810CB33: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-80A3C5CCC52048D2",
+    "created_at": "2026-07-03T01:47:49.693868+00:00",
+    "updated_at": "2026-07-03T01:47:49.693868+00:00",
+    "expires_at": "2026-07-04T01:47:49.693868+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-E1DE8CCD254AC238",
+    "source_procurement_record_id": "AIGC-PROC-2B865F4F93615B3F",
+    "opportunity_id": "b62bc7f1caf7a27c588a6d6a",
+    "proposal_id": "phase4_c4a28db5c40631315048704b",
+    "authorization_id": "AIGC-AUTH-5ea02454ff109c1959",
+    "action_id": "AIGC-ACT-20260701-0004",
+    "title": "[integrations] Consistent \"three modes\" README section across integrations",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3550",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0004",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for [integrations] Consistent \"three modes\" README section across integrations?",
+        "What technical acceptance criteria are explicit or missing for [integrations] Consistent \"three modes\" README section across integrations?",
+        "What value would cognee recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "b62bc7f1caf7a27c588a6d6a",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_c4a28db5c40631315048704b",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-5ea02454ff109c1959",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-09E3C35142AEDF45",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-335E69979A560162",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-80A3C5CCC52048D2.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-80A3C5CCC52048D2.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-80A3C5CCC52048D2: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-8931622F2F99B3B0",
+    "created_at": "2026-07-03T01:47:49.693868+00:00",
+    "updated_at": "2026-07-03T01:47:49.693868+00:00",
+    "expires_at": "2026-07-04T01:47:49.693868+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-56F07A476A83CF14",
+    "source_procurement_record_id": "AIGC-PROC-C48CC2C2B614DA65",
+    "opportunity_id": "9d7bb4d37968940e7f9738d5",
+    "proposal_id": "phase4_6bf8f3b4f446d9bb6e635d18",
+    "authorization_id": "AIGC-AUTH-b013216e3c55fb47a5",
+    "action_id": "AIGC-ACT-20260701-0005",
+    "title": "[integrations] Add COGNEE_REMEMBER_TIMEOUT / COGNEE_REGISTER_TIMEOUT env vars",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3543",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0005",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for [integrations] Add COGNEE_REMEMBER_TIMEOUT / COGNEE_REGISTER_TIMEOUT env vars?",
+        "What technical acceptance criteria are explicit or missing for [integrations] Add COGNEE_REMEMBER_TIMEOUT / COGNEE_REGISTER_TIMEOUT env vars?",
+        "What value would cognee recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "9d7bb4d37968940e7f9738d5",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_6bf8f3b4f446d9bb6e635d18",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-b013216e3c55fb47a5",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-10724D35AA6DC626",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-3552AE1C029B948D",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-8931622F2F99B3B0.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-8931622F2F99B3B0.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-8931622F2F99B3B0: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-4F0A6F081BA414A4",
+    "created_at": "2026-07-03T01:47:49.693868+00:00",
+    "updated_at": "2026-07-03T01:47:49.693868+00:00",
+    "expires_at": "2026-07-04T01:47:49.693868+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-6231C427F63C10D9",
+    "source_procurement_record_id": "AIGC-PROC-27E02908C91D2978",
+    "opportunity_id": "c8c4ba85f90c5b86890d806d",
+    "proposal_id": "phase4_817f9a8ede8b80d3aeefbb12",
+    "authorization_id": "AIGC-AUTH-c5dfb1152dd6b59f02",
+    "action_id": "AIGC-ACT-20260701-0006",
+    "title": "[integrations] Cloud cold-start warmup ping for plugin sessions",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3541",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0006",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for [integrations] Cloud cold-start warmup ping for plugin sessions?",
+        "What technical acceptance criteria are explicit or missing for [integrations] Cloud cold-start warmup ping for plugin sessions?",
+        "What value would cognee recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "c8c4ba85f90c5b86890d806d",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_817f9a8ede8b80d3aeefbb12",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-c5dfb1152dd6b59f02",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-B09277DCD49891E3",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-114DC082909FBB7B",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-4F0A6F081BA414A4.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-4F0A6F081BA414A4.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-4F0A6F081BA414A4: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-3281ED69EDC431BC",
+    "created_at": "2026-07-03T01:47:49.693868+00:00",
+    "updated_at": "2026-07-03T01:47:49.693868+00:00",
+    "expires_at": "2026-07-04T01:47:49.693868+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-25F841B105FB6F09",
+    "source_procurement_record_id": "AIGC-PROC-EBC689A6B32C5562",
+    "opportunity_id": "3795782df71592e3c47e76b7",
+    "proposal_id": "phase4_2ff3d6fd1a91ab8f7167254d",
+    "authorization_id": "AIGC-AUTH-5b146e3bc90d53962f",
+    "action_id": "AIGC-ACT-20260701-0007",
+    "title": "Federal BIM Design Associate",
+    "employer": "Olsson",
+    "source_platform": "We Work Remotely",
+    "source_url": "https://weworkremotely.com/remote-jobs/olsson-federal-bim-design-associate",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0007",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for Federal BIM Design Associate?",
+        "What technical acceptance criteria are explicit or missing for Federal BIM Design Associate?",
+        "What value would Olsson recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "3795782df71592e3c47e76b7",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_2ff3d6fd1a91ab8f7167254d",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-5b146e3bc90d53962f",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-C7CECD65D8C7D687",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-5361E1416AC7C190",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-3281ED69EDC431BC.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-3281ED69EDC431BC.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-3281ED69EDC431BC: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-1B621B60725835C6",
+    "created_at": "2026-07-03T01:47:49.693868+00:00",
+    "updated_at": "2026-07-03T01:47:49.693868+00:00",
+    "expires_at": "2026-07-04T01:47:49.693868+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-4012510954D8399F",
+    "source_procurement_record_id": "AIGC-PROC-5D62AF286D65B60F",
+    "opportunity_id": "f17580421d45bc56fbb3323d",
+    "proposal_id": "phase4_a0c0eb6104cbdcc1c08d2f49",
+    "authorization_id": "AIGC-AUTH-1fe7f97c06d8899721",
+    "action_id": "AIGC-ACT-20260701-0008",
+    "title": "[integrations] Config-precedence tests (env > config > defaults)",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3559",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0008",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for [integrations] Config-precedence tests (env > config > defaults)?",
+        "What technical acceptance criteria are explicit or missing for [integrations] Config-precedence tests (env > config > defaults)?",
+        "What value would cognee recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "f17580421d45bc56fbb3323d",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_a0c0eb6104cbdcc1c08d2f49",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-1fe7f97c06d8899721",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-6638E75AEB28FA04",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-7A5242D6EC6BDC30",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-1B621B60725835C6.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-1B621B60725835C6.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-1B621B60725835C6: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-770A645F52E8C839",
+    "created_at": "2026-07-03T01:47:49.693868+00:00",
+    "updated_at": "2026-07-03T01:47:49.693868+00:00",
+    "expires_at": "2026-07-04T01:47:49.693868+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-4154C53D346E45C8",
+    "source_procurement_record_id": "AIGC-PROC-1C999A62E93EA2A4",
+    "opportunity_id": "315f658a9364057a86cabcbe",
+    "proposal_id": "phase4_298d569fd92600e3865c3ab4",
+    "authorization_id": "AIGC-AUTH-3ffa779bf10d8ff763",
+    "action_id": "AIGC-ACT-20260701-0009",
+    "title": "[integrations] n8n: expose remember/recall verbs",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3560",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0009",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for [integrations] n8n: expose remember/recall verbs?",
+        "What technical acceptance criteria are explicit or missing for [integrations] n8n: expose remember/recall verbs?",
+        "What value would cognee recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "315f658a9364057a86cabcbe",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_298d569fd92600e3865c3ab4",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-3ffa779bf10d8ff763",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-ED0640258A99B3EA",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-8BD1B2C2D5E0C148",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-770A645F52E8C839.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-770A645F52E8C839.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-770A645F52E8C839: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-99EB524EC4C5BDB2",
+    "created_at": "2026-07-03T01:47:49.693868+00:00",
+    "updated_at": "2026-07-03T01:47:49.693868+00:00",
+    "expires_at": "2026-07-04T01:47:49.693868+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-1F877932EE22119A",
+    "source_procurement_record_id": "AIGC-PROC-941C89440005C77F",
+    "opportunity_id": "bbc2efb9c274d0221aa447b8",
+    "proposal_id": "phase4_ad3173750b0c97f03fa3eed3",
+    "authorization_id": "AIGC-AUTH-75e0dc157d306b6dc7",
+    "action_id": "AIGC-ACT-20260701-0010",
+    "title": "Productionize the Helm chart (deployment/helm)",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3602",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0010",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for Productionize the Helm chart (deployment/helm)?",
+        "What technical acceptance criteria are explicit or missing for Productionize the Helm chart (deployment/helm)?",
+        "What value would cognee recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "bbc2efb9c274d0221aa447b8",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_ad3173750b0c97f03fa3eed3",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-75e0dc157d306b6dc7",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-E4054A162A8DF8F3",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-25D43010BB322829",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-99EB524EC4C5BDB2.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-99EB524EC4C5BDB2.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-99EB524EC4C5BDB2: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-803DD7EAE965059E",
+    "created_at": "2026-07-03T01:47:49.693868+00:00",
+    "updated_at": "2026-07-03T01:47:49.693868+00:00",
+    "expires_at": "2026-07-04T01:47:49.693868+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-D581BF8E84253900",
+    "source_procurement_record_id": "AIGC-PROC-A28489FFCEF5800C",
+    "opportunity_id": "5cf46914d492ec92f9c9d72d",
+    "proposal_id": "phase4_c36264be20bfb858ee9bcd7c",
+    "authorization_id": "AIGC-AUTH-b549b7e88976609380",
+    "action_id": "AIGC-ACT-20260701-0011",
+    "title": "[integrations] OpenClaw: cold-start warmup + first-recall retry in the TS client",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3546",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0011",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for [integrations] OpenClaw: cold-start warmup + first-recall retry in the TS client?",
+        "What technical acceptance criteria are explicit or missing for [integrations] OpenClaw: cold-start warmup + first-recall retry in the TS client?",
+        "What value would cognee recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "5cf46914d492ec92f9c9d72d",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_c36264be20bfb858ee9bcd7c",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-b549b7e88976609380",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-AC93DF344E2A5CC7",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-25D8E304DCCCD844",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-803DD7EAE965059E.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-803DD7EAE965059E.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-803DD7EAE965059E: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-2C074E51B7F980B0",
+    "created_at": "2026-07-03T01:47:49.693868+00:00",
+    "updated_at": "2026-07-03T01:47:49.693868+00:00",
+    "expires_at": "2026-07-04T01:47:49.693868+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-0F3E6A57932EFFBB",
+    "source_procurement_record_id": "AIGC-PROC-750B39454AEF91FF",
+    "opportunity_id": "1a3aad74c4db7e62c8704d92",
+    "proposal_id": "phase4_8e810fe9f8a35f40e3846269",
+    "authorization_id": "AIGC-AUTH-3f265e09b4890df0f5",
+    "action_id": "AIGC-ACT-20260701-0012",
+    "title": "[integrations] OpenClaw: circuit breaker + per-op timeouts in the TS client",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3545",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0012",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for [integrations] OpenClaw: circuit breaker + per-op timeouts in the TS client?",
+        "What technical acceptance criteria are explicit or missing for [integrations] OpenClaw: circuit breaker + per-op timeouts in the TS client?",
+        "What value would cognee recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "1a3aad74c4db7e62c8704d92",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_8e810fe9f8a35f40e3846269",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-3f265e09b4890df0f5",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-EAA0E9CA5DA5C44B",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-6B73FF4427D9D97A",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-2C074E51B7F980B0.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-2C074E51B7F980B0.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-2C074E51B7F980B0: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-9A011832CA93C720",
+    "created_at": "2026-07-03T01:47:49.693868+00:00",
+    "updated_at": "2026-07-03T01:47:49.693868+00:00",
+    "expires_at": "2026-07-04T01:47:49.693868+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-4286F00B867F75D8",
+    "source_procurement_record_id": "AIGC-PROC-DCAA704B695645C9",
+    "opportunity_id": "a368e5083373c9ab1e57e991",
+    "proposal_id": "phase4_e6f0729949d9a3867cc46ca7",
+    "authorization_id": "AIGC-AUTH-6bae261cc8c7d167c4",
+    "action_id": "AIGC-ACT-20260701-0013",
+    "title": "Feature: new environment variable PIP_AUDIT_IGNORE_VULN",
+    "employer": "pip-audit",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/pypa/pip-audit/issues/948",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0013",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for Feature: new environment variable PIP_AUDIT_IGNORE_VULN?",
+        "What technical acceptance criteria are explicit or missing for Feature: new environment variable PIP_AUDIT_IGNORE_VULN?",
+        "What value would pip-audit recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "a368e5083373c9ab1e57e991",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_e6f0729949d9a3867cc46ca7",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-6bae261cc8c7d167c4",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-8CF1212129B1123B",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-87A49CB19DB90CDA",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-9A011832CA93C720.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-9A011832CA93C720.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-9A011832CA93C720: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-0184167E32A56F30",
+    "created_at": "2026-07-03T01:47:49.694838+00:00",
+    "updated_at": "2026-07-03T01:47:49.694838+00:00",
+    "expires_at": "2026-07-04T01:47:49.694838+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-A64E574306EFBE08",
+    "source_procurement_record_id": "AIGC-PROC-E4D5782B62B11DE5",
+    "opportunity_id": "2987871ab0bc70b14c25741e",
+    "proposal_id": "phase4_ed034ea44d3dbd45def8837f",
+    "authorization_id": "AIGC-AUTH-a5b73451017d8bc2b6",
+    "action_id": "AIGC-ACT-20260701-0014",
+    "title": "[integrations] Surface cognify lag instead of silent empty recall",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3553",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0014",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for [integrations] Surface cognify lag instead of silent empty recall?",
+        "What technical acceptance criteria are explicit or missing for [integrations] Surface cognify lag instead of silent empty recall?",
+        "What value would cognee recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "2987871ab0bc70b14c25741e",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_ed034ea44d3dbd45def8837f",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-a5b73451017d8bc2b6",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-F77F7E0DC16DF1D0",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-80EC6462387FB282",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-0184167E32A56F30.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-0184167E32A56F30.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-0184167E32A56F30: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-6C829D09A31488BF",
+    "created_at": "2026-07-03T01:47:49.694838+00:00",
+    "updated_at": "2026-07-03T01:47:49.694838+00:00",
+    "expires_at": "2026-07-04T01:47:49.694838+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-CB7B0EAB3AC4D0AC",
+    "source_procurement_record_id": "AIGC-PROC-8F979D5FC8CCB109",
+    "opportunity_id": "0cb519bbb35b8e0ddc832b34",
+    "proposal_id": "phase4_e69e7924b59871538b1d8593",
+    "authorization_id": "AIGC-AUTH-525570beec57bc6412",
+    "action_id": "AIGC-ACT-20260701-0015",
+    "title": "[integrations] E2E: session registers and appears via /agents/connections/me",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3558",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0015",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for [integrations] E2E: session registers and appears via /agents/connections/me?",
+        "What technical acceptance criteria are explicit or missing for [integrations] E2E: session registers and appears via /agents/connections/me?",
+        "What value would cognee recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "0cb519bbb35b8e0ddc832b34",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_e69e7924b59871538b1d8593",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-525570beec57bc6412",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-7C985BD9262FE9DA",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-818E75A091487B3E",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-6C829D09A31488BF.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-6C829D09A31488BF.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-6C829D09A31488BF: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-7A4066C7E0A39227",
+    "created_at": "2026-07-03T01:47:49.694838+00:00",
+    "updated_at": "2026-07-03T01:47:49.694838+00:00",
+    "expires_at": "2026-07-04T01:47:49.694838+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-C6A2FC040A244B73",
+    "source_procurement_record_id": "AIGC-PROC-DBF3C530F6FAAED7",
+    "opportunity_id": "f57143f07e5ab9e64974239d",
+    "proposal_id": "phase4_85ce43bf406da7ca7e72ccca",
+    "authorization_id": "AIGC-AUTH-130dcb5e8b85aa00fa",
+    "action_id": "AIGC-ACT-20260701-0016",
+    "title": "[integrations] cognee-plugin status one-liner",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3552",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0016",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for [integrations] cognee-plugin status one-liner?",
+        "What technical acceptance criteria are explicit or missing for [integrations] cognee-plugin status one-liner?",
+        "What value would cognee recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "f57143f07e5ab9e64974239d",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_85ce43bf406da7ca7e72ccca",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-130dcb5e8b85aa00fa",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-14BA9A8BF20F23B5",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-DE8E6C8B6417C20D",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-7A4066C7E0A39227.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-7A4066C7E0A39227.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-7A4066C7E0A39227: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-B308A11B5F0B1AF6",
+    "created_at": "2026-07-03T01:47:49.694838+00:00",
+    "updated_at": "2026-07-03T01:47:49.694838+00:00",
+    "expires_at": "2026-07-04T01:47:49.694838+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-3E60A2110B0B4D9C",
+    "source_procurement_record_id": "AIGC-PROC-41D1A0C053BEBF40",
+    "opportunity_id": "80dbe8c9e366e4b8e63f8c65",
+    "proposal_id": "phase4_58c805c1b3dda1f6aa25ba29",
+    "authorization_id": "AIGC-AUTH-9bc909c4af614d5d60",
+    "action_id": "AIGC-ACT-20260701-0017",
+    "title": "[integrations] Embedding-dimension mismatch: clear error instead of silent empty recall",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3547",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0017",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for [integrations] Embedding-dimension mismatch: clear error instead of silent empty recall?",
+        "What technical acceptance criteria are explicit or missing for [integrations] Embedding-dimension mismatch: clear error instead of silent empty recall?",
+        "What value would cognee recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "80dbe8c9e366e4b8e63f8c65",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_58c805c1b3dda1f6aa25ba29",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-9bc909c4af614d5d60",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-6673F54D4307B140",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-7198173E0E4BC05B",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-B308A11B5F0B1AF6.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-B308A11B5F0B1AF6.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-B308A11B5F0B1AF6: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-C3E973290C5AE6BF",
+    "created_at": "2026-07-03T01:47:49.694838+00:00",
+    "updated_at": "2026-07-03T01:47:49.694838+00:00",
+    "expires_at": "2026-07-04T01:47:49.694838+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-19A72B5C26CFC885",
+    "source_procurement_record_id": "AIGC-PROC-35E1553DA22D6567",
+    "opportunity_id": "533db66d2318bf2bc0dd4abd",
+    "proposal_id": "phase4_82fce1f8f3fe899e64abff5d",
+    "authorization_id": "AIGC-AUTH-29d3e4cdd639b2d9bc",
+    "action_id": "AIGC-ACT-20260701-0018",
+    "title": "[integrations] Dataset-name sanitization parity across integrations",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3549",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0018",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for [integrations] Dataset-name sanitization parity across integrations?",
+        "What technical acceptance criteria are explicit or missing for [integrations] Dataset-name sanitization parity across integrations?",
+        "What value would cognee recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "533db66d2318bf2bc0dd4abd",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_82fce1f8f3fe899e64abff5d",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-29d3e4cdd639b2d9bc",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-65DF4A411DC1CD07",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-4EFC0B479982469B",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-C3E973290C5AE6BF.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-C3E973290C5AE6BF.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-C3E973290C5AE6BF: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-5D01F2519463626B",
+    "created_at": "2026-07-03T01:47:49.694838+00:00",
+    "updated_at": "2026-07-03T01:47:49.694838+00:00",
+    "expires_at": "2026-07-04T01:47:49.694838+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-C7189139F0C74F4F",
+    "source_procurement_record_id": "AIGC-PROC-B0C0CB03D59E512E",
+    "opportunity_id": "0e36363038add3b5915f1b84",
+    "proposal_id": "phase4_2cc717f1098738dc3eeae2fc",
+    "authorization_id": "AIGC-AUTH-788f17b9ccdbd493ab",
+    "action_id": "AIGC-ACT-20260701-0019",
+    "title": "[integrations] Live add→cognify→search smoke test",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3557",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0019",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for [integrations] Live add→cognify→search smoke test?",
+        "What technical acceptance criteria are explicit or missing for [integrations] Live add→cognify→search smoke test?",
+        "What value would cognee recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "0e36363038add3b5915f1b84",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_2cc717f1098738dc3eeae2fc",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-788f17b9ccdbd493ab",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-30B2E2D996DD540A",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-EE100ADD3462FF18",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-5D01F2519463626B.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-5D01F2519463626B.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-5D01F2519463626B: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-8040ACFAAA9A0B79",
+    "created_at": "2026-07-03T01:47:49.694838+00:00",
+    "updated_at": "2026-07-03T01:47:49.694838+00:00",
+    "expires_at": "2026-07-04T01:47:49.694838+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-95FE9206F600C600",
+    "source_procurement_record_id": "AIGC-PROC-79B86BF54967D3B1",
+    "opportunity_id": "ab4ac8a8d497c0cf8adb58c4",
+    "proposal_id": "phase4_2f5eeee5f967b51e0c3f27fa",
+    "authorization_id": "AIGC-AUTH-361e77ad9f77b7bc94",
+    "action_id": "AIGC-ACT-20260701-0020",
+    "title": "[integrations] OpenClaw tests for scope routing + cogneeSessionId",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3555",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0020",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for [integrations] OpenClaw tests for scope routing + cogneeSessionId?",
+        "What technical acceptance criteria are explicit or missing for [integrations] OpenClaw tests for scope routing + cogneeSessionId?",
+        "What value would cognee recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "ab4ac8a8d497c0cf8adb58c4",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_2f5eeee5f967b51e0c3f27fa",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-361e77ad9f77b7bc94",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-0E7449FED073D3A6",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-9208E41251AFDB59",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-8040ACFAAA9A0B79.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-8040ACFAAA9A0B79.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-8040ACFAAA9A0B79: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-A03EA19FE9A7A837",
+    "created_at": "2026-07-03T01:47:49.694838+00:00",
+    "updated_at": "2026-07-03T01:47:49.694838+00:00",
+    "expires_at": "2026-07-04T01:47:49.694838+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-0A090968261E4FD5",
+    "source_procurement_record_id": "AIGC-PROC-804AAAEEACF1AC9B",
+    "opportunity_id": "bd706e8c410ea414b213cd01",
+    "proposal_id": "phase4_13f9f7ffe445c278d57f9f6a",
+    "authorization_id": "AIGC-AUTH-cf172f93401841e536",
+    "action_id": "AIGC-ACT-20260701-0021",
+    "title": "[integrations] Port the claude-code test suite to Codex",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3554",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0021",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for [integrations] Port the claude-code test suite to Codex?",
+        "What technical acceptance criteria are explicit or missing for [integrations] Port the claude-code test suite to Codex?",
+        "What value would cognee recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "bd706e8c410ea414b213cd01",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_13f9f7ffe445c278d57f9f6a",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-cf172f93401841e536",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-F06F84A7B590EC40",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-5F28FAD8A4480D3F",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-A03EA19FE9A7A837.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-A03EA19FE9A7A837.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-A03EA19FE9A7A837: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-E2E8AB2055D27944",
+    "created_at": "2026-07-03T01:47:49.694838+00:00",
+    "updated_at": "2026-07-03T01:47:49.694838+00:00",
+    "expires_at": "2026-07-04T01:47:49.694838+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-6521721278BD0F2F",
+    "source_procurement_record_id": "AIGC-PROC-B44A41637670D9BA",
+    "opportunity_id": "67ed35084445d65a8241e5bf",
+    "proposal_id": "phase4_a690460fc33e1ded08f7ae61",
+    "authorization_id": "AIGC-AUTH-358ead099c2775bb82",
+    "action_id": "AIGC-ACT-20260701-0022",
+    "title": "[integrations] cognee-plugin doctor command",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3551",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0022",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for [integrations] cognee-plugin doctor command?",
+        "What technical acceptance criteria are explicit or missing for [integrations] cognee-plugin doctor command?",
+        "What value would cognee recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "67ed35084445d65a8241e5bf",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_a690460fc33e1ded08f7ae61",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-358ead099c2775bb82",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-C3E1607784CB5A5E",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-B40A2E58B9EB4B8A",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-E2E8AB2055D27944.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-E2E8AB2055D27944.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-E2E8AB2055D27944: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-34BBEE9B2C320E31",
+    "created_at": "2026-07-03T01:47:49.694838+00:00",
+    "updated_at": "2026-07-03T01:47:49.694838+00:00",
+    "expires_at": "2026-07-04T01:47:49.694838+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-BBF496BC4DF47D8C",
+    "source_procurement_record_id": "AIGC-PROC-6BC8A8E9EE14808D",
+    "opportunity_id": "b79351d868e5311a2ed7db55",
+    "proposal_id": "phase4_ad020f580bc22642c8caf9b5",
+    "authorization_id": "AIGC-AUTH-39d2858df03f1de116",
+    "action_id": "AIGC-ACT-20260701-0023",
+    "title": "[integrations] Shared session-id sanitization conformance test",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3548",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0023",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for [integrations] Shared session-id sanitization conformance test?",
+        "What technical acceptance criteria are explicit or missing for [integrations] Shared session-id sanitization conformance test?",
+        "What value would cognee recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "b79351d868e5311a2ed7db55",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_ad020f580bc22642c8caf9b5",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-39d2858df03f1de116",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-9B95288008CCCC12",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-07E8E41D6BA5D84F",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-34BBEE9B2C320E31.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-34BBEE9B2C320E31.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-34BBEE9B2C320E31: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-7D7EF276CC70D2E6",
+    "created_at": "2026-07-03T01:47:49.694838+00:00",
+    "updated_at": "2026-07-03T01:47:49.694838+00:00",
+    "expires_at": "2026-07-04T01:47:49.694838+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-9C330EC62EC8B403",
+    "source_procurement_record_id": "AIGC-PROC-CE403451D58F2E80",
+    "opportunity_id": "e86bbd3a4c9c7c08eb27da18",
+    "proposal_id": "phase4_25fd062345700a1e3a08d0d2",
+    "authorization_id": "AIGC-AUTH-11110c7f38dc614a91",
+    "action_id": "AIGC-ACT-20260701-0024",
+    "title": "[integrations] Re-register agent session on mid-session mode change",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3544",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0024",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for [integrations] Re-register agent session on mid-session mode change?",
+        "What technical acceptance criteria are explicit or missing for [integrations] Re-register agent session on mid-session mode change?",
+        "What value would cognee recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "e86bbd3a4c9c7c08eb27da18",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_25fd062345700a1e3a08d0d2",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-11110c7f38dc614a91",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-FE799140D50C1787",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-18C7B44E55EAE391",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-7D7EF276CC70D2E6.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-7D7EF276CC70D2E6.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-7D7EF276CC70D2E6: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-FRESH-E2FB6015541C5DEC",
+    "created_at": "2026-07-03T01:47:49.694838+00:00",
+    "updated_at": "2026-07-03T01:47:49.694838+00:00",
+    "expires_at": "2026-07-04T01:47:49.694838+00:00",
+    "phase": "phase29_operator_freshness_review_procurement",
+    "status": "pending_operator_freshness_review",
+    "source_phase27_record_id": "AIGC-REN-2DCAD9E7012ACF4B",
+    "source_procurement_record_id": "AIGC-PROC-25C00B95AB52FE75",
+    "opportunity_id": "7f44a2bfe1bde725327f8e99",
+    "proposal_id": "phase4_c473c8af591b5b81ccf4d486",
+    "authorization_id": "AIGC-AUTH-0309292be2f5e4e505",
+    "action_id": "AIGC-ACT-20260701-0025",
+    "title": "[integrations] Retry first recall on cold-start timeout",
+    "employer": "cognee",
+    "source_platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3542",
+    "review_scope": {
+      "review_target": "phase27_renewal_record",
+      "phase28_output_mode": "internal_candidate_only",
+      "source_currentness_required": true,
+      "old_action_id_approval_allowed": false,
+      "old_action_id": "AIGC-ACT-20260701-0025",
+      "required_review_questions": [
+        "Is the source opportunity still current and materially unchanged for [integrations] Retry first recall on cold-start timeout?",
+        "What technical acceptance criteria are explicit or missing for [integrations] Retry first recall on cold-start timeout?",
+        "What value would cognee recognize as a successful outcome?",
+        "What platform terms, disclosure requirements, privacy constraints, or communication norms apply?",
+        "What payment, contract, revision, and delivery terms must be clarified before commitment?",
+        "What evidence should appear in an employer-safe audit packet if this becomes real work?",
+        "Which Phase 26 capability gaps must be resolved before this candidate can claim high-quality readiness?",
+        "Which stale or high-drift context must be refreshed before regeneration?"
+      ]
+    },
+    "evidence_summary": {
+      "source_truth_status": "real_read_only_source_snapshot_present",
+      "renewal_strategy": "preserve_historical_derivative_and_regenerate_from_fresh_source_context",
+      "preserved_artifact_chain": [
+        {
+          "phase": "phase2_opportunity_radar",
+          "artifact_id": "7f44a2bfe1bde725327f8e99",
+          "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+          "truth_role": "source_evidence",
+          "status": "queue_with_caution"
+        },
+        {
+          "phase": "phase4_proposal_drafting",
+          "artifact_id": "phase4_c473c8af591b5b81ccf4d486",
+          "path": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_draft_only"
+        },
+        {
+          "phase": "phase5_human_approval_gate",
+          "artifact_id": "AIGC-AUTH-0309292be2f5e4e505",
+          "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "expired_pending_generated_derivative"
+        },
+        {
+          "phase": "phase22_quantum_aware_quality_kernel",
+          "artifact_id": "AIGC-QK-C9EDE0BE587648AD",
+          "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_quality_state_recorded"
+        },
+        {
+          "phase": "phase23_ascended_work_order_governor",
+          "artifact_id": "AIGC-WOG-0084E01EFFD4E4CB",
+          "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+          "truth_role": "generated_internal_derivative",
+          "status": "internal_work_order_governance_recorded"
+        }
+      ],
+      "phase28_records_found": 1,
+      "phase28_currently_blocked": true,
+      "external_data_fetch_performed": false,
+      "external_action_performed": false
+    },
+    "freshness_findings": {
+      "phase27_freshness_requirements": {
+        "fresh_source_required": true,
+        "temporal_metadata_required": true,
+        "high_or_critical_drift_records": 2,
+        "stale_records": 2,
+        "regenerate_after_phase25_refresh": true
+      },
+      "intelligence_high_or_critical_drift_records": 2,
+      "intelligence_stale_records": 2,
+      "capability_gap_count": 9,
+      "capability_gaps": [
+        "work_quality_application: average quality score 75 is below threshold 85.",
+        "work_quality_application: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+        "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+        "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0.",
+        "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+        "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0.",
+        "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+        "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+      ],
+      "freshness_review_required": true
+    },
+    "required_review_controls": {
+      "source_currentness_reviewed": false,
+      "scope_reviewed": false,
+      "compliance_reviewed": false,
+      "quality_plan_reviewed": false,
+      "payment_contract_reviewed": false,
+      "old_action_id_confirmed_inactive": false,
+      "phase28_internal_candidate_only_confirmed": false
+    },
+    "operator_review": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-E2FB6015541C5DEC.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-E2FB6015541C5DEC.",
+      "revision_phrase_template": "Revise freshness review AIGC-FRESH-E2FB6015541C5DEC: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": "",
+      "external_action_authorized": false
+    },
+    "phase28_gate_projection": {
+      "phase28_regeneration_allowed": false,
+      "allowed_output_mode": "internal_candidate_only",
+      "controls_pass": false,
+      "approved_review_required": true,
+      "external_action_authorized": false,
+      "phase6_authorized": false
+    },
+    "decision": "pending",
+    "blocked_actions": [
+      "approve_without_source_currentness_review",
+      "approve_without_scope_review",
+      "approve_without_compliance_review",
+      "approve_without_quality_plan_review",
+      "approve_without_payment_contract_review",
+      "treat_old_action_id_as_active",
+      "authorize_phase6",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "fetch_external_data_without_operator_command",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  }
+]

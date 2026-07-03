@@ -66,6 +66,7 @@ class Phase12ObservabilityDashboard:
         "phase26_ascended_capability_procurement_program",
         "phase27_stale_artifact_renewal_controller",
         "phase28_fresh_candidate_regeneration_controller",
+        "phase29_operator_freshness_review_procurement",
     ]
 
     def __init__(self, root: Path, config_path: Path):
@@ -97,6 +98,7 @@ class Phase12ObservabilityDashboard:
         phase26_count = count_json_list(self.resolve(inputs.get("phase26_capability_procurement", "")))
         phase27_count = count_json_list(self.resolve(inputs.get("phase27_stale_artifact_renewal", "")))
         phase28_records = load_json_list_if_exists(self.resolve(inputs.get("phase28_regeneration_candidates", "")))
+        phase29_records = load_json_list_if_exists(self.resolve(inputs.get("phase29_freshness_reviews", "")))
         secret_manifest_exists = self.resolve(inputs.get("secret_manifest", "")).exists()
         external_secret_manifest_exists = self.resolve(inputs.get("external_secret_manifest", "")).exists()
         secret_findings = self.scan_secret_paths()
@@ -125,6 +127,9 @@ class Phase12ObservabilityDashboard:
             "phase28_regeneration_candidate_records": len(phase28_records),
             "phase28_allowed_regeneration_candidates": sum(1 for item in phase28_records if item.get("regeneration_allowed") is True),
             "phase28_blocked_regeneration_candidates": sum(1 for item in phase28_records if item.get("regeneration_allowed") is False),
+            "phase29_freshness_review_records": len(phase29_records),
+            "phase29_approved_freshness_reviews": sum(1 for item in phase29_records if item.get("decision") == "approved_for_phase28_regeneration"),
+            "phase29_pending_freshness_reviews": sum(1 for item in phase29_records if item.get("decision") == "pending"),
         }
         audit_integrity = {
             "audit_dir_exists": audit_dir.exists(),
@@ -227,6 +232,7 @@ class Phase12ObservabilityDashboard:
             "phase26_ascended_capability_procurement_program": pipeline_metrics["phase26_capability_procurement_records"],
             "phase27_stale_artifact_renewal_controller": pipeline_metrics["phase27_stale_artifact_renewal_records"],
             "phase28_fresh_candidate_regeneration_controller": pipeline_metrics["phase28_regeneration_candidate_records"],
+            "phase29_operator_freshness_review_procurement": pipeline_metrics["phase29_freshness_review_records"],
         }
         results: List[PhaseHealth] = []
         for phase in self.PHASES:
@@ -237,7 +243,7 @@ class Phase12ObservabilityDashboard:
             elif count > 0:
                 status = "green"
                 notes = ["Telemetry present."]
-            elif phase in {"phase0_genesis_constitution", "phase1_domain_discovery", "phase10_connector_api_layer", "phase13_simulation_arena", "phase14_deployment_runtime", "phase15_finance_contracts_asset_ledger", "phase16_compliance_legal_review", "phase17_incident_response", "phase18_scaling_productization", "phase19_subagent_generation_forge", "phase20_fidelity_forge", "phase21_customer_satisfaction_continuum", "phase22_quantum_aware_quality_kernel", "phase23_ascended_work_order_governor", "phase24_truth_first_procurement_governance", "phase25_continuous_intelligence_ingestion_layer", "phase26_ascended_capability_procurement_program", "phase27_stale_artifact_renewal_controller", "phase28_fresh_candidate_regeneration_controller"}:
+            elif phase in {"phase0_genesis_constitution", "phase1_domain_discovery", "phase10_connector_api_layer", "phase13_simulation_arena", "phase14_deployment_runtime", "phase15_finance_contracts_asset_ledger", "phase16_compliance_legal_review", "phase17_incident_response", "phase18_scaling_productization", "phase19_subagent_generation_forge", "phase20_fidelity_forge", "phase21_customer_satisfaction_continuum", "phase22_quantum_aware_quality_kernel", "phase23_ascended_work_order_governor", "phase24_truth_first_procurement_governance", "phase25_continuous_intelligence_ingestion_layer", "phase26_ascended_capability_procurement_program", "phase27_stale_artifact_renewal_controller", "phase28_fresh_candidate_regeneration_controller", "phase29_operator_freshness_review_procurement"}:
                 status = "yellow"
                 notes = ["No baseline telemetry found yet."]
             else:
@@ -288,8 +294,10 @@ class Phase12ObservabilityDashboard:
         if secrets_privacy["secret_like_findings"] > 0:
             return "Redact secret-like findings and rerun Phase 12."
         if approval_metrics.get("expired_pending", 0) > 0:
+            if pipeline_metrics.get("phase29_pending_freshness_reviews", 0) > 0:
+                return "Review Phase 29 freshness packets before allowing Phase 28 regeneration; do not approve or use expired Phase 5 packets."
             if pipeline_metrics.get("phase28_blocked_regeneration_candidates", 0) > 0:
-                return "Complete an operator freshness review before allowing Phase 28 regeneration; do not approve or use expired Phase 5 packets."
+                return "Run Phase 29 freshness review procurement before allowing Phase 28 regeneration; do not approve or use expired Phase 5 packets."
             if pipeline_metrics.get("phase28_allowed_regeneration_candidates", 0) > 0:
                 return "Review the fresh Phase 28 internal candidates; any Phase 5 candidate still needs separate exact-phrase approval before Phase 6."
             return "Run Phase 27 renewal, then Phase 28 regeneration gating before replacing expired Phase 5 candidates."

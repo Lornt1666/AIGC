@@ -26,6 +26,7 @@
     "phase26_capability_procurement": "data/phase26_capability_procurement/aigc_phase26_capability_procurement_records.json",
     "phase27_stale_artifact_renewal": "data/phase27_renewal/aigc_phase27_stale_artifact_renewal_records.json",
     "phase28_regeneration_candidates": "data/phase28_regeneration/aigc_phase28_regeneration_candidates.json",
+    "phase29_freshness_reviews": "data/phase29_freshness_reviews/aigc_phase29_freshness_review_records.json",
     "secret_manifest": "config/secret_manifest.json",
     "external_secret_manifest": "../AIGC_MEMORY_CORE/config/secret_manifest.json"
   },

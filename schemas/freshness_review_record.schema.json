@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Freshness Review Record",
+  "type": "object",
+  "required": [
+    "record_id",
+    "created_at",
+    "updated_at",
+    "expires_at",
+    "phase",
+    "status",
+    "source_phase27_record_id",
+    "source_procurement_record_id",
+    "opportunity_id",
+    "proposal_id",
+    "authorization_id",
+    "action_id",
+    "title",
+    "employer",
+    "source_platform",
+    "source_url",
+    "review_scope",
+    "evidence_summary",
+    "freshness_findings",
+    "required_review_controls",
+    "operator_review",
+    "phase28_gate_projection",
+    "decision",
+    "blocked_actions",
+    "external_data_fetch_performed",
+    "external_action_performed"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "updated_at": {
+      "type": "string"
+    },
+    "expires_at": {
+      "type": "string"
+    },
+    "phase": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "source_phase27_record_id": {
+      "type": "string"
+    },
+    "source_procurement_record_id": {
+      "type": "string"
+    },
+    "opportunity_id": {
+      "type": "string"
+    },
+    "proposal_id": {
+      "type": "string"
+    },
+    "authorization_id": {
+      "type": "string"
+    },
+    "action_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "employer": {
+      "type": "string"
+    },
+    "source_platform": {
+      "type": "string"
+    },
+    "source_url": {
+      "type": "string"
+    },
+    "review_scope": {
+      "type": "object"
+    },
+    "evidence_summary": {
+      "type": "object"
+    },
+    "freshness_findings": {
+      "type": "object"
+    },
+    "required_review_controls": {
+      "type": "object"
+    },
+    "operator_review": {
+      "type": "object"
+    },
+    "phase28_gate_projection": {
+      "type": "object"
+    },
+    "decision": {
+      "type": "string"
+    },
+    "blocked_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "external_data_fetch_performed": {
+      "type": "boolean"
+    },
+    "external_action_performed": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}

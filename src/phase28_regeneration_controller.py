@@ -73,6 +73,10 @@ class FreshCandidateRegenerationController:
             self.project_root,
             str(inputs.get("phase27_renewal_records", "data/phase27_renewal/aigc_phase27_stale_artifact_renewal_records.json")),
         ))
+        freshness_review_records = load_records(resolve_project_path(
+            self.project_root,
+            str(inputs.get("freshness_review_records", "")),
+        )) if inputs.get("freshness_review_records") else []
         output_path = resolve_project_path(
             self.project_root,
             config.get("output_file", "data/phase28_regeneration/aigc_phase28_regeneration_candidates.json"),
@@ -85,7 +89,7 @@ class FreshCandidateRegenerationController:
             self.project_root,
             config.get("audit_log", "data/audit/aigc_phase28_audit.jsonl"),
         )
-        records = self.build_records(config, phase27_records)
+        records = self.build_records(config, phase27_records, freshness_review_records)
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(
             json.dumps([asdict(record) for record in records], ensure_ascii=False, indent=2),
@@ -109,11 +113,16 @@ class FreshCandidateRegenerationController:
         self,
         config: Dict[str, Any],
         phase27_records: List[Dict[str, Any]],
+        freshness_review_records: List[Dict[str, Any]] | None = None,
     ) -> List[RegenerationCandidateRecord]:
         max_records = int(config.get("max_records", 25))
-        gate = build_freshness_review_gate(config)
+        reviews_by_source = {
+            str(record.get("source_phase27_record_id", "")): record
+            for record in freshness_review_records or []
+            if str(record.get("source_phase27_record_id", ""))
+        }
         return [
-            self._build_record(config, renewal, gate, index)
+            self._build_record(config, renewal, reviews_by_source.get(str(renewal.get("record_id", ""))), index)
             for index, renewal in enumerate(phase27_records[:max_records], start=1)
         ]
 
@@ -121,9 +130,10 @@ class FreshCandidateRegenerationController:
         self,
         config: Dict[str, Any],
         renewal: Dict[str, Any],
-        gate: Dict[str, Any],
+        freshness_review: Dict[str, Any] | None,
         index: int,
     ) -> RegenerationCandidateRecord:
+        gate = build_freshness_review_gate(config, freshness_review)
         allowed = bool(gate.get("approved", False))
         blockers = list(gate.get("blocker_reasons", []))
         phase4_candidate = build_phase4_candidate(config, renewal) if allowed else None
@@ -192,7 +202,47 @@ class FreshCandidateRegenerationController:
         ]).strip() + "\n"
 
 
-def build_freshness_review_gate(config: Dict[str, Any]) -> Dict[str, Any]:
+def build_freshness_review_gate(config: Dict[str, Any], freshness_review: Dict[str, Any] | None = None) -> Dict[str, Any]:
+    if freshness_review:
+        controls = freshness_review.get("required_review_controls", {})
+        if not isinstance(controls, dict):
+            controls = {}
+        operator_review = freshness_review.get("operator_review", {})
+        if not isinstance(operator_review, dict):
+            operator_review = {}
+        projection = freshness_review.get("phase28_gate_projection", {})
+        if not isinstance(projection, dict):
+            projection = {}
+        checks = {
+            "phase29_record_present": True,
+            "decision_approved": str(freshness_review.get("decision", "")) == "approved_for_phase28_regeneration",
+            "status_approved": str(freshness_review.get("status", "")) == "approved_for_internal_regeneration",
+            "review_not_expired": not review_expired(freshness_review),
+            "operator_review_approved": bool(operator_review.get("approved", False)),
+            "controls_pass": all(bool(value) for value in controls.values()) if controls else False,
+            "phase28_projection_allows": bool(projection.get("phase28_regeneration_allowed", False)),
+            "internal_candidate_only": str(projection.get("allowed_output_mode", "")) == "internal_candidate_only",
+            "no_external_action": bool(freshness_review.get("external_action_performed", False)) is False,
+        }
+        blocker_reasons = [
+            name
+            for name, passed in checks.items()
+            if not passed
+        ]
+        return {
+            "approved": not blocker_reasons,
+            "review_source": "phase29_freshness_review_record",
+            "review_id": str(freshness_review.get("record_id", "")),
+            "reviewed_at": str(operator_review.get("approved_at", "")),
+            "freshness_review_status": str(freshness_review.get("status", "")),
+            "allowed_output_mode": str(projection.get("allowed_output_mode", "")),
+            "required_phrase": str(operator_review.get("required_phrase", "")),
+            "received_phrase_recorded": bool(str(operator_review.get("received_phrase", ""))),
+            "received_phrase_matches": bool(operator_review.get("approved", False)),
+            "required_checks": checks,
+            "blocker_reasons": blocker_reasons,
+            "external_action_authorized": False,
+        }
     review = config.get("operator_freshness_review", {})
     if not isinstance(review, dict):
         review = {}
@@ -229,6 +279,19 @@ def build_freshness_review_gate(config: Dict[str, Any]) -> Dict[str, Any]:
         "blocker_reasons": blocker_reasons,
         "external_action_authorized": False,
     }
+
+
+def review_expired(record: Dict[str, Any]) -> bool:
+    value = str(record.get("expires_at", ""))
+    if not value:
+        return True
+    try:
+        expires_at = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return True
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+    return datetime.now(timezone.utc) > expires_at.astimezone(timezone.utc)
 
 
 def build_phase4_candidate(config: Dict[str, Any], renewal: Dict[str, Any]) -> Dict[str, Any]:

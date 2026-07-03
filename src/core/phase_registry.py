@@ -285,6 +285,16 @@ def build_phase_registry(root: Path = PROJECT_ROOT) -> Dict[str, PhaseDefinition
             allowed_runtime_modes=["internal_regeneration_after_freshness_review_only"],
             external_action_risk="none_internal_candidate_regeneration_only",
         ),
+        "phase29": PhaseDefinition(
+            name="phase29",
+            display_name="Phase 29 - Operator Freshness Review Procurement",
+            input_path="config/phase29_freshness_review_procurement.json",
+            output_path="data/phase29_freshness_reviews/aigc_phase29_freshness_review_records.json",
+            schema_name="freshness_review_record",
+            command=[py, str(src / "phase29_freshness_review_procurement.py")],
+            allowed_runtime_modes=["internal_freshness_review_packet_procurement_only"],
+            external_action_risk="none_internal_freshness_review_only",
+        ),
     }
 
 

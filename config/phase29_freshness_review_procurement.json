@@ -1,0 +1,44 @@
+{
+  "phase": "Phase 29 - Operator Freshness Review Procurement",
+  "operating_mode": "internal_freshness_review_packet_procurement_only",
+  "external_actions_allowed": false,
+  "external_data_fetch_allowed": false,
+  "output_file": "data/phase29_freshness_reviews/aigc_phase29_freshness_review_records.json",
+  "report_file": "data/reports/phase29_signature_update.md",
+  "audit_log": "data/audit/aigc_phase29_audit.jsonl",
+  "max_records": 25,
+  "review_expiration_hours": 24,
+  "operator": "Justice Gray Maciocha",
+  "input_files": {
+    "phase27_renewal_records": "data/phase27_renewal/aigc_phase27_stale_artifact_renewal_records.json",
+    "phase25_intelligence_ingestion": "data/phase25_intelligence/aigc_phase25_intelligence_ingestion_records.json",
+    "phase26_capability_procurement": "data/phase26_capability_procurement/aigc_phase26_capability_procurement_records.json",
+    "phase28_regeneration_candidates": "data/phase28_regeneration/aigc_phase28_regeneration_candidates.json"
+  },
+  "required_review_controls": [
+    "source_currentness_reviewed",
+    "scope_reviewed",
+    "compliance_reviewed",
+    "quality_plan_reviewed",
+    "payment_contract_reviewed",
+    "old_action_id_confirmed_inactive",
+    "phase28_internal_candidate_only_confirmed"
+  ],
+  "blocked_actions": [
+    "approve_without_source_currentness_review",
+    "approve_without_scope_review",
+    "approve_without_compliance_review",
+    "approve_without_quality_plan_review",
+    "approve_without_payment_contract_review",
+    "treat_old_action_id_as_active",
+    "authorize_phase6",
+    "contact_external_party",
+    "submit_application",
+    "submit_proposal",
+    "submit_deliverable",
+    "use_credentials",
+    "fetch_external_data_without_operator_command",
+    "bypass_phase5_approval",
+    "hide_stale_context"
+  ]
+}

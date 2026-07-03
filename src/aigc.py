@@ -24,6 +24,7 @@ from src.core.phase_registry import build_phase_registry  # noqa: E402
 from src.core.pipeline_closure import PipelineClosureRunner  # noqa: E402
 from src.core.state_store import AIGCStateStore, DEFAULT_DB_PATH  # noqa: E402
 from src.phase17_incident_response import Phase17IncidentResponse  # noqa: E402
+from src.phase29_freshness_review_procurement import approve_review_record  # noqa: E402
 from src.security.approval_tokens import ApprovalTokenStore  # noqa: E402
 
 
@@ -55,6 +56,12 @@ def main(argv: List[str] | None = None) -> int:
         return command_authorization_decision(args, root, store, "deny")
     if args.command == "revise":
         return command_authorization_decision(args, root, store, "revise")
+    if args.command == "approve-freshness-review":
+        return command_freshness_review_decision(args, root, store, "approve")
+    if args.command == "deny-freshness-review":
+        return command_freshness_review_decision(args, root, store, "deny")
+    if args.command == "revise-freshness-review":
+        return command_freshness_review_decision(args, root, store, "revise")
     if args.command == "close-loop":
         runner = PipelineClosureRunner(root, store)
         result = runner.run(execution_mode=args.execution_mode)
@@ -164,6 +171,7 @@ def command_validate(args: argparse.Namespace, root: Path, store: AIGCStateStore
             (registry["phase26"].schema_name, root / registry["phase26"].output_path),
             (registry["phase27"].schema_name, root / registry["phase27"].output_path),
             (registry["phase28"].schema_name, root / registry["phase28"].output_path),
+            (registry["phase29"].schema_name, root / registry["phase29"].output_path),
         ]
         jsonl_targets = [
             ("outcome_record", root / "data" / "phase8_evolution" / "outcome_records.jsonl"),
@@ -355,6 +363,16 @@ def command_run(args: argparse.Namespace, root: Path, store: AIGCStateStore) -> 
             str(root / "config" / "phase28_regeneration_controller.json"),
         ]
         status = run_subprocess(command, root)
+    elif phase == "phase29":
+        command = [
+            sys.executable,
+            str(PROJECT_ROOT / "src" / "phase29_freshness_review_procurement.py"),
+            "--project-root",
+            str(root),
+            "--config",
+            str(root / "config" / "phase29_freshness_review_procurement.json"),
+        ]
+        status = run_subprocess(command, root)
     else:
         registry = build_phase_registry(root)
         if phase not in registry:
@@ -520,6 +538,67 @@ def command_authorization_decision(
     return 0
 
 
+def command_freshness_review_decision(
+    args: argparse.Namespace,
+    root: Path,
+    store: AIGCStateStore,
+    decision: str,
+) -> int:
+    review_path = Path(args.reviews_path)
+    if not review_path.is_absolute():
+        review_path = root / review_path
+    if not review_path.exists():
+        print(f"Freshness review file not found: {review_path}")
+        return 2
+    records = json.loads(review_path.read_text(encoding="utf-8"))
+    if not isinstance(records, list):
+        print("Freshness review file must contain a JSON list.")
+        return 2
+    target = None
+    for record in records:
+        if isinstance(record, dict) and record.get("record_id") == args.review_id:
+            target = record
+            break
+    if target is None:
+        print(f"Freshness review ID not found: {args.review_id}")
+        return 2
+    try:
+        approve_review_record(target, args.phrase, decision)
+    except ValueError as exc:
+        store.insert_event(
+            event_type="freshness_review_decision_rejected",
+            phase="phase29_operator_freshness_review_procurement",
+            status="blocked",
+            summary=str(exc),
+            data={"review_id": args.review_id, "decision": decision},
+            external_action_performed=False,
+        )
+        print(str(exc))
+        return 2
+    review_path.write_text(json.dumps(records, ensure_ascii=False, indent=2), encoding="utf-8")
+    validate_file("freshness_review_record", review_path)
+    event = store.insert_event(
+        event_type=f"freshness_review_{decision}_recorded",
+        phase="phase29_operator_freshness_review_procurement",
+        status=str(target.get("decision", "")),
+        summary=f"Recorded freshness review {decision} decision for {args.review_id}.",
+        data={
+            "review_id": args.review_id,
+            "source_phase27_record_id": target.get("source_phase27_record_id", ""),
+            "phase28_regeneration_allowed": target.get("phase28_gate_projection", {}).get("phase28_regeneration_allowed", False),
+        },
+        external_action_performed=False,
+    )
+    print(json.dumps({
+        "review_id": args.review_id,
+        "decision": target.get("decision", ""),
+        "phase28_regeneration_allowed": target.get("phase28_gate_projection", {}).get("phase28_regeneration_allowed", False),
+        "event_id": event.event_id,
+        "external_action_performed": False,
+    }, indent=2))
+    return 0
+
+
 def run_phase14_preflight(root: Path, store: AIGCStateStore) -> int:
     registry = build_phase_registry(root)
     validation_failures: List[str] = []
@@ -631,7 +710,7 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     validate_parser.add_argument("--path", default="")
 
     run_parser = subparsers.add_parser("run", help="Run an internal AIGC phase command.")
-    run_parser.add_argument("phase", choices=["phase2", "phase3", "phase4", "phase5", "phase6", "phase7", "phase8", "phase10", "phase11", "phase12", "phase13", "phase14", "phase15", "phase16", "phase17", "phase18", "phase19", "phase20", "phase21", "phase22", "phase23", "phase24", "phase25", "phase26", "phase27", "phase28", "pipeline"])
+    run_parser.add_argument("phase", choices=["phase2", "phase3", "phase4", "phase5", "phase6", "phase7", "phase8", "phase10", "phase11", "phase12", "phase13", "phase14", "phase15", "phase16", "phase17", "phase18", "phase19", "phase20", "phase21", "phase22", "phase23", "phase24", "phase25", "phase26", "phase27", "phase28", "phase29", "pipeline"])
     run_parser.add_argument("--mode", choices=["synthetic", "real", "real_data_read_only"], default="synthetic")
     run_parser.add_argument("--source", choices=["remoteok", "remotive", "weworkremotely", "github_issues"], default="remoteok")
     run_parser.add_argument("--limit", type=int, default=10)
@@ -671,6 +750,21 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     revise_parser.add_argument("--action-id", required=True)
     revise_parser.add_argument("--phrase", required=True)
     revise_parser.add_argument("--authorizations-path", default="data/phase5_authorizations/aigc_phase5_authorization_packets.json")
+
+    approve_freshness_parser = subparsers.add_parser("approve-freshness-review", help="Approve one Phase 29 freshness review by exact phrase.")
+    approve_freshness_parser.add_argument("--review-id", required=True)
+    approve_freshness_parser.add_argument("--phrase", required=True)
+    approve_freshness_parser.add_argument("--reviews-path", default="data/phase29_freshness_reviews/aigc_phase29_freshness_review_records.json")
+
+    deny_freshness_parser = subparsers.add_parser("deny-freshness-review", help="Deny one Phase 29 freshness review by exact phrase.")
+    deny_freshness_parser.add_argument("--review-id", required=True)
+    deny_freshness_parser.add_argument("--phrase", required=True)
+    deny_freshness_parser.add_argument("--reviews-path", default="data/phase29_freshness_reviews/aigc_phase29_freshness_review_records.json")
+
+    revise_freshness_parser = subparsers.add_parser("revise-freshness-review", help="Mark one Phase 29 freshness review as revision-required.")
+    revise_freshness_parser.add_argument("--review-id", required=True)
+    revise_freshness_parser.add_argument("--phrase", required=True)
+    revise_freshness_parser.add_argument("--reviews-path", default="data/phase29_freshness_reviews/aigc_phase29_freshness_review_records.json")
     return parser.parse_args(argv)
 
 

@@ -242,6 +242,7 @@ python .\src\aigc.py run phase25
 python .\src\aigc.py run phase26
 python .\src\aigc.py run phase27
 python .\src\aigc.py run phase28
+python .\src\aigc.py run phase29
 python .\src\aigc.py run pipeline --mode synthetic
 python .\src\aigc.py run pipeline --mode real_data_read_only --source remoteok --limit 10
 python .\src\aigc.py close-loop --execution-mode manual_handoff
@@ -509,6 +510,33 @@ Outputs:
 - `reports/milestone_p_regeneration_controller_report.md`
 
 Phase 28 blocks by default. If the freshness review gate is not satisfied, it emits blocked regeneration records with no embedded candidates. If the gate is satisfied, it writes fresh candidates only inside the Phase 28 ledger. It does not overwrite canonical Phase 4 or Phase 5 files, approve actions, authorize Phase 6, fetch external data, contact external parties, submit applications, submit proposals, submit deliverables, use credentials, or bypass approval gates.
+
+## Milestone Q Operator Freshness Review Procurement
+
+Milestone Q adds Phase 29 as a first-class freshness-review procurement layer. It generates review packets from Phase 27 renewal records so Phase 28 can consume scoped, expirable, exact-phrase-approved review records instead of relying on broad config approval.
+
+Command:
+
+```powershell
+python .\src\aigc.py run phase29
+```
+
+Outputs:
+
+- `data/phase29_freshness_reviews/aigc_phase29_freshness_review_records.json`
+- `data/reports/phase29_signature_update.md`
+- `data/audit/aigc_phase29_audit.jsonl`
+- `reports/milestone_q_freshness_review_procurement_report.md`
+
+Freshness review decisions are recorded internally with exact phrases:
+
+```powershell
+python .\src\aigc.py approve-freshness-review --review-id AIGC-FRESH-... --phrase "I, Justice Gray Maciocha, approve freshness review AIGC-FRESH-...."
+python .\src\aigc.py deny-freshness-review --review-id AIGC-FRESH-... --phrase "I, Justice Gray Maciocha, deny freshness review AIGC-FRESH-...."
+python .\src\aigc.py revise-freshness-review --review-id AIGC-FRESH-... --phrase "Revise freshness review AIGC-FRESH-...: revision instructions"
+```
+
+Approving a Phase 29 review only permits Phase 28 to create internal regenerated candidates for that specific Phase 27 renewal record. It does not approve Phase 5 packets, authorize Phase 6, contact external parties, submit proposals, fetch external data, use credentials, or perform external action.
 
 ## Milestone D Finance, Compliance, and Incident Response
 

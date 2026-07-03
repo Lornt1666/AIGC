@@ -11,7 +11,8 @@
   "max_records": 25,
   "approval_expiration_hours": 24,
   "input_files": {
-    "phase27_renewal_records": "data/phase27_renewal/aigc_phase27_stale_artifact_renewal_records.json"
+    "phase27_renewal_records": "data/phase27_renewal/aigc_phase27_stale_artifact_renewal_records.json",
+    "freshness_review_records": "data/phase29_freshness_reviews/aigc_phase29_freshness_review_records.json"
   },
   "operator_freshness_review": {
     "approved": false,

@@ -40,6 +40,7 @@ ARTIFACT_TABLES = [
     "capability_procurement_records",
     "stale_artifact_renewal_records",
     "regeneration_candidate_records",
+    "freshness_review_records",
     "secret_access_events",
     "incident_events",
 ]
