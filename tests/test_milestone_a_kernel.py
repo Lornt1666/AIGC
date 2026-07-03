@@ -39,6 +39,7 @@ REQUIRED_SCHEMAS = [
     "quality_kernel_record",
     "work_order_governance_record",
     "procurement_record",
+    "intelligence_ingestion_record",
 ]
 
 
@@ -84,6 +85,7 @@ def test_state_db_initializes(tmp_path: Path) -> None:
     assert "quality_kernel_records" in summary["artifact_counts"]
     assert "work_order_governance_records" in summary["artifact_counts"]
     assert "procurement_records" in summary["artifact_counts"]
+    assert "intelligence_ingestion_records" in summary["artifact_counts"]
 
 
 def test_cli_status_works(tmp_path: Path) -> None:

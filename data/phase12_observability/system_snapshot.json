@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-02T23:18:15.319329+00:00",
+  "generated_at": "2026-07-03T00:07:27.859110+00:00",
   "operator": "Justice Gray Maciocha",
   "phase": "Phase 12 - Observability Dashboard",
   "system_health": "yellow",
@@ -206,10 +206,18 @@
       "notes": [
         "Telemetry present."
       ]
+    },
+    {
+      "phase": "phase25_continuous_intelligence_ingestion_layer",
+      "status": "green",
+      "signal_count": 6,
+      "notes": [
+        "Telemetry present."
+      ]
     }
   ],
   "pipeline_metrics": {
-    "audit_events": 639,
+    "audit_events": 641,
     "memory_events": 1,
     "phase2_opportunities": 98,
     "phase3_dossiers": 25,
@@ -224,7 +232,8 @@
     "phase21_customer_satisfaction_records": 25,
     "phase22_quality_kernel_records": 25,
     "phase23_work_order_governance_records": 25,
-    "phase24_procurement_records": 25
+    "phase24_procurement_records": 25,
+    "phase25_intelligence_ingestion_records": 6
   },
   "approval_metrics": {
     "pending": 25,
@@ -249,7 +258,7 @@
   },
   "audit_integrity": {
     "audit_dir_exists": true,
-    "audit_events": 639,
+    "audit_events": 641,
     "memory_events": 1,
     "missing_audit_baseline": false,
     "missing_memory_baseline": false

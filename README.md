@@ -238,6 +238,7 @@ python .\src\aigc.py run phase17
 python .\src\aigc.py run phase22
 python .\src\aigc.py run phase23
 python .\src\aigc.py run phase24
+python .\src\aigc.py run phase25
 python .\src\aigc.py run pipeline --mode synthetic
 python .\src\aigc.py run pipeline --mode real_data_read_only --source remoteok --limit 10
 python .\src\aigc.py close-loop --execution-mode manual_handoff
@@ -427,6 +428,27 @@ Outputs:
 Phase 24 preserves real read-only source snapshots as evidence and marks Phase 4+ artifacts as generated internal derivatives. Expired pending Phase 5 packets are classified as stale generated action candidates that should be archived or regenerated before any future approval attempt.
 
 Phase 24 does not delete files, approve actions, contact external parties, submit applications, submit proposals, submit deliverables, accept contracts, request payment, use credentials, or bypass Phase 5 and Phase 6 gates.
+
+## Milestone M Continuous Intelligence Ingestion Layer
+
+Milestone M adds Phase 25 as an internal freshness, drift, and knowledge-update ledger. It monitors configured local artifacts, validates timestamps and record counts, detects stale generated candidates, and emits refresh or regeneration targets.
+
+Command:
+
+```powershell
+python .\src\aigc.py run phase25
+```
+
+Outputs:
+
+- `data/phase25_intelligence/aigc_phase25_intelligence_ingestion_records.json`
+- `data/reports/phase25_signature_update.md`
+- `data/audit/aigc_phase25_audit.jsonl`
+- `reports/milestone_m_continuous_intelligence_ingestion_report.md`
+
+Phase 25 implements the Continuous Intelligence Ingestion Layer as an operator-scheduled internal refresh cycle. It does not run as a background daemon and does not fetch external data by itself. External data procurement remains governed by explicit operator command, connector policy, source permissions, and approval gates.
+
+Phase 25 does not delete stale artifacts, approve actions, contact external parties, submit applications, submit proposals, submit deliverables, accept contracts, request payment, use credentials, or bypass Phase 5 and Phase 6 gates.
 
 ## Milestone D Finance, Compliance, and Incident Response
 

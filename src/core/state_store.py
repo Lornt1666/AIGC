@@ -36,6 +36,7 @@ ARTIFACT_TABLES = [
     "quality_kernel_records",
     "work_order_governance_records",
     "procurement_records",
+    "intelligence_ingestion_records",
     "secret_access_events",
     "incident_events",
 ]

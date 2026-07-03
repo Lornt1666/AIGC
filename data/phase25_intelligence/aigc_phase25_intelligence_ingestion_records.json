@@ -1,0 +1,960 @@
+[
+  {
+    "record_id": "AIGC-CIIL-13ACD520712F80B0",
+    "created_at": "2026-07-03T00:07:14.445648+00:00",
+    "phase": "phase25_continuous_intelligence_ingestion_layer",
+    "status": "freshness_recorded",
+    "context_domain": "source_opportunity_snapshots",
+    "source_path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+    "source_kind": "read_only_source_evidence",
+    "observed_record_count": 98,
+    "latest_observed_at": "2026-07-01T07:04:26.767955+00:00",
+    "freshness_score": 89,
+    "staleness_status": "fresh",
+    "drift_risk_level": "low",
+    "stale_indicators": [],
+    "missing_context_requests": [],
+    "knowledge_update_events": [
+      {
+        "event_type": "local_artifact_ingested",
+        "context_domain": "source_opportunity_snapshots",
+        "source_path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+        "observed_record_count": 98,
+        "staleness_status": "fresh",
+        "recorded_at": "2026-07-03T00:07:14.445648+00:00"
+      }
+    ],
+    "temporal_freshness_validation": {
+      "path_exists": true,
+      "parse_error": "",
+      "timestamp_count": 198,
+      "latest_observed_at": "2026-07-01T07:04:26.767955+00:00",
+      "age_hours": 41.05,
+      "freshness_horizon_hours": 72,
+      "expired_generated_action_candidates": 0,
+      "validated_at": "2026-07-03T00:07:14.445648+00:00"
+    },
+    "ontological_integration": {
+      "ontology": {
+        "status": "integrated",
+        "context_domain": "source_opportunity_snapshots",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Classifies the artifact as a context object with source, derivative, or governance meaning."
+      },
+      "epistemology": {
+        "status": "integrated",
+        "context_domain": "source_opportunity_snapshots",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Constrains reasoning to freshness-validated evidence."
+      },
+      "methodology": {
+        "status": "integrated",
+        "context_domain": "source_opportunity_snapshots",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Routes stale artifacts to refresh or regeneration before downstream use."
+      },
+      "praxeology": {
+        "status": "integrated",
+        "context_domain": "source_opportunity_snapshots",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Optimizes action by preventing wasted work on outdated context."
+      },
+      "axiology": {
+        "status": "integrated",
+        "context_domain": "source_opportunity_snapshots",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Prioritizes truthfulness, auditability, professionalism, legality, and user trust."
+      },
+      "teleology": {
+        "status": "integrated",
+        "context_domain": "source_opportunity_snapshots",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Aims toward continuously refreshed internal intelligence without unsafe autonomy."
+      },
+      "semiotics": {
+        "status": "integrated",
+        "context_domain": "source_opportunity_snapshots",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Interprets stale, missing, and expired signals as meaning-bearing quality warnings."
+      },
+      "cybernetics": {
+        "status": "integrated",
+        "context_domain": "source_opportunity_snapshots",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Feeds drift findings back into future refresh cycles."
+      },
+      "systems_theory": {
+        "status": "integrated",
+        "context_domain": "source_opportunity_snapshots",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Connects source, approval, procurement, observability, and productization subsystems."
+      }
+    },
+    "agent_coordination": [
+      {
+        "role": "Temporal-Reasoning Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Freshness state is fresh with 0 temporal or drift indicators.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Freshness-Validation Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Artifact can be retained only if freshness status is fresh.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Drift-Detection Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Drift indicators are visible and must remain auditable.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Ontological-Mapping Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Artifact integrated into the source/derivative/governance context map.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Praxeological-Optimization Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Recommended action is refresh before downstream use when stale.",
+        "external_action_allowed": false
+      }
+    ],
+    "recommended_refresh_actions": [
+      "Retain source_opportunity_snapshots; current freshness posture is acceptable."
+    ],
+    "regeneration_targets": [],
+    "blocked_actions": [
+      "fetch_external_data_without_operator_command",
+      "run_background_daemon",
+      "delete_stale_artifacts_without_operator_command",
+      "overwrite_source_snapshots_without_audit",
+      "approve_external_action",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "approval_required_before_external_action": true,
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CIIL-91460A50187F9353",
+    "created_at": "2026-07-03T00:07:14.449651+00:00",
+    "phase": "phase25_continuous_intelligence_ingestion_layer",
+    "status": "refresh_required",
+    "context_domain": "phase5_approval_candidates",
+    "source_path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+    "source_kind": "generated_internal_authorization_derivatives",
+    "observed_record_count": 25,
+    "latest_observed_at": "2026-07-02T14:09:13.266680+00:00",
+    "freshness_score": 22,
+    "staleness_status": "stale_expired_generated_candidates",
+    "drift_risk_level": "critical",
+    "stale_indicators": [
+      "approaching_freshness_horizon",
+      "expired_generated_action_candidates_present"
+    ],
+    "missing_context_requests": [
+      "Provide explicit operator instruction to archive or regenerate expired generated approval candidates."
+    ],
+    "knowledge_update_events": [
+      {
+        "event_type": "local_artifact_ingested",
+        "context_domain": "phase5_approval_candidates",
+        "source_path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+        "observed_record_count": 25,
+        "staleness_status": "stale_expired_generated_candidates",
+        "recorded_at": "2026-07-03T00:07:14.449651+00:00"
+      },
+      {
+        "event_type": "freshness_drift_detected",
+        "context_domain": "phase5_approval_candidates",
+        "indicators": [
+          "approaching_freshness_horizon",
+          "expired_generated_action_candidates_present"
+        ],
+        "recorded_at": "2026-07-03T00:07:14.449651+00:00"
+      }
+    ],
+    "temporal_freshness_validation": {
+      "path_exists": true,
+      "parse_error": "",
+      "timestamp_count": 50,
+      "latest_observed_at": "2026-07-02T14:09:13.266680+00:00",
+      "age_hours": 9.97,
+      "freshness_horizon_hours": 12,
+      "expired_generated_action_candidates": 25,
+      "validated_at": "2026-07-03T00:07:14.449651+00:00"
+    },
+    "ontological_integration": {
+      "ontology": {
+        "status": "integrated",
+        "context_domain": "phase5_approval_candidates",
+        "freshness_state": "stale_expired_generated_candidates",
+        "drift_signal_count": 2,
+        "interpretation": "Classifies the artifact as a context object with source, derivative, or governance meaning."
+      },
+      "epistemology": {
+        "status": "integrated",
+        "context_domain": "phase5_approval_candidates",
+        "freshness_state": "stale_expired_generated_candidates",
+        "drift_signal_count": 2,
+        "interpretation": "Constrains reasoning to freshness-validated evidence."
+      },
+      "methodology": {
+        "status": "integrated",
+        "context_domain": "phase5_approval_candidates",
+        "freshness_state": "stale_expired_generated_candidates",
+        "drift_signal_count": 2,
+        "interpretation": "Routes stale artifacts to refresh or regeneration before downstream use."
+      },
+      "praxeology": {
+        "status": "integrated",
+        "context_domain": "phase5_approval_candidates",
+        "freshness_state": "stale_expired_generated_candidates",
+        "drift_signal_count": 2,
+        "interpretation": "Optimizes action by preventing wasted work on outdated context."
+      },
+      "axiology": {
+        "status": "integrated",
+        "context_domain": "phase5_approval_candidates",
+        "freshness_state": "stale_expired_generated_candidates",
+        "drift_signal_count": 2,
+        "interpretation": "Prioritizes truthfulness, auditability, professionalism, legality, and user trust."
+      },
+      "teleology": {
+        "status": "integrated",
+        "context_domain": "phase5_approval_candidates",
+        "freshness_state": "stale_expired_generated_candidates",
+        "drift_signal_count": 2,
+        "interpretation": "Aims toward continuously refreshed internal intelligence without unsafe autonomy."
+      },
+      "semiotics": {
+        "status": "integrated",
+        "context_domain": "phase5_approval_candidates",
+        "freshness_state": "stale_expired_generated_candidates",
+        "drift_signal_count": 2,
+        "interpretation": "Interprets stale, missing, and expired signals as meaning-bearing quality warnings."
+      },
+      "cybernetics": {
+        "status": "integrated",
+        "context_domain": "phase5_approval_candidates",
+        "freshness_state": "stale_expired_generated_candidates",
+        "drift_signal_count": 2,
+        "interpretation": "Feeds drift findings back into future refresh cycles."
+      },
+      "systems_theory": {
+        "status": "integrated",
+        "context_domain": "phase5_approval_candidates",
+        "freshness_state": "stale_expired_generated_candidates",
+        "drift_signal_count": 2,
+        "interpretation": "Connects source, approval, procurement, observability, and productization subsystems."
+      }
+    },
+    "agent_coordination": [
+      {
+        "role": "Temporal-Reasoning Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Freshness state is stale_expired_generated_candidates with 2 temporal or drift indicators.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Freshness-Validation Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Artifact can be retained only if freshness status is fresh.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Drift-Detection Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Drift indicators are visible and must remain auditable.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Ontological-Mapping Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Artifact integrated into the source/derivative/governance context map.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Praxeological-Optimization Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Recommended action is refresh before downstream use when stale.",
+        "external_action_allowed": false
+      }
+    ],
+    "recommended_refresh_actions": [
+      "Refresh phase5_approval_candidates before using it for downstream reasoning.",
+      "Regeneration target: python .\\src\\aigc.py run phase5.",
+      "Run procurement review and archive or regenerate expired generated approval candidates before Phase 6."
+    ],
+    "regeneration_targets": [
+      "python .\\src\\aigc.py run phase5"
+    ],
+    "blocked_actions": [
+      "fetch_external_data_without_operator_command",
+      "run_background_daemon",
+      "delete_stale_artifacts_without_operator_command",
+      "overwrite_source_snapshots_without_audit",
+      "approve_external_action",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "approval_required_before_external_action": true,
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CIIL-F43084D958D7894E",
+    "created_at": "2026-07-03T00:07:14.452650+00:00",
+    "phase": "phase25_continuous_intelligence_ingestion_layer",
+    "status": "refresh_required",
+    "context_domain": "truth_first_procurement_ledger",
+    "source_path": "data/phase24_procurement/aigc_phase24_procurement_records.json",
+    "source_kind": "generated_internal_procurement_ledger",
+    "observed_record_count": 25,
+    "latest_observed_at": "2026-07-02T23:17:33.931270+00:00",
+    "freshness_score": 52,
+    "staleness_status": "stale_expired_generated_candidates",
+    "drift_risk_level": "high",
+    "stale_indicators": [
+      "expired_generated_action_candidates_present"
+    ],
+    "missing_context_requests": [
+      "Provide explicit operator instruction to archive or regenerate expired generated approval candidates."
+    ],
+    "knowledge_update_events": [
+      {
+        "event_type": "local_artifact_ingested",
+        "context_domain": "truth_first_procurement_ledger",
+        "source_path": "data/phase24_procurement/aigc_phase24_procurement_records.json",
+        "observed_record_count": 25,
+        "staleness_status": "stale_expired_generated_candidates",
+        "recorded_at": "2026-07-03T00:07:14.452650+00:00"
+      },
+      {
+        "event_type": "freshness_drift_detected",
+        "context_domain": "truth_first_procurement_ledger",
+        "indicators": [
+          "expired_generated_action_candidates_present"
+        ],
+        "recorded_at": "2026-07-03T00:07:14.452650+00:00"
+      }
+    ],
+    "temporal_freshness_validation": {
+      "path_exists": true,
+      "parse_error": "",
+      "timestamp_count": 75,
+      "latest_observed_at": "2026-07-02T23:17:33.931270+00:00",
+      "age_hours": 0.83,
+      "freshness_horizon_hours": 12,
+      "expired_generated_action_candidates": 25,
+      "validated_at": "2026-07-03T00:07:14.452650+00:00"
+    },
+    "ontological_integration": {
+      "ontology": {
+        "status": "integrated",
+        "context_domain": "truth_first_procurement_ledger",
+        "freshness_state": "stale_expired_generated_candidates",
+        "drift_signal_count": 1,
+        "interpretation": "Classifies the artifact as a context object with source, derivative, or governance meaning."
+      },
+      "epistemology": {
+        "status": "integrated",
+        "context_domain": "truth_first_procurement_ledger",
+        "freshness_state": "stale_expired_generated_candidates",
+        "drift_signal_count": 1,
+        "interpretation": "Constrains reasoning to freshness-validated evidence."
+      },
+      "methodology": {
+        "status": "integrated",
+        "context_domain": "truth_first_procurement_ledger",
+        "freshness_state": "stale_expired_generated_candidates",
+        "drift_signal_count": 1,
+        "interpretation": "Routes stale artifacts to refresh or regeneration before downstream use."
+      },
+      "praxeology": {
+        "status": "integrated",
+        "context_domain": "truth_first_procurement_ledger",
+        "freshness_state": "stale_expired_generated_candidates",
+        "drift_signal_count": 1,
+        "interpretation": "Optimizes action by preventing wasted work on outdated context."
+      },
+      "axiology": {
+        "status": "integrated",
+        "context_domain": "truth_first_procurement_ledger",
+        "freshness_state": "stale_expired_generated_candidates",
+        "drift_signal_count": 1,
+        "interpretation": "Prioritizes truthfulness, auditability, professionalism, legality, and user trust."
+      },
+      "teleology": {
+        "status": "integrated",
+        "context_domain": "truth_first_procurement_ledger",
+        "freshness_state": "stale_expired_generated_candidates",
+        "drift_signal_count": 1,
+        "interpretation": "Aims toward continuously refreshed internal intelligence without unsafe autonomy."
+      },
+      "semiotics": {
+        "status": "integrated",
+        "context_domain": "truth_first_procurement_ledger",
+        "freshness_state": "stale_expired_generated_candidates",
+        "drift_signal_count": 1,
+        "interpretation": "Interprets stale, missing, and expired signals as meaning-bearing quality warnings."
+      },
+      "cybernetics": {
+        "status": "integrated",
+        "context_domain": "truth_first_procurement_ledger",
+        "freshness_state": "stale_expired_generated_candidates",
+        "drift_signal_count": 1,
+        "interpretation": "Feeds drift findings back into future refresh cycles."
+      },
+      "systems_theory": {
+        "status": "integrated",
+        "context_domain": "truth_first_procurement_ledger",
+        "freshness_state": "stale_expired_generated_candidates",
+        "drift_signal_count": 1,
+        "interpretation": "Connects source, approval, procurement, observability, and productization subsystems."
+      }
+    },
+    "agent_coordination": [
+      {
+        "role": "Temporal-Reasoning Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Freshness state is stale_expired_generated_candidates with 1 temporal or drift indicators.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Freshness-Validation Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Artifact can be retained only if freshness status is fresh.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Drift-Detection Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Drift indicators are visible and must remain auditable.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Ontological-Mapping Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Artifact integrated into the source/derivative/governance context map.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Praxeological-Optimization Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Recommended action is refresh before downstream use when stale.",
+        "external_action_allowed": false
+      }
+    ],
+    "recommended_refresh_actions": [
+      "Refresh truth_first_procurement_ledger before using it for downstream reasoning.",
+      "Regeneration target: python .\\src\\aigc.py run phase24.",
+      "Run procurement review and archive or regenerate expired generated approval candidates before Phase 6."
+    ],
+    "regeneration_targets": [
+      "python .\\src\\aigc.py run phase24"
+    ],
+    "blocked_actions": [
+      "fetch_external_data_without_operator_command",
+      "run_background_daemon",
+      "delete_stale_artifacts_without_operator_command",
+      "overwrite_source_snapshots_without_audit",
+      "approve_external_action",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "approval_required_before_external_action": true,
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CIIL-4381B8C7D843C8CC",
+    "created_at": "2026-07-03T00:07:14.462620+00:00",
+    "phase": "phase25_continuous_intelligence_ingestion_layer",
+    "status": "freshness_recorded",
+    "context_domain": "observability_snapshot",
+    "source_path": "data/phase12_observability/system_snapshot.json",
+    "source_kind": "generated_internal_system_health_snapshot",
+    "observed_record_count": 1,
+    "latest_observed_at": "2026-07-02T23:18:15.319329+00:00",
+    "freshness_score": 98,
+    "staleness_status": "fresh",
+    "drift_risk_level": "minimal",
+    "stale_indicators": [],
+    "missing_context_requests": [],
+    "knowledge_update_events": [
+      {
+        "event_type": "local_artifact_ingested",
+        "context_domain": "observability_snapshot",
+        "source_path": "data/phase12_observability/system_snapshot.json",
+        "observed_record_count": 1,
+        "staleness_status": "fresh",
+        "recorded_at": "2026-07-03T00:07:14.462620+00:00"
+      }
+    ],
+    "temporal_freshness_validation": {
+      "path_exists": true,
+      "parse_error": "",
+      "timestamp_count": 1,
+      "latest_observed_at": "2026-07-02T23:18:15.319329+00:00",
+      "age_hours": 0.82,
+      "freshness_horizon_hours": 6,
+      "expired_generated_action_candidates": 0,
+      "validated_at": "2026-07-03T00:07:14.462620+00:00"
+    },
+    "ontological_integration": {
+      "ontology": {
+        "status": "integrated",
+        "context_domain": "observability_snapshot",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Classifies the artifact as a context object with source, derivative, or governance meaning."
+      },
+      "epistemology": {
+        "status": "integrated",
+        "context_domain": "observability_snapshot",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Constrains reasoning to freshness-validated evidence."
+      },
+      "methodology": {
+        "status": "integrated",
+        "context_domain": "observability_snapshot",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Routes stale artifacts to refresh or regeneration before downstream use."
+      },
+      "praxeology": {
+        "status": "integrated",
+        "context_domain": "observability_snapshot",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Optimizes action by preventing wasted work on outdated context."
+      },
+      "axiology": {
+        "status": "integrated",
+        "context_domain": "observability_snapshot",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Prioritizes truthfulness, auditability, professionalism, legality, and user trust."
+      },
+      "teleology": {
+        "status": "integrated",
+        "context_domain": "observability_snapshot",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Aims toward continuously refreshed internal intelligence without unsafe autonomy."
+      },
+      "semiotics": {
+        "status": "integrated",
+        "context_domain": "observability_snapshot",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Interprets stale, missing, and expired signals as meaning-bearing quality warnings."
+      },
+      "cybernetics": {
+        "status": "integrated",
+        "context_domain": "observability_snapshot",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Feeds drift findings back into future refresh cycles."
+      },
+      "systems_theory": {
+        "status": "integrated",
+        "context_domain": "observability_snapshot",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Connects source, approval, procurement, observability, and productization subsystems."
+      }
+    },
+    "agent_coordination": [
+      {
+        "role": "Temporal-Reasoning Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Freshness state is fresh with 0 temporal or drift indicators.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Freshness-Validation Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Artifact can be retained only if freshness status is fresh.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Drift-Detection Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Drift indicators are visible and must remain auditable.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Ontological-Mapping Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Artifact integrated into the source/derivative/governance context map.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Praxeological-Optimization Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Recommended action is refresh before downstream use when stale.",
+        "external_action_allowed": false
+      }
+    ],
+    "recommended_refresh_actions": [
+      "Retain observability_snapshot; current freshness posture is acceptable."
+    ],
+    "regeneration_targets": [],
+    "blocked_actions": [
+      "fetch_external_data_without_operator_command",
+      "run_background_daemon",
+      "delete_stale_artifacts_without_operator_command",
+      "overwrite_source_snapshots_without_audit",
+      "approve_external_action",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "approval_required_before_external_action": true,
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CIIL-EF5A6550C00E57EB",
+    "created_at": "2026-07-03T00:07:14.463620+00:00",
+    "phase": "phase25_continuous_intelligence_ingestion_layer",
+    "status": "freshness_recorded",
+    "context_domain": "productization_readiness",
+    "source_path": "data/phase18_productization/aigc_phase18_release_readiness.json",
+    "source_kind": "generated_internal_release_readiness",
+    "observed_record_count": 1,
+    "latest_observed_at": "2026-07-02T23:17:43.446308+00:00",
+    "freshness_score": 100,
+    "staleness_status": "fresh",
+    "drift_risk_level": "minimal",
+    "stale_indicators": [],
+    "missing_context_requests": [],
+    "knowledge_update_events": [
+      {
+        "event_type": "local_artifact_ingested",
+        "context_domain": "productization_readiness",
+        "source_path": "data/phase18_productization/aigc_phase18_release_readiness.json",
+        "observed_record_count": 1,
+        "staleness_status": "fresh",
+        "recorded_at": "2026-07-03T00:07:14.463620+00:00"
+      }
+    ],
+    "temporal_freshness_validation": {
+      "path_exists": true,
+      "parse_error": "",
+      "timestamp_count": 1,
+      "latest_observed_at": "2026-07-02T23:17:43.446308+00:00",
+      "age_hours": 0.83,
+      "freshness_horizon_hours": 24,
+      "expired_generated_action_candidates": 0,
+      "validated_at": "2026-07-03T00:07:14.463620+00:00"
+    },
+    "ontological_integration": {
+      "ontology": {
+        "status": "integrated",
+        "context_domain": "productization_readiness",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Classifies the artifact as a context object with source, derivative, or governance meaning."
+      },
+      "epistemology": {
+        "status": "integrated",
+        "context_domain": "productization_readiness",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Constrains reasoning to freshness-validated evidence."
+      },
+      "methodology": {
+        "status": "integrated",
+        "context_domain": "productization_readiness",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Routes stale artifacts to refresh or regeneration before downstream use."
+      },
+      "praxeology": {
+        "status": "integrated",
+        "context_domain": "productization_readiness",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Optimizes action by preventing wasted work on outdated context."
+      },
+      "axiology": {
+        "status": "integrated",
+        "context_domain": "productization_readiness",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Prioritizes truthfulness, auditability, professionalism, legality, and user trust."
+      },
+      "teleology": {
+        "status": "integrated",
+        "context_domain": "productization_readiness",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Aims toward continuously refreshed internal intelligence without unsafe autonomy."
+      },
+      "semiotics": {
+        "status": "integrated",
+        "context_domain": "productization_readiness",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Interprets stale, missing, and expired signals as meaning-bearing quality warnings."
+      },
+      "cybernetics": {
+        "status": "integrated",
+        "context_domain": "productization_readiness",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Feeds drift findings back into future refresh cycles."
+      },
+      "systems_theory": {
+        "status": "integrated",
+        "context_domain": "productization_readiness",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Connects source, approval, procurement, observability, and productization subsystems."
+      }
+    },
+    "agent_coordination": [
+      {
+        "role": "Temporal-Reasoning Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Freshness state is fresh with 0 temporal or drift indicators.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Freshness-Validation Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Artifact can be retained only if freshness status is fresh.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Drift-Detection Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Drift indicators are visible and must remain auditable.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Ontological-Mapping Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Artifact integrated into the source/derivative/governance context map.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Praxeological-Optimization Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Recommended action is refresh before downstream use when stale.",
+        "external_action_allowed": false
+      }
+    ],
+    "recommended_refresh_actions": [
+      "Retain productization_readiness; current freshness posture is acceptable."
+    ],
+    "regeneration_targets": [],
+    "blocked_actions": [
+      "fetch_external_data_without_operator_command",
+      "run_background_daemon",
+      "delete_stale_artifacts_without_operator_command",
+      "overwrite_source_snapshots_without_audit",
+      "approve_external_action",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "approval_required_before_external_action": true,
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CIIL-E931A51AC1577885",
+    "created_at": "2026-07-03T00:07:14.464620+00:00",
+    "phase": "phase25_continuous_intelligence_ingestion_layer",
+    "status": "freshness_recorded",
+    "context_domain": "master_doctrine",
+    "source_path": "AIGC_MASTER_PROMPT.md",
+    "source_kind": "governance_doctrine_document",
+    "observed_record_count": 1,
+    "latest_observed_at": "2026-07-03T00:05:45.773984+00:00",
+    "freshness_score": 100,
+    "staleness_status": "fresh",
+    "drift_risk_level": "minimal",
+    "stale_indicators": [],
+    "missing_context_requests": [],
+    "knowledge_update_events": [
+      {
+        "event_type": "local_artifact_ingested",
+        "context_domain": "master_doctrine",
+        "source_path": "AIGC_MASTER_PROMPT.md",
+        "observed_record_count": 1,
+        "staleness_status": "fresh",
+        "recorded_at": "2026-07-03T00:07:14.464620+00:00"
+      }
+    ],
+    "temporal_freshness_validation": {
+      "path_exists": true,
+      "parse_error": "",
+      "timestamp_count": 1,
+      "latest_observed_at": "2026-07-03T00:05:45.773984+00:00",
+      "age_hours": 0.02,
+      "freshness_horizon_hours": 168,
+      "expired_generated_action_candidates": 0,
+      "validated_at": "2026-07-03T00:07:14.464620+00:00"
+    },
+    "ontological_integration": {
+      "ontology": {
+        "status": "integrated",
+        "context_domain": "master_doctrine",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Classifies the artifact as a context object with source, derivative, or governance meaning."
+      },
+      "epistemology": {
+        "status": "integrated",
+        "context_domain": "master_doctrine",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Constrains reasoning to freshness-validated evidence."
+      },
+      "methodology": {
+        "status": "integrated",
+        "context_domain": "master_doctrine",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Routes stale artifacts to refresh or regeneration before downstream use."
+      },
+      "praxeology": {
+        "status": "integrated",
+        "context_domain": "master_doctrine",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Optimizes action by preventing wasted work on outdated context."
+      },
+      "axiology": {
+        "status": "integrated",
+        "context_domain": "master_doctrine",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Prioritizes truthfulness, auditability, professionalism, legality, and user trust."
+      },
+      "teleology": {
+        "status": "integrated",
+        "context_domain": "master_doctrine",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Aims toward continuously refreshed internal intelligence without unsafe autonomy."
+      },
+      "semiotics": {
+        "status": "integrated",
+        "context_domain": "master_doctrine",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Interprets stale, missing, and expired signals as meaning-bearing quality warnings."
+      },
+      "cybernetics": {
+        "status": "integrated",
+        "context_domain": "master_doctrine",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Feeds drift findings back into future refresh cycles."
+      },
+      "systems_theory": {
+        "status": "integrated",
+        "context_domain": "master_doctrine",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Connects source, approval, procurement, observability, and productization subsystems."
+      }
+    },
+    "agent_coordination": [
+      {
+        "role": "Temporal-Reasoning Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Freshness state is fresh with 0 temporal or drift indicators.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Freshness-Validation Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Artifact can be retained only if freshness status is fresh.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Drift-Detection Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Drift indicators are visible and must remain auditable.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Ontological-Mapping Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Artifact integrated into the source/derivative/governance context map.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Praxeological-Optimization Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Recommended action is refresh before downstream use when stale.",
+        "external_action_allowed": false
+      }
+    ],
+    "recommended_refresh_actions": [
+      "Retain master_doctrine; current freshness posture is acceptable."
+    ],
+    "regeneration_targets": [],
+    "blocked_actions": [
+      "fetch_external_data_without_operator_command",
+      "run_background_daemon",
+      "delete_stale_artifacts_without_operator_command",
+      "overwrite_source_snapshots_without_audit",
+      "approve_external_action",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "approval_required_before_external_action": true,
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  }
+]

@@ -1,12 +1,12 @@
 {
-  "release_id": "AIGC-REL-2C64D9439708F2CC",
-  "created_at": "2026-07-02T23:17:43.446308+00:00",
+  "release_id": "AIGC-REL-81B2F77FADBAECCE",
+  "created_at": "2026-07-03T00:07:27.528110+00:00",
   "phase": "phase18_scaling_productization",
-  "version": "0.12.0-milestone-l",
+  "version": "0.13.0-milestone-m",
   "status": "internal_release_candidate",
   "release_type": "internal_private_kernel",
   "branch": "codex/milestone-l-truth-first-procurement-governance",
-  "commit": "d15400e",
+  "commit": "5a3ef7f",
   "required_files_present": true,
   "missing_required_files": [],
   "checked_files": [
@@ -56,6 +56,11 @@
       "kind": "file"
     },
     {
+      "path": "prompts/phase25_continuous_intelligence_ingestion.md",
+      "present": true,
+      "kind": "file"
+    },
+    {
       "path": "config/phase10_connector_registry.json",
       "present": true,
       "kind": "file"
@@ -101,6 +106,11 @@
       "kind": "file"
     },
     {
+      "path": "config/phase25_continuous_intelligence_ingestion.json",
+      "present": true,
+      "kind": "file"
+    },
+    {
       "path": "schemas/connector_record.schema.json",
       "present": true,
       "kind": "file"
@@ -127,6 +137,11 @@
     },
     {
       "path": "schemas/procurement_record.schema.json",
+      "present": true,
+      "kind": "file"
+    },
+    {
+      "path": "schemas/intelligence_ingestion_record.schema.json",
       "present": true,
       "kind": "file"
     },
@@ -206,6 +221,11 @@
       "kind": "file"
     },
     {
+      "path": "src/phase25_continuous_intelligence_ingestion.py",
+      "present": true,
+      "kind": "file"
+    },
+    {
       "path": "docs/PRIVATE_BRANCH_WORKFLOW.md",
       "present": true,
       "kind": "file"
@@ -214,7 +234,7 @@
   "validation_commands": [
     "python .\\src\\aigc.py validate",
     "python -m pytest",
-    "python .\\src\\security\\redaction_scanner.py --paths src config docs README.md AGENTS.md AIGC_MASTER_PROMPT.md OMEGA_X_CONSTITUTION.md schemas tests reports"
+    "python .\\src\\security\\redaction_scanner.py --paths src config docs README.md AGENTS.md AIGC_MASTER_PROMPT.md OMEGA_X_CONSTITUTION.md schemas tests reports prompts"
   ],
   "manual_release_gates": [
     "confirm_github_repo_private",
@@ -243,6 +263,8 @@
     "data/reports/phase23_signature_update.md",
     "data/phase24_procurement/aigc_phase24_procurement_records.json",
     "data/reports/phase24_signature_update.md",
+    "data/phase25_intelligence/aigc_phase25_intelligence_ingestion_records.json",
+    "data/reports/phase25_signature_update.md",
     "reports/milestone_f_productization_report.md",
     "reports/milestone_g_subagent_forge_report.md",
     "reports/milestone_h_fidelity_forge_report.md",
@@ -250,6 +272,7 @@
     "reports/milestone_j_quantum_quality_kernel_report.md",
     "reports/milestone_k_work_order_governor_report.md",
     "reports/milestone_l_procurement_governance_report.md",
+    "reports/milestone_m_continuous_intelligence_ingestion_report.md",
     "docs/PRODUCTIZATION_RUNBOOK.md"
   ],
   "license_status": "all_rights_reserved_present",

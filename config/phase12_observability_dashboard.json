@@ -22,6 +22,7 @@
     "phase22_quality_records": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
     "phase23_work_order_governance": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
     "phase24_procurement_records": "data/phase24_procurement/aigc_phase24_procurement_records.json",
+    "phase25_intelligence_ingestion": "data/phase25_intelligence/aigc_phase25_intelligence_ingestion_records.json",
     "secret_manifest": "config/secret_manifest.json",
     "external_secret_manifest": "../AIGC_MEMORY_CORE/config/secret_manifest.json"
   },

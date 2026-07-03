@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Continuous Intelligence Ingestion Record",
+  "type": "object",
+  "required": [
+    "record_id",
+    "created_at",
+    "phase",
+    "status",
+    "context_domain",
+    "source_path",
+    "source_kind",
+    "observed_record_count",
+    "latest_observed_at",
+    "freshness_score",
+    "staleness_status",
+    "drift_risk_level",
+    "stale_indicators",
+    "missing_context_requests",
+    "knowledge_update_events",
+    "temporal_freshness_validation",
+    "ontological_integration",
+    "agent_coordination",
+    "recommended_refresh_actions",
+    "regeneration_targets",
+    "blocked_actions",
+    "approval_required_before_external_action",
+    "external_data_fetch_performed",
+    "external_action_performed"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "phase": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "context_domain": {
+      "type": "string"
+    },
+    "source_path": {
+      "type": "string"
+    },
+    "source_kind": {
+      "type": "string"
+    },
+    "observed_record_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "latest_observed_at": {
+      "type": "string"
+    },
+    "freshness_score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "staleness_status": {
+      "type": "string"
+    },
+    "drift_risk_level": {
+      "type": "string"
+    },
+    "stale_indicators": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "missing_context_requests": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "knowledge_update_events": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "temporal_freshness_validation": {
+      "type": "object"
+    },
+    "ontological_integration": {
+      "type": "object"
+    },
+    "agent_coordination": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "recommended_refresh_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "regeneration_targets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "blocked_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "approval_required_before_external_action": {
+      "type": "boolean"
+    },
+    "external_data_fetch_performed": {
+      "type": "boolean"
+    },
+    "external_action_performed": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}

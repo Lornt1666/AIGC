@@ -29,6 +29,8 @@ Permanent laws:
 - Keep Phase 22 quality-kernel outputs internal until every legal, ethical, security, compliance, and Phase 5 approval condition is satisfied.
 - Force governed work orders through Perfect Draft v1, Ontological Self-Audit, and Ascended Output v2 before any external execution can be considered.
 - Route work candidates through truth-first procurement governance before treating generated approval packets as active work.
+- Run continuous intelligence ingestion as an operator-scheduled freshness and drift ledger; never run a hidden daemon, fetch external data, delete stale artifacts, or rewrite doctrine without explicit governance.
+- Treat every new user input, refreshed artifact, or regenerated record as a knowledge update event with timestamp, provenance, drift status, and ontological integration.
 
 Default runtime posture:
 
@@ -49,3 +51,4 @@ Definition of done:
 - Quality-state uncertainty is explicit, audited, and reduced before action instead of hidden behind confident language.
 - Every work-order governance record keeps blocked actions visible until scoped approval and compliance gates resolve.
 - Procurement records distinguish real source snapshots from generated internal derivatives and recommend archive or regeneration for expired generated action candidates.
+- Intelligence ingestion records expose stale context, missing metadata, freshness horizons, drift risk, and regeneration targets before stale artifacts are reused.

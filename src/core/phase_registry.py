@@ -245,6 +245,16 @@ def build_phase_registry(root: Path = PROJECT_ROOT) -> Dict[str, PhaseDefinition
             allowed_runtime_modes=["internal_procurement_truth_ledger"],
             external_action_risk="none_internal_procurement_truth_ledger_only",
         ),
+        "phase25": PhaseDefinition(
+            name="phase25",
+            display_name="Phase 25 - Continuous Intelligence Ingestion Layer",
+            input_path="config/phase25_continuous_intelligence_ingestion.json",
+            output_path="data/phase25_intelligence/aigc_phase25_intelligence_ingestion_records.json",
+            schema_name="intelligence_ingestion_record",
+            command=[py, str(src / "phase25_continuous_intelligence_ingestion.py")],
+            allowed_runtime_modes=["operator_scheduled_internal_refresh"],
+            external_action_risk="none_internal_freshness_and_drift_review_only",
+        ),
     }
 
 

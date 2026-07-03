@@ -1,7 +1,7 @@
 {
   "phase": "Phase 18 - Scaling, Replication, and Productization",
   "operating_mode": "internal_private_release_readiness",
-  "version": "0.12.0-milestone-l",
+  "version": "0.13.0-milestone-m",
   "release_type": "internal_private_kernel",
   "external_actions_allowed": false,
   "deployment_allowed": false,
@@ -19,6 +19,7 @@
     "prompts/phase22_quantum_quality_kernel.md",
     "prompts/phase23_ascended_work_order_governor.md",
     "prompts/phase24_truthful_procurement_process.md",
+    "prompts/phase25_continuous_intelligence_ingestion.md",
     "config/phase10_connector_registry.json",
     "config/phase11_security_config.json",
     "config/phase14_runtime_engine.json",
@@ -28,12 +29,14 @@
     "config/phase22_quantum_quality_kernel.json",
     "config/phase23_work_order_governor.json",
     "config/phase24_procurement_governance.json",
+    "config/phase25_continuous_intelligence_ingestion.json",
     "schemas/connector_record.schema.json",
     "schemas/customer_satisfaction_record.schema.json",
     "schemas/fidelity_review.schema.json",
     "schemas/productization_release_record.schema.json",
     "schemas/quality_kernel_record.schema.json",
     "schemas/procurement_record.schema.json",
+    "schemas/intelligence_ingestion_record.schema.json",
     "schemas/subagent_team_plan.schema.json",
     "schemas/work_order_governance_record.schema.json",
     "src/aigc.py",
@@ -49,12 +52,13 @@
     "src/phase22_quantum_quality_kernel.py",
     "src/phase23_work_order_governor.py",
     "src/phase24_procurement_governance.py",
+    "src/phase25_continuous_intelligence_ingestion.py",
     "docs/PRIVATE_BRANCH_WORKFLOW.md"
   ],
   "validation_commands": [
     "python .\\src\\aigc.py validate",
     "python -m pytest",
-    "python .\\src\\security\\redaction_scanner.py --paths src config docs README.md AGENTS.md AIGC_MASTER_PROMPT.md OMEGA_X_CONSTITUTION.md schemas tests reports"
+    "python .\\src\\security\\redaction_scanner.py --paths src config docs README.md AGENTS.md AIGC_MASTER_PROMPT.md OMEGA_X_CONSTITUTION.md schemas tests reports prompts"
   ],
   "manual_release_gates": [
     "confirm_github_repo_private",
@@ -83,6 +87,8 @@
     "data/reports/phase23_signature_update.md",
     "data/phase24_procurement/aigc_phase24_procurement_records.json",
     "data/reports/phase24_signature_update.md",
+    "data/phase25_intelligence/aigc_phase25_intelligence_ingestion_records.json",
+    "data/reports/phase25_signature_update.md",
     "reports/milestone_f_productization_report.md",
     "reports/milestone_g_subagent_forge_report.md",
     "reports/milestone_h_fidelity_forge_report.md",
@@ -90,6 +96,7 @@
     "reports/milestone_j_quantum_quality_kernel_report.md",
     "reports/milestone_k_work_order_governor_report.md",
     "reports/milestone_l_procurement_governance_report.md",
+    "reports/milestone_m_continuous_intelligence_ingestion_report.md",
     "docs/PRODUCTIZATION_RUNBOOK.md"
   ]
 }

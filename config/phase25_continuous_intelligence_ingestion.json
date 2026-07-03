@@ -1,0 +1,87 @@
+{
+  "phase": "Phase 25 - Continuous Intelligence Ingestion Layer",
+  "operating_mode": "operator_scheduled_internal_refresh",
+  "external_actions_allowed": false,
+  "external_data_fetch_allowed": false,
+  "background_daemon_allowed": false,
+  "output_file": "data/phase25_intelligence/aigc_phase25_intelligence_ingestion_records.json",
+  "report_file": "data/reports/phase25_signature_update.md",
+  "audit_log": "data/audit/aigc_phase25_audit.jsonl",
+  "max_sources": 25,
+  "artifact_sources": [
+    {
+      "context_domain": "source_opportunity_snapshots",
+      "source_kind": "read_only_source_evidence",
+      "path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+      "freshness_horizon_hours": 72,
+      "regeneration_command": "python .\\src\\aigc.py run phase2"
+    },
+    {
+      "context_domain": "phase5_approval_candidates",
+      "source_kind": "generated_internal_authorization_derivatives",
+      "path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+      "freshness_horizon_hours": 12,
+      "regeneration_command": "python .\\src\\aigc.py run phase5"
+    },
+    {
+      "context_domain": "truth_first_procurement_ledger",
+      "source_kind": "generated_internal_procurement_ledger",
+      "path": "data/phase24_procurement/aigc_phase24_procurement_records.json",
+      "freshness_horizon_hours": 12,
+      "regeneration_command": "python .\\src\\aigc.py run phase24"
+    },
+    {
+      "context_domain": "observability_snapshot",
+      "source_kind": "generated_internal_system_health_snapshot",
+      "path": "data/phase12_observability/system_snapshot.json",
+      "freshness_horizon_hours": 6,
+      "regeneration_command": "python .\\src\\aigc.py run phase12"
+    },
+    {
+      "context_domain": "productization_readiness",
+      "source_kind": "generated_internal_release_readiness",
+      "path": "data/phase18_productization/aigc_phase18_release_readiness.json",
+      "freshness_horizon_hours": 24,
+      "regeneration_command": "python .\\src\\aigc.py run phase18"
+    },
+    {
+      "context_domain": "master_doctrine",
+      "source_kind": "governance_doctrine_document",
+      "path": "AIGC_MASTER_PROMPT.md",
+      "freshness_horizon_hours": 168,
+      "regeneration_command": "operator_review_required"
+    }
+  ],
+  "freshness_agents": [
+    "Temporal-Reasoning Agent",
+    "Freshness-Validation Agent",
+    "Drift-Detection Agent",
+    "Ontological-Mapping Agent",
+    "Praxeological-Optimization Agent"
+  ],
+  "ontology_axes": [
+    "ontology",
+    "epistemology",
+    "methodology",
+    "praxeology",
+    "axiology",
+    "teleology",
+    "semiotics",
+    "cybernetics",
+    "systems_theory"
+  ],
+  "blocked_actions": [
+    "fetch_external_data_without_operator_command",
+    "run_background_daemon",
+    "delete_stale_artifacts_without_operator_command",
+    "overwrite_source_snapshots_without_audit",
+    "approve_external_action",
+    "contact_external_party",
+    "submit_application",
+    "submit_proposal",
+    "submit_deliverable",
+    "use_credentials",
+    "bypass_phase5_approval",
+    "hide_stale_context"
+  ]
+}
