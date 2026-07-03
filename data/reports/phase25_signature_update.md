@@ -14,9 +14,9 @@ No deletion performed.
 No external action performed.
 No approvals granted.
 No credentials used.
-Intelligence Records Created: 6
+Intelligence Records Created: 8
 Records Requiring Refresh: 2
 High or Critical Drift Records: 2
-Average Freshness Score: 76.83
+Average Freshness Score: 82.38
 Approval Required:
 Yes, before any external data procurement, connector fetch, publication, or external action.

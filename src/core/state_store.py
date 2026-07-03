@@ -37,6 +37,8 @@ ARTIFACT_TABLES = [
     "work_order_governance_records",
     "procurement_records",
     "intelligence_ingestion_records",
+    "capability_procurement_records",
+    "stale_artifact_renewal_records",
     "secret_access_events",
     "incident_events",
 ]

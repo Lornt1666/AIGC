@@ -63,6 +63,8 @@ class Phase12ObservabilityDashboard:
         "phase23_ascended_work_order_governor",
         "phase24_truth_first_procurement_governance",
         "phase25_continuous_intelligence_ingestion_layer",
+        "phase26_ascended_capability_procurement_program",
+        "phase27_stale_artifact_renewal_controller",
     ]
 
     def __init__(self, root: Path, config_path: Path):
@@ -91,6 +93,8 @@ class Phase12ObservabilityDashboard:
         phase23_count = count_json_list(self.resolve(inputs.get("phase23_work_order_governance", "")))
         phase24_count = count_json_list(self.resolve(inputs.get("phase24_procurement_records", "")))
         phase25_count = count_json_list(self.resolve(inputs.get("phase25_intelligence_ingestion", "")))
+        phase26_count = count_json_list(self.resolve(inputs.get("phase26_capability_procurement", "")))
+        phase27_count = count_json_list(self.resolve(inputs.get("phase27_stale_artifact_renewal", "")))
         secret_manifest_exists = self.resolve(inputs.get("secret_manifest", "")).exists()
         external_secret_manifest_exists = self.resolve(inputs.get("external_secret_manifest", "")).exists()
         secret_findings = self.scan_secret_paths()
@@ -114,6 +118,8 @@ class Phase12ObservabilityDashboard:
             "phase23_work_order_governance_records": phase23_count,
             "phase24_procurement_records": phase24_count,
             "phase25_intelligence_ingestion_records": phase25_count,
+            "phase26_capability_procurement_records": phase26_count,
+            "phase27_stale_artifact_renewal_records": phase27_count,
         }
         audit_integrity = {
             "audit_dir_exists": audit_dir.exists(),
@@ -213,6 +219,8 @@ class Phase12ObservabilityDashboard:
             "phase23_ascended_work_order_governor": pipeline_metrics["phase23_work_order_governance_records"],
             "phase24_truth_first_procurement_governance": pipeline_metrics["phase24_procurement_records"],
             "phase25_continuous_intelligence_ingestion_layer": pipeline_metrics["phase25_intelligence_ingestion_records"],
+            "phase26_ascended_capability_procurement_program": pipeline_metrics["phase26_capability_procurement_records"],
+            "phase27_stale_artifact_renewal_controller": pipeline_metrics["phase27_stale_artifact_renewal_records"],
         }
         results: List[PhaseHealth] = []
         for phase in self.PHASES:
@@ -223,7 +231,7 @@ class Phase12ObservabilityDashboard:
             elif count > 0:
                 status = "green"
                 notes = ["Telemetry present."]
-            elif phase in {"phase0_genesis_constitution", "phase1_domain_discovery", "phase10_connector_api_layer", "phase13_simulation_arena", "phase14_deployment_runtime", "phase15_finance_contracts_asset_ledger", "phase16_compliance_legal_review", "phase17_incident_response", "phase18_scaling_productization", "phase19_subagent_generation_forge", "phase20_fidelity_forge", "phase21_customer_satisfaction_continuum", "phase22_quantum_aware_quality_kernel", "phase23_ascended_work_order_governor", "phase24_truth_first_procurement_governance", "phase25_continuous_intelligence_ingestion_layer"}:
+            elif phase in {"phase0_genesis_constitution", "phase1_domain_discovery", "phase10_connector_api_layer", "phase13_simulation_arena", "phase14_deployment_runtime", "phase15_finance_contracts_asset_ledger", "phase16_compliance_legal_review", "phase17_incident_response", "phase18_scaling_productization", "phase19_subagent_generation_forge", "phase20_fidelity_forge", "phase21_customer_satisfaction_continuum", "phase22_quantum_aware_quality_kernel", "phase23_ascended_work_order_governor", "phase24_truth_first_procurement_governance", "phase25_continuous_intelligence_ingestion_layer", "phase26_ascended_capability_procurement_program", "phase27_stale_artifact_renewal_controller"}:
                 status = "yellow"
                 notes = ["No baseline telemetry found yet."]
             else:
@@ -268,7 +276,7 @@ class Phase12ObservabilityDashboard:
         if secrets_privacy["secret_like_findings"] > 0:
             return "Redact secret-like findings and rerun Phase 12."
         if approval_metrics.get("expired_pending", 0) > 0:
-            return "Run Phase 24 procurement governance, then archive or regenerate expired generated approval candidates before Phase 6 handoff."
+            return "Run Phase 27 stale artifact renewal, then regenerate improved candidates from fresh governed context before Phase 6 handoff."
         if approval_metrics["pending"] > 0:
             return "Review pending Phase 5 approval packets before Phase 6 handoff."
         return "Run Phase 13 simulation or continue the next internal AIGC cycle."

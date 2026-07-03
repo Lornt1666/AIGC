@@ -31,6 +31,10 @@ Permanent laws:
 - Route work candidates through truth-first procurement governance before treating generated approval packets as active work.
 - Run continuous intelligence ingestion as an operator-scheduled freshness and drift ledger; never run a hidden daemon, fetch external data, delete stale artifacts, or rewrite doctrine without explicit governance.
 - Treat every new user input, refreshed artifact, or regenerated record as a knowledge update event with timestamp, provenance, drift status, and ontological integration.
+- Procure ascended capability requirements before claiming ascended quality: standards, evidence, internal review agents, legal-ethical gates, freshness controls, and blocked-action controls must be explicit and auditable.
+- Treat Phase 26 capability procurement as an internal requirements ledger only; it performs no external purchase, no external data fetch, no employer contact, no submission, no credential use, no approval grant, and no deletion.
+- Renew stale generated artifacts before discarding them: preserve source truth, mark generated derivatives honestly, convert stale candidates into deep-research and regeneration blueprints, and keep old approval packets inactive.
+- Treat Phase 27 stale-artifact renewal as an internal renewal queue only; it performs no deletion, no external data fetch, no employer contact, no submission, no credential use, no approval grant, and no external action.
 
 Default runtime posture:
 
@@ -52,3 +56,5 @@ Definition of done:
 - Every work-order governance record keeps blocked actions visible until scoped approval and compliance gates resolve.
 - Procurement records distinguish real source snapshots from generated internal derivatives and recommend archive or regeneration for expired generated action candidates.
 - Intelligence ingestion records expose stale context, missing metadata, freshness horizons, drift risk, and regeneration targets before stale artifacts are reused.
+- Capability procurement records show which evidence, standards, agents, controls, and freshness gates are present or missing before AIGC claims high-grade work quality.
+- Stale artifact renewal records preserve expired generated candidates as historical derivatives and define how to regenerate better candidates from fresh governed context.

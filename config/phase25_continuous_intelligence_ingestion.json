@@ -50,6 +50,20 @@
       "path": "AIGC_MASTER_PROMPT.md",
       "freshness_horizon_hours": 168,
       "regeneration_command": "operator_review_required"
+    },
+    {
+      "context_domain": "ascended_capability_procurement",
+      "source_kind": "generated_internal_capability_procurement_ledger",
+      "path": "data/phase26_capability_procurement/aigc_phase26_capability_procurement_records.json",
+      "freshness_horizon_hours": 12,
+      "regeneration_command": "python .\\src\\aigc.py run phase26"
+    },
+    {
+      "context_domain": "stale_artifact_renewal_queue",
+      "source_kind": "generated_internal_stale_artifact_renewal_ledger",
+      "path": "data/phase27_renewal/aigc_phase27_stale_artifact_renewal_records.json",
+      "freshness_horizon_hours": 12,
+      "regeneration_command": "python .\\src\\aigc.py run phase27"
     }
   ],
   "freshness_agents": [

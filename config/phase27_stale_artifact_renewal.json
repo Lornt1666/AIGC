@@ -1,0 +1,65 @@
+{
+  "phase": "Phase 27 - Stale Artifact Renewal and Deep Research Controller",
+  "operating_mode": "internal_stale_artifact_renewal_only",
+  "external_actions_allowed": false,
+  "external_data_fetch_allowed": false,
+  "deletion_allowed": false,
+  "output_file": "data/phase27_renewal/aigc_phase27_stale_artifact_renewal_records.json",
+  "report_file": "data/reports/phase27_signature_update.md",
+  "audit_log": "data/audit/aigc_phase27_audit.jsonl",
+  "max_records": 50,
+  "input_files": {
+    "truth_first_procurement_records": "data/phase24_procurement/aigc_phase24_procurement_records.json",
+    "intelligence_ingestion_records": "data/phase25_intelligence/aigc_phase25_intelligence_ingestion_records.json",
+    "capability_procurement_records": "data/phase26_capability_procurement/aigc_phase26_capability_procurement_records.json"
+  },
+  "renewal_targets": [
+    "real_source_with_expired_generated_action_candidate",
+    "generated_internal_chain_missing_source_snapshot"
+  ],
+  "quality_targets": {
+    "minimum_quality_score": 85,
+    "maximum_uncertainty_score": 35,
+    "maximum_high_drift_records": 0,
+    "maximum_expired_generated_action_candidates": 0
+  },
+  "deep_research_axes": [
+    "source_currentness",
+    "technical_scope",
+    "customer_value",
+    "platform_rules",
+    "legal_ethics",
+    "payment_and_contract_terms",
+    "acceptance_criteria",
+    "delivery_risk",
+    "audit_packet_requirements"
+  ],
+  "renewal_commands": [
+    "python .\\src\\aigc.py run phase2",
+    "python .\\src\\aigc.py run phase3",
+    "python .\\src\\aigc.py run phase4",
+    "python .\\src\\aigc.py run phase5",
+    "python .\\src\\aigc.py run phase20",
+    "python .\\src\\aigc.py run phase21",
+    "python .\\src\\aigc.py run phase22",
+    "python .\\src\\aigc.py run phase23",
+    "python .\\src\\aigc.py run phase24",
+    "python .\\src\\aigc.py run phase25",
+    "python .\\src\\aigc.py run phase26",
+    "python .\\src\\aigc.py run phase27"
+  ],
+  "blocked_actions": [
+    "delete_stale_artifacts_without_operator_command",
+    "overwrite_source_snapshots_without_audit",
+    "treat_expired_packet_as_active_approval",
+    "fetch_external_data_without_operator_command",
+    "approve_external_action",
+    "contact_external_party",
+    "submit_application",
+    "submit_proposal",
+    "submit_deliverable",
+    "use_credentials",
+    "bypass_phase5_approval",
+    "hide_stale_context"
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Ascended Capability Procurement Record",
+  "type": "object",
+  "required": [
+    "record_id",
+    "created_at",
+    "phase",
+    "status",
+    "procurement_domain",
+    "procurement_purpose",
+    "capability_level",
+    "source_record_counts",
+    "source_quality_state",
+    "source_freshness_state",
+    "required_inputs",
+    "required_controls",
+    "required_standards",
+    "required_agents",
+    "evidence_sources",
+    "gap_analysis",
+    "quantum_quality_application",
+    "ontological_application",
+    "procurement_decision",
+    "recommended_actions",
+    "blocked_actions",
+    "approval_required_before_external_action",
+    "external_data_fetch_performed",
+    "external_action_performed"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "phase": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "procurement_domain": {
+      "type": "string"
+    },
+    "procurement_purpose": {
+      "type": "string"
+    },
+    "capability_level": {
+      "type": "string"
+    },
+    "source_record_counts": {
+      "type": "object"
+    },
+    "source_quality_state": {
+      "type": "object"
+    },
+    "source_freshness_state": {
+      "type": "object"
+    },
+    "required_inputs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "required_controls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "required_standards": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "required_agents": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evidence_sources": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "gap_analysis": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "quantum_quality_application": {
+      "type": "object"
+    },
+    "ontological_application": {
+      "type": "object"
+    },
+    "procurement_decision": {
+      "type": "string"
+    },
+    "recommended_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "blocked_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "approval_required_before_external_action": {
+      "type": "boolean"
+    },
+    "external_data_fetch_performed": {
+      "type": "boolean"
+    },
+    "external_action_performed": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}

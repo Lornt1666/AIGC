@@ -1,7 +1,7 @@
 {
   "phase": "Phase 18 - Scaling, Replication, and Productization",
   "operating_mode": "internal_private_release_readiness",
-  "version": "0.13.0-milestone-m",
+  "version": "0.15.0-milestone-o",
   "release_type": "internal_private_kernel",
   "external_actions_allowed": false,
   "deployment_allowed": false,
@@ -20,6 +20,8 @@
     "prompts/phase23_ascended_work_order_governor.md",
     "prompts/phase24_truthful_procurement_process.md",
     "prompts/phase25_continuous_intelligence_ingestion.md",
+    "prompts/phase26_ascended_capability_procurement.md",
+    "prompts/phase27_stale_artifact_renewal.md",
     "config/phase10_connector_registry.json",
     "config/phase11_security_config.json",
     "config/phase14_runtime_engine.json",
@@ -30,6 +32,8 @@
     "config/phase23_work_order_governor.json",
     "config/phase24_procurement_governance.json",
     "config/phase25_continuous_intelligence_ingestion.json",
+    "config/phase26_capability_procurement.json",
+    "config/phase27_stale_artifact_renewal.json",
     "schemas/connector_record.schema.json",
     "schemas/customer_satisfaction_record.schema.json",
     "schemas/fidelity_review.schema.json",
@@ -37,6 +41,8 @@
     "schemas/quality_kernel_record.schema.json",
     "schemas/procurement_record.schema.json",
     "schemas/intelligence_ingestion_record.schema.json",
+    "schemas/capability_procurement_record.schema.json",
+    "schemas/stale_artifact_renewal_record.schema.json",
     "schemas/subagent_team_plan.schema.json",
     "schemas/work_order_governance_record.schema.json",
     "src/aigc.py",
@@ -53,6 +59,8 @@
     "src/phase23_work_order_governor.py",
     "src/phase24_procurement_governance.py",
     "src/phase25_continuous_intelligence_ingestion.py",
+    "src/phase26_capability_procurement.py",
+    "src/phase27_stale_artifact_renewal.py",
     "docs/PRIVATE_BRANCH_WORKFLOW.md"
   ],
   "validation_commands": [
@@ -89,6 +97,10 @@
     "data/reports/phase24_signature_update.md",
     "data/phase25_intelligence/aigc_phase25_intelligence_ingestion_records.json",
     "data/reports/phase25_signature_update.md",
+    "data/phase26_capability_procurement/aigc_phase26_capability_procurement_records.json",
+    "data/reports/phase26_signature_update.md",
+    "data/phase27_renewal/aigc_phase27_stale_artifact_renewal_records.json",
+    "data/reports/phase27_signature_update.md",
     "reports/milestone_f_productization_report.md",
     "reports/milestone_g_subagent_forge_report.md",
     "reports/milestone_h_fidelity_forge_report.md",
@@ -97,6 +109,8 @@
     "reports/milestone_k_work_order_governor_report.md",
     "reports/milestone_l_procurement_governance_report.md",
     "reports/milestone_m_continuous_intelligence_ingestion_report.md",
+    "reports/milestone_n_capability_procurement_report.md",
+    "reports/milestone_o_stale_artifact_renewal_report.md",
     "docs/PRODUCTIZATION_RUNBOOK.md"
   ]
 }

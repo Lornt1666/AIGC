@@ -12,8 +12,8 @@ No deployment performed.
 No public release performed.
 No credentials used.
 No external action performed.
-Release ID: AIGC-REL-81B2F77FADBAECCE
-Version: 0.13.0-milestone-m
+Release ID: AIGC-REL-D318E5A615D0AF46
+Version: 0.15.0-milestone-o
 Status: internal_release_candidate
 Missing Required Files: 0
 All Rights Reserved Notice: all_rights_reserved_present

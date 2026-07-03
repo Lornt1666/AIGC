@@ -1,0 +1,191 @@
+{
+  "phase": "Phase 26 - Ascended Capability Procurement Program",
+  "operating_mode": "internal_capability_procurement_only",
+  "external_actions_allowed": false,
+  "external_data_fetch_allowed": false,
+  "output_file": "data/phase26_capability_procurement/aigc_phase26_capability_procurement_records.json",
+  "report_file": "data/reports/phase26_signature_update.md",
+  "audit_log": "data/audit/aigc_phase26_audit.jsonl",
+  "input_files": {
+    "fidelity_reviews": "data/phase20_fidelity/aigc_phase20_fidelity_reviews.json",
+    "customer_satisfaction_records": "data/phase21_customer_satisfaction/aigc_phase21_customer_satisfaction_records.json",
+    "quality_kernel_records": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+    "work_order_governance_records": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+    "truth_first_procurement_records": "data/phase24_procurement/aigc_phase24_procurement_records.json",
+    "intelligence_ingestion_records": "data/phase25_intelligence/aigc_phase25_intelligence_ingestion_records.json"
+  },
+  "quality_thresholds": {
+    "minimum_average_quality_score": 85,
+    "maximum_average_uncertainty_score": 35,
+    "maximum_high_drift_records": 0,
+    "maximum_expired_generated_action_candidates": 0
+  },
+  "capability_procurements": [
+    {
+      "domain": "work_quality_application",
+      "purpose": "Procure the controls needed for AIGC to apply quality discipline, not merely recognize quality.",
+      "source_aliases": [
+        "quality_kernel_records",
+        "work_order_governance_records"
+      ],
+      "required_inputs": [
+        "quality_kernel_records",
+        "work_order_governance_records",
+        "contract_validated_work_order"
+      ],
+      "required_controls": [
+        "perfect_draft_v1",
+        "ontological_self_audit",
+        "ascended_output_v2",
+        "explicit_uncertainty_score",
+        "blocked_external_actions"
+      ],
+      "required_standards": [
+        "contract_first_validation",
+        "technical_correctness",
+        "maintainability",
+        "professional_clarity",
+        "auditability"
+      ],
+      "required_agents": [
+        "Meta-Cognition Agent",
+        "Technical-Fidelity Agent",
+        "Optimization-Architect Agent",
+        "Praxeological-Efficiency Agent"
+      ]
+    },
+    {
+      "domain": "legal_ethical_professional_boundary",
+      "purpose": "Procure law, ethics, privacy, security, platform-rule, and professional-norm gates before any external action.",
+      "source_aliases": [
+        "quality_kernel_records",
+        "work_order_governance_records",
+        "truth_first_procurement_records"
+      ],
+      "required_inputs": [
+        "source_truth_classification",
+        "phase5_approval_state",
+        "legal_ethical_boundary",
+        "blocked_action_list"
+      ],
+      "required_controls": [
+        "human_approval_gate",
+        "secret_isolation_gate",
+        "compliance_review_gate",
+        "ai_disclosure_review",
+        "external_action_block"
+      ],
+      "required_standards": [
+        "lawfulness",
+        "ethics",
+        "privacy",
+        "security",
+        "professional_norms"
+      ],
+      "required_agents": [
+        "Ethics-Compliance Agent",
+        "Risk Mitigation Agent",
+        "Ontological-Mapping Agent"
+      ]
+    },
+    {
+      "domain": "truth_freshness_and_drift_control",
+      "purpose": "Procure freshness, provenance, and truth controls so stale generated artifacts cannot become false operational context.",
+      "source_aliases": [
+        "truth_first_procurement_records",
+        "intelligence_ingestion_records"
+      ],
+      "required_inputs": [
+        "read_only_source_snapshot",
+        "truth_first_procurement_record",
+        "continuous_intelligence_ingestion_record",
+        "freshness_drift_status"
+      ],
+      "required_controls": [
+        "source_derivative_separation",
+        "expired_candidate_detection",
+        "temporal_freshness_validation",
+        "regeneration_target_tracking",
+        "no_hidden_deletion"
+      ],
+      "required_standards": [
+        "truthfulness",
+        "provenance_integrity",
+        "temporal_accuracy",
+        "drift_visibility",
+        "operator_review_before_refresh"
+      ],
+      "required_agents": [
+        "Temporal-Reasoning Agent",
+        "Freshness-Validation Agent",
+        "Drift-Detection Agent",
+        "Ontological-Mapping Agent"
+      ]
+    },
+    {
+      "domain": "disciplinary_best_practice_procurement",
+      "purpose": "Procure the evidence that domain-specific best practices, customer fit, fidelity review, and quality gates are present before claiming high-grade work.",
+      "source_aliases": [
+        "fidelity_reviews",
+        "customer_satisfaction_records",
+        "quality_kernel_records",
+        "work_order_governance_records"
+      ],
+      "required_inputs": [
+        "fidelity_review",
+        "customer_satisfaction_record",
+        "quality_kernel_record",
+        "work_order_governance_record"
+      ],
+      "required_controls": [
+        "source_verification",
+        "format_validation",
+        "risk_review",
+        "customer_value_review",
+        "acceptance_readiness_review"
+      ],
+      "required_standards": [
+        "disciplinary_best_practices",
+        "customer_happiness_index",
+        "technical_fidelity",
+        "scope_alignment",
+        "reliability"
+      ],
+      "required_agents": [
+        "Technical-Fidelity Agent",
+        "Customer Liaison",
+        "Quality Sentinel",
+        "Optimization-Architect Agent"
+      ]
+    }
+  ],
+  "ontology_axes": [
+    "ontology",
+    "epistemology",
+    "methodology",
+    "praxeology",
+    "axiology",
+    "teleology",
+    "semiotics",
+    "cybernetics",
+    "systems_theory",
+    "ethics",
+    "jurisprudence",
+    "risk_theory"
+  ],
+  "blocked_actions": [
+    "claim_ascended_quality_without_evidence",
+    "treat_generated_artifacts_as_source_truth",
+    "ignore_quality_uncertainty",
+    "hide_stale_context",
+    "fetch_external_data_without_operator_command",
+    "delete_stale_artifacts_without_operator_command",
+    "approve_external_action",
+    "contact_external_party",
+    "submit_application",
+    "submit_proposal",
+    "submit_deliverable",
+    "use_credentials",
+    "bypass_phase5_approval"
+  ]
+}

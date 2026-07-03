@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Stale Artifact Renewal Record",
+  "type": "object",
+  "required": [
+    "record_id",
+    "created_at",
+    "phase",
+    "status",
+    "source_procurement_record_id",
+    "opportunity_id",
+    "proposal_id",
+    "authorization_id",
+    "action_id",
+    "title",
+    "employer",
+    "source_platform",
+    "source_url",
+    "source_truth_status",
+    "stale_artifact_classification",
+    "renewal_strategy",
+    "preserved_artifact_chain",
+    "deep_research_brief",
+    "architecture_evolution_plan",
+    "regeneration_blueprint",
+    "quality_upgrade_targets",
+    "freshness_requirements",
+    "approval_gate",
+    "blocked_actions",
+    "deletion_performed",
+    "external_data_fetch_performed",
+    "external_action_performed"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "phase": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "source_procurement_record_id": {
+      "type": "string"
+    },
+    "opportunity_id": {
+      "type": "string"
+    },
+    "proposal_id": {
+      "type": "string"
+    },
+    "authorization_id": {
+      "type": "string"
+    },
+    "action_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "employer": {
+      "type": "string"
+    },
+    "source_platform": {
+      "type": "string"
+    },
+    "source_url": {
+      "type": "string"
+    },
+    "source_truth_status": {
+      "type": "string"
+    },
+    "stale_artifact_classification": {
+      "type": "string"
+    },
+    "renewal_strategy": {
+      "type": "string"
+    },
+    "preserved_artifact_chain": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "deep_research_brief": {
+      "type": "object"
+    },
+    "architecture_evolution_plan": {
+      "type": "object"
+    },
+    "regeneration_blueprint": {
+      "type": "object"
+    },
+    "quality_upgrade_targets": {
+      "type": "object"
+    },
+    "freshness_requirements": {
+      "type": "object"
+    },
+    "approval_gate": {
+      "type": "object"
+    },
+    "blocked_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "deletion_performed": {
+      "type": "boolean"
+    },
+    "external_data_fetch_performed": {
+      "type": "boolean"
+    },
+    "external_action_performed": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}

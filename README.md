@@ -239,6 +239,8 @@ python .\src\aigc.py run phase22
 python .\src\aigc.py run phase23
 python .\src\aigc.py run phase24
 python .\src\aigc.py run phase25
+python .\src\aigc.py run phase26
+python .\src\aigc.py run phase27
 python .\src\aigc.py run pipeline --mode synthetic
 python .\src\aigc.py run pipeline --mode real_data_read_only --source remoteok --limit 10
 python .\src\aigc.py close-loop --execution-mode manual_handoff
@@ -449,6 +451,44 @@ Outputs:
 Phase 25 implements the Continuous Intelligence Ingestion Layer as an operator-scheduled internal refresh cycle. It does not run as a background daemon and does not fetch external data by itself. External data procurement remains governed by explicit operator command, connector policy, source permissions, and approval gates.
 
 Phase 25 does not delete stale artifacts, approve actions, contact external parties, submit applications, submit proposals, submit deliverables, accept contracts, request payment, use credentials, or bypass Phase 5 and Phase 6 gates.
+
+## Milestone N Ascended Capability Procurement
+
+Milestone N adds Phase 26 as an internal capability procurement program. It converts the ascended work-quality prompt into contract-valid procurement records for the standards, evidence, internal review agents, legal and ethical controls, freshness gates, and blocked actions required before AIGC may treat a work order as high-quality.
+
+Command:
+
+```powershell
+python .\src\aigc.py run phase26
+```
+
+Outputs:
+
+- `data/phase26_capability_procurement/aigc_phase26_capability_procurement_records.json`
+- `data/reports/phase26_signature_update.md`
+- `data/audit/aigc_phase26_audit.jsonl`
+- `reports/milestone_n_capability_procurement_report.md`
+
+Phase 26 does not perform external procurement, fetch external data, delete artifacts, approve actions, contact external parties, submit applications, submit proposals, submit deliverables, accept contracts, request payment, use credentials, or bypass Phase 5 and Phase 6 gates. It is an internal requirements ledger for applying ascended quality discipline.
+
+## Milestone O Stale Artifact Renewal
+
+Milestone O adds Phase 27 as an internal stale-artifact renewal and deep-research controller. It preserves expired generated action candidates as historical derivatives and converts them into renewal blueprints instead of deleting them or treating them as active approvals.
+
+Command:
+
+```powershell
+python .\src\aigc.py run phase27
+```
+
+Outputs:
+
+- `data/phase27_renewal/aigc_phase27_stale_artifact_renewal_records.json`
+- `data/reports/phase27_signature_update.md`
+- `data/audit/aigc_phase27_audit.jsonl`
+- `reports/milestone_o_stale_artifact_renewal_report.md`
+
+Phase 27 produces deep-research questions, architecture evolution plans, regeneration blueprints, quality upgrade targets, and freshness requirements. It does not browse, fetch external data, delete files, approve actions, contact external parties, submit applications, submit proposals, submit deliverables, accept contracts, request payment, use credentials, or bypass Phase 5 and Phase 6 gates.
 
 ## Milestone D Finance, Compliance, and Incident Response
 

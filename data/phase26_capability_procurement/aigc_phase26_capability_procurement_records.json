@@ -1,0 +1,740 @@
+[
+  {
+    "record_id": "AIGC-CAP-9943FF0728BF7FD0",
+    "created_at": "2026-07-03T01:04:11.799448+00:00",
+    "phase": "phase26_ascended_capability_procurement_program",
+    "status": "capability_procurement_recorded",
+    "procurement_domain": "work_quality_application",
+    "procurement_purpose": "Procure the controls needed for AIGC to apply quality discipline, not merely recognize quality.",
+    "capability_level": "procurement_gaps_require_resolution",
+    "source_record_counts": {
+      "quality_kernel_records": 25,
+      "work_order_governance_records": 25
+    },
+    "source_quality_state": {
+      "average_quality_score": 75,
+      "average_uncertainty_score": 82,
+      "quality_score_count": 50,
+      "uncertainty_score_count": 50,
+      "quality_states": {
+        "improvement_required_before_approval_review": 25
+      },
+      "external_action_performed_count": 0
+    },
+    "source_freshness_state": {
+      "high_or_critical_drift_records": 0,
+      "stale_records": 0,
+      "expired_generated_action_candidates": 0,
+      "freshness_statuses": {},
+      "procurement_classifications": {}
+    },
+    "required_inputs": [
+      "quality_kernel_records",
+      "work_order_governance_records",
+      "contract_validated_work_order"
+    ],
+    "required_controls": [
+      "perfect_draft_v1",
+      "ontological_self_audit",
+      "ascended_output_v2",
+      "explicit_uncertainty_score",
+      "blocked_external_actions"
+    ],
+    "required_standards": [
+      "contract_first_validation",
+      "technical_correctness",
+      "maintainability",
+      "professional_clarity",
+      "auditability"
+    ],
+    "required_agents": [
+      "Meta-Cognition Agent",
+      "Technical-Fidelity Agent",
+      "Optimization-Architect Agent",
+      "Praxeological-Efficiency Agent"
+    ],
+    "evidence_sources": [
+      {
+        "alias": "quality_kernel_records",
+        "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+        "record_count": 25,
+        "present": true,
+        "truth_role": "source_or_governance_evidence"
+      },
+      {
+        "alias": "work_order_governance_records",
+        "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+        "record_count": 25,
+        "present": true,
+        "truth_role": "source_or_governance_evidence"
+      }
+    ],
+    "gap_analysis": [
+      "work_quality_application: average quality score 75 is below threshold 85.",
+      "work_quality_application: average uncertainty score 82 exceeds threshold 35."
+    ],
+    "quantum_quality_application": {
+      "model_type": "deterministic_uncertainty_aware_capability_procurement_model",
+      "literal_quantum_claim": false,
+      "capability_quality_score": 55,
+      "capability_uncertainty_score": 100,
+      "readiness_state": "procurement_gaps_require_resolution",
+      "collapse_conditions": [
+        "work_quality_application evidence sources are present",
+        "contract validation passes",
+        "secret scan passes",
+        "truth-first procurement has no unresolved expired generated action candidates",
+        "continuous intelligence ingestion has no high or critical drift for required evidence",
+        "quality uncertainty is below configured threshold or explicitly accepted by the operator",
+        "Phase 5 approval and Phase 6 scope are satisfied before external action"
+      ]
+    },
+    "ontological_application": {
+      "ontology": {
+        "status": "gap_review_required",
+        "procurement_domain": "work_quality_application",
+        "interpretation": "Defines the capability as an internal requirement object, not a vague aspiration."
+      },
+      "epistemology": {
+        "status": "gap_review_required",
+        "procurement_domain": "work_quality_application",
+        "interpretation": "Requires evidence before AIGC can claim the capability is active."
+      },
+      "methodology": {
+        "status": "gap_review_required",
+        "procurement_domain": "work_quality_application",
+        "interpretation": "Maps standards, controls, inputs, and validation steps into a repeatable process."
+      },
+      "praxeology": {
+        "status": "gap_review_required",
+        "procurement_domain": "work_quality_application",
+        "interpretation": "Turns quality intent into actionable internal next steps."
+      },
+      "axiology": {
+        "status": "gap_review_required",
+        "procurement_domain": "work_quality_application",
+        "interpretation": "Prioritizes truth, professionalism, legality, user trust, and customer value."
+      },
+      "teleology": {
+        "status": "gap_review_required",
+        "procurement_domain": "work_quality_application",
+        "interpretation": "Aims the capability toward high-quality work under explicit gates."
+      },
+      "semiotics": {
+        "status": "gap_review_required",
+        "procurement_domain": "work_quality_application",
+        "interpretation": "Treats gaps, drift, uncertainty, and blocked actions as meaning-bearing signals."
+      },
+      "cybernetics": {
+        "status": "gap_review_required",
+        "procurement_domain": "work_quality_application",
+        "interpretation": "Feeds procurement gaps back into refresh, regeneration, and quality improvement loops."
+      },
+      "systems_theory": {
+        "status": "gap_review_required",
+        "procurement_domain": "work_quality_application",
+        "interpretation": "Connects quality, work-order governance, procurement truth, and freshness subsystems."
+      },
+      "ethics": {
+        "status": "gap_review_required",
+        "procurement_domain": "work_quality_application",
+        "interpretation": "Keeps external action blocked until law, safety, and professional constraints are satisfied."
+      },
+      "jurisprudence": {
+        "status": "gap_review_required",
+        "procurement_domain": "work_quality_application",
+        "interpretation": "Requires legal and platform-rule review before any externally visible conduct."
+      },
+      "risk_theory": {
+        "status": "gap_review_required",
+        "procurement_domain": "work_quality_application",
+        "interpretation": "Surfaces unresolved risk instead of hiding it behind confident language."
+      }
+    },
+    "procurement_decision": "resolve_procurement_gaps_before_ascended_quality_claim",
+    "recommended_actions": [
+      "Resolve procurement gaps for work_quality_application before claiming ascended quality.",
+      "Rerun or revise Phase 22 and Phase 23 after resolving quality, compliance, scope, and approval blockers."
+    ],
+    "blocked_actions": [
+      "claim_ascended_quality_without_evidence",
+      "treat_generated_artifacts_as_source_truth",
+      "ignore_quality_uncertainty",
+      "hide_stale_context",
+      "fetch_external_data_without_operator_command",
+      "delete_stale_artifacts_without_operator_command",
+      "approve_external_action",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "bypass_phase5_approval"
+    ],
+    "approval_required_before_external_action": true,
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CAP-292B7589C559033B",
+    "created_at": "2026-07-03T01:04:11.799448+00:00",
+    "phase": "phase26_ascended_capability_procurement_program",
+    "status": "capability_procurement_recorded",
+    "procurement_domain": "legal_ethical_professional_boundary",
+    "procurement_purpose": "Procure law, ethics, privacy, security, platform-rule, and professional-norm gates before any external action.",
+    "capability_level": "procurement_gaps_require_resolution",
+    "source_record_counts": {
+      "quality_kernel_records": 25,
+      "work_order_governance_records": 25,
+      "truth_first_procurement_records": 25
+    },
+    "source_quality_state": {
+      "average_quality_score": 75,
+      "average_uncertainty_score": 82,
+      "quality_score_count": 50,
+      "uncertainty_score_count": 50,
+      "quality_states": {
+        "improvement_required_before_approval_review": 25
+      },
+      "external_action_performed_count": 0
+    },
+    "source_freshness_state": {
+      "high_or_critical_drift_records": 0,
+      "stale_records": 0,
+      "expired_generated_action_candidates": 25,
+      "freshness_statuses": {},
+      "procurement_classifications": {
+        "real_source_with_expired_generated_action_candidate": 25
+      }
+    },
+    "required_inputs": [
+      "source_truth_classification",
+      "phase5_approval_state",
+      "legal_ethical_boundary",
+      "blocked_action_list"
+    ],
+    "required_controls": [
+      "human_approval_gate",
+      "secret_isolation_gate",
+      "compliance_review_gate",
+      "ai_disclosure_review",
+      "external_action_block"
+    ],
+    "required_standards": [
+      "lawfulness",
+      "ethics",
+      "privacy",
+      "security",
+      "professional_norms"
+    ],
+    "required_agents": [
+      "Ethics-Compliance Agent",
+      "Risk Mitigation Agent",
+      "Ontological-Mapping Agent"
+    ],
+    "evidence_sources": [
+      {
+        "alias": "quality_kernel_records",
+        "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+        "record_count": 25,
+        "present": true,
+        "truth_role": "source_or_governance_evidence"
+      },
+      {
+        "alias": "work_order_governance_records",
+        "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+        "record_count": 25,
+        "present": true,
+        "truth_role": "source_or_governance_evidence"
+      },
+      {
+        "alias": "truth_first_procurement_records",
+        "path": "data/phase24_procurement/aigc_phase24_procurement_records.json",
+        "record_count": 25,
+        "present": true,
+        "truth_role": "source_or_governance_evidence"
+      }
+    ],
+    "gap_analysis": [
+      "legal_ethical_professional_boundary: average quality score 75 is below threshold 85.",
+      "legal_ethical_professional_boundary: average uncertainty score 82 exceeds threshold 35.",
+      "legal_ethical_professional_boundary: expired generated action candidates exceed threshold 0."
+    ],
+    "quantum_quality_application": {
+      "model_type": "deterministic_uncertainty_aware_capability_procurement_model",
+      "literal_quantum_claim": false,
+      "capability_quality_score": 0,
+      "capability_uncertainty_score": 100,
+      "readiness_state": "procurement_gaps_require_resolution",
+      "collapse_conditions": [
+        "legal_ethical_professional_boundary evidence sources are present",
+        "contract validation passes",
+        "secret scan passes",
+        "truth-first procurement has no unresolved expired generated action candidates",
+        "continuous intelligence ingestion has no high or critical drift for required evidence",
+        "quality uncertainty is below configured threshold or explicitly accepted by the operator",
+        "Phase 5 approval and Phase 6 scope are satisfied before external action"
+      ]
+    },
+    "ontological_application": {
+      "ontology": {
+        "status": "gap_review_required",
+        "procurement_domain": "legal_ethical_professional_boundary",
+        "interpretation": "Defines the capability as an internal requirement object, not a vague aspiration."
+      },
+      "epistemology": {
+        "status": "gap_review_required",
+        "procurement_domain": "legal_ethical_professional_boundary",
+        "interpretation": "Requires evidence before AIGC can claim the capability is active."
+      },
+      "methodology": {
+        "status": "gap_review_required",
+        "procurement_domain": "legal_ethical_professional_boundary",
+        "interpretation": "Maps standards, controls, inputs, and validation steps into a repeatable process."
+      },
+      "praxeology": {
+        "status": "gap_review_required",
+        "procurement_domain": "legal_ethical_professional_boundary",
+        "interpretation": "Turns quality intent into actionable internal next steps."
+      },
+      "axiology": {
+        "status": "gap_review_required",
+        "procurement_domain": "legal_ethical_professional_boundary",
+        "interpretation": "Prioritizes truth, professionalism, legality, user trust, and customer value."
+      },
+      "teleology": {
+        "status": "gap_review_required",
+        "procurement_domain": "legal_ethical_professional_boundary",
+        "interpretation": "Aims the capability toward high-quality work under explicit gates."
+      },
+      "semiotics": {
+        "status": "gap_review_required",
+        "procurement_domain": "legal_ethical_professional_boundary",
+        "interpretation": "Treats gaps, drift, uncertainty, and blocked actions as meaning-bearing signals."
+      },
+      "cybernetics": {
+        "status": "gap_review_required",
+        "procurement_domain": "legal_ethical_professional_boundary",
+        "interpretation": "Feeds procurement gaps back into refresh, regeneration, and quality improvement loops."
+      },
+      "systems_theory": {
+        "status": "gap_review_required",
+        "procurement_domain": "legal_ethical_professional_boundary",
+        "interpretation": "Connects quality, work-order governance, procurement truth, and freshness subsystems."
+      },
+      "ethics": {
+        "status": "gap_review_required",
+        "procurement_domain": "legal_ethical_professional_boundary",
+        "interpretation": "Keeps external action blocked until law, safety, and professional constraints are satisfied."
+      },
+      "jurisprudence": {
+        "status": "gap_review_required",
+        "procurement_domain": "legal_ethical_professional_boundary",
+        "interpretation": "Requires legal and platform-rule review before any externally visible conduct."
+      },
+      "risk_theory": {
+        "status": "gap_review_required",
+        "procurement_domain": "legal_ethical_professional_boundary",
+        "interpretation": "Surfaces unresolved risk instead of hiding it behind confident language."
+      }
+    },
+    "procurement_decision": "resolve_procurement_gaps_before_ascended_quality_claim",
+    "recommended_actions": [
+      "Resolve procurement gaps for legal_ethical_professional_boundary before claiming ascended quality.",
+      "Run Phase 24 and archive or regenerate expired generated approval candidates under operator review.",
+      "Rerun or revise Phase 22 and Phase 23 after resolving quality, compliance, scope, and approval blockers."
+    ],
+    "blocked_actions": [
+      "claim_ascended_quality_without_evidence",
+      "treat_generated_artifacts_as_source_truth",
+      "ignore_quality_uncertainty",
+      "hide_stale_context",
+      "fetch_external_data_without_operator_command",
+      "delete_stale_artifacts_without_operator_command",
+      "approve_external_action",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "bypass_phase5_approval"
+    ],
+    "approval_required_before_external_action": true,
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CAP-364BDE6936EEACF9",
+    "created_at": "2026-07-03T01:04:11.799448+00:00",
+    "phase": "phase26_ascended_capability_procurement_program",
+    "status": "capability_procurement_recorded",
+    "procurement_domain": "truth_freshness_and_drift_control",
+    "procurement_purpose": "Procure freshness, provenance, and truth controls so stale generated artifacts cannot become false operational context.",
+    "capability_level": "procurement_gaps_require_resolution",
+    "source_record_counts": {
+      "truth_first_procurement_records": 25,
+      "intelligence_ingestion_records": 7
+    },
+    "source_quality_state": {
+      "average_quality_score": null,
+      "average_uncertainty_score": null,
+      "quality_score_count": 0,
+      "uncertainty_score_count": 0,
+      "quality_states": {},
+      "external_action_performed_count": 0
+    },
+    "source_freshness_state": {
+      "high_or_critical_drift_records": 2,
+      "stale_records": 2,
+      "expired_generated_action_candidates": 25,
+      "freshness_statuses": {
+        "fresh": 5,
+        "stale_expired_generated_candidates": 2
+      },
+      "procurement_classifications": {
+        "real_source_with_expired_generated_action_candidate": 25
+      }
+    },
+    "required_inputs": [
+      "read_only_source_snapshot",
+      "truth_first_procurement_record",
+      "continuous_intelligence_ingestion_record",
+      "freshness_drift_status"
+    ],
+    "required_controls": [
+      "source_derivative_separation",
+      "expired_candidate_detection",
+      "temporal_freshness_validation",
+      "regeneration_target_tracking",
+      "no_hidden_deletion"
+    ],
+    "required_standards": [
+      "truthfulness",
+      "provenance_integrity",
+      "temporal_accuracy",
+      "drift_visibility",
+      "operator_review_before_refresh"
+    ],
+    "required_agents": [
+      "Temporal-Reasoning Agent",
+      "Freshness-Validation Agent",
+      "Drift-Detection Agent",
+      "Ontological-Mapping Agent"
+    ],
+    "evidence_sources": [
+      {
+        "alias": "truth_first_procurement_records",
+        "path": "data/phase24_procurement/aigc_phase24_procurement_records.json",
+        "record_count": 25,
+        "present": true,
+        "truth_role": "source_or_governance_evidence"
+      },
+      {
+        "alias": "intelligence_ingestion_records",
+        "path": "data/phase25_intelligence/aigc_phase25_intelligence_ingestion_records.json",
+        "record_count": 7,
+        "present": true,
+        "truth_role": "source_or_governance_evidence"
+      }
+    ],
+    "gap_analysis": [
+      "truth_freshness_and_drift_control: high or critical drift records exceed threshold 0.",
+      "truth_freshness_and_drift_control: expired generated action candidates exceed threshold 0."
+    ],
+    "quantum_quality_application": {
+      "model_type": "deterministic_uncertainty_aware_capability_procurement_model",
+      "literal_quantum_claim": false,
+      "capability_quality_score": 0,
+      "capability_uncertainty_score": 100,
+      "readiness_state": "procurement_gaps_require_resolution",
+      "collapse_conditions": [
+        "truth_freshness_and_drift_control evidence sources are present",
+        "contract validation passes",
+        "secret scan passes",
+        "truth-first procurement has no unresolved expired generated action candidates",
+        "continuous intelligence ingestion has no high or critical drift for required evidence",
+        "quality uncertainty is below configured threshold or explicitly accepted by the operator",
+        "Phase 5 approval and Phase 6 scope are satisfied before external action"
+      ]
+    },
+    "ontological_application": {
+      "ontology": {
+        "status": "gap_review_required",
+        "procurement_domain": "truth_freshness_and_drift_control",
+        "interpretation": "Defines the capability as an internal requirement object, not a vague aspiration."
+      },
+      "epistemology": {
+        "status": "gap_review_required",
+        "procurement_domain": "truth_freshness_and_drift_control",
+        "interpretation": "Requires evidence before AIGC can claim the capability is active."
+      },
+      "methodology": {
+        "status": "gap_review_required",
+        "procurement_domain": "truth_freshness_and_drift_control",
+        "interpretation": "Maps standards, controls, inputs, and validation steps into a repeatable process."
+      },
+      "praxeology": {
+        "status": "gap_review_required",
+        "procurement_domain": "truth_freshness_and_drift_control",
+        "interpretation": "Turns quality intent into actionable internal next steps."
+      },
+      "axiology": {
+        "status": "gap_review_required",
+        "procurement_domain": "truth_freshness_and_drift_control",
+        "interpretation": "Prioritizes truth, professionalism, legality, user trust, and customer value."
+      },
+      "teleology": {
+        "status": "gap_review_required",
+        "procurement_domain": "truth_freshness_and_drift_control",
+        "interpretation": "Aims the capability toward high-quality work under explicit gates."
+      },
+      "semiotics": {
+        "status": "gap_review_required",
+        "procurement_domain": "truth_freshness_and_drift_control",
+        "interpretation": "Treats gaps, drift, uncertainty, and blocked actions as meaning-bearing signals."
+      },
+      "cybernetics": {
+        "status": "gap_review_required",
+        "procurement_domain": "truth_freshness_and_drift_control",
+        "interpretation": "Feeds procurement gaps back into refresh, regeneration, and quality improvement loops."
+      },
+      "systems_theory": {
+        "status": "gap_review_required",
+        "procurement_domain": "truth_freshness_and_drift_control",
+        "interpretation": "Connects quality, work-order governance, procurement truth, and freshness subsystems."
+      },
+      "ethics": {
+        "status": "gap_review_required",
+        "procurement_domain": "truth_freshness_and_drift_control",
+        "interpretation": "Keeps external action blocked until law, safety, and professional constraints are satisfied."
+      },
+      "jurisprudence": {
+        "status": "gap_review_required",
+        "procurement_domain": "truth_freshness_and_drift_control",
+        "interpretation": "Requires legal and platform-rule review before any externally visible conduct."
+      },
+      "risk_theory": {
+        "status": "gap_review_required",
+        "procurement_domain": "truth_freshness_and_drift_control",
+        "interpretation": "Surfaces unresolved risk instead of hiding it behind confident language."
+      }
+    },
+    "procurement_decision": "resolve_procurement_gaps_before_ascended_quality_claim",
+    "recommended_actions": [
+      "Resolve procurement gaps for truth_freshness_and_drift_control before claiming ascended quality.",
+      "Run Phase 24 and archive or regenerate expired generated approval candidates under operator review.",
+      "Run Phase 25 and refresh stale local artifacts before downstream use."
+    ],
+    "blocked_actions": [
+      "claim_ascended_quality_without_evidence",
+      "treat_generated_artifacts_as_source_truth",
+      "ignore_quality_uncertainty",
+      "hide_stale_context",
+      "fetch_external_data_without_operator_command",
+      "delete_stale_artifacts_without_operator_command",
+      "approve_external_action",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "bypass_phase5_approval"
+    ],
+    "approval_required_before_external_action": true,
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CAP-5BFE630DA3C0D3C9",
+    "created_at": "2026-07-03T01:04:11.800449+00:00",
+    "phase": "phase26_ascended_capability_procurement_program",
+    "status": "capability_procurement_recorded",
+    "procurement_domain": "disciplinary_best_practice_procurement",
+    "procurement_purpose": "Procure the evidence that domain-specific best practices, customer fit, fidelity review, and quality gates are present before claiming high-grade work.",
+    "capability_level": "procurement_gaps_require_resolution",
+    "source_record_counts": {
+      "fidelity_reviews": 25,
+      "customer_satisfaction_records": 25,
+      "quality_kernel_records": 25,
+      "work_order_governance_records": 25
+    },
+    "source_quality_state": {
+      "average_quality_score": 75,
+      "average_uncertainty_score": 82,
+      "quality_score_count": 50,
+      "uncertainty_score_count": 50,
+      "quality_states": {
+        "improvement_required_before_approval_review": 25
+      },
+      "external_action_performed_count": 0
+    },
+    "source_freshness_state": {
+      "high_or_critical_drift_records": 0,
+      "stale_records": 0,
+      "expired_generated_action_candidates": 0,
+      "freshness_statuses": {},
+      "procurement_classifications": {}
+    },
+    "required_inputs": [
+      "fidelity_review",
+      "customer_satisfaction_record",
+      "quality_kernel_record",
+      "work_order_governance_record"
+    ],
+    "required_controls": [
+      "source_verification",
+      "format_validation",
+      "risk_review",
+      "customer_value_review",
+      "acceptance_readiness_review"
+    ],
+    "required_standards": [
+      "disciplinary_best_practices",
+      "customer_happiness_index",
+      "technical_fidelity",
+      "scope_alignment",
+      "reliability"
+    ],
+    "required_agents": [
+      "Technical-Fidelity Agent",
+      "Customer Liaison",
+      "Quality Sentinel",
+      "Optimization-Architect Agent"
+    ],
+    "evidence_sources": [
+      {
+        "alias": "fidelity_reviews",
+        "path": "data/phase20_fidelity/aigc_phase20_fidelity_reviews.json",
+        "record_count": 25,
+        "present": true,
+        "truth_role": "source_or_governance_evidence"
+      },
+      {
+        "alias": "customer_satisfaction_records",
+        "path": "data/phase21_customer_satisfaction/aigc_phase21_customer_satisfaction_records.json",
+        "record_count": 25,
+        "present": true,
+        "truth_role": "source_or_governance_evidence"
+      },
+      {
+        "alias": "quality_kernel_records",
+        "path": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+        "record_count": 25,
+        "present": true,
+        "truth_role": "source_or_governance_evidence"
+      },
+      {
+        "alias": "work_order_governance_records",
+        "path": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+        "record_count": 25,
+        "present": true,
+        "truth_role": "source_or_governance_evidence"
+      }
+    ],
+    "gap_analysis": [
+      "disciplinary_best_practice_procurement: average quality score 75 is below threshold 85.",
+      "disciplinary_best_practice_procurement: average uncertainty score 82 exceeds threshold 35."
+    ],
+    "quantum_quality_application": {
+      "model_type": "deterministic_uncertainty_aware_capability_procurement_model",
+      "literal_quantum_claim": false,
+      "capability_quality_score": 55,
+      "capability_uncertainty_score": 100,
+      "readiness_state": "procurement_gaps_require_resolution",
+      "collapse_conditions": [
+        "disciplinary_best_practice_procurement evidence sources are present",
+        "contract validation passes",
+        "secret scan passes",
+        "truth-first procurement has no unresolved expired generated action candidates",
+        "continuous intelligence ingestion has no high or critical drift for required evidence",
+        "quality uncertainty is below configured threshold or explicitly accepted by the operator",
+        "Phase 5 approval and Phase 6 scope are satisfied before external action"
+      ]
+    },
+    "ontological_application": {
+      "ontology": {
+        "status": "gap_review_required",
+        "procurement_domain": "disciplinary_best_practice_procurement",
+        "interpretation": "Defines the capability as an internal requirement object, not a vague aspiration."
+      },
+      "epistemology": {
+        "status": "gap_review_required",
+        "procurement_domain": "disciplinary_best_practice_procurement",
+        "interpretation": "Requires evidence before AIGC can claim the capability is active."
+      },
+      "methodology": {
+        "status": "gap_review_required",
+        "procurement_domain": "disciplinary_best_practice_procurement",
+        "interpretation": "Maps standards, controls, inputs, and validation steps into a repeatable process."
+      },
+      "praxeology": {
+        "status": "gap_review_required",
+        "procurement_domain": "disciplinary_best_practice_procurement",
+        "interpretation": "Turns quality intent into actionable internal next steps."
+      },
+      "axiology": {
+        "status": "gap_review_required",
+        "procurement_domain": "disciplinary_best_practice_procurement",
+        "interpretation": "Prioritizes truth, professionalism, legality, user trust, and customer value."
+      },
+      "teleology": {
+        "status": "gap_review_required",
+        "procurement_domain": "disciplinary_best_practice_procurement",
+        "interpretation": "Aims the capability toward high-quality work under explicit gates."
+      },
+      "semiotics": {
+        "status": "gap_review_required",
+        "procurement_domain": "disciplinary_best_practice_procurement",
+        "interpretation": "Treats gaps, drift, uncertainty, and blocked actions as meaning-bearing signals."
+      },
+      "cybernetics": {
+        "status": "gap_review_required",
+        "procurement_domain": "disciplinary_best_practice_procurement",
+        "interpretation": "Feeds procurement gaps back into refresh, regeneration, and quality improvement loops."
+      },
+      "systems_theory": {
+        "status": "gap_review_required",
+        "procurement_domain": "disciplinary_best_practice_procurement",
+        "interpretation": "Connects quality, work-order governance, procurement truth, and freshness subsystems."
+      },
+      "ethics": {
+        "status": "gap_review_required",
+        "procurement_domain": "disciplinary_best_practice_procurement",
+        "interpretation": "Keeps external action blocked until law, safety, and professional constraints are satisfied."
+      },
+      "jurisprudence": {
+        "status": "gap_review_required",
+        "procurement_domain": "disciplinary_best_practice_procurement",
+        "interpretation": "Requires legal and platform-rule review before any externally visible conduct."
+      },
+      "risk_theory": {
+        "status": "gap_review_required",
+        "procurement_domain": "disciplinary_best_practice_procurement",
+        "interpretation": "Surfaces unresolved risk instead of hiding it behind confident language."
+      }
+    },
+    "procurement_decision": "resolve_procurement_gaps_before_ascended_quality_claim",
+    "recommended_actions": [
+      "Resolve procurement gaps for disciplinary_best_practice_procurement before claiming ascended quality.",
+      "Rerun or revise Phase 22 and Phase 23 after resolving quality, compliance, scope, and approval blockers."
+    ],
+    "blocked_actions": [
+      "claim_ascended_quality_without_evidence",
+      "treat_generated_artifacts_as_source_truth",
+      "ignore_quality_uncertainty",
+      "hide_stale_context",
+      "fetch_external_data_without_operator_command",
+      "delete_stale_artifacts_without_operator_command",
+      "approve_external_action",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "bypass_phase5_approval"
+    ],
+    "approval_required_before_external_action": true,
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  }
+]

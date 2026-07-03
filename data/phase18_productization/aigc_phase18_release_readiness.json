@@ -1,12 +1,12 @@
 {
-  "release_id": "AIGC-REL-81B2F77FADBAECCE",
-  "created_at": "2026-07-03T00:07:27.528110+00:00",
+  "release_id": "AIGC-REL-D318E5A615D0AF46",
+  "created_at": "2026-07-03T01:04:26.852947+00:00",
   "phase": "phase18_scaling_productization",
-  "version": "0.13.0-milestone-m",
+  "version": "0.15.0-milestone-o",
   "status": "internal_release_candidate",
   "release_type": "internal_private_kernel",
   "branch": "codex/milestone-l-truth-first-procurement-governance",
-  "commit": "5a3ef7f",
+  "commit": "fcf181e",
   "required_files_present": true,
   "missing_required_files": [],
   "checked_files": [
@@ -61,6 +61,16 @@
       "kind": "file"
     },
     {
+      "path": "prompts/phase26_ascended_capability_procurement.md",
+      "present": true,
+      "kind": "file"
+    },
+    {
+      "path": "prompts/phase27_stale_artifact_renewal.md",
+      "present": true,
+      "kind": "file"
+    },
+    {
       "path": "config/phase10_connector_registry.json",
       "present": true,
       "kind": "file"
@@ -111,6 +121,16 @@
       "kind": "file"
     },
     {
+      "path": "config/phase26_capability_procurement.json",
+      "present": true,
+      "kind": "file"
+    },
+    {
+      "path": "config/phase27_stale_artifact_renewal.json",
+      "present": true,
+      "kind": "file"
+    },
+    {
       "path": "schemas/connector_record.schema.json",
       "present": true,
       "kind": "file"
@@ -142,6 +162,16 @@
     },
     {
       "path": "schemas/intelligence_ingestion_record.schema.json",
+      "present": true,
+      "kind": "file"
+    },
+    {
+      "path": "schemas/capability_procurement_record.schema.json",
+      "present": true,
+      "kind": "file"
+    },
+    {
+      "path": "schemas/stale_artifact_renewal_record.schema.json",
       "present": true,
       "kind": "file"
     },
@@ -226,6 +256,16 @@
       "kind": "file"
     },
     {
+      "path": "src/phase26_capability_procurement.py",
+      "present": true,
+      "kind": "file"
+    },
+    {
+      "path": "src/phase27_stale_artifact_renewal.py",
+      "present": true,
+      "kind": "file"
+    },
+    {
       "path": "docs/PRIVATE_BRANCH_WORKFLOW.md",
       "present": true,
       "kind": "file"
@@ -265,6 +305,10 @@
     "data/reports/phase24_signature_update.md",
     "data/phase25_intelligence/aigc_phase25_intelligence_ingestion_records.json",
     "data/reports/phase25_signature_update.md",
+    "data/phase26_capability_procurement/aigc_phase26_capability_procurement_records.json",
+    "data/reports/phase26_signature_update.md",
+    "data/phase27_renewal/aigc_phase27_stale_artifact_renewal_records.json",
+    "data/reports/phase27_signature_update.md",
     "reports/milestone_f_productization_report.md",
     "reports/milestone_g_subagent_forge_report.md",
     "reports/milestone_h_fidelity_forge_report.md",
@@ -273,6 +317,8 @@
     "reports/milestone_k_work_order_governor_report.md",
     "reports/milestone_l_procurement_governance_report.md",
     "reports/milestone_m_continuous_intelligence_ingestion_report.md",
+    "reports/milestone_n_capability_procurement_report.md",
+    "reports/milestone_o_stale_artifact_renewal_report.md",
     "docs/PRODUCTIZATION_RUNBOOK.md"
   ],
   "license_status": "all_rights_reserved_present",

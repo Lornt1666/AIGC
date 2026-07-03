@@ -255,6 +255,26 @@ def build_phase_registry(root: Path = PROJECT_ROOT) -> Dict[str, PhaseDefinition
             allowed_runtime_modes=["operator_scheduled_internal_refresh"],
             external_action_risk="none_internal_freshness_and_drift_review_only",
         ),
+        "phase26": PhaseDefinition(
+            name="phase26",
+            display_name="Phase 26 - Ascended Capability Procurement Program",
+            input_path="config/phase26_capability_procurement.json",
+            output_path="data/phase26_capability_procurement/aigc_phase26_capability_procurement_records.json",
+            schema_name="capability_procurement_record",
+            command=[py, str(src / "phase26_capability_procurement.py")],
+            allowed_runtime_modes=["internal_capability_procurement_only"],
+            external_action_risk="none_internal_capability_procurement_only",
+        ),
+        "phase27": PhaseDefinition(
+            name="phase27",
+            display_name="Phase 27 - Stale Artifact Renewal and Deep Research Controller",
+            input_path="config/phase27_stale_artifact_renewal.json",
+            output_path="data/phase27_renewal/aigc_phase27_stale_artifact_renewal_records.json",
+            schema_name="stale_artifact_renewal_record",
+            command=[py, str(src / "phase27_stale_artifact_renewal.py")],
+            allowed_runtime_modes=["internal_stale_artifact_renewal_only"],
+            external_action_risk="none_internal_renewal_blueprints_only",
+        ),
     }
 
 

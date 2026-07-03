@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-03T00:07:27.859110+00:00",
+  "generated_at": "2026-07-03T01:04:27.038947+00:00",
   "operator": "Justice Gray Maciocha",
   "phase": "Phase 12 - Observability Dashboard",
   "system_health": "yellow",
@@ -210,14 +210,30 @@
     {
       "phase": "phase25_continuous_intelligence_ingestion_layer",
       "status": "green",
-      "signal_count": 6,
+      "signal_count": 8,
+      "notes": [
+        "Telemetry present."
+      ]
+    },
+    {
+      "phase": "phase26_ascended_capability_procurement_program",
+      "status": "green",
+      "signal_count": 4,
+      "notes": [
+        "Telemetry present."
+      ]
+    },
+    {
+      "phase": "phase27_stale_artifact_renewal_controller",
+      "status": "green",
+      "signal_count": 25,
       "notes": [
         "Telemetry present."
       ]
     }
   ],
   "pipeline_metrics": {
-    "audit_events": 641,
+    "audit_events": 649,
     "memory_events": 1,
     "phase2_opportunities": 98,
     "phase3_dossiers": 25,
@@ -233,7 +249,9 @@
     "phase22_quality_kernel_records": 25,
     "phase23_work_order_governance_records": 25,
     "phase24_procurement_records": 25,
-    "phase25_intelligence_ingestion_records": 6
+    "phase25_intelligence_ingestion_records": 8,
+    "phase26_capability_procurement_records": 4,
+    "phase27_stale_artifact_renewal_records": 25
   },
   "approval_metrics": {
     "pending": 25,
@@ -258,11 +276,11 @@
   },
   "audit_integrity": {
     "audit_dir_exists": true,
-    "audit_events": 641,
+    "audit_events": 649,
     "memory_events": 1,
     "missing_audit_baseline": false,
     "missing_memory_baseline": false
   },
-  "next_recommended_action": "Run Phase 24 procurement governance, then archive or regenerate expired generated approval candidates before Phase 6 handoff.",
+  "next_recommended_action": "Run Phase 27 stale artifact renewal, then regenerate improved candidates from fresh governed context before Phase 6 handoff.",
   "external_action_performed": false
 }
