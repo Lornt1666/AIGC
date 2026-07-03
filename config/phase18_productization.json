@@ -1,7 +1,7 @@
 {
   "phase": "Phase 18 - Scaling, Replication, and Productization",
   "operating_mode": "internal_private_release_readiness",
-  "version": "0.15.0-milestone-o",
+  "version": "0.16.0-milestone-p",
   "release_type": "internal_private_kernel",
   "external_actions_allowed": false,
   "deployment_allowed": false,
@@ -22,6 +22,7 @@
     "prompts/phase25_continuous_intelligence_ingestion.md",
     "prompts/phase26_ascended_capability_procurement.md",
     "prompts/phase27_stale_artifact_renewal.md",
+    "prompts/phase28_fresh_candidate_regeneration.md",
     "config/phase10_connector_registry.json",
     "config/phase11_security_config.json",
     "config/phase14_runtime_engine.json",
@@ -34,6 +35,7 @@
     "config/phase25_continuous_intelligence_ingestion.json",
     "config/phase26_capability_procurement.json",
     "config/phase27_stale_artifact_renewal.json",
+    "config/phase28_regeneration_controller.json",
     "schemas/connector_record.schema.json",
     "schemas/customer_satisfaction_record.schema.json",
     "schemas/fidelity_review.schema.json",
@@ -43,6 +45,7 @@
     "schemas/intelligence_ingestion_record.schema.json",
     "schemas/capability_procurement_record.schema.json",
     "schemas/stale_artifact_renewal_record.schema.json",
+    "schemas/regeneration_candidate_record.schema.json",
     "schemas/subagent_team_plan.schema.json",
     "schemas/work_order_governance_record.schema.json",
     "src/aigc.py",
@@ -61,6 +64,7 @@
     "src/phase25_continuous_intelligence_ingestion.py",
     "src/phase26_capability_procurement.py",
     "src/phase27_stale_artifact_renewal.py",
+    "src/phase28_regeneration_controller.py",
     "docs/PRIVATE_BRANCH_WORKFLOW.md"
   ],
   "validation_commands": [
@@ -101,6 +105,8 @@
     "data/reports/phase26_signature_update.md",
     "data/phase27_renewal/aigc_phase27_stale_artifact_renewal_records.json",
     "data/reports/phase27_signature_update.md",
+    "data/phase28_regeneration/aigc_phase28_regeneration_candidates.json",
+    "data/reports/phase28_signature_update.md",
     "reports/milestone_f_productization_report.md",
     "reports/milestone_g_subagent_forge_report.md",
     "reports/milestone_h_fidelity_forge_report.md",
@@ -111,6 +117,7 @@
     "reports/milestone_m_continuous_intelligence_ingestion_report.md",
     "reports/milestone_n_capability_procurement_report.md",
     "reports/milestone_o_stale_artifact_renewal_report.md",
+    "reports/milestone_p_regeneration_controller_report.md",
     "docs/PRODUCTIZATION_RUNBOOK.md"
   ]
 }

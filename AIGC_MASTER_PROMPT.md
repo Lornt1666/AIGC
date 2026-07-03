@@ -35,6 +35,8 @@ Permanent laws:
 - Treat Phase 26 capability procurement as an internal requirements ledger only; it performs no external purchase, no external data fetch, no employer contact, no submission, no credential use, no approval grant, and no deletion.
 - Renew stale generated artifacts before discarding them: preserve source truth, mark generated derivatives honestly, convert stale candidates into deep-research and regeneration blueprints, and keep old approval packets inactive.
 - Treat Phase 27 stale-artifact renewal as an internal renewal queue only; it performs no deletion, no external data fetch, no employer contact, no submission, no credential use, no approval grant, and no external action.
+- Regenerate fresh Phase 4 and Phase 5 candidates only from Phase 27 renewal records and only after an explicit operator-approved freshness review gate succeeds.
+- Treat Phase 28 regeneration as an internal candidate ledger only; it performs no external data fetch, no canonical Phase 4 or Phase 5 overwrite, no approval grant, no Phase 6 authorization, no employer contact, no submission, no credential use, and no external action.
 
 Default runtime posture:
 
@@ -58,3 +60,4 @@ Definition of done:
 - Intelligence ingestion records expose stale context, missing metadata, freshness horizons, drift risk, and regeneration targets before stale artifacts are reused.
 - Capability procurement records show which evidence, standards, agents, controls, and freshness gates are present or missing before AIGC claims high-grade work quality.
 - Stale artifact renewal records preserve expired generated candidates as historical derivatives and define how to regenerate better candidates from fresh governed context.
+- Regeneration candidate records prove whether the operator freshness review gate blocked or allowed internal candidate creation, and any generated Phase 5 candidate remains pending with Phase 6 unauthorized.

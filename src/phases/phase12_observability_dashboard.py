@@ -65,6 +65,7 @@ class Phase12ObservabilityDashboard:
         "phase25_continuous_intelligence_ingestion_layer",
         "phase26_ascended_capability_procurement_program",
         "phase27_stale_artifact_renewal_controller",
+        "phase28_fresh_candidate_regeneration_controller",
     ]
 
     def __init__(self, root: Path, config_path: Path):
@@ -95,6 +96,7 @@ class Phase12ObservabilityDashboard:
         phase25_count = count_json_list(self.resolve(inputs.get("phase25_intelligence_ingestion", "")))
         phase26_count = count_json_list(self.resolve(inputs.get("phase26_capability_procurement", "")))
         phase27_count = count_json_list(self.resolve(inputs.get("phase27_stale_artifact_renewal", "")))
+        phase28_records = load_json_list_if_exists(self.resolve(inputs.get("phase28_regeneration_candidates", "")))
         secret_manifest_exists = self.resolve(inputs.get("secret_manifest", "")).exists()
         external_secret_manifest_exists = self.resolve(inputs.get("external_secret_manifest", "")).exists()
         secret_findings = self.scan_secret_paths()
@@ -120,6 +122,9 @@ class Phase12ObservabilityDashboard:
             "phase25_intelligence_ingestion_records": phase25_count,
             "phase26_capability_procurement_records": phase26_count,
             "phase27_stale_artifact_renewal_records": phase27_count,
+            "phase28_regeneration_candidate_records": len(phase28_records),
+            "phase28_allowed_regeneration_candidates": sum(1 for item in phase28_records if item.get("regeneration_allowed") is True),
+            "phase28_blocked_regeneration_candidates": sum(1 for item in phase28_records if item.get("regeneration_allowed") is False),
         }
         audit_integrity = {
             "audit_dir_exists": audit_dir.exists(),
@@ -154,7 +159,7 @@ class Phase12ObservabilityDashboard:
             patch_metrics=patch_metrics,
             secrets_privacy=secrets_privacy,
             audit_integrity=audit_integrity,
-            next_recommended_action=self.next_action(system_health, approval_metrics, secrets_privacy),
+            next_recommended_action=self.next_action(system_health, approval_metrics, secrets_privacy, pipeline_metrics),
         )
 
     def export(self, snapshot: SystemSnapshot) -> None:
@@ -221,6 +226,7 @@ class Phase12ObservabilityDashboard:
             "phase25_continuous_intelligence_ingestion_layer": pipeline_metrics["phase25_intelligence_ingestion_records"],
             "phase26_ascended_capability_procurement_program": pipeline_metrics["phase26_capability_procurement_records"],
             "phase27_stale_artifact_renewal_controller": pipeline_metrics["phase27_stale_artifact_renewal_records"],
+            "phase28_fresh_candidate_regeneration_controller": pipeline_metrics["phase28_regeneration_candidate_records"],
         }
         results: List[PhaseHealth] = []
         for phase in self.PHASES:
@@ -231,7 +237,7 @@ class Phase12ObservabilityDashboard:
             elif count > 0:
                 status = "green"
                 notes = ["Telemetry present."]
-            elif phase in {"phase0_genesis_constitution", "phase1_domain_discovery", "phase10_connector_api_layer", "phase13_simulation_arena", "phase14_deployment_runtime", "phase15_finance_contracts_asset_ledger", "phase16_compliance_legal_review", "phase17_incident_response", "phase18_scaling_productization", "phase19_subagent_generation_forge", "phase20_fidelity_forge", "phase21_customer_satisfaction_continuum", "phase22_quantum_aware_quality_kernel", "phase23_ascended_work_order_governor", "phase24_truth_first_procurement_governance", "phase25_continuous_intelligence_ingestion_layer", "phase26_ascended_capability_procurement_program", "phase27_stale_artifact_renewal_controller"}:
+            elif phase in {"phase0_genesis_constitution", "phase1_domain_discovery", "phase10_connector_api_layer", "phase13_simulation_arena", "phase14_deployment_runtime", "phase15_finance_contracts_asset_ledger", "phase16_compliance_legal_review", "phase17_incident_response", "phase18_scaling_productization", "phase19_subagent_generation_forge", "phase20_fidelity_forge", "phase21_customer_satisfaction_continuum", "phase22_quantum_aware_quality_kernel", "phase23_ascended_work_order_governor", "phase24_truth_first_procurement_governance", "phase25_continuous_intelligence_ingestion_layer", "phase26_ascended_capability_procurement_program", "phase27_stale_artifact_renewal_controller", "phase28_fresh_candidate_regeneration_controller"}:
                 status = "yellow"
                 notes = ["No baseline telemetry found yet."]
             else:
@@ -270,13 +276,23 @@ class Phase12ObservabilityDashboard:
             return "green", reasons
         return "yellow", reasons
 
-    def next_action(self, system_health: str, approval_metrics: Dict[str, int], secrets_privacy: Dict[str, Any]) -> str:
+    def next_action(
+        self,
+        system_health: str,
+        approval_metrics: Dict[str, int],
+        secrets_privacy: Dict[str, Any],
+        pipeline_metrics: Dict[str, int],
+    ) -> str:
         if system_health == "red":
             return "Resolve red health findings before running additional phases."
         if secrets_privacy["secret_like_findings"] > 0:
             return "Redact secret-like findings and rerun Phase 12."
         if approval_metrics.get("expired_pending", 0) > 0:
-            return "Run Phase 27 stale artifact renewal, then regenerate improved candidates from fresh governed context before Phase 6 handoff."
+            if pipeline_metrics.get("phase28_blocked_regeneration_candidates", 0) > 0:
+                return "Complete an operator freshness review before allowing Phase 28 regeneration; do not approve or use expired Phase 5 packets."
+            if pipeline_metrics.get("phase28_allowed_regeneration_candidates", 0) > 0:
+                return "Review the fresh Phase 28 internal candidates; any Phase 5 candidate still needs separate exact-phrase approval before Phase 6."
+            return "Run Phase 27 renewal, then Phase 28 regeneration gating before replacing expired Phase 5 candidates."
         if approval_metrics["pending"] > 0:
             return "Review pending Phase 5 approval packets before Phase 6 handoff."
         return "Run Phase 13 simulation or continue the next internal AIGC cycle."

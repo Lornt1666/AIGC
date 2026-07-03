@@ -64,6 +64,13 @@
       "path": "data/phase27_renewal/aigc_phase27_stale_artifact_renewal_records.json",
       "freshness_horizon_hours": 12,
       "regeneration_command": "python .\\src\\aigc.py run phase27"
+    },
+    {
+      "context_domain": "fresh_candidate_regeneration_queue",
+      "source_kind": "generated_internal_regeneration_candidate_ledger",
+      "path": "data/phase28_regeneration/aigc_phase28_regeneration_candidates.json",
+      "freshness_horizon_hours": 12,
+      "regeneration_command": "python .\\src\\aigc.py run phase28"
     }
   ],
   "freshness_agents": [

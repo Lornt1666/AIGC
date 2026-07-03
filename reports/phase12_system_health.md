@@ -1,7 +1,7 @@
 # AIGC Phase 12 System Health
 
 Generated At:
-2026-07-03T01:04:27.038947+00:00
+2026-07-03T01:30:32.514487+00:00
 
 Operator:
 Justice Gray Maciocha
@@ -15,7 +15,7 @@ Health Reasons:
 Pipeline Metrics:
 ```json
 {
-  "audit_events": 649,
+  "audit_events": 653,
   "memory_events": 1,
   "phase2_opportunities": 98,
   "phase3_dossiers": 25,
@@ -31,9 +31,12 @@ Pipeline Metrics:
   "phase22_quality_kernel_records": 25,
   "phase23_work_order_governance_records": 25,
   "phase24_procurement_records": 25,
-  "phase25_intelligence_ingestion_records": 8,
+  "phase25_intelligence_ingestion_records": 9,
   "phase26_capability_procurement_records": 4,
-  "phase27_stale_artifact_renewal_records": 25
+  "phase27_stale_artifact_renewal_records": 25,
+  "phase28_regeneration_candidate_records": 25,
+  "phase28_allowed_regeneration_candidates": 0,
+  "phase28_blocked_regeneration_candidates": 25
 }
 ```
 
@@ -74,7 +77,7 @@ Audit Integrity:
 ```json
 {
   "audit_dir_exists": true,
-  "audit_events": 649,
+  "audit_events": 653,
   "memory_events": 1,
   "missing_audit_baseline": false,
   "missing_memory_baseline": false
@@ -107,9 +110,10 @@ Phase Health:
 - phase22_quantum_aware_quality_kernel: green (25) - Telemetry present.
 - phase23_ascended_work_order_governor: green (25) - Telemetry present.
 - phase24_truth_first_procurement_governance: green (25) - Telemetry present.
-- phase25_continuous_intelligence_ingestion_layer: green (8) - Telemetry present.
+- phase25_continuous_intelligence_ingestion_layer: green (9) - Telemetry present.
 - phase26_ascended_capability_procurement_program: green (4) - Telemetry present.
 - phase27_stale_artifact_renewal_controller: green (25) - Telemetry present.
+- phase28_fresh_candidate_regeneration_controller: green (25) - Telemetry present.
 
 AIGC Signature Update
 
@@ -123,4 +127,4 @@ External Action Performed:
 No.
 
 Next Recommended Action:
-Run Phase 27 stale artifact renewal, then regenerate improved candidates from fresh governed context before Phase 6 handoff.
+Complete an operator freshness review before allowing Phase 28 regeneration; do not approve or use expired Phase 5 packets.

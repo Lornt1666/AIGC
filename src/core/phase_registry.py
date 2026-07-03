@@ -275,6 +275,16 @@ def build_phase_registry(root: Path = PROJECT_ROOT) -> Dict[str, PhaseDefinition
             allowed_runtime_modes=["internal_stale_artifact_renewal_only"],
             external_action_risk="none_internal_renewal_blueprints_only",
         ),
+        "phase28": PhaseDefinition(
+            name="phase28",
+            display_name="Phase 28 - Fresh Candidate Regeneration Controller",
+            input_path="config/phase28_regeneration_controller.json",
+            output_path="data/phase28_regeneration/aigc_phase28_regeneration_candidates.json",
+            schema_name="regeneration_candidate_record",
+            command=[py, str(src / "phase28_regeneration_controller.py")],
+            allowed_runtime_modes=["internal_regeneration_after_freshness_review_only"],
+            external_action_risk="none_internal_candidate_regeneration_only",
+        ),
     }
 
 

@@ -241,6 +241,7 @@ python .\src\aigc.py run phase24
 python .\src\aigc.py run phase25
 python .\src\aigc.py run phase26
 python .\src\aigc.py run phase27
+python .\src\aigc.py run phase28
 python .\src\aigc.py run pipeline --mode synthetic
 python .\src\aigc.py run pipeline --mode real_data_read_only --source remoteok --limit 10
 python .\src\aigc.py close-loop --execution-mode manual_handoff
@@ -489,6 +490,25 @@ Outputs:
 - `reports/milestone_o_stale_artifact_renewal_report.md`
 
 Phase 27 produces deep-research questions, architecture evolution plans, regeneration blueprints, quality upgrade targets, and freshness requirements. It does not browse, fetch external data, delete files, approve actions, contact external parties, submit applications, submit proposals, submit deliverables, accept contracts, request payment, use credentials, or bypass Phase 5 and Phase 6 gates.
+
+## Milestone P Fresh Candidate Regeneration Controller
+
+Milestone P adds Phase 28 as an internal regeneration controller. It can create fresh internal Phase 4 and Phase 5 candidate payloads from Phase 27 renewal records, but only after the configured operator freshness-review gate is approved with the exact required phrase.
+
+Command:
+
+```powershell
+python .\src\aigc.py run phase28
+```
+
+Outputs:
+
+- `data/phase28_regeneration/aigc_phase28_regeneration_candidates.json`
+- `data/reports/phase28_signature_update.md`
+- `data/audit/aigc_phase28_audit.jsonl`
+- `reports/milestone_p_regeneration_controller_report.md`
+
+Phase 28 blocks by default. If the freshness review gate is not satisfied, it emits blocked regeneration records with no embedded candidates. If the gate is satisfied, it writes fresh candidates only inside the Phase 28 ledger. It does not overwrite canonical Phase 4 or Phase 5 files, approve actions, authorize Phase 6, fetch external data, contact external parties, submit applications, submit proposals, submit deliverables, use credentials, or bypass approval gates.
 
 ## Milestone D Finance, Compliance, and Incident Response
 

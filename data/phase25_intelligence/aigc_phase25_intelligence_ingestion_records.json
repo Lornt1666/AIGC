@@ -1,7 +1,7 @@
 [
   {
     "record_id": "AIGC-CIIL-13ACD520712F80B0",
-    "created_at": "2026-07-03T01:04:11.778448+00:00",
+    "created_at": "2026-07-03T01:29:58.665741+00:00",
     "phase": "phase25_continuous_intelligence_ingestion_layer",
     "status": "freshness_recorded",
     "context_domain": "source_opportunity_snapshots",
@@ -21,7 +21,7 @@
         "source_path": "data/phase2_processed/aigc_phase2_opportunity_queue.json",
         "observed_record_count": 98,
         "staleness_status": "fresh",
-        "recorded_at": "2026-07-03T01:04:11.778448+00:00"
+        "recorded_at": "2026-07-03T01:29:58.665741+00:00"
       }
     ],
     "temporal_freshness_validation": {
@@ -29,10 +29,10 @@
       "parse_error": "",
       "timestamp_count": 198,
       "latest_observed_at": "2026-07-01T07:04:26.767955+00:00",
-      "age_hours": 42.0,
+      "age_hours": 42.43,
       "freshness_horizon_hours": 72,
       "expired_generated_action_candidates": 0,
-      "validated_at": "2026-07-03T01:04:11.778448+00:00"
+      "validated_at": "2026-07-03T01:29:58.665741+00:00"
     },
     "ontological_integration": {
       "ontology": {
@@ -155,7 +155,7 @@
   },
   {
     "record_id": "AIGC-CIIL-91460A50187F9353",
-    "created_at": "2026-07-03T01:04:11.782448+00:00",
+    "created_at": "2026-07-03T01:29:58.673739+00:00",
     "phase": "phase25_continuous_intelligence_ingestion_layer",
     "status": "refresh_required",
     "context_domain": "phase5_approval_candidates",
@@ -180,7 +180,7 @@
         "source_path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
         "observed_record_count": 25,
         "staleness_status": "stale_expired_generated_candidates",
-        "recorded_at": "2026-07-03T01:04:11.782448+00:00"
+        "recorded_at": "2026-07-03T01:29:58.673739+00:00"
       },
       {
         "event_type": "freshness_drift_detected",
@@ -189,7 +189,7 @@
           "approaching_freshness_horizon",
           "expired_generated_action_candidates_present"
         ],
-        "recorded_at": "2026-07-03T01:04:11.782448+00:00"
+        "recorded_at": "2026-07-03T01:29:58.673739+00:00"
       }
     ],
     "temporal_freshness_validation": {
@@ -197,10 +197,10 @@
       "parse_error": "",
       "timestamp_count": 50,
       "latest_observed_at": "2026-07-02T14:09:13.266680+00:00",
-      "age_hours": 10.92,
+      "age_hours": 11.35,
       "freshness_horizon_hours": 12,
       "expired_generated_action_candidates": 25,
-      "validated_at": "2026-07-03T01:04:11.782448+00:00"
+      "validated_at": "2026-07-03T01:29:58.673739+00:00"
     },
     "ontological_integration": {
       "ontology": {
@@ -327,7 +327,7 @@
   },
   {
     "record_id": "AIGC-CIIL-F43084D958D7894E",
-    "created_at": "2026-07-03T01:04:11.786448+00:00",
+    "created_at": "2026-07-03T01:29:58.677742+00:00",
     "phase": "phase25_continuous_intelligence_ingestion_layer",
     "status": "refresh_required",
     "context_domain": "truth_first_procurement_ledger",
@@ -335,7 +335,7 @@
     "source_kind": "generated_internal_procurement_ledger",
     "observed_record_count": 25,
     "latest_observed_at": "2026-07-02T23:17:33.931270+00:00",
-    "freshness_score": 51,
+    "freshness_score": 50,
     "staleness_status": "stale_expired_generated_candidates",
     "drift_risk_level": "high",
     "stale_indicators": [
@@ -351,7 +351,7 @@
         "source_path": "data/phase24_procurement/aigc_phase24_procurement_records.json",
         "observed_record_count": 25,
         "staleness_status": "stale_expired_generated_candidates",
-        "recorded_at": "2026-07-03T01:04:11.786448+00:00"
+        "recorded_at": "2026-07-03T01:29:58.677742+00:00"
       },
       {
         "event_type": "freshness_drift_detected",
@@ -359,7 +359,7 @@
         "indicators": [
           "expired_generated_action_candidates_present"
         ],
-        "recorded_at": "2026-07-03T01:04:11.786448+00:00"
+        "recorded_at": "2026-07-03T01:29:58.677742+00:00"
       }
     ],
     "temporal_freshness_validation": {
@@ -367,10 +367,10 @@
       "parse_error": "",
       "timestamp_count": 75,
       "latest_observed_at": "2026-07-02T23:17:33.931270+00:00",
-      "age_hours": 1.78,
+      "age_hours": 2.21,
       "freshness_horizon_hours": 12,
       "expired_generated_action_candidates": 25,
-      "validated_at": "2026-07-03T01:04:11.786448+00:00"
+      "validated_at": "2026-07-03T01:29:58.677742+00:00"
     },
     "ontological_integration": {
       "ontology": {
@@ -497,14 +497,14 @@
   },
   {
     "record_id": "AIGC-CIIL-4381B8C7D843C8CC",
-    "created_at": "2026-07-03T01:04:11.797450+00:00",
+    "created_at": "2026-07-03T01:29:58.693742+00:00",
     "phase": "phase25_continuous_intelligence_ingestion_layer",
     "status": "freshness_recorded",
     "context_domain": "observability_snapshot",
     "source_path": "data/phase12_observability/system_snapshot.json",
     "source_kind": "generated_internal_system_health_snapshot",
     "observed_record_count": 1,
-    "latest_observed_at": "2026-07-03T00:44:34.243597+00:00",
+    "latest_observed_at": "2026-07-03T01:04:27.038947+00:00",
     "freshness_score": 99,
     "staleness_status": "fresh",
     "drift_risk_level": "minimal",
@@ -517,18 +517,18 @@
         "source_path": "data/phase12_observability/system_snapshot.json",
         "observed_record_count": 1,
         "staleness_status": "fresh",
-        "recorded_at": "2026-07-03T01:04:11.797450+00:00"
+        "recorded_at": "2026-07-03T01:29:58.693742+00:00"
       }
     ],
     "temporal_freshness_validation": {
       "path_exists": true,
       "parse_error": "",
       "timestamp_count": 1,
-      "latest_observed_at": "2026-07-03T00:44:34.243597+00:00",
-      "age_hours": 0.33,
+      "latest_observed_at": "2026-07-03T01:04:27.038947+00:00",
+      "age_hours": 0.43,
       "freshness_horizon_hours": 6,
       "expired_generated_action_candidates": 0,
-      "validated_at": "2026-07-03T01:04:11.797450+00:00"
+      "validated_at": "2026-07-03T01:29:58.693742+00:00"
     },
     "ontological_integration": {
       "ontology": {
@@ -651,14 +651,14 @@
   },
   {
     "record_id": "AIGC-CIIL-EF5A6550C00E57EB",
-    "created_at": "2026-07-03T01:04:11.798448+00:00",
+    "created_at": "2026-07-03T01:29:58.695740+00:00",
     "phase": "phase25_continuous_intelligence_ingestion_layer",
     "status": "freshness_recorded",
     "context_domain": "productization_readiness",
     "source_path": "data/phase18_productization/aigc_phase18_release_readiness.json",
     "source_kind": "generated_internal_release_readiness",
     "observed_record_count": 1,
-    "latest_observed_at": "2026-07-03T00:44:34.075594+00:00",
+    "latest_observed_at": "2026-07-03T01:04:26.852947+00:00",
     "freshness_score": 100,
     "staleness_status": "fresh",
     "drift_risk_level": "minimal",
@@ -671,18 +671,18 @@
         "source_path": "data/phase18_productization/aigc_phase18_release_readiness.json",
         "observed_record_count": 1,
         "staleness_status": "fresh",
-        "recorded_at": "2026-07-03T01:04:11.798448+00:00"
+        "recorded_at": "2026-07-03T01:29:58.695740+00:00"
       }
     ],
     "temporal_freshness_validation": {
       "path_exists": true,
       "parse_error": "",
       "timestamp_count": 1,
-      "latest_observed_at": "2026-07-03T00:44:34.075594+00:00",
-      "age_hours": 0.33,
+      "latest_observed_at": "2026-07-03T01:04:26.852947+00:00",
+      "age_hours": 0.43,
       "freshness_horizon_hours": 24,
       "expired_generated_action_candidates": 0,
-      "validated_at": "2026-07-03T01:04:11.798448+00:00"
+      "validated_at": "2026-07-03T01:29:58.695740+00:00"
     },
     "ontological_integration": {
       "ontology": {
@@ -805,14 +805,14 @@
   },
   {
     "record_id": "AIGC-CIIL-E931A51AC1577885",
-    "created_at": "2026-07-03T01:04:11.799448+00:00",
+    "created_at": "2026-07-03T01:29:58.696742+00:00",
     "phase": "phase25_continuous_intelligence_ingestion_layer",
     "status": "freshness_recorded",
     "context_domain": "master_doctrine",
     "source_path": "AIGC_MASTER_PROMPT.md",
     "source_kind": "governance_doctrine_document",
     "observed_record_count": 1,
-    "latest_observed_at": "2026-07-03T01:02:32.227326+00:00",
+    "latest_observed_at": "2026-07-03T01:29:14.682931+00:00",
     "freshness_score": 100,
     "staleness_status": "fresh",
     "drift_risk_level": "minimal",
@@ -825,18 +825,18 @@
         "source_path": "AIGC_MASTER_PROMPT.md",
         "observed_record_count": 1,
         "staleness_status": "fresh",
-        "recorded_at": "2026-07-03T01:04:11.799448+00:00"
+        "recorded_at": "2026-07-03T01:29:58.696742+00:00"
       }
     ],
     "temporal_freshness_validation": {
       "path_exists": true,
       "parse_error": "",
       "timestamp_count": 1,
-      "latest_observed_at": "2026-07-03T01:02:32.227326+00:00",
-      "age_hours": 0.03,
+      "latest_observed_at": "2026-07-03T01:29:14.682931+00:00",
+      "age_hours": 0.01,
       "freshness_horizon_hours": 168,
       "expired_generated_action_candidates": 0,
-      "validated_at": "2026-07-03T01:04:11.799448+00:00"
+      "validated_at": "2026-07-03T01:29:58.696742+00:00"
     },
     "ontological_integration": {
       "ontology": {
@@ -959,14 +959,14 @@
   },
   {
     "record_id": "AIGC-CIIL-F403FA1941A886BF",
-    "created_at": "2026-07-03T01:04:11.800449+00:00",
+    "created_at": "2026-07-03T01:29:58.698741+00:00",
     "phase": "phase25_continuous_intelligence_ingestion_layer",
     "status": "freshness_recorded",
     "context_domain": "ascended_capability_procurement",
     "source_path": "data/phase26_capability_procurement/aigc_phase26_capability_procurement_records.json",
     "source_kind": "generated_internal_capability_procurement_ledger",
     "observed_record_count": 4,
-    "latest_observed_at": "2026-07-03T00:42:56.318201+00:00",
+    "latest_observed_at": "2026-07-03T01:04:11.800449+00:00",
     "freshness_score": 100,
     "staleness_status": "fresh",
     "drift_risk_level": "minimal",
@@ -979,18 +979,18 @@
         "source_path": "data/phase26_capability_procurement/aigc_phase26_capability_procurement_records.json",
         "observed_record_count": 4,
         "staleness_status": "fresh",
-        "recorded_at": "2026-07-03T01:04:11.800449+00:00"
+        "recorded_at": "2026-07-03T01:29:58.698741+00:00"
       }
     ],
     "temporal_freshness_validation": {
       "path_exists": true,
       "parse_error": "",
       "timestamp_count": 4,
-      "latest_observed_at": "2026-07-03T00:42:56.318201+00:00",
-      "age_hours": 0.35,
+      "latest_observed_at": "2026-07-03T01:04:11.800449+00:00",
+      "age_hours": 0.43,
       "freshness_horizon_hours": 12,
       "expired_generated_action_candidates": 0,
-      "validated_at": "2026-07-03T01:04:11.800449+00:00"
+      "validated_at": "2026-07-03T01:29:58.698741+00:00"
     },
     "ontological_integration": {
       "ontology": {
@@ -1113,14 +1113,14 @@
   },
   {
     "record_id": "AIGC-CIIL-8E81056EE647D13C",
-    "created_at": "2026-07-03T01:04:11.826452+00:00",
+    "created_at": "2026-07-03T01:29:58.710737+00:00",
     "phase": "phase25_continuous_intelligence_ingestion_layer",
     "status": "freshness_recorded",
     "context_domain": "stale_artifact_renewal_queue",
     "source_path": "data/phase27_renewal/aigc_phase27_stale_artifact_renewal_records.json",
     "source_kind": "generated_internal_stale_artifact_renewal_ledger",
     "observed_record_count": 25,
-    "latest_observed_at": "2026-07-03T01:04:02.917926+00:00",
+    "latest_observed_at": "2026-07-03T01:04:18.482887+00:00",
     "freshness_score": 100,
     "staleness_status": "fresh",
     "drift_risk_level": "minimal",
@@ -1133,18 +1133,18 @@
         "source_path": "data/phase27_renewal/aigc_phase27_stale_artifact_renewal_records.json",
         "observed_record_count": 25,
         "staleness_status": "fresh",
-        "recorded_at": "2026-07-03T01:04:11.826452+00:00"
+        "recorded_at": "2026-07-03T01:29:58.710737+00:00"
       }
     ],
     "temporal_freshness_validation": {
       "path_exists": true,
       "parse_error": "",
       "timestamp_count": 25,
-      "latest_observed_at": "2026-07-03T01:04:02.917926+00:00",
-      "age_hours": 0.0,
+      "latest_observed_at": "2026-07-03T01:04:18.482887+00:00",
+      "age_hours": 0.43,
       "freshness_horizon_hours": 12,
       "expired_generated_action_candidates": 0,
-      "validated_at": "2026-07-03T01:04:11.826452+00:00"
+      "validated_at": "2026-07-03T01:29:58.710737+00:00"
     },
     "ontological_integration": {
       "ontology": {
@@ -1245,6 +1245,160 @@
     ],
     "recommended_refresh_actions": [
       "Retain stale_artifact_renewal_queue; current freshness posture is acceptable."
+    ],
+    "regeneration_targets": [],
+    "blocked_actions": [
+      "fetch_external_data_without_operator_command",
+      "run_background_daemon",
+      "delete_stale_artifacts_without_operator_command",
+      "overwrite_source_snapshots_without_audit",
+      "approve_external_action",
+      "contact_external_party",
+      "submit_application",
+      "submit_proposal",
+      "submit_deliverable",
+      "use_credentials",
+      "bypass_phase5_approval",
+      "hide_stale_context"
+    ],
+    "approval_required_before_external_action": true,
+    "external_data_fetch_performed": false,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-CIIL-36A6DF51D13BA99B",
+    "created_at": "2026-07-03T01:29:58.730739+00:00",
+    "phase": "phase25_continuous_intelligence_ingestion_layer",
+    "status": "freshness_recorded",
+    "context_domain": "fresh_candidate_regeneration_queue",
+    "source_path": "data/phase28_regeneration/aigc_phase28_regeneration_candidates.json",
+    "source_kind": "generated_internal_regeneration_candidate_ledger",
+    "observed_record_count": 25,
+    "latest_observed_at": "2026-07-03T01:29:24.531506+00:00",
+    "freshness_score": 100,
+    "staleness_status": "fresh",
+    "drift_risk_level": "minimal",
+    "stale_indicators": [],
+    "missing_context_requests": [],
+    "knowledge_update_events": [
+      {
+        "event_type": "local_artifact_ingested",
+        "context_domain": "fresh_candidate_regeneration_queue",
+        "source_path": "data/phase28_regeneration/aigc_phase28_regeneration_candidates.json",
+        "observed_record_count": 25,
+        "staleness_status": "fresh",
+        "recorded_at": "2026-07-03T01:29:58.730739+00:00"
+      }
+    ],
+    "temporal_freshness_validation": {
+      "path_exists": true,
+      "parse_error": "",
+      "timestamp_count": 25,
+      "latest_observed_at": "2026-07-03T01:29:24.531506+00:00",
+      "age_hours": 0.01,
+      "freshness_horizon_hours": 12,
+      "expired_generated_action_candidates": 0,
+      "validated_at": "2026-07-03T01:29:58.730739+00:00"
+    },
+    "ontological_integration": {
+      "ontology": {
+        "status": "integrated",
+        "context_domain": "fresh_candidate_regeneration_queue",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Classifies the artifact as a context object with source, derivative, or governance meaning."
+      },
+      "epistemology": {
+        "status": "integrated",
+        "context_domain": "fresh_candidate_regeneration_queue",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Constrains reasoning to freshness-validated evidence."
+      },
+      "methodology": {
+        "status": "integrated",
+        "context_domain": "fresh_candidate_regeneration_queue",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Routes stale artifacts to refresh or regeneration before downstream use."
+      },
+      "praxeology": {
+        "status": "integrated",
+        "context_domain": "fresh_candidate_regeneration_queue",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Optimizes action by preventing wasted work on outdated context."
+      },
+      "axiology": {
+        "status": "integrated",
+        "context_domain": "fresh_candidate_regeneration_queue",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Prioritizes truthfulness, auditability, professionalism, legality, and user trust."
+      },
+      "teleology": {
+        "status": "integrated",
+        "context_domain": "fresh_candidate_regeneration_queue",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Aims toward continuously refreshed internal intelligence without unsafe autonomy."
+      },
+      "semiotics": {
+        "status": "integrated",
+        "context_domain": "fresh_candidate_regeneration_queue",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Interprets stale, missing, and expired signals as meaning-bearing quality warnings."
+      },
+      "cybernetics": {
+        "status": "integrated",
+        "context_domain": "fresh_candidate_regeneration_queue",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Feeds drift findings back into future refresh cycles."
+      },
+      "systems_theory": {
+        "status": "integrated",
+        "context_domain": "fresh_candidate_regeneration_queue",
+        "freshness_state": "fresh",
+        "drift_signal_count": 0,
+        "interpretation": "Connects source, approval, procurement, observability, and productization subsystems."
+      }
+    },
+    "agent_coordination": [
+      {
+        "role": "Temporal-Reasoning Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Freshness state is fresh with 0 temporal or drift indicators.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Freshness-Validation Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Artifact can be retained only if freshness status is fresh.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Drift-Detection Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Drift indicators are visible and must remain auditable.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Ontological-Mapping Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Artifact integrated into the source/derivative/governance context map.",
+        "external_action_allowed": false
+      },
+      {
+        "role": "Praxeological-Optimization Agent",
+        "status": "internal_freshness_review_only",
+        "finding": "Recommended action is refresh before downstream use when stale.",
+        "external_action_allowed": false
+      }
+    ],
+    "recommended_refresh_actions": [
+      "Retain fresh_candidate_regeneration_queue; current freshness posture is acceptable."
     ],
     "regeneration_targets": [],
     "blocked_actions": [

@@ -1,0 +1,54 @@
+{
+  "phase": "Phase 28 - Fresh Candidate Regeneration Controller",
+  "operating_mode": "internal_regeneration_after_freshness_review_only",
+  "external_actions_allowed": false,
+  "external_data_fetch_allowed": false,
+  "canonical_phase4_overwrite_allowed": false,
+  "canonical_phase5_overwrite_allowed": false,
+  "output_file": "data/phase28_regeneration/aigc_phase28_regeneration_candidates.json",
+  "report_file": "data/reports/phase28_signature_update.md",
+  "audit_log": "data/audit/aigc_phase28_audit.jsonl",
+  "max_records": 25,
+  "approval_expiration_hours": 24,
+  "input_files": {
+    "phase27_renewal_records": "data/phase27_renewal/aigc_phase27_stale_artifact_renewal_records.json"
+  },
+  "operator_freshness_review": {
+    "approved": false,
+    "review_id": "",
+    "reviewed_at": "",
+    "freshness_review_status": "not_reviewed",
+    "reviewed_source_currentness": false,
+    "reviewed_scope": false,
+    "reviewed_compliance": false,
+    "reviewed_quality_plan": false,
+    "reviewed_payment_contract": false,
+    "allowed_output_mode": "internal_candidate_only",
+    "required_phrase": "I, Justice Gray Maciocha, approve Phase 28 freshness-reviewed internal regeneration.",
+    "received_phrase": ""
+  },
+  "candidate_defaults": {
+    "operator": "Justice Gray Maciocha",
+    "proposal_status": "internal_regenerated_candidate_only",
+    "proposal_readiness_decision": "ready_for_phase_5",
+    "phase5_decision": "pending",
+    "minimum_quality_score": 88,
+    "uncertainty_score": 22
+  },
+  "blocked_actions": [
+    "regenerate_without_operator_freshness_review",
+    "overwrite_canonical_phase4_artifacts",
+    "overwrite_canonical_phase5_artifacts",
+    "treat_old_action_id_as_active",
+    "approve_external_action",
+    "authorize_phase6",
+    "contact_external_party",
+    "submit_application",
+    "submit_proposal",
+    "submit_deliverable",
+    "use_credentials",
+    "fetch_external_data_without_operator_command",
+    "bypass_phase5_approval",
+    "hide_stale_context"
+  ]
+}

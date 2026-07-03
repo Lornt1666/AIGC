@@ -42,6 +42,7 @@ REQUIRED_SCHEMAS = [
     "intelligence_ingestion_record",
     "capability_procurement_record",
     "stale_artifact_renewal_record",
+    "regeneration_candidate_record",
 ]
 
 
@@ -90,6 +91,7 @@ def test_state_db_initializes(tmp_path: Path) -> None:
     assert "intelligence_ingestion_records" in summary["artifact_counts"]
     assert "capability_procurement_records" in summary["artifact_counts"]
     assert "stale_artifact_renewal_records" in summary["artifact_counts"]
+    assert "regeneration_candidate_records" in summary["artifact_counts"]
 
 
 def test_cli_status_works(tmp_path: Path) -> None:

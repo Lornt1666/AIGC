@@ -39,6 +39,7 @@ ARTIFACT_TABLES = [
     "intelligence_ingestion_records",
     "capability_procurement_records",
     "stale_artifact_renewal_records",
+    "regeneration_candidate_records",
     "secret_access_events",
     "incident_events",
 ]

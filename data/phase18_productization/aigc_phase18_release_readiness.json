@@ -1,12 +1,12 @@
 {
-  "release_id": "AIGC-REL-D318E5A615D0AF46",
-  "created_at": "2026-07-03T01:04:26.852947+00:00",
+  "release_id": "AIGC-REL-4E7F6DF375192D99",
+  "created_at": "2026-07-03T01:29:58.742740+00:00",
   "phase": "phase18_scaling_productization",
-  "version": "0.15.0-milestone-o",
+  "version": "0.16.0-milestone-p",
   "status": "internal_release_candidate",
   "release_type": "internal_private_kernel",
   "branch": "codex/milestone-l-truth-first-procurement-governance",
-  "commit": "fcf181e",
+  "commit": "3d83818",
   "required_files_present": true,
   "missing_required_files": [],
   "checked_files": [
@@ -71,6 +71,11 @@
       "kind": "file"
     },
     {
+      "path": "prompts/phase28_fresh_candidate_regeneration.md",
+      "present": true,
+      "kind": "file"
+    },
+    {
       "path": "config/phase10_connector_registry.json",
       "present": true,
       "kind": "file"
@@ -131,6 +136,11 @@
       "kind": "file"
     },
     {
+      "path": "config/phase28_regeneration_controller.json",
+      "present": true,
+      "kind": "file"
+    },
+    {
       "path": "schemas/connector_record.schema.json",
       "present": true,
       "kind": "file"
@@ -172,6 +182,11 @@
     },
     {
       "path": "schemas/stale_artifact_renewal_record.schema.json",
+      "present": true,
+      "kind": "file"
+    },
+    {
+      "path": "schemas/regeneration_candidate_record.schema.json",
       "present": true,
       "kind": "file"
     },
@@ -266,6 +281,11 @@
       "kind": "file"
     },
     {
+      "path": "src/phase28_regeneration_controller.py",
+      "present": true,
+      "kind": "file"
+    },
+    {
       "path": "docs/PRIVATE_BRANCH_WORKFLOW.md",
       "present": true,
       "kind": "file"
@@ -309,6 +329,8 @@
     "data/reports/phase26_signature_update.md",
     "data/phase27_renewal/aigc_phase27_stale_artifact_renewal_records.json",
     "data/reports/phase27_signature_update.md",
+    "data/phase28_regeneration/aigc_phase28_regeneration_candidates.json",
+    "data/reports/phase28_signature_update.md",
     "reports/milestone_f_productization_report.md",
     "reports/milestone_g_subagent_forge_report.md",
     "reports/milestone_h_fidelity_forge_report.md",
@@ -319,6 +341,7 @@
     "reports/milestone_m_continuous_intelligence_ingestion_report.md",
     "reports/milestone_n_capability_procurement_report.md",
     "reports/milestone_o_stale_artifact_renewal_report.md",
+    "reports/milestone_p_regeneration_controller_report.md",
     "docs/PRODUCTIZATION_RUNBOOK.md"
   ],
   "license_status": "all_rights_reserved_present",

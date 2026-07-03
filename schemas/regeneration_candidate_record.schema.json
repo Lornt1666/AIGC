@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Regeneration Candidate Record",
+  "type": "object",
+  "required": [
+    "record_id",
+    "created_at",
+    "phase",
+    "status",
+    "source_phase27_record_id",
+    "source_procurement_record_id",
+    "source_opportunity_id",
+    "source_proposal_id",
+    "source_authorization_id",
+    "source_action_id",
+    "regeneration_allowed",
+    "freshness_review_gate",
+    "regeneration_decision",
+    "blocker_reasons",
+    "candidate_scope",
+    "candidate_quality_state",
+    "fresh_phase4_candidate",
+    "fresh_phase5_candidate",
+    "audit_lineage",
+    "blocked_actions",
+    "external_data_fetch_performed",
+    "external_action_performed",
+    "canonical_phase4_overwrite_performed",
+    "canonical_phase5_overwrite_performed"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "phase": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "source_phase27_record_id": {
+      "type": "string"
+    },
+    "source_procurement_record_id": {
+      "type": "string"
+    },
+    "source_opportunity_id": {
+      "type": "string"
+    },
+    "source_proposal_id": {
+      "type": "string"
+    },
+    "source_authorization_id": {
+      "type": "string"
+    },
+    "source_action_id": {
+      "type": "string"
+    },
+    "regeneration_allowed": {
+      "type": "boolean"
+    },
+    "freshness_review_gate": {
+      "type": "object"
+    },
+    "regeneration_decision": {
+      "type": "string"
+    },
+    "blocker_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "candidate_scope": {
+      "type": "object"
+    },
+    "candidate_quality_state": {
+      "type": "object"
+    },
+    "fresh_phase4_candidate": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "fresh_phase5_candidate": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "audit_lineage": {
+      "type": "object"
+    },
+    "blocked_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "external_data_fetch_performed": {
+      "type": "boolean"
+    },
+    "external_action_performed": {
+      "type": "boolean"
+    },
+    "canonical_phase4_overwrite_performed": {
+      "type": "boolean"
+    },
+    "canonical_phase5_overwrite_performed": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}
