@@ -295,6 +295,16 @@ def build_phase_registry(root: Path = PROJECT_ROOT) -> Dict[str, PhaseDefinition
             allowed_runtime_modes=["internal_freshness_review_packet_procurement_only"],
             external_action_risk="none_internal_freshness_review_only",
         ),
+        "phase30": PhaseDefinition(
+            name="phase30",
+            display_name="Phase 30 - Omni-Agent Cloud Intelligence Architecture Procurement",
+            input_path="config/phase30_omni_agent_cloud_intelligence.json",
+            output_path="data/phase30_omni_agent_cloud/aigc_phase30_omni_agent_architecture_records.json",
+            schema_name="omni_agent_architecture_record",
+            command=[py, str(src / "phase30_omni_agent_cloud_intelligence.py")],
+            allowed_runtime_modes=["internal_cloud_architecture_procurement_only"],
+            external_action_risk="none_internal_cloud_architecture_procurement_only",
+        ),
     }
 
 

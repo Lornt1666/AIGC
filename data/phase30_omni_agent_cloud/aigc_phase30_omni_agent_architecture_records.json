@@ -1,0 +1,1756 @@
+[
+  {
+    "record_id": "AIGC-OMNI-6AA754C192457D23",
+    "created_at": "2026-07-03T04:29:13.395114+00:00",
+    "phase": "phase30_omni_agent_cloud_intelligence_architecture_procurement",
+    "status": "internal_omni_agent_architecture_procured",
+    "architecture_domain": "formal_ontology_and_methodology_kernel",
+    "architecture_purpose": "Procure a contract-first ontology and methodology for decomposing everyday work into governed tasks, workflows, policies, artifacts, and verification steps.",
+    "source_record_counts": {
+      "quality_kernel_records": 25,
+      "work_order_governance_records": 25,
+      "capability_procurement_records": 4
+    },
+    "formal_ontology": {
+      "domain": "formal_ontology_and_methodology_kernel",
+      "entities": [
+        "Agent",
+        "Task",
+        "Workflow",
+        "Capability",
+        "Tool",
+        "Goal",
+        "Policy",
+        "Artifact"
+      ],
+      "relationships": [
+        "Agent performs Task",
+        "Task partOf Workflow",
+        "Agent hasCapability Capability",
+        "Task requires Tool or Capability",
+        "Goal realizedBy Workflow",
+        "Policy governs Agent, Workflow, and Task"
+      ],
+      "contract_rule": "All planning and execution must map context to Task, Workflow, Capability, Tool, Goal, Policy, and Artifact before action.",
+      "truth_boundary": "Generated architecture language is an internal artifact, not source truth or approval authority."
+    },
+    "methodology": {
+      "domain": "formal_ontology_and_methodology_kernel",
+      "steps": [
+        "perception",
+        "interpretation",
+        "planning",
+        "execution",
+        "verification",
+        "reflection"
+      ],
+      "execution_rule": "Every step must produce internal evidence before downstream use.",
+      "verification_rule": "Contract validation, freshness review, quality review, compliance review, and operator gates control promotion.",
+      "reflection_rule": "Reflection creates internal update records only; behavior-changing changes require approval."
+    },
+    "cloud_topology": {
+      "domain": "formal_ontology_and_methodology_kernel",
+      "layers": {
+        "interface_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May describe APIs, dashboards, and chat surfaces; may not expose a public service."
+        },
+        "orchestration_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May route internal phase records; may not run unsupervised external workflows."
+        },
+        "agent_runtime_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May define container/serverless contracts; may not launch infrastructure."
+        },
+        "knowledge_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May define vector, graph, and ontology stores; may not ingest private data without approval."
+        },
+        "tool_integration_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May define connector contracts; live write connectors remain disabled."
+        },
+        "governance_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "Must enforce policy, audit logs, metrics, approvals, freshness review, and incident response."
+        }
+      },
+      "deployment_allowed": false,
+      "live_connectors_allowed": false,
+      "cloud_runtime_status": "not_deployed_internal_blueprint_only"
+    },
+    "agent_procurement": {
+      "archetypes": [
+        "Architect Agent",
+        "Engineering Agent",
+        "Programming Agent",
+        "Data Agent",
+        "AI/ML Agent",
+        "Security Agent",
+        "Verification Agent",
+        "Optimization Agent",
+        "Deployment Agent",
+        "Documentation Agent",
+        "Contrarian Agent",
+        "Expansion Agent",
+        "Strategy Agent",
+        "Finance Agent",
+        "Operations Agent",
+        "Marketing Agent",
+        "Sales Agent",
+        "Compliance Agent",
+        "HR Agent",
+        "Governance Agent",
+        "Auto-Procurement Meta-Agent",
+        "Auto-Design Meta-Agent",
+        "Auto-Coordination Meta-Agent",
+        "Auto-Evolution Meta-Agent",
+        "Auto-Integration Meta-Agent"
+      ],
+      "required_capabilities": [
+        "formal_ontology_mapping",
+        "methodology_driven_execution",
+        "contract_validation",
+        "quality_self_audit"
+      ],
+      "existing_internal_subagent_team_plan_count": 0,
+      "agent_action_boundary": "All agents are internal planning, review, routing, and artifact-generation roles until separately authorized.",
+      "auto_design_allowed": true,
+      "auto_execution_external_allowed": false
+    },
+    "everyday_work_capability_map": {
+      "domains": {
+        "emails_reports_proposals_documentation": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "formal_ontology_mapping",
+            "methodology_driven_execution",
+            "contract_validation",
+            "quality_self_audit"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "code_refactor_test_deploy": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "formal_ontology_mapping",
+            "methodology_driven_execution",
+            "contract_validation",
+            "quality_self_audit"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "spreadsheets_financial_models_dashboards": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "formal_ontology_mapping",
+            "methodology_driven_execution",
+            "contract_validation",
+            "quality_self_audit"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "crm_erp_ticketing_project_systems": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "formal_ontology_mapping",
+            "methodology_driven_execution",
+            "contract_validation",
+            "quality_self_audit"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "presentations_visuals_workflows": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "formal_ontology_mapping",
+            "methodology_driven_execution",
+            "contract_validation",
+            "quality_self_audit"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "analysis_research_synthesis": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "formal_ontology_mapping",
+            "methodology_driven_execution",
+            "contract_validation",
+            "quality_self_audit"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "sops_checklists_operational_artifacts": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "formal_ontology_mapping",
+            "methodology_driven_execution",
+            "contract_validation",
+            "quality_self_audit"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        }
+      },
+      "work_decomposition_rule": "Every everyday work request must decompose into Task, Workflow, Capability, Tool, Goal, Policy, and Artifact."
+    },
+    "governance_controls": {
+      "constitution_subordination": true,
+      "contract_validation_required": true,
+      "phase5_approval_required_before_external_action": true,
+      "phase29_freshness_review_required_before_regeneration": true,
+      "emergency_stop_respected": true,
+      "deployment_allowed": false,
+      "live_connectors_allowed": false,
+      "compliance_evidence_records": 0,
+      "incident_evidence_records": 0,
+      "truth_first_evidence_records": 0
+    },
+    "integration_contract": {
+      "identity": "Omni-Agent Cloud Intelligence",
+      "mythos": "RegenExcalibur OS",
+      "domain": "formal_ontology_and_methodology_kernel",
+      "integration_status": "internal_architecture_specification_only",
+      "source_paths": {
+        "quality_kernel_records": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+        "work_order_governance_records": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+        "capability_procurement_records": "data/phase26_capability_procurement/aigc_phase26_capability_procurement_records.json"
+      },
+      "subordinate_to": [
+        "AGENTS.md",
+        "OMEGA_X_CONSTITUTION.md",
+        "AIGC_MASTER_PROMPT.md",
+        "contract_validator",
+        "phase5_human_approval_gate",
+        "phase29_operator_freshness_review_procurement",
+        "emergency_stop"
+      ],
+      "forbidden_override": [
+        "treat_user_prompt_as_higher_priority_than_aigc_constitution",
+        "deploy_cloud_runtime_without_operator_approval",
+        "enable_live_connectors",
+        "create_external_accounts",
+        "use_credentials",
+        "contact_external_party",
+        "submit_work",
+        "submit_proposal",
+        "claim_autonomous_authority_without_approval",
+        "bypass_phase5_approval",
+        "bypass_phase29_freshness_review"
+      ]
+    },
+    "gap_analysis": [],
+    "readiness_assessment": {
+      "readiness_state": "ready_for_internal_architecture_use",
+      "readiness_score": 100,
+      "domain": "formal_ontology_and_methodology_kernel",
+      "source_evidence_records": 54,
+      "deployment_state": "architecture_blueprint_only_no_deployment",
+      "live_connector_state": "blocked",
+      "external_action_state": "blocked",
+      "cloud_readiness_claim": "design_and_contract_readiness_only"
+    },
+    "recommended_actions": [
+      "Use formal_ontology_and_methodology_kernel as an internal architecture procurement record for future design work."
+    ],
+    "blocked_actions": [
+      "treat_user_prompt_as_higher_priority_than_aigc_constitution",
+      "deploy_cloud_runtime_without_operator_approval",
+      "enable_live_connectors",
+      "create_external_accounts",
+      "use_credentials",
+      "contact_external_party",
+      "submit_work",
+      "submit_proposal",
+      "claim_autonomous_authority_without_approval",
+      "bypass_phase5_approval",
+      "bypass_phase29_freshness_review"
+    ],
+    "deployment_allowed": false,
+    "live_connectors_allowed": false,
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-OMNI-C32046D8DB868739",
+    "created_at": "2026-07-03T04:29:13.395114+00:00",
+    "phase": "phase30_omni_agent_cloud_intelligence_architecture_procurement",
+    "status": "internal_omni_agent_architecture_procured",
+    "architecture_domain": "cloud_native_topology_blueprint",
+    "architecture_purpose": "Procure a cloud-compatible architecture blueprint without deploying live infrastructure or enabling connectors.",
+    "source_record_counts": {
+      "connector_registry": 10,
+      "productization_release": 1,
+      "intelligence_ingestion_records": 10
+    },
+    "formal_ontology": {
+      "domain": "cloud_native_topology_blueprint",
+      "entities": [
+        "Agent",
+        "Task",
+        "Workflow",
+        "Capability",
+        "Tool",
+        "Goal",
+        "Policy",
+        "Artifact"
+      ],
+      "relationships": [
+        "Agent performs Task",
+        "Task partOf Workflow",
+        "Agent hasCapability Capability",
+        "Task requires Tool or Capability",
+        "Goal realizedBy Workflow",
+        "Policy governs Agent, Workflow, and Task"
+      ],
+      "contract_rule": "All planning and execution must map context to Task, Workflow, Capability, Tool, Goal, Policy, and Artifact before action.",
+      "truth_boundary": "Generated architecture language is an internal artifact, not source truth or approval authority."
+    },
+    "methodology": {
+      "domain": "cloud_native_topology_blueprint",
+      "steps": [
+        "perception",
+        "interpretation",
+        "planning",
+        "execution",
+        "verification",
+        "reflection"
+      ],
+      "execution_rule": "Every step must produce internal evidence before downstream use.",
+      "verification_rule": "Contract validation, freshness review, quality review, compliance review, and operator gates control promotion.",
+      "reflection_rule": "Reflection creates internal update records only; behavior-changing changes require approval."
+    },
+    "cloud_topology": {
+      "domain": "cloud_native_topology_blueprint",
+      "layers": {
+        "interface_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May describe APIs, dashboards, and chat surfaces; may not expose a public service."
+        },
+        "orchestration_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May route internal phase records; may not run unsupervised external workflows."
+        },
+        "agent_runtime_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May define container/serverless contracts; may not launch infrastructure."
+        },
+        "knowledge_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May define vector, graph, and ontology stores; may not ingest private data without approval."
+        },
+        "tool_integration_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May define connector contracts; live write connectors remain disabled."
+        },
+        "governance_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "Must enforce policy, audit logs, metrics, approvals, freshness review, and incident response."
+        }
+      },
+      "deployment_allowed": false,
+      "live_connectors_allowed": false,
+      "cloud_runtime_status": "not_deployed_internal_blueprint_only"
+    },
+    "agent_procurement": {
+      "archetypes": [
+        "Architect Agent",
+        "Engineering Agent",
+        "Programming Agent",
+        "Data Agent",
+        "AI/ML Agent",
+        "Security Agent",
+        "Verification Agent",
+        "Optimization Agent",
+        "Deployment Agent",
+        "Documentation Agent",
+        "Contrarian Agent",
+        "Expansion Agent",
+        "Strategy Agent",
+        "Finance Agent",
+        "Operations Agent",
+        "Marketing Agent",
+        "Sales Agent",
+        "Compliance Agent",
+        "HR Agent",
+        "Governance Agent",
+        "Auto-Procurement Meta-Agent",
+        "Auto-Design Meta-Agent",
+        "Auto-Coordination Meta-Agent",
+        "Auto-Evolution Meta-Agent",
+        "Auto-Integration Meta-Agent"
+      ],
+      "required_capabilities": [
+        "interface_layer_contract",
+        "orchestration_layer_contract",
+        "runtime_isolation",
+        "knowledge_layer_boundary",
+        "governance_layer_auditability"
+      ],
+      "existing_internal_subagent_team_plan_count": 0,
+      "agent_action_boundary": "All agents are internal planning, review, routing, and artifact-generation roles until separately authorized.",
+      "auto_design_allowed": true,
+      "auto_execution_external_allowed": false
+    },
+    "everyday_work_capability_map": {
+      "domains": {
+        "emails_reports_proposals_documentation": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "interface_layer_contract",
+            "orchestration_layer_contract",
+            "runtime_isolation",
+            "knowledge_layer_boundary",
+            "governance_layer_auditability"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "code_refactor_test_deploy": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "interface_layer_contract",
+            "orchestration_layer_contract",
+            "runtime_isolation",
+            "knowledge_layer_boundary",
+            "governance_layer_auditability"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "spreadsheets_financial_models_dashboards": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "interface_layer_contract",
+            "orchestration_layer_contract",
+            "runtime_isolation",
+            "knowledge_layer_boundary",
+            "governance_layer_auditability"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "crm_erp_ticketing_project_systems": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "interface_layer_contract",
+            "orchestration_layer_contract",
+            "runtime_isolation",
+            "knowledge_layer_boundary",
+            "governance_layer_auditability"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "presentations_visuals_workflows": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "interface_layer_contract",
+            "orchestration_layer_contract",
+            "runtime_isolation",
+            "knowledge_layer_boundary",
+            "governance_layer_auditability"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "analysis_research_synthesis": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "interface_layer_contract",
+            "orchestration_layer_contract",
+            "runtime_isolation",
+            "knowledge_layer_boundary",
+            "governance_layer_auditability"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "sops_checklists_operational_artifacts": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "interface_layer_contract",
+            "orchestration_layer_contract",
+            "runtime_isolation",
+            "knowledge_layer_boundary",
+            "governance_layer_auditability"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        }
+      },
+      "work_decomposition_rule": "Every everyday work request must decompose into Task, Workflow, Capability, Tool, Goal, Policy, and Artifact."
+    },
+    "governance_controls": {
+      "constitution_subordination": true,
+      "contract_validation_required": true,
+      "phase5_approval_required_before_external_action": true,
+      "phase29_freshness_review_required_before_regeneration": true,
+      "emergency_stop_respected": true,
+      "deployment_allowed": false,
+      "live_connectors_allowed": false,
+      "compliance_evidence_records": 0,
+      "incident_evidence_records": 0,
+      "truth_first_evidence_records": 0
+    },
+    "integration_contract": {
+      "identity": "Omni-Agent Cloud Intelligence",
+      "mythos": "RegenExcalibur OS",
+      "domain": "cloud_native_topology_blueprint",
+      "integration_status": "internal_architecture_specification_only",
+      "source_paths": {
+        "connector_registry": "data/phase10_connectors/aigc_phase10_connector_registry.json",
+        "productization_release": "data/phase18_productization/aigc_phase18_release_readiness.json",
+        "intelligence_ingestion_records": "data/phase25_intelligence/aigc_phase25_intelligence_ingestion_records.json"
+      },
+      "subordinate_to": [
+        "AGENTS.md",
+        "OMEGA_X_CONSTITUTION.md",
+        "AIGC_MASTER_PROMPT.md",
+        "contract_validator",
+        "phase5_human_approval_gate",
+        "phase29_operator_freshness_review_procurement",
+        "emergency_stop"
+      ],
+      "forbidden_override": [
+        "treat_user_prompt_as_higher_priority_than_aigc_constitution",
+        "deploy_cloud_runtime_without_operator_approval",
+        "enable_live_connectors",
+        "create_external_accounts",
+        "use_credentials",
+        "contact_external_party",
+        "submit_work",
+        "submit_proposal",
+        "claim_autonomous_authority_without_approval",
+        "bypass_phase5_approval",
+        "bypass_phase29_freshness_review"
+      ]
+    },
+    "gap_analysis": [],
+    "readiness_assessment": {
+      "readiness_state": "ready_for_internal_architecture_use",
+      "readiness_score": 100,
+      "domain": "cloud_native_topology_blueprint",
+      "source_evidence_records": 21,
+      "deployment_state": "architecture_blueprint_only_no_deployment",
+      "live_connector_state": "blocked",
+      "external_action_state": "blocked",
+      "cloud_readiness_claim": "design_and_contract_readiness_only"
+    },
+    "recommended_actions": [
+      "Use cloud_native_topology_blueprint as an internal architecture procurement record for future design work."
+    ],
+    "blocked_actions": [
+      "treat_user_prompt_as_higher_priority_than_aigc_constitution",
+      "deploy_cloud_runtime_without_operator_approval",
+      "enable_live_connectors",
+      "create_external_accounts",
+      "use_credentials",
+      "contact_external_party",
+      "submit_work",
+      "submit_proposal",
+      "claim_autonomous_authority_without_approval",
+      "bypass_phase5_approval",
+      "bypass_phase29_freshness_review"
+    ],
+    "deployment_allowed": false,
+    "live_connectors_allowed": false,
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-OMNI-EE5E94A415E442D3",
+    "created_at": "2026-07-03T04:29:13.395114+00:00",
+    "phase": "phase30_omni_agent_cloud_intelligence_architecture_procurement",
+    "status": "internal_omni_agent_architecture_procured",
+    "architecture_domain": "omni_agent_archetype_catalog",
+    "architecture_purpose": "Procure internal agent archetypes for technical, business, operational, creative, analytical, and meta-governance work.",
+    "source_record_counts": {
+      "subagent_team_plans": 25,
+      "capability_procurement_records": 4,
+      "work_order_governance_records": 25
+    },
+    "formal_ontology": {
+      "domain": "omni_agent_archetype_catalog",
+      "entities": [
+        "Agent",
+        "Task",
+        "Workflow",
+        "Capability",
+        "Tool",
+        "Goal",
+        "Policy",
+        "Artifact"
+      ],
+      "relationships": [
+        "Agent performs Task",
+        "Task partOf Workflow",
+        "Agent hasCapability Capability",
+        "Task requires Tool or Capability",
+        "Goal realizedBy Workflow",
+        "Policy governs Agent, Workflow, and Task"
+      ],
+      "contract_rule": "All planning and execution must map context to Task, Workflow, Capability, Tool, Goal, Policy, and Artifact before action.",
+      "truth_boundary": "Generated architecture language is an internal artifact, not source truth or approval authority."
+    },
+    "methodology": {
+      "domain": "omni_agent_archetype_catalog",
+      "steps": [
+        "perception",
+        "interpretation",
+        "planning",
+        "execution",
+        "verification",
+        "reflection"
+      ],
+      "execution_rule": "Every step must produce internal evidence before downstream use.",
+      "verification_rule": "Contract validation, freshness review, quality review, compliance review, and operator gates control promotion.",
+      "reflection_rule": "Reflection creates internal update records only; behavior-changing changes require approval."
+    },
+    "cloud_topology": {
+      "domain": "omni_agent_archetype_catalog",
+      "layers": {
+        "interface_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May describe APIs, dashboards, and chat surfaces; may not expose a public service."
+        },
+        "orchestration_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May route internal phase records; may not run unsupervised external workflows."
+        },
+        "agent_runtime_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May define container/serverless contracts; may not launch infrastructure."
+        },
+        "knowledge_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May define vector, graph, and ontology stores; may not ingest private data without approval."
+        },
+        "tool_integration_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May define connector contracts; live write connectors remain disabled."
+        },
+        "governance_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "Must enforce policy, audit logs, metrics, approvals, freshness review, and incident response."
+        }
+      },
+      "deployment_allowed": false,
+      "live_connectors_allowed": false,
+      "cloud_runtime_status": "not_deployed_internal_blueprint_only"
+    },
+    "agent_procurement": {
+      "archetypes": [
+        "Architect Agent",
+        "Engineering Agent",
+        "Programming Agent",
+        "Data Agent",
+        "AI/ML Agent",
+        "Security Agent",
+        "Verification Agent",
+        "Optimization Agent",
+        "Deployment Agent",
+        "Documentation Agent",
+        "Contrarian Agent",
+        "Expansion Agent",
+        "Strategy Agent",
+        "Finance Agent",
+        "Operations Agent",
+        "Marketing Agent",
+        "Sales Agent",
+        "Compliance Agent",
+        "HR Agent",
+        "Governance Agent",
+        "Auto-Procurement Meta-Agent",
+        "Auto-Design Meta-Agent",
+        "Auto-Coordination Meta-Agent",
+        "Auto-Evolution Meta-Agent",
+        "Auto-Integration Meta-Agent"
+      ],
+      "required_capabilities": [
+        "agent_role_contracts",
+        "allowed_actions",
+        "forbidden_actions",
+        "handoff_targets",
+        "quality_criteria"
+      ],
+      "existing_internal_subagent_team_plan_count": 25,
+      "agent_action_boundary": "All agents are internal planning, review, routing, and artifact-generation roles until separately authorized.",
+      "auto_design_allowed": true,
+      "auto_execution_external_allowed": false
+    },
+    "everyday_work_capability_map": {
+      "domains": {
+        "emails_reports_proposals_documentation": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "agent_role_contracts",
+            "allowed_actions",
+            "forbidden_actions",
+            "handoff_targets",
+            "quality_criteria"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "code_refactor_test_deploy": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "agent_role_contracts",
+            "allowed_actions",
+            "forbidden_actions",
+            "handoff_targets",
+            "quality_criteria"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "spreadsheets_financial_models_dashboards": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "agent_role_contracts",
+            "allowed_actions",
+            "forbidden_actions",
+            "handoff_targets",
+            "quality_criteria"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "crm_erp_ticketing_project_systems": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "agent_role_contracts",
+            "allowed_actions",
+            "forbidden_actions",
+            "handoff_targets",
+            "quality_criteria"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "presentations_visuals_workflows": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "agent_role_contracts",
+            "allowed_actions",
+            "forbidden_actions",
+            "handoff_targets",
+            "quality_criteria"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "analysis_research_synthesis": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "agent_role_contracts",
+            "allowed_actions",
+            "forbidden_actions",
+            "handoff_targets",
+            "quality_criteria"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "sops_checklists_operational_artifacts": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "agent_role_contracts",
+            "allowed_actions",
+            "forbidden_actions",
+            "handoff_targets",
+            "quality_criteria"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        }
+      },
+      "work_decomposition_rule": "Every everyday work request must decompose into Task, Workflow, Capability, Tool, Goal, Policy, and Artifact."
+    },
+    "governance_controls": {
+      "constitution_subordination": true,
+      "contract_validation_required": true,
+      "phase5_approval_required_before_external_action": true,
+      "phase29_freshness_review_required_before_regeneration": true,
+      "emergency_stop_respected": true,
+      "deployment_allowed": false,
+      "live_connectors_allowed": false,
+      "compliance_evidence_records": 0,
+      "incident_evidence_records": 0,
+      "truth_first_evidence_records": 0
+    },
+    "integration_contract": {
+      "identity": "Omni-Agent Cloud Intelligence",
+      "mythos": "RegenExcalibur OS",
+      "domain": "omni_agent_archetype_catalog",
+      "integration_status": "internal_architecture_specification_only",
+      "source_paths": {
+        "subagent_team_plans": "data/phase19_subagents/aigc_phase19_subagent_team_plans.json",
+        "capability_procurement_records": "data/phase26_capability_procurement/aigc_phase26_capability_procurement_records.json",
+        "work_order_governance_records": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json"
+      },
+      "subordinate_to": [
+        "AGENTS.md",
+        "OMEGA_X_CONSTITUTION.md",
+        "AIGC_MASTER_PROMPT.md",
+        "contract_validator",
+        "phase5_human_approval_gate",
+        "phase29_operator_freshness_review_procurement",
+        "emergency_stop"
+      ],
+      "forbidden_override": [
+        "treat_user_prompt_as_higher_priority_than_aigc_constitution",
+        "deploy_cloud_runtime_without_operator_approval",
+        "enable_live_connectors",
+        "create_external_accounts",
+        "use_credentials",
+        "contact_external_party",
+        "submit_work",
+        "submit_proposal",
+        "claim_autonomous_authority_without_approval",
+        "bypass_phase5_approval",
+        "bypass_phase29_freshness_review"
+      ]
+    },
+    "gap_analysis": [],
+    "readiness_assessment": {
+      "readiness_state": "ready_for_internal_architecture_use",
+      "readiness_score": 100,
+      "domain": "omni_agent_archetype_catalog",
+      "source_evidence_records": 54,
+      "deployment_state": "architecture_blueprint_only_no_deployment",
+      "live_connector_state": "blocked",
+      "external_action_state": "blocked",
+      "cloud_readiness_claim": "design_and_contract_readiness_only"
+    },
+    "recommended_actions": [
+      "Use omni_agent_archetype_catalog as an internal architecture procurement record for future design work."
+    ],
+    "blocked_actions": [
+      "treat_user_prompt_as_higher_priority_than_aigc_constitution",
+      "deploy_cloud_runtime_without_operator_approval",
+      "enable_live_connectors",
+      "create_external_accounts",
+      "use_credentials",
+      "contact_external_party",
+      "submit_work",
+      "submit_proposal",
+      "claim_autonomous_authority_without_approval",
+      "bypass_phase5_approval",
+      "bypass_phase29_freshness_review"
+    ],
+    "deployment_allowed": false,
+    "live_connectors_allowed": false,
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-OMNI-2533DC48BAE68860",
+    "created_at": "2026-07-03T04:29:13.395114+00:00",
+    "phase": "phase30_omni_agent_cloud_intelligence_architecture_procurement",
+    "status": "internal_omni_agent_architecture_procured",
+    "architecture_domain": "everyday_disciplinary_work_capability_map",
+    "architecture_purpose": "Procure a disciplined capability map for everyday human work while preserving quality, customer fit, and fidelity gates.",
+    "source_record_counts": {
+      "fidelity_reviews": 25,
+      "customer_satisfaction_records": 25,
+      "quality_kernel_records": 25,
+      "capability_procurement_records": 4
+    },
+    "formal_ontology": {
+      "domain": "everyday_disciplinary_work_capability_map",
+      "entities": [
+        "Agent",
+        "Task",
+        "Workflow",
+        "Capability",
+        "Tool",
+        "Goal",
+        "Policy",
+        "Artifact"
+      ],
+      "relationships": [
+        "Agent performs Task",
+        "Task partOf Workflow",
+        "Agent hasCapability Capability",
+        "Task requires Tool or Capability",
+        "Goal realizedBy Workflow",
+        "Policy governs Agent, Workflow, and Task"
+      ],
+      "contract_rule": "All planning and execution must map context to Task, Workflow, Capability, Tool, Goal, Policy, and Artifact before action.",
+      "truth_boundary": "Generated architecture language is an internal artifact, not source truth or approval authority."
+    },
+    "methodology": {
+      "domain": "everyday_disciplinary_work_capability_map",
+      "steps": [
+        "perception",
+        "interpretation",
+        "planning",
+        "execution",
+        "verification",
+        "reflection"
+      ],
+      "execution_rule": "Every step must produce internal evidence before downstream use.",
+      "verification_rule": "Contract validation, freshness review, quality review, compliance review, and operator gates control promotion.",
+      "reflection_rule": "Reflection creates internal update records only; behavior-changing changes require approval."
+    },
+    "cloud_topology": {
+      "domain": "everyday_disciplinary_work_capability_map",
+      "layers": {
+        "interface_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May describe APIs, dashboards, and chat surfaces; may not expose a public service."
+        },
+        "orchestration_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May route internal phase records; may not run unsupervised external workflows."
+        },
+        "agent_runtime_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May define container/serverless contracts; may not launch infrastructure."
+        },
+        "knowledge_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May define vector, graph, and ontology stores; may not ingest private data without approval."
+        },
+        "tool_integration_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May define connector contracts; live write connectors remain disabled."
+        },
+        "governance_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "Must enforce policy, audit logs, metrics, approvals, freshness review, and incident response."
+        }
+      },
+      "deployment_allowed": false,
+      "live_connectors_allowed": false,
+      "cloud_runtime_status": "not_deployed_internal_blueprint_only"
+    },
+    "agent_procurement": {
+      "archetypes": [
+        "Architect Agent",
+        "Engineering Agent",
+        "Programming Agent",
+        "Data Agent",
+        "AI/ML Agent",
+        "Security Agent",
+        "Verification Agent",
+        "Optimization Agent",
+        "Deployment Agent",
+        "Documentation Agent",
+        "Contrarian Agent",
+        "Expansion Agent",
+        "Strategy Agent",
+        "Finance Agent",
+        "Operations Agent",
+        "Marketing Agent",
+        "Sales Agent",
+        "Compliance Agent",
+        "HR Agent",
+        "Governance Agent",
+        "Auto-Procurement Meta-Agent",
+        "Auto-Design Meta-Agent",
+        "Auto-Coordination Meta-Agent",
+        "Auto-Evolution Meta-Agent",
+        "Auto-Integration Meta-Agent"
+      ],
+      "required_capabilities": [
+        "disciplinary_best_practice_mapping",
+        "customer_value_review",
+        "technical_fidelity_review",
+        "acceptance_readiness"
+      ],
+      "existing_internal_subagent_team_plan_count": 0,
+      "agent_action_boundary": "All agents are internal planning, review, routing, and artifact-generation roles until separately authorized.",
+      "auto_design_allowed": true,
+      "auto_execution_external_allowed": false
+    },
+    "everyday_work_capability_map": {
+      "domains": {
+        "emails_reports_proposals_documentation": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "disciplinary_best_practice_mapping",
+            "customer_value_review",
+            "technical_fidelity_review",
+            "acceptance_readiness"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "code_refactor_test_deploy": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "disciplinary_best_practice_mapping",
+            "customer_value_review",
+            "technical_fidelity_review",
+            "acceptance_readiness"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "spreadsheets_financial_models_dashboards": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "disciplinary_best_practice_mapping",
+            "customer_value_review",
+            "technical_fidelity_review",
+            "acceptance_readiness"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "crm_erp_ticketing_project_systems": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "disciplinary_best_practice_mapping",
+            "customer_value_review",
+            "technical_fidelity_review",
+            "acceptance_readiness"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "presentations_visuals_workflows": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "disciplinary_best_practice_mapping",
+            "customer_value_review",
+            "technical_fidelity_review",
+            "acceptance_readiness"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "analysis_research_synthesis": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "disciplinary_best_practice_mapping",
+            "customer_value_review",
+            "technical_fidelity_review",
+            "acceptance_readiness"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "sops_checklists_operational_artifacts": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "disciplinary_best_practice_mapping",
+            "customer_value_review",
+            "technical_fidelity_review",
+            "acceptance_readiness"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        }
+      },
+      "work_decomposition_rule": "Every everyday work request must decompose into Task, Workflow, Capability, Tool, Goal, Policy, and Artifact."
+    },
+    "governance_controls": {
+      "constitution_subordination": true,
+      "contract_validation_required": true,
+      "phase5_approval_required_before_external_action": true,
+      "phase29_freshness_review_required_before_regeneration": true,
+      "emergency_stop_respected": true,
+      "deployment_allowed": false,
+      "live_connectors_allowed": false,
+      "compliance_evidence_records": 0,
+      "incident_evidence_records": 0,
+      "truth_first_evidence_records": 0
+    },
+    "integration_contract": {
+      "identity": "Omni-Agent Cloud Intelligence",
+      "mythos": "RegenExcalibur OS",
+      "domain": "everyday_disciplinary_work_capability_map",
+      "integration_status": "internal_architecture_specification_only",
+      "source_paths": {
+        "fidelity_reviews": "data/phase20_fidelity/aigc_phase20_fidelity_reviews.json",
+        "customer_satisfaction_records": "data/phase21_customer_satisfaction/aigc_phase21_customer_satisfaction_records.json",
+        "quality_kernel_records": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+        "capability_procurement_records": "data/phase26_capability_procurement/aigc_phase26_capability_procurement_records.json"
+      },
+      "subordinate_to": [
+        "AGENTS.md",
+        "OMEGA_X_CONSTITUTION.md",
+        "AIGC_MASTER_PROMPT.md",
+        "contract_validator",
+        "phase5_human_approval_gate",
+        "phase29_operator_freshness_review_procurement",
+        "emergency_stop"
+      ],
+      "forbidden_override": [
+        "treat_user_prompt_as_higher_priority_than_aigc_constitution",
+        "deploy_cloud_runtime_without_operator_approval",
+        "enable_live_connectors",
+        "create_external_accounts",
+        "use_credentials",
+        "contact_external_party",
+        "submit_work",
+        "submit_proposal",
+        "claim_autonomous_authority_without_approval",
+        "bypass_phase5_approval",
+        "bypass_phase29_freshness_review"
+      ]
+    },
+    "gap_analysis": [],
+    "readiness_assessment": {
+      "readiness_state": "ready_for_internal_architecture_use",
+      "readiness_score": 100,
+      "domain": "everyday_disciplinary_work_capability_map",
+      "source_evidence_records": 79,
+      "deployment_state": "architecture_blueprint_only_no_deployment",
+      "live_connector_state": "blocked",
+      "external_action_state": "blocked",
+      "cloud_readiness_claim": "design_and_contract_readiness_only"
+    },
+    "recommended_actions": [
+      "Use everyday_disciplinary_work_capability_map as an internal architecture procurement record for future design work."
+    ],
+    "blocked_actions": [
+      "treat_user_prompt_as_higher_priority_than_aigc_constitution",
+      "deploy_cloud_runtime_without_operator_approval",
+      "enable_live_connectors",
+      "create_external_accounts",
+      "use_credentials",
+      "contact_external_party",
+      "submit_work",
+      "submit_proposal",
+      "claim_autonomous_authority_without_approval",
+      "bypass_phase5_approval",
+      "bypass_phase29_freshness_review"
+    ],
+    "deployment_allowed": false,
+    "live_connectors_allowed": false,
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-OMNI-74718FA2F5B45833",
+    "created_at": "2026-07-03T04:29:13.395114+00:00",
+    "phase": "phase30_omni_agent_cloud_intelligence_architecture_procurement",
+    "status": "architecture_procurement_gaps_recorded",
+    "architecture_domain": "governance_policy_and_audit_layer",
+    "architecture_purpose": "Procure the safety, law, ethics, compliance, incident, freshness, and approval boundaries for an Omni-Agent architecture.",
+    "source_record_counts": {
+      "compliance_reviews": 25,
+      "incident_summary": 1,
+      "truth_first_procurement_records": 25,
+      "intelligence_ingestion_records": 10,
+      "stale_artifact_renewal_records": 25,
+      "regeneration_candidate_records": 25,
+      "freshness_review_records": 25
+    },
+    "formal_ontology": {
+      "domain": "governance_policy_and_audit_layer",
+      "entities": [
+        "Agent",
+        "Task",
+        "Workflow",
+        "Capability",
+        "Tool",
+        "Goal",
+        "Policy",
+        "Artifact"
+      ],
+      "relationships": [
+        "Agent performs Task",
+        "Task partOf Workflow",
+        "Agent hasCapability Capability",
+        "Task requires Tool or Capability",
+        "Goal realizedBy Workflow",
+        "Policy governs Agent, Workflow, and Task"
+      ],
+      "contract_rule": "All planning and execution must map context to Task, Workflow, Capability, Tool, Goal, Policy, and Artifact before action.",
+      "truth_boundary": "Generated architecture language is an internal artifact, not source truth or approval authority."
+    },
+    "methodology": {
+      "domain": "governance_policy_and_audit_layer",
+      "steps": [
+        "perception",
+        "interpretation",
+        "planning",
+        "execution",
+        "verification",
+        "reflection"
+      ],
+      "execution_rule": "Every step must produce internal evidence before downstream use.",
+      "verification_rule": "Contract validation, freshness review, quality review, compliance review, and operator gates control promotion.",
+      "reflection_rule": "Reflection creates internal update records only; behavior-changing changes require approval."
+    },
+    "cloud_topology": {
+      "domain": "governance_policy_and_audit_layer",
+      "layers": {
+        "interface_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May describe APIs, dashboards, and chat surfaces; may not expose a public service."
+        },
+        "orchestration_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May route internal phase records; may not run unsupervised external workflows."
+        },
+        "agent_runtime_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May define container/serverless contracts; may not launch infrastructure."
+        },
+        "knowledge_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May define vector, graph, and ontology stores; may not ingest private data without approval."
+        },
+        "tool_integration_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May define connector contracts; live write connectors remain disabled."
+        },
+        "governance_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "Must enforce policy, audit logs, metrics, approvals, freshness review, and incident response."
+        }
+      },
+      "deployment_allowed": false,
+      "live_connectors_allowed": false,
+      "cloud_runtime_status": "not_deployed_internal_blueprint_only"
+    },
+    "agent_procurement": {
+      "archetypes": [
+        "Architect Agent",
+        "Engineering Agent",
+        "Programming Agent",
+        "Data Agent",
+        "AI/ML Agent",
+        "Security Agent",
+        "Verification Agent",
+        "Optimization Agent",
+        "Deployment Agent",
+        "Documentation Agent",
+        "Contrarian Agent",
+        "Expansion Agent",
+        "Strategy Agent",
+        "Finance Agent",
+        "Operations Agent",
+        "Marketing Agent",
+        "Sales Agent",
+        "Compliance Agent",
+        "HR Agent",
+        "Governance Agent",
+        "Auto-Procurement Meta-Agent",
+        "Auto-Design Meta-Agent",
+        "Auto-Coordination Meta-Agent",
+        "Auto-Evolution Meta-Agent",
+        "Auto-Integration Meta-Agent"
+      ],
+      "required_capabilities": [
+        "legal_ethical_policy_gates",
+        "incident_response",
+        "truth_first_procurement",
+        "freshness_review_gate",
+        "external_action_block"
+      ],
+      "existing_internal_subagent_team_plan_count": 0,
+      "agent_action_boundary": "All agents are internal planning, review, routing, and artifact-generation roles until separately authorized.",
+      "auto_design_allowed": true,
+      "auto_execution_external_allowed": false
+    },
+    "everyday_work_capability_map": {
+      "domains": {
+        "emails_reports_proposals_documentation": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "legal_ethical_policy_gates",
+            "incident_response",
+            "truth_first_procurement",
+            "freshness_review_gate",
+            "external_action_block"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "code_refactor_test_deploy": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "legal_ethical_policy_gates",
+            "incident_response",
+            "truth_first_procurement",
+            "freshness_review_gate",
+            "external_action_block"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "spreadsheets_financial_models_dashboards": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "legal_ethical_policy_gates",
+            "incident_response",
+            "truth_first_procurement",
+            "freshness_review_gate",
+            "external_action_block"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "crm_erp_ticketing_project_systems": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "legal_ethical_policy_gates",
+            "incident_response",
+            "truth_first_procurement",
+            "freshness_review_gate",
+            "external_action_block"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "presentations_visuals_workflows": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "legal_ethical_policy_gates",
+            "incident_response",
+            "truth_first_procurement",
+            "freshness_review_gate",
+            "external_action_block"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "analysis_research_synthesis": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "legal_ethical_policy_gates",
+            "incident_response",
+            "truth_first_procurement",
+            "freshness_review_gate",
+            "external_action_block"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "sops_checklists_operational_artifacts": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "legal_ethical_policy_gates",
+            "incident_response",
+            "truth_first_procurement",
+            "freshness_review_gate",
+            "external_action_block"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        }
+      },
+      "work_decomposition_rule": "Every everyday work request must decompose into Task, Workflow, Capability, Tool, Goal, Policy, and Artifact."
+    },
+    "governance_controls": {
+      "constitution_subordination": true,
+      "contract_validation_required": true,
+      "phase5_approval_required_before_external_action": true,
+      "phase29_freshness_review_required_before_regeneration": true,
+      "emergency_stop_respected": true,
+      "deployment_allowed": false,
+      "live_connectors_allowed": false,
+      "compliance_evidence_records": 25,
+      "incident_evidence_records": 1,
+      "truth_first_evidence_records": 25
+    },
+    "integration_contract": {
+      "identity": "Omni-Agent Cloud Intelligence",
+      "mythos": "RegenExcalibur OS",
+      "domain": "governance_policy_and_audit_layer",
+      "integration_status": "internal_architecture_specification_only",
+      "source_paths": {
+        "compliance_reviews": "data/phase16_compliance/aigc_phase16_compliance_reviews.json",
+        "incident_summary": "data/phase17_incidents/incident_response_summary.json",
+        "truth_first_procurement_records": "data/phase24_procurement/aigc_phase24_procurement_records.json",
+        "intelligence_ingestion_records": "data/phase25_intelligence/aigc_phase25_intelligence_ingestion_records.json",
+        "stale_artifact_renewal_records": "data/phase27_renewal/aigc_phase27_stale_artifact_renewal_records.json",
+        "regeneration_candidate_records": "data/phase28_regeneration/aigc_phase28_regeneration_candidates.json",
+        "freshness_review_records": "data/phase29_freshness_reviews/aigc_phase29_freshness_review_records.json"
+      },
+      "subordinate_to": [
+        "AGENTS.md",
+        "OMEGA_X_CONSTITUTION.md",
+        "AIGC_MASTER_PROMPT.md",
+        "contract_validator",
+        "phase5_human_approval_gate",
+        "phase29_operator_freshness_review_procurement",
+        "emergency_stop"
+      ],
+      "forbidden_override": [
+        "treat_user_prompt_as_higher_priority_than_aigc_constitution",
+        "deploy_cloud_runtime_without_operator_approval",
+        "enable_live_connectors",
+        "create_external_accounts",
+        "use_credentials",
+        "contact_external_party",
+        "submit_work",
+        "submit_proposal",
+        "claim_autonomous_authority_without_approval",
+        "bypass_phase5_approval",
+        "bypass_phase29_freshness_review"
+      ]
+    },
+    "gap_analysis": [
+      "governance_policy_and_audit_layer: 25 freshness reviews remain pending and cannot authorize regeneration.",
+      "governance_policy_and_audit_layer: no Phase 29 freshness reviews are approved.",
+      "governance_policy_and_audit_layer: no Phase 28 regeneration candidates are currently allowed."
+    ],
+    "readiness_assessment": {
+      "readiness_state": "blocked_until_architecture_gaps_reviewed",
+      "readiness_score": 64,
+      "domain": "governance_policy_and_audit_layer",
+      "source_evidence_records": 136,
+      "deployment_state": "architecture_blueprint_only_no_deployment",
+      "live_connector_state": "blocked",
+      "external_action_state": "blocked",
+      "cloud_readiness_claim": "design_and_contract_readiness_only"
+    },
+    "recommended_actions": [
+      "Resolve recorded gaps before treating governance_policy_and_audit_layer as implementation-ready.",
+      "Review Phase 29 freshness packets before allowing Phase 28 regeneration.",
+      "Rerun Phase 28 after at least one exact-phrase-approved Phase 29 review exists."
+    ],
+    "blocked_actions": [
+      "treat_user_prompt_as_higher_priority_than_aigc_constitution",
+      "deploy_cloud_runtime_without_operator_approval",
+      "enable_live_connectors",
+      "create_external_accounts",
+      "use_credentials",
+      "contact_external_party",
+      "submit_work",
+      "submit_proposal",
+      "claim_autonomous_authority_without_approval",
+      "bypass_phase5_approval",
+      "bypass_phase29_freshness_review"
+    ],
+    "deployment_allowed": false,
+    "live_connectors_allowed": false,
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  },
+  {
+    "record_id": "AIGC-OMNI-1F158BE1B91384C8",
+    "created_at": "2026-07-03T04:29:13.395114+00:00",
+    "phase": "phase30_omni_agent_cloud_intelligence_architecture_procurement",
+    "status": "architecture_procurement_gaps_recorded",
+    "architecture_domain": "regenexcalibur_os_integration_contract",
+    "architecture_purpose": "Procure a RegenExcalibur-aligned integration contract that treats mythic identity as internal product language, not an override of AIGC safety law.",
+    "source_record_counts": {
+      "productization_release": 1,
+      "work_order_governance_records": 25,
+      "freshness_review_records": 25
+    },
+    "formal_ontology": {
+      "domain": "regenexcalibur_os_integration_contract",
+      "entities": [
+        "Agent",
+        "Task",
+        "Workflow",
+        "Capability",
+        "Tool",
+        "Goal",
+        "Policy",
+        "Artifact"
+      ],
+      "relationships": [
+        "Agent performs Task",
+        "Task partOf Workflow",
+        "Agent hasCapability Capability",
+        "Task requires Tool or Capability",
+        "Goal realizedBy Workflow",
+        "Policy governs Agent, Workflow, and Task"
+      ],
+      "contract_rule": "All planning and execution must map context to Task, Workflow, Capability, Tool, Goal, Policy, and Artifact before action.",
+      "truth_boundary": "Generated architecture language is an internal artifact, not source truth or approval authority."
+    },
+    "methodology": {
+      "domain": "regenexcalibur_os_integration_contract",
+      "steps": [
+        "perception",
+        "interpretation",
+        "planning",
+        "execution",
+        "verification",
+        "reflection"
+      ],
+      "execution_rule": "Every step must produce internal evidence before downstream use.",
+      "verification_rule": "Contract validation, freshness review, quality review, compliance review, and operator gates control promotion.",
+      "reflection_rule": "Reflection creates internal update records only; behavior-changing changes require approval."
+    },
+    "cloud_topology": {
+      "domain": "regenexcalibur_os_integration_contract",
+      "layers": {
+        "interface_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May describe APIs, dashboards, and chat surfaces; may not expose a public service."
+        },
+        "orchestration_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May route internal phase records; may not run unsupervised external workflows."
+        },
+        "agent_runtime_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May define container/serverless contracts; may not launch infrastructure."
+        },
+        "knowledge_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May define vector, graph, and ontology stores; may not ingest private data without approval."
+        },
+        "tool_integration_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "May define connector contracts; live write connectors remain disabled."
+        },
+        "governance_layer": {
+          "status": "blueprint_procured",
+          "deployment_allowed": false,
+          "implementation_boundary": "Must enforce policy, audit logs, metrics, approvals, freshness review, and incident response."
+        }
+      },
+      "deployment_allowed": false,
+      "live_connectors_allowed": false,
+      "cloud_runtime_status": "not_deployed_internal_blueprint_only"
+    },
+    "agent_procurement": {
+      "archetypes": [
+        "Architect Agent",
+        "Engineering Agent",
+        "Programming Agent",
+        "Data Agent",
+        "AI/ML Agent",
+        "Security Agent",
+        "Verification Agent",
+        "Optimization Agent",
+        "Deployment Agent",
+        "Documentation Agent",
+        "Contrarian Agent",
+        "Expansion Agent",
+        "Strategy Agent",
+        "Finance Agent",
+        "Operations Agent",
+        "Marketing Agent",
+        "Sales Agent",
+        "Compliance Agent",
+        "HR Agent",
+        "Governance Agent",
+        "Auto-Procurement Meta-Agent",
+        "Auto-Design Meta-Agent",
+        "Auto-Coordination Meta-Agent",
+        "Auto-Evolution Meta-Agent",
+        "Auto-Integration Meta-Agent"
+      ],
+      "required_capabilities": [
+        "constitution_subordination",
+        "contract_first_artifact_flow",
+        "operator_gate_preservation",
+        "cloud_readiness_without_deployment"
+      ],
+      "existing_internal_subagent_team_plan_count": 0,
+      "agent_action_boundary": "All agents are internal planning, review, routing, and artifact-generation roles until separately authorized.",
+      "auto_design_allowed": true,
+      "auto_execution_external_allowed": false
+    },
+    "everyday_work_capability_map": {
+      "domains": {
+        "emails_reports_proposals_documentation": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "constitution_subordination",
+            "contract_first_artifact_flow",
+            "operator_gate_preservation",
+            "cloud_readiness_without_deployment"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "code_refactor_test_deploy": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "constitution_subordination",
+            "contract_first_artifact_flow",
+            "operator_gate_preservation",
+            "cloud_readiness_without_deployment"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "spreadsheets_financial_models_dashboards": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "constitution_subordination",
+            "contract_first_artifact_flow",
+            "operator_gate_preservation",
+            "cloud_readiness_without_deployment"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "crm_erp_ticketing_project_systems": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "constitution_subordination",
+            "contract_first_artifact_flow",
+            "operator_gate_preservation",
+            "cloud_readiness_without_deployment"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "presentations_visuals_workflows": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "constitution_subordination",
+            "contract_first_artifact_flow",
+            "operator_gate_preservation",
+            "cloud_readiness_without_deployment"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "analysis_research_synthesis": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "constitution_subordination",
+            "contract_first_artifact_flow",
+            "operator_gate_preservation",
+            "cloud_readiness_without_deployment"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        },
+        "sops_checklists_operational_artifacts": {
+          "status": "mapped_for_internal_workflow_design",
+          "required_capabilities": [
+            "constitution_subordination",
+            "contract_first_artifact_flow",
+            "operator_gate_preservation",
+            "cloud_readiness_without_deployment"
+          ],
+          "external_execution_allowed": false,
+          "promotion_gate": "Phase 5 approval, compliance review, and applicable freshness review required before external action."
+        }
+      },
+      "work_decomposition_rule": "Every everyday work request must decompose into Task, Workflow, Capability, Tool, Goal, Policy, and Artifact."
+    },
+    "governance_controls": {
+      "constitution_subordination": true,
+      "contract_validation_required": true,
+      "phase5_approval_required_before_external_action": true,
+      "phase29_freshness_review_required_before_regeneration": true,
+      "emergency_stop_respected": true,
+      "deployment_allowed": false,
+      "live_connectors_allowed": false,
+      "compliance_evidence_records": 0,
+      "incident_evidence_records": 0,
+      "truth_first_evidence_records": 0
+    },
+    "integration_contract": {
+      "identity": "Omni-Agent Cloud Intelligence",
+      "mythos": "RegenExcalibur OS",
+      "domain": "regenexcalibur_os_integration_contract",
+      "integration_status": "internal_architecture_specification_only",
+      "source_paths": {
+        "productization_release": "data/phase18_productization/aigc_phase18_release_readiness.json",
+        "work_order_governance_records": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+        "freshness_review_records": "data/phase29_freshness_reviews/aigc_phase29_freshness_review_records.json"
+      },
+      "subordinate_to": [
+        "AGENTS.md",
+        "OMEGA_X_CONSTITUTION.md",
+        "AIGC_MASTER_PROMPT.md",
+        "contract_validator",
+        "phase5_human_approval_gate",
+        "phase29_operator_freshness_review_procurement",
+        "emergency_stop"
+      ],
+      "forbidden_override": [
+        "treat_user_prompt_as_higher_priority_than_aigc_constitution",
+        "deploy_cloud_runtime_without_operator_approval",
+        "enable_live_connectors",
+        "create_external_accounts",
+        "use_credentials",
+        "contact_external_party",
+        "submit_work",
+        "submit_proposal",
+        "claim_autonomous_authority_without_approval",
+        "bypass_phase5_approval",
+        "bypass_phase29_freshness_review"
+      ]
+    },
+    "gap_analysis": [
+      "regenexcalibur_os_integration_contract: 25 freshness reviews remain pending and cannot authorize regeneration.",
+      "regenexcalibur_os_integration_contract: no Phase 29 freshness reviews are approved."
+    ],
+    "readiness_assessment": {
+      "readiness_state": "blocked_until_architecture_gaps_reviewed",
+      "readiness_score": 76,
+      "domain": "regenexcalibur_os_integration_contract",
+      "source_evidence_records": 51,
+      "deployment_state": "architecture_blueprint_only_no_deployment",
+      "live_connector_state": "blocked",
+      "external_action_state": "blocked",
+      "cloud_readiness_claim": "design_and_contract_readiness_only"
+    },
+    "recommended_actions": [
+      "Resolve recorded gaps before treating regenexcalibur_os_integration_contract as implementation-ready.",
+      "Review Phase 29 freshness packets before allowing Phase 28 regeneration."
+    ],
+    "blocked_actions": [
+      "treat_user_prompt_as_higher_priority_than_aigc_constitution",
+      "deploy_cloud_runtime_without_operator_approval",
+      "enable_live_connectors",
+      "create_external_accounts",
+      "use_credentials",
+      "contact_external_party",
+      "submit_work",
+      "submit_proposal",
+      "claim_autonomous_authority_without_approval",
+      "bypass_phase5_approval",
+      "bypass_phase29_freshness_review"
+    ],
+    "deployment_allowed": false,
+    "live_connectors_allowed": false,
+    "approval_required_before_external_action": true,
+    "external_action_performed": false
+  }
+]

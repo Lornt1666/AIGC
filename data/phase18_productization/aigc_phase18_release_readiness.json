@@ -1,12 +1,12 @@
 {
-  "release_id": "AIGC-REL-7C92ED6A74F79EDA",
-  "created_at": "2026-07-03T01:48:33.080188+00:00",
+  "release_id": "AIGC-REL-5C632BB7E4D1ACD1",
+  "created_at": "2026-07-03T04:29:21.400429+00:00",
   "phase": "phase18_scaling_productization",
-  "version": "0.17.0-milestone-q",
+  "version": "0.18.0-milestone-r",
   "status": "internal_release_candidate",
   "release_type": "internal_private_kernel",
   "branch": "codex/milestone-l-truth-first-procurement-governance",
-  "commit": "d629ed8",
+  "commit": "e6507c3",
   "required_files_present": true,
   "missing_required_files": [],
   "checked_files": [
@@ -81,6 +81,11 @@
       "kind": "file"
     },
     {
+      "path": "prompts/phase30_omni_agent_cloud_intelligence.md",
+      "present": true,
+      "kind": "file"
+    },
+    {
       "path": "config/phase10_connector_registry.json",
       "present": true,
       "kind": "file"
@@ -151,6 +156,11 @@
       "kind": "file"
     },
     {
+      "path": "config/phase30_omni_agent_cloud_intelligence.json",
+      "present": true,
+      "kind": "file"
+    },
+    {
       "path": "schemas/connector_record.schema.json",
       "present": true,
       "kind": "file"
@@ -202,6 +212,11 @@
     },
     {
       "path": "schemas/freshness_review_record.schema.json",
+      "present": true,
+      "kind": "file"
+    },
+    {
+      "path": "schemas/omni_agent_architecture_record.schema.json",
       "present": true,
       "kind": "file"
     },
@@ -306,6 +321,11 @@
       "kind": "file"
     },
     {
+      "path": "src/phase30_omni_agent_cloud_intelligence.py",
+      "present": true,
+      "kind": "file"
+    },
+    {
       "path": "docs/PRIVATE_BRANCH_WORKFLOW.md",
       "present": true,
       "kind": "file"
@@ -353,6 +373,8 @@
     "data/reports/phase28_signature_update.md",
     "data/phase29_freshness_reviews/aigc_phase29_freshness_review_records.json",
     "data/reports/phase29_signature_update.md",
+    "data/phase30_omni_agent_cloud/aigc_phase30_omni_agent_architecture_records.json",
+    "data/reports/phase30_signature_update.md",
     "reports/milestone_f_productization_report.md",
     "reports/milestone_g_subagent_forge_report.md",
     "reports/milestone_h_fidelity_forge_report.md",
@@ -365,6 +387,7 @@
     "reports/milestone_o_stale_artifact_renewal_report.md",
     "reports/milestone_p_regeneration_controller_report.md",
     "reports/milestone_q_freshness_review_procurement_report.md",
+    "reports/milestone_r_omni_agent_cloud_intelligence_report.md",
     "docs/PRODUCTIZATION_RUNBOOK.md"
   ],
   "license_status": "all_rights_reserved_present",

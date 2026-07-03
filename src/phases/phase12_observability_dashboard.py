@@ -67,6 +67,7 @@ class Phase12ObservabilityDashboard:
         "phase27_stale_artifact_renewal_controller",
         "phase28_fresh_candidate_regeneration_controller",
         "phase29_operator_freshness_review_procurement",
+        "phase30_omni_agent_cloud_intelligence_architecture_procurement",
     ]
 
     def __init__(self, root: Path, config_path: Path):
@@ -99,6 +100,7 @@ class Phase12ObservabilityDashboard:
         phase27_count = count_json_list(self.resolve(inputs.get("phase27_stale_artifact_renewal", "")))
         phase28_records = load_json_list_if_exists(self.resolve(inputs.get("phase28_regeneration_candidates", "")))
         phase29_records = load_json_list_if_exists(self.resolve(inputs.get("phase29_freshness_reviews", "")))
+        phase30_count = count_json_list(self.resolve(inputs.get("phase30_omni_agent_architecture", "")))
         secret_manifest_exists = self.resolve(inputs.get("secret_manifest", "")).exists()
         external_secret_manifest_exists = self.resolve(inputs.get("external_secret_manifest", "")).exists()
         secret_findings = self.scan_secret_paths()
@@ -130,6 +132,7 @@ class Phase12ObservabilityDashboard:
             "phase29_freshness_review_records": len(phase29_records),
             "phase29_approved_freshness_reviews": sum(1 for item in phase29_records if item.get("decision") == "approved_for_phase28_regeneration"),
             "phase29_pending_freshness_reviews": sum(1 for item in phase29_records if item.get("decision") == "pending"),
+            "phase30_omni_agent_architecture_records": phase30_count,
         }
         audit_integrity = {
             "audit_dir_exists": audit_dir.exists(),
@@ -233,6 +236,7 @@ class Phase12ObservabilityDashboard:
             "phase27_stale_artifact_renewal_controller": pipeline_metrics["phase27_stale_artifact_renewal_records"],
             "phase28_fresh_candidate_regeneration_controller": pipeline_metrics["phase28_regeneration_candidate_records"],
             "phase29_operator_freshness_review_procurement": pipeline_metrics["phase29_freshness_review_records"],
+            "phase30_omni_agent_cloud_intelligence_architecture_procurement": pipeline_metrics["phase30_omni_agent_architecture_records"],
         }
         results: List[PhaseHealth] = []
         for phase in self.PHASES:
@@ -243,7 +247,7 @@ class Phase12ObservabilityDashboard:
             elif count > 0:
                 status = "green"
                 notes = ["Telemetry present."]
-            elif phase in {"phase0_genesis_constitution", "phase1_domain_discovery", "phase10_connector_api_layer", "phase13_simulation_arena", "phase14_deployment_runtime", "phase15_finance_contracts_asset_ledger", "phase16_compliance_legal_review", "phase17_incident_response", "phase18_scaling_productization", "phase19_subagent_generation_forge", "phase20_fidelity_forge", "phase21_customer_satisfaction_continuum", "phase22_quantum_aware_quality_kernel", "phase23_ascended_work_order_governor", "phase24_truth_first_procurement_governance", "phase25_continuous_intelligence_ingestion_layer", "phase26_ascended_capability_procurement_program", "phase27_stale_artifact_renewal_controller", "phase28_fresh_candidate_regeneration_controller", "phase29_operator_freshness_review_procurement"}:
+            elif phase in {"phase0_genesis_constitution", "phase1_domain_discovery", "phase10_connector_api_layer", "phase13_simulation_arena", "phase14_deployment_runtime", "phase15_finance_contracts_asset_ledger", "phase16_compliance_legal_review", "phase17_incident_response", "phase18_scaling_productization", "phase19_subagent_generation_forge", "phase20_fidelity_forge", "phase21_customer_satisfaction_continuum", "phase22_quantum_aware_quality_kernel", "phase23_ascended_work_order_governor", "phase24_truth_first_procurement_governance", "phase25_continuous_intelligence_ingestion_layer", "phase26_ascended_capability_procurement_program", "phase27_stale_artifact_renewal_controller", "phase28_fresh_candidate_regeneration_controller", "phase29_operator_freshness_review_procurement", "phase30_omni_agent_cloud_intelligence_architecture_procurement"}:
                 status = "yellow"
                 notes = ["No baseline telemetry found yet."]
             else:

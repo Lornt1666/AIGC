@@ -41,6 +41,7 @@ ARTIFACT_TABLES = [
     "stale_artifact_renewal_records",
     "regeneration_candidate_records",
     "freshness_review_records",
+    "omni_agent_architecture_records",
     "secret_access_events",
     "incident_events",
 ]

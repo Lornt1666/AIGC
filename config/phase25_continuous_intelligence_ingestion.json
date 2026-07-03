@@ -78,6 +78,13 @@
       "path": "data/phase29_freshness_reviews/aigc_phase29_freshness_review_records.json",
       "freshness_horizon_hours": 12,
       "regeneration_command": "python .\\src\\aigc.py run phase29"
+    },
+    {
+      "context_domain": "omni_agent_cloud_architecture",
+      "source_kind": "generated_internal_architecture_procurement_ledger",
+      "path": "data/phase30_omni_agent_cloud/aigc_phase30_omni_agent_architecture_records.json",
+      "freshness_horizon_hours": 24,
+      "regeneration_command": "python .\\src\\aigc.py run phase30"
     }
   ],
   "freshness_agents": [

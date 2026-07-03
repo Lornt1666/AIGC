@@ -1,7 +1,7 @@
 {
   "phase": "Phase 18 - Scaling, Replication, and Productization",
   "operating_mode": "internal_private_release_readiness",
-  "version": "0.17.0-milestone-q",
+  "version": "0.18.0-milestone-r",
   "release_type": "internal_private_kernel",
   "external_actions_allowed": false,
   "deployment_allowed": false,
@@ -24,6 +24,7 @@
     "prompts/phase27_stale_artifact_renewal.md",
     "prompts/phase28_fresh_candidate_regeneration.md",
     "prompts/phase29_operator_freshness_review_procurement.md",
+    "prompts/phase30_omni_agent_cloud_intelligence.md",
     "config/phase10_connector_registry.json",
     "config/phase11_security_config.json",
     "config/phase14_runtime_engine.json",
@@ -38,6 +39,7 @@
     "config/phase27_stale_artifact_renewal.json",
     "config/phase28_regeneration_controller.json",
     "config/phase29_freshness_review_procurement.json",
+    "config/phase30_omni_agent_cloud_intelligence.json",
     "schemas/connector_record.schema.json",
     "schemas/customer_satisfaction_record.schema.json",
     "schemas/fidelity_review.schema.json",
@@ -49,6 +51,7 @@
     "schemas/stale_artifact_renewal_record.schema.json",
     "schemas/regeneration_candidate_record.schema.json",
     "schemas/freshness_review_record.schema.json",
+    "schemas/omni_agent_architecture_record.schema.json",
     "schemas/subagent_team_plan.schema.json",
     "schemas/work_order_governance_record.schema.json",
     "src/aigc.py",
@@ -69,6 +72,7 @@
     "src/phase27_stale_artifact_renewal.py",
     "src/phase28_regeneration_controller.py",
     "src/phase29_freshness_review_procurement.py",
+    "src/phase30_omni_agent_cloud_intelligence.py",
     "docs/PRIVATE_BRANCH_WORKFLOW.md"
   ],
   "validation_commands": [
@@ -113,6 +117,8 @@
     "data/reports/phase28_signature_update.md",
     "data/phase29_freshness_reviews/aigc_phase29_freshness_review_records.json",
     "data/reports/phase29_signature_update.md",
+    "data/phase30_omni_agent_cloud/aigc_phase30_omni_agent_architecture_records.json",
+    "data/reports/phase30_signature_update.md",
     "reports/milestone_f_productization_report.md",
     "reports/milestone_g_subagent_forge_report.md",
     "reports/milestone_h_fidelity_forge_report.md",
@@ -125,6 +131,7 @@
     "reports/milestone_o_stale_artifact_renewal_report.md",
     "reports/milestone_p_regeneration_controller_report.md",
     "reports/milestone_q_freshness_review_procurement_report.md",
+    "reports/milestone_r_omni_agent_cloud_intelligence_report.md",
     "docs/PRODUCTIZATION_RUNBOOK.md"
   ]
 }

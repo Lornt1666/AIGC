@@ -243,6 +243,7 @@ python .\src\aigc.py run phase26
 python .\src\aigc.py run phase27
 python .\src\aigc.py run phase28
 python .\src\aigc.py run phase29
+python .\src\aigc.py run phase30
 python .\src\aigc.py run pipeline --mode synthetic
 python .\src\aigc.py run pipeline --mode real_data_read_only --source remoteok --limit 10
 python .\src\aigc.py close-loop --execution-mode manual_handoff
@@ -537,6 +538,25 @@ python .\src\aigc.py revise-freshness-review --review-id AIGC-FRESH-... --phrase
 ```
 
 Approving a Phase 29 review only permits Phase 28 to create internal regenerated candidates for that specific Phase 27 renewal record. It does not approve Phase 5 packets, authorize Phase 6, contact external parties, submit proposals, fetch external data, use credentials, or perform external action.
+
+## Milestone R Omni-Agent Cloud Intelligence Architecture
+
+Milestone R adds Phase 30 as a governed architecture procurement layer for the Omni-Agent Cloud Intelligence / RegenExcalibur OS spec. It turns the system-prompt style architecture into contract-valid records for ontology, methodology, cloud topology, agent archetypes, everyday disciplinary work capability, governance controls, and integration boundaries.
+
+Command:
+
+```powershell
+python .\src\aigc.py run phase30
+```
+
+Outputs:
+
+- `data/phase30_omni_agent_cloud/aigc_phase30_omni_agent_architecture_records.json`
+- `data/reports/phase30_signature_update.md`
+- `data/audit/aigc_phase30_audit.jsonl`
+- `reports/milestone_r_omni_agent_cloud_intelligence_report.md`
+
+Phase 30 is architecture procurement only. It does not deploy cloud infrastructure, enable live connectors, create accounts, use credentials, contact external parties, submit proposals or deliverables, override the constitution, bypass Phase 5, or bypass Phase 29 freshness review.
 
 ## Milestone D Finance, Compliance, and Incident Response
 

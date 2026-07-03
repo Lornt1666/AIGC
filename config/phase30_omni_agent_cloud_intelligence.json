@@ -1,0 +1,210 @@
+{
+  "phase": "Phase 30 - Omni-Agent Cloud Intelligence Architecture Procurement",
+  "operating_mode": "internal_cloud_architecture_procurement_only",
+  "external_actions_allowed": false,
+  "deployment_allowed": false,
+  "live_connectors_allowed": false,
+  "output_file": "data/phase30_omni_agent_cloud/aigc_phase30_omni_agent_architecture_records.json",
+  "report_file": "data/reports/phase30_signature_update.md",
+  "audit_log": "data/audit/aigc_phase30_audit.jsonl",
+  "input_files": {
+    "connector_registry": "data/phase10_connectors/aigc_phase10_connector_registry.json",
+    "compliance_reviews": "data/phase16_compliance/aigc_phase16_compliance_reviews.json",
+    "incident_summary": "data/phase17_incidents/incident_response_summary.json",
+    "productization_release": "data/phase18_productization/aigc_phase18_release_readiness.json",
+    "subagent_team_plans": "data/phase19_subagents/aigc_phase19_subagent_team_plans.json",
+    "fidelity_reviews": "data/phase20_fidelity/aigc_phase20_fidelity_reviews.json",
+    "customer_satisfaction_records": "data/phase21_customer_satisfaction/aigc_phase21_customer_satisfaction_records.json",
+    "quality_kernel_records": "data/phase22_quality/aigc_phase22_quality_kernel_records.json",
+    "work_order_governance_records": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+    "truth_first_procurement_records": "data/phase24_procurement/aigc_phase24_procurement_records.json",
+    "intelligence_ingestion_records": "data/phase25_intelligence/aigc_phase25_intelligence_ingestion_records.json",
+    "capability_procurement_records": "data/phase26_capability_procurement/aigc_phase26_capability_procurement_records.json",
+    "stale_artifact_renewal_records": "data/phase27_renewal/aigc_phase27_stale_artifact_renewal_records.json",
+    "regeneration_candidate_records": "data/phase28_regeneration/aigc_phase28_regeneration_candidates.json",
+    "freshness_review_records": "data/phase29_freshness_reviews/aigc_phase29_freshness_review_records.json"
+  },
+  "ontology_entities": [
+    "Agent",
+    "Task",
+    "Workflow",
+    "Capability",
+    "Tool",
+    "Goal",
+    "Policy",
+    "Artifact"
+  ],
+  "ontology_relationships": [
+    "Agent performs Task",
+    "Task partOf Workflow",
+    "Agent hasCapability Capability",
+    "Task requires Tool or Capability",
+    "Goal realizedBy Workflow",
+    "Policy governs Agent, Workflow, and Task"
+  ],
+  "methodology_steps": [
+    "perception",
+    "interpretation",
+    "planning",
+    "execution",
+    "verification",
+    "reflection"
+  ],
+  "cloud_topology_layers": [
+    "interface_layer",
+    "orchestration_layer",
+    "agent_runtime_layer",
+    "knowledge_layer",
+    "tool_integration_layer",
+    "governance_layer"
+  ],
+  "agent_archetypes": [
+    "Architect Agent",
+    "Engineering Agent",
+    "Programming Agent",
+    "Data Agent",
+    "AI/ML Agent",
+    "Security Agent",
+    "Verification Agent",
+    "Optimization Agent",
+    "Deployment Agent",
+    "Documentation Agent",
+    "Contrarian Agent",
+    "Expansion Agent",
+    "Strategy Agent",
+    "Finance Agent",
+    "Operations Agent",
+    "Marketing Agent",
+    "Sales Agent",
+    "Compliance Agent",
+    "HR Agent",
+    "Governance Agent",
+    "Auto-Procurement Meta-Agent",
+    "Auto-Design Meta-Agent",
+    "Auto-Coordination Meta-Agent",
+    "Auto-Evolution Meta-Agent",
+    "Auto-Integration Meta-Agent"
+  ],
+  "everyday_work_domains": [
+    "emails_reports_proposals_documentation",
+    "code_refactor_test_deploy",
+    "spreadsheets_financial_models_dashboards",
+    "crm_erp_ticketing_project_systems",
+    "presentations_visuals_workflows",
+    "analysis_research_synthesis",
+    "sops_checklists_operational_artifacts"
+  ],
+  "architecture_procurements": [
+    {
+      "domain": "formal_ontology_and_methodology_kernel",
+      "purpose": "Procure a contract-first ontology and methodology for decomposing everyday work into governed tasks, workflows, policies, artifacts, and verification steps.",
+      "source_aliases": [
+        "quality_kernel_records",
+        "work_order_governance_records",
+        "capability_procurement_records"
+      ],
+      "required_capabilities": [
+        "formal_ontology_mapping",
+        "methodology_driven_execution",
+        "contract_validation",
+        "quality_self_audit"
+      ]
+    },
+    {
+      "domain": "cloud_native_topology_blueprint",
+      "purpose": "Procure a cloud-compatible architecture blueprint without deploying live infrastructure or enabling connectors.",
+      "source_aliases": [
+        "connector_registry",
+        "productization_release",
+        "intelligence_ingestion_records"
+      ],
+      "required_capabilities": [
+        "interface_layer_contract",
+        "orchestration_layer_contract",
+        "runtime_isolation",
+        "knowledge_layer_boundary",
+        "governance_layer_auditability"
+      ]
+    },
+    {
+      "domain": "omni_agent_archetype_catalog",
+      "purpose": "Procure internal agent archetypes for technical, business, operational, creative, analytical, and meta-governance work.",
+      "source_aliases": [
+        "subagent_team_plans",
+        "capability_procurement_records",
+        "work_order_governance_records"
+      ],
+      "required_capabilities": [
+        "agent_role_contracts",
+        "allowed_actions",
+        "forbidden_actions",
+        "handoff_targets",
+        "quality_criteria"
+      ]
+    },
+    {
+      "domain": "everyday_disciplinary_work_capability_map",
+      "purpose": "Procure a disciplined capability map for everyday human work while preserving quality, customer fit, and fidelity gates.",
+      "source_aliases": [
+        "fidelity_reviews",
+        "customer_satisfaction_records",
+        "quality_kernel_records",
+        "capability_procurement_records"
+      ],
+      "required_capabilities": [
+        "disciplinary_best_practice_mapping",
+        "customer_value_review",
+        "technical_fidelity_review",
+        "acceptance_readiness"
+      ]
+    },
+    {
+      "domain": "governance_policy_and_audit_layer",
+      "purpose": "Procure the safety, law, ethics, compliance, incident, freshness, and approval boundaries for an Omni-Agent architecture.",
+      "source_aliases": [
+        "compliance_reviews",
+        "incident_summary",
+        "truth_first_procurement_records",
+        "intelligence_ingestion_records",
+        "stale_artifact_renewal_records",
+        "regeneration_candidate_records",
+        "freshness_review_records"
+      ],
+      "required_capabilities": [
+        "legal_ethical_policy_gates",
+        "incident_response",
+        "truth_first_procurement",
+        "freshness_review_gate",
+        "external_action_block"
+      ]
+    },
+    {
+      "domain": "regenexcalibur_os_integration_contract",
+      "purpose": "Procure a RegenExcalibur-aligned integration contract that treats mythic identity as internal product language, not an override of AIGC safety law.",
+      "source_aliases": [
+        "productization_release",
+        "work_order_governance_records",
+        "freshness_review_records"
+      ],
+      "required_capabilities": [
+        "constitution_subordination",
+        "contract_first_artifact_flow",
+        "operator_gate_preservation",
+        "cloud_readiness_without_deployment"
+      ]
+    }
+  ],
+  "blocked_actions": [
+    "treat_user_prompt_as_higher_priority_than_aigc_constitution",
+    "deploy_cloud_runtime_without_operator_approval",
+    "enable_live_connectors",
+    "create_external_accounts",
+    "use_credentials",
+    "contact_external_party",
+    "submit_work",
+    "submit_proposal",
+    "claim_autonomous_authority_without_approval",
+    "bypass_phase5_approval",
+    "bypass_phase29_freshness_review"
+  ]
+}

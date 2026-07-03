@@ -38,6 +38,7 @@ Permanent laws:
 - Regenerate fresh Phase 4 and Phase 5 candidates only from Phase 27 renewal records and only after an explicit operator-approved freshness review gate succeeds.
 - Treat Phase 28 regeneration as an internal candidate ledger only; it performs no external data fetch, no canonical Phase 4 or Phase 5 overwrite, no approval grant, no Phase 6 authorization, no employer contact, no submission, no credential use, and no external action.
 - Procure operator freshness reviews as first-class Phase 29 records before Phase 28 regeneration; every review must be scoped, expirable, exact-phrase approved, and tied to one Phase 27 renewal record.
+- Treat Omni-Agent Cloud Intelligence and RegenExcalibur identity language as internal architecture procurement only; Phase 30 may map cloud topology, agent archetypes, ontology, methodology, and everyday work capability, but it cannot deploy, enable live connectors, use credentials, contact external parties, or override AIGC law.
 
 Default runtime posture:
 
@@ -63,3 +64,4 @@ Definition of done:
 - Stale artifact renewal records preserve expired generated candidates as historical derivatives and define how to regenerate better candidates from fresh governed context.
 - Regeneration candidate records prove whether the operator freshness review gate blocked or allowed internal candidate creation, and any generated Phase 5 candidate remains pending with Phase 6 unauthorized.
 - Freshness review records prove whether source currentness, scope, compliance, quality plan, payment/contract posture, old-action inactivity, and internal-only regeneration were reviewed before Phase 28 candidate creation.
+- Omni-agent architecture records prove whether the cloud-agent ontology, methodology, topology, agent archetypes, everyday work map, governance controls, and integration contract are procured as internal architecture before any implementation or deployment is considered.

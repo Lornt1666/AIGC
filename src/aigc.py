@@ -172,6 +172,7 @@ def command_validate(args: argparse.Namespace, root: Path, store: AIGCStateStore
             (registry["phase27"].schema_name, root / registry["phase27"].output_path),
             (registry["phase28"].schema_name, root / registry["phase28"].output_path),
             (registry["phase29"].schema_name, root / registry["phase29"].output_path),
+            (registry["phase30"].schema_name, root / registry["phase30"].output_path),
         ]
         jsonl_targets = [
             ("outcome_record", root / "data" / "phase8_evolution" / "outcome_records.jsonl"),
@@ -710,7 +711,7 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     validate_parser.add_argument("--path", default="")
 
     run_parser = subparsers.add_parser("run", help="Run an internal AIGC phase command.")
-    run_parser.add_argument("phase", choices=["phase2", "phase3", "phase4", "phase5", "phase6", "phase7", "phase8", "phase10", "phase11", "phase12", "phase13", "phase14", "phase15", "phase16", "phase17", "phase18", "phase19", "phase20", "phase21", "phase22", "phase23", "phase24", "phase25", "phase26", "phase27", "phase28", "phase29", "pipeline"])
+    run_parser.add_argument("phase", choices=["phase2", "phase3", "phase4", "phase5", "phase6", "phase7", "phase8", "phase10", "phase11", "phase12", "phase13", "phase14", "phase15", "phase16", "phase17", "phase18", "phase19", "phase20", "phase21", "phase22", "phase23", "phase24", "phase25", "phase26", "phase27", "phase28", "phase29", "phase30", "pipeline"])
     run_parser.add_argument("--mode", choices=["synthetic", "real", "real_data_read_only"], default="synthetic")
     run_parser.add_argument("--source", choices=["remoteok", "remotive", "weworkremotely", "github_issues"], default="remoteok")
     run_parser.add_argument("--limit", type=int, default=10)
