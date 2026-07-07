@@ -1,0 +1,43 @@
+{
+  "name": "AIGC Intake to Work Order",
+  "workflowId": "intake_to_work_order",
+  "dryRun": true,
+  "externalActionNodesDisabled": true,
+  "humanApprovalWaitStep": true,
+  "webhookPlaceholder": "{{AIGC_N8N_WEBHOOK_PLACEHOLDER}}",
+  "aigcEndpointPlaceholder": "{{AIGC_LOCAL_ORCHESTRATION_CLI}}",
+  "correlationFields": [
+    "workflow_execution_id",
+    "audit_event_id",
+    "work_order_id",
+    "action_permit_id",
+    "requires_human_approval",
+    "external_action_performed"
+  ],
+  "manualSetup": [
+    "replace placeholders only after AIGC approval",
+    "keep endpoint values outside this template",
+    "preserve dry-run behavior until a live permit exists"
+  ],
+  "nodes": [
+    {
+      "name": "Manual Intake Fixture",
+      "type": "manualTrigger",
+      "disabled": false,
+      "externalAction": false
+    },
+    {
+      "name": "Map Intake Payload",
+      "type": "function",
+      "disabled": false,
+      "externalAction": false,
+      "emits": "work_order.created"
+    },
+    {
+      "name": "Stop Before External Action",
+      "type": "noop",
+      "disabled": true,
+      "externalAction": true
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "name": "AIGC Actor Execution Dry Run",
+  "workflowId": "actor_execution_dry_run",
+  "dryRun": true,
+  "externalActionNodesDisabled": true,
+  "humanApprovalWaitStep": true,
+  "webhookPlaceholder": "{{AIGC_N8N_WEBHOOK_PLACEHOLDER}}",
+  "aigcEndpointPlaceholder": "{{AIGC_LOCAL_ORCHESTRATION_CLI}}",
+  "correlationFields": [
+    "workflow_execution_id",
+    "audit_event_id",
+    "work_order_id",
+    "action_permit_id",
+    "requires_human_approval",
+    "external_action_performed"
+  ],
+  "manualSetup": [
+    "simulate actor work only",
+    "keep tool connectors disabled",
+    "require a separate permit for live connector use"
+  ],
+  "nodes": [
+    {
+      "name": "Approved Local Permit Fixture",
+      "type": "manualTrigger",
+      "disabled": false,
+      "externalAction": false
+    },
+    {
+      "name": "Queue Actor Task",
+      "type": "function",
+      "disabled": false,
+      "externalAction": false,
+      "emits": "actor_task.queued"
+    },
+    {
+      "name": "Simulate Completion",
+      "type": "function",
+      "disabled": false,
+      "externalAction": false,
+      "emits": "actor_task.completed"
+    },
+    {
+      "name": "Connector Execution Block",
+      "type": "noop",
+      "disabled": true,
+      "externalAction": true
+    }
+  ]
+}

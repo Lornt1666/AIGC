@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Workflow Execution Record",
+  "type": "object",
+  "required": [
+    "id",
+    "workflow_name",
+    "workflow_engine",
+    "trigger_type",
+    "dry_run",
+    "started_at",
+    "completed_at",
+    "status",
+    "input_event_id",
+    "output_event_ids",
+    "work_order_id",
+    "action_permit_id",
+    "audit_event_id",
+    "external_action_performed",
+    "approval_required",
+    "approval_status",
+    "blocked_actions",
+    "errors",
+    "next_safe_action"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "workflow_name": {
+      "type": "string"
+    },
+    "workflow_engine": {
+      "type": "string"
+    },
+    "trigger_type": {
+      "type": "string"
+    },
+    "dry_run": {
+      "type": "boolean"
+    },
+    "started_at": {
+      "type": "string"
+    },
+    "completed_at": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "input_event_id": {
+      "type": "string"
+    },
+    "output_event_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "work_order_id": {
+      "type": "string"
+    },
+    "action_permit_id": {
+      "type": "string"
+    },
+    "audit_event_id": {
+      "type": "string"
+    },
+    "external_action_performed": {
+      "enum": [
+        false,
+        "blocked",
+        "approved"
+      ]
+    },
+    "approval_required": {
+      "type": "boolean"
+    },
+    "approval_status": {
+      "type": "string"
+    },
+    "blocked_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "next_safe_action": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

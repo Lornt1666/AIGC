@@ -1,0 +1,44 @@
+{
+  "name": "AIGC Action Permit Approval Queue",
+  "workflowId": "action_permit_approval_queue",
+  "dryRun": true,
+  "externalActionNodesDisabled": true,
+  "humanApprovalWaitStep": true,
+  "webhookPlaceholder": "{{AIGC_N8N_WEBHOOK_PLACEHOLDER}}",
+  "aigcEndpointPlaceholder": "{{AIGC_LOCAL_ORCHESTRATION_CLI}}",
+  "correlationFields": [
+    "workflow_execution_id",
+    "audit_event_id",
+    "work_order_id",
+    "action_permit_id",
+    "requires_human_approval",
+    "external_action_performed"
+  ],
+  "manualSetup": [
+    "human review is required",
+    "self approval is disabled",
+    "no outward action may be chained from this template"
+  ],
+  "nodes": [
+    {
+      "name": "Receive Work Order Fixture",
+      "type": "manualTrigger",
+      "disabled": false,
+      "externalAction": false
+    },
+    {
+      "name": "Create Permit Requested Event",
+      "type": "function",
+      "disabled": false,
+      "externalAction": false,
+      "emits": "action_permit.requested"
+    },
+    {
+      "name": "Human Approval Wait Placeholder",
+      "type": "wait",
+      "disabled": false,
+      "externalAction": false,
+      "emits": "human_approval.required"
+    }
+  ]
+}
