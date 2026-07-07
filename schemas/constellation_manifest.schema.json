@@ -1,0 +1,209 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/constellation_manifest.schema.json",
+  "title": "AIGC Constellation Manifest",
+  "type": "object",
+  "required": [
+    "phase",
+    "generated_at",
+    "status",
+    "trigger",
+    "safety_doctrine",
+    "summary",
+    "files"
+  ],
+  "properties": {
+    "phase": {
+      "type": "string",
+      "const": "phase25_constellation_fabric"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "completed",
+        "blocked_no_trigger"
+      ]
+    },
+    "trigger": {
+      "type": "object",
+      "required": [
+        "phrase",
+        "detected",
+        "sources"
+      ],
+      "properties": {
+        "phrase": {
+          "type": "string"
+        },
+        "case_sensitive": {
+          "type": "boolean"
+        },
+        "detected": {
+          "type": "boolean"
+        },
+        "force_local": {
+          "type": "boolean"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "safety_doctrine": {
+      "type": "object"
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "total_files_classified",
+        "external_action_performed",
+        "physical_file_moves_performed",
+        "raw_chat_text_stored"
+      ],
+      "properties": {
+        "total_files_classified": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "constellation_zone_counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "agent_lane_counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "methodology_counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "risk_class_counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "external_action_performed": {
+          "type": "boolean",
+          "const": false
+        },
+        "physical_file_moves_performed": {
+          "type": "boolean",
+          "const": false
+        },
+        "raw_chat_text_stored": {
+          "type": "boolean",
+          "const": false
+        }
+      },
+      "additionalProperties": true
+    },
+    "agent_roster": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "function"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "function": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "operational_directives": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "name",
+          "extension",
+          "size_bytes",
+          "constellation_zone",
+          "ontology",
+          "taxonomy",
+          "methodology",
+          "agent_lane",
+          "risk_class",
+          "physical_move_performed"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "extension": {
+            "type": "string"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "phase": {
+            "type": "string"
+          },
+          "constellation_zone": {
+            "type": "string"
+          },
+          "ontology": {
+            "type": "string"
+          },
+          "taxonomy": {
+            "type": "string"
+          },
+          "methodology": {
+            "type": "string"
+          },
+          "agent_lane": {
+            "type": "string"
+          },
+          "risk_class": {
+            "type": "string"
+          },
+          "physical_move_performed": {
+            "type": "boolean",
+            "const": false
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}
