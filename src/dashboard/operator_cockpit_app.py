@@ -173,13 +173,23 @@ def render_review_tab(st, root: Path) -> None:
         st.info(f"This packet is already `{selected.decision}`.")
 
     st.code(selected.required_phrase or "(accept phrase missing)", language="text")
+    typed_accept_phrase = st.text_input(
+        "Type the exact acceptance phrase to unlock Accept",
+        value="",
+        type="default",
+        help="The cockpit passes only the phrase you type. It will not auto-fill the approval phrase.",
+    )
     reviewed = st.checkbox(
         "I reviewed the exact action, artifact hash, risk state, expiry, blocked actions, and no-external-action boundary.",
         value=False,
     )
+    phrase_matches = bool(selected.required_phrase) and typed_accept_phrase == selected.required_phrase
+    if typed_accept_phrase and not phrase_matches:
+        st.error("Typed acceptance phrase does not match the required phrase.")
 
     accept_disabled = (
         not reviewed
+        or not phrase_matches
         or selected.expired
         or selected.external_action_performed
         or selected.decision != "pending"
@@ -192,7 +202,7 @@ def render_review_tab(st, root: Path) -> None:
     with col_accept:
         if st.button("Accept selected action", type="primary", disabled=accept_disabled, use_container_width=True):
             result = run_command(
-                build_accept_command(root, selected, DEFAULT_AUTHORIZATIONS_PATH),
+                build_accept_command(root, selected, typed_accept_phrase, DEFAULT_AUTHORIZATIONS_PATH),
                 root=root,
                 label=f"Accept {selected.action_id}",
             )

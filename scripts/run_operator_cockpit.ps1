@@ -3,7 +3,7 @@ $ErrorActionPreference = "Stop"
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 Set-Location $RepoRoot
 
-if ($env:AIGC_SKIP_DEPENDENCY_INSTALL -ne "1") {
+if ($env:AIGC_INSTALL_DEPENDENCIES -eq "1") {
     python -m pip install -r requirements.txt
 }
 

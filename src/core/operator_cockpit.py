@@ -241,18 +241,25 @@ def build_enterprise_run_commands(root: Path = PROJECT_ROOT) -> List[GovernedCom
 def build_accept_command(
     root: Path,
     review: AuthorizationReview,
+    typed_phrase: str,
     authorizations_path: Path = DEFAULT_AUTHORIZATIONS_PATH,
 ) -> List[str]:
+    if not accept_phrase_matches_required(review, typed_phrase):
+        raise ValueError("Typed acceptance phrase does not match the required phrase.")
     return build_aigc_command(
         root,
         "approve",
         "--action-id",
         review.action_id,
         "--phrase",
-        review.required_phrase,
+        typed_phrase,
         "--authorizations-path",
         str(authorizations_path),
     )
+
+
+def accept_phrase_matches_required(review: AuthorizationReview, typed_phrase: str) -> bool:
+    return bool(review.required_phrase) and typed_phrase == review.required_phrase
 
 
 def build_deny_command(

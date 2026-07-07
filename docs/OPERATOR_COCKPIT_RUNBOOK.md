@@ -34,6 +34,13 @@ PowerShell launcher:
 .\scripts\run_operator_cockpit.ps1
 ```
 
+The launchers do not install dependencies by default. To combine setup and launch for a local operator workstation, opt in explicitly:
+
+```powershell
+$env:AIGC_INSTALL_DEPENDENCIES = "1"
+.\scripts\run_operator_cockpit.ps1
+```
+
 ## Enterprise control model
 
 The cockpit follows these operating controls:
@@ -74,7 +81,7 @@ The sequence can stop on the first failed governance step. Each command output i
 
 ## What the Accept button does
 
-The Accept button only records the visible, selected packet as approved for Phase 6 eligibility. It calls the existing exact-phrase approval gate on your behalf after you confirm review in the UI.
+The Accept button only records the visible, selected packet as approved for Phase 6 eligibility. It calls the existing exact-phrase approval gate only after you manually type the exact required phrase in the UI.
 
 Accept does not:
 
@@ -101,6 +108,10 @@ python .\src\aigc.py close-loop --execution-mode manual_handoff
 ```
 
 The resulting handoff instructs the operator to manually verify the recipient, platform, artifact hash, and scope before any external submission.
+
+## Procurement procedure
+
+The governed procurement procedure is defined in `docs/AIGC_PROCUREMENT_PROCEDURE.md`. It is process-only: it may organize research, evidence, comparison, permit drafting, and review, but it does not authorize purchase, payment, vendor account changes, paid trial activation, or contract acceptance.
 
 ## Operator rules
 
