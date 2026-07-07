@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: aigc-governed-worker
+    runtime: docker
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: AIGC_ENV
+        value: production
+      - key: AIGC_COMMAND_CENTER_TOKEN
+        sync: false

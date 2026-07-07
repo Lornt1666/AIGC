@@ -15,6 +15,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+from src.core.algorithmic_capabilities import capabilities_for_role  # noqa: E402
+
 
 @dataclass
 class SubAgentMember:
@@ -26,6 +28,7 @@ class SubAgentMember:
     allowed_actions: List[str]
     forbidden_actions: List[str]
     quality_criteria: List[str]
+    algorithmic_capabilities: List[Dict[str, Any]]
     handoff_target: str
     approval_required: bool
     external_action_allowed: bool = False
@@ -205,6 +208,7 @@ class SubAgentForge:
             allowed_actions=allowed_actions,
             forbidden_actions=forbidden_actions,
             quality_criteria=quality_bar,
+            algorithmic_capabilities=capabilities_for_role(role, taxonomy),
             handoff_target=str(template.get("handoff_target", "")),
             approval_required=True,
             external_action_allowed=False,

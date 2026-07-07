@@ -1,0 +1,65 @@
+{
+  "phase": "Phase 24 - Autonomic Business Pipeline",
+  "operating_mode": "single_button_governed_business_cycle",
+  "output_file": "data/phase24_business_pipeline/aigc_phase24_business_pipeline_records.json",
+  "report_file": "data/reports/phase24_signature_update.md",
+  "audit_log": "data/audit/aigc_phase24_audit.jsonl",
+  "max_records": 25,
+  "input_files": {
+    "phase5_authorizations": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+    "phase23_work_orders": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json"
+  },
+  "single_button_contract": {
+    "find_work": true,
+    "ingest_job": true,
+    "research_job": true,
+    "find_best_practices": true,
+    "deep_dive_into_work": true,
+    "instantiate_learning_measures": true,
+    "design_appropriate_agents": true,
+    "use_agents_for_internal_work": true,
+    "prepare_application_or_delivery_handoff": true,
+    "auto_accept_generated_packets": false,
+    "outward_action_requires_existing_approval": true
+  },
+  "identity_policy": {
+    "operator_name": "Justice Gray Maciocha",
+    "agent_role": "transparent_authorized_business_operator",
+    "must_not_claim_hidden_manual_authorship": true,
+    "must_preserve_required_ai_disclosure": true,
+    "must_keep_audit_trail": true
+  },
+  "business_ologies": [
+    "strategy",
+    "operations",
+    "finance",
+    "marketing",
+    "sales",
+    "customer_success",
+    "product_management",
+    "project_management",
+    "systems_engineering",
+    "software_engineering",
+    "security",
+    "privacy",
+    "legal_review",
+    "ethics",
+    "research",
+    "design",
+    "communications",
+    "quality_assurance",
+    "risk_management",
+    "learning_science"
+  ],
+  "blocked_behaviors": [
+    "hidden_identity_claims",
+    "unreviewed_outward_action",
+    "expired_authorization_use",
+    "secret_value_logging",
+    "platform_rule_bypass",
+    "batch_outward_action",
+    "artifact_change_after_approval",
+    "contract_acceptance_without_review",
+    "payment_request_without_review"
+  ]
+}

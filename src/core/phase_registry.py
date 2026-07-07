@@ -235,6 +235,23 @@ def build_phase_registry(root: Path = PROJECT_ROOT) -> Dict[str, PhaseDefinition
             allowed_runtime_modes=["internal_work_order_governance_only"],
             external_action_risk="none_internal_work_order_governance_only",
         ),
+        "phase24": PhaseDefinition(
+            name="phase24",
+            display_name="Phase 24 - Autonomic Business Pipeline",
+            input_path="data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
+            output_path="data/phase24_business_pipeline/aigc_phase24_business_pipeline_records.json",
+            schema_name="autonomic_business_pipeline_record",
+            command=[
+                py,
+                str(src / "phase24_autonomic_business_pipeline.py"),
+                "--project-root",
+                str(root),
+                "--config",
+                str(root / "config" / "phase24_autonomic_business_pipeline.json"),
+            ],
+            allowed_runtime_modes=["internal_autonomic_business_pipeline_only"],
+            external_action_risk="none_internal_business_pipeline_readiness_only",
+        ),
     }
 
 
