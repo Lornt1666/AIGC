@@ -39,17 +39,17 @@ The research scan used publicly available, authoritative sources:
 | Layer | Priority | Current Status | Procurement Action |
 |---|---:|---|---|
 | Public research provenance matrix | P0 | procured as catalog | instantiate source-ranked catalog before future layer work |
-| AI RMF Govern/Map/Measure/Manage control plane | P0 | planned | add AI risk-control mappings and tests |
-| Input/tool/output guardrail mesh | P0 | planned | define tool guardrail policies for every function/tool invocation |
-| Human interrupt and resumable approval state | P0 | planned | add interrupt records and permit revalidation on resume |
-| Durable workflow execution readiness | P1 | planned | design Temporal-ready event-history records |
-| Data workflow and evidence observability | P1 | planned | design Prefect-ready evidence refresh records |
-| Supply-chain provenance and release attestation | P0 | planned | add release provenance, SBOM guidance, and signing plan |
-| Prompt-injection and excessive-agency red-team harness | P0 | planned | add adversarial fixtures that attack the approval boundary |
-| Privacy, retention, and data-classification layer | P0 | planned | add retention classes and data-boundary contracts |
-| Cost, rate-limit, and unbounded-consumption guard | P1 | planned | add budgets, max steps, token ceilings, and tripwires |
-| Vetted post-quantum crypto provider integration plan | P1 | partially procured | keep envelope plan; require vetted provider before real crypto claims |
-| Buyer tenant isolation and workspace boundary | P1 | planned | add tenant IDs, storage partitions, and export filters |
+| AI RMF Govern/Map/Measure/Manage control plane | P0 | procured as local contract | add AI risk-control mappings and tests |
+| Input/tool/output guardrail mesh | P0 | procured as local contract | define tool guardrail policies for every function/tool invocation |
+| Human interrupt and resumable approval state | P0 | procured as local contract | add interrupt records and permit revalidation on resume |
+| Durable workflow execution readiness | P1 | procured as local contract | design Temporal-ready event-history records |
+| Data workflow and evidence observability | P1 | procured as local contract | design Prefect-ready evidence refresh records |
+| Supply-chain provenance and release attestation | P0 | procured as local contract | add release provenance, SBOM guidance, and signing plan |
+| Prompt-injection and excessive-agency red-team harness | P0 | procured as local contract | add adversarial fixtures that attack the approval boundary |
+| Privacy, retention, and data-classification layer | P0 | procured as local contract | add retention classes and data-boundary contracts |
+| Cost, rate-limit, and unbounded-consumption guard | P1 | procured as local contract | add budgets, max steps, token ceilings, and tripwires |
+| Vetted post-quantum crypto provider integration plan | P1 | procured as provider-selection contract | keep envelope plan; require vetted provider before real crypto claims |
+| Buyer tenant isolation and workspace boundary | P1 | procured as local contract | add tenant IDs, storage partitions, and export filters |
 
 ## Non-Negotiable Procurement Blocks
 

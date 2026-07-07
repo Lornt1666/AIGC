@@ -13,28 +13,37 @@ The safe procurement decision is:
 
 ## Procured Now
 
-This commit procures:
+The latest procurement pass procures:
 
 - public research provenance matrix
 - missing-layer procurement catalog
 - schema for the catalog
 - tests that enforce source provenance, human review, and no external action
+- AI RMF control-plane contract
+- tool guardrail mesh contract
+- interrupt/resume contract
+- durable workflow readiness contract
+- evidence workflow observability contract
+- supply-chain provenance contract
+- prompt-injection red-team contract
+- privacy and retention contract
+- cost and rate-limit contract
+- post-quantum provider-selection contract
+- buyer tenant-isolation contract
+- safe push-command procurement record
 
-## Planned Next Layers
+## Procured Control Layers
 
-### P0
+These layers are now procured as local contracts, schemas, modules, tests, and documentation. They do not install or activate external systems.
 
 - AI RMF control plane
 - tool guardrail mesh
 - human interrupt/resume records
+- durable workflow execution readiness
+- data workflow observability
 - supply-chain provenance and release attestation
 - prompt-injection red-team harness
 - privacy/retention/data-classification layer
-
-### P1
-
-- durable workflow execution readiness
-- data workflow observability
 - cost/rate-limit/unbounded-consumption guard
 - post-quantum provider integration plan
 - buyer tenant isolation

@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Procured Control Layers Catalog",
+  "type": "object",
+  "required": [
+    "catalog_id",
+    "created_at",
+    "status",
+    "requested_layer_ids",
+    "procured_layers",
+    "procured_safe_commands",
+    "procurement_boundary",
+    "forbidden_procurement_targets",
+    "external_action_performed"
+  ],
+  "properties": {
+    "catalog_id": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "requested_layer_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "procured_layers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "layer_id",
+          "name",
+          "status",
+          "source_ids",
+          "control_objective",
+          "formations_procured",
+          "schemas_to_create",
+          "modules_to_create",
+          "tests_to_create",
+          "controls",
+          "acceptance_tests",
+          "blocked_failure_modes",
+          "implementation_boundary",
+          "human_review_required",
+          "external_action_performed"
+        ],
+        "properties": {
+          "layer_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "source_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "control_objective": {
+            "type": "string"
+          },
+          "formations_procured": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "schemas_to_create": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "modules_to_create": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "tests_to_create": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "controls": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "acceptance_tests": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "blocked_failure_modes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "implementation_boundary": {
+            "type": "string"
+          },
+          "human_review_required": {
+            "type": "boolean"
+          },
+          "external_action_performed": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "procured_safe_commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "command_id",
+          "command",
+          "purpose",
+          "prerequisites",
+          "forbidden_side_effects",
+          "verification_after_command",
+          "human_review_required",
+          "external_action_performed"
+        ],
+        "properties": {
+          "command_id": {
+            "type": "string"
+          },
+          "command": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "prerequisites": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "forbidden_side_effects": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "verification_after_command": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "human_review_required": {
+            "type": "boolean"
+          },
+          "external_action_performed": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "procurement_boundary": {
+      "type": "object"
+    },
+    "forbidden_procurement_targets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "external_action_performed": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}

@@ -195,7 +195,7 @@ def procured_layers() -> List[ProcuredLayer]:
         ProcuredLayer(
             layer_id="layer_ai_rmf_govern_map_measure_manage",
             name="AI RMF Govern/Map/Measure/Manage control plane",
-            status="planned_for_mvp_plus",
+            status="procured_as_local_contract",
             priority="P0",
             source_ids=["src_nist_ai_rmf"],
             missing_reason="Current gates are strong, but AI risk controls are not grouped under a formal AI RMF lifecycle.",
@@ -207,7 +207,7 @@ def procured_layers() -> List[ProcuredLayer]:
         ProcuredLayer(
             layer_id="layer_tool_guardrail_mesh",
             name="Input/tool/output guardrail mesh",
-            status="planned_for_mvp_plus",
+            status="procured_as_local_contract",
             priority="P0",
             source_ids=["src_openai_agents_sdk", "src_owasp_llm_top10"],
             missing_reason="AIGC has approval gates, but tool-level guardrails need a dedicated contract for every function/tool invocation.",
@@ -219,7 +219,7 @@ def procured_layers() -> List[ProcuredLayer]:
         ProcuredLayer(
             layer_id="layer_human_interrupt_resume",
             name="Human interrupt and resumable approval state",
-            status="planned_for_mvp_plus",
+            status="procured_as_local_contract",
             priority="P0",
             source_ids=["src_langgraph_interrupts", "src_openai_agents_sdk"],
             missing_reason="Approval exists, but resumable state and interrupt records are not yet first-class workflow contracts.",
@@ -231,7 +231,7 @@ def procured_layers() -> List[ProcuredLayer]:
         ProcuredLayer(
             layer_id="layer_durable_workflow_readiness",
             name="Durable workflow execution readiness",
-            status="planned_for_mvp_double_plus",
+            status="procured_as_local_contract",
             priority="P1",
             source_ids=["src_temporal_workflow_execution"],
             missing_reason="Long-running business cycles are still subprocess-first and lack durable event-history semantics.",
@@ -243,7 +243,7 @@ def procured_layers() -> List[ProcuredLayer]:
         ProcuredLayer(
             layer_id="layer_data_workflow_observability",
             name="Data workflow and evidence observability",
-            status="planned_for_mvp_double_plus",
+            status="procured_as_local_contract",
             priority="P1",
             source_ids=["src_prefect_docs"],
             missing_reason="Evidence pack refresh and reporting flows need richer task state and observability contracts.",
@@ -255,7 +255,7 @@ def procured_layers() -> List[ProcuredLayer]:
         ProcuredLayer(
             layer_id="layer_supply_chain_provenance",
             name="Supply-chain provenance and release attestation",
-            status="planned_for_mvp_double_plus",
+            status="procured_as_local_contract",
             priority="P0",
             source_ids=["src_slsa_requirements", "src_nist_ssdf"],
             missing_reason="PR CI exists, but signed provenance, SBOM, and release attestation are not yet first-class.",
@@ -267,7 +267,7 @@ def procured_layers() -> List[ProcuredLayer]:
         ProcuredLayer(
             layer_id="layer_prompt_injection_red_team",
             name="Prompt-injection and excessive-agency red-team harness",
-            status="planned_for_mvp_plus",
+            status="procured_as_local_contract",
             priority="P0",
             source_ids=["src_owasp_llm_top10"],
             missing_reason="Static redaction tests exist, but adversarial prompt/tool-use fixtures are not yet a dedicated suite.",
@@ -279,7 +279,7 @@ def procured_layers() -> List[ProcuredLayer]:
         ProcuredLayer(
             layer_id="layer_privacy_retention_classification",
             name="Privacy, retention, and data-classification layer",
-            status="planned_for_mvp_plus",
+            status="procured_as_local_contract",
             priority="P0",
             source_ids=["src_owasp_llm_top10", "src_nist_ai_rmf"],
             missing_reason="Redaction scanning exists, but retention class, data minimization, and buyer data boundaries need explicit contracts.",
@@ -291,7 +291,7 @@ def procured_layers() -> List[ProcuredLayer]:
         ProcuredLayer(
             layer_id="layer_cost_rate_limit_budget",
             name="Cost, rate-limit, and unbounded-consumption guard",
-            status="planned_for_mvp_plus",
+            status="procured_as_local_contract",
             priority="P1",
             source_ids=["src_owasp_llm_top10", "src_openai_agents_sdk"],
             missing_reason="AIGC has safety gates, but no dedicated cost budget and rate-limit contract for agent/tool loops.",
@@ -303,7 +303,7 @@ def procured_layers() -> List[ProcuredLayer]:
         ProcuredLayer(
             layer_id="layer_post_quantum_crypto_provider",
             name="Vetted post-quantum crypto provider integration plan",
-            status="partially_procured_as_onion_envelope",
+            status="procured_as_provider_selection_contract",
             priority="P1",
             source_ids=["src_nist_pqc"],
             missing_reason="AIGC now has a post-quantum-ready envelope, but not a vetted provider-backed encryption/signature implementation.",
@@ -315,7 +315,7 @@ def procured_layers() -> List[ProcuredLayer]:
         ProcuredLayer(
             layer_id="layer_buyer_tenant_isolation",
             name="Buyer tenant isolation and workspace boundary",
-            status="planned_for_mvp_triple_plus",
+            status="procured_as_local_contract",
             priority="P1",
             source_ids=["src_nist_ai_rmf", "src_nist_ssdf"],
             missing_reason="Sellable-folder posture exists, but multi-buyer isolation is not yet an enforceable runtime contract.",
