@@ -41,7 +41,7 @@ To launch locally:
 
 ```powershell
 python -m pip install -r requirements.txt
-$env:AIGC_COMMAND_CENTER_TOKEN="set-a-private-operator-token"
+# Set AIGC_COMMAND_CENTER_TOKEN in this shell to a private value kept outside Git.
 uvicorn src.webapp.app:app --host 127.0.0.1 --port 8000
 ```
 
