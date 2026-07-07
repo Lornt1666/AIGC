@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Transparent Action Governance Record",
+  "type": "object",
+  "required": [
+    "record_id",
+    "created_at",
+    "phase",
+    "status",
+    "action_id",
+    "authorization_id",
+    "proposal_id",
+    "recipient",
+    "platform",
+    "proposed_action",
+    "identity_policy",
+    "automation_policy",
+    "approval_state",
+    "eligibility",
+    "dispatch_plan",
+    "blocked_reasons",
+    "required_disclosures",
+    "blocked_actions",
+    "external_action_performed"
+  ],
+  "properties": {
+    "record_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "phase": {"type": "string"},
+    "status": {"type": "string"},
+    "action_id": {"type": "string"},
+    "authorization_id": {"type": "string"},
+    "proposal_id": {"type": "string"},
+    "opportunity_id": {"type": "string"},
+    "recipient": {"type": "string"},
+    "platform": {"type": "string"},
+    "proposed_action": {"type": "string"},
+    "source_url": {"type": "string"},
+    "identity_policy": {"type": "object"},
+    "automation_policy": {"type": "object"},
+    "approval_state": {"type": "object"},
+    "eligibility": {"type": "object"},
+    "dispatch_plan": {"type": "object"},
+    "blocked_reasons": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "required_disclosures": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "blocked_actions": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "work_order_quality_state": {"type": "string"},
+    "external_action_performed": {"type": "boolean"},
+    "audit_event_ids": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  },
+  "additionalProperties": true
+}
