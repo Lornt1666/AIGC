@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Post-Quantum Onion Envelope",
+  "type": "object",
+  "required": [
+    "envelope_id",
+    "created_at",
+    "artifact_id",
+    "purpose",
+    "payload_digest_sha3_256",
+    "payload_included",
+    "payload_bytes_included",
+    "layer_count",
+    "layers",
+    "post_quantum_readiness",
+    "key_reference",
+    "secret_material_included",
+    "cryptographic_claims",
+    "approval_boundary",
+    "external_action_performed"
+  ],
+  "properties": {
+    "envelope_id": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "artifact_id": {
+      "type": "string"
+    },
+    "purpose": {
+      "type": "string"
+    },
+    "payload_digest_sha3_256": {
+      "type": "string"
+    },
+    "payload_included": {
+      "type": "boolean"
+    },
+    "payload_bytes_included": {
+      "type": "integer"
+    },
+    "layer_count": {
+      "type": "integer"
+    },
+    "layers": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "required": [
+          "layer_id",
+          "name",
+          "purpose",
+          "algorithm_or_control",
+          "status",
+          "protects_against",
+          "secret_material_included",
+          "external_action_performed"
+        ],
+        "properties": {
+          "layer_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "algorithm_or_control": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "protects_against": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "secret_material_included": {
+            "type": "boolean"
+          },
+          "external_action_performed": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "post_quantum_readiness": {
+      "type": "object"
+    },
+    "key_reference": {
+      "type": "string"
+    },
+    "secret_material_included": {
+      "type": "boolean"
+    },
+    "cryptographic_claims": {
+      "type": "object"
+    },
+    "approval_boundary": {
+      "type": "object"
+    },
+    "external_action_performed": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}

@@ -16,6 +16,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.core.contract_validator import validate_artifact  # noqa: E402
+from src.core.algorithmic_capabilities import capabilities_for_role  # noqa: E402
 
 
 @dataclass
@@ -242,6 +243,7 @@ def business_agents(title: str, quality_state: str) -> List[Dict[str, Any]]:
             "mission": mission,
             "work_order": title,
             "quality_state": quality_state,
+            "algorithmic_capabilities": capabilities_for_role(role, [title, quality_state]),
             "governance_required": True,
             "external_action_allowed": False,
         }
