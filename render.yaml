@@ -9,3 +9,5 @@ services:
         value: 8000
       - key: AIGC_ENV
         value: production
+      - key: AIGC_COMMAND_CENTER_TOKEN
+        sync: false

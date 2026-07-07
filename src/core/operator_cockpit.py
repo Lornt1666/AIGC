@@ -36,6 +36,7 @@ ENTERPRISE_RUN_SEQUENCE = [
     ("Customer satisfaction continuum", ("run", "phase21"), "internal_customer_fit_scoring_only"),
     ("Quality-state kernel", ("run", "phase22"), "internal_uncertainty_model_only"),
     ("Ascended work-order governor", ("run", "phase23"), "internal_work_order_governance_only"),
+    ("Autonomic business pipeline", ("run", "phase24"), "internal_business_pipeline_readiness_only"),
     ("Productization readiness", ("run", "phase18"), "internal_release_readiness_only"),
     ("Observability refresh", ("run", "phase12"), "internal_observability_only"),
     ("Contract validation", ("validate",), "schema_contract_validation"),

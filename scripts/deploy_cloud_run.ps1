@@ -1,7 +1,8 @@
 param(
     [Parameter(Mandatory=$true)] [string] $ProjectId,
     [string] $Region = "us-central1",
-    [string] $ServiceName = "aigc-governed-worker"
+    [string] $ServiceName = "aigc-governed-worker",
+    [string] $CommandCenterTokenSecret = "aigc-command-center-token"
 )
 
 $ErrorActionPreference = "Stop"
@@ -16,7 +17,8 @@ gcloud run deploy $ServiceName `
     --image "gcr.io/$ProjectId/$ServiceName" `
     --platform managed `
     --region $Region `
-    --allow-unauthenticated `
-    --set-env-vars "AIGC_ENV=production,PORT=8000"
+    --no-allow-unauthenticated `
+    --set-env-vars "AIGC_ENV=production,PORT=8000" `
+    --set-secrets "AIGC_COMMAND_CENTER_TOKEN=$CommandCenterTokenSecret:latest"
 
-Write-Host "Deployment command completed. Review Cloud Run IAM and authentication policy before sharing the URL."
+Write-Host "Deployment command completed with authenticated invoker required and command-center token loaded from Secret Manager."

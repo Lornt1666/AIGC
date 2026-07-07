@@ -19,12 +19,38 @@ The web application exposes:
 - `POST /api/reviews/{action_id}/revise` — request revision;
 - `POST /api/emergency-stop` — enable the local runtime stop flag.
 
+## Authentication boundary
+
+The command center fails closed unless `AIGC_COMMAND_CENTER_TOKEN` is configured outside Git.
+
+Protected routes include:
+
+- `GET /`;
+- `GET /api/pipeline`;
+- `POST /api/run`;
+- `GET /api/run/{run_id}`;
+- `GET /api/reviews`;
+- `POST /api/reviews/{action_id}/accept`;
+- `POST /api/reviews/{action_id}/deny`;
+- `POST /api/reviews/{action_id}/revise`;
+- `POST /api/emergency-stop`.
+
+Use one of:
+
+- an `Authorization` bearer header containing the configured operator token;
+- HTTP Basic auth with the token as the password;
+- an `X-AIGC-Command-Token` header containing the configured operator token for controlled internal calls.
+
+Do not commit the token, print it in logs, put it in a URL, or send it to a third party.
+
 ## Local launch
 
 ```powershell
 python -m pip install -r requirements.txt
-uvicorn src.webapp.app:app --host 0.0.0.0 --port 8000
+uvicorn src.webapp.app:app --host 127.0.0.1 --port 8000
 ```
+
+Set `AIGC_COMMAND_CENTER_TOKEN` outside the repository before launching.
 
 Then open:
 
@@ -36,7 +62,7 @@ http://localhost:8000
 
 ```powershell
 docker build -t aigc-governed-worker .
-docker run --rm -p 8000:8000 -e PORT=8000 aigc-governed-worker
+docker run --rm -p 127.0.0.1:8000:8000 -e PORT=8000 --env-file <operator-env-file> aigc-governed-worker
 ```
 
 ## Render launch
@@ -45,7 +71,8 @@ docker run --rm -p 8000:8000 -e PORT=8000 aigc-governed-worker
 2. Create a new Render Blueprint.
 3. Select this repository.
 4. Render reads `render.yaml`.
-5. After launch, review authentication and sharing settings before distributing the URL.
+5. Set `AIGC_COMMAND_CENTER_TOKEN` in Render environment variables.
+6. Put authentication in front of the service before distributing the URL.
 
 ## Fly.io launch
 
@@ -55,13 +82,15 @@ fly launch --copy-config --name aigc-governed-worker
 fly deploy
 ```
 
+Set the `AIGC_COMMAND_CENTER_TOKEN` Fly secret before deployment.
+
 ## Google Cloud Run launch
 
 ```powershell
 .\scripts\deploy_cloud_run.ps1 -ProjectId YOUR_PROJECT_ID -Region us-central1 -ServiceName aigc-governed-worker
 ```
 
-After deployment, review Cloud Run IAM policy before public sharing.
+The Cloud Run script deploys with `--no-allow-unauthenticated` and loads `AIGC_COMMAND_CENTER_TOKEN` from Secret Manager secret `aigc-command-center-token` by default. Create that secret before deployment.
 
 ## Production controls before sale
 
@@ -87,4 +116,4 @@ For a customer-facing product, run with authentication in front of the app. Use 
 - Render private environment plus external auth gateway;
 - Fly.io plus an auth proxy.
 
-Do not expose admin command endpoints publicly without authentication.
+Do not expose admin command endpoints publicly without authentication. Do not use `--allow-unauthenticated` for this service.

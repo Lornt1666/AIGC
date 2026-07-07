@@ -10,6 +10,8 @@ from src.phase24_autonomic_business_pipeline import (
     neural_microcycle,
     status_from,
 )
+from src.core.contract_validator import validate_artifact
+from src.core.phase_registry import build_phase_registry
 
 
 def packet(decision: str = "pending", approved: bool = False, authorized: bool = False) -> dict:
@@ -81,3 +83,10 @@ def test_approved_packet_can_reach_handoff_readiness_without_outward_action(tmp_
     assert record.status == "approved_for_handoff_readiness"
     assert record.external_action_performed is False
     assert record.governed_next_action.startswith("Create Phase 6 manual handoff")
+    assert validate_artifact("autonomic_business_pipeline_record", record.__dict__) == record.__dict__
+
+
+def test_phase24_is_registered_in_core_phase_registry() -> None:
+    registry = build_phase_registry()
+    assert registry["phase24"].schema_name == "autonomic_business_pipeline_record"
+    assert registry["phase24"].output_path == "data/phase24_business_pipeline/aigc_phase24_business_pipeline_records.json"

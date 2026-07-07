@@ -7,4 +7,7 @@ if ($env:AIGC_INSTALL_DEPENDENCIES -eq "1") {
     python -m pip install -r requirements.txt
 }
 
-uvicorn src.webapp.app:app --host 0.0.0.0 --port 8000
+$HostAddress = if ($env:AIGC_WEBAPP_HOST) { $env:AIGC_WEBAPP_HOST } else { "127.0.0.1" }
+$PortNumber = if ($env:PORT) { $env:PORT } else { "8000" }
+
+uvicorn src.webapp.app:app --host $HostAddress --port $PortNumber

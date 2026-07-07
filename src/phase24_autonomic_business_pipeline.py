@@ -15,6 +15,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+from src.core.contract_validator import validate_artifact  # noqa: E402
+
 
 @dataclass
 class AutonomicBusinessRecord:
@@ -100,6 +102,7 @@ class AutonomicBusinessPipeline:
         )
         for record in records:
             record.audit_event_ids.append(event_id)
+            validate_artifact("autonomic_business_pipeline_record", asdict(record))
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(json.dumps([asdict(record) for record in records], ensure_ascii=False, indent=2), encoding="utf-8")
         report_path.parent.mkdir(parents=True, exist_ok=True)

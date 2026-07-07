@@ -91,7 +91,7 @@ AIGC should not be sold as:
 
 - Docker container;
 - Render/Fly/Cloud Run;
-- authentication in front of the service;
+- fail-closed `AIGC_COMMAND_CENTER_TOKEN` plus authentication in front of the service;
 - no stored secrets in the repository.
 
 ### Tier 3 — enterprise deployment

@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Autonomic Business Pipeline Record",
+  "type": "object",
+  "required": [
+    "record_id",
+    "created_at",
+    "phase",
+    "status",
+    "action_id",
+    "authorization_id",
+    "proposal_id",
+    "opportunity_id",
+    "recipient",
+    "platform",
+    "work_order_title",
+    "business_pipeline",
+    "neural_microcycle",
+    "business_agent_team",
+    "ology_review",
+    "learning_measures",
+    "approval_state",
+    "blocked_reasons",
+    "blocked_behaviors",
+    "governed_next_action",
+    "external_action_performed",
+    "audit_event_ids"
+  ],
+  "properties": {
+    "record_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "phase": {"type": "string"},
+    "status": {"type": "string"},
+    "action_id": {"type": "string"},
+    "authorization_id": {"type": "string"},
+    "proposal_id": {"type": "string"},
+    "opportunity_id": {"type": "string"},
+    "recipient": {"type": "string"},
+    "platform": {"type": "string"},
+    "work_order_title": {"type": "string"},
+    "business_pipeline": {
+      "type": "array",
+      "items": {"type": "object"}
+    },
+    "neural_microcycle": {"type": "object"},
+    "business_agent_team": {
+      "type": "array",
+      "items": {"type": "object"}
+    },
+    "ology_review": {"type": "object"},
+    "learning_measures": {"type": "object"},
+    "approval_state": {"type": "object"},
+    "blocked_reasons": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "blocked_behaviors": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "governed_next_action": {"type": "string"},
+    "external_action_performed": {"type": "boolean"},
+    "audit_event_ids": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  },
+  "additionalProperties": true
+}

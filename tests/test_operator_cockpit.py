@@ -103,6 +103,7 @@ def test_enterprise_run_sequence_keeps_validation_and_governance_gates() -> None
     assert "Human approval packet generation" in labels
     assert "Compliance and legal review" in labels
     assert "Ascended work-order governor" in labels
+    assert "Autonomic business pipeline" in labels
     assert labels[-1] == "Contract validation"
 
 

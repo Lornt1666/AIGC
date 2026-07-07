@@ -30,6 +30,7 @@ The buyer needs:
 - Python 3.12 or Docker;
 - Git;
 - optional cloud account for internet deployment;
+- operator-owned command center token configured outside Git;
 - their own API keys if they extend the system with model calls or third-party connectors;
 - responsibility for platform terms, local laws, privacy requirements, and employer/client consent.
 
@@ -41,6 +42,7 @@ Before distributing a copy:
 - run `python src/aigc.py validate`;
 - run the redaction scanner;
 - verify there are no private credentials;
+- verify the command center is not public without authentication;
 - remove private generated data if needed;
 - verify launch instructions on a clean machine;
 - update the version number and release notes;

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import html
+import base64
+import hmac
 import json
 import os
 import subprocess
@@ -11,7 +13,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any, Dict, List
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
 
@@ -39,6 +41,7 @@ app = FastAPI(
 
 RUNS: Dict[str, Dict[str, Any]] = {}
 RUN_LOCK = threading.Lock()
+COMMAND_CENTER_TOKEN_ENV = "AIGC_COMMAND_CENTER_TOKEN"
 
 
 class DecisionRequest(BaseModel):
@@ -59,22 +62,60 @@ BUSINESS_CYCLE = [
     ("customer_fit_review", [sys.executable, str(PROJECT_ROOT / "src" / "aigc.py"), "--root", str(PROJECT_ROOT), "run", "phase21"]),
     ("quality_deep_dive", [sys.executable, str(PROJECT_ROOT / "src" / "aigc.py"), "--root", str(PROJECT_ROOT), "run", "phase22"]),
     ("work_order_governance", [sys.executable, str(PROJECT_ROOT / "src" / "aigc.py"), "--root", str(PROJECT_ROOT), "run", "phase23"]),
-    ("autonomic_business_pipeline", [sys.executable, str(PROJECT_ROOT / "src" / "phase24_autonomic_business_pipeline.py"), "--project-root", str(PROJECT_ROOT), "--config", str(PROJECT_ROOT / "config" / "phase24_autonomic_business_pipeline.json")]),
+    ("autonomic_business_pipeline", [sys.executable, str(PROJECT_ROOT / "src" / "aigc.py"), "--root", str(PROJECT_ROOT), "run", "phase24"]),
     ("observability", [sys.executable, str(PROJECT_ROOT / "src" / "aigc.py"), "--root", str(PROJECT_ROOT), "run", "phase12"]),
     ("contract_validation", [sys.executable, str(PROJECT_ROOT / "src" / "aigc.py"), "--root", str(PROJECT_ROOT), "validate"]),
 ]
+
+
+def require_operator_auth(request: Request) -> bool:
+    expected = os.environ.get(COMMAND_CENTER_TOKEN_ENV, "").strip()
+    if not expected:
+        raise HTTPException(
+            status_code=503,
+            detail=f"{COMMAND_CENTER_TOKEN_ENV} is required before command center access is enabled.",
+        )
+    provided = extract_operator_token(request)
+    if not provided or not hmac.compare_digest(provided, expected):
+        raise HTTPException(
+            status_code=401,
+            detail="Operator authentication required.",
+            headers={"WWW-Authenticate": 'Basic realm="AIGC Command Center"'},
+        )
+    return True
+
+
+def extract_operator_token(request: Request) -> str:
+    header_token = request.headers.get("x-aigc-command-token", "").strip()
+    if header_token:
+        return header_token
+    auth = request.headers.get("authorization", "").strip()
+    lower = auth.lower()
+    if lower.startswith("bearer "):
+        return auth[7:].strip()
+    if lower.startswith("basic "):
+        try:
+            decoded = base64.b64decode(auth[6:].strip()).decode("utf-8")
+        except (ValueError, UnicodeDecodeError):
+            return ""
+        if ":" in decoded:
+            _username, password = decoded.split(":", 1)
+            return password
+        return decoded
+    return ""
 
 
 @app.get("/health")
 def health() -> Dict[str, Any]:
     return {
         "ok": True,
-        "project_root": str(PROJECT_ROOT),
         "mode": "governed_command_center",
+        "auth_required": True,
+        "auth_configured": bool(os.environ.get(COMMAND_CENTER_TOKEN_ENV, "").strip()),
     }
 
 
-@app.get("/api/pipeline")
+@app.get("/api/pipeline", dependencies=[Depends(require_operator_auth)])
 def pipeline() -> Dict[str, Any]:
     return {
         "steps": [
@@ -84,7 +125,7 @@ def pipeline() -> Dict[str, Any]:
     }
 
 
-@app.post("/api/run")
+@app.post("/api/run", dependencies=[Depends(require_operator_auth)])
 def run_cycle() -> Dict[str, Any]:
     run_id = f"AIGC-RUN-{uuid.uuid4()}"
     with RUN_LOCK:
@@ -94,14 +135,14 @@ def run_cycle() -> Dict[str, Any]:
     return {"run_id": run_id, "status_url": f"/api/run/{run_id}"}
 
 
-@app.get("/api/run/{run_id}")
+@app.get("/api/run/{run_id}", dependencies=[Depends(require_operator_auth)])
 def run_status(run_id: str) -> Dict[str, Any]:
     if run_id not in RUNS:
         raise HTTPException(status_code=404, detail="Run not found")
     return RUNS[run_id]
 
 
-@app.get("/api/reviews")
+@app.get("/api/reviews", dependencies=[Depends(require_operator_auth)])
 def reviews() -> Dict[str, Any]:
     packets = load_authorization_packets(PROJECT_ROOT)
     work_orders = load_work_order_governance_records(PROJECT_ROOT)
@@ -109,7 +150,7 @@ def reviews() -> Dict[str, Any]:
     return {"reviews": [asdict(item) for item in review_items]}
 
 
-@app.post("/api/reviews/{action_id}/accept")
+@app.post("/api/reviews/{action_id}/accept", dependencies=[Depends(require_operator_auth)])
 def accept_review(action_id: str, request: DecisionRequest) -> Dict[str, Any]:
     review = _find_review(action_id)
     if review.expired:
@@ -126,7 +167,7 @@ def accept_review(action_id: str, request: DecisionRequest) -> Dict[str, Any]:
     return _command_payload(result)
 
 
-@app.post("/api/reviews/{action_id}/deny")
+@app.post("/api/reviews/{action_id}/deny", dependencies=[Depends(require_operator_auth)])
 def deny_review(action_id: str, request: DecisionRequest) -> Dict[str, Any]:
     review = _find_review(action_id)
     result = run_command(
@@ -137,7 +178,7 @@ def deny_review(action_id: str, request: DecisionRequest) -> Dict[str, Any]:
     return _command_payload(result)
 
 
-@app.post("/api/reviews/{action_id}/revise")
+@app.post("/api/reviews/{action_id}/revise", dependencies=[Depends(require_operator_auth)])
 def revise_review(action_id: str, request: DecisionRequest) -> Dict[str, Any]:
     if not request.revision_instructions.strip():
         raise HTTPException(status_code=400, detail="revision_instructions is required")
@@ -150,7 +191,7 @@ def revise_review(action_id: str, request: DecisionRequest) -> Dict[str, Any]:
     return _command_payload(result)
 
 
-@app.post("/api/emergency-stop")
+@app.post("/api/emergency-stop", dependencies=[Depends(require_operator_auth)])
 def emergency_stop() -> Dict[str, Any]:
     result = subprocess.run(
         [sys.executable, str(PROJECT_ROOT / "src" / "aigc.py"), "--root", str(PROJECT_ROOT), "emergency-stop"],
@@ -162,7 +203,7 @@ def emergency_stop() -> Dict[str, Any]:
     return {"ok": result.returncode == 0, "stdout": result.stdout, "stderr": result.stderr}
 
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse, dependencies=[Depends(require_operator_auth)])
 def ui() -> str:
     return render_ui()
 
@@ -235,6 +276,7 @@ def render_ui() -> str:
 <body>
   <h1>AIGC Governed Worker Command Center</h1>
   <p>One cloud-launchable command surface for governed business cycles, review packets, and audit-first operations.</p>
+  <p>This command center requires operator authentication. Configure <code>AIGC_COMMAND_CENTER_TOKEN</code> outside Git before use.</p>
   <div class="card">
     <h2>Large Action Button</h2>
     <button class="primary" onclick="runCycle()">RUN FULL GOVERNED BUSINESS CYCLE</button>
@@ -321,7 +363,7 @@ if __name__ == "__main__":
 
     uvicorn.run(
         "src.webapp.app:app",
-        host=os.environ.get("HOST", "0.0.0.0"),
+        host=os.environ.get("AIGC_WEBAPP_HOST", os.environ.get("HOST", "127.0.0.1")),
         port=int(os.environ.get("PORT", "8000")),
         reload=False,
     )
