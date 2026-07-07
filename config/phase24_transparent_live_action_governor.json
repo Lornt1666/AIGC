@@ -1,0 +1,76 @@
+{
+  "phase": "Phase 24 - Transparent Live Action Governor",
+  "operating_mode": "single_button_governed_autopilot",
+  "external_actions_allowed": false,
+  "live_execution_allowed": false,
+  "human_impersonation_allowed": false,
+  "hidden_ai_action_allowed": false,
+  "one_large_action_button": {
+    "enabled": true,
+    "purpose": "Run the governed readiness cycle and prepare only explicitly approved, non-expired, transparent actions for connector dispatch.",
+    "auto_accept_generated_packets": false,
+    "executes_only_preapproved_actions": true,
+    "requires_visible_artifact_hash": true,
+    "requires_ai_disclosure": true
+  },
+  "input_files": {
+    "phase5_authorizations": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+    "phase23_work_orders": "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json"
+  },
+  "output_file": "data/phase24_live_actions/aigc_phase24_live_action_governance_records.json",
+  "report_file": "data/reports/phase24_signature_update.md",
+  "audit_log": "data/audit/aigc_phase24_audit.jsonl",
+  "max_records": 25,
+  "identity_policy": {
+    "operator_name": "Justice Gray Maciocha",
+    "agent_role": "transparent_authorized_digital_operator",
+    "must_disclose_automation_when_required": true,
+    "must_not_claim_to_be_human": true,
+    "must_not_hide_ai_or_automation": true,
+    "must_not_use_operator_identity_outside_scoped_approval": true
+  },
+  "connector_policy": {
+    "default_mode": "disabled_manual_handoff_only",
+    "allowed_when_enabled": [
+      "explicit_phase5_approval",
+      "unexpired_authorization",
+      "platform_policy_review",
+      "artifact_hash_match",
+      "ai_disclosure_preserved",
+      "no_secret_value_logging",
+      "non_deceptive_identity",
+      "single_action_scope"
+    ],
+    "adapters": {
+      "GitHub": {
+        "enabled": false,
+        "mode": "manual_handoff_only"
+      },
+      "We Work Remotely": {
+        "enabled": false,
+        "mode": "manual_handoff_only"
+      },
+      "RemoteOK": {
+        "enabled": false,
+        "mode": "manual_handoff_only"
+      },
+      "Remotive": {
+        "enabled": false,
+        "mode": "manual_handoff_only"
+      }
+    }
+  },
+  "blocked_actions": [
+    "impersonate_human",
+    "hide_ai_or_automation",
+    "submit_without_phase5_approval",
+    "submit_expired_authorization",
+    "use_credentials_without_scoped_secret_policy",
+    "bypass_platform_restrictions",
+    "batch_external_actions",
+    "modify_artifact_after_approval",
+    "request_payment_without_contract_review",
+    "accept_contract_without_operator_review",
+    "perform_unlogged_external_action"
+  ]
+}
