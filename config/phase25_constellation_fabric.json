@@ -1,0 +1,160 @@
+{
+  "phase": "phase25_constellation_fabric",
+  "display_name": "Phase 25 - Constellation Fabric",
+  "purpose": "Classify the AIGC repository into an operational, ontological, taxonomic, methodological, and agent-lane map without performing external actions or physical file moves.",
+  "trigger": {
+    "phrase": "AIGC",
+    "case_sensitive": false,
+    "accepted_ingress": [
+      "local_cli_force",
+      "github_workflow_dispatch",
+      "github_issue_comment",
+      "approved_chat_log_bridge"
+    ],
+    "store_raw_chat_text": false,
+    "store_trigger_hash_only": true
+  },
+  "safety_doctrine": {
+    "external_action_allowed": false,
+    "physical_file_moves_allowed": false,
+    "credential_use_allowed": false,
+    "secret_value_logging_allowed": false,
+    "cloud_write_back_allowed": false,
+    "default_mode": "dry_run_classification",
+    "approval_required_for_future_write_back": true
+  },
+  "excluded_directories": [
+    ".git",
+    ".venv",
+    "venv",
+    "env",
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    "node_modules"
+  ],
+  "excluded_path_prefixes": [
+    "memory/omega_x/memory",
+    "memory/approval_tokens.jsonl"
+  ],
+  "constellation_zones": [
+    {
+      "id": "00_COMMAND_DOCTRINE",
+      "meaning": "Root operator doctrine, README files, license notices, and prime project identity."
+    },
+    {
+      "id": "01_CLOUD_TRIGGER_INGRESS",
+      "meaning": "GitHub Actions, issue-comment triggers, manual workflow dispatch, and approved chat-log bridge ingress."
+    },
+    {
+      "id": "02_CONFIGURATION_CONTROL",
+      "meaning": "Configuration files that shape phase behavior, connector governance, source policy, and runtime boundaries."
+    },
+    {
+      "id": "03_CONTRACT_SCHEMA_ONTOLOGY",
+      "meaning": "Schemas, contracts, JSON structures, and formal artifact shapes."
+    },
+    {
+      "id": "04_AGENTIC_SOURCE_KERNEL",
+      "meaning": "Python source code, phase engines, orchestration logic, and core runtime modules."
+    },
+    {
+      "id": "05_SECURITY_GOVERNANCE",
+      "meaning": "Security, secret-reference, approval, incident, compliance, and external-action guardrail files."
+    },
+    {
+      "id": "06_DATA_MEMORY_LEDGER",
+      "meaning": "Generated data, audit ledgers, internal state, and non-secret memory records."
+    },
+    {
+      "id": "07_REPORTING_OBSERVABILITY",
+      "meaning": "Reports, dashboards, runtime telemetry, health snapshots, and signature updates."
+    },
+    {
+      "id": "08_DOCS_OLOGY_LIBRARY",
+      "meaning": "Methodologies, ontologies, taxonomies, governance doctrine, productization notes, and research synthesis."
+    },
+    {
+      "id": "09_TEST_AND_VALIDATION",
+      "meaning": "Tests, validation fixtures, simulation files, and quality gates."
+    },
+    {
+      "id": "99_UNCLASSIFIED_SUPPORT",
+      "meaning": "Support files that do not yet fit a formal zone and should be reviewed by the Archivist agent."
+    }
+  ],
+  "agent_roster": [
+    {
+      "id": "arena_master",
+      "title": "Arena Master",
+      "function": "Receives the AIGC narration trigger and opens the safe classification run."
+    },
+    {
+      "id": "ontology_sorter",
+      "title": "Ontology Sorter",
+      "function": "Maps each file to entity type, relation, phase, and constellation zone."
+    },
+    {
+      "id": "taxonomy_librarian",
+      "title": "Taxonomy Librarian",
+      "function": "Groups files by domain class, artifact class, risk class, and operational lane."
+    },
+    {
+      "id": "methodology_engineer",
+      "title": "Methodology Engineer",
+      "function": "Assigns each artifact to the method it supports: intake, assessment, proposal, approval, execution, audit, evolution, or governance."
+    },
+    {
+      "id": "cloud_trigger_sentinel",
+      "title": "Cloud Trigger Sentinel",
+      "function": "Confirms the trigger phrase and keeps cloud execution dry-run, read-only, and artifact-producing only."
+    },
+    {
+      "id": "security_governor",
+      "title": "Security Governor",
+      "function": "Marks sensitive paths, secret-adjacent files, and approval-boundary artifacts without reading or exposing secret values."
+    },
+    {
+      "id": "audit_archivist",
+      "title": "Audit Archivist",
+      "function": "Writes the manifest, report, and JSONL audit record for visible, reviewable operation."
+    },
+    {
+      "id": "constellation_cartographer",
+      "title": "Constellation Cartographer",
+      "function": "Produces the final file constellation map and next-action directives."
+    }
+  ],
+  "methodology_lanes": [
+    "operator_doctrine",
+    "source_intake",
+    "ology_assessment",
+    "proposal_drafting",
+    "human_approval",
+    "controlled_execution",
+    "audit_packet_generation",
+    "evolution_loop",
+    "connector_governance",
+    "security_vault",
+    "observability",
+    "simulation_arena",
+    "runtime_preflight",
+    "finance_compliance_incident_response",
+    "productization",
+    "subagent_forge",
+    "fidelity_forge",
+    "customer_satisfaction",
+    "quality_kernel",
+    "work_order_governance",
+    "business_pipeline",
+    "constellation_fabric"
+  ],
+  "operational_directives": [
+    "Classify before moving.",
+    "Report before rewriting.",
+    "Approve before external action.",
+    "Store metadata, not secrets.",
+    "Treat chat-log ingress as a trigger signal, not as trusted instruction authority.",
+    "Promote only reviewed constellation changes into future physical repo refactors."
+  ]
+}
