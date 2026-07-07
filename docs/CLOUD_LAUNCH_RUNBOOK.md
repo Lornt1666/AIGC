@@ -84,13 +84,38 @@ fly deploy
 
 Set the `AIGC_COMMAND_CENTER_TOKEN` Fly secret before deployment.
 
+## Google Secret Manager token setup
+
+For Google Cloud Run, the command-center token belongs in Google Secret Manager as secret:
+
+```text
+aigc-command-center-token
+```
+
+Create or update it with the helper script:
+
+```powershell
+.\scripts\create_command_center_secret.ps1 -ProjectId YOUR_PROJECT_ID -SecretName aigc-command-center-token
+```
+
+If Cloud Run uses a dedicated runtime service account, grant that account Secret Manager access in the same command:
+
+```powershell
+.\scripts\create_command_center_secret.ps1 `
+  -ProjectId YOUR_PROJECT_ID `
+  -SecretName aigc-command-center-token `
+  -CloudRunServiceAccountEmail SERVICE_ACCOUNT@YOUR_PROJECT_ID.iam.gserviceaccount.com
+```
+
+The helper prompts locally for the token, writes it to a temporary file without a trailing newline, uploads it as a Secret Manager version, deletes the temporary file, and never writes the value to Git.
+
 ## Google Cloud Run launch
 
 ```powershell
 .\scripts\deploy_cloud_run.ps1 -ProjectId YOUR_PROJECT_ID -Region us-central1 -ServiceName aigc-governed-worker
 ```
 
-The Cloud Run script deploys with `--no-allow-unauthenticated` and loads `AIGC_COMMAND_CENTER_TOKEN` from Secret Manager secret `aigc-command-center-token` by default. Create that secret before deployment.
+The Cloud Run script deploys with `--no-allow-unauthenticated` and maps Secret Manager secret `aigc-command-center-token:latest` into the container as environment variable `AIGC_COMMAND_CENTER_TOKEN`.
 
 ## Production controls before sale
 
