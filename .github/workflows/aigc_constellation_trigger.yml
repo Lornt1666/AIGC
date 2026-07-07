@@ -1,0 +1,49 @@
+name: AIGC Narration Trigger
+
+on:
+  workflow_dispatch:
+    inputs:
+      narration:
+        description: "Narration text that should contain the AIGC trigger phrase."
+        required: true
+        default: "AIGC: run constellation fabric classification."
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  constellation-fabric:
+    name: Phase 25 Constellation Fabric
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.comment.body, 'AIGC')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run safe AIGC constellation fabric classifier
+        env:
+          AIGC_TRIGGER_TEXT: ${{ github.event.inputs.narration || github.event.comment.body || 'AIGC manual trigger' }}
+        run: |
+          python src/phase25_constellation_fabric.py \
+            --project-root . \
+            --config config/phase25_constellation_fabric.json \
+            --trigger-text "$AIGC_TRIGGER_TEXT"
+
+      - name: Upload constellation artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: aigc-phase25-constellation-fabric
+          if-no-files-found: error
+          path: |
+            data/phase25_constellation/aigc_phase25_constellation_manifest.json
+            data/audit/aigc_phase25_audit.jsonl
+            reports/phase25_constellation_fabric_report.md
