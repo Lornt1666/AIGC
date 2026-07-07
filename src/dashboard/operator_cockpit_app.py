@@ -197,7 +197,7 @@ def render_review_tab(st, root: Path) -> None:
                 label=f"Accept {selected.action_id}",
             )
             render_decision_result(st, result)
-            st.rerun()
+            st.info("Refresh the review table to see the updated packet state.")
     with col_deny:
         if st.button("Deny selected action", disabled=deny_disabled, use_container_width=True):
             result = run_command(
@@ -206,7 +206,7 @@ def render_review_tab(st, root: Path) -> None:
                 label=f"Deny {selected.action_id}",
             )
             render_decision_result(st, result)
-            st.rerun()
+            st.info("Refresh the review table to see the updated packet state.")
 
     revision = st.text_area(
         "Revision instructions",
@@ -219,7 +219,7 @@ def render_review_tab(st, root: Path) -> None:
             label=f"Revise {selected.action_id}",
         )
         render_decision_result(st, result)
-        st.rerun()
+        st.info("Refresh the review table to see the updated packet state.")
 
 
 def render_audit_tab(st, root: Path) -> None:
