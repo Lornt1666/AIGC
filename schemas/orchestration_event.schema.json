@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Orchestration Event",
+  "type": "object",
+  "required": [
+    "event_id",
+    "event_type",
+    "timestamp",
+    "source_system",
+    "workflow_execution_id",
+    "audit_event_id",
+    "work_order_id",
+    "action_permit_id",
+    "payload",
+    "risk_level",
+    "requires_human_approval",
+    "allowed_authority_level",
+    "status",
+    "external_action_performed"
+  ],
+  "properties": {
+    "event_id": {
+      "type": "string"
+    },
+    "event_type": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string"
+    },
+    "source_system": {
+      "type": "string"
+    },
+    "workflow_execution_id": {
+      "type": "string"
+    },
+    "audit_event_id": {
+      "type": "string"
+    },
+    "work_order_id": {
+      "type": "string"
+    },
+    "action_permit_id": {
+      "type": "string"
+    },
+    "payload": {
+      "type": "object"
+    },
+    "risk_level": {
+      "type": "string"
+    },
+    "requires_human_approval": {
+      "type": "boolean"
+    },
+    "allowed_authority_level": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "external_action_performed": {
+      "enum": [
+        false,
+        "blocked",
+        "approved"
+      ]
+    }
+  },
+  "additionalProperties": true
+}

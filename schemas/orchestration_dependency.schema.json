@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Orchestration Dependency",
+  "type": "object",
+  "required": [
+    "dependency_id",
+    "workflow_id",
+    "depends_on",
+    "dependency_type",
+    "required",
+    "approval_required",
+    "external_action_performed"
+  ],
+  "properties": {
+    "dependency_id": {
+      "type": "string"
+    },
+    "workflow_id": {
+      "type": "string"
+    },
+    "depends_on": {
+      "type": "string"
+    },
+    "dependency_type": {
+      "type": "string"
+    },
+    "required": {
+      "type": "boolean"
+    },
+    "approval_required": {
+      "type": "boolean"
+    },
+    "external_action_performed": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,43 @@
+{
+  "name": "AIGC Regression Guard Check",
+  "workflowId": "regression_guard_check",
+  "dryRun": true,
+  "externalActionNodesDisabled": true,
+  "humanApprovalWaitStep": true,
+  "webhookPlaceholder": "{{AIGC_N8N_WEBHOOK_PLACEHOLDER}}",
+  "aigcEndpointPlaceholder": "{{AIGC_LOCAL_ORCHESTRATION_CLI}}",
+  "correlationFields": [
+    "workflow_execution_id",
+    "audit_event_id",
+    "work_order_id",
+    "action_permit_id",
+    "requires_human_approval",
+    "external_action_performed"
+  ],
+  "manualSetup": [
+    "use local dry-run command first",
+    "do not notify external systems from this template",
+    "record result as local audit evidence"
+  ],
+  "nodes": [
+    {
+      "name": "Schedule Placeholder",
+      "type": "scheduleTrigger",
+      "disabled": false,
+      "externalAction": false
+    },
+    {
+      "name": "Run Local Guard Placeholder",
+      "type": "function",
+      "disabled": false,
+      "externalAction": false,
+      "emits": "regression_guard.passed"
+    },
+    {
+      "name": "External Notification Block",
+      "type": "noop",
+      "disabled": true,
+      "externalAction": true
+    }
+  ]
+}

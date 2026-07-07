@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Workflow Candidate",
+  "type": "object",
+  "required": [
+    "workflow_id",
+    "workflow_name",
+    "trigger_type",
+    "description",
+    "input_event_types",
+    "output_event_types",
+    "requires_human_approval",
+    "external_action_allowed",
+    "blocked_actions"
+  ],
+  "properties": {
+    "workflow_id": {
+      "type": "string"
+    },
+    "workflow_name": {
+      "type": "string"
+    },
+    "trigger_type": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "input_event_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "output_event_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "requires_human_approval": {
+      "type": "boolean"
+    },
+    "external_action_allowed": {
+      "type": "boolean"
+    },
+    "blocked_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,43 @@
+{
+  "name": "AIGC Evidence Pack Refresh",
+  "workflowId": "evidence_pack_refresh",
+  "dryRun": true,
+  "externalActionNodesDisabled": true,
+  "humanApprovalWaitStep": true,
+  "webhookPlaceholder": "{{AIGC_N8N_WEBHOOK_PLACEHOLDER}}",
+  "aigcEndpointPlaceholder": "{{AIGC_LOCAL_ORCHESTRATION_CLI}}",
+  "correlationFields": [
+    "workflow_execution_id",
+    "audit_event_id",
+    "work_order_id",
+    "action_permit_id",
+    "requires_human_approval",
+    "external_action_performed"
+  ],
+  "manualSetup": [
+    "refresh local evidence only",
+    "do not upload refreshed packs",
+    "require review before any release use"
+  ],
+  "nodes": [
+    {
+      "name": "Evidence Fixture",
+      "type": "manualTrigger",
+      "disabled": false,
+      "externalAction": false
+    },
+    {
+      "name": "Update Evidence Event",
+      "type": "function",
+      "disabled": false,
+      "externalAction": false,
+      "emits": "evidence_pack.updated"
+    },
+    {
+      "name": "Upload Block",
+      "type": "noop",
+      "disabled": true,
+      "externalAction": true
+    }
+  ]
+}

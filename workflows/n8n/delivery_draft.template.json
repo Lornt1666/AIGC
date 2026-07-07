@@ -1,0 +1,43 @@
+{
+  "name": "AIGC Client Delivery Draft",
+  "workflowId": "delivery_draft",
+  "dryRun": true,
+  "externalActionNodesDisabled": true,
+  "humanApprovalWaitStep": true,
+  "webhookPlaceholder": "{{AIGC_N8N_WEBHOOK_PLACEHOLDER}}",
+  "aigcEndpointPlaceholder": "{{AIGC_LOCAL_ORCHESTRATION_CLI}}",
+  "correlationFields": [
+    "workflow_execution_id",
+    "audit_event_id",
+    "work_order_id",
+    "action_permit_id",
+    "requires_human_approval",
+    "external_action_performed"
+  ],
+  "manualSetup": [
+    "prepare delivery packet only",
+    "stop before send or upload",
+    "require human approval and live action permit"
+  ],
+  "nodes": [
+    {
+      "name": "QA Passed Fixture",
+      "type": "manualTrigger",
+      "disabled": false,
+      "externalAction": false
+    },
+    {
+      "name": "Prepare Delivery Packet",
+      "type": "function",
+      "disabled": false,
+      "externalAction": false,
+      "emits": "delivery_packet.ready"
+    },
+    {
+      "name": "Send Upload Delivery Block",
+      "type": "noop",
+      "disabled": true,
+      "externalAction": true
+    }
+  ]
+}
