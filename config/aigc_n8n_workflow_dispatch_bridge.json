@@ -1,0 +1,102 @@
+{
+  "phase": "n8n_workflow_dispatch_bridge",
+  "display_name": "AIGC n8n Workflow Dispatch Bridge",
+  "purpose": "Define a governed n8n webhook-to-GitHub workflow_dispatch bridge for triggering the AIGC pipeline from chat-log or desktop events without storing raw secrets in AIGC artifacts.",
+  "trigger_contract": {
+    "ingress": "n8n_webhook",
+    "allowed_phrase": "AIGC",
+    "default_ref": "main",
+    "workflow_file": "aigc_constellation_trigger.yml",
+    "repo_full_name": "Lornt1666/AIGC",
+    "required_inputs": {
+      "narration": "AIGC",
+      "project_profile": "auto",
+      "run_mode": "artifact_generation",
+      "submission_decision": "review_only",
+      "submission_phrase": ""
+    }
+  },
+  "n8n_nodes": [
+    {
+      "name": "AIGC Webhook Intake",
+      "type": "Webhook",
+      "method": "POST",
+      "path": "aigc/run",
+      "auth": "header_auth_required",
+      "purpose": "Receive a chat-log or desktop trigger payload."
+    },
+    {
+      "name": "Validate Trigger",
+      "type": "Code",
+      "purpose": "Require narration to contain AIGC and force review-only defaults unless explicitly overridden."
+    },
+    {
+      "name": "GitHub Workflow Dispatch",
+      "type": "HTTP Request",
+      "method": "POST",
+      "url": "https://api.github.com/repos/Lornt1666/AIGC/actions/workflows/aigc_constellation_trigger.yml/dispatches",
+      "purpose": "Create a GitHub workflow_dispatch event using a GitHub credential with Actions write permission."
+    },
+    {
+      "name": "Audit Response",
+      "type": "Respond to Webhook",
+      "purpose": "Return accepted dispatch metadata and no secret values."
+    }
+  ],
+  "github_dispatch_request": {
+    "method": "POST",
+    "url": "https://api.github.com/repos/Lornt1666/AIGC/actions/workflows/aigc_constellation_trigger.yml/dispatches",
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2026-03-10",
+      "Authorization": "Bearer <GITHUB_ACTIONS_DISPATCH_CREDENTIAL_FROM_N8N>"
+    },
+    "body": {
+      "ref": "main",
+      "inputs": {
+        "narration": "AIGC",
+        "project_profile": "auto",
+        "run_mode": "artifact_generation",
+        "submission_decision": "review_only",
+        "submission_phrase": ""
+      }
+    }
+  },
+  "secret_references": [
+    "n8n_credential://GITHUB_ACTIONS_DISPATCH_CREDENTIAL",
+    "gcp_secret://AIGC_WORK_SOURCE_CONNECTOR_ALLOWLIST/latest",
+    "gcp_secret://AIGC_OPERATOR_GOOGLE_WORKSPACE_EMAIL/latest"
+  ],
+  "safety_controls": {
+    "raw_secret_logging_allowed": false,
+    "raw_trigger_payload_storage_allowed": false,
+    "default_submission_mode": "review_only",
+    "proceed_requires_exact_phrase": "PROCEED AIGC SUBMISSION",
+    "external_submission_from_n8n_allowed": false,
+    "n8n_can_dispatch_pipeline_only": true,
+    "desktop_or_operator_must_review_artifacts": true
+  },
+  "expected_response": {
+    "accepted": true,
+    "workflow": "AIGC Narration Trigger",
+    "repo": "Lornt1666/AIGC",
+    "ref": "main",
+    "mode": "review_only",
+    "secret_values_returned": false
+  },
+  "failure_checks": [
+    "n8n workflow inactive",
+    "webhook URL using test path instead of production path",
+    "GitHub dispatch credential missing Actions write permission",
+    "workflow file name mismatch",
+    "branch ref mismatch",
+    "missing narration input",
+    "submission decision accidentally set to proceed without phrase",
+    "GitHub Actions disabled for repository"
+  ],
+  "outputs": {
+    "packet": "data/n8n_bridge/aigc_n8n_workflow_dispatch_bridge_packet.json",
+    "report": "reports/n8n_workflow_dispatch_bridge_report.md",
+    "audit": "data/audit/aigc_n8n_workflow_dispatch_bridge_audit.jsonl"
+  }
+}
