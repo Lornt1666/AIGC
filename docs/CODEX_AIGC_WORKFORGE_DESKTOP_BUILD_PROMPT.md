@@ -37,6 +37,39 @@ AIGC trigger
   -> proceed/deny decision
 ```
 
+## Credential Holder Architecture
+
+Read and implement:
+
+```text
+docs/AIGC_CREDENTIAL_HOLDER_ARCHITECTURE.md
+```
+
+The app must implement a **Save Credential Broker** popup. The broker coordinates saving into approved vaults; it does not turn AIGC into a plaintext password manager.
+
+Approved save targets:
+
+```text
+Google Secret Manager
+OS-protected local storage for development only
+future reviewed third-party password manager connector
+```
+
+The broker must show:
+
+```text
+destination vault
+reference name
+purpose
+required-before stage
+scope requested
+rotation policy
+audit event to be written
+warning that repository and artifacts receive no credential payload
+```
+
+The broker must write only success/failure metadata, reference URI, version status, and audit receipts into AIGC artifacts.
+
 ## Secret Reference Procurement Contract
 
 Read and implement:
@@ -88,6 +121,27 @@ The Secret Manager tab must include:
 - Block Proceed when required references are missing.
 - Show rotation due status.
 - Show last audit receipt.
+- Open Save Credential Broker.
+- Open Ctrl+N Credential Reference Inspector.
+
+## Ctrl+N Advanced Inspector
+
+`Ctrl+N` must open an advanced Credential Reference Inspector.
+
+The inspector may show:
+
+```text
+reference URI
+vault target
+presence status
+version status
+rotation status
+last checked time
+last audit receipt
+source of truth
+```
+
+The inspector must not show credential payloads or plaintext credential material.
 
 ## Recommended Stack
 
@@ -99,6 +153,8 @@ Python subprocess runner for existing AIGC scripts
 GitHub CLI integration for workflow dispatch and artifact download
 gcloud command-plan generation for Secret Manager setup
 ```
+
+Electron builds may use `safeStorage` for local-development encrypted references only. Tauri builds may use Stronghold. Google Secret Manager remains the preferred cloud vault for workflow-facing AIGC references.
 
 ## Create These Paths
 
@@ -129,6 +185,7 @@ apps/aigc-workforge-desktop/
   backend/services/secret_reference_checker.py
   backend/services/github_cli.py
   backend/services/gcloud_plan.py
+  backend/services/credential_broker.py
   backend/storage/db.py
 ```
 
@@ -142,6 +199,8 @@ apps/aigc-workforge-desktop/
 - Use proceed and deny buttons with exact phrase confirmation.
 - Show warnings when the user tries to proceed without required artifacts.
 - Do not show raw secrets.
+- Include Save Credential Broker in the Secret Manager tab.
+- Include Ctrl+N Credential Reference Inspector.
 
 ## Backend Requirements
 
@@ -160,6 +219,9 @@ GET  /secrets/references
 GET  /secrets/procurement-matrix
 POST /secrets/command-plan
 POST /secrets/validate-references
+POST /secrets/save-broker/plan
+POST /secrets/save-broker/record-result
+GET  /secrets/inspector
 GET  /employer/latest-packet
 GET  /audit/latest
 POST /submission/review-only
@@ -220,7 +282,9 @@ Proceed records handoff authority only. It does not silently submit externally.
 - Work-source gates must be visible before any connector is marked active.
 - Secret references must be validated by presence/status only.
 - Missing required secret references block Proceed.
+- Save Credential Broker writes to approved vault targets only.
+- Ctrl+N shows reference inspection only.
 
 ## Deliverable
 
-Build a runnable scaffold that can load existing AIGC artifacts and run the local pipeline. Focus on clarity, safety, and investor-demo polish before complex live integrations.
+Build a runnable scaffold that can load existing AIGC artifacts and run the local pipeline. Focus on clarity, safety, credential durability, and investor-demo polish before complex live integrations.
