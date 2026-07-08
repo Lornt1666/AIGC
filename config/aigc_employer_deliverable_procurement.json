@@ -1,0 +1,113 @@
+{
+  "phase": "employer_deliverable_procurement",
+  "display_name": "Employer Deliverable Procurement",
+  "purpose": "Synthesize AIGC phase outputs into an employer-facing project delivery packet that recognizes the occupational discipline, instantiates appropriate agent roles, applies ology-based research, data analytics, best practices, emerging practices, reasoning, and metacognition, and prepares a reviewable submission package without auto-submitting it.",
+  "inputs": {
+    "phase1_plan": "data/phase1_cognitive_router/aigc_phase1_cognitive_plan.json",
+    "phase2_24_continuity": "data/phase2_24_continuity/aigc_phase2_24_continuity_plan.json",
+    "phase_interleave_schedule": "data/phase_interleaves/aigc_phase_interleave_schedule.json",
+    "auto_approval_gate_packet": "data/auto_approval_gates/aigc_auto_approval_gate_packet.json",
+    "mvp_plus_plus_plus_packet": "data/mvp_plus_plus_plus/aigc_mvp_plus_plus_plus_procurement_packet.json",
+    "phase25_manifest": "data/phase25_constellation/aigc_phase25_constellation_manifest.json",
+    "phase26_refactor_plan": "data/phase26_constellation_refactor/aigc_phase26_refactor_plan.json"
+  },
+  "outputs": {
+    "packet": "data/employer_deliverables/aigc_employer_deliverable_procurement_packet.json",
+    "report": "reports/employer_deliverable_procurement_report.md",
+    "audit": "data/audit/aigc_employer_deliverable_procurement_audit.jsonl"
+  },
+  "publication_policy": {
+    "publish_phase_map_artifact_to_employer": false,
+    "publish_internal_reasoning_trace_to_employer": false,
+    "publish_audit_summary_to_employer": true,
+    "publish_methodology_summary_to_employer": true,
+    "publish_source_citations_when_available": true,
+    "auto_submit_to_employer": false,
+    "pay_outcome_guarantee_allowed": false
+  },
+  "occupational_taxonomy": [
+    {
+      "discipline": "software_engineering",
+      "keywords": ["code", "app", "api", "bug", "repo", "software", "python", "javascript", "frontend", "backend", "deployment"],
+      "agents": ["requirements_engineer", "solution_architect", "code_worker", "qa_verifier", "security_reviewer", "documentation_writer"]
+    },
+    {
+      "discipline": "data_analytics",
+      "keywords": ["data", "analytics", "dashboard", "spreadsheet", "metrics", "forecast", "model", "kpi", "statistics", "visualization"],
+      "agents": ["data_analyst", "data_cleaner", "statistical_reviewer", "visualization_designer", "insight_writer", "quality_verifier"]
+    },
+    {
+      "discipline": "business_operations",
+      "keywords": ["business", "proposal", "sales", "customer", "operations", "lead", "market", "pipeline", "strategy", "finance"],
+      "agents": ["business_analyst", "market_researcher", "financial_modeler", "operations_planner", "proposal_writer", "risk_reviewer"]
+    },
+    {
+      "discipline": "security_governance",
+      "keywords": ["security", "compliance", "risk", "incident", "governance", "secret", "credential", "policy", "audit"],
+      "agents": ["security_engineer", "governance_analyst", "compliance_reviewer", "incident_reviewer", "audit_archivist", "risk_controller"]
+    },
+    {
+      "discipline": "construction_trades",
+      "keywords": ["construction", "framing", "carpentry", "estimate", "materials", "blueprint", "build", "site", "contractor", "renovation"],
+      "agents": ["scope_estimator", "materials_planner", "schedule_planner", "safety_reviewer", "client_proposal_writer", "cost_controller"]
+    },
+    {
+      "discipline": "research_synthesis",
+      "keywords": ["research", "literature", "paper", "study", "science", "evidence", "source", "theory", "methodology"],
+      "agents": ["researcher", "source_verifier", "methodologist", "epistemology_reviewer", "synthesis_writer", "citation_auditor"]
+    },
+    {
+      "discipline": "creative_design_storytelling",
+      "keywords": ["design", "brand", "story", "script", "visual", "creative", "worldbuilding", "narrative", "content"],
+      "agents": ["creative_director", "narrative_architect", "visual_designer", "brand_strategist", "critic_reviewer", "final_editor"]
+    }
+  ],
+  "ology_stack": [
+    "methodology",
+    "ontology",
+    "taxonomy",
+    "epistemology",
+    "axiology",
+    "teleology",
+    "praxeology",
+    "systems_theory",
+    "cybernetics",
+    "semiotics",
+    "hermeneutics",
+    "risk_analysis",
+    "quality_engineering",
+    "metacognition"
+  ],
+  "deliverable_sections": [
+    "employer_problem_understanding",
+    "occupational_discipline_recognition",
+    "agent_constellation_assignment",
+    "requirements_and_acceptance_criteria",
+    "best_practices_and_emerging_practices",
+    "ology_research_synthesis",
+    "data_analytics_and_quality_metrics",
+    "solution_or_work_product_plan",
+    "verification_and_fidelity_review",
+    "submission_readiness_packet",
+    "risk_limitations_and_human_review",
+    "value_proposition_for_employer"
+  ],
+  "quality_rubric": {
+    "requirements_fit": 20,
+    "evidence_and_research_depth": 15,
+    "technical_or_domain_quality": 20,
+    "data_analytics_quality": 10,
+    "clarity_and_employer_readability": 10,
+    "risk_and_compliance_handling": 10,
+    "differentiated_value": 10,
+    "submission_readiness": 5
+  },
+  "safety_doctrine": {
+    "external_action_allowed": false,
+    "auto_submit_to_employer": false,
+    "credential_use_allowed": false,
+    "secret_value_logging_allowed": false,
+    "pay_outcome_guarantee_allowed": false,
+    "human_review_required_before_submission": true
+  }
+}
