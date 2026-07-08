@@ -19,7 +19,18 @@ narrate AIGC
   -> stop before physical moves or external actions
 ```
 
-The result is not hidden autonomy. It is visible autonomy: every file receives a place in the constellation before any future refactor is proposed.
+Phase 26 adds the **Constellation Refactor Planner** layer. Its job is to convert the Phase 25 map into a human-reviewed migration proposal:
+
+```text
+Phase 25 manifest
+  -> proposed constellation target paths
+  -> dependency and workflow risk flags
+  -> retained-in-place decisions
+  -> move-candidate ledger
+  -> human-reviewed future PR boundary
+```
+
+The result is not hidden autonomy. It is visible autonomy: every file receives a place in the constellation before any future physical refactor is proposed.
 
 ## What Phase 25 Does
 
@@ -37,8 +48,20 @@ Phase 25 performs safe repository cartography:
 Phase 25 does **not** move files by default. The correct sequence is:
 
 ```text
-classify -> report -> review -> approve -> refactor in a separate PR
+classify -> report -> review -> plan refactor -> review again -> refactor in a separate PR
 ```
+
+## What Phase 26 Does
+
+Phase 26 reads the Phase 25 manifest and writes a proposal-only refactor plan. It decides whether each file is:
+
+| Proposed action | Meaning |
+|---|---|
+| `move_candidate_after_review` | Could be moved in a future reviewed PR if imports, links, and tests are handled. |
+| `blocked_until_dependency_review` | Must not move yet because import, workflow, docs, secret-boundary, or classification risks exist. |
+| `retain_in_place_with_constellation_metadata` | Should stay where it is while still receiving constellation metadata. |
+
+Phase 26 does **not** move files, rewrite imports, edit workflows, commit generated outputs, use credentials, or bypass approval gates.
 
 ## Constellation Zones
 
@@ -66,8 +89,9 @@ classify -> report -> review -> approve -> refactor in a separate PR
 | Methodology Engineer | Assigns each artifact to the process it supports. |
 | Cloud Trigger Sentinel | Keeps cloud execution dry-run and artifact-only. |
 | Security Governor | Marks sensitive paths and secret-adjacent files without exposing secrets. |
-| Audit Archivist | Writes the manifest, report, and audit entry. |
+| Audit Archivist | Writes the manifest, report, audit entry, and refactor plan ledger. |
 | Constellation Cartographer | Produces the final map and next-action directives. |
+| Dependency Sentinel | Flags imports, workflow paths, documentation links, generated-artifact lineage, and secret-boundary risks before movement. |
 
 ## Trigger Model
 
@@ -96,6 +120,7 @@ AI chat/log source
   -> secret stored outside repo
   -> GitHub workflow_dispatch call
   -> Phase 25 dry-run classification
+  -> Phase 26 dry-run refactor plan
   -> artifact report
 ```
 
@@ -103,8 +128,18 @@ No tokens, credentials, or raw private chat logs belong in the repository.
 
 ## Local Run
 
+Unified CLI:
+
+```powershell
+python .\src\aigc.py run phase25
+python .\src\aigc.py run phase26
+```
+
+Direct scripts:
+
 ```powershell
 python .\src\phase25_constellation_fabric.py --project-root . --config config\phase25_constellation_fabric.json --force-local
+python .\src\phase26_constellation_refactor.py --project-root . --config config\phase26_constellation_refactor.json
 ```
 
 Outputs:
@@ -112,6 +147,9 @@ Outputs:
 - `data/phase25_constellation/aigc_phase25_constellation_manifest.json`
 - `reports/phase25_constellation_fabric_report.md`
 - `data/audit/aigc_phase25_audit.jsonl`
+- `data/phase26_constellation_refactor/aigc_phase26_refactor_plan.json`
+- `reports/phase26_constellation_refactor_report.md`
+- `data/audit/aigc_phase26_audit.jsonl`
 
 ## Cloud Run
 
@@ -127,44 +165,47 @@ GitHub issue or PR comment trigger:
 AIGC: run constellation fabric classification.
 ```
 
-The workflow uploads the manifest, report, and audit ledger as GitHub Actions artifacts. It does not commit generated output back into the repo.
+The workflow uploads the Phase 25 manifest, Phase 26 refactor plan, reports, and audit ledgers as GitHub Actions artifacts. It does not commit generated output back into the repo.
 
 ## Operational Safety Doctrine
 
-Phase 25 obeys these boundaries:
+Phase 25 and Phase 26 obey these boundaries:
 
 ```text
 external_action_allowed = false
 physical_file_moves_allowed = false
+source_rewrite_allowed = false
+workflow_rewrite_allowed = false
 credential_use_allowed = false
 secret_value_logging_allowed = false
 cloud_write_back_allowed = false
 approval_required_for_future_write_back = true
 ```
 
-This means the constellation can see the board, name the pieces, and draw the map. It cannot secretly move the pieces.
+This means the constellation can see the board, name the pieces, and draw the migration chart. It cannot secretly move the pieces.
 
 ## Future Physical Refactor Plan
 
-After reviewing the Phase 25 manifest, a future PR can add a controlled refactor mode that generates move proposals such as:
+After reviewing the Phase 26 plan, a future PR can perform actual moves only if it includes:
 
 ```text
-source path -> constellation zone path -> reason -> risk -> approval state
+source path -> target path -> reason -> risk -> import update -> docs update -> test result -> approval state
 ```
 
-That future refactor should remain human-reviewed and should preserve imports, tests, workflows, documentation links, and audit history.
+That future refactor must preserve imports, tests, workflows, documentation links, generated-artifact lineage, schema references, and audit history.
 
 ## Short Form
 
-AIGC Phase 25 is the bridge between the myth and the machine:
+AIGC Phase 25 and Phase 26 are the bridge between the myth and the machine:
 
 ```text
 word -> trigger
 trigger -> arena
 arena -> ontology
 ontology -> file map
-file map -> agent lanes
-agent lanes -> governed work
+file map -> migration plan
+migration plan -> reviewed PR
+reviewed PR -> governed work
 ```
 
 The constellation wakes when AIGC is spoken, but it moves only under law.
