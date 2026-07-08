@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/auto_approval_gate_packet.schema.json",
+  "title": "AIGC Auto-Approval Gate Packet",
+  "type": "object",
+  "required": [
+    "phase",
+    "generated_at",
+    "status",
+    "summary",
+    "decisions"
+  ],
+  "properties": {
+    "phase": {
+      "type": "string",
+      "enum": ["auto_approval_gate_procurement"]
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["completed_gate_procurement"]
+    },
+    "input_status": {
+      "type": "object"
+    },
+    "effective_runtime_authority": {
+      "type": "object"
+    },
+    "gate_invariants": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "stage_requests_reviewed",
+        "decision_counts",
+        "external_action_performed",
+        "physical_file_moves_performed",
+        "source_rewrites_performed",
+        "workflow_rewrites_performed",
+        "credential_use_performed",
+        "secret_values_logged"
+      ],
+      "properties": {
+        "stage_requests_reviewed": {"type": "integer"},
+        "decision_counts": {"type": "object"},
+        "risk_counts": {"type": "object"},
+        "dangerous_authority_flags_true": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "external_action_performed": {"type": "boolean", "enum": [false]},
+        "physical_file_moves_performed": {"type": "boolean", "enum": [false]},
+        "source_rewrites_performed": {"type": "boolean", "enum": [false]},
+        "workflow_rewrites_performed": {"type": "boolean", "enum": [false]},
+        "credential_use_performed": {"type": "boolean", "enum": [false]},
+        "secret_values_logged": {"type": "boolean", "enum": [false]}
+      },
+      "additionalProperties": true
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "stage_id",
+          "request_type",
+          "risk_level",
+          "decision",
+          "reason",
+          "external_action_authorized",
+          "credential_use_authorized",
+          "secret_value_logging_authorized"
+        ],
+        "properties": {
+          "stage_id": {"type": "string"},
+          "request_type": {"type": "string"},
+          "risk_level": {"type": "string"},
+          "description": {"type": "string"},
+          "decision": {
+            "type": "string",
+            "enum": ["auto_pass_internal_only", "human_review_required", "auto_deny"]
+          },
+          "reason": {"type": "string"},
+          "external_action_authorized": {"type": "boolean", "enum": [false]},
+          "physical_file_move_authorized": {"type": "boolean", "enum": [false]},
+          "source_rewrite_authorized": {"type": "boolean", "enum": [false]},
+          "workflow_rewrite_authorized": {"type": "boolean", "enum": [false]},
+          "credential_use_authorized": {"type": "boolean", "enum": [false]},
+          "secret_value_logging_authorized": {"type": "boolean", "enum": [false]}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}
