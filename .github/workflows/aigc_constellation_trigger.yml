@@ -6,7 +6,7 @@ on:
       narration:
         description: "Narration text that should contain the AIGC trigger phrase."
         required: true
-        default: "AIGC: run constellation fabric classification."
+        default: "AIGC: run MVP+++ procurement, constellation fabric classification, and refactor planning."
   issue_comment:
     types: [created]
 
@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   constellation-fabric:
-    name: Phase 25 and Phase 26 Constellation Fabric
+    name: MVP+++, Phase 25, and Phase 26 Constellation Fabric
     if: github.event_name == 'workflow_dispatch' || contains(github.event.comment.body, 'AIGC')
     runs-on: ubuntu-latest
     steps:
@@ -28,6 +28,12 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
+      - name: Run MVP+++ capability procurement packet
+        run: |
+          python src/mvp_plus_plus_plus_procurement.py \
+            --project-root . \
+            --config config/mvp_plus_plus_plus_capability_procurement.json
 
       - name: Run safe AIGC constellation fabric classifier
         env:
@@ -47,12 +53,15 @@ jobs:
       - name: Upload constellation artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: aigc-phase25-phase26-constellation-fabric
+          name: aigc-mvp-plus-plus-plus-phase25-phase26-constellation-fabric
           if-no-files-found: error
           path: |
+            data/mvp_plus_plus_plus/aigc_mvp_plus_plus_plus_procurement_packet.json
             data/phase25_constellation/aigc_phase25_constellation_manifest.json
             data/phase26_constellation_refactor/aigc_phase26_refactor_plan.json
+            data/audit/aigc_mvp_plus_plus_plus_procurement_audit.jsonl
             data/audit/aigc_phase25_audit.jsonl
             data/audit/aigc_phase26_audit.jsonl
+            reports/mvp_plus_plus_plus_procurement_report.md
             reports/phase25_constellation_fabric_report.md
             reports/phase26_constellation_refactor_report.md
