@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/employer_deliverable_procurement_packet.schema.json",
+  "title": "AIGC Employer Deliverable Procurement Packet",
+  "type": "object",
+  "required": [
+    "phase",
+    "generated_at",
+    "status",
+    "input_status",
+    "occupational_discipline_recognition",
+    "agent_constellation",
+    "submission_readiness",
+    "safety_result"
+  ],
+  "properties": {
+    "phase": {"type": "string", "enum": ["employer_deliverable_procurement"]},
+    "generated_at": {"type": "string"},
+    "status": {"type": "string", "enum": ["completed_reviewable_employer_procurement_packet"]},
+    "input_status": {"type": "object"},
+    "missing_inputs": {"type": "array", "items": {"type": "string"}},
+    "publication_policy": {"type": "object"},
+    "occupational_discipline_recognition": {
+      "type": "object",
+      "required": ["primary_discipline", "recognition_confidence", "selected_agents"],
+      "properties": {
+        "primary_discipline": {"type": "string"},
+        "discipline_scores": {"type": "object"},
+        "recognition_confidence": {"type": "string"},
+        "selected_agents": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": true
+    },
+    "agent_constellation": {"type": "array", "items": {"type": "object"}},
+    "ology_research_plan": {"type": "array", "items": {"type": "object"}},
+    "data_analytics_coordination": {"type": "object"},
+    "best_and_emerging_practices": {"type": "object"},
+    "deliverable_sections": {"type": "array", "items": {"type": "object"}},
+    "quality_rubric": {"type": "object"},
+    "submission_readiness": {
+      "type": "object",
+      "required": ["readiness_score", "recommended_decision", "employer_submission_allowed_now"],
+      "properties": {
+        "readiness_score": {"type": "integer"},
+        "evidence_completeness": {"type": "number"},
+        "recognition_confidence": {"type": "string"},
+        "recommended_decision": {"type": "string"},
+        "employer_submission_allowed_now": {"type": "boolean", "enum": [false]},
+        "reason": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "safety_result": {
+      "type": "object",
+      "required": ["auto_submitted_to_employer", "external_action_performed", "credential_use_performed", "secret_values_logged", "human_review_required_before_submission"],
+      "properties": {
+        "auto_submitted_to_employer": {"type": "boolean", "enum": [false]},
+        "external_action_performed": {"type": "boolean", "enum": [false]},
+        "credential_use_performed": {"type": "boolean", "enum": [false]},
+        "secret_values_logged": {"type": "boolean", "enum": [false]},
+        "pay_outcome_guaranteed": {"type": "boolean", "enum": [false]},
+        "human_review_required_before_submission": {"type": "boolean", "enum": [true]},
+        "phase_map_published_to_employer": {"type": "boolean"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
