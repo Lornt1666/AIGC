@@ -1,0 +1,76 @@
+{
+  "phase": "phase26_constellation_refactor",
+  "display_name": "Phase 26 - Constellation Refactor Planner",
+  "purpose": "Convert the Phase 25 constellation manifest into a human-reviewed refactor plan without moving files, rewriting imports, changing workflows, or performing external actions.",
+  "input_manifest": "data/phase25_constellation/aigc_phase25_constellation_manifest.json",
+  "output_plan": "data/phase26_constellation_refactor/aigc_phase26_refactor_plan.json",
+  "output_report": "reports/phase26_constellation_refactor_report.md",
+  "audit_log": "data/audit/aigc_phase26_audit.jsonl",
+  "target_root": "constellation",
+  "safety_doctrine": {
+    "external_action_allowed": false,
+    "physical_file_moves_allowed": false,
+    "source_rewrite_allowed": false,
+    "workflow_rewrite_allowed": false,
+    "credential_use_allowed": false,
+    "secret_value_logging_allowed": false,
+    "default_mode": "proposal_only",
+    "approval_required_for_future_write_back": true
+  },
+  "zone_target_paths": {
+    "00_COMMAND_DOCTRINE": "constellation/00_command_doctrine",
+    "01_CLOUD_TRIGGER_INGRESS": "constellation/01_cloud_trigger_ingress",
+    "02_CONFIGURATION_CONTROL": "constellation/02_configuration_control",
+    "03_CONTRACT_SCHEMA_ONTOLOGY": "constellation/03_contract_schema_ontology",
+    "04_AGENTIC_SOURCE_KERNEL": "constellation/04_agentic_source_kernel",
+    "05_SECURITY_GOVERNANCE": "constellation/05_security_governance",
+    "06_DATA_MEMORY_LEDGER": "constellation/06_data_memory_ledger",
+    "07_REPORTING_OBSERVABILITY": "constellation/07_reporting_observability",
+    "08_DOCS_OLOGY_LIBRARY": "constellation/08_docs_ology_library",
+    "09_TEST_AND_VALIDATION": "constellation/09_test_and_validation",
+    "99_UNCLASSIFIED_SUPPORT": "constellation/99_unclassified_support"
+  },
+  "retain_in_place_zones": [
+    "01_CLOUD_TRIGGER_INGRESS",
+    "06_DATA_MEMORY_LEDGER",
+    "07_REPORTING_OBSERVABILITY"
+  ],
+  "high_risk_prefixes": [
+    ".github/",
+    "src/",
+    "config/secret",
+    "memory/",
+    "data/",
+    "reports/"
+  ],
+  "import_sensitive_extensions": [
+    ".py"
+  ],
+  "documentation_sensitive_extensions": [
+    ".md",
+    ".rst",
+    ".txt"
+  ],
+  "workflow_sensitive_paths": [
+    ".github/workflows/"
+  ],
+  "planning_agents": [
+    {
+      "id": "constellation_cartographer",
+      "responsibility": "Translate Phase 25 zones into proposed target paths."
+    },
+    {
+      "id": "dependency_sentinel",
+      "responsibility": "Flag import, workflow, documentation, and generated-artifact movement risks."
+    },
+    {
+      "id": "security_governor",
+      "responsibility": "Block secret-adjacent, credential-adjacent, and approval-sensitive relocation until manual review."
+    },
+    {
+      "id": "audit_archivist",
+      "responsibility": "Write plan, report, and audit ledger with no physical file changes."
+    }
+  ],
+  "promotion_rule": "A generated move proposal may become a physical refactor only through a separate reviewed PR that updates imports, workflow paths, documentation links, schemas, reports, and tests."
+}
