@@ -1,0 +1,119 @@
+{
+  "phase": "access_automation_procurement",
+  "display_name": "AIGC Access Automation Procurement",
+  "purpose": "Procure trigger-based, human-in-loop access automation for employer/job/task source domains while keeping connector access, credential access, submission, and secret handling behind explicit safety parameters.",
+  "trigger": {
+    "phrase": "AIGC",
+    "human_in_loop_required": true,
+    "allowed_trigger_surfaces": [
+      "workflow_dispatch",
+      "issue_comment"
+    ],
+    "default_mode": "procure_access_plan_only"
+  },
+  "human_in_loop_requested_capability_state": {
+    "external_action_allowed": true,
+    "auto_submit_to_employer": true,
+    "credential_use_allowed": true,
+    "secret_value_logging_allowed": true,
+    "human_review_required_before_submission": true,
+    "proceed_records_handoff_only": true
+  },
+  "effective_safety_parameters": {
+    "external_action_allowed": "conditional_after_submission_cockpit_proceed_phrase_and_connector_allowlist",
+    "auto_submit_to_employer": "conditional_handoff_only_until_live_connector_is_separately_approved",
+    "credential_use_allowed": "conditional_secret_broker_reference_only_after_operator_approval",
+    "secret_value_logging_allowed": "redacted_reference_hash_only_raw_secret_values_forbidden",
+    "human_review_required_before_submission": true,
+    "proceed_records_handoff_only": true,
+    "raw_secret_value_logging_allowed": false,
+    "unapproved_external_submission_allowed": false,
+    "credential_exfiltration_allowed": false
+  },
+  "access_procurement_gates": [
+    "source_terms_review",
+    "source_access_mode_classification",
+    "robots_or_api_policy_check_when_applicable",
+    "connector_allowlist",
+    "secret_reference_manifest",
+    "approval_token_or_exact_phrase",
+    "dry_run_receipt",
+    "idempotency_key",
+    "rate_limit_policy",
+    "redaction_scan",
+    "audit_receipt",
+    "rollback_or_manual_handoff_path"
+  ],
+  "hiring_and_work_source_domains": [
+    {
+      "category": "remote_job_boards",
+      "purpose": "Read public or API/RSS opportunity listings where employers seek workers or contractors.",
+      "examples": ["RemoteOK", "Remotive", "WeWorkRemotely", "Wellfound", "FlexJobs", "Dynamite Jobs", "Working Nomads"],
+      "default_access_mode": "read_only_api_rss_or_public_listing",
+      "automation_status": "discovery_and_scoring_allowed_submission_requires_review"
+    },
+    {
+      "category": "general_job_boards",
+      "purpose": "Discover employer hiring intent across broad job listings.",
+      "examples": ["Indeed", "LinkedIn Jobs", "Glassdoor", "ZipRecruiter", "Monster", "SimplyHired", "Talent.com"],
+      "default_access_mode": "manual_or_approved_connector_only",
+      "automation_status": "terms_sensitive_no_scraping_without_review"
+    },
+    {
+      "category": "freelance_marketplaces",
+      "purpose": "Find task-based work and project postings.",
+      "examples": ["Upwork", "Freelancer", "Guru", "PeoplePerHour", "Contra", "Toptal", "Workana"],
+      "default_access_mode": "approved_account_connector_or_manual_handoff",
+      "automation_status": "proposal_drafting_allowed_submission_requires_operator_proceed"
+    },
+    {
+      "category": "creative_and_portfolio_marketplaces",
+      "purpose": "Discover creative, design, media, and storytelling work opportunities.",
+      "examples": ["Behance", "Dribbble", "Contra", "Malt", "99designs"],
+      "default_access_mode": "public_discovery_or_manual_handoff",
+      "automation_status": "portfolio_sensitive_review_required"
+    },
+    {
+      "category": "developer_and_open_source_work",
+      "purpose": "Identify paid, sponsored, bounty, or issue-based work signals.",
+      "examples": ["GitHub Issues", "GitLab Issues", "Codeberg", "IssueHunt", "Bountysource-like listings", "OpenCollective project work"],
+      "default_access_mode": "read_only_api_or_public_issue_search",
+      "automation_status": "comment_or_pr_submission_requires_review"
+    },
+    {
+      "category": "government_and_rfp_procurement",
+      "purpose": "Find formal procurement, RFP, RFQ, grant, and contract opportunities.",
+      "examples": ["CanadaBuys", "MERX", "Alberta Purchasing Connection", "SAM.gov", "TED Tenders Electronic Daily", "UNGM"],
+      "default_access_mode": "read_only_public_portal_or_api",
+      "automation_status": "bid_response_requires_formal_review_and_operator_submission"
+    },
+    {
+      "category": "local_services_and_trades",
+      "purpose": "Find local requests for construction, carpentry, repair, framing, renovation, and service work.",
+      "examples": ["Kijiji", "Craigslist", "Facebook Groups", "Nextdoor", "local classifieds", "municipal vendor portals"],
+      "default_access_mode": "manual_review_or_approved_connector_only",
+      "automation_status": "identity_and_platform_rules_sensitive_manual_handoff_default"
+    },
+    {
+      "category": "company_direct_career_pages",
+      "purpose": "Discover direct employer opportunities and role requirements.",
+      "examples": ["company career pages", "Greenhouse boards", "Lever boards", "Workday listings", "Ashby boards", "SmartRecruiters boards"],
+      "default_access_mode": "read_only_public_listing_or_api_where_available",
+      "automation_status": "application_submission_requires_operator_proceed"
+    }
+  ],
+  "submission_activation_requirements": {
+    "must_have_employer_packet": true,
+    "must_have_submission_cockpit_proceed": true,
+    "must_match_required_phrase": "PROCEED AIGC SUBMISSION",
+    "must_have_connector_allowlist_entry": true,
+    "must_have_secret_reference_not_value": true,
+    "must_have_audit_receipt": true,
+    "must_have_manual_rollback_or_handoff": true
+  },
+  "output_paths": {
+    "packet": "data/access_automation/aigc_access_automation_procurement_packet.json",
+    "report": "reports/access_automation_procurement_report.md",
+    "audit": "data/audit/aigc_access_automation_procurement_audit.jsonl"
+  }
+}
