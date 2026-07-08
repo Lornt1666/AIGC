@@ -6,7 +6,9 @@
     "phase1_plan": "data/phase1_cognitive_router/aigc_phase1_cognitive_plan.json",
     "phase2_24_continuity": "data/phase2_24_continuity/aigc_phase2_24_continuity_plan.json",
     "phase_interleave_schedule": "data/phase_interleaves/aigc_phase_interleave_schedule.json",
-    "mvp_plus_plus_plus_packet": "data/mvp_plus_plus_plus/aigc_mvp_plus_plus_plus_procurement_packet.json"
+    "mvp_plus_plus_plus_packet": "data/mvp_plus_plus_plus/aigc_mvp_plus_plus_plus_procurement_packet.json",
+    "employer_deliverable_packet": "data/employer_deliverables/aigc_employer_deliverable_procurement_packet.json",
+    "submission_approval_decision": "data/submission_approval/aigc_submission_approval_decision.json"
   },
   "outputs": {
     "packet": "data/auto_approval_gates/aigc_auto_approval_gate_packet.json",
@@ -24,7 +26,9 @@
       "proposal_only_refactor_planning",
       "continuity_ledger_generation",
       "interleave_schedule_generation",
-      "procurement_intent_recording"
+      "procurement_intent_recording",
+      "employer_deliverable_packet_generation",
+      "submission_audit_view_generation"
     ],
     "human_review_required_for": [
       "external_action_request",
@@ -35,7 +39,8 @@
       "secret_reference_use_request",
       "approval_gate_state_change",
       "behavior_change_patch",
-      "connector_write_enablement"
+      "connector_write_enablement",
+      "employer_submission_handoff"
     ],
     "auto_deny_for": [
       "raw_secret_value_logging",
@@ -84,6 +89,24 @@
       "request_type": "proposal_only_refactor_planning",
       "risk_level": "medium",
       "description": "Plan possible future file moves without performing them."
+    },
+    {
+      "stage_id": "employer_deliverable_procurement",
+      "request_type": "employer_deliverable_packet_generation",
+      "risk_level": "medium",
+      "description": "Generate reviewable employer-facing deliverable packet without submitting externally."
+    },
+    {
+      "stage_id": "submission_approval_cockpit_review",
+      "request_type": "submission_audit_view_generation",
+      "risk_level": "low",
+      "description": "Generate audit-view cockpit with proceed or deny decision controls."
+    },
+    {
+      "stage_id": "submission_approval_cockpit_proceed",
+      "request_type": "employer_submission_handoff",
+      "risk_level": "high",
+      "description": "Proceed decision requires exact phrase and human review, and still records handoff only unless future approved connector exists."
     }
   ],
   "effective_runtime_authority": {
@@ -99,6 +122,7 @@
     "Auto-approval can only approve internal artifact generation and metadata classification.",
     "Auto-approval cannot approve external action, credential use, raw secret logging, physical file movement, source rewrite, or workflow rewrite.",
     "Medium-risk internal stages can auto-pass only when effective runtime authority remains false for dangerous capabilities.",
+    "Employer deliverable packets can be auto-generated, but employer submission handoff requires human review.",
     "Repeated phase occurrences are schedule artifacts only until a reviewed executor maps them to safe static steps.",
     "Every gate decision must be written to packet, report, and audit ledger."
   ]
