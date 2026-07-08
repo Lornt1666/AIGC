@@ -29,6 +29,7 @@ Auto-pass is limited to internal, non-destructive, non-external artifact work:
 - read-only repository cartography;
 - proposal-only refactor planning;
 - continuity ledger generation;
+- interleave schedule generation;
 - procurement intent recording.
 
 ## What Requires Human Review
@@ -66,12 +67,15 @@ The intended order is:
 AIGC trigger
   -> Phase 1 cognitive phase router
   -> Phase 2-24 continuity bridge
+  -> Phase Interleave Scheduler
   -> Auto-Approval Gate Procurement
   -> MVP+++ procurement packet
   -> Phase 25 constellation classification
   -> Phase 26 refactor planning
   -> artifact upload
 ```
+
+The auto-approval gate reads the interleave schedule as context. It can auto-pass the schedule artifact itself because the scheduler only produces metadata and performs no live phase execution.
 
 ## Outputs
 
