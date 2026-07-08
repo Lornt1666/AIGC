@@ -1,0 +1,74 @@
+{
+  "phase": "phase_interleave_scheduler",
+  "display_name": "AIGC Phase Interleave Scheduler",
+  "purpose": "Represent phases 1 through 26 as a recursive pipeline where selected phases can repeat between numbered phases as guard, review, verification, observability, approval, security, and quality loops.",
+  "inputs": {
+    "phase1_plan": "data/phase1_cognitive_router/aigc_phase1_cognitive_plan.json",
+    "phase2_24_continuity": "data/phase2_24_continuity/aigc_phase2_24_continuity_plan.json"
+  },
+  "outputs": {
+    "schedule": "data/phase_interleaves/aigc_phase_interleave_schedule.json",
+    "report": "reports/phase_interleave_scheduler_report.md",
+    "audit": "data/audit/aigc_phase_interleave_scheduler_audit.jsonl"
+  },
+  "safety_doctrine": {
+    "external_action_allowed": false,
+    "physical_file_moves_allowed": false,
+    "source_rewrite_allowed": false,
+    "workflow_rewrite_allowed": false,
+    "credential_use_allowed": false,
+    "secret_value_logging_allowed": false,
+    "approval_required_for_future_write_back": true
+  },
+  "always_insert_before": {
+    "phase5": ["phase9", "phase14", "phase16"],
+    "phase6": ["phase5", "phase9", "phase10", "phase11", "phase14", "phase16"],
+    "phase18": ["phase9", "phase10", "phase11", "phase14", "phase16", "phase17"],
+    "phase24": ["phase9", "phase14", "phase16", "phase20", "phase22"]
+  },
+  "always_insert_after": {
+    "phase4": ["phase20", "phase21"],
+    "phase6": ["phase7", "phase12", "phase8"],
+    "phase17": ["phase8", "phase12"],
+    "phase23": ["phase20", "phase22"],
+    "phase25": ["phase9", "phase12"],
+    "phase26": ["phase7", "phase12", "phase20"]
+  },
+  "recurring_guard_phases": [
+    "phase5",
+    "phase7",
+    "phase8",
+    "phase9",
+    "phase10",
+    "phase11",
+    "phase12",
+    "phase14",
+    "phase16",
+    "phase17",
+    "phase20",
+    "phase21",
+    "phase22"
+  ],
+  "guard_phase_meanings": {
+    "phase5": "approval gate",
+    "phase7": "audit packet",
+    "phase8": "evolution and learning loop",
+    "phase9": "verification tribunal",
+    "phase10": "connector governance",
+    "phase11": "security vault",
+    "phase12": "observability dashboard",
+    "phase14": "runtime preflight",
+    "phase16": "compliance and legal review",
+    "phase17": "incident response and recovery",
+    "phase20": "fidelity forge",
+    "phase21": "customer satisfaction continuum",
+    "phase22": "quality kernel"
+  },
+  "triggered_interleaves": [
+    {"when_intent_contains": "security_governance", "insert_before_each": ["phase10", "phase11", "phase16", "phase17"], "insert_phases": ["phase9", "phase14"]},
+    {"when_intent_contains": "business_pipeline", "insert_before_each": ["phase4", "phase24"], "insert_phases": ["phase14", "phase16", "phase20"]},
+    {"when_intent_contains": "constellation_refactor", "insert_after_each": ["phase25", "phase26"], "insert_phases": ["phase7", "phase9", "phase12", "phase20"]},
+    {"when_intent_contains": "full_continuum", "insert_before_each": ["phase5", "phase6", "phase18", "phase24", "phase26"], "insert_phases": ["phase9", "phase14", "phase16"]}
+  ],
+  "runtime_rule": "The scheduler emits an interleaved plan only. It does not execute repeated phases, use credentials, move files, rewrite source, rewrite workflows, or perform external actions."
+}
