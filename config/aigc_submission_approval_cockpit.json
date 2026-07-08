@@ -1,0 +1,36 @@
+{
+  "phase": "submission_approval_cockpit",
+  "display_name": "Submission Approval Cockpit",
+  "purpose": "Render a review-first approval cockpit for the employer deliverable packet, allowing the operator to view the audit and choose review_only, proceed, or deny without silently submitting externally.",
+  "inputs": {
+    "employer_packet": "data/employer_deliverables/aigc_employer_deliverable_procurement_packet.json",
+    "employer_report": "reports/employer_deliverable_procurement_report.md",
+    "employer_audit": "data/audit/aigc_employer_deliverable_procurement_audit.jsonl",
+    "auto_approval_gate_packet": "data/auto_approval_gates/aigc_auto_approval_gate_packet.json"
+  },
+  "outputs": {
+    "decision": "data/submission_approval/aigc_submission_approval_decision.json",
+    "cockpit": "reports/submission_approval_cockpit.md",
+    "audit": "data/audit/aigc_submission_approval_audit.jsonl"
+  },
+  "allowed_decisions": [
+    "review_only",
+    "proceed",
+    "deny"
+  ],
+  "required_proceed_phrase": "PROCEED AIGC SUBMISSION",
+  "required_deny_phrase": "DENY AIGC SUBMISSION",
+  "button_model": {
+    "proceed_button": "Records approval_for_submission_handoff only. It does not send externally unless a future approved live connector exists.",
+    "deny_button": "Records denied_by_operator and blocks submission handoff.",
+    "review_only_button": "Displays audit and keeps decision pending."
+  },
+  "safety_doctrine": {
+    "external_action_allowed": false,
+    "auto_submit_to_employer": false,
+    "credential_use_allowed": false,
+    "secret_value_logging_allowed": false,
+    "human_review_required_before_submission": true,
+    "proceed_records_handoff_only": true
+  }
+}
