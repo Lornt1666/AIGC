@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/n8n_workflow_dispatch_bridge_packet.schema.json",
+  "title": "AIGC n8n Workflow Dispatch Bridge Packet",
+  "type": "object",
+  "required": [
+    "phase",
+    "generated_at",
+    "status",
+    "trigger_contract",
+    "n8n_nodes",
+    "github_dispatch_request",
+    "secret_references",
+    "safety_controls",
+    "failure_checks",
+    "summary"
+  ],
+  "properties": {
+    "phase": {"type": "string", "enum": ["n8n_workflow_dispatch_bridge_procurement"]},
+    "generated_at": {"type": "string"},
+    "status": {"type": "string", "enum": ["completed_n8n_workflow_dispatch_bridge_procurement"]},
+    "purpose": {"type": "string"},
+    "trigger_contract": {
+      "type": "object",
+      "required": ["ingress", "allowed_phrase", "default_ref", "workflow_file", "repo_full_name", "required_inputs"],
+      "properties": {
+        "ingress": {"type": "string"},
+        "allowed_phrase": {"type": "string"},
+        "default_ref": {"type": "string"},
+        "workflow_file": {"type": "string"},
+        "repo_full_name": {"type": "string"},
+        "required_inputs": {"type": "object"}
+      },
+      "additionalProperties": true
+    },
+    "n8n_nodes": {"type": "array", "items": {"type": "object"}},
+    "github_dispatch_request": {
+      "type": "object",
+      "required": ["method", "url", "auth_model", "headers_are_reference_only", "body"],
+      "properties": {
+        "method": {"type": "string"},
+        "url": {"type": "string"},
+        "auth_model": {"type": "string", "enum": ["n8n_managed_credential_reference_only"]},
+        "headers_are_reference_only": {"type": "boolean", "enum": [true]},
+        "body": {"type": "object"}
+      },
+      "additionalProperties": true
+    },
+    "secret_references": {"type": "array", "items": {"type": "string"}},
+    "safety_controls": {
+      "type": "object",
+      "properties": {
+        "raw_secret_logging_allowed": {"type": "boolean", "enum": [false]},
+        "raw_trigger_payload_storage_allowed": {"type": "boolean", "enum": [false]},
+        "external_submission_from_n8n_allowed": {"type": "boolean", "enum": [false]},
+        "n8n_can_dispatch_pipeline_only": {"type": "boolean", "enum": [true]},
+        "desktop_or_operator_must_review_artifacts": {"type": "boolean", "enum": [true]}
+      },
+      "additionalProperties": true
+    },
+    "expected_response": {"type": "object"},
+    "failure_checks": {"type": "array", "items": {"type": "string"}},
+    "summary": {
+      "type": "object",
+      "properties": {
+        "raw_secret_values_logged": {"type": "boolean", "enum": [false]},
+        "raw_trigger_payload_stored": {"type": "boolean", "enum": [false]},
+        "external_submission_from_n8n_allowed": {"type": "boolean", "enum": [false]},
+        "workflow_dispatch_performed_by_this_stage": {"type": "boolean", "enum": [false]},
+        "operator_review_required": {"type": "boolean", "enum": [true]}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
