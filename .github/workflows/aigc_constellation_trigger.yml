@@ -80,6 +80,10 @@ jobs:
         run: |
           python src/mvp_plus_plus_plus_procurement.py --project-root . --config config/mvp_plus_plus_plus_capability_procurement.json
 
+      - name: Run access automation procurement
+        run: |
+          python src/access_automation_procurement.py --project-root . --config config/aigc_access_automation_procurement.json
+
       - name: Run Phase 25 classifier
         run: |
           set -a
@@ -113,6 +117,7 @@ jobs:
             data/phase_interleaves/aigc_phase_interleave_schedule.json
             data/auto_approval_gates/aigc_auto_approval_gate_packet.json
             data/mvp_plus_plus_plus/aigc_mvp_plus_plus_plus_procurement_packet.json
+            data/access_automation/aigc_access_automation_procurement_packet.json
             data/phase25_constellation/aigc_phase25_constellation_manifest.json
             data/phase26_constellation_refactor/aigc_phase26_refactor_plan.json
             data/employer_deliverables/aigc_employer_deliverable_procurement_packet.json
@@ -122,6 +127,7 @@ jobs:
             data/audit/aigc_phase_interleave_scheduler_audit.jsonl
             data/audit/aigc_auto_approval_gate_audit.jsonl
             data/audit/aigc_mvp_plus_plus_plus_procurement_audit.jsonl
+            data/audit/aigc_access_automation_procurement_audit.jsonl
             data/audit/aigc_phase25_audit.jsonl
             data/audit/aigc_phase26_audit.jsonl
             data/audit/aigc_employer_deliverable_procurement_audit.jsonl
@@ -131,6 +137,7 @@ jobs:
             reports/phase_interleave_scheduler_report.md
             reports/auto_approval_gate_procurement_report.md
             reports/mvp_plus_plus_plus_procurement_report.md
+            reports/access_automation_procurement_report.md
             reports/phase25_constellation_fabric_report.md
             reports/phase26_constellation_refactor_report.md
             reports/employer_deliverable_procurement_report.md
