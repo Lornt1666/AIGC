@@ -252,6 +252,41 @@ def build_phase_registry(root: Path = PROJECT_ROOT) -> Dict[str, PhaseDefinition
             allowed_runtime_modes=["internal_autonomic_business_pipeline_only"],
             external_action_risk="none_internal_business_pipeline_readiness_only",
         ),
+        "phase25": PhaseDefinition(
+            name="phase25",
+            display_name="Phase 25 - Constellation Fabric",
+            input_path="config/phase25_constellation_fabric.json",
+            output_path="data/phase25_constellation/aigc_phase25_constellation_manifest.json",
+            schema_name="constellation_manifest",
+            command=[
+                py,
+                str(src / "phase25_constellation_fabric.py"),
+                "--project-root",
+                str(root),
+                "--config",
+                str(root / "config" / "phase25_constellation_fabric.json"),
+                "--force-local",
+            ],
+            allowed_runtime_modes=["proposal_only_repository_cartography"],
+            external_action_risk="no_external_action_no_file_moves",
+        ),
+        "phase26": PhaseDefinition(
+            name="phase26",
+            display_name="Phase 26 - Constellation Refactor Planner",
+            input_path="data/phase25_constellation/aigc_phase25_constellation_manifest.json",
+            output_path="data/phase26_constellation_refactor/aigc_phase26_refactor_plan.json",
+            schema_name="constellation_refactor_plan",
+            command=[
+                py,
+                str(src / "phase26_constellation_refactor.py"),
+                "--project-root",
+                str(root),
+                "--config",
+                str(root / "config" / "phase26_constellation_refactor.json"),
+            ],
+            allowed_runtime_modes=["proposal_only_refactor_planning"],
+            external_action_risk="no_external_action_no_file_moves",
+        ),
     }
 
 

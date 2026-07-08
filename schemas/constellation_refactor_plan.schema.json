@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/constellation_refactor_plan.schema.json",
+  "title": "AIGC Constellation Refactor Plan",
+  "type": "object",
+  "required": [
+    "phase",
+    "generated_at",
+    "status",
+    "safety_doctrine",
+    "summary",
+    "proposals"
+  ],
+  "properties": {
+    "phase": {
+      "type": "string",
+      "enum": ["phase26_constellation_refactor"]
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["completed_proposal_only"]
+    },
+    "input_manifest_path": {
+      "type": "string"
+    },
+    "input_manifest_generated_at": {
+      "type": "string"
+    },
+    "input_manifest_status": {
+      "type": "string"
+    },
+    "safety_doctrine": {
+      "type": "object"
+    },
+    "promotion_rule": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "source_files_reviewed",
+        "proposals_created",
+        "physical_moves_performed",
+        "source_rewrites_performed",
+        "workflow_rewrites_performed",
+        "external_action_performed"
+      ],
+      "properties": {
+        "source_files_reviewed": {
+          "type": "integer"
+        },
+        "proposals_created": {
+          "type": "integer"
+        },
+        "physical_moves_performed": {
+          "type": "boolean",
+          "enum": [false]
+        },
+        "source_rewrites_performed": {
+          "type": "boolean",
+          "enum": [false]
+        },
+        "workflow_rewrites_performed": {
+          "type": "boolean",
+          "enum": [false]
+        },
+        "external_action_performed": {
+          "type": "boolean",
+          "enum": [false]
+        },
+        "raw_secret_values_accessed": {
+          "type": "boolean",
+          "enum": [false]
+        },
+        "move_candidates_after_review": {
+          "type": "integer"
+        },
+        "blocked_or_retained": {
+          "type": "integer"
+        },
+        "action_counts": {
+          "type": "object"
+        },
+        "risk_counts": {
+          "type": "object"
+        },
+        "zone_counts": {
+          "type": "object"
+        },
+        "blocker_counts": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": true
+    },
+    "planning_agents": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "proposals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "proposal_id",
+          "source_path",
+          "proposed_target_path",
+          "constellation_zone",
+          "risk_level",
+          "proposed_action",
+          "requires_human_approval",
+          "physical_move_performed"
+        ],
+        "properties": {
+          "proposal_id": {
+            "type": "string"
+          },
+          "source_path": {
+            "type": "string"
+          },
+          "proposed_target_path": {
+            "type": "string"
+          },
+          "constellation_zone": {
+            "type": "string"
+          },
+          "ontology": {
+            "type": "string"
+          },
+          "taxonomy": {
+            "type": "string"
+          },
+          "methodology": {
+            "type": "string"
+          },
+          "agent_lane": {
+            "type": "string"
+          },
+          "risk_class": {
+            "type": "string"
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": ["low", "medium", "high", "critical"]
+          },
+          "proposed_action": {
+            "type": "string",
+            "enum": [
+              "move_candidate_after_review",
+              "blocked_until_dependency_review",
+              "retain_in_place_with_constellation_metadata"
+            ]
+          },
+          "blockers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "requires_human_approval": {
+            "type": "boolean",
+            "enum": [true]
+          },
+          "requires_import_review": {
+            "type": "boolean"
+          },
+          "requires_workflow_review": {
+            "type": "boolean"
+          },
+          "requires_documentation_review": {
+            "type": "boolean"
+          },
+          "requires_secret_boundary_review": {
+            "type": "boolean"
+          },
+          "physical_move_performed": {
+            "type": "boolean",
+            "enum": [false]
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}
