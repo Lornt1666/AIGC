@@ -1,0 +1,140 @@
+{
+  "phase": "phase2_24_continuity_bridge",
+  "display_name": "Phase 2-24 - Cognitive Continuity Bridge",
+  "purpose": "Make AIGC phases 2 through 24 visible inside the pipeline by producing an ordered, dependency-aware, safety-gated continuity ledger before Phase 25 and Phase 26 artifact stages run.",
+  "input_router_config": "config/aigc_cognitive_phase_router.json",
+  "input_phase1_plan": "data/phase1_cognitive_router/aigc_phase1_cognitive_plan.json",
+  "output_plan": "data/phase2_24_continuity/aigc_phase2_24_continuity_plan.json",
+  "output_report": "reports/phase2_24_continuity_report.md",
+  "audit_log": "data/audit/aigc_phase2_24_continuity_audit.jsonl",
+  "phase_range": {
+    "start": 2,
+    "end": 24
+  },
+  "safety_doctrine": {
+    "external_action_allowed": false,
+    "physical_file_moves_allowed": false,
+    "source_rewrite_allowed": false,
+    "workflow_rewrite_allowed": false,
+    "credential_use_allowed": false,
+    "secret_value_logging_allowed": false,
+    "approval_required_for_future_write_back": true
+  },
+  "phase_dependency_classes": {
+    "phase2": {
+      "state": "read_only_candidate",
+      "requires": ["approved_source_config", "network_allowed_by_operator"],
+      "reason": "Opportunity radar can be read-only but still touches external public sources, so it remains explicit-run gated."
+    },
+    "phase3": {
+      "state": "dependency_gated",
+      "requires": ["phase2_opportunity_queue"],
+      "reason": "Ology assessment needs a Phase 2 queue."
+    },
+    "phase4": {
+      "state": "dependency_gated",
+      "requires": ["phase3_assessment_dossiers"],
+      "reason": "Proposal drafting needs assessment dossiers."
+    },
+    "phase5": {
+      "state": "approval_gate",
+      "requires": ["phase4_proposal_packages", "operator_exact_phrase"],
+      "reason": "Authorization packets and approval decisions must remain human-controlled."
+    },
+    "phase6": {
+      "state": "approval_gated_execution",
+      "requires": ["phase5_approved_packets"],
+      "reason": "Controlled execution requires approved Phase 5 packets and still performs no hidden external execution."
+    },
+    "phase7": {
+      "state": "dependency_gated",
+      "requires": ["phase6_receipts"],
+      "reason": "Audit packet generation requires execution receipts or manual handoff records."
+    },
+    "phase8": {
+      "state": "review_gated_evolution",
+      "requires": ["phase7_audit_packets", "operator_review"],
+      "reason": "Evolution proposals must not silently alter behavior."
+    },
+    "phase9": {
+      "state": "reserved_planned_slot",
+      "requires": ["future_verification_tribunal_implementation"],
+      "reason": "Reserved verification tribunal slot."
+    },
+    "phase10": {
+      "state": "internal_governance_candidate",
+      "requires": ["connector_registry_config"],
+      "reason": "Connector governance can produce internal registry records."
+    },
+    "phase11": {
+      "state": "security_check_candidate",
+      "requires": ["secret_manifest_references_only"],
+      "reason": "Security vault checks must never log secret values."
+    },
+    "phase12": {
+      "state": "observability_candidate",
+      "requires": ["local_runtime_files"],
+      "reason": "Observability can summarize internal status."
+    },
+    "phase13": {
+      "state": "simulation_candidate",
+      "requires": ["synthetic_or_read_only_mode"],
+      "reason": "Simulation and replay must remain synthetic or read-only."
+    },
+    "phase14": {
+      "state": "preflight_candidate",
+      "requires": ["secret_manifest", "state_db"],
+      "reason": "Runtime preflight checks readiness and blocks external action."
+    },
+    "phase15": {
+      "state": "dependency_gated",
+      "requires": ["phase4_proposal_packages"],
+      "reason": "Finance/contracts ledger depends on proposal packages."
+    },
+    "phase16": {
+      "state": "dependency_gated",
+      "requires": ["phase4_proposal_packages"],
+      "reason": "Compliance review depends on proposal packages and is not legal advice."
+    },
+    "phase17": {
+      "state": "operator_event_candidate",
+      "requires": ["incident_summary_or_config"],
+      "reason": "Incident response records internal events only."
+    },
+    "phase18": {
+      "state": "internal_release_readiness_candidate",
+      "requires": ["release_config"],
+      "reason": "Productization readiness is an internal release check."
+    },
+    "phase19": {
+      "state": "dependency_gated",
+      "requires": ["phase4_proposal_packages"],
+      "reason": "Sub-agent planning depends on proposal packages."
+    },
+    "phase20": {
+      "state": "dependency_gated",
+      "requires": ["phase19_subagent_team_plans"],
+      "reason": "Fidelity review depends on sub-agent plans."
+    },
+    "phase21": {
+      "state": "dependency_gated",
+      "requires": ["phase20_fidelity_reviews"],
+      "reason": "Customer satisfaction scoring depends on fidelity reviews."
+    },
+    "phase22": {
+      "state": "dependency_gated",
+      "requires": ["phase21_customer_satisfaction_records"],
+      "reason": "Quality kernel consumes customer satisfaction records."
+    },
+    "phase23": {
+      "state": "dependency_gated",
+      "requires": ["phase22_quality_kernel_records"],
+      "reason": "Work order governance consumes quality kernel records."
+    },
+    "phase24": {
+      "state": "dependency_gated",
+      "requires": ["phase23_work_order_governance_records"],
+      "reason": "Autonomic business pipeline consumes work order governance records."
+    }
+  }
+}
