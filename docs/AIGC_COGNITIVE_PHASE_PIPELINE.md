@@ -29,7 +29,7 @@ The router decides what is necessary. The workflow executes only known safe arti
 
 | Stage | Function |
 |---|---|
-| Trigger Intake | Accepts `AIGC` from workflow dispatch, issue/PR comment, or push commit message. |
+| Trigger Intake | Accepts `AIGC` from manual workflow dispatch or issue/PR comment. |
 | Phase 1 Cognitive Router | Reads the narration, detects intent, selects profile, and emits a phase plan. |
 | MVP+++ Procurement | Records requested elevated capability state as procurement intent while keeping effective runtime authority governed. |
 | Phase 25 | Classifies repository files into ontology, taxonomy, methodology, agent lane, risk class, and constellation zone. |
@@ -95,9 +95,8 @@ The workflow triggers from:
 
 1. Manual workflow dispatch.
 2. Issue or pull request comment containing `AIGC`.
-3. Push to `main` where the head commit message contains `AIGC`.
 
-The push trigger exists so a merge commit containing `AIGC` can produce a concrete workflow run ID for inspection and artifact download.
+The workflow is intentionally not self-triggering on push. That keeps execution explicit and avoids hidden automation loops.
 
 ## Artifact Bundle
 
