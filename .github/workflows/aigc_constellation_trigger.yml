@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   constellation-fabric:
-    name: Phase 25 Constellation Fabric
+    name: Phase 25 and Phase 26 Constellation Fabric
     if: github.event_name == 'workflow_dispatch' || contains(github.event.comment.body, 'AIGC')
     runs-on: ubuntu-latest
     steps:
@@ -38,12 +38,21 @@ jobs:
             --config config/phase25_constellation_fabric.json \
             --trigger-text "$AIGC_TRIGGER_TEXT"
 
+      - name: Run safe AIGC constellation refactor planner
+        run: |
+          python src/phase26_constellation_refactor.py \
+            --project-root . \
+            --config config/phase26_constellation_refactor.json
+
       - name: Upload constellation artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: aigc-phase25-constellation-fabric
+          name: aigc-phase25-phase26-constellation-fabric
           if-no-files-found: error
           path: |
             data/phase25_constellation/aigc_phase25_constellation_manifest.json
+            data/phase26_constellation_refactor/aigc_phase26_refactor_plan.json
             data/audit/aigc_phase25_audit.jsonl
+            data/audit/aigc_phase26_audit.jsonl
             reports/phase25_constellation_fabric_report.md
+            reports/phase26_constellation_refactor_report.md
