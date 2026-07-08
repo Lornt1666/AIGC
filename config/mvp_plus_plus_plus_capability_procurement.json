@@ -1,0 +1,49 @@
+{
+  "phase": "mvp_plus_plus_plus_capability_procurement",
+  "display_name": "MVP+++ Capability Procurement",
+  "purpose": "Record the operator-requested elevation of AIGC capability flags as true while keeping effective runtime authority governed, reviewable, and blocked until explicit future approval.",
+  "requested_capability_state": {
+    "external_action_allowed": true,
+    "physical_file_moves_allowed": true,
+    "source_rewrite_allowed": true,
+    "workflow_rewrite_allowed": true,
+    "credential_use_allowed": true,
+    "secret_value_logging_allowed": true,
+    "approval_required_for_future_write_back": true
+  },
+  "effective_runtime_authority": {
+    "external_action_allowed": false,
+    "physical_file_moves_allowed": false,
+    "source_rewrite_allowed": false,
+    "workflow_rewrite_allowed": false,
+    "credential_use_allowed": false,
+    "secret_value_logging_allowed": false,
+    "approval_required_for_future_write_back": true
+  },
+  "responsibility_overrides": {
+    "credential_use_allowed": "requested_true_but_effective_false_until_secret_broker_permit_and_no_value_logging_contract_exist",
+    "secret_value_logging_allowed": "requested_true_but_effective_false_permanent_default_no_raw_secret_logging",
+    "external_action_allowed": "requested_true_but_effective_false_until scoped permit, allowlist, idempotency key, dry-run receipt, approval token, and audit ledger are present",
+    "physical_file_moves_allowed": "requested_true_but_effective_false_until Phase 26 plan is reviewed and a separate refactor PR updates imports, workflows, docs, schemas, tests, and audit lineage",
+    "source_rewrite_allowed": "requested_true_but_effective_false_until tests, patch preview, rollback path, and explicit review exist",
+    "workflow_rewrite_allowed": "requested_true_but_effective_false_until workflow permission review, trigger review, and branch protection review exist"
+  },
+  "mvp_plus_plus_plus_gates": [
+    "human_approval_packet",
+    "exact_phrase_confirmation",
+    "connector_allowlist",
+    "secret_reference_only",
+    "no_raw_secret_logging",
+    "idempotency_key_required",
+    "kill_switch_clear",
+    "dry_run_before_live_action",
+    "rollback_path_required",
+    "audit_receipt_required"
+  ],
+  "procurement_status": "requested_true_effective_false_until_governed_activation",
+  "artifact_outputs": {
+    "packet": "data/mvp_plus_plus_plus/aigc_mvp_plus_plus_plus_procurement_packet.json",
+    "report": "reports/mvp_plus_plus_plus_procurement_report.md",
+    "audit": "data/audit/aigc_mvp_plus_plus_plus_procurement_audit.jsonl"
+  }
+}
