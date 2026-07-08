@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/phase_interleave_schedule.schema.json",
+  "title": "AIGC Phase Interleave Schedule",
+  "type": "object",
+  "required": [
+    "phase",
+    "generated_at",
+    "status",
+    "summary",
+    "schedule"
+  ],
+  "properties": {
+    "phase": {
+      "type": "string",
+      "enum": ["phase_interleave_scheduler"]
+    },
+    "generated_at": {"type": "string"},
+    "status": {
+      "type": "string",
+      "enum": ["completed_interleaved_plan"]
+    },
+    "intents": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "base_sequence": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "safety_doctrine": {"type": "object"},
+    "summary": {
+      "type": "object",
+      "required": [
+        "base_sequence_length",
+        "interleaved_occurrences",
+        "unique_phases",
+        "external_action_performed",
+        "physical_file_moves_performed",
+        "source_rewrites_performed",
+        "workflow_rewrites_performed",
+        "credential_use_performed",
+        "secret_values_logged"
+      ],
+      "properties": {
+        "base_sequence_length": {"type": "integer"},
+        "interleaved_occurrences": {"type": "integer"},
+        "unique_phases": {"type": "integer"},
+        "repeated_phases": {"type": "object"},
+        "role_counts": {"type": "object"},
+        "external_action_performed": {"type": "boolean", "enum": [false]},
+        "physical_file_moves_performed": {"type": "boolean", "enum": [false]},
+        "source_rewrites_performed": {"type": "boolean", "enum": [false]},
+        "workflow_rewrites_performed": {"type": "boolean", "enum": [false]},
+        "credential_use_performed": {"type": "boolean", "enum": [false]},
+        "secret_values_logged": {"type": "boolean", "enum": [false]}
+      },
+      "additionalProperties": true
+    },
+    "schedule": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "occurrence_id",
+          "phase_id",
+          "phase_slot",
+          "role",
+          "anchor_phase",
+          "reason",
+          "auto_executable_in_workflow",
+          "external_action_allowed",
+          "physical_file_moves_allowed",
+          "source_rewrite_allowed",
+          "workflow_rewrite_allowed",
+          "credential_use_allowed",
+          "secret_value_logging_allowed"
+        ],
+        "properties": {
+          "occurrence_id": {"type": "string"},
+          "phase_id": {"type": "string"},
+          "phase_slot": {"type": "integer"},
+          "role": {"type": "string"},
+          "anchor_phase": {"type": "string"},
+          "reason": {"type": "string"},
+          "auto_executable_in_workflow": {"type": "boolean"},
+          "external_action_allowed": {"type": "boolean", "enum": [false]},
+          "physical_file_moves_allowed": {"type": "boolean", "enum": [false]},
+          "source_rewrite_allowed": {"type": "boolean", "enum": [false]},
+          "workflow_rewrite_allowed": {"type": "boolean", "enum": [false]},
+          "credential_use_allowed": {"type": "boolean", "enum": [false]},
+          "secret_value_logging_allowed": {"type": "boolean", "enum": [false]}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}
