@@ -37,6 +37,58 @@ AIGC trigger
   -> proceed/deny decision
 ```
 
+## Secret Reference Procurement Contract
+
+Read and implement:
+
+```text
+docs/AIGC_GOOGLE_SECRET_REFERENCE_PROCUREMENT_MATRIX.md
+```
+
+The app must support these Google Secret Manager references:
+
+```text
+gcp_secret://AIGC_OPERATOR_GOOGLE_WORKSPACE_EMAIL/latest
+gcp_secret://AIGC_GMAIL_OAUTH_CLIENT_ID/latest
+gcp_secret://AIGC_GMAIL_OAUTH_CLIENT_SECRET/latest
+gcp_secret://AIGC_GMAIL_REFRESH_TOKEN/latest
+```
+
+For each reference, the app must show:
+
+```text
+reference URI
+presence status
+version/alias status
+classification
+purpose
+required-before stage
+rotation policy
+last audit receipt
+redaction status
+missing-reference warning
+```
+
+The app must never show:
+
+```text
+raw OAuth client material
+raw refresh credential material
+raw credential values
+raw token values
+raw secret payloads
+```
+
+The Secret Manager tab must include:
+
+- Generate command plan.
+- Copy gcloud commands without values.
+- Validate reference presence without printing values.
+- Mark missing references.
+- Block Proceed when required references are missing.
+- Show rotation due status.
+- Show last audit receipt.
+
 ## Recommended Stack
 
 ```text
@@ -105,7 +157,9 @@ GET  /pipeline/latest-run
 POST /pipeline/download-artifact
 GET  /sources/gates
 GET  /secrets/references
+GET  /secrets/procurement-matrix
 POST /secrets/command-plan
+POST /secrets/validate-references
 GET  /employer/latest-packet
 GET  /audit/latest
 POST /submission/review-only
@@ -164,6 +218,8 @@ Proceed records handoff authority only. It does not silently submit externally.
 - External connector activation requires separate future review.
 - Source terms and API/robots policy checks must be shown per source.
 - Work-source gates must be visible before any connector is marked active.
+- Secret references must be validated by presence/status only.
+- Missing required secret references block Proceed.
 
 ## Deliverable
 
