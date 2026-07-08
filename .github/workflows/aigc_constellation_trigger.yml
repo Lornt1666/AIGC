@@ -72,9 +72,9 @@ jobs:
         run: |
           python src/phase_interleave_scheduler.py --project-root . --config config/aigc_phase_interleave_scheduler.json
 
-      - name: Run auto-approval gates
+      - name: Run Google Workspace Secret Manager procurement
         run: |
-          python src/auto_approval_gate_procurement.py --project-root . --config config/aigc_auto_approval_gates.json
+          python src/google_workspace_secret_manager_procurement.py --project-root . --config config/aigc_google_workspace_secret_manager_procurement.json
 
       - name: Run procurement packet
         run: |
@@ -83,6 +83,14 @@ jobs:
       - name: Run access automation procurement
         run: |
           python src/access_automation_procurement.py --project-root . --config config/aigc_access_automation_procurement.json
+
+      - name: Run work source gate procurement
+        run: |
+          python src/work_source_gate_procurement.py --project-root . --config config/aigc_work_source_gate_catalog.json
+
+      - name: Run auto-approval gates
+        run: |
+          python src/auto_approval_gate_procurement.py --project-root . --config config/aigc_auto_approval_gates.json
 
       - name: Run Phase 25 classifier
         run: |
@@ -115,9 +123,11 @@ jobs:
             data/phase1_cognitive_router/aigc_phase1_cognitive_plan.json
             data/phase2_24_continuity/aigc_phase2_24_continuity_plan.json
             data/phase_interleaves/aigc_phase_interleave_schedule.json
-            data/auto_approval_gates/aigc_auto_approval_gate_packet.json
+            data/google_workspace_secret_manager/aigc_google_workspace_secret_manager_procurement_packet.json
             data/mvp_plus_plus_plus/aigc_mvp_plus_plus_plus_procurement_packet.json
             data/access_automation/aigc_access_automation_procurement_packet.json
+            data/work_source_gates/aigc_work_source_gate_procurement_packet.json
+            data/auto_approval_gates/aigc_auto_approval_gate_packet.json
             data/phase25_constellation/aigc_phase25_constellation_manifest.json
             data/phase26_constellation_refactor/aigc_phase26_refactor_plan.json
             data/employer_deliverables/aigc_employer_deliverable_procurement_packet.json
@@ -125,9 +135,11 @@ jobs:
             data/audit/aigc_phase1_cognitive_router_audit.jsonl
             data/audit/aigc_phase2_24_continuity_audit.jsonl
             data/audit/aigc_phase_interleave_scheduler_audit.jsonl
-            data/audit/aigc_auto_approval_gate_audit.jsonl
+            data/audit/aigc_google_workspace_secret_manager_procurement_audit.jsonl
             data/audit/aigc_mvp_plus_plus_plus_procurement_audit.jsonl
             data/audit/aigc_access_automation_procurement_audit.jsonl
+            data/audit/aigc_work_source_gate_procurement_audit.jsonl
+            data/audit/aigc_auto_approval_gate_audit.jsonl
             data/audit/aigc_phase25_audit.jsonl
             data/audit/aigc_phase26_audit.jsonl
             data/audit/aigc_employer_deliverable_procurement_audit.jsonl
@@ -135,9 +147,11 @@ jobs:
             reports/phase1_cognitive_router_report.md
             reports/phase2_24_continuity_report.md
             reports/phase_interleave_scheduler_report.md
-            reports/auto_approval_gate_procurement_report.md
+            reports/google_workspace_secret_manager_procurement_report.md
             reports/mvp_plus_plus_plus_procurement_report.md
             reports/access_automation_procurement_report.md
+            reports/work_source_gate_procurement_report.md
+            reports/auto_approval_gate_procurement_report.md
             reports/phase25_constellation_fabric_report.md
             reports/phase26_constellation_refactor_report.md
             reports/employer_deliverable_procurement_report.md
