@@ -79,6 +79,9 @@ class RedactionScanner:
 
     def _is_false_positive(self, match_text: str) -> bool:
         value = match_text.strip()
+        lowered_value = value.lower()
+        if is_vault_reference_text(lowered_value):
+            return True
         if ".*?" in value and "BEGIN PRIVATE KEY" in value:
             return True
         if "\n" in value or "\r" in value:
@@ -91,6 +94,8 @@ class RedactionScanner:
             right = value.split("=", 1)[1].strip().strip("\"' ,)")
         else:
             return False
+        if is_vault_reference_text(right.lower()):
+            return True
         type_like = {
             "Any",
             "Dict",
@@ -165,7 +170,18 @@ class RedactionScanner:
             "none",
             "null",
         ]
-        return any(term in lowered for term in placeholder_terms)
+        return any(term in lowered for term in placeholder_terms) or is_vault_reference_text(lowered)
+
+
+def is_vault_reference_text(value: str) -> bool:
+    safe_reference_markers = (
+        "gcp_secret://",
+        "secret://",
+        "n8n_credential://",
+        "credential://",
+        "vault://",
+    )
+    return any(marker in value for marker in safe_reference_markers)
 
 
 def extra_secret_patterns() -> List[str]:
