@@ -35,7 +35,7 @@
       "type": "HTTP Request",
       "method": "POST",
       "url": "https://api.github.com/repos/Lornt1666/AIGC/actions/workflows/aigc_constellation_trigger.yml/dispatches",
-      "purpose": "Create a GitHub workflow_dispatch event using a GitHub credential with Actions write permission."
+      "purpose": "Create a GitHub workflow_dispatch event using an n8n-managed GitHub credential with Actions write permission."
     },
     {
       "name": "Audit Response",
@@ -46,11 +46,13 @@
   "github_dispatch_request": {
     "method": "POST",
     "url": "https://api.github.com/repos/Lornt1666/AIGC/actions/workflows/aigc_constellation_trigger.yml/dispatches",
-    "headers": {
-      "Accept": "application/vnd.github+json",
-      "X-GitHub-Api-Version": "2026-03-10",
-      "Authorization": "Bearer <GITHUB_ACTIONS_DISPATCH_CREDENTIAL_FROM_N8N>"
-    },
+    "headers_are_reference_only": true,
+    "auth_model": "n8n_managed_credential_reference_only",
+    "recommended_headers": [
+      "Accept application/vnd.github+json",
+      "X-GitHub-Api-Version 2026-03-10",
+      "GitHub credential supplied by n8n credential store"
+    ],
     "body": {
       "ref": "main",
       "inputs": {
@@ -92,7 +94,8 @@
     "branch ref mismatch",
     "missing narration input",
     "submission decision accidentally set to proceed without phrase",
-    "GitHub Actions disabled for repository"
+    "GitHub Actions disabled for repository",
+    "redaction scanner finding secret-shaped header examples in documentation"
   ],
   "outputs": {
     "packet": "data/n8n_bridge/aigc_n8n_workflow_dispatch_bridge_packet.json",
