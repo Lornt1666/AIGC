@@ -19,13 +19,27 @@ Chat-log or desktop event
 
 This avoids relying on GitHub issue-comment events created by automation, which may not reliably start a workflow from connector-created comments.
 
+## AIGC CI Ownership
+
+The bridge is now a procurement-owned AIGC subsystem. CI must prove the bridge can generate:
+
+```text
+data/n8n_bridge/aigc_n8n_workflow_dispatch_bridge_packet.json
+reports/n8n_workflow_dispatch_bridge_report.md
+data/audit/aigc_n8n_workflow_dispatch_bridge_audit.jsonl
+```
+
+The generator stage is:
+
+```powershell
+python .\src\n8n_workflow_dispatch_bridge_procurement.py --project-root . --config config\aigc_n8n_workflow_dispatch_bridge.json
+```
+
 ## Why n8n
 
-n8n's Webhook node can start a workflow when it receives data from apps or services. It supports test and production URLs, and the production URL is registered when the workflow is published.
+n8n receives the external event, validates the trigger payload, and uses an HTTP Request node to call GitHub's workflow dispatch endpoint.
 
-n8n's HTTP Request node can call REST APIs, which makes it the correct node for calling GitHub's workflow dispatch endpoint.
-
-GitHub's workflow dispatch endpoint is designed to manually trigger a GitHub Actions workflow. It requires the workflow to support `workflow_dispatch`, a `ref`, and optional configured `inputs`.
+GitHub's workflow dispatch endpoint is designed to manually trigger a workflow. It requires a workflow that supports `workflow_dispatch`, a `ref`, and optional configured `inputs`.
 
 ## Required n8n Nodes
 
@@ -66,12 +80,14 @@ Expected payload:
 https://api.github.com/repos/Lornt1666/AIGC/actions/workflows/aigc_constellation_trigger.yml/dispatches
 ```
 
-Headers:
+Header configuration must be stored in n8n's credential system. Do not paste or serialize a bearer credential in AIGC docs, config, reports, artifacts, logs, or prompts.
+
+Recommended non-secret header names:
 
 ```text
-Accept: application/vnd.github+json
-X-GitHub-Api-Version: 2026-03-10
-Authorization: Bearer <n8n GitHub credential>
+Accept application/vnd.github+json
+X-GitHub-Api-Version 2026-03-10
+GitHub credential supplied by n8n credential store
 ```
 
 Body:
@@ -142,6 +158,7 @@ If the bridge does not start a run, check:
 6. Body includes `narration: AIGC`.
 7. Submission mode is review-only unless exact proceed phrase is supplied.
 8. GitHub Actions is enabled for the repository.
+9. CI redaction scan is not tripping on secret-shaped documentation examples.
 
 ## Local GitHub CLI Fallback
 
