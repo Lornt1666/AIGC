@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/access_automation_procurement_packet.schema.json",
+  "title": "AIGC Access Automation Procurement Packet",
+  "type": "object",
+  "required": [
+    "phase",
+    "generated_at",
+    "status",
+    "trigger",
+    "human_in_loop_requested_capability_state",
+    "effective_safety_parameters",
+    "domain_records",
+    "summary"
+  ],
+  "properties": {
+    "phase": {"type": "string", "enum": ["access_automation_procurement"]},
+    "generated_at": {"type": "string"},
+    "status": {"type": "string", "enum": ["completed_human_in_loop_access_procurement_plan"]},
+    "trigger": {"type": "object"},
+    "human_in_loop_requested_capability_state": {
+      "type": "object",
+      "required": [
+        "external_action_allowed",
+        "auto_submit_to_employer",
+        "credential_use_allowed",
+        "secret_value_logging_allowed",
+        "human_review_required_before_submission",
+        "proceed_records_handoff_only"
+      ],
+      "properties": {
+        "external_action_allowed": {"type": "boolean", "enum": [true]},
+        "auto_submit_to_employer": {"type": "boolean", "enum": [true]},
+        "credential_use_allowed": {"type": "boolean", "enum": [true]},
+        "secret_value_logging_allowed": {"type": "boolean", "enum": [true]},
+        "human_review_required_before_submission": {"type": "boolean", "enum": [true]},
+        "proceed_records_handoff_only": {"type": "boolean", "enum": [true]}
+      },
+      "additionalProperties": true
+    },
+    "effective_safety_parameters": {"type": "object"},
+    "access_procurement_gates": {"type": "array", "items": {"type": "string"}},
+    "domain_records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["category", "default_access_mode", "read_only_discovery_allowed", "submission_requires_operator_proceed", "raw_secret_value_logging_allowed"],
+        "properties": {
+          "category": {"type": "string"},
+          "purpose": {"type": "string"},
+          "examples": {"type": "array", "items": {"type": "string"}},
+          "default_access_mode": {"type": "string"},
+          "automation_status": {"type": "string"},
+          "read_only_discovery_allowed": {"type": "boolean"},
+          "credential_use_requires_secret_broker": {"type": "boolean"},
+          "submission_requires_operator_proceed": {"type": "boolean"},
+          "human_review_required": {"type": "boolean"},
+          "raw_secret_value_logging_allowed": {"type": "boolean", "enum": [false]}
+        },
+        "additionalProperties": true
+      }
+    },
+    "submission_activation_requirements": {"type": "object"},
+    "summary": {
+      "type": "object",
+      "required": [
+        "requested_external_action_allowed",
+        "requested_auto_submit_to_employer",
+        "requested_credential_use_allowed",
+        "requested_secret_value_logging_allowed",
+        "requested_human_review_required_before_submission",
+        "requested_proceed_records_handoff_only",
+        "raw_secret_value_logging_allowed",
+        "external_action_performed",
+        "credential_use_performed",
+        "secret_values_logged"
+      ],
+      "properties": {
+        "requested_external_action_allowed": {"type": "boolean", "enum": [true]},
+        "requested_auto_submit_to_employer": {"type": "boolean", "enum": [true]},
+        "requested_credential_use_allowed": {"type": "boolean", "enum": [true]},
+        "requested_secret_value_logging_allowed": {"type": "boolean", "enum": [true]},
+        "requested_human_review_required_before_submission": {"type": "boolean", "enum": [true]},
+        "requested_proceed_records_handoff_only": {"type": "boolean", "enum": [true]},
+        "domain_categories": {"type": "integer"},
+        "domain_examples": {"type": "integer"},
+        "raw_secret_value_logging_allowed": {"type": "boolean", "enum": [false]},
+        "credential_exfiltration_allowed": {"type": "boolean", "enum": [false]},
+        "unapproved_external_submission_allowed": {"type": "boolean", "enum": [false]},
+        "external_action_performed": {"type": "boolean", "enum": [false]},
+        "credential_use_performed": {"type": "boolean", "enum": [false]},
+        "secret_values_logged": {"type": "boolean", "enum": [false]}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
