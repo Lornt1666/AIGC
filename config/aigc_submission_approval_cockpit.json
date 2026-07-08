@@ -3,6 +3,7 @@
   "display_name": "Submission Approval Cockpit",
   "purpose": "Render a review-first approval cockpit for the employer deliverable packet, allowing the operator to view the audit and choose review_only, proceed, or deny without silently submitting externally.",
   "inputs": {
+    "access_automation_packet": "data/access_automation/aigc_access_automation_procurement_packet.json",
     "employer_packet": "data/employer_deliverables/aigc_employer_deliverable_procurement_packet.json",
     "employer_report": "reports/employer_deliverable_procurement_report.md",
     "employer_audit": "data/audit/aigc_employer_deliverable_procurement_audit.jsonl",
@@ -25,12 +26,22 @@
     "deny_button": "Records denied_by_operator and blocks submission handoff.",
     "review_only_button": "Displays audit and keeps decision pending."
   },
-  "safety_doctrine": {
-    "external_action_allowed": false,
-    "auto_submit_to_employer": false,
-    "credential_use_allowed": false,
-    "secret_value_logging_allowed": false,
+  "human_in_loop_requested_capability_state": {
+    "external_action_allowed": true,
+    "auto_submit_to_employer": true,
+    "credential_use_allowed": true,
+    "secret_value_logging_allowed": true,
     "human_review_required_before_submission": true,
     "proceed_records_handoff_only": true
+  },
+  "effective_safety_doctrine": {
+    "external_action_allowed": "conditional_after_proceed_and_connector_allowlist",
+    "auto_submit_to_employer": "conditional_handoff_only_until_live_connector_is_separately_approved",
+    "credential_use_allowed": "conditional_secret_broker_reference_only",
+    "secret_value_logging_allowed": "redacted_reference_hash_only_raw_secret_values_forbidden",
+    "human_review_required_before_submission": true,
+    "proceed_records_handoff_only": true,
+    "raw_secret_value_logging_allowed": false,
+    "unapproved_external_submission_allowed": false
   }
 }
