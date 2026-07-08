@@ -29,6 +29,11 @@ jobs:
       - name: Validate contracts
         run: python src/aigc.py validate
 
+      - name: Scan committed content for secret-like content
+        run: >
+          python src/security/redaction_scanner.py
+          --paths src config docs README.md AGENTS.md AIGC_MASTER_PROMPT.md OMEGA_X_CONSTITUTION.md schemas tests reports Dockerfile render.yaml fly.toml Procfile
+
       - name: Run procurement smoke stages
         run: |
           python src/save_credential_broker_procurement.py --project-root . --config config/aigc_save_credential_broker.json
@@ -38,8 +43,3 @@ jobs:
 
       - name: Run tests
         run: python -m pytest
-
-      - name: Scan for secret-like content
-        run: >
-          python src/security/redaction_scanner.py
-          --paths src config docs README.md AGENTS.md AIGC_MASTER_PROMPT.md OMEGA_X_CONSTITUTION.md schemas tests reports Dockerfile render.yaml fly.toml Procfile
