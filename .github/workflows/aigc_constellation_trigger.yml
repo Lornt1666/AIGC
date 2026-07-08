@@ -58,6 +58,10 @@ jobs:
         run: |
           python src/phase2_24_continuity_bridge.py --project-root . --config config/aigc_phase2_24_continuity.json
 
+      - name: Run phase interleave scheduler
+        run: |
+          python src/phase_interleave_scheduler.py --project-root . --config config/aigc_phase_interleave_scheduler.json
+
       - name: Run auto-approval gates
         run: |
           python src/auto_approval_gate_procurement.py --project-root . --config config/aigc_auto_approval_gates.json
@@ -85,18 +89,21 @@ jobs:
           path: |
             data/phase1_cognitive_router/aigc_phase1_cognitive_plan.json
             data/phase2_24_continuity/aigc_phase2_24_continuity_plan.json
+            data/phase_interleaves/aigc_phase_interleave_schedule.json
             data/auto_approval_gates/aigc_auto_approval_gate_packet.json
             data/mvp_plus_plus_plus/aigc_mvp_plus_plus_plus_procurement_packet.json
             data/phase25_constellation/aigc_phase25_constellation_manifest.json
             data/phase26_constellation_refactor/aigc_phase26_refactor_plan.json
             data/audit/aigc_phase1_cognitive_router_audit.jsonl
             data/audit/aigc_phase2_24_continuity_audit.jsonl
+            data/audit/aigc_phase_interleave_scheduler_audit.jsonl
             data/audit/aigc_auto_approval_gate_audit.jsonl
             data/audit/aigc_mvp_plus_plus_plus_procurement_audit.jsonl
             data/audit/aigc_phase25_audit.jsonl
             data/audit/aigc_phase26_audit.jsonl
             reports/phase1_cognitive_router_report.md
             reports/phase2_24_continuity_report.md
+            reports/phase_interleave_scheduler_report.md
             reports/auto_approval_gate_procurement_report.md
             reports/mvp_plus_plus_plus_procurement_report.md
             reports/phase25_constellation_fabric_report.md
