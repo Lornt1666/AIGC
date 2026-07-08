@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/mvp_plus_plus_plus_procurement_packet.schema.json",
+  "title": "AIGC MVP+++ Procurement Packet",
+  "type": "object",
+  "required": [
+    "phase",
+    "generated_at",
+    "status",
+    "requested_capability_state",
+    "effective_runtime_authority",
+    "safety_result"
+  ],
+  "properties": {
+    "phase": {
+      "type": "string",
+      "enum": ["mvp_plus_plus_plus_capability_procurement"]
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["procured_as_requested_true_but_runtime_guarded"]
+    },
+    "requested_capability_state": {
+      "type": "object",
+      "required": [
+        "external_action_allowed",
+        "physical_file_moves_allowed",
+        "source_rewrite_allowed",
+        "workflow_rewrite_allowed",
+        "credential_use_allowed",
+        "secret_value_logging_allowed",
+        "approval_required_for_future_write_back"
+      ],
+      "properties": {
+        "external_action_allowed": {"type": "boolean", "enum": [true]},
+        "physical_file_moves_allowed": {"type": "boolean", "enum": [true]},
+        "source_rewrite_allowed": {"type": "boolean", "enum": [true]},
+        "workflow_rewrite_allowed": {"type": "boolean", "enum": [true]},
+        "credential_use_allowed": {"type": "boolean", "enum": [true]},
+        "secret_value_logging_allowed": {"type": "boolean", "enum": [true]},
+        "approval_required_for_future_write_back": {"type": "boolean", "enum": [true]}
+      },
+      "additionalProperties": true
+    },
+    "effective_runtime_authority": {
+      "type": "object"
+    },
+    "responsibility_overrides": {
+      "type": "object"
+    },
+    "mvp_plus_plus_plus_gates": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "procurement_status": {
+      "type": "string"
+    },
+    "safety_result": {
+      "type": "object",
+      "required": [
+        "requested_all_flags_true",
+        "secret_values_logged",
+        "credentials_used",
+        "external_action_performed",
+        "physical_file_moves_performed",
+        "source_rewrites_performed",
+        "workflow_rewrites_performed",
+        "future_activation_requires_review"
+      ],
+      "properties": {
+        "requested_all_flags_true": {"type": "boolean", "enum": [true]},
+        "effective_dangerous_true_flags": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "blocked_elevations": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "secret_values_logged": {"type": "boolean", "enum": [false]},
+        "credentials_used": {"type": "boolean", "enum": [false]},
+        "external_action_performed": {"type": "boolean", "enum": [false]},
+        "physical_file_moves_performed": {"type": "boolean", "enum": [false]},
+        "source_rewrites_performed": {"type": "boolean", "enum": [false]},
+        "workflow_rewrites_performed": {"type": "boolean", "enum": [false]},
+        "future_activation_requires_review": {"type": "boolean", "enum": [true]}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
