@@ -6,9 +6,20 @@ on:
       narration:
         description: "Narration text that should contain the AIGC trigger phrase."
         required: true
-        default: "AIGC: run MVP+++ procurement, constellation fabric classification, and refactor planning."
+        default: "AIGC: run MVP+++ procurement, cognitive phase routing, constellation fabric classification, and refactor planning."
+      project_profile:
+        description: "Project profile for cognitive routing: auto, constellation_refactor, business_pipeline, security_governance, full_continuum."
+        required: false
+        default: "auto"
+      run_mode:
+        description: "Routing mode: plan_only, artifact_generation, safe_sweep, project_pipeline."
+        required: false
+        default: "artifact_generation"
   issue_comment:
     types: [created]
+  push:
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -17,8 +28,11 @@ permissions:
 
 jobs:
   constellation-fabric:
-    name: MVP+++, Phase 25, and Phase 26 Constellation Fabric
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.comment.body, 'AIGC')
+    name: AIGC Cognitive Router, MVP+++, Phase 25, and Phase 26
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, 'AIGC')) ||
+      (github.event_name == 'push' && contains(github.event.head_commit.message, 'AIGC'))
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -29,6 +43,26 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Resolve AIGC trigger parameters
+        run: |
+          cat > aigc_trigger.env <<'EOF'
+          AIGC_TRIGGER_TEXT=${{ github.event.inputs.narration || github.event.comment.body || github.event.head_commit.message || 'AIGC manual trigger' }}
+          AIGC_PROJECT_PROFILE=${{ github.event.inputs.project_profile || 'auto' }}
+          AIGC_RUN_MODE=${{ github.event.inputs.run_mode || 'artifact_generation' }}
+          EOF
+
+      - name: Run Phase 1 cognitive phase router
+        run: |
+          set -a
+          . ./aigc_trigger.env
+          set +a
+          python src/phase1_cognitive_phase_router.py \
+            --project-root . \
+            --config config/aigc_cognitive_phase_router.json \
+            --trigger-text "$AIGC_TRIGGER_TEXT" \
+            --project-profile "$AIGC_PROJECT_PROFILE" \
+            --run-mode "$AIGC_RUN_MODE"
+
       - name: Run MVP+++ capability procurement packet
         run: |
           python src/mvp_plus_plus_plus_procurement.py \
@@ -36,9 +70,10 @@ jobs:
             --config config/mvp_plus_plus_plus_capability_procurement.json
 
       - name: Run safe AIGC constellation fabric classifier
-        env:
-          AIGC_TRIGGER_TEXT: ${{ github.event.inputs.narration || github.event.comment.body || 'AIGC manual trigger' }}
         run: |
+          set -a
+          . ./aigc_trigger.env
+          set +a
           python src/phase25_constellation_fabric.py \
             --project-root . \
             --config config/phase25_constellation_fabric.json \
@@ -53,15 +88,18 @@ jobs:
       - name: Upload constellation artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: aigc-mvp-plus-plus-plus-phase25-phase26-constellation-fabric
+          name: aigc-mvp-plus-plus-plus-phase1-phase25-phase26-constellation-fabric
           if-no-files-found: error
           path: |
+            data/phase1_cognitive_router/aigc_phase1_cognitive_plan.json
             data/mvp_plus_plus_plus/aigc_mvp_plus_plus_plus_procurement_packet.json
             data/phase25_constellation/aigc_phase25_constellation_manifest.json
             data/phase26_constellation_refactor/aigc_phase26_refactor_plan.json
+            data/audit/aigc_phase1_cognitive_router_audit.jsonl
             data/audit/aigc_mvp_plus_plus_plus_procurement_audit.jsonl
             data/audit/aigc_phase25_audit.jsonl
             data/audit/aigc_phase26_audit.jsonl
+            reports/phase1_cognitive_router_report.md
             reports/mvp_plus_plus_plus_procurement_report.md
             reports/phase25_constellation_fabric_report.md
             reports/phase26_constellation_refactor_report.md
