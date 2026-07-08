@@ -160,6 +160,8 @@ def command_validate(args: argparse.Namespace, root: Path, store: AIGCStateStore
             (registry["phase22"].schema_name, root / registry["phase22"].output_path),
             (registry["phase23"].schema_name, root / registry["phase23"].output_path),
             (registry["phase24"].schema_name, root / registry["phase24"].output_path),
+            (registry["phase25"].schema_name, root / registry["phase25"].output_path),
+            (registry["phase26"].schema_name, root / registry["phase26"].output_path),
         ]
         jsonl_targets = [
             ("outcome_record", root / "data" / "phase8_evolution" / "outcome_records.jsonl"),
@@ -586,8 +588,35 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     validate_parser.add_argument("--schema", default="")
     validate_parser.add_argument("--path", default="")
 
+    phase_choices = [
+        "phase2",
+        "phase3",
+        "phase4",
+        "phase5",
+        "phase6",
+        "phase7",
+        "phase8",
+        "phase10",
+        "phase11",
+        "phase12",
+        "phase13",
+        "phase14",
+        "phase15",
+        "phase16",
+        "phase17",
+        "phase18",
+        "phase19",
+        "phase20",
+        "phase21",
+        "phase22",
+        "phase23",
+        "phase24",
+        "phase25",
+        "phase26",
+        "pipeline",
+    ]
     run_parser = subparsers.add_parser("run", help="Run an internal AIGC phase command.")
-    run_parser.add_argument("phase", choices=["phase2", "phase3", "phase4", "phase5", "phase6", "phase7", "phase8", "phase10", "phase11", "phase12", "phase13", "phase14", "phase15", "phase16", "phase17", "phase18", "phase19", "phase20", "phase21", "phase22", "phase23", "phase24", "pipeline"])
+    run_parser.add_argument("phase", choices=phase_choices)
     run_parser.add_argument("--mode", choices=["synthetic", "real", "real_data_read_only"], default="synthetic")
     run_parser.add_argument("--source", choices=["remoteok", "remotive", "weworkremotely", "github_issues"], default="remoteok")
     run_parser.add_argument("--limit", type=int, default=10)
