@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/submission_approval_decision.schema.json",
+  "title": "AIGC Submission Approval Decision",
+  "type": "object",
+  "required": [
+    "phase",
+    "generated_at",
+    "status",
+    "operator_decision_requested",
+    "button_state",
+    "audit_view",
+    "submission_summary",
+    "safety_result"
+  ],
+  "properties": {
+    "phase": {"type": "string", "enum": ["submission_approval_cockpit"]},
+    "generated_at": {"type": "string"},
+    "status": {
+      "type": "string",
+      "enum": ["review_only_pending_decision", "approved_for_submission_handoff", "denied_by_operator", "blocked_phrase_mismatch", "pending_review"]
+    },
+    "operator_decision_requested": {"type": "string", "enum": ["review_only", "proceed", "deny"]},
+    "required_phrase": {"type": "string"},
+    "phrase_matched": {"type": "boolean"},
+    "button_state": {"type": "object"},
+    "audit_view": {"type": "object"},
+    "submission_summary": {"type": "object"},
+    "safety_result": {
+      "type": "object",
+      "required": ["external_action_performed", "auto_submitted_to_employer", "credential_use_performed", "secret_values_logged", "submission_handoff_authorized"],
+      "properties": {
+        "external_action_performed": {"type": "boolean", "enum": [false]},
+        "auto_submitted_to_employer": {"type": "boolean", "enum": [false]},
+        "credential_use_performed": {"type": "boolean", "enum": [false]},
+        "secret_values_logged": {"type": "boolean", "enum": [false]},
+        "submission_handoff_authorized": {"type": "boolean"},
+        "submission_handoff_blocked": {"type": "boolean"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
