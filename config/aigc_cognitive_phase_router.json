@@ -1,0 +1,97 @@
+{
+  "phase": "phase1_cognitive_phase_router",
+  "display_name": "Phase 1 - AIGC Cognitive Phase Router",
+  "trigger_phrase": "AIGC",
+  "purpose": "Interpret an AIGC narration trigger and produce a governed phase plan across AIGC procedures 1-26, selecting order and necessity by project profile, intent, risk, and available safe authority.",
+  "default_project_profile": "auto",
+  "default_run_mode": "artifact_generation",
+  "allowed_run_modes": [
+    "plan_only",
+    "artifact_generation",
+    "safe_sweep",
+    "project_pipeline"
+  ],
+  "safety_doctrine": {
+    "external_action_allowed": false,
+    "physical_file_moves_allowed": false,
+    "source_rewrite_allowed": false,
+    "workflow_rewrite_allowed": false,
+    "credential_use_allowed": false,
+    "secret_value_logging_allowed": false,
+    "approval_required_for_future_write_back": true
+  },
+  "phase_slots": [
+    {"slot": 1, "id": "phase1", "name": "Cognitive Phase Router", "category": "reasoning", "autonomous_execution_allowed": true},
+    {"slot": 2, "id": "phase2", "name": "Opportunity Radar", "category": "source_intake", "autonomous_execution_allowed": false},
+    {"slot": 3, "id": "phase3", "name": "Ology Assessment", "category": "assessment", "autonomous_execution_allowed": false},
+    {"slot": 4, "id": "phase4", "name": "Proposal Drafting", "category": "drafting", "autonomous_execution_allowed": false},
+    {"slot": 5, "id": "phase5", "name": "Human Approval Gate", "category": "approval", "autonomous_execution_allowed": false},
+    {"slot": 6, "id": "phase6", "name": "Controlled Execution", "category": "controlled_execution", "autonomous_execution_allowed": false},
+    {"slot": 7, "id": "phase7", "name": "Audit Packet", "category": "audit", "autonomous_execution_allowed": false},
+    {"slot": 8, "id": "phase8", "name": "Evolution Loop", "category": "evolution", "autonomous_execution_allowed": false},
+    {"slot": 9, "id": "phase9", "name": "Verification Tribunal", "category": "verification", "autonomous_execution_allowed": false, "status": "reserved_planned_slot"},
+    {"slot": 10, "id": "phase10", "name": "Connector Governance", "category": "governance", "autonomous_execution_allowed": false},
+    {"slot": 11, "id": "phase11", "name": "Security Vault", "category": "security", "autonomous_execution_allowed": false},
+    {"slot": 12, "id": "phase12", "name": "Observability Dashboard", "category": "observability", "autonomous_execution_allowed": false},
+    {"slot": 13, "id": "phase13", "name": "Simulation Arena", "category": "simulation", "autonomous_execution_allowed": false},
+    {"slot": 14, "id": "phase14", "name": "Runtime Preflight", "category": "preflight", "autonomous_execution_allowed": false},
+    {"slot": 15, "id": "phase15", "name": "Finance and Contracts Ledger", "category": "finance", "autonomous_execution_allowed": false},
+    {"slot": 16, "id": "phase16", "name": "Compliance and Legal Review", "category": "compliance", "autonomous_execution_allowed": false},
+    {"slot": 17, "id": "phase17", "name": "Incident Response", "category": "incident_response", "autonomous_execution_allowed": false},
+    {"slot": 18, "id": "phase18", "name": "Productization Readiness", "category": "productization", "autonomous_execution_allowed": false},
+    {"slot": 19, "id": "phase19", "name": "Sub-Agent Forge", "category": "subagent_planning", "autonomous_execution_allowed": false},
+    {"slot": 20, "id": "phase20", "name": "Fidelity Forge", "category": "quality", "autonomous_execution_allowed": false},
+    {"slot": 21, "id": "phase21", "name": "Customer Satisfaction Continuum", "category": "customer_fit", "autonomous_execution_allowed": false},
+    {"slot": 22, "id": "phase22", "name": "Quality Kernel", "category": "quality_kernel", "autonomous_execution_allowed": false},
+    {"slot": 23, "id": "phase23", "name": "Work Order Governor", "category": "work_order_governance", "autonomous_execution_allowed": false},
+    {"slot": 24, "id": "phase24", "name": "Autonomic Business Pipeline", "category": "business_pipeline", "autonomous_execution_allowed": false},
+    {"slot": 25, "id": "phase25", "name": "Constellation Fabric", "category": "repository_cartography", "autonomous_execution_allowed": true},
+    {"slot": 26, "id": "phase26", "name": "Constellation Refactor Planner", "category": "refactor_planning", "autonomous_execution_allowed": true}
+  ],
+  "artifact_generation_sequence": [
+    "mvp_plus_plus_plus",
+    "phase25",
+    "phase26"
+  ],
+  "safe_sweep_sequence": [
+    "mvp_plus_plus_plus",
+    "phase1",
+    "phase14",
+    "phase25",
+    "phase26"
+  ],
+  "project_pipeline_sequence": [
+    "phase1",
+    "phase2",
+    "phase3",
+    "phase4",
+    "phase5",
+    "phase15",
+    "phase16",
+    "phase19",
+    "phase20",
+    "phase21",
+    "phase22",
+    "phase23",
+    "phase24",
+    "phase25",
+    "phase26"
+  ],
+  "intent_rules": [
+    {"intent": "constellation_refactor", "keywords": ["constellation", "refactor", "sort files", "repo", "repository", "phase 25", "phase 26"], "sequence": ["mvp_plus_plus_plus", "phase25", "phase26"]},
+    {"intent": "business_pipeline", "keywords": ["business", "proposal", "customer", "work order", "pipeline", "job", "lead"], "sequence": ["phase2", "phase3", "phase4", "phase5", "phase15", "phase16", "phase19", "phase20", "phase21", "phase22", "phase23", "phase24"]},
+    {"intent": "security_governance", "keywords": ["security", "secret", "credential", "incident", "compliance", "governance"], "sequence": ["phase10", "phase11", "phase14", "phase16", "phase17", "phase18"]},
+    {"intent": "full_continuum", "keywords": ["phase 1-26", "phase 1 to 26", "all phases", "full continuum", "full pipeline"], "sequence": ["phase1", "phase2", "phase3", "phase4", "phase5", "phase6", "phase7", "phase8", "phase9", "phase10", "phase11", "phase12", "phase13", "phase14", "phase15", "phase16", "phase17", "phase18", "phase19", "phase20", "phase21", "phase22", "phase23", "phase24", "phase25", "phase26"]}
+  ],
+  "script_commands": {
+    "mvp_plus_plus_plus": ["python", "src/mvp_plus_plus_plus_procurement.py", "--project-root", ".", "--config", "config/mvp_plus_plus_plus_capability_procurement.json"],
+    "phase25": ["python", "src/phase25_constellation_fabric.py", "--project-root", ".", "--config", "config/phase25_constellation_fabric.json", "--trigger-text", "{trigger_text}"],
+    "phase26": ["python", "src/phase26_constellation_refactor.py", "--project-root", ".", "--config", "config/phase26_constellation_refactor.json"]
+  },
+  "outputs": {
+    "plan": "data/phase1_cognitive_router/aigc_phase1_cognitive_plan.json",
+    "report": "reports/phase1_cognitive_router_report.md",
+    "audit": "data/audit/aigc_phase1_cognitive_router_audit.jsonl",
+    "execution": "data/phase1_cognitive_router/aigc_cognitive_execution_result.json"
+  }
+}
