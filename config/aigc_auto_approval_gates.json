@@ -6,8 +6,10 @@
     "phase1_plan": "data/phase1_cognitive_router/aigc_phase1_cognitive_plan.json",
     "phase2_24_continuity": "data/phase2_24_continuity/aigc_phase2_24_continuity_plan.json",
     "phase_interleave_schedule": "data/phase_interleaves/aigc_phase_interleave_schedule.json",
+    "google_workspace_secret_manager_packet": "data/google_workspace_secret_manager/aigc_google_workspace_secret_manager_procurement_packet.json",
     "mvp_plus_plus_plus_packet": "data/mvp_plus_plus_plus/aigc_mvp_plus_plus_plus_procurement_packet.json",
     "access_automation_packet": "data/access_automation/aigc_access_automation_procurement_packet.json",
+    "work_source_gate_packet": "data/work_source_gates/aigc_work_source_gate_procurement_packet.json",
     "employer_deliverable_packet": "data/employer_deliverables/aigc_employer_deliverable_procurement_packet.json",
     "submission_approval_decision": "data/submission_approval/aigc_submission_approval_decision.json"
   },
@@ -27,8 +29,10 @@
       "proposal_only_refactor_planning",
       "continuity_ledger_generation",
       "interleave_schedule_generation",
+      "google_secret_manager_procurement_plan_generation",
       "procurement_intent_recording",
       "access_automation_procurement_plan_generation",
+      "work_source_gate_procurement_packet_generation",
       "employer_deliverable_packet_generation",
       "submission_audit_view_generation"
     ],
@@ -57,72 +61,19 @@
     ]
   },
   "stage_requests": [
-    {
-      "stage_id": "phase1_cognitive_router",
-      "request_type": "internal_artifact_generation",
-      "risk_level": "low",
-      "description": "Generate cognitive phase plan."
-    },
-    {
-      "stage_id": "phase2_24_continuity_bridge",
-      "request_type": "continuity_ledger_generation",
-      "risk_level": "low",
-      "description": "Generate visibility ledger for phases 2 through 24."
-    },
-    {
-      "stage_id": "phase_interleave_scheduler",
-      "request_type": "interleave_schedule_generation",
-      "risk_level": "low",
-      "description": "Generate repeated phase occurrence schedule showing guard loops between phases."
-    },
-    {
-      "stage_id": "mvp_plus_plus_plus_procurement",
-      "request_type": "procurement_intent_recording",
-      "risk_level": "medium",
-      "description": "Record requested capability flags as procurement intent while keeping effective authority blocked."
-    },
-    {
-      "stage_id": "access_automation_procurement",
-      "request_type": "access_automation_procurement_plan_generation",
-      "risk_level": "medium",
-      "description": "Record human-in-loop automation access request flags as true and map hiring/work source domains to safety parameters without live connector activation."
-    },
-    {
-      "stage_id": "phase25_constellation_fabric",
-      "request_type": "read_only_repository_cartography",
-      "risk_level": "low",
-      "description": "Classify repository files without moving them."
-    },
-    {
-      "stage_id": "phase26_constellation_refactor",
-      "request_type": "proposal_only_refactor_planning",
-      "risk_level": "medium",
-      "description": "Plan possible future file moves without performing them."
-    },
-    {
-      "stage_id": "employer_deliverable_procurement",
-      "request_type": "employer_deliverable_packet_generation",
-      "risk_level": "medium",
-      "description": "Generate reviewable employer-facing deliverable packet without submitting externally."
-    },
-    {
-      "stage_id": "submission_approval_cockpit_review",
-      "request_type": "submission_audit_view_generation",
-      "risk_level": "low",
-      "description": "Generate audit-view cockpit with proceed or deny decision controls."
-    },
-    {
-      "stage_id": "submission_approval_cockpit_proceed",
-      "request_type": "employer_submission_handoff",
-      "risk_level": "high",
-      "description": "Proceed decision requires exact phrase and human review, and still records handoff only unless future approved connector exists."
-    },
-    {
-      "stage_id": "future_live_access_automation_activation",
-      "request_type": "live_access_automation_activation",
-      "risk_level": "high",
-      "description": "Future live connector automation requires separate reviewed activation, connector allowlist, secret broker, redaction, rate limits, idempotency, and audit receipt."
-    }
+    {"stage_id":"phase1_cognitive_router","request_type":"internal_artifact_generation","risk_level":"low","description":"Generate cognitive phase plan."},
+    {"stage_id":"phase2_24_continuity_bridge","request_type":"continuity_ledger_generation","risk_level":"low","description":"Generate visibility ledger for phases 2 through 24."},
+    {"stage_id":"phase_interleave_scheduler","request_type":"interleave_schedule_generation","risk_level":"low","description":"Generate repeated phase occurrence schedule showing guard loops between phases."},
+    {"stage_id":"google_workspace_secret_manager_procurement","request_type":"google_secret_manager_procurement_plan_generation","risk_level":"medium","description":"Generate Google Workspace and Secret Manager reference-only procurement plan without mutating Google Cloud or exposing secrets."},
+    {"stage_id":"mvp_plus_plus_plus_procurement","request_type":"procurement_intent_recording","risk_level":"medium","description":"Record requested capability flags as procurement intent while keeping effective authority blocked."},
+    {"stage_id":"access_automation_procurement","request_type":"access_automation_procurement_plan_generation","risk_level":"medium","description":"Record human-in-loop automation access request flags as true and map hiring/work source domains to safety parameters without live connector activation."},
+    {"stage_id":"work_source_gate_procurement","request_type":"work_source_gate_procurement_packet_generation","risk_level":"medium","description":"Generate per-source gate records for every listed hiring/work platform."},
+    {"stage_id":"phase25_constellation_fabric","request_type":"read_only_repository_cartography","risk_level":"low","description":"Classify repository files without moving them."},
+    {"stage_id":"phase26_constellation_refactor","request_type":"proposal_only_refactor_planning","risk_level":"medium","description":"Plan possible future file moves without performing them."},
+    {"stage_id":"employer_deliverable_procurement","request_type":"employer_deliverable_packet_generation","risk_level":"medium","description":"Generate reviewable employer-facing deliverable packet without submitting externally."},
+    {"stage_id":"submission_approval_cockpit_review","request_type":"submission_audit_view_generation","risk_level":"low","description":"Generate audit-view cockpit with proceed or deny decision controls."},
+    {"stage_id":"submission_approval_cockpit_proceed","request_type":"employer_submission_handoff","risk_level":"high","description":"Proceed decision requires exact phrase and human review, and still records handoff only unless future approved connector exists."},
+    {"stage_id":"future_live_access_automation_activation","request_type":"live_access_automation_activation","risk_level":"high","description":"Future live connector automation requires separate reviewed activation, connector allowlist, secret broker, redaction, rate limits, idempotency, and audit receipt."}
   ],
   "effective_runtime_authority": {
     "external_action_allowed": false,
@@ -136,10 +87,11 @@
   "gate_invariants": [
     "Auto-approval can only approve internal artifact generation and metadata classification.",
     "Auto-approval cannot approve external action, credential use, raw secret logging, physical file movement, source rewrite, or workflow rewrite.",
+    "Google Secret Manager procurement can generate a command plan and references only; it cannot mutate Google Cloud from this stage.",
+    "Work source gate procurement can classify sources only; it cannot activate live connectors.",
     "Medium-risk internal stages can auto-pass only when effective runtime authority remains false for dangerous capabilities.",
     "Access automation procurement can record requested human-in-loop capabilities as true, but live connector activation requires separate review.",
     "Employer deliverable packets can be auto-generated, but employer submission handoff requires human review.",
-    "Repeated phase occurrences are schedule artifacts only until a reviewed executor maps them to safe static steps.",
     "Every gate decision must be written to packet, report, and audit ledger."
   ]
 }
