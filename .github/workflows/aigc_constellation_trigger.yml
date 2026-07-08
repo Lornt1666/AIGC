@@ -15,6 +15,14 @@ on:
         description: "Routing mode."
         required: false
         default: "artifact_generation"
+      submission_decision:
+        description: "Submission cockpit decision: review_only, proceed, or deny."
+        required: false
+        default: "review_only"
+      submission_phrase:
+        description: "Exact approval phrase for proceed or deny. Leave blank for review_only."
+        required: false
+        default: ""
   issue_comment:
     types: [created]
 
@@ -45,6 +53,8 @@ jobs:
           AIGC_TRIGGER_TEXT=${{ github.event.inputs.narration || github.event.comment.body || 'AIGC manual trigger' }}
           AIGC_PROJECT_PROFILE=${{ github.event.inputs.project_profile || 'auto' }}
           AIGC_RUN_MODE=${{ github.event.inputs.run_mode || 'artifact_generation' }}
+          AIGC_SUBMISSION_DECISION=${{ github.event.inputs.submission_decision || 'review_only' }}
+          AIGC_SUBMISSION_PHRASE=${{ github.event.inputs.submission_phrase || '' }}
           EOF
 
       - name: Run Phase 1 router
@@ -81,6 +91,17 @@ jobs:
         run: |
           python src/phase26_constellation_refactor.py --project-root . --config config/phase26_constellation_refactor.json
 
+      - name: Run employer deliverable procurement
+        run: |
+          python src/employer_deliverable_procurement.py --project-root . --config config/aigc_employer_deliverable_procurement.json
+
+      - name: Run submission approval cockpit
+        run: |
+          set -a
+          . ./aigc_trigger.env
+          set +a
+          python src/submission_approval_cockpit.py --project-root . --config config/aigc_submission_approval_cockpit.json --decision "$AIGC_SUBMISSION_DECISION" --phrase "$AIGC_SUBMISSION_PHRASE"
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -94,6 +115,8 @@ jobs:
             data/mvp_plus_plus_plus/aigc_mvp_plus_plus_plus_procurement_packet.json
             data/phase25_constellation/aigc_phase25_constellation_manifest.json
             data/phase26_constellation_refactor/aigc_phase26_refactor_plan.json
+            data/employer_deliverables/aigc_employer_deliverable_procurement_packet.json
+            data/submission_approval/aigc_submission_approval_decision.json
             data/audit/aigc_phase1_cognitive_router_audit.jsonl
             data/audit/aigc_phase2_24_continuity_audit.jsonl
             data/audit/aigc_phase_interleave_scheduler_audit.jsonl
@@ -101,6 +124,8 @@ jobs:
             data/audit/aigc_mvp_plus_plus_plus_procurement_audit.jsonl
             data/audit/aigc_phase25_audit.jsonl
             data/audit/aigc_phase26_audit.jsonl
+            data/audit/aigc_employer_deliverable_procurement_audit.jsonl
+            data/audit/aigc_submission_approval_audit.jsonl
             reports/phase1_cognitive_router_report.md
             reports/phase2_24_continuity_report.md
             reports/phase_interleave_scheduler_report.md
@@ -108,3 +133,5 @@ jobs:
             reports/mvp_plus_plus_plus_procurement_report.md
             reports/phase25_constellation_fabric_report.md
             reports/phase26_constellation_refactor_report.md
+            reports/employer_deliverable_procurement_report.md
+            reports/submission_approval_cockpit.md
