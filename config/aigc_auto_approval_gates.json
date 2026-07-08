@@ -5,6 +5,7 @@
   "inputs": {
     "phase1_plan": "data/phase1_cognitive_router/aigc_phase1_cognitive_plan.json",
     "phase2_24_continuity": "data/phase2_24_continuity/aigc_phase2_24_continuity_plan.json",
+    "phase_interleave_schedule": "data/phase_interleaves/aigc_phase_interleave_schedule.json",
     "mvp_plus_plus_plus_packet": "data/mvp_plus_plus_plus/aigc_mvp_plus_plus_plus_procurement_packet.json"
   },
   "outputs": {
@@ -22,6 +23,7 @@
       "read_only_repository_cartography",
       "proposal_only_refactor_planning",
       "continuity_ledger_generation",
+      "interleave_schedule_generation",
       "procurement_intent_recording"
     ],
     "human_review_required_for": [
@@ -60,6 +62,12 @@
       "description": "Generate visibility ledger for phases 2 through 24."
     },
     {
+      "stage_id": "phase_interleave_scheduler",
+      "request_type": "interleave_schedule_generation",
+      "risk_level": "low",
+      "description": "Generate repeated phase occurrence schedule showing guard loops between phases."
+    },
+    {
       "stage_id": "mvp_plus_plus_plus_procurement",
       "request_type": "procurement_intent_recording",
       "risk_level": "medium",
@@ -91,6 +99,7 @@
     "Auto-approval can only approve internal artifact generation and metadata classification.",
     "Auto-approval cannot approve external action, credential use, raw secret logging, physical file movement, source rewrite, or workflow rewrite.",
     "Medium-risk internal stages can auto-pass only when effective runtime authority remains false for dangerous capabilities.",
+    "Repeated phase occurrences are schedule artifacts only until a reviewed executor maps them to safe static steps.",
     "Every gate decision must be written to packet, report, and audit ledger."
   ]
 }
