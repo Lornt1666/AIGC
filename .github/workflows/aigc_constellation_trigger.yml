@@ -17,9 +17,6 @@ on:
         default: "artifact_generation"
   issue_comment:
     types: [created]
-  push:
-    branches:
-      - main
 
 permissions:
   contents: read
@@ -31,8 +28,7 @@ jobs:
     name: AIGC Cognitive Router, MVP+++, Phase 25, and Phase 26
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, 'AIGC')) ||
-      (github.event_name == 'push' && contains(github.event.head_commit.message, 'AIGC'))
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, 'AIGC'))
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -46,7 +42,7 @@ jobs:
       - name: Resolve AIGC trigger parameters
         run: |
           cat > aigc_trigger.env <<'EOF'
-          AIGC_TRIGGER_TEXT=${{ github.event.inputs.narration || github.event.comment.body || github.event.head_commit.message || 'AIGC manual trigger' }}
+          AIGC_TRIGGER_TEXT=${{ github.event.inputs.narration || github.event.comment.body || 'AIGC manual trigger' }}
           AIGC_PROJECT_PROFILE=${{ github.event.inputs.project_profile || 'auto' }}
           AIGC_RUN_MODE=${{ github.event.inputs.run_mode || 'artifact_generation' }}
           EOF
