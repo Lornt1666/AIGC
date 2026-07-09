@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "required": [
+    "permit_id",
+    "work_order_id",
+    "correlation_id",
+    "requested",
+    "status",
+    "reason",
+    "required_future_controls",
+    "live_execution_allowed",
+    "external_action_performed"
+  ],
+  "properties": {
+    "permit_id": {"type": "string"},
+    "work_order_id": {"type": "string"},
+    "correlation_id": {"type": "string"},
+    "requested": {"type": "boolean"},
+    "status": {"type": "string"},
+    "reason": {"type": "string"},
+    "required_future_controls": {"type": "array", "items": {"type": "string"}},
+    "live_execution_allowed": {"type": "boolean"},
+    "external_action_performed": {"type": "boolean"}
+  }
+}
