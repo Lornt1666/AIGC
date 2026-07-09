@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "required": [
+    "review_id",
+    "created_at",
+    "request_id",
+    "decision_state",
+    "proceed_enabled",
+    "operator_popup_required",
+    "required_clarifications",
+    "risk_flags",
+    "visible_acceptance_summary",
+    "external_action_performed"
+  ],
+  "properties": {
+    "review_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "request_id": {"type": "string"},
+    "decision_state": {"type": "string"},
+    "proceed_enabled": {"type": "boolean"},
+    "operator_popup_required": {"type": "boolean"},
+    "required_clarifications": {"type": "array", "items": {"type": "string"}},
+    "risk_flags": {"type": "array", "items": {"type": "string"}},
+    "visible_acceptance_summary": {"type": "object"},
+    "external_action_performed": {"type": "boolean"}
+  }
+}
