@@ -23,7 +23,6 @@ REQUIRED_PATHS = [
     "schemas/work_order_packet.schema.json",
     "schemas/paycheque_pipeline.schema.json",
     "tests",
-    "reports",
 ]
 
 OPTIONAL_IMPORTS = [
