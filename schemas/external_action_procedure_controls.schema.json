@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "required": [
+    "controls_id",
+    "mode",
+    "common_stages",
+    "high_risk_extra_stages",
+    "evidence_requirements",
+    "separation_of_duties",
+    "non_negotiable_blocks"
+  ],
+  "properties": {
+    "controls_id": {"type": "string"},
+    "mode": {"type": "string"},
+    "common_stages": {"type": "array", "items": {"type": "object"}},
+    "high_risk_extra_stages": {"type": "array", "items": {"type": "object"}},
+    "evidence_requirements": {"type": "array", "items": {"type": "string"}},
+    "separation_of_duties": {"type": "object"},
+    "non_negotiable_blocks": {"type": "array", "items": {"type": "string"}}
+  }
+}
