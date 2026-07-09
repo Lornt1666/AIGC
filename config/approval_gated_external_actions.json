@@ -1,0 +1,159 @@
+{
+  "policy_id": "AIGC-APPROVAL-GATED-EXTERNAL-ACTIONS-001",
+  "mode": "operator_confirmed_actions_only",
+  "operator_popup_required": true,
+  "proceed_button_required": true,
+  "approval_automatable_actions": [
+    {
+      "action": "apply",
+      "requested_as": "auto-apply",
+      "status": "approval_gated_possible",
+      "requirements": [
+        "platform permits assisted or API-based application flow",
+        "operator reviews exact job, employer, profile content, attachments, and claims",
+        "operator clicks Proceed in local AIGC popup",
+        "audit receipt is written",
+        "no fabricated credentials or claims"
+      ]
+    },
+    {
+      "action": "submit",
+      "requested_as": "auto-submit",
+      "status": "approval_gated_possible",
+      "requirements": [
+        "submission target is owned, authorized, or platform-compliant",
+        "operator reviews exact payload",
+        "operator clicks Proceed",
+        "rollback or correction notes are prepared when applicable"
+      ]
+    },
+    {
+      "action": "accept",
+      "requested_as": "auto-accept",
+      "status": "approval_gated_possible_high_risk",
+      "requirements": [
+        "operator reviews exact contract, terms, rate, timeline, and obligations",
+        "platform terms permit the action",
+        "operator clicks Proceed",
+        "legal/financial risk notes are displayed",
+        "self-approval remains blocked"
+      ]
+    },
+    {
+      "action": "pay",
+      "requested_as": "auto-pay",
+      "status": "approval_gated_possible_high_risk",
+      "requirements": [
+        "operator reviews exact amount, recipient, reason, currency, and payment method",
+        "spending limit check passes",
+        "operator clicks Proceed",
+        "receipt is written",
+        "no hidden recurring payment is created"
+      ]
+    },
+    {
+      "action": "purchase",
+      "requested_as": "auto-purchase",
+      "status": "approval_gated_possible_high_risk",
+      "requirements": [
+        "operator reviews exact item, seller, price, tax, shipping, return policy, and purpose",
+        "spending limit check passes",
+        "operator clicks Proceed",
+        "receipt is written"
+      ]
+    },
+    {
+      "action": "deploy",
+      "requested_as": "auto-deploy",
+      "status": "approval_gated_possible_high_risk",
+      "requirements": [
+        "target system is owned or explicitly authorized",
+        "tests pass",
+        "diff and rollback plan are shown",
+        "operator clicks Proceed",
+        "deployment receipt is written"
+      ]
+    },
+    {
+      "action": "bid",
+      "requested_as": "auto-bid",
+      "status": "approval_gated_possible_high_risk",
+      "requirements": [
+        "platform permits bid submission through the selected method",
+        "operator reviews exact amount, scope, timeline, and terms",
+        "operator clicks Proceed",
+        "audit receipt is written"
+      ]
+    },
+    {
+      "action": "message",
+      "requested_as": "auto-message",
+      "status": "approval_gated_possible",
+      "requirements": [
+        "message is truthful, non-spam, platform-compliant, and operator-reviewed",
+        "recipient and content are displayed exactly",
+        "operator clicks Proceed",
+        "audit receipt is written"
+      ]
+    },
+    {
+      "action": "deliver_work",
+      "requested_as": "externally deliver work after operator review",
+      "status": "approval_gated_possible_high_risk",
+      "requirements": [
+        "operator reviews final deliverable and evidence packet",
+        "quality gates pass",
+        "client/platform destination is shown",
+        "operator clicks Proceed",
+        "delivery receipt is written"
+      ]
+    }
+  ],
+  "hard_blocked_actions": [
+    {
+      "action": "use_credentials_without_reviewed_integration",
+      "requested_as": "use credentials without future reviewed integration",
+      "status": "hard_blocked",
+      "reason": "Credentials require an official reviewed integration, least privilege, secret broker, audit logging, and explicit operator approval."
+    },
+    {
+      "action": "bypass_platform_rules",
+      "requested_as": "bypass platform rules",
+      "status": "hard_blocked",
+      "reason": "AIGC must not bypass platform terms, access controls, anti-abuse controls, or workflow restrictions."
+    },
+    {
+      "action": "fabricate_credentials",
+      "requested_as": "fabricate credentials",
+      "status": "hard_blocked",
+      "reason": "AIGC must not invent education, certifications, work history, identity facts, portfolio claims, or completion state."
+    },
+    {
+      "action": "self_approve",
+      "requested_as": "self-approve",
+      "status": "hard_blocked",
+      "reason": "The agent cannot approve its own external actions. Operator approval is required and must be recorded."
+    },
+    {
+      "action": "deliver_work_without_operator_review",
+      "requested_as": "externally deliver work without operator review",
+      "status": "hard_blocked",
+      "reason": "External delivery requires operator review of the deliverable, destination, and quality evidence."
+    }
+  ],
+  "global_controls": {
+    "popup_title": "AIGC External Action Review",
+    "proceed_button_label": "Proceed",
+    "cancel_button_label": "Cancel",
+    "show_exact_payload": true,
+    "show_destination": true,
+    "show_risk_class": true,
+    "show_cost_or_contract_terms": true,
+    "show_platform_terms_status": true,
+    "show_rollback_or_correction_plan": true,
+    "write_audit_receipt": true,
+    "operator_must_confirm_exact_action": true,
+    "agent_self_approval_allowed": false,
+    "external_action_default": "blocked_until_operator_proceeds"
+  }
+}
