@@ -1,0 +1,60 @@
+{
+  "request_id": "AIGC-COUNTERPARTY-REQ-001",
+  "created_at": "2026-07-09T00:00:00+00:00",
+  "source": "manual_operator_entry",
+  "counterparty": {
+    "name": "Example Client",
+    "platform": "Manual Review",
+    "contact_reference": "example-client-reference",
+    "verified": false
+  },
+  "requested_action": "accept",
+  "work_description": {
+    "summary": "Example client requests a local automation dashboard concept and implementation plan.",
+    "problem_to_solve": "The client needs a clearer way to organize tasks, drafts, and delivery notes.",
+    "success_outcome": "A reviewable dashboard concept, task breakdown, implementation plan, and handoff checklist."
+  },
+  "deliverables": [
+    {
+      "deliverable_id": "DEL-001",
+      "title": "Dashboard concept and workflow map",
+      "format": "markdown report",
+      "review_required": true
+    },
+    {
+      "deliverable_id": "DEL-002",
+      "title": "Implementation plan and quality checklist",
+      "format": "markdown report",
+      "review_required": true
+    }
+  ],
+  "acceptance_criteria": [
+    "The client can understand the proposed workflow.",
+    "The deliverables include a scoped implementation plan.",
+    "No external deployment is performed without separate approval."
+  ],
+  "terms": {
+    "compensation": "CAD 250 fixed draft proposal only",
+    "payment_timing": "manual agreement required before paid work starts",
+    "contract_obligations": "operator must review before accepting",
+    "refund_or_revision_terms": "not agreed yet"
+  },
+  "timeline": {
+    "requested_deadline": "not agreed yet",
+    "milestones": ["confirm scope", "draft packet", "operator review", "manual delivery if approved"]
+  },
+  "constraints": [
+    "no credential use",
+    "no live external deployment",
+    "operator approval required before accepting"
+  ],
+  "attachments": [],
+  "communication_history": [
+    {
+      "timestamp": "2026-07-09T00:00:00+00:00",
+      "summary": "Initial manual example request created for AIGC intake testing."
+    }
+  ],
+  "operator_review_required": true,
+  "external_action_performed": false
+}
