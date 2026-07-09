@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "required": [
+    "packet_id",
+    "created_at",
+    "mode",
+    "specific_chatlog_scope",
+    "observer",
+    "visibility_controls",
+    "security_controls",
+    "sharing_state"
+  ],
+  "properties": {
+    "packet_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "mode": {"type": "string"},
+    "specific_chatlog_scope": {"type": "object"},
+    "observer": {"type": "object"},
+    "visibility_controls": {"type": "object"},
+    "security_controls": {"type": "object"},
+    "sharing_state": {"type": "object"}
+  }
+}
