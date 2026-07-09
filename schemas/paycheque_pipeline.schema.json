@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "required": [
+    "pipeline_id",
+    "created_at",
+    "mode",
+    "trigger",
+    "user_profile_summary",
+    "actions",
+    "dashboard_buttons",
+    "audit_policy",
+    "external_action_performed",
+    "commit_actions_blocked"
+  ],
+  "properties": {
+    "pipeline_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "mode": {"type": "string"},
+    "trigger": {"type": "string"},
+    "user_profile_summary": {"type": "string"},
+    "actions": {"type": "array", "items": {"type": "object"}},
+    "dashboard_buttons": {"type": "array", "items": {"type": "string"}},
+    "audit_policy": {"type": "object"},
+    "external_action_performed": {"type": "boolean"},
+    "commit_actions_blocked": {"type": "array", "items": {"type": "string"}}
+  }
+}
