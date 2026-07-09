@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "required": [
+    "manifest_id",
+    "work_order_id",
+    "correlation_id",
+    "created_at",
+    "artifact_root",
+    "generated_artifacts",
+    "schema_validated",
+    "external_action_performed"
+  ],
+  "properties": {
+    "manifest_id": {"type": "string"},
+    "work_order_id": {"type": "string"},
+    "correlation_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "artifact_root": {"type": "string"},
+    "generated_artifacts": {"type": "array", "items": {"type": "object"}},
+    "schema_validated": {"type": "boolean"},
+    "external_action_performed": {"type": "boolean"}
+  }
+}
