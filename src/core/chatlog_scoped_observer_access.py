@@ -139,7 +139,6 @@ def run_chatlog_observer_packet(
     policy_path = policy_path or root / "config" / "chatlog_scoped_observer_access.json"
     artifact_root = artifact_root or root / "reports" / "artifacts" / "chatlog_observer_access"
     policy = load_policy(policy_path)
-    validate_file(SCHEMA_NAME.replace("chatlog_scoped_observer_access", "chatlog_scoped_observer_access"), root / "schemas" / "chatlog_scoped_observer_access.schema.json")
 
     packet = build_chatlog_observer_packet(
         policy,
