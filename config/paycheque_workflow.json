@@ -1,0 +1,85 @@
+{
+  "user_profile": {
+    "name": "Justice Gray Maciocha",
+    "operator_handle": "Lornt",
+    "skills": [
+      "AI workflow design",
+      "Python automation",
+      "architecture and construction technology",
+      "clean-tech research",
+      "proposal drafting",
+      "systems engineering"
+    ],
+    "portfolio_summary": "AIGC, RegenExcalibur, governed automation, clean-tech systems, and local operator tooling."
+  },
+  "platforms": [
+    {
+      "platform_id": "manual-export-opportunities",
+      "name": "Manual or exported opportunity list",
+      "source_type": "local_export_or_approved_api",
+      "read_only": true,
+      "opportunities": [
+        {
+          "opportunity_id": "PAY-OPP-001",
+          "title": "Build a local automation dashboard for a small business",
+          "platform": "Manual Lead",
+          "url": "https://example.com/opportunity/local-dashboard",
+          "description": "A small business needs a local dashboard that organizes customer tasks, drafts messages, and produces reports.",
+          "fit_score": 88,
+          "expected_value_label": "medium",
+          "manual_commit_required": true
+        },
+        {
+          "opportunity_id": "PAY-OPP-002",
+          "title": "Draft a clean-tech research brief",
+          "platform": "Manual Lead",
+          "url": "https://example.com/opportunity/cleantech-brief",
+          "description": "Prepare a sourced clean-tech brief for smart facade, BIPV, and carbon-aware building materials.",
+          "fit_score": 84,
+          "expected_value_label": "medium",
+          "manual_commit_required": true
+        }
+      ]
+    }
+  ],
+  "pending_contracts": [
+    {
+      "contract_id": "PAY-CONTRACT-001",
+      "title": "AIGC local program finishing milestone",
+      "platform": "Manual Contract Tracker",
+      "url": "https://example.com/contracts/aigc-local-program",
+      "milestone": "Prepare local launcher, cockpit, docs, and validation packet.",
+      "fit_score": 92,
+      "manual_commit_required": true
+    }
+  ],
+  "pending_payments": [
+    {
+      "payment_id": "PAY-INVOICE-001",
+      "title": "Draft invoice for completed local automation setup",
+      "platform": "Manual Invoice Tracker",
+      "url": "https://example.com/invoices/manual-review",
+      "invoice_note": "Draft invoice text only. Operator must review and send manually.",
+      "fit_score": 78,
+      "manual_commit_required": true
+    }
+  ],
+  "constraints": {
+    "auto_apply": false,
+    "auto_submit": false,
+    "auto_accept": false,
+    "auto_pay": false,
+    "auto_purchase": false,
+    "auto_deploy": false,
+    "auto_use_credentials": false,
+    "secret_logging": false,
+    "self_approval": false,
+    "external_action_performed": false
+  },
+  "dashboard_buttons": [
+    "ReviewDraft",
+    "CopyText",
+    "OpenPlatformLink",
+    "MarkCompletedInternalOnly"
+  ]
+}
