@@ -1,0 +1,161 @@
+{
+  "registry_id": "AIGC-WORK-DOMAINS-001",
+  "mode": "read_only_or_manual_handoff_only",
+  "domains": [
+    {
+      "domain_id": "usajobs",
+      "name": "USAJOBS",
+      "base_url": "https://www.usajobs.gov",
+      "source_mode": "approved_api_or_manual_review",
+      "priority": 80,
+      "allowed_actions": ["search", "read", "rank", "draft_application_packet"],
+      "blocked_actions": ["auto_apply", "auto_submit", "credential_use", "impersonation"],
+      "terms_review_required": true
+    },
+    {
+      "domain_id": "greenhouse",
+      "name": "Greenhouse job boards",
+      "base_url": "https://boards.greenhouse.io",
+      "source_mode": "public_board_read_only",
+      "priority": 88,
+      "allowed_actions": ["search", "read", "rank", "draft_application_packet"],
+      "blocked_actions": ["auto_apply", "auto_submit", "form_automation", "credential_use"],
+      "terms_review_required": true
+    },
+    {
+      "domain_id": "lever",
+      "name": "Lever job boards",
+      "base_url": "https://jobs.lever.co",
+      "source_mode": "public_board_read_only",
+      "priority": 86,
+      "allowed_actions": ["search", "read", "rank", "draft_application_packet"],
+      "blocked_actions": ["auto_apply", "auto_submit", "form_automation", "credential_use"],
+      "terms_review_required": true
+    },
+    {
+      "domain_id": "ashby",
+      "name": "Ashby job boards",
+      "base_url": "https://jobs.ashbyhq.com",
+      "source_mode": "public_board_read_only",
+      "priority": 86,
+      "allowed_actions": ["search", "read", "rank", "draft_application_packet"],
+      "blocked_actions": ["auto_apply", "auto_submit", "form_automation", "credential_use"],
+      "terms_review_required": true
+    },
+    {
+      "domain_id": "remoteok",
+      "name": "RemoteOK",
+      "base_url": "https://remoteok.com",
+      "source_mode": "approved_api_or_public_read_only",
+      "priority": 84,
+      "allowed_actions": ["search", "read", "rank", "draft_application_packet"],
+      "blocked_actions": ["auto_apply", "auto_submit", "credential_use"],
+      "terms_review_required": true
+    },
+    {
+      "domain_id": "remotive",
+      "name": "Remotive",
+      "base_url": "https://remotive.com",
+      "source_mode": "approved_api_or_public_read_only",
+      "priority": 84,
+      "allowed_actions": ["search", "read", "rank", "draft_application_packet"],
+      "blocked_actions": ["auto_apply", "auto_submit", "credential_use"],
+      "terms_review_required": true
+    },
+    {
+      "domain_id": "weworkremotely",
+      "name": "We Work Remotely RSS",
+      "base_url": "https://weworkremotely.com",
+      "source_mode": "rss_or_public_read_only",
+      "priority": 82,
+      "allowed_actions": ["search", "read", "rank", "draft_application_packet"],
+      "blocked_actions": ["auto_apply", "auto_submit", "credential_use"],
+      "terms_review_required": true
+    },
+    {
+      "domain_id": "adzuna",
+      "name": "Adzuna",
+      "base_url": "https://www.adzuna.com",
+      "source_mode": "approved_api_required",
+      "priority": 78,
+      "allowed_actions": ["search", "read", "rank", "draft_application_packet"],
+      "blocked_actions": ["auto_apply", "auto_submit", "credential_use_without_secret_broker"],
+      "terms_review_required": true
+    },
+    {
+      "domain_id": "themuse",
+      "name": "The Muse",
+      "base_url": "https://www.themuse.com",
+      "source_mode": "approved_api_or_manual_review",
+      "priority": 72,
+      "allowed_actions": ["search", "read", "rank", "draft_application_packet"],
+      "blocked_actions": ["auto_apply", "auto_submit", "credential_use"],
+      "terms_review_required": true
+    },
+    {
+      "domain_id": "arbeitnow",
+      "name": "Arbeitnow",
+      "base_url": "https://www.arbeitnow.com",
+      "source_mode": "approved_api_or_public_read_only",
+      "priority": 72,
+      "allowed_actions": ["search", "read", "rank", "draft_application_packet"],
+      "blocked_actions": ["auto_apply", "auto_submit", "credential_use"],
+      "terms_review_required": true
+    },
+    {
+      "domain_id": "jobicy",
+      "name": "Jobicy",
+      "base_url": "https://jobicy.com",
+      "source_mode": "approved_api_or_public_read_only",
+      "priority": 72,
+      "allowed_actions": ["search", "read", "rank", "draft_application_packet"],
+      "blocked_actions": ["auto_apply", "auto_submit", "credential_use"],
+      "terms_review_required": true
+    },
+    {
+      "domain_id": "upwork",
+      "name": "Upwork",
+      "base_url": "https://www.upwork.com",
+      "source_mode": "manual_operator_review_or_official_integration_only",
+      "priority": 90,
+      "allowed_actions": ["operator_supplied_lead_review", "rank", "draft_proposal_packet", "open_platform_link"],
+      "blocked_actions": ["auto_apply", "auto_submit", "auto_bid", "credential_use", "platform_bypass"],
+      "terms_review_required": true
+    },
+    {
+      "domain_id": "freelancer",
+      "name": "Freelancer.com",
+      "base_url": "https://www.freelancer.com",
+      "source_mode": "manual_operator_review_or_official_integration_only",
+      "priority": 74,
+      "allowed_actions": ["operator_supplied_lead_review", "rank", "draft_proposal_packet", "open_platform_link"],
+      "blocked_actions": ["auto_apply", "auto_submit", "auto_bid", "credential_use", "platform_bypass"],
+      "terms_review_required": true
+    },
+    {
+      "domain_id": "devpost",
+      "name": "Devpost",
+      "base_url": "https://devpost.com",
+      "source_mode": "manual_operator_review_or_public_read_only",
+      "priority": 68,
+      "allowed_actions": ["search", "read", "rank", "draft_project_packet"],
+      "blocked_actions": ["auto_submit", "credential_use", "platform_bypass"],
+      "terms_review_required": true
+    }
+  ],
+  "global_constraints": {
+    "dry_run_by_default": true,
+    "domain_allowlist_required": true,
+    "no_login_by_default": true,
+    "no_forms_by_default": true,
+    "no_javascript_automation_by_default": true,
+    "no_auto_apply": true,
+    "no_auto_submit": true,
+    "no_auto_accept": true,
+    "no_auto_pay": true,
+    "no_auto_purchase": true,
+    "no_auto_deploy": true,
+    "operator_review_required": true,
+    "external_action_performed": false
+  }
+}

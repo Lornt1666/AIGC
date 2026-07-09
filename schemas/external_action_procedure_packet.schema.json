@@ -1,0 +1,29 @@
+{
+  "type": "object",
+  "required": [
+    "procedure_packet_id",
+    "created_at",
+    "action",
+    "status",
+    "risk_class",
+    "operator_popup_required",
+    "proceed_button_enabled",
+    "external_action_performed",
+    "procedure_stages",
+    "evidence_requirements",
+    "audit_requirements"
+  ],
+  "properties": {
+    "procedure_packet_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "action": {"type": "string"},
+    "status": {"type": "string"},
+    "risk_class": {"type": "string"},
+    "operator_popup_required": {"type": "boolean"},
+    "proceed_button_enabled": {"type": "boolean"},
+    "external_action_performed": {"type": "boolean"},
+    "procedure_stages": {"type": "array", "items": {"type": "object"}},
+    "evidence_requirements": {"type": "array", "items": {"type": "string"}},
+    "audit_requirements": {"type": "array", "items": {"type": "string"}}
+  }
+}

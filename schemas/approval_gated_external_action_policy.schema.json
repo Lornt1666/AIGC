@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "required": [
+    "policy_id",
+    "mode",
+    "operator_popup_required",
+    "proceed_button_required",
+    "approval_automatable_actions",
+    "hard_blocked_actions",
+    "global_controls"
+  ],
+  "properties": {
+    "policy_id": {"type": "string"},
+    "mode": {"type": "string"},
+    "operator_popup_required": {"type": "boolean"},
+    "proceed_button_required": {"type": "boolean"},
+    "approval_automatable_actions": {"type": "array", "items": {"type": "object"}},
+    "hard_blocked_actions": {"type": "array", "items": {"type": "object"}},
+    "global_controls": {"type": "object"}
+  }
+}

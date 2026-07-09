@@ -1,0 +1,125 @@
+{
+  "controls_id": "AIGC-EXTERNAL-ACTION-PROCEDURES-001",
+  "mode": "operator_approved_platform_compliant_actions_only",
+  "common_stages": [
+    {
+      "stage_id": "intake",
+      "name": "Action Intake",
+      "purpose": "Capture requested action, destination, payload, cost/contract terms, platform, identity context, and intended outcome.",
+      "required": true
+    },
+    {
+      "stage_id": "eligibility_review",
+      "name": "Eligibility Review",
+      "purpose": "Confirm the action is in the approval-gated allowlist and not in the hard-blocked list.",
+      "required": true
+    },
+    {
+      "stage_id": "platform_terms_review",
+      "name": "Platform Terms Review",
+      "purpose": "Confirm the selected method is permitted by platform terms, official API rules, or explicit authorization.",
+      "required": true
+    },
+    {
+      "stage_id": "truthfulness_review",
+      "name": "Truthfulness Review",
+      "purpose": "Confirm no fabricated credentials, false identity claims, fake completion states, fake portfolio claims, or deceptive statements are present.",
+      "required": true
+    },
+    {
+      "stage_id": "credential_review",
+      "name": "Credential and Secret Review",
+      "purpose": "Confirm credentials are not used unless a reviewed integration, secret broker, least-privilege scope, audit log, and revocation plan exist.",
+      "required": true
+    },
+    {
+      "stage_id": "operator_popup_review",
+      "name": "Operator Popup Review",
+      "purpose": "Show exact action, exact destination, exact payload, risk class, terms, cost, and rollback/correction plan in a local popup.",
+      "required": true
+    },
+    {
+      "stage_id": "operator_proceed_decision",
+      "name": "Operator Proceed Decision",
+      "purpose": "Require the operator to click Proceed. Cancel or missing approval leaves action blocked.",
+      "required": true
+    },
+    {
+      "stage_id": "execution_handoff",
+      "name": "Execution Handoff",
+      "purpose": "Execute only through a future reviewed connector or manual operator handoff. This procedure packet itself never performs external action.",
+      "required": true
+    },
+    {
+      "stage_id": "audit_receipt",
+      "name": "Audit Receipt",
+      "purpose": "Record request, decision, payload hash, destination, risk class, timestamp, operator confirmation state, and external_action_performed flag.",
+      "required": true
+    },
+    {
+      "stage_id": "post_action_review",
+      "name": "Post-Action Review",
+      "purpose": "Confirm outcome, error state, rollback/correction needs, and lessons learned.",
+      "required": true
+    }
+  ],
+  "high_risk_extra_stages": [
+    {
+      "stage_id": "financial_risk_review",
+      "name": "Financial Risk Review",
+      "applies_to": ["pay", "purchase", "bid", "accept"],
+      "purpose": "Display exact money, obligation, term, recipient, platform, and spending/contract risk before Proceed can be enabled."
+    },
+    {
+      "stage_id": "deployment_risk_review",
+      "name": "Deployment Risk Review",
+      "applies_to": ["deploy"],
+      "purpose": "Show tests, diff, target, rollback plan, owner authorization, and blast-radius notes before Proceed can be enabled."
+    },
+    {
+      "stage_id": "delivery_quality_review",
+      "name": "Delivery Quality Review",
+      "applies_to": ["deliver_work"],
+      "purpose": "Show deliverable, evidence packet, acceptance criteria, quality gate status, and operator review state before Proceed can be enabled."
+    }
+  ],
+  "evidence_requirements": [
+    "exact action name",
+    "exact destination or recipient",
+    "exact payload or artifact hash",
+    "operator identity context",
+    "platform terms status",
+    "risk classification",
+    "cost or contract obligations when applicable",
+    "rollback or correction plan",
+    "operator Proceed decision state",
+    "external_action_performed flag"
+  ],
+  "audit_requirements": [
+    "procedure packet id",
+    "approval policy id",
+    "requested action",
+    "status",
+    "timestamp",
+    "payload hash",
+    "destination hash when needed",
+    "operator confirmation state",
+    "hard-block status",
+    "external_action_performed=false unless future connector executes after approval"
+  ],
+  "separation_of_duties": {
+    "aigc_may_prepare": true,
+    "aigc_may_recommend": true,
+    "aigc_may_show_popup": true,
+    "aigc_may_self_approve": false,
+    "operator_must_approve": true,
+    "future_connector_must_be_reviewed": true
+  },
+  "non_negotiable_blocks": [
+    "use_credentials_without_reviewed_integration",
+    "bypass_platform_rules",
+    "fabricate_credentials",
+    "self_approve",
+    "deliver_work_without_operator_review"
+  ]
+}

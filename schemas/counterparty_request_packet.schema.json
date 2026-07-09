@@ -1,0 +1,34 @@
+{
+  "type": "object",
+  "required": [
+    "request_id",
+    "created_at",
+    "source",
+    "counterparty",
+    "requested_action",
+    "work_description",
+    "deliverables",
+    "acceptance_criteria",
+    "terms",
+    "timeline",
+    "operator_review_required",
+    "external_action_performed"
+  ],
+  "properties": {
+    "request_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "source": {"type": "string"},
+    "counterparty": {"type": "object"},
+    "requested_action": {"type": "string"},
+    "work_description": {"type": "object"},
+    "deliverables": {"type": "array", "items": {"type": "object"}},
+    "acceptance_criteria": {"type": "array", "items": {"type": "string"}},
+    "terms": {"type": "object"},
+    "timeline": {"type": "object"},
+    "constraints": {"type": "array", "items": {"type": "string"}},
+    "attachments": {"type": "array", "items": {"type": "object"}},
+    "communication_history": {"type": "array", "items": {"type": "object"}},
+    "operator_review_required": {"type": "boolean"},
+    "external_action_performed": {"type": "boolean"}
+  }
+}

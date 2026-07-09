@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "required": [
+    "packet_id",
+    "created_at",
+    "mode",
+    "operator_contact_email",
+    "counterparty",
+    "observer_access",
+    "visibility_scope",
+    "privacy_boundary",
+    "approval_required",
+    "external_invite_sent"
+  ],
+  "properties": {
+    "packet_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "mode": {"type": "string"},
+    "operator_contact_email": {"type": "string"},
+    "counterparty": {"type": "object"},
+    "observer_access": {"type": "object"},
+    "visibility_scope": {"type": "array", "items": {"type": "object"}},
+    "privacy_boundary": {"type": "object"},
+    "approval_required": {"type": "boolean"},
+    "external_invite_sent": {"type": "boolean"}
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "required": [
+    "packet_id",
+    "created_at",
+    "mode",
+    "domain_count",
+    "search_domains",
+    "application_prep_controls",
+    "work_performance_controls",
+    "blocked_actions",
+    "external_action_performed"
+  ],
+  "properties": {
+    "packet_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "mode": {"type": "string"},
+    "domain_count": {"type": "integer"},
+    "search_domains": {"type": "array", "items": {"type": "object"}},
+    "application_prep_controls": {"type": "object"},
+    "work_performance_controls": {"type": "object"},
+    "blocked_actions": {"type": "array", "items": {"type": "string"}},
+    "external_action_performed": {"type": "boolean"}
+  }
+}
