@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "required": [
+    "profile_id",
+    "mode",
+    "research_basis",
+    "layer_model",
+    "control_families",
+    "authorized_disclosure_boundary",
+    "blocked_capabilities",
+    "repo_assignment"
+  ],
+  "properties": {
+    "profile_id": {"type": "string"},
+    "mode": {"type": "string"},
+    "research_basis": {"type": "array", "items": {"type": "object"}},
+    "layer_model": {"type": "array", "items": {"type": "object"}},
+    "control_families": {"type": "array", "items": {"type": "object"}},
+    "authorized_disclosure_boundary": {"type": "object"},
+    "blocked_capabilities": {"type": "array", "items": {"type": "string"}},
+    "repo_assignment": {"type": "object"}
+  }
+}
