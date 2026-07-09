@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "required": [
+    "receipt_id",
+    "work_order_id",
+    "correlation_id",
+    "created_at",
+    "valid",
+    "validated_artifacts",
+    "failures"
+  ],
+  "properties": {
+    "receipt_id": {"type": "string"},
+    "work_order_id": {"type": "string"},
+    "correlation_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "valid": {"type": "boolean"},
+    "validated_artifacts": {"type": "array", "items": {"type": "object"}},
+    "failures": {"type": "array", "items": {"type": "string"}}
+  }
+}
