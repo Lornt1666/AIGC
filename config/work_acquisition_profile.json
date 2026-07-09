@@ -1,0 +1,41 @@
+{
+  "profile_id": "AIGC-WORK-PROFILE-001",
+  "operator_name": "Justice Gray Maciocha",
+  "program_name": "AIGC Operator Program",
+  "positioning": "Governed AI operator system for preparing proposals, workflows, research packets, automation plans, and delivery artifacts while preserving human approval over all external commitments.",
+  "skills": [
+    "Python automation",
+    "AI workflow design",
+    "proposal drafting",
+    "systems engineering",
+    "quality assurance",
+    "local operator tooling",
+    "research synthesis",
+    "construction and architectural technology context"
+  ],
+  "target_work_types": [
+    "automation dashboard setup",
+    "AI workflow assistant setup",
+    "research brief preparation",
+    "proposal packet preparation",
+    "documentation cleanup",
+    "small business workflow organization",
+    "data organization and reporting",
+    "quality checklist and delivery package creation"
+  ],
+  "application_standards": {
+    "truthful_profile_only": true,
+    "no_fabricated_credentials": true,
+    "tailor_to_listing": true,
+    "include_review_before_submit": true,
+    "operator_submits_manually": true
+  },
+  "work_performance_standards": {
+    "clarify_scope_first": true,
+    "define_acceptance_criteria": true,
+    "make_delivery_checklist": true,
+    "produce_evidence_packet": true,
+    "run_quality_gate_before_delivery": true,
+    "operator_reviews_before_delivery": true
+  }
+}
