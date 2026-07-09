@@ -26,6 +26,7 @@ from src.core.operator_cockpit import (  # noqa: E402
     summarize_authorizations,
 )
 from src.core.work_order import run_work_order  # noqa: E402
+from src.dashboard.paycheque_workflow_panel import render_paycheque_workflow_tab  # noqa: E402
 
 
 def main() -> int:
@@ -46,9 +47,10 @@ def main() -> int:
         "No external action is performed by this cockpit. Accept only records scoped approval for Phase 6 eligibility."
     )
 
-    tab_run, tab_work_order, tab_review, tab_audit = st.tabs([
+    tab_run, tab_work_order, tab_paycheque, tab_review, tab_audit = st.tabs([
         "Run",
         "New Work Order",
+        "Paycheque Pipeline",
         "Review & Accept",
         "Audit / Transparency",
     ])
@@ -58,6 +60,9 @@ def main() -> int:
 
     with tab_work_order:
         render_work_order_tab(st, root)
+
+    with tab_paycheque:
+        render_paycheque_workflow_tab(st, root)
 
     with tab_review:
         render_review_tab(st, root)
@@ -334,6 +339,7 @@ def render_audit_tab(st, root: Path) -> None:
         "reports/milestone_k_work_order_governor_report.md",
         "reports/artifacts/work_orders",
         "reports/artifacts/governance_smoke",
+        "reports/artifacts/paycheque_pipeline",
     ]
     for relative_path in artifacts:
         path = root / relative_path
