@@ -21,42 +21,8 @@ AIGC is not merely a job-search bot.
 AIGC is a governed work engine:
 
 ```text
-Find work -> capture counterparty request -> prepare application -> operator submits manually -> prepare work plan -> assist execution -> quality gate -> operator reviews -> external delivery only if approved
+Find work -> prepare application -> operator submits manually -> prepare work plan -> assist execution -> quality gate -> operator delivers manually
 ```
-
-## Mandatory Counterparty Intake
-
-AIGC must not accept, bid, submit, pay, purchase, deploy, message, or deliver against vague work.
-
-Before any approval-gated external action can proceed, AIGC must build a counterparty request and acceptance review packet using:
-
-```text
-config/counterparty_request_example.json
-schemas/counterparty_request_packet.schema.json
-schemas/counterparty_acceptance_review.schema.json
-src/core/counterparty_request_intake.py
-src/counterparty_request_intake_cli.py
-docs/AIGC_COUNTERPARTY_REQUEST_INTAKE.md
-```
-
-This gate requires the operator to see:
-
-- counterparty identity;
-- request source;
-- requested action;
-- work description;
-- success outcome;
-- deliverables;
-- acceptance criteria;
-- terms, compensation, obligations, costs, or payment details;
-- timeline;
-- constraints;
-- attachments;
-- communication history;
-- missing information;
-- risk flags.
-
-If the counterparty request is vague, incomplete, risky, or unsupported by the other party's description, AIGC must ask for clarification before any Proceed path is enabled.
 
 ## Domain Registry
 
@@ -123,12 +89,6 @@ reports/artifacts/work_acquisition/<packet_id>/work_performance_packet.json
 reports/artifacts/work_acquisition/<packet_id>/work_acquisition_report.md
 ```
 
-Counterparty intake command:
-
-```powershell
-python .\src\counterparty_request_intake_cli.py --request .\config\counterparty_request_example.json
-```
-
 ## Application Preparation Controls
 
 AIGC may:
@@ -143,41 +103,77 @@ AIGC may:
 
 AIGC may not:
 
-- accept vague work;
-- auto-apply;
-- auto-submit;
-- auto-message;
-- auto-bid;
-- use credentials;
+- auto-apply without the approval-gated action process;
+- auto-submit without the approval-gated action process;
+- auto-message without the approval-gated action process;
+- auto-bid without the approval-gated action process;
+- use credentials without reviewed integration;
 - bypass platform rules;
 - fabricate credentials;
 - self-approve.
+
+## Mandatory Counterparty Request Intake
+
+AIGC must not accept vague or unsupported work.
+
+Before any acceptance, bid, submission, payment, purchase, deployment, message, or external delivery can become proceed-capable, the operator must see the counterparty's request and a statement-of-work style review.
+
+See:
+
+```text
+docs/AIGC_COUNTERPARTY_REQUEST_INTAKE.md
+```
+
+The counterparty intake gate verifies:
+
+- counterparty identity;
+- source/platform;
+- requested action;
+- work description;
+- success outcome;
+- deliverables;
+- acceptance criteria;
+- terms, compensation, obligations, costs, or payment details;
+- timeline;
+- constraints;
+- attachments;
+- communication history;
+- missing information;
+- risk flags.
+
+If required information is missing, AIGC must ask for clarification before any proceed path is enabled.
+
+## Communication and Observer Access
+
+AIGC may prepare communication and employer/client observer access only through a redacted, read-only, counterparty-specific packet.
+
+See:
+
+```text
+docs/AIGC_COMMUNICATION_AND_OBSERVER_ACCESS.md
+```
+
+The operator contact email is configured as:
+
+```text
+JustLornt95@gmail.com
+```
+
+No invite, email, message, or observer link is sent automatically in this PR.
 
 ## Work Performance Controls
 
 Once the operator has work, AIGC should assist execution through:
 
-1. Counterparty request intake.
-2. Scope clarification.
-3. Acceptance criteria definition.
-4. Deliverable decomposition.
-5. Evidence/source trail.
-6. Quality gate.
-7. Revision log.
-8. Operator review before delivery.
+1. Scope clarification.
+2. Acceptance criteria definition.
+3. Deliverable decomposition.
+4. Evidence/source trail.
+5. Quality gate.
+6. Revision log.
+7. Operator review before delivery.
 
 This is how AIGC moves from finding work to helping perform work at a high standard.
-
-## Approval-Gated External Actions
-
-AIGC may prepare approval-gated actions only through:
-
-```text
-docs/AIGC_APPROVAL_GATED_EXTERNAL_ACTIONS.md
-docs/AIGC_EXTERNAL_ACTION_PROCESSES_AND_PROCEDURES.md
-```
-
-The operator must see the exact action, payload, destination, terms, cost/risk state, and audit requirements before clicking Proceed.
 
 ## Professional Standard
 
@@ -200,6 +196,10 @@ It should never claim skills, education, credentials, work history, or completed
 
 AIGC prepares the work path.
 
+The operator sees what is being accepted.
+
+The counterparty sees only approved, selected, redacted project artifacts.
+
 The operator crosses the external threshold.
 
-External actions remain manual unless a future reviewed PR implements scoped official integrations with terms review, explicit operator approval, counterparty request validation, secret-broker controls, audit logging, and blocked-by-default tests.
+External actions remain manual unless a future reviewed PR implements scoped official integrations with terms review, explicit operator approval, counterparty request visibility, secret-broker controls, audit logging, and blocked-by-default tests.
