@@ -23,6 +23,7 @@ from src.core.contract_validator import (  # noqa: E402
 from src.core.paycheque_workflow import run_paycheque_workflow  # noqa: E402
 from src.core.phase_registry import build_phase_registry  # noqa: E402
 from src.core.pipeline_closure import PipelineClosureRunner  # noqa: E402
+from src.core.program_health import run_program_health, write_health_report  # noqa: E402
 from src.core.state_store import AIGCStateStore, DEFAULT_DB_PATH  # noqa: E402
 from src.core.work_order import run_cockpit_smoke, run_governance_smoke, run_work_order  # noqa: E402
 from src.phase17_incident_response import Phase17IncidentResponse  # noqa: E402
@@ -47,6 +48,26 @@ def main(argv: List[str] | None = None) -> int:
     if args.command == "status":
         print(json.dumps(store.get_status_summary(), indent=2))
         return 0
+    if args.command == "health":
+        report = run_program_health(root)
+        payload = report.to_dict()
+        if args.write:
+            path = write_health_report(root)
+            payload["written_report_path"] = str(path)
+        store.insert_event(
+            event_type="local_program_health_check",
+            phase="local_program_runtime",
+            status=report.overall_status,
+            summary=f"Local program health status: {report.overall_status}.",
+            data={
+                "overall_status": report.overall_status,
+                "external_actions_enabled": report.external_actions_enabled,
+                "safe_mode_default": report.safe_mode_default,
+            },
+            external_action_performed=False,
+        )
+        print(json.dumps(payload, indent=2))
+        return 0 if report.overall_status in {"healthy", "warning"} else 1
     if args.command == "validate":
         return command_validate(args, root, store)
     if args.command == "run":
@@ -639,6 +660,8 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
 
     subparsers.add_parser("status", help="Show AIGC runtime state summary.")
     subparsers.add_parser("init-db", help="Initialize the AIGC SQLite state database.")
+    health_parser = subparsers.add_parser("health", help="Run local program health checks.")
+    health_parser.add_argument("--write", action="store_true", help="Write latest health report under reports/artifacts/program_health.")
 
     validate_parser = subparsers.add_parser("validate", help="Validate AIGC artifacts against JSON schemas.")
     validate_parser.add_argument("--schema", default="")
