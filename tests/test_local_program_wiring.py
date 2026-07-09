@@ -33,9 +33,11 @@ def test_local_program_docs_exist() -> None:
         assert "external" in text.lower()
 
 
-def test_readme_documents_local_program_path() -> None:
-    readme = Path("README.md").read_text(encoding="utf-8")
+def test_quickstart_docs_document_local_program_path() -> None:
+    setup = Path("docs/AIGC_WINDOWS_DESKTOP_SETUP.md").read_text(encoding="utf-8")
+    runbook = Path("docs/AIGC_PROGRAM_RUNBOOK.md").read_text(encoding="utf-8")
 
-    assert "Run AIGC as a Local Program" in readme
-    assert "RUN_AIGC_PROGRAM.bat" in readme
-    assert "python .\\src\\aigc.py health" in readme
+    combined = setup + "\n" + runbook
+    assert "RUN_AIGC_PROGRAM.bat" in combined
+    assert "python .\\src\\aigc.py health" in combined
+    assert "scripts\\run_aigc_program.ps1" in combined or "scripts\\setup_aigc_local.ps1" in combined
