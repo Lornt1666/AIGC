@@ -25,6 +25,7 @@ from src.core.phase_registry import build_phase_registry  # noqa: E402
 from src.core.pipeline_closure import PipelineClosureRunner  # noqa: E402
 from src.core.program_health import run_program_health, write_health_report  # noqa: E402
 from src.core.state_store import AIGCStateStore, DEFAULT_DB_PATH  # noqa: E402
+from src.core.work_acquisition import run_work_acquisition  # noqa: E402
 from src.core.work_order import run_cockpit_smoke, run_governance_smoke, run_work_order  # noqa: E402
 from src.phase17_incident_response import Phase17IncidentResponse  # noqa: E402
 from src.security.approval_tokens import ApprovalTokenStore  # noqa: E402
@@ -259,6 +260,22 @@ def command_run(args: argparse.Namespace, root: Path, store: AIGCStateStore) -> 
                 "pipeline_path": payload.get("pipeline_path", ""),
                 "report_path": payload.get("report_path", ""),
                 "audit_receipt_path": payload.get("audit_receipt_path", ""),
+            },
+            external_action_performed=False,
+        )
+        print(json.dumps(payload, indent=2))
+        return 0
+    if phase == "work-acquisition":
+        payload = run_work_acquisition(root, args.registry, args.profile, args.artifact_root)
+        store.insert_event(
+            event_type="work_acquisition_packet_prepared",
+            phase="work_acquisition_performance_engine",
+            status="prepared_internal_only",
+            summary="Prepared work-acquisition and work-performance packets with external commitments blocked.",
+            data={
+                "acquisition_path": payload.get("acquisition_path", ""),
+                "performance_path": payload.get("performance_path", ""),
+                "report_path": payload.get("report_path", ""),
             },
             external_action_performed=False,
         )
@@ -695,6 +712,7 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
         "pipeline",
         "work-order",
         "paycheque",
+        "work-acquisition",
         "governance-smoke",
         "cockpit-smoke",
     ]
@@ -705,6 +723,8 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     run_parser.add_argument("--limit", type=int, default=10)
     run_parser.add_argument("--input", type=Path, default=None)
     run_parser.add_argument("--artifact-root", type=Path, default=None)
+    run_parser.add_argument("--registry", type=Path, default=None)
+    run_parser.add_argument("--profile", type=Path, default=None)
 
     subparsers.add_parser("emergency-stop", help="Enable the runtime emergency stop.")
     subparsers.add_parser("clear-emergency-stop", help="Clear the runtime emergency stop.")
