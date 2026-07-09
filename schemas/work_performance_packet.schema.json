@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "required": [
+    "packet_id",
+    "created_at",
+    "objective",
+    "role_profile",
+    "execution_standards",
+    "deliverable_workbench",
+    "quality_gates",
+    "operator_review_required",
+    "external_action_performed"
+  ],
+  "properties": {
+    "packet_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "objective": {"type": "string"},
+    "role_profile": {"type": "object"},
+    "execution_standards": {"type": "array", "items": {"type": "string"}},
+    "deliverable_workbench": {"type": "array", "items": {"type": "object"}},
+    "quality_gates": {"type": "array", "items": {"type": "object"}},
+    "operator_review_required": {"type": "boolean"},
+    "external_action_performed": {"type": "boolean"}
+  }
+}
