@@ -1,0 +1,58 @@
+{
+  "policy_id": "AIGC-COMM-OBSERVER-ACCESS-001",
+  "operator_contact_email": "JustLornt95@gmail.com",
+  "mode": "prepare_invite_and_visibility_scope_only",
+  "channels": [
+    {
+      "channel_id": "operator_email",
+      "name": "Operator email contact",
+      "type": "email",
+      "address": "JustLornt95@gmail.com",
+      "allowed_use": "counterparty can contact operator; AIGC may draft but not send without approval",
+      "operator_approval_required_before_send": true
+    },
+    {
+      "channel_id": "future_chatgpt_observer",
+      "name": "Future ChatGPT/application observer link",
+      "type": "future_read_only_observer_portal",
+      "address": "not_enabled_in_current_pr",
+      "allowed_use": "future read-only project observer packet if platform support exists and operator approves invite",
+      "operator_approval_required_before_send": true
+    },
+    {
+      "channel_id": "local_artifact_packet",
+      "name": "Local artifact packet",
+      "type": "local_review_packet",
+      "address": "reports/artifacts/communications/",
+      "allowed_use": "operator can export or share selected redacted project artifacts manually",
+      "operator_approval_required_before_send": true
+    }
+  ],
+  "observer_access_defaults": {
+    "read_only": true,
+    "counterparty_specific": true,
+    "project_specific": true,
+    "time_limited": true,
+    "operator_can_revoke": true,
+    "redacted_by_default": true,
+    "show_only_selected_artifacts": true,
+    "show_progress_status": true,
+    "show_deliverables": true,
+    "show_acceptance_criteria": true,
+    "show_audit_receipts": true,
+    "hide_secrets": true,
+    "hide_private_repo_internals": true,
+    "hide_unrelated_clients": true,
+    "hide_operator_private_notes_by_default": true
+  },
+  "approval_controls": {
+    "external_invite_sent_by_default": false,
+    "operator_popup_required": true,
+    "proceed_button_required": true,
+    "counterparty_request_required": true,
+    "visibility_scope_required": true,
+    "privacy_review_required": true,
+    "redaction_review_required": true,
+    "audit_receipt_required": true
+  }
+}
