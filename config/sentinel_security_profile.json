@@ -1,0 +1,142 @@
+{
+  "profile_id": "AIGC-SENTINEL-SECURITY-001",
+  "mode": "defensive_privacy_preserving_repo_wide_security_profile",
+  "research_basis": [
+    {
+      "source": "NIST Cybersecurity Framework 2.0",
+      "use": "Govern, Identify, Protect, Detect, Respond, Recover operating model"
+    },
+    {
+      "source": "NIST SP 800-207 Zero Trust Architecture",
+      "use": "No implicit trust; subject and device authentication and authorization before resource access"
+    },
+    {
+      "source": "NIST SP 800-218 Secure Software Development Framework",
+      "use": "Secure development lifecycle, vulnerability mitigation, evidence-ready software practices"
+    },
+    {
+      "source": "NIST Post-Quantum Cryptography FIPS 203/204/205",
+      "use": "Crypto-agility and post-quantum migration planning"
+    },
+    {
+      "source": "OWASP ASVS 5.0",
+      "use": "Application security verification requirements"
+    },
+    {
+      "source": "OWASP API Security Top 10 2023",
+      "use": "API risk taxonomy and control mapping"
+    },
+    {
+      "source": "OWASP Top 10 for LLM Applications",
+      "use": "Prompt injection, sensitive information disclosure, tool-use, model behavior, and AI supply-chain risk controls"
+    },
+    {
+      "source": "SLSA 1.1",
+      "use": "Build provenance and supply-chain integrity planning"
+    },
+    {
+      "source": "OpenSSF Scorecard",
+      "use": "Repository security posture metrics and improvement targets"
+    },
+    {
+      "source": "GitHub Actions and Code Security guidance",
+      "use": "CI hardening, permissions, secret protection, scanning, and code security configuration"
+    }
+  ],
+  "layer_model": [
+    {
+      "layer_id": "aegis_shield",
+      "name": "Aegis Shield",
+      "purpose": "outer perimeter and abuse resistance",
+      "controls": ["rate_limit_policy", "bot_abuse_detection", "input_size_limits", "public_interface_inventory", "safe_error_responses"]
+    },
+    {
+      "layer_id": "excalibur_seals",
+      "name": "Excalibur Seals",
+      "purpose": "identity, access, approval, and least privilege",
+      "controls": ["MFA_required", "least_privilege", "operator_approval_gates", "no_self_approval", "scoped_observer_packets"]
+    },
+    {
+      "layer_id": "quantum_maze",
+      "name": "Quantum Maze",
+      "purpose": "adaptive defense and deception-safe moving target design",
+      "controls": ["canary_tokens", "decoy_artifact_ids", "rotating_risk_thresholds", "non_breaking_parameter_mutation", "anomaly_scoring"]
+    },
+    {
+      "layer_id": "medusa_chamber",
+      "name": "Medusa Chamber",
+      "purpose": "intrusion containment and forensic capture",
+      "controls": ["session_isolation", "write_blocking", "forensic_receipts", "emergency_stop", "post_incident_review"]
+    },
+    {
+      "layer_id": "ananta_core",
+      "name": "Ananta Core",
+      "purpose": "minimal trusted base and private data protection",
+      "controls": ["secret_reference_only", "redaction_before_share", "schema_validation", "contract_first_outputs", "deny_by_default"]
+    }
+  ],
+  "control_families": [
+    {
+      "family": "governance",
+      "controls": ["policy_registry", "security_profile", "risk_acceptance_record", "change_review", "CI_required_before_merge"]
+    },
+    {
+      "family": "identity_access",
+      "controls": ["least_privilege", "operator_proceed_required", "no_agent_self_approval", "counterparty_specific_visibility", "revocable_access"]
+    },
+    {
+      "family": "application_security",
+      "controls": ["schema_validation", "input_sanitization", "safe_rendering", "secure_defaults", "negative_tests"]
+    },
+    {
+      "family": "AI_security",
+      "controls": ["prompt_injection_review", "tool_action_preview", "sensitive_info_disclosure_block", "human_in_the_loop", "model_output_uncertainty"]
+    },
+    {
+      "family": "supply_chain",
+      "controls": ["dependency_inventory", "SBOM_planned", "signed_release_planned", "CI_permissions_minimized", "scorecard_planned"]
+    },
+    {
+      "family": "cryptography",
+      "controls": ["crypto_inventory", "algorithm_abstraction", "rotation_policy", "post_quantum_migration_plan", "hybrid_mode_planning"]
+    },
+    {
+      "family": "privacy_observability",
+      "controls": ["data_minimization", "pseudonymous_logs", "redacted_exports", "authorized_evidence_packet", "no_backdoor_access"]
+    },
+    {
+      "family": "incident_response",
+      "controls": ["emergency_stop", "containment_packet", "incident_timeline", "recovery_checklist", "lessons_learned"]
+    }
+  ],
+  "authorized_disclosure_boundary": {
+    "mode": "evidence_export_with_due_process_only",
+    "no_backdoor": true,
+    "operator_review_required": true,
+    "jurisdiction_review_required": true,
+    "share_minimum_necessary": true,
+    "audit_receipt_required": true,
+    "redaction_required_unless_lawful_scope_requires_specific_evidence": true
+  },
+  "blocked_capabilities": [
+    "offensive_exploit_generation",
+    "malware_or_credential_theft",
+    "backdoor_or_unrestricted_government_access",
+    "silent_external_sharing",
+    "raw_secret_logging",
+    "raw_chatlog_share_by_default",
+    "whole_account_observer_access",
+    "backend_access_for_counterparties",
+    "bypass_platform_rules",
+    "fabricated_credentials",
+    "agent_self_approval"
+  ],
+  "repo_assignment": {
+    "all_security_sensitive_outputs_require_schema": true,
+    "all_external_actions_require_operator_approval": true,
+    "all_counterparty_visibility_requires_redaction_review": true,
+    "all_future_live_connectors_require_terms_review": true,
+    "all_future_secret_access_requires_secret_broker": true,
+    "all_prs_require_CI_before_merge": true
+  }
+}
