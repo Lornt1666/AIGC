@@ -1,0 +1,39 @@
+{
+  "type": "object",
+  "required": [
+    "decision_id",
+    "work_order_id",
+    "correlation_id",
+    "created_at",
+    "classification",
+    "risk_class",
+    "allowed_operations",
+    "blocked_operations",
+    "required_approvals",
+    "assigned_agents",
+    "risk_findings",
+    "external_action_allowed",
+    "approval_required_before_external_action",
+    "self_approval_allowed",
+    "symbolic_layers_grant_authority",
+    "status"
+  ],
+  "properties": {
+    "decision_id": {"type": "string"},
+    "work_order_id": {"type": "string"},
+    "correlation_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "classification": {"type": "string"},
+    "risk_class": {"type": "string"},
+    "allowed_operations": {"type": "array", "items": {"type": "string"}},
+    "blocked_operations": {"type": "array", "items": {"type": "string"}},
+    "required_approvals": {"type": "array", "items": {"type": "string"}},
+    "assigned_agents": {"type": "array", "items": {"type": "string"}},
+    "risk_findings": {"type": "array", "items": {"type": "object"}},
+    "external_action_allowed": {"type": "boolean"},
+    "approval_required_before_external_action": {"type": "boolean"},
+    "self_approval_allowed": {"type": "boolean"},
+    "symbolic_layers_grant_authority": {"type": "boolean"},
+    "status": {"type": "string"}
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "required": [
+    "user_profile",
+    "platforms",
+    "constraints"
+  ],
+  "properties": {
+    "user_profile": {"type": "object"},
+    "platforms": {"type": "array", "items": {"type": "object"}},
+    "pending_contracts": {"type": "array", "items": {"type": "object"}},
+    "pending_payments": {"type": "array", "items": {"type": "object"}},
+    "constraints": {"type": "object"},
+    "dashboard_buttons": {"type": "array", "items": {"type": "string"}}
+  }
+}

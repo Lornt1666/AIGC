@@ -1,0 +1,39 @@
+{
+  "work_order_id": "AIGC-WO-EXAMPLE-001",
+  "created_at": "2026-07-08T00:00:00+00:00",
+  "title": "Wire AIGC governed work-order execution slice",
+  "objective": "Create a dry-run work-order packet that classifies operator intent, routes internal agents, validates artifacts, and preserves human approval gates.",
+  "domain": "secure software engineering and AI governance",
+  "urgency": "normal",
+  "risk_class": "medium",
+  "desired_output": "schema-valid operator-reviewable artifact packet",
+  "external_action_intent": "none",
+  "acceptance_criteria": [
+    "Every generated JSON artifact validates against a schema.",
+    "External actions remain blocked by default.",
+    "Approval requires exact visible operator review language.",
+    "No raw secret values are stored, printed, or logged.",
+    "Symbolic layers do not grant execution authority."
+  ],
+  "operator_visible_summary": "Internal AIGC work-order dry run for functional wiring only.",
+  "symbolic_layers": [
+    "Artificial Intelligence Gladiator Colosseum",
+    "constellation-based agentry",
+    "omni-meta-trans articulation"
+  ],
+  "requested_agents": [
+    "researcher",
+    "planner",
+    "auditor"
+  ],
+  "secret_references": [
+    {
+      "reference_id": "AIGC-SECRET-REF-001",
+      "provider": "google_secret_manager",
+      "reference": "gcp_secret://aigc/command-center-token",
+      "purpose": "Reference-only placeholder for future command-center authorization; no secret value is stored.",
+      "raw_secret_present": false
+    }
+  ],
+  "source": "operator_cli"
+}

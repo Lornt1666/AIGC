@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "required": [
+    "run_id",
+    "work_order_id",
+    "correlation_id",
+    "created_at",
+    "status",
+    "artifact_root",
+    "work_order_packet_path",
+    "governance_decision_path",
+    "approval_packet_path",
+    "external_action_permit_path",
+    "artifact_manifest_path",
+    "validation_receipt_path",
+    "external_action_performed",
+    "operator_next_action"
+  ],
+  "properties": {
+    "run_id": {"type": "string"},
+    "work_order_id": {"type": "string"},
+    "correlation_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "status": {"type": "string"},
+    "artifact_root": {"type": "string"},
+    "work_order_packet_path": {"type": "string"},
+    "governance_decision_path": {"type": "string"},
+    "approval_packet_path": {"type": "string"},
+    "external_action_permit_path": {"type": "string"},
+    "artifact_manifest_path": {"type": "string"},
+    "validation_receipt_path": {"type": "string"},
+    "external_action_performed": {"type": "boolean"},
+    "operator_next_action": {"type": "string"}
+  }
+}

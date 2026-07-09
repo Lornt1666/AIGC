@@ -1,0 +1,39 @@
+{
+  "type": "object",
+  "required": [
+    "approval_id",
+    "work_order_id",
+    "correlation_id",
+    "created_at",
+    "status",
+    "required_phrase",
+    "denial_phrase",
+    "revision_phrase_template",
+    "expires_at",
+    "approved",
+    "denied",
+    "revision_required",
+    "self_approval_allowed",
+    "external_action_performed",
+    "visible_review_summary",
+    "blocked_actions"
+  ],
+  "properties": {
+    "approval_id": {"type": "string"},
+    "work_order_id": {"type": "string"},
+    "correlation_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "status": {"type": "string"},
+    "required_phrase": {"type": "string"},
+    "denial_phrase": {"type": "string"},
+    "revision_phrase_template": {"type": "string"},
+    "expires_at": {"type": "string"},
+    "approved": {"type": "boolean"},
+    "denied": {"type": "boolean"},
+    "revision_required": {"type": "boolean"},
+    "self_approval_allowed": {"type": "boolean"},
+    "external_action_performed": {"type": "boolean"},
+    "visible_review_summary": {"type": "string"},
+    "blocked_actions": {"type": "array", "items": {"type": "string"}}
+  }
+}
