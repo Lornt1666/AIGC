@@ -20,6 +20,7 @@ from src.core.contract_validator import (  # noqa: E402
     validate_file,
     validate_jsonl_file,
 )
+from src.core.paycheque_workflow import run_paycheque_workflow  # noqa: E402
 from src.core.phase_registry import build_phase_registry  # noqa: E402
 from src.core.pipeline_closure import PipelineClosureRunner  # noqa: E402
 from src.core.state_store import AIGCStateStore, DEFAULT_DB_PATH  # noqa: E402
@@ -146,6 +147,7 @@ def command_validate(args: argparse.Namespace, root: Path, store: AIGCStateStore
         targets = [
             ("secret_manifest", root / "config" / "secret_manifest.json"),
             ("work_order_packet", root / "config" / "example_work_order.json"),
+            ("paycheque_workflow_config", root / "config" / "paycheque_workflow.json"),
             (registry["phase2"].schema_name, root / registry["phase2"].output_path),
             (registry["phase3"].schema_name, root / registry["phase3"].output_path),
             (registry["phase4"].schema_name, root / registry["phase4"].output_path),
@@ -214,7 +216,7 @@ def command_run(args: argparse.Namespace, root: Path, store: AIGCStateStore) -> 
         return 2
 
     if phase == "work-order":
-        result = run_work_order(root, args.input, args.artifact_root)
+        result = run_work_order(root, args.input or root / "config" / "example_work_order.json", args.artifact_root)
         store.insert_event(
             event_type="governed_work_order_run_completed",
             phase="work_order_execution_slice",
@@ -224,6 +226,22 @@ def command_run(args: argparse.Namespace, root: Path, store: AIGCStateStore) -> 
             external_action_performed=False,
         )
         print(json.dumps(result.to_dict(), indent=2))
+        return 0
+    if phase == "paycheque":
+        payload = run_paycheque_workflow(root, args.input or root / "config" / "paycheque_workflow.json", args.artifact_root)
+        store.insert_event(
+            event_type="paycheque_pipeline_prepared",
+            phase="paycheque_workflow",
+            status="prepared_internal_only",
+            summary="Prepared paycheque pipeline with review/copy/open/mark-done controls only.",
+            data={
+                "pipeline_path": payload.get("pipeline_path", ""),
+                "report_path": payload.get("report_path", ""),
+                "audit_receipt_path": payload.get("audit_receipt_path", ""),
+            },
+            external_action_performed=False,
+        )
+        print(json.dumps(payload, indent=2))
         return 0
     if phase == "governance-smoke":
         result = run_governance_smoke(root)
@@ -653,6 +671,7 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
         "phase26",
         "pipeline",
         "work-order",
+        "paycheque",
         "governance-smoke",
         "cockpit-smoke",
     ]
@@ -661,7 +680,7 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     run_parser.add_argument("--mode", choices=["synthetic", "real", "real_data_read_only"], default="synthetic")
     run_parser.add_argument("--source", choices=["remoteok", "remotive", "weworkremotely", "github_issues"], default="remoteok")
     run_parser.add_argument("--limit", type=int, default=10)
-    run_parser.add_argument("--input", type=Path, default=PROJECT_ROOT / "config" / "example_work_order.json")
+    run_parser.add_argument("--input", type=Path, default=None)
     run_parser.add_argument("--artifact-root", type=Path, default=None)
 
     subparsers.add_parser("emergency-stop", help="Enable the runtime emergency stop.")
