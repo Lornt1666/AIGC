@@ -1,0 +1,30 @@
+{
+  "type": "object",
+  "required": [
+    "title",
+    "objective",
+    "domain",
+    "urgency",
+    "risk_class",
+    "desired_output",
+    "external_action_intent",
+    "acceptance_criteria"
+  ],
+  "properties": {
+    "work_order_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "title": {"type": "string"},
+    "objective": {"type": "string"},
+    "domain": {"type": "string"},
+    "urgency": {"type": "string"},
+    "risk_class": {"type": "string"},
+    "desired_output": {"type": "string"},
+    "external_action_intent": {"type": "string"},
+    "acceptance_criteria": {"type": "array", "items": {"type": "string"}},
+    "operator_visible_summary": {"type": "string"},
+    "symbolic_layers": {"type": "array", "items": {"type": "string"}},
+    "requested_agents": {"type": "array", "items": {"type": "string"}},
+    "secret_references": {"type": "array", "items": {"type": "object"}},
+    "source": {"type": "string"}
+  }
+}
