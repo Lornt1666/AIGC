@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -24,6 +25,7 @@ from src.core.operator_cockpit import (  # noqa: E402
     run_command,
     summarize_authorizations,
 )
+from src.core.work_order import run_work_order  # noqa: E402
 
 
 def main() -> int:
@@ -44,10 +46,18 @@ def main() -> int:
         "No external action is performed by this cockpit. Accept only records scoped approval for Phase 6 eligibility."
     )
 
-    tab_run, tab_review, tab_audit = st.tabs(["Run", "Review & Accept", "Audit / Transparency"])
+    tab_run, tab_work_order, tab_review, tab_audit = st.tabs([
+        "Run",
+        "New Work Order",
+        "Review & Accept",
+        "Audit / Transparency",
+    ])
 
     with tab_run:
         render_run_tab(st, root)
+
+    with tab_work_order:
+        render_work_order_tab(st, root)
 
     with tab_review:
         render_review_tab(st, root)
@@ -111,6 +121,82 @@ def render_run_tab(st, root: Path) -> None:
             file_name="aigc_operator_cockpit_run_receipt.json",
             mime="application/json",
         )
+
+
+def render_work_order_tab(st, root: Path) -> None:
+    st.header("New Governed Work Order")
+    st.write(
+        "This panel creates a dry-run work-order packet, classifies the work, generates reviewable artifacts, "
+        "and keeps external action blocked by default."
+    )
+
+    with st.form("aigc_work_order_form"):
+        title = st.text_input("Title", value="Wire AIGC governed work-order execution slice")
+        objective = st.text_area(
+            "Objective",
+            value="Create a reviewable internal artifact packet with governance, manifest, validation, and approval records.",
+        )
+        domain = st.text_input("Domain", value="secure software engineering and AI governance")
+        desired_output = st.text_input("Desired output", value="schema-valid operator-reviewable artifact packet")
+        urgency = st.selectbox("Urgency", ["low", "normal", "high"], index=1)
+        risk_class = st.selectbox("Risk class", ["low", "medium", "high", "critical"], index=1)
+        external_action_intent = st.selectbox("External action intent", ["none", "proposed", "required"], index=0)
+        acceptance_text = st.text_area(
+            "Acceptance criteria, one per line",
+            value="Every generated JSON artifact validates against a schema.\nExternal actions remain blocked by default.\nApproval requires exact visible operator review language.",
+        )
+        submitted = st.form_submit_button("Run work-order dry run", type="primary")
+
+    if not submitted:
+        st.info("No work-order run has been started from this panel yet.")
+        return
+
+    payload = {
+        "work_order_id": make_cockpit_work_order_id(title),
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "title": title.strip() or "Untitled AIGC work order",
+        "objective": objective.strip(),
+        "domain": domain.strip() or "general",
+        "urgency": urgency,
+        "risk_class": risk_class,
+        "desired_output": desired_output.strip() or "operator-reviewable artifact packet",
+        "external_action_intent": external_action_intent,
+        "acceptance_criteria": [line.strip() for line in acceptance_text.splitlines() if line.strip()],
+        "operator_visible_summary": "Created from AIGC Operator Cockpit work-order form.",
+        "symbolic_layers": ["Artificial Intelligence Gladiator Colosseum", "constellation-based agentry"],
+        "requested_agents": ["researcher", "planner", "auditor", "compliance_checker"],
+        "secret_references": [],
+        "source": "operator_cockpit",
+    }
+    input_dir = root / "reports" / "artifacts" / "cockpit_inputs"
+    input_dir.mkdir(parents=True, exist_ok=True)
+    input_path = input_dir / f"{payload['work_order_id']}.json"
+    input_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    try:
+        result = run_work_order(root, input_path)
+    except Exception as exc:
+        st.error(f"Work-order dry run failed: {exc}")
+        return
+
+    st.success("Work-order dry run completed. External action remained blocked.")
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Classification", result.governance_decision.classification)
+    col2.metric("Status", result.run_receipt.status)
+    col3.metric("External action", "blocked")
+
+    st.subheader("Run Receipt")
+    st.json(result.run_receipt.__dict__)
+
+    st.subheader("Governance Decision")
+    st.json(result.governance_decision.__dict__)
+
+    st.subheader("Approval Packet")
+    st.code(result.approval_packet.required_phrase, language="text")
+    st.json(result.approval_packet.__dict__)
+
+    st.subheader("Artifact Manifest")
+    st.json(result.artifact_manifest.__dict__)
 
 
 def render_review_tab(st, root: Path) -> None:
@@ -246,12 +332,14 @@ def render_audit_tab(st, root: Path) -> None:
         "data/phase23_work_orders/aigc_phase23_work_order_governance_records.json",
         "reports/phase14_runtime_preflight.md",
         "reports/milestone_k_work_order_governor_report.md",
+        "reports/artifacts/work_orders",
+        "reports/artifacts/governance_smoke",
     ]
     for relative_path in artifacts:
         path = root / relative_path
         exists = path.exists()
         st.markdown(f"- `{'present' if exists else 'missing'}` — `{relative_path}`")
-        if exists and path.suffix in {".json", ".md"}:
+        if exists and path.is_file() and path.suffix in {".json", ".md"}:
             with st.expander(f"Preview {relative_path}", expanded=False):
                 try:
                     st.code(path.read_text(encoding="utf-8")[:8000], language="json" if path.suffix == ".json" else "markdown")
@@ -293,6 +381,12 @@ def format_action_label(action_id: str, reviews: list[AuthorizationReview]) -> s
     review = next(item for item in reviews if item.action_id == action_id)
     status = "expired" if review.expired else review.decision
     return f"{action_id} — {review.recipient} — {status}"
+
+
+def make_cockpit_work_order_id(title: str) -> str:
+    seed = "".join(char.upper() if char.isalnum() else "-" for char in title.strip())
+    compact = "-".join(part for part in seed.split("-") if part)[:48] or "UNTITLED"
+    return f"AIGC-WO-COCKPIT-{compact}"
 
 
 if __name__ == "__main__":
