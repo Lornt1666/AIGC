@@ -1,0 +1,51 @@
+{
+  "policy_id": "AIGC-CHATLOG-SCOPED-OBSERVER-001",
+  "mode": "prepare_specific_chatlog_observer_packet_only",
+  "operator_contact_email": "JustLornt95@gmail.com",
+  "default_scope_rules": {
+    "specific_chatlog_required": true,
+    "whole_account_access_allowed": false,
+    "whole_conversation_access_allowed_by_default": false,
+    "backend_access_allowed": false,
+    "raw_chatgpt_link_sharing_allowed_by_default": false,
+    "exported_packet_required": true,
+    "redaction_required": true,
+    "operator_approval_required_before_invite": true,
+    "observer_read_only": true,
+    "observer_time_limited": true,
+    "operator_can_revoke": true
+  },
+  "hidden_or_private_content_blocks": [
+    "system_messages",
+    "developer_messages",
+    "private_chain_of_thought",
+    "secret_values",
+    "credentials",
+    "private_operator_notes",
+    "unrelated_conversations",
+    "unrelated_client_records",
+    "raw_repo_internals",
+    "unapproved_drafts"
+  ],
+  "required_invite_review_fields": [
+    "observer_identity",
+    "observer_organization",
+    "project_or_task_id",
+    "chatlog_artifact_id",
+    "allowed_sections",
+    "redaction_status",
+    "expiration_policy",
+    "revocation_policy",
+    "audit_receipt_path"
+  ],
+  "security_posture": {
+    "least_privilege": true,
+    "deny_by_default": true,
+    "share_packet_not_backend": true,
+    "hash_exported_packet": true,
+    "audit_all_invites": true,
+    "watermark_or_identifier_required": true,
+    "crawler_indexing_allowed": false,
+    "search_engine_discoverability_allowed": false
+  }
+}
