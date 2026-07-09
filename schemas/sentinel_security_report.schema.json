@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "required": [
+    "report_id",
+    "generated_at",
+    "profile_id",
+    "overall_status",
+    "layer_count",
+    "control_count",
+    "repo_assignment",
+    "blocked_capabilities",
+    "authorized_disclosure_boundary"
+  ],
+  "properties": {
+    "report_id": {"type": "string"},
+    "generated_at": {"type": "string"},
+    "profile_id": {"type": "string"},
+    "overall_status": {"type": "string"},
+    "layer_count": {"type": "integer"},
+    "control_count": {"type": "integer"},
+    "repo_assignment": {"type": "object"},
+    "blocked_capabilities": {"type": "array", "items": {"type": "string"}},
+    "authorized_disclosure_boundary": {"type": "object"}
+  }
+}
