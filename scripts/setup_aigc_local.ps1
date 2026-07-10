@@ -1,56 +1,120 @@
 param(
     [switch]$SkipVenv,
-    [switch]$SkipTests
+    [switch]$SkipTests,
+    [switch]$ForceRecreateVenv
 )
 
 $ErrorActionPreference = "Stop"
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 Set-Location $RepoRoot
 
-Write-Host "AIGC local setup"
+function Invoke-AigcStep {
+    param(
+        [Parameter(Mandatory = $true)][string]$Name,
+        [Parameter(Mandatory = $true)][scriptblock]$Action
+    )
 
-$python = Get-Command python -ErrorAction SilentlyContinue
-if (-not $python) {
-    throw "Python was not found. Install Python 3.10 or newer and rerun this setup script."
+    Write-Host ""
+    Write-Host "=== $Name ==="
+    try {
+        & $Action
+        if ($LASTEXITCODE -ne 0) {
+            throw "$Name exited with code $LASTEXITCODE"
+        }
+        Write-Host "PASS: $Name"
+    }
+    catch {
+        Write-Error "FAIL: $Name`n$($_.Exception.Message)"
+        Write-Host "Recovery: review the first failing step above; later steps were not trusted or executed."
+        exit 1
+    }
 }
 
-python --version
+Write-Host "AIGC MVP+++ local setup and verification"
+Write-Host "Repository: $RepoRoot"
+
+$SystemPython = Get-Command python -ErrorAction SilentlyContinue
+if (-not $SystemPython) {
+    throw "Python was not found. Install Python 3.10 or newer, reopen PowerShell, and rerun this script."
+}
+
+& $SystemPython.Source --version
+if ($LASTEXITCODE -ne 0) {
+    throw "Python exists but could not execute."
+}
+
+$PythonExe = $SystemPython.Source
+$VenvPython = Join-Path $RepoRoot ".venv\Scripts\python.exe"
 
 if (-not $SkipVenv) {
-    if (-not (Test-Path ".venv")) {
-        Write-Host "Creating .venv..."
-        python -m venv .venv
+    if ($ForceRecreateVenv -and (Test-Path ".venv")) {
+        Write-Host "Removing existing .venv..."
+        Remove-Item -Recurse -Force ".venv"
     }
-    Write-Host "Virtual environment exists at .venv. Activate it manually if desired: .\.venv\Scripts\Activate.ps1"
+
+    if (-not (Test-Path $VenvPython)) {
+        Invoke-AigcStep -Name "Create virtual environment" -Action {
+            & $SystemPython.Source -m venv .venv
+        }
+    }
+
+    if (-not (Test-Path $VenvPython)) {
+        throw "Virtual environment creation completed without producing $VenvPython"
+    }
+
+    $PythonExe = $VenvPython
+    Write-Host "Using isolated interpreter: $PythonExe"
+}
+else {
+    Write-Host "Using system interpreter because -SkipVenv was supplied: $PythonExe"
 }
 
-Write-Host "Installing reviewed dependencies..."
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
+Invoke-AigcStep -Name "Show selected Python" -Action {
+    & $PythonExe --version
+}
 
-Write-Host "Running health check..."
-python .\src\aigc.py health --write
+Invoke-AigcStep -Name "Upgrade pip" -Action {
+    & $PythonExe -m pip install --upgrade pip
+}
 
-Write-Host "Running contract validation..."
-python .\src\aigc.py validate
+Invoke-AigcStep -Name "Install reviewed dependencies" -Action {
+    & $PythonExe -m pip install -r requirements.txt
+}
 
-Write-Host "Running governance and cockpit smoke checks..."
-python .\src\aigc.py run governance-smoke
-python .\src\aigc.py run cockpit-smoke
+Invoke-AigcStep -Name "Program health check" -Action {
+    & $PythonExe .\src\aigc.py health --write
+}
 
-Write-Host "Running Security & Privacy Wiring Gate smoke check..."
-python .\src\security_privacy_wiring_cli.py --request .\config\counterparty_request_example.json
+Invoke-AigcStep -Name "Contract validation" -Action {
+    & $PythonExe .\src\aigc.py validate
+}
 
-Write-Host "Running Agent Operating Doctrine smoke check..."
-python .\src\agent_operating_doctrine_cli.py
+Invoke-AigcStep -Name "Governance smoke" -Action {
+    & $PythonExe .\src\aigc.py run governance-smoke
+}
+
+Invoke-AigcStep -Name "Cockpit smoke" -Action {
+    & $PythonExe .\src\aigc.py run cockpit-smoke
+}
+
+Invoke-AigcStep -Name "Security and Privacy Wiring Gate" -Action {
+    & $PythonExe .\src\security_privacy_wiring_cli.py --request .\config\counterparty_request_example.json
+}
+
+Invoke-AigcStep -Name "Agent Operating Doctrine" -Action {
+    & $PythonExe .\src\agent_operating_doctrine_cli.py
+}
 
 if (-not $SkipTests) {
-    Write-Host "Running tests..."
-    python -m pytest
+    Invoke-AigcStep -Name "Full test suite" -Action {
+        & $PythonExe -m pytest -q
+    }
 }
 
-Write-Host "AIGC local setup complete."
-Write-Host "Launch with: .\RUN_AIGC_PROGRAM.bat"
-Write-Host "Or launch with: .\scripts\run_aigc_program.ps1"
-Write-Host "Security gate: python .\src\security_privacy_wiring_cli.py --request .\config\counterparty_request_example.json"
-Write-Host "Agent doctrine: python .\src\agent_operating_doctrine_cli.py"
+Write-Host ""
+Write-Host "AIGC MVP+++ setup and verification completed successfully."
+Write-Host "Launch: .\RUN_AIGC_PROGRAM.bat"
+Write-Host "Direct PowerShell launch: .\scripts\run_aigc_program.ps1"
+Write-Host "Selected Python: $PythonExe"
+Write-Host "Security gate: & '$PythonExe' .\src\security_privacy_wiring_cli.py --request .\config\counterparty_request_example.json"
+Write-Host "Agent doctrine: & '$PythonExe' .\src\agent_operating_doctrine_cli.py"
