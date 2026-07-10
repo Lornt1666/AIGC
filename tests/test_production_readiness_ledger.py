@@ -13,6 +13,7 @@ from src.core.production_readiness_ledger import (
     repository_revision,
     run_production_readiness_ledger,
     validate_ledger,
+    validate_report,
 )
 
 
@@ -97,10 +98,8 @@ def test_strict_report_schema_rejects_untracked_fields() -> None:
     ledger = load_ledger(PROJECT_ROOT / "config" / "production_readiness_ledger.json")
     report = build_report(PROJECT_ROOT, ledger)
     report["fabricated_metric"] = 100
-    from src.core.contract_validator import ContractValidationError, validate_artifact
-
-    with pytest.raises(ContractValidationError):
-        validate_artifact("production_readiness_report", report)
+    with pytest.raises(ProductionReadinessLedgerError):
+        validate_report(report)
 
 
 def test_unified_cli_exposes_readiness_command() -> None:
