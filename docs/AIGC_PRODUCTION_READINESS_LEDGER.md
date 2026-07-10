@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The Production Readiness Ledger gives AIGC one canonical, evidence-backed answer to:
+The Production Readiness Ledger gives AIGC one canonical, structurally evidenced answer to:
 
 > What is complete, what is internal-only, what is partial, what is planned, and what still blocks production?
 
@@ -69,3 +69,29 @@ repository evidence
 ```
 
 The ledger is the measurable metabolism of AIGC evolution: each future cycle must change evidence, status, readiness score, or blocker state rather than merely generate new language.
+
+## Evidence Boundary
+
+The ledger's current evidence model is `structural_repository_evidence_v2`.
+
+It verifies non-empty repository paths and binds each report to the evaluated Git revision. This is stronger than filename existence alone, but it is intentionally labelled `structural_not_operational_proof`.
+
+A source file, schema, or test file can prove that an implementation artifact exists. It cannot by itself prove runtime reliability, production security, recovery, performance, or user outcomes. Those maturity claims require later test, runtime, staging, monitoring, and recovery receipts.
+
+Empty files and empty placeholder directories never count as evidence. Unknown Git revisions are recorded explicitly as `unbound`; they are not silently treated as verified.
+
+## Unified CLI and CI
+
+Run the non-blocking assessment:
+
+```powershell
+python .\src\aigc.py readiness
+```
+
+Require a production-ready result for a future release gate:
+
+```powershell
+python .\src\aigc.py readiness --require-production-ready
+```
+
+The CI workflow runs the assessment and uploads the revision-bound readiness receipt. It does not claim production readiness while blocking gaps remain.
