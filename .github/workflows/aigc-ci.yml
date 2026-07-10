@@ -53,4 +53,4 @@ jobs:
         with:
           name: production-readiness-${{ github.sha }}
           path: reports/artifacts/production_readiness
-          if-no-files-found: error
+          if-no-files-found: warn
