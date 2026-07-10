@@ -35,7 +35,8 @@ def test_agent_doctrine_generates_report(tmp_path: Path) -> None:
 
     result = run_agent_operating_doctrine(PROJECT_ROOT, artifact_root=tmp_path)
     assert result["external_action_performed"] is False
-    assert (PROJECT_ROOT / result["report_path"]).exists() is False
+    assert Path(result["report_path"]).exists()
+    assert Path(result["markdown_report_path"]).exists()
     assert any(tmp_path.rglob("agent_operating_doctrine_report.json"))
     assert any(tmp_path.rglob("agent_operating_doctrine_report.md"))
 
