@@ -1,0 +1,33 @@
+{
+  "type": "object",
+  "required": [
+    "report_id",
+    "created_at",
+    "ledger_id",
+    "overall_score",
+    "production_readiness_threshold",
+    "production_ready",
+    "capability_results",
+    "dimension_scores",
+    "blocking_gaps",
+    "highest_impact_next_step",
+    "governance_summary",
+    "operator_review_required",
+    "external_action_performed"
+  ],
+  "properties": {
+    "report_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "ledger_id": {"type": "string"},
+    "overall_score": {"type": "number", "minimum": 0, "maximum": 100},
+    "production_readiness_threshold": {"type": "number", "minimum": 0, "maximum": 100},
+    "production_ready": {"type": "boolean"},
+    "capability_results": {"type": "array", "items": {"type": "object"}},
+    "dimension_scores": {"type": "object"},
+    "blocking_gaps": {"type": "array", "items": {"type": "string"}},
+    "highest_impact_next_step": {"type": "object"},
+    "governance_summary": {"type": "object"},
+    "operator_review_required": {"type": "boolean"},
+    "external_action_performed": {"type": "boolean"}
+  }
+}
