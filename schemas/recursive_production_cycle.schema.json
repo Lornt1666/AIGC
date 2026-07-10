@@ -1,0 +1,33 @@
+{
+  "type": "object",
+  "required": [
+    "cycle_id",
+    "created_at",
+    "cycle_number",
+    "decision_state",
+    "ontology",
+    "taxonomy",
+    "methodology",
+    "architecture_assessment",
+    "transformation_backlog",
+    "preservation_controls",
+    "stop_conditions",
+    "operator_review_required",
+    "external_action_performed"
+  ],
+  "properties": {
+    "cycle_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "cycle_number": {"type": "integer", "minimum": 1},
+    "decision_state": {"type": "string"},
+    "ontology": {"type": "object"},
+    "taxonomy": {"type": "object"},
+    "methodology": {"type": "object"},
+    "architecture_assessment": {"type": "object"},
+    "transformation_backlog": {"type": "array", "items": {"type": "object"}},
+    "preservation_controls": {"type": "object"},
+    "stop_conditions": {"type": "array", "items": {"type": "string"}},
+    "operator_review_required": {"type": "boolean"},
+    "external_action_performed": {"type": "boolean"}
+  }
+}
