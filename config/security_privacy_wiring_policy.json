@@ -1,0 +1,84 @@
+{
+  "policy_id": "AIGC-SECURITY-PRIVACY-WIRING-001",
+  "mode": "unified_security_privacy_gate",
+  "gate_order": [
+    "hard_block_precheck",
+    "counterparty_request_intake",
+    "observer_authority_verification",
+    "redaction_privacy_review",
+    "sentinel_policy_review",
+    "approval_gated_procedure_packet",
+    "operator_popup_review",
+    "audit_receipt"
+  ],
+  "external_action_families": [
+    "apply",
+    "submit",
+    "accept",
+    "pay",
+    "purchase",
+    "deploy",
+    "bid",
+    "message",
+    "deliver_work"
+  ],
+  "observer_action_families": [
+    "observer_access",
+    "invite_observer",
+    "share_chatlog",
+    "share_observer_packet",
+    "enable_observer_view"
+  ],
+  "sharing_action_families": [
+    "message",
+    "deliver_work",
+    "observer_access",
+    "invite_observer",
+    "share_chatlog",
+    "share_observer_packet",
+    "enable_observer_view"
+  ],
+  "hard_blocks": [
+    "raw_secret",
+    "raw_chatlog_sharing",
+    "whole_account_access",
+    "backend_access",
+    "self_approval",
+    "fabricated_credentials",
+    "platform_rule_bypass",
+    "unverified_observer_authority",
+    "silent_external_sharing"
+  ],
+  "privacy_scan": {
+    "required_for_all_requests": true,
+    "explicit_redaction_review_required_for_sharing": true,
+    "blocked_secret_markers": [
+      "sk-",
+      "ghp_",
+      "github_pat_",
+      "api_key",
+      "password",
+      "private_key",
+      "client_secret",
+      "access_token",
+      "refresh_token",
+      "seed phrase"
+    ]
+  },
+  "sentinel_controls": {
+    "deny_by_default": true,
+    "operator_popup_required": true,
+    "audit_receipt_required": true,
+    "external_action_performed_default": false,
+    "future_cockpit_tab": "Security & Privacy Gate"
+  },
+  "future_connector_requirements": [
+    "counterparty_request_intake_passed",
+    "observer_authority_verified_when_observer_or_sharing_is_involved",
+    "redaction_privacy_review_passed",
+    "approval_gated_procedure_packet_exists",
+    "operator_proceed_clicked",
+    "audit_receipt_written",
+    "external_action_performed_false_until_connector_execution"
+  ]
+}
