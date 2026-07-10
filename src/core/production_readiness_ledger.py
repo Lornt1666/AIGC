@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List
@@ -90,15 +92,43 @@ def validate_ledger(ledger: Dict[str, Any]) -> None:
 
 
 def evidence_exists(project_root: Path, relative_path: str) -> bool:
+    """Return true only for non-empty repository evidence.
+
+    This is deliberately structural evidence, not proof that a capability works.
+    Operational maturity requires separate test, runtime, and CI receipts.
+    """
     path = project_root / relative_path
     if path.is_file():
-        return True
+        try:
+            return path.stat().st_size > 0
+        except OSError:
+            return False
     if path.is_dir():
         try:
-            return any(item.is_file() for item in path.rglob("*"))
+            return any(item.is_file() and item.stat().st_size > 0 for item in path.rglob("*"))
         except OSError:
             return False
     return False
+
+
+def repository_revision(project_root: Path) -> str:
+    """Bind a report to the evaluated revision when Git metadata is available."""
+    github_sha = os.environ.get("GITHUB_SHA", "").strip()
+    if github_sha:
+        return github_sha
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=project_root,
+            capture_output=True,
+            text=True,
+            timeout=5,
+            check=False,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return "unbound"
+    revision = result.stdout.strip()
+    return revision if result.returncode == 0 and revision else "unbound"
 
 
 def effective_status(declared_status: str, evidence_complete: bool) -> str:
@@ -120,7 +150,11 @@ def evaluate_capability(
 ) -> Dict[str, Any]:
     evidence_paths = [str(item) for item in capability.get("required_evidence", [])]
     evidence = [
-        {"path": path, "present": evidence_exists(project_root, path)}
+        {
+            "path": path,
+            "kind": "structural_repository_path",
+            "present": evidence_exists(project_root, path),
+        }
         for path in evidence_paths
     ]
     evidence_complete = bool(evidence_paths) and all(item["present"] for item in evidence)
@@ -215,6 +249,9 @@ def build_report(project_root: Path, ledger: Dict[str, Any]) -> Dict[str, Any]:
         "report_id": make_id("AIGC-PRODUCTION-READINESS", ledger["ledger_id"], utc_now()),
         "created_at": utc_now(),
         "ledger_id": ledger["ledger_id"],
+        "source_revision": repository_revision(project_root),
+        "evidence_model": "structural_repository_evidence_v2",
+        "evidence_strength": "structural_not_operational_proof",
         "overall_score": overall_score,
         "production_readiness_threshold": threshold,
         "production_ready": production_ready,
@@ -224,7 +261,8 @@ def build_report(project_root: Path, ledger: Dict[str, Any]) -> Dict[str, Any]:
         "blocking_gaps": blocking_gaps,
         "highest_impact_next_step": next_step,
         "governance_summary": {
-            "completion_claims_are_evidence_backed": True,
+            "completion_claims_are_structurally_evidenced": True,
+            "operational_proof_claimed": False,
             "unsupported_claims_are_downgraded": True,
             "production_ready_requires_no_blocking_gaps": True,
             "result": "production_ready" if production_ready else "not_production_ready",
@@ -270,6 +308,8 @@ def render_report(report: Dict[str, Any]) -> str:
         "# AIGC Production Readiness Ledger",
         "",
         f"Report ID: `{report['report_id']}`",
+        f"Source revision: `{report['source_revision']}`",
+        f"Evidence strength: `{report['evidence_strength']}`",
         f"Overall score: **{report['overall_score']} / 100**",
         f"Threshold: **{report['production_readiness_threshold']}**",
         f"Production ready: **{'Yes' if report['production_ready'] else 'No'}**",
