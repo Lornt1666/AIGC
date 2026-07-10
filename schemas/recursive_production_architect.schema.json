@@ -1,0 +1,39 @@
+{
+  "type": "object",
+  "required": [
+    "architect_id",
+    "version",
+    "mode",
+    "maximum_cycles_per_run",
+    "production_readiness_target",
+    "mandatory_gate",
+    "paradigms",
+    "ontology_domains",
+    "taxonomy_dimensions",
+    "methodology_stack",
+    "required_outputs",
+    "preservation_controls",
+    "hard_blocks",
+    "stop_conditions",
+    "operator_review_required",
+    "external_action_performed"
+  ],
+  "properties": {
+    "architect_id": {"type": "string"},
+    "version": {"type": "string"},
+    "mode": {"type": "string"},
+    "maximum_cycles_per_run": {"type": "integer", "minimum": 1, "maximum": 10},
+    "production_readiness_target": {"type": "integer", "minimum": 0, "maximum": 100},
+    "mandatory_gate": {"type": "string"},
+    "paradigms": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "ontology_domains": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "taxonomy_dimensions": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "methodology_stack": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "required_outputs": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "preservation_controls": {"type": "object"},
+    "hard_blocks": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "stop_conditions": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "operator_review_required": {"type": "boolean"},
+    "external_action_performed": {"type": "boolean"}
+  }
+}
