@@ -101,3 +101,11 @@ def test_strict_report_schema_rejects_untracked_fields() -> None:
 
     with pytest.raises(ContractValidationError):
         validate_artifact("production_readiness_report", report)
+
+
+def test_unified_cli_exposes_readiness_command() -> None:
+    from src.aigc import parse_args
+
+    args = parse_args(["readiness", "--require-production-ready"])
+    assert args.command == "readiness"
+    assert args.require_production_ready is True
