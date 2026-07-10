@@ -1,0 +1,45 @@
+{
+  "type": "object",
+  "required": [
+    "ledger_id",
+    "version",
+    "mode",
+    "production_readiness_threshold",
+    "status_multipliers",
+    "capabilities",
+    "truth_controls"
+  ],
+  "properties": {
+    "ledger_id": {"type": "string"},
+    "version": {"type": "string"},
+    "mode": {"type": "string"},
+    "production_readiness_threshold": {"type": "number", "minimum": 0, "maximum": 100},
+    "status_multipliers": {"type": "object"},
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "capability_id",
+          "name",
+          "dimension",
+          "weight",
+          "declared_status",
+          "required_evidence",
+          "blocking_for_production"
+        ],
+        "properties": {
+          "capability_id": {"type": "string"},
+          "name": {"type": "string"},
+          "dimension": {"type": "string"},
+          "weight": {"type": "number", "minimum": 0},
+          "declared_status": {"type": "string"},
+          "required_evidence": {"type": "array", "items": {"type": "string"}},
+          "blocking_for_production": {"type": "boolean"}
+        }
+      }
+    },
+    "truth_controls": {"type": "object"}
+  }
+}
