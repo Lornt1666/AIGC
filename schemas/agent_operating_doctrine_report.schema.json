@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "required": [
+    "report_id",
+    "created_at",
+    "doctrine_id",
+    "decision_state",
+    "dependency_install_command",
+    "mandatory_gate",
+    "agent_job_cards",
+    "disabled_capabilities",
+    "external_action_performed"
+  ],
+  "properties": {
+    "report_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "doctrine_id": {"type": "string"},
+    "decision_state": {"type": "string"},
+    "dependency_install_command": {"type": "string"},
+    "mandatory_gate": {"type": "object"},
+    "agent_job_cards": {"type": "array", "items": {"type": "object"}, "minItems": 1},
+    "disabled_capabilities": {"type": "array", "items": {"type": "string"}},
+    "reports_written": {"type": "array", "items": {"type": "string"}},
+    "external_action_performed": {"type": "boolean"}
+  }
+}
