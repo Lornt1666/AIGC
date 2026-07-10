@@ -24,6 +24,7 @@ from src.core.paycheque_workflow import run_paycheque_workflow  # noqa: E402
 from src.core.phase_registry import build_phase_registry  # noqa: E402
 from src.core.pipeline_closure import PipelineClosureRunner  # noqa: E402
 from src.core.program_health import run_program_health, write_health_report  # noqa: E402
+from src.core.production_readiness_ledger import run_production_readiness_ledger  # noqa: E402
 from src.core.state_store import AIGCStateStore, DEFAULT_DB_PATH  # noqa: E402
 from src.core.work_acquisition import run_work_acquisition  # noqa: E402
 from src.core.work_order import run_cockpit_smoke, run_governance_smoke, run_work_order  # noqa: E402
@@ -69,6 +70,30 @@ def main(argv: List[str] | None = None) -> int:
         )
         print(json.dumps(payload, indent=2))
         return 0 if report.overall_status in {"healthy", "warning"} else 1
+    if args.command == "readiness":
+        result = run_production_readiness_ledger(root, artifact_root=args.artifact_root)
+        report = result["report"]
+        store.insert_event(
+            event_type="production_readiness_evaluated",
+            phase="production_readiness_ledger",
+            status="production_ready" if report["production_ready"] else "not_production_ready",
+            summary=(
+                f"Evaluated structural production readiness at {report['overall_score']} "
+                f"against threshold {report['production_readiness_threshold']}."
+            ),
+            data={
+                "report_id": report["report_id"],
+                "source_revision": report["source_revision"],
+                "evidence_strength": report["evidence_strength"],
+                "blocking_gaps": report["blocking_gaps"],
+                "production_ready": report["production_ready"],
+            },
+            external_action_performed=False,
+        )
+        print(json.dumps(result, indent=2))
+        if args.require_production_ready and not report["production_ready"]:
+            return 3
+        return 0
     if args.command == "validate":
         return command_validate(args, root, store)
     if args.command == "run":
@@ -679,6 +704,17 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     subparsers.add_parser("init-db", help="Initialize the AIGC SQLite state database.")
     health_parser = subparsers.add_parser("health", help="Run local program health checks.")
     health_parser.add_argument("--write", action="store_true", help="Write latest health report under reports/artifacts/program_health.")
+
+    readiness_parser = subparsers.add_parser(
+        "readiness",
+        help="Evaluate structurally evidenced production readiness and blocking gaps.",
+    )
+    readiness_parser.add_argument("--artifact-root", type=Path, default=None)
+    readiness_parser.add_argument(
+        "--require-production-ready",
+        action="store_true",
+        help="Return a nonzero exit when the evaluated revision is not production ready.",
+    )
 
     validate_parser = subparsers.add_parser("validate", help="Validate AIGC artifacts against JSON schemas.")
     validate_parser.add_argument("--schema", default="")
