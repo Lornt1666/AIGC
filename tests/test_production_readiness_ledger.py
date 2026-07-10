@@ -8,7 +8,9 @@ import pytest
 from src.core.production_readiness_ledger import (
     ProductionReadinessLedgerError,
     build_report,
+    evidence_exists,
     load_ledger,
+    repository_revision,
     run_production_readiness_ledger,
     validate_ledger,
 )
@@ -25,6 +27,10 @@ def test_production_readiness_report_is_evidence_backed(tmp_path: Path) -> None:
     assert report["operator_review_required"] is True
     assert report["production_ready"] is False
     assert report["overall_score"] < report["production_readiness_threshold"]
+    assert report["evidence_model"] == "structural_repository_evidence_v2"
+    assert report["evidence_strength"] == "structural_not_operational_proof"
+    assert report["source_revision"]
+    assert report["governance_summary"]["operational_proof_claimed"] is False
     assert "production_identity_access" in report["blocking_gaps"]
     assert report["highest_impact_next_step"]["capability_id"] == "production_identity_access"
 
@@ -62,3 +68,36 @@ def test_ledger_rejects_weakened_truth_controls() -> None:
 
     with pytest.raises(ProductionReadinessLedgerError):
         validate_ledger(ledger)
+
+
+def test_empty_files_and_directories_do_not_count_as_evidence(tmp_path: Path) -> None:
+    empty_file = tmp_path / "empty.py"
+    empty_file.write_text("", encoding="utf-8")
+    assert evidence_exists(tmp_path, "empty.py") is False
+
+    empty_dir = tmp_path / "empty_dir"
+    empty_dir.mkdir()
+    (empty_dir / "placeholder.txt").write_text("", encoding="utf-8")
+    assert evidence_exists(tmp_path, "empty_dir") is False
+
+    (empty_dir / "evidence.txt").write_text("verified structural evidence\n", encoding="utf-8")
+    assert evidence_exists(tmp_path, "empty_dir") is True
+
+
+def test_report_revision_is_bound_or_explicitly_unbound(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("GITHUB_SHA", raising=False)
+    revision = repository_revision(tmp_path)
+    assert revision == "unbound"
+
+    monkeypatch.setenv("GITHUB_SHA", "abc123")
+    assert repository_revision(tmp_path) == "abc123"
+
+
+def test_strict_report_schema_rejects_untracked_fields() -> None:
+    ledger = load_ledger(PROJECT_ROOT / "config" / "production_readiness_ledger.json")
+    report = build_report(PROJECT_ROOT, ledger)
+    report["fabricated_metric"] = 100
+    from src.core.contract_validator import ContractValidationError, validate_artifact
+
+    with pytest.raises(ContractValidationError):
+        validate_artifact("production_readiness_report", report)
