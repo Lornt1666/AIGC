@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "required": [
+    "doctrine_id",
+    "version",
+    "mode",
+    "dependency_policy",
+    "mandatory_gate",
+    "agent_roles",
+    "professional_standards",
+    "hard_blocks",
+    "external_action_performed"
+  ],
+  "properties": {
+    "doctrine_id": {"type": "string"},
+    "version": {"type": "string"},
+    "mode": {"type": "string"},
+    "dependency_policy": {"type": "object"},
+    "mandatory_gate": {"type": "object"},
+    "agent_roles": {"type": "array", "items": {"type": "object"}, "minItems": 1},
+    "professional_standards": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "hard_blocks": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "report_outputs": {"type": "array", "items": {"type": "string"}},
+    "external_action_performed": {"type": "boolean"}
+  }
+}
