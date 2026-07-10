@@ -1,0 +1,48 @@
+{
+  "type": "object",
+  "required": [
+    "registry_id",
+    "version",
+    "status_values",
+    "capabilities",
+    "operator_review_required",
+    "external_action_performed"
+  ],
+  "properties": {
+    "registry_id": {"type": "string"},
+    "version": {"type": "string"},
+    "status_values": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "capability_id",
+          "name",
+          "domain",
+          "declared_status",
+          "evidence_paths",
+          "production_requirements",
+          "next_step"
+        ],
+        "properties": {
+          "capability_id": {"type": "string"},
+          "name": {"type": "string"},
+          "domain": {"type": "string"},
+          "declared_status": {"type": "string"},
+          "evidence_paths": {"type": "array", "items": {"type": "string"}},
+          "production_requirements": {"type": "array", "items": {"type": "string"}},
+          "next_step": {"type": "string"},
+          "source_prs": {"type": "array", "items": {"type": "integer"}}
+        }
+      }
+    },
+    "operator_review_required": {"type": "boolean"},
+    "external_action_performed": {"type": "boolean"}
+  }
+}
