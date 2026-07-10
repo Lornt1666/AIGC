@@ -32,6 +32,47 @@ STATUS_RANK = {
     "complete": 5,
 }
 
+LEDGER_KEYS = {
+    "ledger_id", "version", "mode", "production_readiness_threshold",
+    "status_multipliers", "capabilities", "truth_controls",
+}
+CAPABILITY_KEYS = {
+    "capability_id", "name", "dimension", "weight", "declared_status",
+    "required_evidence", "blocking_for_production",
+}
+TRUTH_CONTROL_KEYS = {
+    "missing_evidence_downgrades_status",
+    "completion_claim_requires_all_evidence",
+    "production_ready_requires_no_blocking_gaps",
+    "operator_review_required",
+    "external_action_performed",
+}
+REPORT_KEYS = {
+    "report_id", "created_at", "ledger_id", "source_revision", "evidence_model",
+    "evidence_strength", "overall_score", "production_readiness_threshold",
+    "production_ready", "status_counts", "capability_results", "dimension_scores",
+    "blocking_gaps", "highest_impact_next_step", "governance_summary",
+    "operator_review_required", "external_action_performed",
+}
+CAPABILITY_RESULT_KEYS = {
+    "capability_id", "name", "dimension", "weight", "declared_status",
+    "effective_status", "evidence_complete", "evidence", "missing_evidence",
+    "blocking_for_production", "earned_weight", "readiness_percent",
+}
+EVIDENCE_KEYS = {"path", "kind", "present"}
+NEXT_STEP_KEYS = {
+    "capability_id", "name", "action", "reason", "effective_status",
+    "missing_evidence", "operator_review_required",
+}
+NEXT_STEP_REQUIRED_KEYS = {"capability_id", "action", "reason", "operator_review_required"}
+GOVERNANCE_KEYS = {
+    "completion_claims_are_structurally_evidenced",
+    "operational_proof_claimed",
+    "unsupported_claims_are_downgraded",
+    "production_ready_requires_no_blocking_gaps",
+    "result",
+}
+
 
 class ProductionReadinessLedgerError(ValueError):
     """Raised when the completion ledger would make an unsupported claim."""
@@ -55,8 +96,31 @@ def load_ledger(path: Path) -> Dict[str, Any]:
     return payload
 
 
+def require_exact_keys(
+    value: Dict[str, Any],
+    allowed: set[str],
+    label: str,
+    required: set[str] | None = None,
+) -> None:
+    required = allowed if required is None else required
+    unknown = sorted(set(value) - allowed)
+    missing = sorted(required - set(value))
+    if unknown or missing:
+        raise ProductionReadinessLedgerError(
+            f"{label} keys invalid; unknown={unknown}, missing={missing}"
+        )
+
+
 def validate_ledger(ledger: Dict[str, Any]) -> None:
+    require_exact_keys(ledger, LEDGER_KEYS, "ledger")
+    if ledger.get("mode") != "evidence_backed_completion_measurement":
+        raise ProductionReadinessLedgerError("Unsupported readiness ledger mode.")
+    threshold = float(ledger.get("production_readiness_threshold", -1))
+    if threshold < 0 or threshold > 100:
+        raise ProductionReadinessLedgerError("Production readiness threshold must be 0..100.")
+
     controls = dict(ledger.get("truth_controls", {}))
+    require_exact_keys(controls, TRUTH_CONTROL_KEYS, "truth_controls")
     required_true = {
         "missing_evidence_downgrades_status",
         "completion_claim_requires_all_evidence",
@@ -70,12 +134,16 @@ def validate_ledger(ledger: Dict[str, Any]) -> None:
         raise ProductionReadinessLedgerError("Ledger cannot claim an external action.")
 
     multipliers = dict(ledger.get("status_multipliers", {}))
-    if not ALLOWED_STATUSES.issubset(multipliers):
-        raise ProductionReadinessLedgerError("Every allowed status requires a multiplier.")
+    require_exact_keys(multipliers, ALLOWED_STATUSES, "status_multipliers")
+    if any(float(value) < 0 or float(value) > 1 for value in multipliers.values()):
+        raise ProductionReadinessLedgerError("Status multipliers must be within 0..1.")
 
     identifiers: set[str] = set()
     total_weight = 0.0
     for capability in ledger.get("capabilities", []):
+        if not isinstance(capability, dict):
+            raise ProductionReadinessLedgerError("Every capability must be an object.")
+        require_exact_keys(capability, CAPABILITY_KEYS, "capability")
         capability_id = str(capability.get("capability_id", ""))
         if not capability_id or capability_id in identifiers:
             raise ProductionReadinessLedgerError(f"Invalid or duplicate capability_id: {capability_id!r}")
@@ -270,8 +338,51 @@ def build_report(project_root: Path, ledger: Dict[str, Any]) -> Dict[str, Any]:
         "operator_review_required": True,
         "external_action_performed": False,
     }
+    validate_report(report)
     validate_artifact(REPORT_SCHEMA, report)
     return report
+
+
+def validate_report(report: Dict[str, Any]) -> None:
+    require_exact_keys(report, REPORT_KEYS, "report")
+    if report.get("evidence_model") != "structural_repository_evidence_v2":
+        raise ProductionReadinessLedgerError("Unexpected readiness evidence model.")
+    if report.get("evidence_strength") != "structural_not_operational_proof":
+        raise ProductionReadinessLedgerError("Readiness evidence strength must remain bounded.")
+    if report.get("operator_review_required") is not True:
+        raise ProductionReadinessLedgerError("Readiness report requires operator review.")
+    if report.get("external_action_performed") is not False:
+        raise ProductionReadinessLedgerError("Readiness report cannot claim external action.")
+
+    for result in report.get("capability_results", []):
+        if not isinstance(result, dict):
+            raise ProductionReadinessLedgerError("Capability results must be objects.")
+        require_exact_keys(result, CAPABILITY_RESULT_KEYS, "capability_result")
+        for evidence in result.get("evidence", []):
+            if not isinstance(evidence, dict):
+                raise ProductionReadinessLedgerError("Evidence entries must be objects.")
+            require_exact_keys(evidence, EVIDENCE_KEYS, "evidence")
+            if evidence.get("kind") != "structural_repository_path":
+                raise ProductionReadinessLedgerError("Unsupported evidence kind.")
+
+    next_step = report.get("highest_impact_next_step", {})
+    if not isinstance(next_step, dict):
+        raise ProductionReadinessLedgerError("Highest-impact next step must be an object.")
+    require_exact_keys(
+        next_step,
+        NEXT_STEP_KEYS,
+        "highest_impact_next_step",
+        required=NEXT_STEP_REQUIRED_KEYS,
+    )
+    if next_step.get("operator_review_required") is not True:
+        raise ProductionReadinessLedgerError("Next step requires operator review.")
+
+    governance = report.get("governance_summary", {})
+    if not isinstance(governance, dict):
+        raise ProductionReadinessLedgerError("Governance summary must be an object.")
+    require_exact_keys(governance, GOVERNANCE_KEYS, "governance_summary")
+    if governance.get("operational_proof_claimed") is not False:
+        raise ProductionReadinessLedgerError("Structural evidence cannot claim operational proof.")
 
 
 def run_production_readiness_ledger(
