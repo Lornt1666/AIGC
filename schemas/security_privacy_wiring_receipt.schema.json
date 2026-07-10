@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "required": [
+    "receipt_id",
+    "created_at",
+    "request_id",
+    "requested_action",
+    "decision_state",
+    "blocked_reason",
+    "required_next_step",
+    "enabled_controls",
+    "disabled_controls",
+    "gate_results",
+    "artifact_paths",
+    "operator_popup_required",
+    "proceed_enabled",
+    "external_action_performed"
+  ],
+  "properties": {
+    "receipt_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "request_id": {"type": "string"},
+    "requested_action": {"type": "string"},
+    "decision_state": {"type": "string"},
+    "blocked_reason": {"type": "string"},
+    "required_next_step": {"type": "string"},
+    "enabled_controls": {"type": "array", "items": {"type": "string"}},
+    "disabled_controls": {"type": "array", "items": {"type": "string"}},
+    "gate_results": {"type": "object"},
+    "artifact_paths": {"type": "object"},
+    "operator_popup_required": {"type": "boolean"},
+    "proceed_enabled": {"type": "boolean"},
+    "external_action_performed": {"type": "boolean"}
+  }
+}
