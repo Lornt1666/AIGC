@@ -1,0 +1,83 @@
+{
+  "policy_id": "AIGC-OBSERVER-AUTHORITY-001",
+  "mode": "verify_before_observer_access",
+  "research_basis": [
+    "NIST SP 800-63-4 Digital Identity Guidelines",
+    "NIST SP 800-207 Zero Trust Architecture",
+    "privacy-by-design minimum necessary disclosure principles"
+  ],
+  "required_checks": {
+    "identity_proof_required": true,
+    "organization_or_platform_link_required": true,
+    "role_authority_required": true,
+    "project_scope_required": true,
+    "counterparty_request_link_required": true,
+    "operator_approval_required": true,
+    "redaction_review_required": true,
+    "expiry_required": true,
+    "revocation_required": true,
+    "audit_receipt_required": true
+  },
+  "observer_types": [
+    {
+      "type": "employer_or_client",
+      "acceptable_evidence": [
+        "verified platform conversation or contract",
+        "company email domain matching the organization",
+        "signed or platform-recorded statement of work",
+        "operator-approved counterparty request packet"
+      ],
+      "disallowed_evidence": [
+        "unsourced self-claim",
+        "generic public email with no project linkage",
+        "request to observe unrelated work",
+        "request for backend or whole-account access"
+      ]
+    },
+    {
+      "type": "internal_operator_delegate",
+      "acceptable_evidence": [
+        "operator-approved delegate record",
+        "specific project/task scope",
+        "time-limited review purpose"
+      ],
+      "disallowed_evidence": [
+        "standing unrestricted access",
+        "access to unrelated projects",
+        "silent delegation"
+      ]
+    },
+    {
+      "type": "authorized_evidence_reviewer",
+      "acceptable_evidence": [
+        "documented lawful or process-bound request",
+        "named organization and officer/agent role",
+        "jurisdiction/process review",
+        "specific evidence scope and purpose"
+      ],
+      "disallowed_evidence": [
+        "unrestricted backend access",
+        "bulk account access",
+        "unscoped demand",
+        "silent disclosure"
+      ]
+    }
+  ],
+  "decision_states": [
+    "insufficient_authority",
+    "blocked_scope_overreach",
+    "ready_for_operator_review",
+    "ready_for_operator_review_high_risk"
+  ],
+  "hard_blocks": [
+    "whole_account_access",
+    "backend_access",
+    "raw_chatlog_access_by_default",
+    "unrelated_project_access",
+    "silent_sharing",
+    "unverified_identity",
+    "unverified_role_authority",
+    "expired_authority",
+    "unrevocable_access"
+  ]
+}

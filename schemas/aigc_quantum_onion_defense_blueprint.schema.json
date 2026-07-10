@@ -1,0 +1,38 @@
+{
+  "type": "object",
+  "required": [
+    "blueprint_id",
+    "scope",
+    "mode",
+    "source_document",
+    "layers",
+    "hard_blocks",
+    "authorized_disclosure_boundary",
+    "external_action_default",
+    "production_status"
+  ],
+  "properties": {
+    "blueprint_id": {"type": "string"},
+    "scope": {"type": "string"},
+    "mode": {"type": "string"},
+    "source_document": {"type": "string"},
+    "layers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["layer_id", "mythic_name", "concrete_purpose", "assigned_paths", "required_controls"],
+        "properties": {
+          "layer_id": {"type": "string"},
+          "mythic_name": {"type": "string"},
+          "concrete_purpose": {"type": "string"},
+          "assigned_paths": {"type": "array", "items": {"type": "string"}},
+          "required_controls": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "hard_blocks": {"type": "array", "items": {"type": "string"}},
+    "authorized_disclosure_boundary": {"type": "object"},
+    "external_action_default": {"type": "string"},
+    "production_status": {"type": "string"}
+  }
+}

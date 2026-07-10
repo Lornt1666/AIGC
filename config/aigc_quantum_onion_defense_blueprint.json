@@ -1,0 +1,124 @@
+{
+  "blueprint_id": "AIGC-QUANTUM-ONION-BLUEPRINT-001",
+  "scope": "Lornt1666/AIGC",
+  "mode": "defensive_only_repo_wide_security_assignment",
+  "source_document": "docs/AIGC_QUANTUM_ONION_TAILORED_DEFENSE_BLUEPRINT.md",
+  "layers": [
+    {
+      "layer_id": "aegis_shield",
+      "mythic_name": "Aegis Shield",
+      "concrete_purpose": "Outer abuse resistance, redaction, rate-limit planning, safe boundaries, no-index observer posture.",
+      "assigned_paths": [
+        "src/security/redaction_scanner.py",
+        "config/work_domain_registry.json",
+        "config/communication_observer_access.json",
+        "config/chatlog_scoped_observer_access.json",
+        "docs/AIGC_CHATLOG_SCOPED_OBSERVER_HARDENING.md"
+      ],
+      "required_controls": [
+        "redaction_scan",
+        "deny_raw_secret_logging",
+        "no_raw_chatlog_sharing_by_default",
+        "crawler_indexing_disallowed",
+        "external_action_default_blocked"
+      ]
+    },
+    {
+      "layer_id": "excalibur_seals",
+      "mythic_name": "Excalibur Seals",
+      "concrete_purpose": "Identity, approval, least privilege, exact action preview, no self-approval.",
+      "assigned_paths": [
+        "src/core/approval_gated_external_actions.py",
+        "src/core/external_action_procedures.py",
+        "src/core/counterparty_request_intake.py",
+        "src/security/approval_tokens.py",
+        "src/security/secret_broker.py"
+      ],
+      "required_controls": [
+        "operator_proceed_required",
+        "no_self_approval",
+        "counterparty_request_required",
+        "secret_reference_only",
+        "platform_terms_review_required"
+      ]
+    },
+    {
+      "layer_id": "quantum_maze",
+      "mythic_name": "Quantum Maze",
+      "concrete_purpose": "Non-breaking defensive mutation, canary packet identifiers, dynamic risk state, artifact hashes.",
+      "assigned_paths": [
+        "src/core/chatlog_scoped_observer_access.py",
+        "src/core/communication_observer_access.py",
+        "src/core/sentinel_security_profile.py",
+        "reports/artifacts/"
+      ],
+      "required_controls": [
+        "artifact_hashing",
+        "canary_identifiers",
+        "non_breaking_parameter_mutation_only",
+        "operator_visible_policy_changes",
+        "audit_receipts"
+      ]
+    },
+    {
+      "layer_id": "medusa_chamber",
+      "mythic_name": "Medusa Chamber",
+      "concrete_purpose": "Containment, blocked states, emergency stop, forensic receipts, no progression after boundary violation.",
+      "assigned_paths": [
+        "src/core/state_store.py",
+        "src/core/approval_gated_external_actions.py",
+        "src/core/counterparty_request_intake.py",
+        "src/core/chatlog_scoped_observer_access.py"
+      ],
+      "required_controls": [
+        "emergency_stop",
+        "hard_blocked_actions",
+        "insufficient_information_state",
+        "blocked_pending_risk_review_state",
+        "forensic_receipt_required"
+      ]
+    },
+    {
+      "layer_id": "ananta_core",
+      "mythic_name": "Ananta Core",
+      "concrete_purpose": "Minimal trusted base, schema validation, contract-first artifacts, secret-reference-only doctrine.",
+      "assigned_paths": [
+        "schemas/",
+        "src/core/contract_validator.py",
+        "src/aigc.py",
+        "src/core/program_health.py",
+        "config/secret_manifest.json"
+      ],
+      "required_controls": [
+        "schema_validation",
+        "contract_first_artifacts",
+        "secret_references_only",
+        "local_health_check",
+        "ci_gate_before_merge"
+      ]
+    }
+  ],
+  "hard_blocks": [
+    "offensive_exploit_generation",
+    "malware_or_credential_theft",
+    "unrestricted_backdoor_access",
+    "silent_external_sharing",
+    "raw_secret_logging",
+    "whole_account_observer_access",
+    "backend_access_for_counterparties",
+    "platform_rule_bypass",
+    "fabricated_credentials",
+    "agent_self_approval"
+  ],
+  "authorized_disclosure_boundary": {
+    "backdoor_access_allowed": false,
+    "evidence_export_allowed": true,
+    "operator_review_required": true,
+    "jurisdiction_review_required": true,
+    "minimum_necessary_required": true,
+    "redaction_default": true,
+    "audit_receipt_required": true
+  },
+  "external_action_default": "blocked_until_operator_proceeds",
+  "production_status": "blueprint_and_local_artifact_controls_only"
+}

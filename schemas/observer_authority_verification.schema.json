@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "required": [
+    "verification_id",
+    "created_at",
+    "observer",
+    "authority_basis",
+    "scope",
+    "decision",
+    "controls",
+    "audit"
+  ],
+  "properties": {
+    "verification_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "observer": {"type": "object"},
+    "authority_basis": {"type": "object"},
+    "scope": {"type": "object"},
+    "decision": {"type": "object"},
+    "controls": {"type": "object"},
+    "audit": {"type": "object"}
+  }
+}
