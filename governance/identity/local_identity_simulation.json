@@ -49,8 +49,8 @@
     "active_project_id": "project-a",
     "session_state": "ACTIVE",
     "issued_at": "2026-07-11T18:00:00Z",
-    "idle_expires_at": "2026-07-11T22:00:00Z",
-    "absolute_expires_at": "2026-07-12T18:00:00Z",
+    "idle_expires_at": "2027-07-11T00:00:00Z",
+    "absolute_expires_at": "2027-07-11T00:00:00Z",
     "authentication_assurance": "AAL0",
     "revocation_version": 0
   }],
