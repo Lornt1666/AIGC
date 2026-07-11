@@ -1,0 +1,15 @@
+{
+  "$schema":"../schemas/governance_receipt.schema.json",
+  "receipt_id":"AIGC-GOV-RECEIPT-RATIFICATION-TEMPLATE",
+  "receipt_type":"ratification",
+  "constitution_id":"AEC-001",
+  "constitution_version":"1.0.0",
+  "revision":"REPLACE_WITH_MERGED_MAIN_SHA",
+  "result":"insufficient_evidence",
+  "reason_codes":["POST_MERGE_VERIFICATION_REQUIRED"],
+  "evidence_references":["PR #42","Epoch I completion PR"],
+  "review_path":"automated_verification",
+  "operator_ratification":false,
+  "generated_at":"1970-01-01T00:00:00Z",
+  "external_action_performed":false
+}
