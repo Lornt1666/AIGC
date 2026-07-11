@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/eiap_shared_contracts.schema.json",
+  "title": "EIAP Shared Assurance Contracts v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_version", "contract_type", "payload"],
+  "properties": {
+    "contract_version": {"const": "1.0.0"},
+    "contract_type": {
+      "enum": [
+        "actor_reference",
+        "artifact_reference",
+        "evidence_reference",
+        "decision",
+        "approval_reference",
+        "gate_receipt",
+        "traceability_manifest",
+        "finding",
+        "observation"
+      ]
+    },
+    "payload": {"type": "object"}
+  },
+  "$defs": {
+    "ActorReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "actor_type", "display_name", "authority_source"],
+      "properties": {
+        "actor_id": {"type": "string", "minLength": 1},
+        "actor_type": {"enum": ["human", "service", "agent", "organization"]},
+        "display_name": {"type": "string", "minLength": 1},
+        "authority_source": {"type": "string", "minLength": 1},
+        "tenant_id": {"type": ["string", "null"]}
+      }
+    },
+    "ArtifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "artifact_type", "revision", "location"],
+      "properties": {
+        "artifact_id": {"type": "string", "minLength": 1},
+        "artifact_type": {"type": "string", "minLength": 1},
+        "revision": {"type": "string", "minLength": 7},
+        "location": {"type": "string", "minLength": 1}
+      }
+    },
+    "EvidenceReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_id", "evidence_class", "revision", "location", "maturity"],
+      "properties": {
+        "evidence_id": {"type": "string", "minLength": 1},
+        "evidence_class": {"enum": ["structural", "behavioral", "staging", "production", "operational_history"]},
+        "revision": {"type": "string", "minLength": 7},
+        "location": {"type": "string", "minLength": 1},
+        "maturity": {"enum": ["proposed", "structurally_evidenced", "behaviorally_tested", "staging_verified", "production_observed", "superseded", "disputed", "unknown"]}
+      }
+    },
+    "Decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision_id", "decision_type", "result", "reason_codes", "revision"],
+      "properties": {
+        "decision_id": {"type": "string", "minLength": 1},
+        "decision_type": {"type": "string", "minLength": 1},
+        "result": {"enum": ["pass", "pass_with_observations", "request_changes", "blocking", "insufficient_evidence", "deny"]},
+        "reason_codes": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "revision": {"type": "string", "minLength": 7}
+      }
+    },
+    "ApprovalReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["approval_id", "actor_id", "approval_class", "revision", "status"],
+      "properties": {
+        "approval_id": {"type": "string", "minLength": 1},
+        "actor_id": {"type": "string", "minLength": 1},
+        "approval_class": {"enum": ["automated_verification", "ai_advisory", "operator_ratification", "external_assurance", "independent_human_review"]},
+        "revision": {"type": "string", "minLength": 7},
+        "status": {"enum": ["active", "expired", "revoked", "superseded"]},
+        "expires_at": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "GateReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["receipt_id", "gate_id", "revision", "result", "reason_codes", "evidence_ids"],
+      "properties": {
+        "receipt_id": {"type": "string", "minLength": 1},
+        "gate_id": {"type": "string", "minLength": 1},
+        "revision": {"type": "string", "minLength": 7},
+        "result": {"enum": ["pass", "pass_with_observations", "fail", "insufficient_evidence"]},
+        "reason_codes": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "evidence_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "TraceabilityManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["manifest_id", "revision", "constitutional_articles", "artifact_ids", "evidence_ids", "rollback_boundary"],
+      "properties": {
+        "manifest_id": {"type": "string", "minLength": 1},
+        "revision": {"type": "string", "minLength": 7},
+        "constitutional_articles": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^AEC-[IVXLCDM]+$"}},
+        "artifact_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "evidence_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "rollback_boundary": {"type": "string", "minLength": 1}
+      }
+    },
+    "Finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["finding_id", "domain", "revision", "severity", "confidence", "blocking", "state"],
+      "properties": {
+        "finding_id": {"type": "string", "minLength": 1},
+        "domain": {"type": "string", "minLength": 1},
+        "revision": {"type": "string", "minLength": 7},
+        "severity": {"enum": ["informational", "low", "moderate", "high", "critical"]},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "blocking": {"type": "boolean"},
+        "state": {"enum": ["open", "accepted", "resolved", "suppressed", "superseded"]}
+      }
+    },
+    "Observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["observation_id", "sensor_id", "revision", "signal", "health_state"],
+      "properties": {
+        "observation_id": {"type": "string", "minLength": 1},
+        "sensor_id": {"type": "string", "minLength": 1},
+        "revision": {"type": "string", "minLength": 7},
+        "signal": {"type": "string", "minLength": 1},
+        "health_state": {"enum": ["healthy", "degraded", "stale", "misconfigured", "unavailable", "untrusted_input"]}
+      }
+    }
+  }
+}
