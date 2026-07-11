@@ -12,7 +12,7 @@ HEALTH_STATES = {
     "untrusted_input",
 }
 
-SEVERITIES = {"info", "low", "medium", "high", "critical"}
+SEVERITIES = {"informational", "low", "moderate", "high", "critical"}
 
 
 @dataclass(frozen=True)
@@ -27,7 +27,7 @@ class AssuranceSensorium:
     """Deterministic local assurance sensing.
 
     The Sensorium observes declared repository evidence and emits EIAP-compatible
-    Observation and Finding payloads. It never approves, merges, deploys, grants
+    Observation and Finding envelopes. It never approves, merges, deploys, grants
     authority, accesses credentials, or performs network actions.
     """
 
@@ -40,10 +40,9 @@ class AssuranceSensorium:
         signal: str,
         health_state: str,
         domain: str,
-        severity: str = "info",
+        severity: str = "informational",
         confidence: float = 1.0,
         blocking: bool = False,
-        artifact: str | None = None,
     ) -> SensoriumResult:
         reasons: list[str] = []
 
@@ -57,6 +56,8 @@ class AssuranceSensorium:
             reasons.append("INVALID_CONFIDENCE")
         if not signal.strip():
             reasons.append("EMPTY_SIGNAL")
+        if not domain.strip():
+            reasons.append("EMPTY_DOMAIN")
 
         observation = {
             "contract_version": "1.0.0",
@@ -67,8 +68,6 @@ class AssuranceSensorium:
                 "revision": revision,
                 "signal": signal,
                 "health_state": health_state,
-                "domain": domain,
-                "artifact": artifact,
             },
         }
 
@@ -85,9 +84,6 @@ class AssuranceSensorium:
                     "confidence": confidence,
                     "blocking": bool(blocking or health_state in {"unavailable", "untrusted_input"}),
                     "state": "open",
-                    "observation_id": observation_id,
-                    "artifact": artifact,
-                    "reason_codes": tuple(reasons) or (f"SENSOR_{health_state.upper()}",),
                 },
             }
 
