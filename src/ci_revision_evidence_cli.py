@@ -3,9 +3,15 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 from pathlib import Path
 
-from src.core.ci_revision_evidence import (
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from src.core.ci_revision_evidence import (  # noqa: E402
     CIRevisionEvidenceError,
     build_receipt,
     read_git_head,
@@ -13,7 +19,6 @@ from src.core.ci_revision_evidence import (
 )
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = PROJECT_ROOT / "reports" / "artifacts" / "ci_revision_evidence" / "ci_revision_evidence_receipt.json"
 
 
