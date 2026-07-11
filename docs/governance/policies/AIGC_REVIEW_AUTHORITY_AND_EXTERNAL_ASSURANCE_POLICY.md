@@ -42,7 +42,7 @@ Where no eligible second human reviewer is reasonably available, a bounded chang
 - an AI Advisory Review produces `RECOMMEND_APPROVE` or equivalent, with evidence and limitations;
 - an independent analysis source distinct from the authoring session is used where technically and contractually available;
 - all blocking findings are resolved or explicitly rejected with operator rationale;
-- the operator signs an explicit risk-acceptance and merge-ratification record;
+- the operator signs an explicit risk acceptance and merge-ratification record;
 - rollback is defined and practical;
 - post-merge verification and observation are mandatory;
 - no credentials, production deployment, irreversible data mutation, cross-tenant access, or external consequential action is introduced;
@@ -173,7 +173,7 @@ Path B changes the governance requirement. It does not retroactively create inde
 - passing CI bound to that SHA;
 - Review Packet and AI advisory recommendation;
 - zero unresolved blocking findings;
-- operator risk-acceptance statement;
+- operator risk acceptance statement;
 - confirmation that PR #29 only measures readiness and does not deploy, use credentials, grant access, or perform external actions;
 - expected-head protected merge;
 - CI and readiness receipt on the resulting `main` revision;
