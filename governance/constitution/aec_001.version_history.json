@@ -1,0 +1,15 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "constitution_id":"AEC-001",
+  "versions":[
+    {
+      "version":"1.0.0",
+      "status":"proposed",
+      "effective_revision":null,
+      "ratification_receipt":null,
+      "supersedes":null,
+      "article_count":32,
+      "notes":"Initial constitutional kernel proposed through PR #42."
+    }
+  ]
+}
