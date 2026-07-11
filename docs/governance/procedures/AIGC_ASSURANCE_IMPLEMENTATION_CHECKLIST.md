@@ -4,15 +4,40 @@
 
 This checklist decomposes the intended AIGC assurance architecture into bounded, sequential, reviewable work packages. Completion of a checklist item requires repository evidence; checked boxes in planning documents alone do not prove implementation.
 
-## Gate 0 — Current prerequisite
+## Gate 0 — PR #29 readiness-ledger prerequisite
 
-- [ ] Obtain a legitimate independent reviewer for PR #29.
-- [ ] Bind the review to head `dc6b38204f3087eda7beb676ad53beecf1d8e1e2` or its verified successor.
-- [ ] Resolve requested changes, if any.
-- [ ] Re-run CI after every head change.
-- [ ] Confirm zero unresolved mandatory review threads.
-- [ ] Merge through explicit operator action only after required gates pass.
-- [ ] Verify CI and readiness receipt on the resulting `main` revision.
+Select one truthful path:
+
+- [ ] Path A — obtain a distinct human reviewer.
+- [ ] Path B — use the Solo-Operator Alternative Assurance bootstrap defined by the Review Authority Policy.
+
+### Path A
+
+- [ ] identify a distinct eligible reviewer;
+- [ ] complete confidentiality and conflict screening;
+- [ ] grant minimum, time-bounded access;
+- [ ] request review against the exact head;
+- [ ] receive a reasoned decision;
+- [ ] resolve blocking findings and renew review after head changes.
+
+### Path B
+
+- [ ] record that independent human review was not performed;
+- [ ] generate the strongest available AI advisory review and Review Packet;
+- [ ] verify exact-head CI and negative tests;
+- [ ] confirm no unresolved blocking findings;
+- [ ] record operator risk acceptance and bootstrap rationale;
+- [ ] confirm PR #29 introduces no deployment, credentials, external actions, or production mutation;
+- [ ] define rollback and mandatory post-merge verification;
+- [ ] merge using expected-head protection only after explicit operator command.
+
+### Shared completion
+
+- [ ] verify the selected path against the exact head SHA;
+- [ ] verify successful required checks;
+- [ ] verify zero unresolved mandatory review threads;
+- [ ] merge through operator control;
+- [ ] verify CI and readiness receipt on the resulting `main` revision.
 
 ## Gate 1 — AEC-001 constitutional kernel
 
@@ -24,7 +49,8 @@ This checklist decomposes the intended AIGC assurance architecture into bounded,
 - [ ] Amendment and waiver rules.
 - [ ] Positive and negative tests.
 - [ ] Revision-bound governance receipt.
-- [ ] Independent review and operator ratification.
+- [ ] Review path selected according to risk class.
+- [ ] Operator ratification.
 
 ## Gate 2 — EIAP shared assurance contracts
 
@@ -51,7 +77,7 @@ This checklist decomposes the intended AIGC assurance architecture into bounded,
 - [ ] Unsupported-maturity-claim sensor.
 - [ ] Secret-like-payload guard.
 - [ ] Stale-evidence/reference sensor.
-- [ ] Explicit suppression/waiver handling.
+- [ ] Explicit suppression and waiver handling.
 - [ ] Markdown and JSON report.
 - [ ] Fail-closed negative tests.
 
@@ -72,10 +98,10 @@ This checklist decomposes the intended AIGC assurance architecture into bounded,
 
 - [ ] Consume review packet, Sensorium findings, CI, reviews, and threads.
 - [ ] Produce `recommend_approve`, `recommend_changes`, or `insufficient_evidence`.
-- [ ] Separate advisory recommendation from authoritative human decision.
+- [ ] Separate automated verification, AI advisory review, external assurance, operator ratification, and human review.
 - [ ] Invalidate recommendation on head change.
 - [ ] Produce plain-language and technical evidence views.
-- [ ] Test author-as-independent-reviewer rejection.
+- [ ] Test false human-identity and false independence claims.
 - [ ] Test unresolved blocking findings.
 
 ## Gate 6 — Engineering Review Council
@@ -85,10 +111,23 @@ This checklist decomposes the intended AIGC assurance architecture into bounded,
 - [ ] Prepare confidentiality and acceptable-use statement.
 - [ ] Prepare conflict-of-interest declaration.
 - [ ] Define least-privilege access and revocation procedure.
-- [ ] Recruit one reviewer for PR #29.
-- [ ] Expand to three accepted reviewers.
+- [ ] Recruit one human reviewer or procure one external assurance source for bounded advisory analysis.
+- [ ] Expand to three accepted reviewers or providers.
 - [ ] Expand to five seats as risk and workload justify.
-- [ ] Record reviewer domains, assignments, reviewed head, decision, expiry, and lessons.
+- [ ] Record reviewer/provider type, domains, assignments, reviewed head, decision, expiry, and lessons.
+
+## Gate 6A — External assurance provider due diligence
+
+- [ ] disclose whether the service is human-led, AI-assisted, or automated;
+- [ ] verify the legal entity and responsible contact;
+- [ ] inspect privacy, retention, training-use, deletion, and subprocessor terms;
+- [ ] inspect security controls and incident-notification terms;
+- [ ] establish written confidentiality and permitted-use restrictions;
+- [ ] define ownership of inputs, outputs, findings, and derivative material;
+- [ ] define responsibility, remedies, limits, governing law, termination, and deletion obligations;
+- [ ] establish time-limited access and a minimal disclosure package;
+- [ ] preserve a disclosure manifest and revocation evidence;
+- [ ] obtain legal review for material engagements.
 
 ## Gate 7 — Identity, Scope and Authorization Kernel v1
 
@@ -150,6 +189,7 @@ This checklist decomposes the intended AIGC assurance architecture into bounded,
 - [ ] SBOM and provenance attestations.
 - [ ] Accessible HTML, DOCX, and PDF renderers.
 - [ ] Controlled deployment, rollback, and post-deployment verification.
+- [ ] Mandatory independent human review for release-critical work.
 
 ## Mandatory completion evidence for every gate
 
@@ -160,12 +200,12 @@ This checklist decomposes the intended AIGC assurance architecture into bounded,
 - [ ] CI success bound to exact head.
 - [ ] Security, privacy, accessibility, and governance review as applicable.
 - [ ] Review packet.
-- [ ] Required independent review.
+- [ ] Review path selected according to the applicable risk class.
 - [ ] Operator-controlled merge.
 - [ ] Main-branch verification.
 - [ ] Readiness-ledger update.
 - [ ] Rollback evidence.
-- [ ] No unsupported production, compliance, certification, or independence claim.
+- [ ] No unsupported production, compliance, certification, human-identity, or independence claim.
 
 ## Definition of completion
 
