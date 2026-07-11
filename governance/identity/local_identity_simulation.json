@@ -1,0 +1,93 @@
+{
+  "principals": [
+    {
+      "principal_id": "principal-a",
+      "actor_reference": {"actor_id": "principal-a", "actor_type": "human", "display_name": "Synthetic Operator A", "authority_source": "local-simulation"},
+      "principal_status": "ACTIVE",
+      "identity_assurance": "IAL0",
+      "authentication_assurance": "AAL0",
+      "federation_assurance": "FAL0",
+      "authority_source": "local-simulation",
+      "evidence_ids": ["EVID-PRINCIPAL-A"],
+      "valid_from": "2026-07-11T00:00:00Z",
+      "expires_at": "2027-07-11T00:00:00Z",
+      "revocation_version": 0
+    },
+    {
+      "principal_id": "principal-b",
+      "actor_reference": {"actor_id": "principal-b", "actor_type": "human", "display_name": "Synthetic Operator B", "authority_source": "local-simulation"},
+      "principal_status": "ACTIVE",
+      "identity_assurance": "IAL0",
+      "authentication_assurance": "AAL0",
+      "federation_assurance": "FAL0",
+      "authority_source": "local-simulation",
+      "evidence_ids": ["EVID-PRINCIPAL-B"],
+      "valid_from": "2026-07-11T00:00:00Z",
+      "expires_at": "2027-07-11T00:00:00Z",
+      "revocation_version": 0
+    }
+  ],
+  "memberships": [{
+    "membership_id": "membership-a",
+    "principal_id": "principal-a",
+    "tenant_id": "tenant-a",
+    "project_ids": ["project-a"],
+    "roles": ["operator"],
+    "granted_scopes": ["project:read"],
+    "status": "ACTIVE",
+    "valid_from": "2026-07-11T00:00:00Z",
+    "expires_at": "2027-07-11T00:00:00Z",
+    "policy_revision": "b76d6ac966ef41df00066db4bbbbead64eec8dd6",
+    "evidence_ids": ["EVID-MEMBERSHIP-A"],
+    "revoked": false
+  }],
+  "sessions": [{
+    "session_id": "session-a",
+    "principal_id": "principal-a",
+    "membership_id": "membership-a",
+    "tenant_id": "tenant-a",
+    "active_project_id": "project-a",
+    "session_state": "ACTIVE",
+    "issued_at": "2026-07-11T18:00:00Z",
+    "idle_expires_at": "2026-07-11T22:00:00Z",
+    "absolute_expires_at": "2026-07-12T18:00:00Z",
+    "authentication_assurance": "AAL0",
+    "revocation_version": 0
+  }],
+  "policies": [{
+    "policy_id": "policy-a",
+    "policy_revision": "b76d6ac966ef41df00066db4bbbbead64eec8dd6",
+    "subject_selectors": {"principal_ids": ["principal-a"], "role_ids": ["operator"]},
+    "tenant_id": "tenant-a",
+    "project_selectors": ["project-a"],
+    "allowed_roles": ["operator"],
+    "allowed_actions": ["read"],
+    "granted_scopes": ["project:read"],
+    "permitted_purposes": ["operator_review", "observer_access"],
+    "minimum_assurance": {"ial": "IAL0", "aal": "AAL0", "fal": "FAL0", "evidence_maturity": "EA0_CLAIMED"},
+    "permitted_sensitivity": ["internal"],
+    "approval_rules": [],
+    "obligations": ["log_decision"],
+    "revoked": false
+  }],
+  "approvals": [],
+  "revocations": [],
+  "request": {
+    "request_id": "REQ-AUTHZ-V1-1-001",
+    "exact_revision": "b76d6ac966ef41df00066db4bbbbead64eec8dd6",
+    "principal_id": "principal-a",
+    "membership_id": "membership-a",
+    "session_id": "session-a",
+    "tenant_id": "tenant-a",
+    "project_id": "project-a",
+    "resource": {"resource_id": "resource-a", "tenant_id": "tenant-a", "project_id": "project-a", "sensitivity": "internal"},
+    "action": "read",
+    "scopes": ["project:read"],
+    "purpose": "operator_review",
+    "context": {"channel": "local-simulation", "jurisdiction": ["CA-AB"], "operator_mode": "local_simulation", "risk_signals": []},
+    "assurance": {"ial": "IAL0", "aal": "AAL0", "fal": "FAL0", "evidence_maturity": "EA0_CLAIMED"},
+    "approval_reference_ids": [],
+    "request_digest": "cd5f7515339ba65c31262f61f0db4c3b9d3c2066763b977bfce37a15aa88689f",
+    "evidence_ids": ["EVID-REQUEST-A"]
+  }
+}
