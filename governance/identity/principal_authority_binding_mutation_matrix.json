@@ -1,6 +1,6 @@
 {
   "matrix_id": "AIGC-IDENTITY-PAB-V1.1-MUTATIONS",
-  "status": "procured_not_implemented",
+  "status": "implemented_pending_ci",
   "base_revision": "7acef921a39f76fb56f9df883d7597fa2b720d5f",
   "external_action_performed": false,
   "mutations": [
