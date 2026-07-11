@@ -22,10 +22,28 @@ class AuthorizationApplicationService:
         self.kernel = kernel or PrincipalAuthorityBindingKernel()
 
     @staticmethod
-    def _receipt_id(request: Mapping[str, Any]) -> str:
+    def _receipt_id(
+        *,
+        request: Mapping[str, Any],
+        principals: Sequence[Mapping[str, Any]],
+        memberships: Sequence[Mapping[str, Any]],
+        sessions: Sequence[Mapping[str, Any]],
+        policies: Sequence[Mapping[str, Any]],
+        approvals: Sequence[Mapping[str, Any]],
+        revocations: Sequence[Mapping[str, Any]],
+    ) -> str:
         request_id = str(request.get("request_id") or "REQUEST-UNKNOWN")
+        authority_bundle = {
+            "request": dict(request),
+            "principals": [dict(item) for item in principals],
+            "memberships": [dict(item) for item in memberships],
+            "sessions": [dict(item) for item in sessions],
+            "policies": [dict(item) for item in policies],
+            "approvals": [dict(item) for item in approvals],
+            "revocations": [dict(item) for item in revocations],
+        }
         canonical = json.dumps(
-            dict(request),
+            authority_bundle,
             sort_keys=True,
             separators=(",", ":"),
             ensure_ascii=False,
@@ -57,7 +75,15 @@ class AuthorizationApplicationService:
         revocations: Sequence[Mapping[str, Any]],
         now: datetime | None = None,
     ) -> dict[str, Any]:
-        receipt_id = self._receipt_id(request)
+        receipt_id = self._receipt_id(
+            request=request,
+            principals=principals,
+            memberships=memberships,
+            sessions=sessions,
+            policies=policies,
+            approvals=approvals,
+            revocations=revocations,
+        )
         existing = self.receipt_repository.get(receipt_id)
         if existing is not None:
             return self._response(receipt_id, existing.payload)
