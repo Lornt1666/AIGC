@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/jobs/job-transition-receipt-v1.json",
+  "title": "AIGC Governed Job Transition Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "receipt_id",
+    "job_id",
+    "from_state",
+    "to_state",
+    "expected_revision",
+    "new_revision",
+    "operator_approval_required",
+    "operator_approval_present",
+    "external_action_performed"
+  ],
+  "properties": {
+    "receipt_id": {"type": "string", "minLength": 1},
+    "job_id": {"type": "string", "minLength": 1},
+    "from_state": {
+      "type": "string",
+      "enum": ["PROPOSED", "RESEARCHING", "READY_FOR_REVIEW", "ACCEPTED", "REJECTED", "DELIVERED", "CANCELLED"]
+    },
+    "to_state": {
+      "type": "string",
+      "enum": ["PROPOSED", "RESEARCHING", "READY_FOR_REVIEW", "ACCEPTED", "REJECTED", "DELIVERED", "CANCELLED"]
+    },
+    "expected_revision": {"type": "integer", "minimum": 1},
+    "new_revision": {"type": "integer", "minimum": 2},
+    "operator_approval_required": {"type": "boolean"},
+    "operator_approval_present": {"type": "boolean"},
+    "reason": {"type": ["string", "null"]},
+    "external_action_performed": {"const": false}
+  }
+}
