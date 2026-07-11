@@ -1,0 +1,29 @@
+{
+  "$schema": "../schemas/governance_receipt.schema.json",
+  "receipt_id": "AIGC-GOV-RECEIPT-AEC001-RATIFICATION-001",
+  "receipt_type": "ratification",
+  "constitution_id": "AEC-001",
+  "constitution_version": "1.0.0",
+  "revision": "f843a1ea7e1e9cc6e67ffd0e84a19f6eebdd629b",
+  "result": "pass_with_observations",
+  "reason_codes": [
+    "PR43_EXACT_HEAD_CI_PASSED",
+    "CONSTITUTIONAL_ADVISORY_REVIEW_COMPLETED",
+    "OPERATOR_RATIFICATION_RECORDED",
+    "EXPECTED_HEAD_PROTECTED_MERGE_COMPLETED",
+    "INDEPENDENT_HUMAN_REVIEW_NOT_PERFORMED",
+    "POST_MERGE_PUSH_RUN_NOT_VISIBLE_THROUGH_CURRENT_CONNECTOR"
+  ],
+  "evidence_references": [
+    "PR #42 merged core AEC-001 kernel",
+    "PR #43 head f200af53bdff5959a12d35fcac3a5493f69fbeee",
+    "AIGC CI run 560 conclusion success",
+    "PR #43 constitutional advisory review",
+    "PR #43 scope-limited operator ratification record",
+    "main revision f843a1ea7e1e9cc6e67ffd0e84a19f6eebdd629b"
+  ],
+  "review_path": "solo_operator_alternative_assurance",
+  "operator_ratification": true,
+  "generated_at": "2026-07-11T18:17:14Z",
+  "external_action_performed": false
+}
