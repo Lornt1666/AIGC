@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/identity/authorization_request.schema.json",
+  "title": "AIGC Authorization Request v1.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["request_id", "exact_revision", "principal_id", "membership_id", "session_id", "tenant_id", "project_id", "resource", "action", "scopes", "purpose", "context", "assurance", "request_digest", "evidence_ids"],
+  "properties": {
+    "request_id": {"type": "string", "minLength": 1},
+    "exact_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "principal_id": {"type": "string", "minLength": 1},
+    "membership_id": {"type": "string", "minLength": 1},
+    "session_id": {"type": "string", "minLength": 1},
+    "tenant_id": {"type": "string", "minLength": 1},
+    "project_id": {"type": "string", "minLength": 1},
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resource_id", "tenant_id", "project_id", "sensitivity"],
+      "properties": {
+        "resource_id": {"type": "string", "minLength": 1},
+        "tenant_id": {"type": "string", "minLength": 1},
+        "project_id": {"type": "string", "minLength": 1},
+        "sensitivity": {"enum": ["public", "internal", "confidential", "restricted", "critical"]}
+      }
+    },
+    "action": {"type": "string", "minLength": 1},
+    "scopes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "purpose": {"type": "string", "minLength": 1},
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["channel", "jurisdiction", "operator_mode"],
+      "properties": {
+        "channel": {"type": "string", "minLength": 1},
+        "jurisdiction": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "operator_mode": {"enum": ["local_simulation", "review", "staging", "production"]},
+        "risk_signals": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "assurance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ial", "aal", "fal", "evidence_maturity"],
+      "properties": {
+        "ial": {"enum": ["IAL0", "IAL1", "IAL2", "IAL3"]},
+        "aal": {"enum": ["AAL0", "AAL1", "AAL2", "AAL3"]},
+        "fal": {"enum": ["FAL0", "FAL1", "FAL2", "FAL3"]},
+        "evidence_maturity": {"enum": ["EA0_CLAIMED", "EA1_SCHEMA_VALID", "EA2_SEMANTICALLY_TESTED", "EA3_CI_EXECUTED", "EA4_STAGING_OBSERVED", "EA5_PRODUCTION_OBSERVED"]}
+      }
+    },
+    "approval_reference_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "request_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "evidence_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+  }
+}
