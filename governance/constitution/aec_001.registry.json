@@ -1,9 +1,9 @@
 {
   "constitution_id": "AEC-001",
   "title": "AIGC Engineering Constitution",
-  "version": "1.0.0-draft",
+  "version": "1.0.0",
   "authority_class": "constitution",
-  "status": "proposed",
+  "status": "ratified",
   "human_authority_path": "docs/governance/constitution/AIGC_ENGINEERING_CONSTITUTION.md",
   "machine_authority_path": "governance/constitution/aec_001.registry.json",
   "conflict_behavior": "pause_for_accountable_human_ruling",
