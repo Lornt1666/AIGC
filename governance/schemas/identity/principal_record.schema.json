@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/identity/principal_record.schema.json",
+  "title": "AIGC Principal Record v1.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["principal_id", "actor_reference", "principal_status", "identity_assurance", "authentication_assurance", "federation_assurance", "authority_source", "evidence_ids", "valid_from", "revocation_version"],
+  "properties": {
+    "principal_id": {"type": "string", "minLength": 1},
+    "actor_reference": {"type": "object"},
+    "principal_status": {"enum": ["PENDING", "ACTIVE", "SUSPENDED", "REVOKED", "EXPIRED", "TERMINATED", "COMPROMISED", "INVALID"]},
+    "identity_assurance": {"enum": ["IAL0", "IAL1", "IAL2", "IAL3"]},
+    "authentication_assurance": {"enum": ["AAL0", "AAL1", "AAL2", "AAL3"]},
+    "federation_assurance": {"enum": ["FAL0", "FAL1", "FAL2", "FAL3"]},
+    "authority_source": {"type": "string", "minLength": 1},
+    "evidence_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "valid_from": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": ["string", "null"], "format": "date-time"},
+    "revocation_version": {"type": "integer", "minimum": 0}
+  }
+}
