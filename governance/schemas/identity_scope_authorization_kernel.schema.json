@@ -13,8 +13,8 @@
       "properties": {
         "decision_id": {"type": "string", "minLength": 1},
         "revision": {"type": "string", "minLength": 7},
-        "actor_reference": {"$ref": "eiap_shared_contracts.schema.json#/$defs/actorReferencePayload"},
-        "approval_reference": {"$ref": "eiap_shared_contracts.schema.json#/$defs/approvalReferencePayload"},
+        "actor_reference": {"$ref": "eiap_shared_contracts.schema.json#/$defs/ActorReference"},
+        "approval_reference": {"$ref": "eiap_shared_contracts.schema.json#/$defs/ApprovalReference"},
         "tenant_id": {"type": "string", "minLength": 1},
         "project_id": {"type": "string", "minLength": 1},
         "revocation_id": {"type": ["string", "null"]},
