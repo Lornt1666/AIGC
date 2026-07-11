@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/identity/membership_binding.schema.json",
+  "title": "AIGC Membership Binding v1.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["membership_id", "principal_id", "tenant_id", "project_ids", "roles", "granted_scopes", "status", "valid_from", "policy_revision", "evidence_ids", "revoked"],
+  "properties": {
+    "membership_id": {"type": "string", "minLength": 1},
+    "principal_id": {"type": "string", "minLength": 1},
+    "tenant_id": {"type": "string", "minLength": 1},
+    "project_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "roles": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "granted_scopes": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "status": {"enum": ["PENDING", "ACTIVE", "EXPIRED", "REVOKED", "SUSPENDED", "INVALID"]},
+    "valid_from": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": ["string", "null"], "format": "date-time"},
+    "policy_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "evidence_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "revoked": {"type": "boolean"}
+  }
+}

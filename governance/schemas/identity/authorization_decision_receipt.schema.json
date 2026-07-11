@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/identity/authorization_decision_receipt.schema.json",
+  "title": "AIGC Authorization Decision Receipt v1.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["decision_id", "request_id", "request_digest", "exact_revision", "principal_id", "membership_id", "session_id", "tenant_id", "project_id", "policy_id", "policy_revision", "result", "reason_codes", "approval_obligations", "evidence_ids", "data_accessed", "state_changed", "external_action_performed", "evaluated_at"],
+  "properties": {
+    "decision_id": {"type": "string", "minLength": 1},
+    "request_id": {"type": "string", "minLength": 1},
+    "request_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "exact_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "principal_id": {"type": "string", "minLength": 1},
+    "membership_id": {"type": "string", "minLength": 1},
+    "session_id": {"type": "string", "minLength": 1},
+    "tenant_id": {"type": "string", "minLength": 1},
+    "project_id": {"type": "string", "minLength": 1},
+    "policy_id": {"type": "string", "minLength": 1},
+    "policy_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "result": {"enum": ["PERMIT", "DENY", "REVIEW_REQUIRED", "NOT_APPLICABLE", "INDETERMINATE"]},
+    "reason_codes": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "obligations": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "approval_obligations": {"type": "array", "items": {"type": "object"}},
+    "evidence_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "data_accessed": {"type": "boolean"},
+    "state_changed": {"type": "boolean"},
+    "external_action_performed": {"const": false},
+    "evaluated_at": {"type": "string", "format": "date-time"}
+  }
+}

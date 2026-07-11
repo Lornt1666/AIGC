@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/identity/session_binding.schema.json",
+  "title": "AIGC Session Binding v1.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["session_id", "principal_id", "membership_id", "tenant_id", "active_project_id", "session_state", "issued_at", "idle_expires_at", "absolute_expires_at", "authentication_assurance", "revocation_version"],
+  "properties": {
+    "session_id": {"type": "string", "minLength": 1},
+    "principal_id": {"type": "string", "minLength": 1},
+    "membership_id": {"type": "string", "minLength": 1},
+    "tenant_id": {"type": "string", "minLength": 1},
+    "active_project_id": {"type": "string", "minLength": 1},
+    "session_state": {"enum": ["PENDING", "ACTIVE", "STEP_UP_REQUIRED", "IDLE_EXPIRED", "ABSOLUTE_EXPIRED", "REVOKED", "TERMINATED", "COMPROMISED", "INVALID"]},
+    "issued_at": {"type": "string", "format": "date-time"},
+    "idle_expires_at": {"type": "string", "format": "date-time"},
+    "absolute_expires_at": {"type": "string", "format": "date-time"},
+    "authentication_assurance": {"enum": ["AAL0", "AAL1", "AAL2", "AAL3"]},
+    "revocation_version": {"type": "integer", "minimum": 0}
+  }
+}
