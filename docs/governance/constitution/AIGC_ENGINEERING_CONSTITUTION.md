@@ -1,8 +1,8 @@
 # AIGC Engineering Constitution — AEC-001
 
-Version: `1.0.0-draft`
+Version: `1.0.0`
 Authority class: `constitution`
-Status: `proposed`
+Status: `ratified`
 
 ## Purpose
 
@@ -144,4 +144,4 @@ Every governed change must identify affected articles and classify each as:
 
 ## Ratification state
 
-This document becomes ratified only after its machine registry, schemas, gate implementation, tests, CI evidence, applicable review path, and operator ratification are complete. Until then, it is a proposed constitutional specification.
+AEC-001 was operator-ratified after exact-head CI, advisory review, scope-limited review-path disclosure, and merge of PR #42. The immutable ratification evidence is recorded in `governance/constitution/aec_001.ratification_receipt.json`. Ratification does not claim independent human review, certification, compliance, staging readiness, or production readiness.
