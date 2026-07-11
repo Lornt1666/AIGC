@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 import pytest
@@ -15,6 +16,7 @@ from src.core.ci_revision_evidence import (
     write_receipt,
 )
 from src.core.contract_validator import validate_file
+import src.production_readiness_revision_bound_cli as revision_bound_readiness
 
 
 REVISION_A = "a" * 40
@@ -73,6 +75,37 @@ def test_written_receipt_validates_against_contract(tmp_path: Path) -> None:
     assert result.valid is True
 
 
+def test_revision_bound_readiness_restores_runner_environment(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    observed: dict[str, str | None] = {}
+    monkeypatch.setenv("GITHUB_SHA", REVISION_B)
+    monkeypatch.setattr(
+        revision_bound_readiness,
+        "verify_ci_revision",
+        lambda _root, expected, _event: {"verified": expected == REVISION_A},
+    )
+
+    def fake_readiness(_root: Path, ledger_path: Path | None, artifact_root: Path | None) -> dict[str, object]:
+        observed["github_sha"] = os.environ.get("GITHUB_SHA")
+        return {"report": {"source_revision": os.environ.get("GITHUB_SHA")}}
+
+    monkeypatch.setattr(
+        revision_bound_readiness,
+        "run_production_readiness_ledger",
+        fake_readiness,
+    )
+
+    result = revision_bound_readiness.run(
+        ["--expected", REVISION_A, "--project-root", str(tmp_path)]
+    )
+
+    assert result["report"]["source_revision"] == REVISION_A
+    assert observed["github_sha"] == REVISION_A
+    assert os.environ["GITHUB_SHA"] == REVISION_B
+
+
 def test_workflow_wires_exact_revision_checkout_and_readiness_binding() -> None:
     workflow = (Path(__file__).resolve().parents[1] / ".github" / "workflows" / "aigc-ci.yml").read_text(
         encoding="utf-8"
@@ -81,5 +114,5 @@ def test_workflow_wires_exact_revision_checkout_and_readiness_binding() -> None:
     assert "github.event.pull_request.head.sha || github.sha" in workflow
     assert "ref: ${{ env.AIGC_EXPECTED_REVISION }}" in workflow
     assert "python src/ci_revision_evidence_cli.py" in workflow
-    assert 'GITHUB_SHA="$AIGC_EXPECTED_REVISION" python src/aigc.py readiness' in workflow
+    assert "python src/production_readiness_revision_bound_cli.py" in workflow
     assert "reports/artifacts/ci_revision_evidence" in workflow
