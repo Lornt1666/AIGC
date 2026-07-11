@@ -1,0 +1,34 @@
+{
+  "receipt_id": "AEC-001-RATIFICATION-2026-07-11",
+  "constitution_id": "AEC-001",
+  "constitution_version": "1.0.0",
+  "status": "ratified",
+  "implementation_pr": 42,
+  "reviewed_head_sha": "89751f02b258cc85f73217591074d81d5fd431ce",
+  "merge_commit_sha": "bda96247953a6b0563688669ce9e8de4baf3f7e9",
+  "ci_run": 538,
+  "ci_conclusion": "success",
+  "review_path": "SOLO_OPERATOR_ALTERNATIVE_ASSURANCE",
+  "independent_human_review": false,
+  "ai_advisory_review": true,
+  "operator_ratification": {
+    "principal": "Justice Gray Maciocha / Satoshi / Lornt",
+    "github_identity": "Lornt1666",
+    "recorded": true
+  },
+  "scope_limitations": [
+    "non_production",
+    "no_credentials",
+    "no_external_actions",
+    "no_irreversible_migration",
+    "no_cross_tenant_access",
+    "no_security_privacy_gate_weakening"
+  ],
+  "rollback": "Revert PR #42 and this ratification-status PR.",
+  "post_merge_main_ci_evidenced": false,
+  "notes": [
+    "PR-head CI passed on the exact reviewed head.",
+    "No independent human review is claimed.",
+    "Ratification is an engineering-governance state, not certification, compliance, staging readiness, or production readiness."
+  ]
+}
