@@ -19,7 +19,9 @@ client_secret*.json
 
 # Local databases and sensitive runtime logs
 *.sqlite
+*.sqlite3
 *.db
+.aigc/
 memory/approval_tokens.jsonl
 audit/secret_access_log.jsonl
 audit/denied_secret_access_log.jsonl
