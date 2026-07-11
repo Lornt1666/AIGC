@@ -14,9 +14,20 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    env:
+      AIGC_EXPECTED_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
-      - name: Checkout
+      - name: Checkout exact revision
         uses: actions/checkout@v4
+        with:
+          ref: ${{ env.AIGC_EXPECTED_REVISION }}
+          fetch-depth: 0
+
+      - name: Verify exact checked-out revision
+        run: >
+          python src/ci_revision_evidence_cli.py
+          --expected "$AIGC_EXPECTED_REVISION"
+          --event "${{ github.event_name }}"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -50,10 +61,12 @@ jobs:
       - name: Evaluate production readiness evidence
         run: python src/aigc.py readiness
 
-      - name: Upload production readiness receipt
+      - name: Upload revision-bound evidence receipts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: production-readiness-${{ github.sha }}
-          path: reports/artifacts/production_readiness
+          name: production-readiness-${{ env.AIGC_EXPECTED_REVISION }}
+          path: |
+            reports/artifacts/ci_revision_evidence
+            reports/artifacts/production_readiness
           if-no-files-found: warn
