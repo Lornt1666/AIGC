@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/aec_001.registry.schema.json",
+  "title": "AEC-001 Constitution Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "constitution_id",
+    "title",
+    "version",
+    "authority_class",
+    "status",
+    "human_authority_path",
+    "machine_authority_path",
+    "conflict_behavior",
+    "default_compliance_state",
+    "articles",
+    "invariants",
+    "compliance_states",
+    "amendment_requires",
+    "external_action_performed"
+  ],
+  "properties": {
+    "constitution_id": {"const": "AEC-001"},
+    "title": {"type": "string", "minLength": 1},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-draft)?$"},
+    "authority_class": {"const": "constitution"},
+    "status": {"enum": ["proposed", "ratified", "superseded"]},
+    "human_authority_path": {"type": "string", "minLength": 1},
+    "machine_authority_path": {"type": "string", "minLength": 1},
+    "conflict_behavior": {"const": "pause_for_accountable_human_ruling"},
+    "default_compliance_state": {"const": "nonconformant_blocking"},
+    "articles": {
+      "type": "array",
+      "minItems": 32,
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "category", "mandatory"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^AEC-[IVXLCDM]+$"},
+          "title": {"type": "string", "minLength": 1},
+          "category": {"type": "string", "minLength": 1},
+          "mandatory": {"const": true}
+        }
+      }
+    },
+    "invariants": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]+$"}
+    },
+    "compliance_states": {
+      "type": "array",
+      "const": ["conformant", "not_applicable", "exception_requested", "nonconformant_blocking"]
+    },
+    "amendment_requires": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "external_action_performed": {"const": false}
+  }
+}
