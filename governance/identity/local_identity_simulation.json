@@ -13,9 +13,7 @@
       "authentication_assurance": "AAL0",
       "federation_assurance": "FAL0",
       "authority_source": "local-simulation",
-      "evidence_ids": [
-        "EVID-PRINCIPAL-A"
-      ],
+      "evidence_ids": ["EVID-PRINCIPAL-A"],
       "valid_from": "2026-07-11T00:00:00Z",
       "expires_at": "2027-07-11T00:00:00Z",
       "revocation_version": 0
@@ -33,9 +31,7 @@
       "authentication_assurance": "AAL0",
       "federation_assurance": "FAL0",
       "authority_source": "local-simulation",
-      "evidence_ids": [
-        "EVID-PRINCIPAL-B"
-      ],
+      "evidence_ids": ["EVID-PRINCIPAL-B"],
       "valid_from": "2026-07-11T00:00:00Z",
       "expires_at": "2027-07-11T00:00:00Z",
       "revocation_version": 0
@@ -46,22 +42,14 @@
       "membership_id": "membership-a",
       "principal_id": "principal-a",
       "tenant_id": "tenant-a",
-      "project_ids": [
-        "project-a"
-      ],
-      "roles": [
-        "operator"
-      ],
-      "granted_scopes": [
-        "project:read"
-      ],
+      "project_ids": ["project-a"],
+      "roles": ["operator"],
+      "granted_scopes": ["project:read"],
       "status": "ACTIVE",
       "valid_from": "2026-07-11T00:00:00Z",
       "expires_at": "2027-07-11T00:00:00Z",
-      "policy_revision": "34777dba1b2222a3489ae66c4e36bcfe4adf5e44",
-      "evidence_ids": [
-        "EVID-MEMBERSHIP-A"
-      ],
+      "policy_revision": "b76d6ac966ef41df00066db4bbbbead64eec8dd6",
+      "evidence_ids": ["EVID-MEMBERSHIP-A"],
       "revoked": false
     }
   ],
@@ -83,45 +71,26 @@
   "policies": [
     {
       "policy_id": "policy-a",
-      "policy_revision": "34777dba1b2222a3489ae66c4e36bcfe4adf5e44",
+      "policy_revision": "b76d6ac966ef41df00066db4bbbbead64eec8dd6",
       "subject_selectors": {
-        "principal_ids": [
-          "principal-a"
-        ],
-        "role_ids": [
-          "operator"
-        ]
+        "principal_ids": ["principal-a"],
+        "role_ids": ["operator"]
       },
       "tenant_id": "tenant-a",
-      "project_selectors": [
-        "project-a"
-      ],
-      "allowed_roles": [
-        "operator"
-      ],
-      "allowed_actions": [
-        "read"
-      ],
-      "granted_scopes": [
-        "project:read"
-      ],
-      "permitted_purposes": [
-        "operator_review",
-        "observer_access"
-      ],
+      "project_selectors": ["project-a"],
+      "allowed_roles": ["operator"],
+      "allowed_actions": ["read"],
+      "granted_scopes": ["project:read"],
+      "permitted_purposes": ["operator_review", "observer_access"],
       "minimum_assurance": {
         "ial": "IAL0",
         "aal": "AAL0",
         "fal": "FAL0",
         "evidence_maturity": "EA0_CLAIMED"
       },
-      "permitted_sensitivity": [
-        "internal"
-      ],
+      "permitted_sensitivity": ["internal"],
       "approval_rules": [],
-      "obligations": [
-        "log_decision"
-      ],
+      "obligations": ["log_decision"],
       "revoked": false
     }
   ],
@@ -129,7 +98,7 @@
   "revocations": [],
   "request": {
     "request_id": "REQ-AUTHZ-V1-1-001",
-    "exact_revision": "34777dba1b2222a3489ae66c4e36bcfe4adf5e44",
+    "exact_revision": "b76d6ac966ef41df00066db4bbbbead64eec8dd6",
     "principal_id": "principal-a",
     "membership_id": "membership-a",
     "session_id": "session-a",
@@ -142,15 +111,11 @@
       "sensitivity": "internal"
     },
     "action": "read",
-    "scopes": [
-      "project:read"
-    ],
+    "scopes": ["project:read"],
     "purpose": "operator_review",
     "context": {
       "channel": "local-simulation",
-      "jurisdiction": [
-        "CA-AB"
-      ],
+      "jurisdiction": ["CA-AB"],
       "operator_mode": "local_simulation",
       "risk_signals": []
     },
@@ -162,8 +127,6 @@
     },
     "approval_reference_ids": [],
     "request_digest": "1c9598a82c5a26f3b8589090f2dda83503713a7c92ae45768d98a224e848f08f",
-    "evidence_ids": [
-      "EVID-REQUEST-A"
-    ]
+    "evidence_ids": ["EVID-REQUEST-A"]
   }
 }
