@@ -3,13 +3,16 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 from pathlib import Path
-
-from src.core.ci_revision_evidence import normalize_revision, verify_ci_revision
-from src.core.production_readiness_ledger import run_production_readiness_ledger
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from src.core.ci_revision_evidence import normalize_revision, verify_ci_revision  # noqa: E402
+from src.core.production_readiness_ledger import run_production_readiness_ledger  # noqa: E402
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
