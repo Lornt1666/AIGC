@@ -42,19 +42,20 @@ class AuthorizationApplicationService:
             now=now or datetime.now(timezone.utc),
         )
         receipt = dict(decision.receipt)
-        receipt_id = str(
+        decision_id = str(
             receipt.get("receipt_id")
             or receipt.get("decision_id")
             or request.get("request_id")
         )
-        if not receipt_id:
+        if not decision_id:
             raise ValueError("Authorization decision did not produce a receipt identifier")
 
         exact_revision = str(request.get("exact_revision") or "")
-        request_digest = str(request.get("request_digest") or "")
+        request_digest = str(receipt.get("request_digest") or request.get("request_digest") or "")
         if not exact_revision or not request_digest:
             raise ValueError("Authorization request requires exact_revision and request_digest")
 
+        receipt_id = f"{decision_id}:{request_digest[:16]}"
         stored = self.receipt_repository.append(
             receipt_id,
             receipt,
