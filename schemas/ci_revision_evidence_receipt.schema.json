@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/ci_revision_evidence_receipt.schema.json",
+  "title": "AIGC CI Exact Revision Evidence Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "receipt_id",
+    "created_at",
+    "event_name",
+    "expected_revision",
+    "actual_revision",
+    "verified",
+    "evidence_class",
+    "operator_review_required",
+    "external_action_performed"
+  ],
+  "properties": {
+    "receipt_id": {"type": "string", "minLength": 1},
+    "created_at": {"type": "string", "minLength": 1},
+    "event_name": {
+      "type": "string",
+      "enum": ["push", "pull_request", "workflow_dispatch", "unknown"]
+    },
+    "expected_revision": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "actual_revision": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "verified": {"type": "boolean"},
+    "evidence_class": {
+      "type": "string",
+      "enum": ["exact_checked_out_revision"]
+    },
+    "operator_review_required": {"type": "boolean", "enum": [true]},
+    "external_action_performed": {"type": "boolean", "enum": [false]}
+  }
+}
