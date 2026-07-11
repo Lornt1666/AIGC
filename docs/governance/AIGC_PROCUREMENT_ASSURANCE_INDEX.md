@@ -6,7 +6,10 @@ This index connects the current AIGC governance procurements into one reviewable
 
 - `programs/AIGC_EIAP_ASSURANCE_PROGRAM.md` — integrated engineering intelligence and assurance program.
 - `standards/AIGC_ASSURANCE_SENSORIUM_STANDARD.md` — deterministic observation and nano-control mesh.
+- `standards/AIGC_REVIEW_PACKET_STANDARD.md` — permanent revision-bound reviewer workspace standard.
+- `charters/AIGC_ENGINEERING_REVIEW_COUNCIL_CHARTER.md` — standing human review and external advisory structure.
 - `procedures/AIGC_ZERO_AMBIGUITY_PROCUREMENT_WORKFLOW.md` — five-phase procurement procedure.
+- `procedures/AIGC_ASSURANCE_IMPLEMENTATION_CHECKLIST.md` — bounded task sequence from PR #29 through production continuation.
 - `programs/AIGC_UPEP_001.md` — universal lifecycle from intent through retirement.
 
 ## Related repository work
@@ -43,6 +46,9 @@ PR #29 remains the declared prerequisite for the ordered implementation train. T
 - No blocking finding averaged away.
 - No production-ready claim while blocking capabilities remain.
 - Every governed change preserves rollback and revision binding.
+- No review packet remains valid after its bound revision changes.
+- No council role permits review beyond declared competence.
+- No procurement phase is skipped or retroactively justified.
 
 ## Next implementation order
 
@@ -54,7 +60,23 @@ PR #29 independent review and merge
 → Assurance Sensorium v1
 → Review Packet Generator v1
 → Review Evidence Agent v1
+→ Engineering Review Council onboarding
 → Identity Kernel v1
 → Documentation Rendering Agent v1
+→ UPEP-001 initial implementation
+→ Review Knowledge Graph
 → staging, monitoring, recovery, connectors, and deployment
 ```
+
+## Review checklist for this documentation package
+
+- [ ] Terminology is consistent across all documents.
+- [ ] Human authority and AI advisory functions remain distinct.
+- [ ] PR #29 is not represented as independently approved or merged.
+- [ ] Fail-closed rules are consistent.
+- [ ] Shared primitives are reused rather than duplicated.
+- [ ] Review Council independence and conflict rules are explicit.
+- [ ] Review Packet Generator outputs and staleness rules are complete.
+- [ ] The implementation checklist remains bounded and sequential.
+- [ ] No unsupported certification, compliance, staging, or production claim appears.
+- [ ] All future implementations remain separate reviewed PRs.
