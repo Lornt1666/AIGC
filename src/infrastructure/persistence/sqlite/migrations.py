@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from hashlib import sha256
 from pathlib import Path
+import sqlite3
 
 from .connection import SQLiteConnectionFactory
 
@@ -42,7 +43,7 @@ class SQLiteMigrator:
                 statement = ""
                 for line in sql.splitlines():
                     statement += line + "\n"
-                    if connection.complete_statement(statement):
+                    if sqlite3.complete_statement(statement):
                         if statement.strip():
                             connection.execute(statement)
                         statement = ""
