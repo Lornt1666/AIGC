@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from hashlib import sha256
+import json
 from typing import Any, Mapping, Sequence
 
 from src.core.identity.principal_authority_binding import PrincipalAuthorityBindingKernel
@@ -19,6 +21,30 @@ class AuthorizationApplicationService:
         self.receipt_repository = receipt_repository
         self.kernel = kernel or PrincipalAuthorityBindingKernel()
 
+    @staticmethod
+    def _receipt_id(request: Mapping[str, Any]) -> str:
+        request_id = str(request.get("request_id") or "REQUEST-UNKNOWN")
+        canonical = json.dumps(
+            dict(request),
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=False,
+            default=str,
+        )
+        digest = sha256(canonical.encode("utf-8")).hexdigest()
+        return f"AUTHZ-{request_id}:{digest[:16]}"
+
+    @staticmethod
+    def _response(receipt_id: str, receipt: Mapping[str, Any]) -> dict[str, Any]:
+        result = str(receipt.get("result") or "DENY")
+        return {
+            "result": result,
+            "passed": result == "PERMIT",
+            "reason_codes": list(receipt.get("reason_codes") or []),
+            "receipt_id": receipt_id,
+            "receipt": dict(receipt),
+        }
+
     def authorize(
         self,
         *,
@@ -31,6 +57,11 @@ class AuthorizationApplicationService:
         revocations: Sequence[Mapping[str, Any]],
         now: datetime | None = None,
     ) -> dict[str, Any]:
+        receipt_id = self._receipt_id(request)
+        existing = self.receipt_repository.get(receipt_id)
+        if existing is not None:
+            return self._response(receipt_id, existing.payload)
+
         decision = self.kernel.evaluate(
             request=request,
             principals=principals,
@@ -42,20 +73,11 @@ class AuthorizationApplicationService:
             now=now or datetime.now(timezone.utc),
         )
         receipt = dict(decision.receipt)
-        decision_id = str(
-            receipt.get("receipt_id")
-            or receipt.get("decision_id")
-            or request.get("request_id")
-        )
-        if not decision_id:
-            raise ValueError("Authorization decision did not produce a receipt identifier")
-
         exact_revision = str(request.get("exact_revision") or "")
         request_digest = str(receipt.get("request_digest") or request.get("request_digest") or "")
         if not exact_revision or not request_digest:
             raise ValueError("Authorization request requires exact_revision and request_digest")
 
-        receipt_id = f"{decision_id}:{request_digest[:16]}"
         stored = self.receipt_repository.append(
             receipt_id,
             receipt,
@@ -63,13 +85,7 @@ class AuthorizationApplicationService:
             request_digest=request_digest,
             idempotency_key=receipt_id,
         )
-        return {
-            "result": decision.result,
-            "passed": decision.passed,
-            "reason_codes": list(decision.reason_codes),
-            "receipt_id": receipt_id,
-            "receipt": stored.payload,
-        }
+        return self._response(receipt_id, stored.payload)
 
     def get_receipt(self, receipt_id: str) -> dict[str, Any] | None:
         stored = self.receipt_repository.get(receipt_id)
