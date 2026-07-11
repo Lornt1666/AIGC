@@ -26,7 +26,8 @@ class SQLiteMigrator:
             version = path.stem
             sql = path.read_text(encoding="utf-8")
             checksum = sha256(sql.encode("utf-8")).hexdigest()
-            with self.factory.transaction() as connection:
+            connection = self.factory.connect()
+            try:
                 connection.execute(
                     "CREATE TABLE IF NOT EXISTS schema_migrations (version TEXT PRIMARY KEY, applied_at TEXT NOT NULL, checksum TEXT NOT NULL)"
                 )
@@ -38,10 +39,18 @@ class SQLiteMigrator:
                         raise RuntimeError(f"Migration checksum mismatch for {version}")
                     results.append(MigrationResult(version, checksum, False))
                     continue
-                connection.executescript(sql)
+                connection.executescript("BEGIN IMMEDIATE;\n" + sql + "\nCOMMIT;")
+                connection.execute("BEGIN IMMEDIATE")
                 connection.execute(
                     "INSERT INTO schema_migrations(version, applied_at, checksum) VALUES (?, ?, ?)",
                     (version, datetime.now(timezone.utc).isoformat(), checksum),
                 )
+                connection.execute("COMMIT")
                 results.append(MigrationResult(version, checksum, True))
+            except Exception:
+                if connection.in_transaction:
+                    connection.execute("ROLLBACK")
+                raise
+            finally:
+                connection.close()
         return results
