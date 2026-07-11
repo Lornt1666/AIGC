@@ -26,10 +26,10 @@ def evidence(revision: str) -> dict:
         "contract_type": "evidence_reference",
         "payload": {
             "evidence_id": "EVID-001",
-            "evidence_class": "behavioural_test",
+            "evidence_class": "behavioral",
             "revision": revision,
             "location": "ci/run/1",
-            "maturity": "tested",
+            "maturity": "behaviorally_tested",
         },
     }
 
