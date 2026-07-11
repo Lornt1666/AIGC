@@ -58,8 +58,11 @@ jobs:
       - name: Run tests
         run: python -m pytest
 
-      - name: Evaluate production readiness evidence
-        run: GITHUB_SHA="$AIGC_EXPECTED_REVISION" python src/aigc.py readiness
+      - name: Evaluate revision-bound production readiness evidence
+        run: >
+          python src/production_readiness_revision_bound_cli.py
+          --expected "$AIGC_EXPECTED_REVISION"
+          --event "${{ github.event_name }}"
 
       - name: Upload revision-bound evidence receipts
         if: always()
