@@ -63,7 +63,10 @@ def test_session_principal_substitution_denies() -> None:
 
 def test_policy_subject_substitution_denies() -> None:
     bundle = deepcopy(example())
-    bundle["policies"][0]["subject_selectors"]["principal_ids"] = ["principal-b"]
+    bundle["policies"][0]["subject_selectors"] = {
+        "principal_ids": ["principal-b"],
+        "role_ids": [],
+    }
     body = client.post("/api/v1/identity/authorize", json=bundle).json()
     assert body["result"] == "DENY"
     assert "POLICY_SUBJECT_MISMATCH" in body["reason_codes"]
