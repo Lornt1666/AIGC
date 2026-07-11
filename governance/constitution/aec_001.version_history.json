@@ -1,15 +1,15 @@
 {
-  "$schema":"https://json-schema.org/draft/2020-12/schema",
-  "constitution_id":"AEC-001",
-  "versions":[
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "constitution_id": "AEC-001",
+  "versions": [
     {
-      "version":"1.0.0",
-      "status":"proposed",
-      "effective_revision":null,
-      "ratification_receipt":null,
-      "supersedes":null,
-      "article_count":32,
-      "notes":"Initial constitutional kernel proposed through PR #42."
+      "version": "1.0.0",
+      "status": "ratified",
+      "effective_revision": "f843a1ea7e1e9cc6e67ffd0e84a19f6eebdd629b",
+      "ratification_receipt": "governance/constitution/aec_001.ratification_receipt.json",
+      "supersedes": null,
+      "article_count": 32,
+      "notes": "Initial constitutional kernel from PR #42 and Epoch I completion substrate from PR #43; ratified through the scope-limited constitutional bootstrap path after exact-head CI, advisory review, operator ratification, expected-head protected merge, and ratification closeout validation."
     }
   ]
 }
