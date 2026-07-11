@@ -3,7 +3,7 @@
 Status: **reconstructed on clean PR #50 lineage; exact-head CI and operator review required**  
 Scope: **AIGC only**  
 Main evidence revision: `b76d6ac966ef41df00066db4bbbbead64eec8dd6`  
-Runtime head: `88484dc62e03e7b67140d8606ac17551753821ce`  
+Runtime head: `8a646255512adfc9e1b26cb900eb128dfb1f1a08`  
 Assurance class: `BOOTSTRAP_OPERATOR_ASSURANCE`  
 Sole accountable operator: Justice Gray Maciocha / Lornt / Satoshi  
 Independent human review: not performed  
@@ -11,7 +11,7 @@ External action performed by the AIGC runtime: `false`
 
 ## Integration state
 
-PR #49 is merged. PR #50 has been reconstructed directly from the resulting main revision with a single runtime-only commit. The archived pre-reconstruction branch preserves the earlier stacked implementation history. No procurement files are replayed.
+PR #49 is merged. PR #50 has been reconstructed directly from the resulting main revision with runtime-only commits. The archived pre-reconstruction branch preserves the earlier stacked implementation history. No procurement files are replayed.
 
 ## Implemented runtime boundary
 
@@ -30,23 +30,7 @@ PR #49 is merged. PR #50 has been reconstructed directly from the resulting main
 
 ## CI hardening expectations
 
-The exact-head workflow must execute:
-
-1. repository contract validation;
-2. identity Draft 2020-12 schema/meta-schema validation;
-3. synthetic fixture validation;
-4. all 36 mutation cases;
-5. authorization replay checks;
-6. tenant substitution checks;
-7. session substitution checks;
-8. policy-subject substitution checks;
-9. approval replay checks;
-10. deterministic malformed-input denial;
-11. AEC-001 validation;
-12. secret/redaction scanning;
-13. full repository tests;
-14. readiness evaluation;
-15. revision-bound evidence upload.
+The exact-head workflow must execute repository contract validation, identity schema/meta-schema validation, synthetic fixture validation, all mutation and replay tests, tenant/session/policy/approval substitution tests, deterministic malformed-input denial, AEC-001 validation, redaction scanning, the full repository tests, readiness evaluation and revision-bound evidence upload.
 
 ## Governance and release boundary
 
