@@ -7,7 +7,7 @@ from typing import Any
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from src.core.identity.principal_authority_binding import PrincipalAuthorityBindingKernel
 
@@ -23,8 +23,8 @@ class AuthorizationBundle(BaseModel):
     memberships: list[dict[str, Any]]
     sessions: list[dict[str, Any]]
     policies: list[dict[str, Any]]
-    approvals: list[dict[str, Any]] = []
-    revocations: list[dict[str, Any]] = []
+    approvals: list[dict[str, Any]] = Field(default_factory=list)
+    revocations: list[dict[str, Any]] = Field(default_factory=list)
 
 
 app = FastAPI(
@@ -70,7 +70,10 @@ def readiness() -> dict[str, Any]:
 @app.get("/api/v1/identity/contracts")
 def identity_contracts() -> dict[str, Any]:
     root = ROOT / "governance" / "schemas" / "identity"
-    return {"contracts": sorted(path.name for path in root.glob("*.schema.json")), "external_action_performed": False}
+    return {
+        "contracts": sorted(path.name for path in root.glob("*.schema.json")),
+        "external_action_performed": False,
+    }
 
 
 @app.post("/api/v1/identity/authorize")
@@ -88,11 +91,24 @@ def authorize(bundle: AuthorizationBundle) -> dict[str, Any]:
             now=datetime.now(timezone.utc),
         )
     except Exception as exc:
-        raise HTTPException(status_code=400, detail={"code": "AUTHORIZATION_EVALUATION_FAILED", "message": str(exc)}) from exc
+        raise HTTPException(
+            status_code=400,
+            detail={"code": "AUTHORIZATION_EVALUATION_FAILED", "message": str(exc)},
+        ) from exc
     receipt = dict(decision.receipt)
-    receipt_id = str(receipt.get("receipt_id") or receipt.get("decision_id") or bundle.request.get("request_id"))
+    receipt_id = str(
+        receipt.get("receipt_id")
+        or receipt.get("decision_id")
+        or bundle.request.get("request_id")
+    )
     RECEIPTS[receipt_id] = receipt
-    return {"result": decision.result, "passed": decision.passed, "reason_codes": list(decision.reason_codes), "receipt_id": receipt_id, "receipt": receipt}
+    return {
+        "result": decision.result,
+        "passed": decision.passed,
+        "reason_codes": list(decision.reason_codes),
+        "receipt_id": receipt_id,
+        "receipt": receipt,
+    }
 
 
 @app.get("/api/v1/audit/receipts/{receipt_id}")
