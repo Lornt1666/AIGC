@@ -29,10 +29,13 @@ jobs:
       - name: Validate contracts
         run: python src/aigc.py validate
 
+      - name: Validate AEC-001 constitutional substrate
+        run: python src/validate_aec_001.py
+
       - name: Scan committed content for secret-like content
         run: >
           python src/security/redaction_scanner.py
-          --paths src config docs README.md AGENTS.md AIGC_MASTER_PROMPT.md OMEGA_X_CONSTITUTION.md schemas tests reports Dockerfile render.yaml fly.toml Procfile
+          --paths src config docs governance README.md AGENTS.md AIGC_MASTER_PROMPT.md OMEGA_X_CONSTITUTION.md schemas tests reports Dockerfile render.yaml fly.toml Procfile
 
       - name: Run procurement smoke stages
         run: |

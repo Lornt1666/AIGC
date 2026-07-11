@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/governance_registry.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["registry_id","version","status","constitutional_authority","authority_order","artifacts","conflict_rule","external_action_performed"],
+  "properties": {
+    "$schema": {"type":"string"},
+    "registry_id": {"const":"AIGC-GOVERNANCE-REGISTRY-001"},
+    "version": {"type":"string","pattern":"^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "status": {"enum":["proposed","ratified","superseded"]},
+    "constitutional_authority": {
+      "type":"object","additionalProperties":false,
+      "required":["constitution_id","version","human_source","machine_source"],
+      "properties": {
+        "constitution_id":{"const":"AEC-001"},
+        "version":{"type":"string","pattern":"^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+        "human_source":{"type":"string","minLength":1},
+        "machine_source":{"type":"string","minLength":1}
+      }
+    },
+    "authority_order": {
+      "type":"array","minItems":7,"uniqueItems":true,
+      "prefixItems":[
+        {"const":"constitution"},{"const":"charter"},{"const":"standard"},{"const":"policy"},{"const":"procedure"},{"const":"control"},{"const":"implementation"}
+      ],
+      "items": false
+    },
+    "artifacts": {
+      "type":"array","minItems":1,
+      "items": {
+        "type":"object","additionalProperties":false,
+        "required":["artifact_id","authority_class","version","status","steward","path","machine_path"],
+        "properties": {
+          "artifact_id":{"type":"string","minLength":1},
+          "authority_class":{"enum":["constitution","charter","standard","policy","procedure","control","implementation"]},
+          "version":{"type":"string","pattern":"^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+          "status":{"enum":["proposed","ratified","deprecated","superseded"]},
+          "steward":{"type":"string","minLength":1},
+          "path":{"type":"string","minLength":1},
+          "machine_path":{"type":["string","null"]}
+        }
+      }
+    },
+    "conflict_rule":{"const":"higher_authority_prevails_else_pause_for_accountable_human_ruling"},
+    "external_action_performed":{"const":false}
+  }
+}
