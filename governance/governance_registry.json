@@ -1,0 +1,43 @@
+{
+  "$schema": "./schemas/governance_registry.schema.json",
+  "registry_id": "AIGC-GOVERNANCE-REGISTRY-001",
+  "version": "1.0.0",
+  "status": "proposed",
+  "constitutional_authority": {
+    "constitution_id": "AEC-001",
+    "version": "1.0.0",
+    "human_source": "docs/governance/constitution/AIGC_ENGINEERING_CONSTITUTION.md",
+    "machine_source": "governance/constitution/aec_001.registry.json"
+  },
+  "authority_order": [
+    "constitution",
+    "charter",
+    "standard",
+    "policy",
+    "procedure",
+    "control",
+    "implementation"
+  ],
+  "artifacts": [
+    {
+      "artifact_id": "AEC-001",
+      "authority_class": "constitution",
+      "version": "1.0.0",
+      "status": "proposed",
+      "steward": "repository_operator",
+      "path": "docs/governance/constitution/AIGC_ENGINEERING_CONSTITUTION.md",
+      "machine_path": "governance/constitution/aec_001.registry.json"
+    },
+    {
+      "artifact_id": "AEC-AMENDMENT-WAIVER-001",
+      "authority_class": "procedure",
+      "version": "1.0.0",
+      "status": "proposed",
+      "steward": "repository_operator",
+      "path": "docs/governance/constitution/AIGC_CONSTITUTIONAL_AMENDMENT_AND_WAIVER_PROCEDURE.md",
+      "machine_path": null
+    }
+  ],
+  "conflict_rule": "higher_authority_prevails_else_pause_for_accountable_human_ruling",
+  "external_action_performed": false
+}
