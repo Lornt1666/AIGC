@@ -1,0 +1,150 @@
+{
+  "ledger_id": "AIGC-PRODUCTION-READINESS-LEDGER-001",
+  "version": "2026-07-10",
+  "mode": "evidence_backed_completion_measurement",
+  "production_readiness_threshold": 90,
+  "status_multipliers": {
+    "complete": 1.0,
+    "implemented_internal": 0.75,
+    "partial": 0.5,
+    "planned": 0.2,
+    "stale": 0.1,
+    "unimplemented": 0.0,
+    "superseded": 0.0
+  },
+  "capabilities": [
+    {
+      "capability_id": "contract_governance",
+      "name": "Contract-first governance and CI",
+      "dimension": "governance",
+      "weight": 12,
+      "declared_status": "complete",
+      "required_evidence": [
+        "src/core/contract_validator.py",
+        ".github/workflows",
+        "schemas"
+      ],
+      "blocking_for_production": true
+    },
+    {
+      "capability_id": "local_operator_runtime",
+      "name": "Local operator application and health system",
+      "dimension": "runtime",
+      "weight": 10,
+      "declared_status": "implemented_internal",
+      "required_evidence": [
+        "RUN_AIGC_PROGRAM.bat",
+        "scripts/setup_aigc_local.ps1",
+        "src/core/program_health.py",
+        "src/dashboard/operator_cockpit_app.py"
+      ],
+      "blocking_for_production": false
+    },
+    {
+      "capability_id": "governed_work_execution",
+      "name": "Governed work-order and paycheque preparation",
+      "dimension": "work_execution",
+      "weight": 10,
+      "declared_status": "implemented_internal",
+      "required_evidence": [
+        "src/core/work_order.py",
+        "src/core/paycheque_workflow.py",
+        "tests"
+      ],
+      "blocking_for_production": false
+    },
+    {
+      "capability_id": "work_acquisition",
+      "name": "Work acquisition and counterparty intake",
+      "dimension": "work_acquisition",
+      "weight": 9,
+      "declared_status": "partial",
+      "required_evidence": [
+        "src/core/work_acquisition.py",
+        "src/core/counterparty_request_intake.py",
+        "config/work_domain_registry.json"
+      ],
+      "blocking_for_production": false
+    },
+    {
+      "capability_id": "security_privacy_wiring",
+      "name": "Security, privacy, authority, and approval wiring",
+      "dimension": "security_privacy",
+      "weight": 14,
+      "declared_status": "implemented_internal",
+      "required_evidence": [
+        "src/core/security_privacy_wiring.py",
+        "src/core/observer_authority_verification.py",
+        "config/sentinel_security_profile.json"
+      ],
+      "blocking_for_production": true
+    },
+    {
+      "capability_id": "recursive_evolution",
+      "name": "Bounded recursive production architecture",
+      "dimension": "evolution",
+      "weight": 8,
+      "declared_status": "implemented_internal",
+      "required_evidence": [
+        "src/core/recursive_production_architect.py",
+        "config/recursive_production_architect.json"
+      ],
+      "blocking_for_production": false
+    },
+    {
+      "capability_id": "transactional_persistence",
+      "name": "Transactional database persistence and migrations",
+      "dimension": "data",
+      "weight": 9,
+      "declared_status": "partial",
+      "required_evidence": [],
+      "blocking_for_production": true
+    },
+    {
+      "capability_id": "production_identity_access",
+      "name": "Production authentication, authorization, sessions, and tenant isolation",
+      "dimension": "identity_access",
+      "weight": 9,
+      "declared_status": "unimplemented",
+      "required_evidence": [],
+      "blocking_for_production": true
+    },
+    {
+      "capability_id": "approved_external_connectors",
+      "name": "Platform-compliant external connectors and secret broker",
+      "dimension": "integrations",
+      "weight": 8,
+      "declared_status": "planned",
+      "required_evidence": [],
+      "blocking_for_production": true
+    },
+    {
+      "capability_id": "hosted_observer_portal",
+      "name": "Scoped hosted counterparty observer portal",
+      "dimension": "user_experience",
+      "weight": 5,
+      "declared_status": "partial",
+      "required_evidence": [
+        "src/core/communication_observer_access.py",
+        "src/core/chatlog_scoped_observer_access.py"
+      ],
+      "blocking_for_production": false
+    },
+    {
+      "capability_id": "production_deployment",
+      "name": "Reproducible production deployment, rollback, monitoring, and recovery",
+      "dimension": "deployment_operations",
+      "weight": 6,
+      "declared_status": "unimplemented",
+      "required_evidence": [],
+      "blocking_for_production": true
+    }
+  ],
+  "truth_controls": {
+    "missing_evidence_downgrades_status": true,
+    "completion_claim_requires_all_evidence": true,
+    "production_ready_requires_no_blocking_gaps": true,
+    "operator_review_required": true,
+    "external_action_performed": false
+  }
+}

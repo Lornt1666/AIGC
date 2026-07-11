@@ -43,3 +43,14 @@ jobs:
 
       - name: Run tests
         run: python -m pytest
+
+      - name: Evaluate production readiness evidence
+        run: python src/aigc.py readiness
+
+      - name: Upload production readiness receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-readiness-${{ github.sha }}
+          path: reports/artifacts/production_readiness
+          if-no-files-found: warn

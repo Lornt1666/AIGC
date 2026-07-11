@@ -1,0 +1,275 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_id",
+    "created_at",
+    "ledger_id",
+    "source_revision",
+    "evidence_model",
+    "evidence_strength",
+    "overall_score",
+    "production_readiness_threshold",
+    "production_ready",
+    "status_counts",
+    "capability_results",
+    "dimension_scores",
+    "blocking_gaps",
+    "highest_impact_next_step",
+    "governance_summary",
+    "operator_review_required",
+    "external_action_performed"
+  ],
+  "properties": {
+    "report_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ledger_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_model": {
+      "const": "structural_repository_evidence_v2"
+    },
+    "evidence_strength": {
+      "const": "structural_not_operational_proof"
+    },
+    "overall_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "production_readiness_threshold": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "production_ready": {
+      "type": "boolean"
+    },
+    "status_counts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "capability_results": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "capability_id",
+          "name",
+          "dimension",
+          "weight",
+          "declared_status",
+          "effective_status",
+          "evidence_complete",
+          "evidence",
+          "missing_evidence",
+          "blocking_for_production",
+          "earned_weight",
+          "readiness_percent"
+        ],
+        "properties": {
+          "capability_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "dimension": {
+            "type": "string",
+            "minLength": 1
+          },
+          "weight": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "declared_status": {
+            "type": "string",
+            "enum": [
+              "complete",
+              "implemented_internal",
+              "partial",
+              "planned",
+              "stale",
+              "unimplemented",
+              "superseded"
+            ]
+          },
+          "effective_status": {
+            "type": "string",
+            "enum": [
+              "complete",
+              "implemented_internal",
+              "partial",
+              "planned",
+              "stale",
+              "unimplemented",
+              "superseded"
+            ]
+          },
+          "evidence_complete": {
+            "type": "boolean"
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "path",
+                "kind",
+                "present"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "kind": {
+                  "const": "structural_repository_path"
+                },
+                "present": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "missing_evidence": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "blocking_for_production": {
+            "type": "boolean"
+          },
+          "earned_weight": {
+            "type": "number",
+            "minimum": 0
+          },
+          "readiness_percent": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }
+        }
+      }
+    },
+    "dimension_scores": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 100
+      }
+    },
+    "blocking_gaps": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "highest_impact_next_step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "capability_id",
+        "action",
+        "reason",
+        "operator_review_required"
+      ],
+      "properties": {
+        "capability_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "effective_status": {
+          "type": "string",
+          "enum": [
+            "complete",
+            "implemented_internal",
+            "partial",
+            "planned",
+            "stale",
+            "unimplemented",
+            "superseded"
+          ]
+        },
+        "missing_evidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "operator_review_required": {
+          "const": true
+        }
+      }
+    },
+    "governance_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "completion_claims_are_structurally_evidenced",
+        "operational_proof_claimed",
+        "unsupported_claims_are_downgraded",
+        "production_ready_requires_no_blocking_gaps",
+        "result"
+      ],
+      "properties": {
+        "completion_claims_are_structurally_evidenced": {
+          "const": true
+        },
+        "operational_proof_claimed": {
+          "const": false
+        },
+        "unsupported_claims_are_downgraded": {
+          "const": true
+        },
+        "production_ready_requires_no_blocking_gaps": {
+          "const": true
+        },
+        "result": {
+          "enum": [
+            "production_ready",
+            "not_production_ready"
+          ]
+        }
+      }
+    },
+    "operator_review_required": {
+      "const": true
+    },
+    "external_action_performed": {
+      "const": false
+    }
+  }
+}
