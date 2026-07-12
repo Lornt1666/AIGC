@@ -1,0 +1,62 @@
+{
+  "map_id": "AIGC-JOB-STATE-COMPATIBILITY-001",
+  "version": "1.0.0",
+  "canonical_contract_id": "AIGC-JOB-LIFECYCLE-001",
+  "canonical_contract_version": "1.0.0",
+  "source_contracts": [
+    {
+      "source_contract_id": "AIGC-FULL-STACK-ARCHITECTURE-PROGRAM",
+      "source_version": "main-293de53489fe7212fad272c01c698c0ffe2da610",
+      "mappings": [
+        {"source_state": "DISCOVERED", "target_state": "DISCOVERED", "status": "EXACT", "rationale": "The canonical contract retains the discovery meaning.", "operator_decision_required": false},
+        {"source_state": "QUALIFIED", "target_state": "QUALIFIED", "status": "EXACT", "rationale": "The canonical contract retains the qualification meaning.", "operator_decision_required": false},
+        {"source_state": "PROPOSED", "target_state": "PROPOSED", "status": "EXACT", "rationale": "The canonical contract retains the proposal meaning.", "operator_decision_required": false},
+        {"source_state": "APPROVAL_REQUIRED", "target_state": "APPROVAL_REQUIRED", "status": "EXACT", "rationale": "The canonical contract retains the operator commitment gate.", "operator_decision_required": false},
+        {"source_state": "ACCEPTED", "target_state": "WORK_ACCEPTED", "status": "SEMANTIC_RENAME", "rationale": "The architecture-program ACCEPTED state occurs before research and therefore means acceptance of the work commitment, not acceptance of completed work.", "operator_decision_required": true},
+        {"source_state": "RESEARCHING", "target_state": "RESEARCHING", "status": "EXACT", "rationale": "The canonical contract retains the research stage.", "operator_decision_required": false},
+        {"source_state": "PLANNING", "target_state": "PLANNING", "status": "EXACT", "rationale": "The canonical contract retains the planning stage.", "operator_decision_required": false},
+        {"source_state": "EXECUTING_LOCALLY", "target_state": "EXECUTING_LOCALLY", "status": "EXACT", "rationale": "The canonical contract retains the local-only execution boundary.", "operator_decision_required": false},
+        {"source_state": "REVIEW_REQUIRED", "target_state": "REVIEW_REQUIRED", "status": "EXACT", "rationale": "The canonical contract retains the review gate.", "operator_decision_required": false},
+        {"source_state": "ACCEPTED_FOR_DELIVERY", "target_state": "ACCEPTED_FOR_DELIVERY", "status": "EXACT", "rationale": "The canonical contract retains acceptance of completed work for a separate delivery action.", "operator_decision_required": false},
+        {"source_state": "DELIVERED", "target_state": "DELIVERED", "status": "EXACT", "rationale": "The canonical state requires a separate delivery execution receipt and does not itself perform delivery.", "operator_decision_required": false},
+        {"source_state": "CLOSED", "target_state": "CLOSED", "status": "EXACT", "rationale": "The canonical contract retains administrative closure.", "operator_decision_required": false}
+      ]
+    },
+    {
+      "source_contract_id": "PR64-GOVERNED-JOB-STATE-MACHINE",
+      "source_version": "4ee974d1f6f3be634a5c610aac5e998e01aaf6e3",
+      "mappings": [
+        {"source_state": "PROPOSED", "target_state": "PROPOSED", "status": "EXACT", "rationale": "Both contracts represent a reviewable proposal before internal work begins.", "operator_decision_required": false},
+        {"source_state": "RESEARCHING", "target_state": "RESEARCHING", "status": "EXACT", "rationale": "Both contracts represent bounded internal research.", "operator_decision_required": false},
+        {"source_state": "READY_FOR_REVIEW", "target_state": "REVIEW_REQUIRED", "status": "SEMANTIC_RENAME", "rationale": "The canonical term emphasizes that operator review is a required gate rather than merely a readiness label.", "operator_decision_required": true},
+        {"source_state": "ACCEPTED", "target_state": "ACCEPTED_FOR_DELIVERY", "status": "SEMANTIC_RENAME", "rationale": "PR #64 places ACCEPTED after review and before delivery, so its meaning is acceptance of completed work for delivery.", "operator_decision_required": true},
+        {"source_state": "REJECTED", "target_state": "REJECTED", "status": "EXACT", "rationale": "Both contracts use rejection as a reason-bound terminal outcome.", "operator_decision_required": false},
+        {"source_state": "DELIVERED", "target_state": "DELIVERED", "status": "EXACT", "rationale": "The state name is retained, but the canonical contract additionally requires a separate delivery execution receipt.", "operator_decision_required": true},
+        {"source_state": "CANCELLED", "target_state": "CANCELLED", "status": "EXACT", "rationale": "Both contracts use cancellation as a reason-bound terminal outcome.", "operator_decision_required": false}
+      ]
+    },
+    {
+      "source_contract_id": "LEGACY-WORK-ORDER-PREPARATION",
+      "source_version": "main-293de53489fe7212fad272c01c698c0ffe2da610",
+      "mappings": [
+        {"source_state": "PREPARED", "target_state": null, "status": "UNSUPPORTED", "rationale": "The legacy work-order module prepares artifacts and approval packets but does not implement a durable canonical job state.", "operator_decision_required": true}
+      ]
+    }
+  ],
+  "unresolved_conflicts": [
+    {
+      "conflict_id": "GENERIC_ACCEPTED_SEMANTIC_COLLISION",
+      "severity": "BLOCKING",
+      "summary": "ACCEPTED means pre-research work commitment in the architecture program and post-review acceptance for delivery in PR #64.",
+      "required_resolution": "Ratify distinct WORK_ACCEPTED and ACCEPTED_FOR_DELIVERY state identifiers before durable job persistence or Run/Accept UI wiring."
+    },
+    {
+      "conflict_id": "PR64_REWORK_EDGE_COMPRESSION",
+      "severity": "MATERIAL",
+      "summary": "PR #64 permits READY_FOR_REVIEW directly back to RESEARCHING, while the canonical proposal records an explicit REWORK_REQUIRED finding state.",
+      "required_resolution": "Choose whether PR #64 must add REWORK_REQUIRED or be formally classified as a compressed internal sub-lifecycle."
+    }
+  ],
+  "operator_review_required": true,
+  "external_action_performed": false
+}
