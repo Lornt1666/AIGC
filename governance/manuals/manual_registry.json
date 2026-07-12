@@ -67,7 +67,7 @@
       "kind": "RESEARCH_SYNTHESIS",
       "authority": "ADVISORY_RESEARCH",
       "maturity": "PROCURED_TARGET",
-      "sha256": "0ec2f19db22bd5faca42c7df8e3f2c4ca0b3f1101cf49caabe42ca9fb81bdc39",
+      "sha256": "a6159600a69928b2f6dcef021b76ed0bc47ed2a2514666c2296919d2a60ad052",
       "storage_status": "COMMITTED"
     },
     {
@@ -121,121 +121,29 @@
     }
   ],
   "missing_source_artifacts": [
-    {
-      "path": "BOOK_00_THE_SOVEREIGN_KERNEL_AND_OPERATOR_QUICKSTART.md",
-      "sha256": "d23a680d01f415ceb032784d61cc972d94ff28f9c1accff3e5128d282a1a85f9",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    },
-    {
-      "path": "BOOK_01_THE_REPOSITORY_TOTAL_SYNTHESIS_AND_TRUTH_MAP.md",
-      "sha256": "e2eb7ae6358a4f8ff7bec77693863652322629f5d560e296dcdd1d4fd2bc2635",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    },
-    {
-      "path": "BOOK_02_THE_PLATFORM_ARCHITECTURE_AND_MARKETPLACE_REALMS.md",
-      "sha256": "4187c2cc4dd63a678133e933e9bd2fb17ee2411ed9122988c7495c7b5f46c002",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    },
-    {
-      "path": "BOOK_03_THE_AGENT_ORDERS_AND_AUTHORITY_PROTOCOLS.md",
-      "sha256": "05bd820b4e94583de38d347260a79d42760a4c93a1b58f4f35e23f18b82cabbb",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    },
-    {
-      "path": "BOOK_04_THE_OPPORTUNITY_DISCOVERY_AND_MARKET_INTAKE_SCRIPTURE.md",
-      "sha256": "a8a3494f2709cdcf12bfb59ba258c85b75a103679b528142060d819e46e58d76",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    },
-    {
-      "path": "BOOK_05_THE_WORK_PRODUCTION_ENGINE_AND_WALKTHROUGH_GUIDE.md",
-      "sha256": "f0e1d5cb270392af7dbe276f766d4c1a1b84a09f20aeb46f82fa3a5c62cb7c1c",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    },
-    {
-      "path": "BOOK_06_THE_GOVERNANCE_COMPLIANCE_TRUST_AND_SAFETY_SCRIPTURE.md",
-      "sha256": "a61b5c7f9add7e9b5ad89ed5afdf7f4ec95190f0ddf275cc1d72cce59efb274d",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    },
-    {
-      "path": "BOOK_07_THE_EVIDENCE_LEARNING_AND_EVOLUTION_SCRIPTURE.md",
-      "sha256": "2a4922b5eceea3987b985b326b177e983b03da1ac74f161f8f17eb7ca341aac4",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    },
-    {
-      "path": "BOOK_08_THE_ACCEPTANCE_DELIVERY_PAYMENT_AND_DISPUTE_SCRIPTURE.md",
-      "sha256": "52fe75e1cd87c064351e96c39eba2185f75bbde6b57b9f1627ed5564ce94ec79",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    },
-    {
-      "path": "BOOK_09_THE_SYSTEM_INTEGRATION_DATAFLOW_AND_RUNLEVEL_SCRIPTURE.md",
-      "sha256": "d3d5c0cc5bdcf7cee51190e7c5ee896197db0b7b7ea011685ee9f01c52bb857a",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    },
-    {
-      "path": "BOOK_10_THE_DEPLOYMENT_OPERATIONS_RECOVERY_AND_LIVE_SERVICE_SCRIPTURE.md",
-      "sha256": "086c9860e1ea97a45a9ba0a624a79d0a961ac17e0e3fdf0a29e957ad605d3e5c",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    },
-    {
-      "path": "README_PACKAGE.md",
-      "sha256": "8eab00d096c5fcaee8e988ec1b50449de924ca3b459624dcddb23052c315dad4",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    },
-    {
-      "path": "figures/book_00_flow.png",
-      "sha256": "c5fb81daa3bbae0de7b1d421bd0033d604cfd7c2aa7c12c2399c12521bfecc8b",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    },
-    {
-      "path": "figures/book_01_flow.png",
-      "sha256": "d1dca0cf3dc09e380b243391fc80d9d008099b32849e8ae2108e388c569bc0d2",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    },
-    {
-      "path": "figures/book_02_flow.png",
-      "sha256": "025db09f7fa4ab07d2f64413335d000b0263b32ada5b8105de22e54c5f691836",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    },
-    {
-      "path": "figures/book_03_flow.png",
-      "sha256": "8b52e4c8ec852e7c3110cfcf01ba5333ce3747c65381b8f2f32ca54ca276e7eb",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    },
-    {
-      "path": "figures/book_04_flow.png",
-      "sha256": "baab2c59973c915556fdd6b8750a0a56c872edaaacecc195443c041262a77e59",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    },
-    {
-      "path": "figures/book_05_flow.png",
-      "sha256": "c79e6e538d3c1c980b3765ed92f5e7035ef6259ac5c10dc844f6c31f89f1ca2d",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    },
-    {
-      "path": "figures/book_06_flow.png",
-      "sha256": "147f3fe9a6b8927275de2cd83a4ae03bab0dbf81f244fc7fdb76454444c2cdd0",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    },
-    {
-      "path": "figures/book_07_flow.png",
-      "sha256": "90fe7b513fcb704d98e2ddf4ac20e9ed0db27c52ddf36c44812c6611c95a4076",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    },
-    {
-      "path": "figures/book_08_flow.png",
-      "sha256": "2c611195eb3954f1506044491ba360d388fd0c2f13d0eeaeab7a744fe16eb962",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    },
-    {
-      "path": "figures/book_09_flow.png",
-      "sha256": "4f7328672c168bbb50af6e434c9b7fe47d1b276d1f862adea60cad6df49d746e",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    },
-    {
-      "path": "figures/book_10_flow.png",
-      "sha256": "fcb044312ee53ff822e640908d15993655251e336e9043aac0785b3b3acac8f9",
-      "status": "NOT_PROVIDED_IN_UPLOAD"
-    }
+    {"path": "BOOK_00_THE_SOVEREIGN_KERNEL_AND_OPERATOR_QUICKSTART.md", "sha256": "d23a680d01f415ceb032784d61cc972d94ff28f9c1accff3e5128d282a1a85f9", "status": "NOT_PROVIDED_IN_UPLOAD"},
+    {"path": "BOOK_01_THE_REPOSITORY_TOTAL_SYNTHESIS_AND_TRUTH_MAP.md", "sha256": "e2eb7ae6358a4f8ff7bec77693863652322629f5d560e296dcdd1d4fd2bc2635", "status": "NOT_PROVIDED_IN_UPLOAD"},
+    {"path": "BOOK_02_THE_PLATFORM_ARCHITECTURE_AND_MARKETPLACE_REALMS.md", "sha256": "4187c2cc4dd63a678133e933e9bd2fb17ee2411ed9122988c7495c7b5f46c002", "status": "NOT_PROVIDED_IN_UPLOAD"},
+    {"path": "BOOK_03_THE_AGENT_ORDERS_AND_AUTHORITY_PROTOCOLS.md", "sha256": "05bd820b4e94583de38d347260a79d42760a4c93a1b58f4f35e23f18b82cabbb", "status": "NOT_PROVIDED_IN_UPLOAD"},
+    {"path": "BOOK_04_THE_OPPORTUNITY_DISCOVERY_AND_MARKET_INTAKE_SCRIPTURE.md", "sha256": "a8a3494f2709cdcf12bfb59ba258c85b75a103679b528142060d819e46e58d76", "status": "NOT_PROVIDED_IN_UPLOAD"},
+    {"path": "BOOK_05_THE_WORK_PRODUCTION_ENGINE_AND_WALKTHROUGH_GUIDE.md", "sha256": "f0e1d5cb270392af7dbe276f766d4c1a1b84a09f20aeb46f82fa3a5c62cb7c1c", "status": "NOT_PROVIDED_IN_UPLOAD"},
+    {"path": "BOOK_06_THE_GOVERNANCE_COMPLIANCE_TRUST_AND_SAFETY_SCRIPTURE.md", "sha256": "a61b5c7f9add7e9b5ad89ed5afdf7f4ec95190f0ddf275cc1d72cce59efb274d", "status": "NOT_PROVIDED_IN_UPLOAD"},
+    {"path": "BOOK_07_THE_EVIDENCE_LEARNING_AND_EVOLUTION_SCRIPTURE.md", "sha256": "2a4922b5eceea3987b985b326b177e983b03da1ac74f161f8f17eb7ca341aac4", "status": "NOT_PROVIDED_IN_UPLOAD"},
+    {"path": "BOOK_08_THE_ACCEPTANCE_DELIVERY_PAYMENT_AND_DISPUTE_SCRIPTURE.md", "sha256": "52fe75e1cd87c064351e96c39eba2185f75bbde6b57b9f1627ed5564ce94ec79", "status": "NOT_PROVIDED_IN_UPLOAD"},
+    {"path": "BOOK_09_THE_SYSTEM_INTEGRATION_DATAFLOW_AND_RUNLEVEL_SCRIPTURE.md", "sha256": "d3d5c0cc5bdcf7cee51190e7c5ee896197db0b7b7ea011685ee9f01c52bb857a", "status": "NOT_PROVIDED_IN_UPLOAD"},
+    {"path": "BOOK_10_THE_DEPLOYMENT_OPERATIONS_RECOVERY_AND_LIVE_SERVICE_SCRIPTURE.md", "sha256": "086c9860e1ea97a45a9ba0a624a79d0a961ac17e0e3fdf0a29e957ad605d3e5c", "status": "NOT_PROVIDED_IN_UPLOAD"},
+    {"path": "README_PACKAGE.md", "sha256": "8eab00d096c5fcaee8e988ec1b50449de924ca3b459624dcddb23052c315dad4", "status": "NOT_PROVIDED_IN_UPLOAD"},
+    {"path": "figures/book_00_flow.png", "sha256": "c5fb81daa3bbae0de7b1d421bd0033d604cfd7c2aa7c12c2399c12521bfecc8b", "status": "NOT_PROVIDED_IN_UPLOAD"},
+    {"path": "figures/book_01_flow.png", "sha256": "d1dca0cf3dc09e380b243391fc80d9d008099b32849e8ae2108e388c569bc0d2", "status": "NOT_PROVIDED_IN_UPLOAD"},
+    {"path": "figures/book_02_flow.png", "sha256": "025db09f7fa4ab07d2f64413335d000b0263b32ada5b8105de22e54c5f691836", "status": "NOT_PROVIDED_IN_UPLOAD"},
+    {"path": "figures/book_03_flow.png", "sha256": "8b52e4c8ec852e7c3110cfcf01ba5333ce3747c65381b8f2f32ca54ca276e7eb", "status": "NOT_PROVIDED_IN_UPLOAD"},
+    {"path": "figures/book_04_flow.png", "sha256": "baab2c59973c915556fdd6b8750a0a56c872edaaacecc195443c041262a77e59", "status": "NOT_PROVIDED_IN_UPLOAD"},
+    {"path": "figures/book_05_flow.png", "sha256": "c79e6e538d3c1c980b3765ed92f5e7035ef6259ac5c10dc844f6c31f89f1ca2d", "status": "NOT_PROVIDED_IN_UPLOAD"},
+    {"path": "figures/book_06_flow.png", "sha256": "147f3fe9a6b8927275de2cd83a4ae03bab0dbf81f244fc7fdb76454444c2cdd0", "status": "NOT_PROVIDED_IN_UPLOAD"},
+    {"path": "figures/book_07_flow.png", "sha256": "90fe7b513fcb704d98e2ddf4ac20e9ed0db27c52ddf36c44812c6611c95a4076", "status": "NOT_PROVIDED_IN_UPLOAD"},
+    {"path": "figures/book_08_flow.png", "sha256": "2c611195eb3954f1506044491ba360d388fd0c2f13d0eeaeab7a744fe16eb962", "status": "NOT_PROVIDED_IN_UPLOAD"},
+    {"path": "figures/book_09_flow.png", "sha256": "4f7328672c168bbb50af6e434c9b7fe47d1b276d1f862adea60cad6df49d746e", "status": "NOT_PROVIDED_IN_UPLOAD"},
+    {"path": "figures/book_10_flow.png", "sha256": "fcb044312ee53ff822e640908d15993655251e336e9043aac0785b3b3acac8f9", "status": "NOT_PROVIDED_IN_UPLOAD"}
   ],
   "gates": [
     "CONSTITUTION_HUMAN_MACHINE_STATUS_RECONCILIATION",
