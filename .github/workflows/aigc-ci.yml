@@ -73,7 +73,7 @@ jobs:
           path: |
             reports/artifacts/ci_revision_evidence
             reports/artifacts/production_readiness
-          if-no-files-found: warn
+          if-no-files-found: error
 
   merge-candidate-integration:
     if: github.event_name == 'pull_request'
@@ -132,4 +132,4 @@ jobs:
         with:
           name: merge-candidate-${{ env.AIGC_HEAD_REVISION }}-${{ env.AIGC_EXPECTED_MERGE_REVISION }}
           path: reports/artifacts/ci_merge_candidate_evidence
-          if-no-files-found: warn
+          if-no-files-found: error
