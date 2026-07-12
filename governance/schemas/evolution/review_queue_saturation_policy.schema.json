@@ -1,0 +1,81 @@
+{
+  "$id": "https://aigc.local/schemas/review_queue_saturation_policy.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "automatic_mutation_allowed": {
+      "const": false
+    },
+    "diagnostic_correction_allowed_when_saturated": {
+      "const": true
+    },
+    "evidence_refresh_allowed_when_saturated": {
+      "const": true
+    },
+    "existing_critical_train_correction_allowed_when_saturated": {
+      "const": true
+    },
+    "external_action_performed": {
+      "const": false
+    },
+    "maximum_open_critical_path_items": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "maximum_open_review_trains": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "new_independent_implementation_train_allowed_when_saturated": {
+      "const": false
+    },
+    "normal_mode": {
+      "const": "BOUNDED_IMPLEMENTATION_ALLOWED"
+    },
+    "operator_override_required": {
+      "const": true
+    },
+    "operator_review_required": {
+      "const": true
+    },
+    "policy_id": {
+      "const": "AIGC-REVIEW-QUEUE-SATURATION-001"
+    },
+    "repository": {
+      "const": "Lornt1666/AIGC"
+    },
+    "review_support_allowed_when_saturated": {
+      "const": true
+    },
+    "rollback_preparation_allowed_when_saturated": {
+      "const": true
+    },
+    "saturated_mode": {
+      "const": "REVIEW_SUPPORT_ONLY"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    }
+  },
+  "required": [
+    "policy_id",
+    "schema_version",
+    "repository",
+    "maximum_open_critical_path_items",
+    "maximum_open_review_trains",
+    "normal_mode",
+    "saturated_mode",
+    "new_independent_implementation_train_allowed_when_saturated",
+    "existing_critical_train_correction_allowed_when_saturated",
+    "review_support_allowed_when_saturated",
+    "evidence_refresh_allowed_when_saturated",
+    "diagnostic_correction_allowed_when_saturated",
+    "rollback_preparation_allowed_when_saturated",
+    "operator_override_required",
+    "operator_review_required",
+    "automatic_mutation_allowed",
+    "external_action_performed"
+  ],
+  "title": "AIGC Review Queue Saturation Policy",
+  "type": "object"
+}
