@@ -4,8 +4,8 @@ Status: **bounded implementation on a separate operator-controlled branch**
 Scope: **AIGC only**  
 Base revision at branch creation: `293de53489fe7212fad272c01c698c0ffe2da610`  
 Branch: `codex/ci-dual-revision-evidence-gate-v2-current-main`  
-Operator authorization: Justice Gray Maciocha approved updating the repository with the inspected findings and bounded replacement implementation.  
-Merge authorization: **not granted by this record**  
+Operator approval record — Justice Gray Maciocha approved updating the repository with the inspected findings and bounded replacement implementation.  
+Merge approval state — **not granted by this record**  
 Deployment performed: **false**  
 Credentials used: **false**  
 External action performed by AIGC runtime: **false**
