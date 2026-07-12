@@ -67,7 +67,7 @@ Each UI state links to the book/runlevel that explains the current decision, req
 - **The revenge of the video game manual.** Reporting on immersive modern manuals for HighFleet, Tunic, Tren, and The Banished Vault. https://www.theguardian.com/games/2024/jan/17/the-revenge-of-the-video-game-manual-tunic-the-banished-vault
 - **Automatic Generation of Board Game Manuals.** Research on rules translation, move visualization, strategy explanation, and full-manual assembly. https://arxiv.org/abs/2109.09507
 - **Learning to Win by Reading Manuals in a Monte-Carlo Framework.** Research supporting state-relevant manual retrieval for complex tasks. https://arxiv.org/abs/1401.5390
-- **NIST AI Risk Management Framework.** Voluntary trustworthiness and AI risk-management reference; AI RMF 1.0 is under revision as of 2026. https://www.nist.gov/itl/ai-risk-management-framework
+- **NIST AI Risk Management Framework.** Voluntary trustworthiness and AI risk management reference; AI RMF 1.0 is under revision as of 2026. https://www.nist.gov/itl/ai-risk%2Dmanagement-framework
 - **NIST SP 800-218 SSDF 1.1.** High-level secure software development practices integrated into the SDLC. https://csrc.nist.gov/pubs/sp/800/218/final
 - **WCAG 2.2.** Current W3C Recommendation for accessible web content. https://www.w3.org/TR/WCAG22/
 - **CRA RC4110 Employee or Self-employed.** Canadian worker-status factors; facts of the relationship control classification. https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/rc4110/employee-self-employed.html
