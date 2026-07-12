@@ -50,6 +50,12 @@ jobs:
       - name: Validate CI dependency manifest
         run: python -m pytest tests/test_ci_action_pinning.py -q
 
+      - name: Generate CI dependency review receipt
+        run: >
+          python src/ci_dependency_review_receipt_cli.py
+          --project-root .
+          --output reports/artifacts/ci_dependency_review/ci_dependency_review_receipt.json
+
       - name: Run tests
         run: python -m pytest
 
@@ -63,3 +69,11 @@ jobs:
           name: production-readiness-${{ github.sha }}
           path: reports/artifacts/production_readiness
           if-no-files-found: warn
+
+      - name: Upload CI dependency review receipt
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ci-dependency-review-${{ github.sha }}
+          path: reports/artifacts/ci_dependency_review
+          if-no-files-found: error
