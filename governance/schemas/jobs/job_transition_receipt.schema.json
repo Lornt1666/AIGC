@@ -4,6 +4,50 @@
   "title": "AIGC Governed Job Transition Receipt v1",
   "type": "object",
   "additionalProperties": false,
+  "$defs": {
+    "operatorApproval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "approval_id",
+        "actor_id",
+        "approval_class",
+        "authorization_receipt_id",
+        "job_id",
+        "from_state",
+        "to_state",
+        "expected_revision",
+        "source_revision",
+        "transition_digest",
+        "status"
+      ],
+      "properties": {
+        "approval_id": {"type": "string", "minLength": 1},
+        "actor_id": {"type": "string", "minLength": 1},
+        "approval_class": {
+          "type": "string",
+          "enum": ["JOB_ACCEPTANCE", "JOB_DELIVERY"]
+        },
+        "authorization_receipt_id": {"type": "string", "minLength": 1},
+        "job_id": {"type": "string", "minLength": 1},
+        "from_state": {
+          "type": "string",
+          "enum": ["PROPOSED", "RESEARCHING", "READY_FOR_REVIEW", "ACCEPTED", "REJECTED", "DELIVERED", "CANCELLED"]
+        },
+        "to_state": {
+          "type": "string",
+          "enum": ["PROPOSED", "RESEARCHING", "READY_FOR_REVIEW", "ACCEPTED", "REJECTED", "DELIVERED", "CANCELLED"]
+        },
+        "expected_revision": {"type": "integer", "minimum": 1},
+        "source_revision": {"type": "string", "minLength": 7},
+        "transition_digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "status": {"const": "ACTIVE"}
+      }
+    }
+  },
   "required": [
     "receipt_id",
     "job_id",
@@ -11,8 +55,12 @@
     "to_state",
     "expected_revision",
     "new_revision",
+    "source_revision",
+    "transition_digest",
     "operator_approval_required",
     "operator_approval_present",
+    "operator_approval",
+    "reason",
     "external_action_performed"
   ],
   "properties": {
@@ -28,9 +76,46 @@
     },
     "expected_revision": {"type": "integer", "minimum": 1},
     "new_revision": {"type": "integer", "minimum": 2},
+    "source_revision": {"type": "string", "minLength": 7},
+    "transition_digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
     "operator_approval_required": {"type": "boolean"},
     "operator_approval_present": {"type": "boolean"},
+    "operator_approval": {
+      "anyOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/operatorApproval"}
+      ]
+    },
     "reason": {"type": ["string", "null"]},
     "external_action_performed": {"const": false}
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"operator_approval_required": {"const": true}},
+        "required": ["operator_approval_required"]
+      },
+      "then": {
+        "properties": {
+          "operator_approval_present": {"const": true},
+          "operator_approval": {"$ref": "#/$defs/operatorApproval"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"operator_approval_required": {"const": false}},
+        "required": ["operator_approval_required"]
+      },
+      "then": {
+        "properties": {
+          "operator_approval_present": {"const": false},
+          "operator_approval": {"type": "null"}
+        }
+      }
+    }
+  ]
 }
