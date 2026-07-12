@@ -165,6 +165,21 @@
     "schema_version": {
       "const": "1.0.0"
     },
+    "snapshot_age_seconds": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "snapshot_completeness_conclusion": {
+      "const": "COMPLETE"
+    },
+    "snapshot_completeness_receipt_digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "snapshot_completeness_receipt_id": {
+      "pattern": "^AIGC-PR-SNAPSHOT-REQUEST-[0-9A-F]{16}$",
+      "type": "string"
+    },
     "thresholds": {
       "additionalProperties": false,
       "properties": {
@@ -195,6 +210,10 @@
     "policy_digest",
     "graph_digest",
     "platform_snapshot_digest",
+    "snapshot_completeness_receipt_id",
+    "snapshot_completeness_receipt_digest",
+    "snapshot_completeness_conclusion",
+    "snapshot_age_seconds",
     "open_critical_path_items",
     "open_review_trains",
     "open_decision_gates",
