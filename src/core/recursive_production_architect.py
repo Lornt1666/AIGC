@@ -10,6 +10,7 @@ from src.core.contract_validator import validate_artifact, validate_file
 
 
 CYCLE_SCHEMA = "recursive_production_cycle"
+SINGLE_SNAPSHOT_MODE = "single_snapshot_review_only"
 
 CRITICAL_NAMES = {
     ".github",
@@ -37,7 +38,7 @@ HARD_BLOCKS = {
 
 
 class RecursiveProductionArchitectError(ValueError):
-    """Raised when recursive production policy would weaken AIGC governance."""
+    """Raised when evolution-snapshot policy would weaken AIGC governance."""
 
 
 def utc_now() -> str:
@@ -52,15 +53,23 @@ def make_id(prefix: str, *parts: object) -> str:
 def load_policy(path: Path) -> Dict[str, Any]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(payload, dict):
-        raise RecursiveProductionArchitectError("Recursive architect policy must be an object.")
+        raise RecursiveProductionArchitectError("Evolution architect policy must be an object.")
     validate_policy(payload)
     return payload
 
 
 def validate_policy(policy: Dict[str, Any]) -> None:
+    mode = str(policy.get("mode", ""))
+    if mode != SINGLE_SNAPSHOT_MODE:
+        raise RecursiveProductionArchitectError(
+            f"mode must be {SINGLE_SNAPSHOT_MODE!r} until a reviewed recursive-cycle contract exists."
+        )
+
     maximum_cycles = int(policy.get("maximum_cycles_per_run", 0))
-    if maximum_cycles < 1 or maximum_cycles > 10:
-        raise RecursiveProductionArchitectError("maximum_cycles_per_run must be between 1 and 10.")
+    if maximum_cycles != 1:
+        raise RecursiveProductionArchitectError(
+            "maximum_cycles_per_run must equal 1 in single-snapshot review-only mode."
+        )
     if policy.get("operator_review_required") is not True:
         raise RecursiveProductionArchitectError("Operator review must remain required.")
     if policy.get("external_action_performed") is not False:
@@ -198,7 +207,9 @@ def assess_architecture(root: Path, baselines: Dict[str, Any]) -> Dict[str, Any]
         "has_agent_doctrine": (root / "src" / "core" / "agent_operating_doctrine.py").exists(),
         "has_container_definition": (root / "Dockerfile").exists(),
         "has_iac": any((root / name).exists() for name in ("terraform", "infra", "infrastructure")),
-        "has_e2e_tests": any("e2e" in path.name.lower() for path in (root / "tests").glob("*.py")) if (root / "tests").exists() else False,
+        "has_e2e_tests": any("e2e" in path.name.lower() for path in (root / "tests").glob("*.py"))
+        if (root / "tests").exists()
+        else False,
     }
     score = round(sum(bool(value) for value in checks.values()) / len(checks) * 100)
     gaps = [name for name, present in checks.items() if not present]
@@ -239,16 +250,24 @@ def build_backlog(assessment: Dict[str, Any]) -> List[Dict[str, Any]]:
 
 
 def build_cycle(root: Path, policy: Dict[str, Any], cycle_number: int) -> Dict[str, Any]:
+    if cycle_number != 1:
+        raise RecursiveProductionArchitectError("Single-snapshot mode permits only cycle_number=1.")
+
     baselines = build_baselines(root)
     assessment = assess_architecture(root, baselines)
     backlog = build_backlog(assessment)
     target = int(policy.get("production_readiness_target", 90))
-    decision_state = "production_target_reached" if assessment["production_readiness_score"] >= target else "operator_review_required"
+    decision_state = (
+        "production_target_reached"
+        if assessment["production_readiness_score"] >= target
+        else "operator_review_required"
+    )
 
     cycle = {
-        "cycle_id": make_id("AIGC-RECURSIVE-CYCLE", root, cycle_number, utc_now()),
+        "cycle_id": make_id("AIGC-EVOLUTION-SNAPSHOT", root, cycle_number, utc_now()),
         "created_at": utc_now(),
         "cycle_number": cycle_number,
+        "execution_mode": SINGLE_SNAPSHOT_MODE,
         "decision_state": decision_state,
         "ontology": baselines["ontology"],
         "taxonomy": baselines["taxonomy"],
@@ -269,34 +288,33 @@ def run_recursive_production_architect(
     policy_path: Path | None = None,
     artifact_root: Path | None = None,
 ) -> Dict[str, Any]:
+    """Build exactly one review-only repository evolution snapshot.
+
+    The legacy function name is retained for CLI and caller compatibility. This
+    implementation does not perform recursive execution or repository mutation.
+    """
+
     root = project_root.resolve()
     policy_path = policy_path or root / "config" / "recursive_production_architect.json"
     artifact_root = artifact_root or root / "reports" / "artifacts" / "recursive_production_architect"
     policy = load_policy(policy_path)
+    cycle = build_cycle(root, policy, 1)
 
-    cycles: List[Dict[str, Any]] = []
-    maximum_cycles = int(policy["maximum_cycles_per_run"])
-    for cycle_number in range(1, maximum_cycles + 1):
-        cycle = build_cycle(root, policy, cycle_number)
-        cycles.append(cycle)
-        # This engine plans only. It cannot mutate the repository within the same run.
-        break
-
-    run_id = make_id("AIGC-RECURSIVE-RUN", root, utc_now())
+    run_id = make_id("AIGC-EVOLUTION-SNAPSHOT-RUN", root, utc_now())
     run_root = artifact_root / run_id
     run_root.mkdir(parents=True, exist_ok=True)
     cycle_path = run_root / "recursive_production_cycle.json"
     report_path = run_root / "recursive_production_cycle.md"
-    cycle_path.write_text(json.dumps(cycles[-1], indent=2) + "\n", encoding="utf-8")
+    cycle_path.write_text(json.dumps(cycle, indent=2) + "\n", encoding="utf-8")
     validate_file(CYCLE_SCHEMA, cycle_path)
-    report_path.write_text(render_cycle(cycles[-1]), encoding="utf-8")
+    report_path.write_text(render_cycle(cycle), encoding="utf-8")
 
     return {
         "run_id": run_id,
-        "cycle": cycles[-1],
+        "cycle": cycle,
         "cycle_path": relative_to_root(root, cycle_path),
         "report_path": relative_to_root(root, report_path),
-        "cycles_executed": len(cycles),
+        "cycles_executed": 1,
         "repository_mutated": False,
         "operator_review_required": True,
         "external_action_performed": False,
@@ -306,9 +324,10 @@ def run_recursive_production_architect(
 def render_cycle(cycle: Dict[str, Any]) -> str:
     assessment = cycle["architecture_assessment"]
     lines = [
-        "# AIGC Recursive Production Architect Cycle",
+        "# AIGC Evolution Snapshot",
         "",
-        f"Cycle ID: `{cycle['cycle_id']}`",
+        f"Snapshot ID: `{cycle['cycle_id']}`",
+        f"Execution mode: `{cycle['execution_mode']}`",
         f"Decision: `{cycle['decision_state']}`",
         f"Production readiness score: `{assessment['production_readiness_score']}`",
         "Repository mutated: No",
@@ -325,7 +344,7 @@ def render_cycle(cycle: Dict[str, Any]) -> str:
         [
             "",
             "## Governance",
-            "This cycle may inventory, classify, score, and propose. It may not self-approve, rewrite critical files, deploy, use credentials, or merge its own changes.",
+            "This snapshot may inventory, classify, score, and propose. It may not self-approve, rewrite critical files, deploy, use credentials, or merge its own changes.",
         ]
     )
     return "\n".join(lines) + "\n"
