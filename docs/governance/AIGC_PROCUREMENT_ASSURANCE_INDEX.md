@@ -1,47 +1,105 @@
 # AIGC Procurement and Assurance Index
 
-This index connects the current AIGC governance procurements into one reviewable documentation set.
+This index connects AIGC governance, assurance, identity, persistence, readiness and evolution procurements into one reviewable implementation register.
 
-## Included documents
+## Governing documents
 
-- `programs/AIGC_EIAP_ASSURANCE_PROGRAM.md` — integrated engineering intelligence and assurance program.
-- `standards/AIGC_ASSURANCE_SENSORIUM_STANDARD.md` — deterministic observation and nano-control mesh.
-- `standards/AIGC_REVIEW_PACKET_STANDARD.md` — exact-head review packet requirements and decision workspace.
-- `charters/AIGC_ENGINEERING_REVIEW_COUNCIL_CHARTER.md` — standing human review council and advisory-circle governance.
-- `policies/AIGC_REVIEW_AUTHORITY_AND_EXTERNAL_ASSURANCE_POLICY.md` — review authority classes, solo-operator alternative assurance, external provider due diligence, and IP/confidentiality controls.
-- `procedures/AIGC_ZERO_AMBIGUITY_PROCUREMENT_WORKFLOW.md` — five-phase procurement procedure.
-- `procedures/AIGC_ASSURANCE_IMPLEMENTATION_CHECKLIST.md` — bounded implementation gates from PR #29 through production continuation.
-- `procedures/AIGC_INDEPENDENT_REVIEWER_RECRUITMENT_AND_ONBOARDING_PACKET.md` — reviewer recruitment, screening, access, review, and revocation process.
+- `constitution/AIGC_ENGINEERING_CONSTITUTION.md` — AEC-001 human-readable authority.
+- `programs/AIGC_EIAP_ASSURANCE_PROGRAM.md` — engineering intelligence and assurance program.
+- `standards/AIGC_EIAP_SHARED_ASSURANCE_CONTRACTS_STANDARD.md` — shared evidence contracts.
+- `standards/AIGC_ASSURANCE_SENSORIUM_STANDARD.md` — deterministic observation and finding synthesis.
+- `standards/AIGC_REVIEW_PACKET_STANDARD.md` — revision-bound review packet requirements.
+- `charters/AIGC_ENGINEERING_REVIEW_COUNCIL_CHARTER.md` — human review council model.
+- `policies/AIGC_REVIEW_AUTHORITY_AND_EXTERNAL_ASSURANCE_POLICY.md` — review authority classes.
+- `procedures/AIGC_ZERO_AMBIGUITY_PROCUREMENT_WORKFLOW.md` — bounded procurement procedure.
+- `procedures/AIGC_ASSURANCE_IMPLEMENTATION_CHECKLIST.md` — implementation gates.
+- `procedures/AIGC_DUAL_REVISION_CI_EVIDENCE_PROCEDURE_V2.md` — immutable-head and merge-candidate assurance procedure.
 - `programs/AIGC_UPEP_001.md` — universal lifecycle from intent through retirement.
 
-## Related repository work
+## Current authoritative mainline
 
-- PR #29 — Production Readiness Ledger
-- Issue #30 — Identity, Scope and Authorization Decision Kernel
-- Issue #31 — AEC-001 Constitution and executable governance graph
-- Issue #32 — PR Review Evidence Agent
-- Issue #33 — Sovereign Documentation Rendering Agent
-- Issue #34 — Constitutional Control Plane execution graph
-- Issue #35 — EIAP program
-- Issue #36 — Permanent Review Packet Generator
-- Issue #37 — Engineering Review Council
-- Issue #38 — Assurance Sensorium
-- Issue #39 — Zero-Ambiguity Procurement Workflow
-- Issue #40 — UPEP-001
+At creation of the dual-revision evidence branch, current `main` was:
 
-## Authority and maturity statement
+`293de53489fe7212fad272c01c698c0ffe2da610`
 
-These documents are proposed governance and implementation specifications. They do not prove runtime, staging, production, certification, compliance, or independent human review. Implementation requires bounded PRs, CI, review packets, the review path required by the applicable risk class, operator-controlled merge, rollback, and readiness evidence.
+That revision includes the merged localhost operator API and transactional SQLite authority, receipt, audit, migration, integrity and backup substrate. These are non-production internal capabilities; they do not authorize public networking, production identity, credentials, deployment or external action.
 
-## Review authority statement
+## Current implementation register
 
-AIGC distinguishes automated verification, AI advisory review, operator ratification, independent external assurance, and independent human review. These events are never interchangeable.
+| Capability train | Repository state | Evidence state | Next controlled action |
+|---|---|---|---|
+| AEC-001 constitutional substrate | merged and ratified in machine governance records | repository validation exists | maintain and reconcile any human/machine document mismatch separately |
+| EIAP shared assurance contracts | merged | deterministic tests exist | extend through bounded consumers |
+| Assurance Sensorium v1 | merged | local deterministic evidence | operational adapters later |
+| Review Packet Generator v1 | merged | revision-reference tests | consume dual-revision evidence later |
+| Principal Authority Binding runtime v1.1 | merged through PR #50 | local synthetic authorization evidence | production identity remains blocked |
+| Local operator API | merged through PR #54 as `70eb171d3f7144917f72a68cd2ca8987efd42a27` | localhost tests and prior exact-head CI | preserve non-production boundary |
+| Transactional local authority and audit persistence | merged through PR #61 as `293de53489fe7212fad272c01c698c0ffe2da610` | migration, integrity, concurrency, immutability and backup tests | wire bounded consumers through separate PRs |
+| Dual-Revision CI Evidence Gate v2 | branch `codex/ci-dual-revision-evidence-gate-v2-current-main` | implementation pending final dual-lane CI | draft PR and operator review |
+| PR #53 Exact Revision Evidence Gate v1 | open, older base | run 671 proves its own immutable head; branch diverged from current main | retain until v2 passes, then close unmerged as superseded |
+| Persistent authorization receipt API, PR #63 | draft | successful tests but synthetic-merge readiness artifact | remain blocked pending v2 evidence |
+| Governed job state-machine kernel, PR #64 | draft | successful tests but synthetic-merge readiness artifact | remain blocked pending v2 and lifecycle reconciliation |
+| Canonical job lifecycle contract, PR #65 | draft | successful tests but synthetic-merge readiness artifact | remain blocked pending v2 and Issue #66 decision |
+| Production identity, approved connectors and deployment | blocked | no production evidence | remain deferred |
 
-For solo-operated, bounded, reversible, non-production changes, the proposed Review Authority Policy permits a clearly disclosed Solo-Operator Alternative Assurance Path. This path never creates or claims independent human review. Release-critical changes still require a distinct human reviewer.
+## Evidence-role model
+
+AIGC now distinguishes:
+
+- `immutable_checked_out_revision` — proves the exact reviewed source revision;
+- `pull_request_merge_candidate` — proves the reviewed head integrates with the event target revision.
+
+Neither evidence class substitutes for the other.
 
 ## Current gating dependency
 
-PR #29 remains the declared prerequisite for the ordered implementation train under the original strict-review path. The proposed Review Authority Policy also defines a transparent bootstrap alternative for PR #29: exact-head CI, strongest available advisory review, explicit operator risk acceptance, expected-head protected merge, and mandatory post-merge verification. Selecting that path changes the governance requirement; it does not fabricate historical independence.
+```text
+Dual-Revision CI Evidence Gate v2
+→ immutable-head receipt and readiness artifact
+→ merge-candidate equality and ancestry receipt
+→ operator review of final immutable head
+→ separately authorized expected-head-protected merge
+→ exact-main post-merge verification
+→ fresh evidence for selected downstream PRs
+```
+
+CI success is evidence, not approval or merge authority.
+
+## PR #53 disposition
+
+PR #53 is `SUPERSEDE_PENDING_REPLACEMENT`.
+
+It shall remain open as reference until the v2 replacement passes both evidence lanes. It may then be closed unmerged with a link to the replacement. Its stale-base procurement index must not be merged unchanged.
+
+## Blocking downstream state
+
+PRs #63, #64 and #65 remain non-merge-ready until fresh immutable-head and merge-candidate evidence is produced on their final heads.
+
+Issue #66 remains open and independently blocking. The accountable operator must decide:
+
+- distinct `WORK_ACCEPTED` and `ACCEPTED_FOR_DELIVERY` semantics;
+- explicit `REWORK_REQUIRED` versus compressed adapter semantics;
+- PR #64 expansion, reclassification or discontinuation.
+
+CI cannot make those semantic decisions.
+
+## Prioritized transformation backlog
+
+1. Pass dual-revision CI on the final v2 head.
+2. Obtain operator review and explicit merge decision.
+3. Perform exact-main post-merge verification.
+4. Close PR #53 unmerged as superseded only after v2 evidence is complete.
+5. Resolve Issue #66 through an attributable operator decision.
+6. Re-run or refresh PRs #63–#65 in dependency order.
+7. Reconcile the production-readiness ledger against merged API and persistence evidence in a separate PR.
+8. Build a unified `CapabilityEvidenceSnapshot v1` consumed by readiness and recursive evolution.
+9. Continue production identity, monitoring, recovery, approved connectors and deployment only through separate reviewed trains.
+
+## Authority and maturity statement
+
+Repository documents, schemas, local code and CI tests do not prove staging, production, certification, legal compliance, independent human review or safe external operation. Every consequential implementation requires bounded scope, immutable evidence, target-branch integration evidence, applicable review authority, operator-controlled merge, rollback and post-merge verification.
+
+AIGC distinguishes automated verification, AI advisory review, operator ratification, independent external assurance and independent human review. These events are not interchangeable.
 
 ## Shared invariants
 
@@ -53,35 +111,22 @@ PR #29 remains the declared prerequisite for the ordered implementation train un
 - No false independence or human-identity claim.
 - No blocking finding averaged away.
 - No production-ready claim while blocking capabilities remain.
-- Every governed change preserves rollback and revision binding.
-- Provider contracts never replace least-privilege technical controls.
+- Every governed change preserves rollback and immutable revision binding.
+- Immutable-head and merge-candidate evidence remain distinct.
+- CI success is not merge approval.
 
-## Next implementation order
+## Current review checklist
 
-```text
-select PR #29 review path
-→ satisfy the selected path without false claims
-→ merge PR #29 with expected-head protection
-→ verify main CI/readiness receipt
-→ refresh and review PR #41
-→ AEC-001 bounded implementation
-→ EIAP shared assurance contracts
-→ Assurance Sensorium v1
-→ Review Packet Generator v1
-→ Review Evidence Agent v1
-→ Identity Kernel v1
-→ Documentation Rendering Agent v1
-→ staging, monitoring, recovery, connectors, and deployment
-```
-
-## Documentation-package review checklist
-
-- [ ] terminology and hierarchy are consistent;
-- [ ] human, operator, AI, and provider authorities are distinct;
-- [ ] solo-operator alternative assurance is restricted and disclosed;
-- [ ] provider IP/confidentiality controls are practical and do not overclaim enforceability;
-- [ ] lifecycle and procurement gates fail closed;
-- [ ] no certification or production maturity is claimed;
-- [ ] implementation remains decomposed into bounded PRs;
-- [ ] rollback and post-merge verification are mandatory;
-- [ ] public-facing explanations remain understandable.
+- [ ] immutable selected and checked-out revisions are equal;
+- [ ] immutable receipt, readiness source revision and artifact name identify the same head;
+- [ ] merge expected and checked-out revisions are equal;
+- [ ] event base and immutable head are ancestors of the merge candidate;
+- [ ] both CI jobs pass on the final immutable head;
+- [ ] no unresolved blocking finding or review thread remains;
+- [ ] Security & Privacy Wiring remains intact;
+- [ ] workflow permissions remain read-only and checkout credentials are not persisted;
+- [ ] no production identity, credential, deployment, connector or external action is introduced;
+- [ ] operator authority and residual-risk acceptance are explicit;
+- [ ] rollback is bounded;
+- [ ] post-merge exact-main verification is planned;
+- [ ] readiness changes occur only in a separate evidence-backed update.
