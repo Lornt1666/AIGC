@@ -12,16 +12,28 @@ permissions:
   contents: read
 
 jobs:
-  validate:
+  immutable-head-assurance:
     runs-on: ubuntu-latest
+    env:
+      AIGC_EXPECTED_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
-      - name: Checkout
+      - name: Checkout immutable revision
         uses: actions/checkout@v4
+        with:
+          ref: ${{ env.AIGC_EXPECTED_REVISION }}
+          fetch-depth: 0
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      - name: Verify immutable checked-out revision
+        run: >
+          python src/ci_revision_evidence_cli.py
+          --expected "$AIGC_EXPECTED_REVISION"
+          --event "${{ github.event_name }}"
 
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
@@ -44,16 +56,80 @@ jobs:
           python src/aigc.py validate --schema save_credential_broker_packet --path data/save_credential_broker/aigc_save_credential_broker_packet.json
           python src/aigc.py validate --schema n8n_workflow_dispatch_bridge_packet --path data/n8n_bridge/aigc_n8n_workflow_dispatch_bridge_packet.json
 
-      - name: Run tests
+      - name: Run tests on immutable head
         run: python -m pytest
 
-      - name: Evaluate production readiness evidence
-        run: python src/aigc.py readiness
+      - name: Evaluate immutable-revision production readiness evidence
+        run: >
+          python src/production_readiness_revision_bound_cli.py
+          --expected "$AIGC_EXPECTED_REVISION"
+          --event "${{ github.event_name }}"
 
-      - name: Upload production readiness receipt
+      - name: Upload immutable revision evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: production-readiness-${{ github.sha }}
-          path: reports/artifacts/production_readiness
+          name: production-readiness-${{ env.AIGC_EXPECTED_REVISION }}
+          path: |
+            reports/artifacts/ci_revision_evidence
+            reports/artifacts/production_readiness
+          if-no-files-found: warn
+
+  merge-candidate-integration:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    env:
+      AIGC_BASE_REVISION: ${{ github.event.pull_request.base.sha }}
+      AIGC_HEAD_REVISION: ${{ github.event.pull_request.head.sha }}
+      AIGC_EXPECTED_MERGE_REVISION: ${{ github.sha }}
+    steps:
+      - name: Checkout pull-request merge candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.AIGC_EXPECTED_MERGE_REVISION }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify base, head and merge-candidate binding
+        run: >
+          python src/ci_merge_candidate_evidence_cli.py
+          --base "$AIGC_BASE_REVISION"
+          --head "$AIGC_HEAD_REVISION"
+          --expected-merge "$AIGC_EXPECTED_MERGE_REVISION"
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Validate contracts on merge candidate
+        run: python src/aigc.py validate
+
+      - name: Validate AEC-001 on merge candidate
+        run: python src/validate_aec_001.py
+
+      - name: Scan merge candidate for secret-like content
+        run: >
+          python src/security/redaction_scanner.py
+          --paths src config docs governance README.md AGENTS.md AIGC_MASTER_PROMPT.md OMEGA_X_CONSTITUTION.md schemas tests reports Dockerfile render.yaml fly.toml Procfile
+
+      - name: Run procurement smoke stages on merge candidate
+        run: |
+          python src/save_credential_broker_procurement.py --project-root . --config config/aigc_save_credential_broker.json
+          python src/n8n_workflow_dispatch_bridge_procurement.py --project-root . --config config/aigc_n8n_workflow_dispatch_bridge.json
+          python src/aigc.py validate --schema save_credential_broker_packet --path data/save_credential_broker/aigc_save_credential_broker_packet.json
+          python src/aigc.py validate --schema n8n_workflow_dispatch_bridge_packet --path data/n8n_bridge/aigc_n8n_workflow_dispatch_bridge_packet.json
+
+      - name: Run tests on merge candidate
+        run: python -m pytest
+
+      - name: Upload merge-candidate evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: merge-candidate-${{ env.AIGC_HEAD_REVISION }}-${{ env.AIGC_EXPECTED_MERGE_REVISION }}
+          path: reports/artifacts/ci_merge_candidate_evidence
           if-no-files-found: warn
