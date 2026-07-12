@@ -1,0 +1,270 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/manual_registry.schema.json",
+  "title": "AIGC Manual Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "registry_id",
+    "version",
+    "status",
+    "repository",
+    "integration",
+    "package_snapshot",
+    "authority",
+    "current_open_trains",
+    "artifacts",
+    "missing_source_artifacts",
+    "gates",
+    "non_claims",
+    "external_action_performed"
+  ],
+  "properties": {
+    "registry_id": {
+      "const": "AIGC-MANUAL-REGISTRY-001"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "status": {
+      "enum": [
+        "PROPOSED",
+        "RATIFIED",
+        "SUPERSEDED"
+      ]
+    },
+    "repository": {
+      "const": "Lornt1666/AIGC"
+    },
+    "integration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "base_main_sha",
+        "branch",
+        "scope",
+        "external_action_performed"
+      ],
+      "properties": {
+        "base_main_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "branch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "const": "DOCUMENTATION_ONLY"
+        },
+        "external_action_performed": {
+          "const": false
+        }
+      }
+    },
+    "package_snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifest_id",
+        "date_local",
+        "source_main_sha",
+        "source_sha256s_verified",
+        "sha256_manifest_path"
+      ],
+      "properties": {
+        "manifest_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "date_local": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_main_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "source_sha256s_verified": {
+          "const": true
+        },
+        "sha256_manifest_path": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "constitution_id",
+        "machine_registry_status",
+        "machine_registry_version",
+        "human_document_status",
+        "human_document_version",
+        "reconciliation_required",
+        "conflict_behavior"
+      ],
+      "properties": {
+        "constitution_id": {
+          "const": "AEC-001"
+        },
+        "machine_registry_status": {
+          "type": "string"
+        },
+        "machine_registry_version": {
+          "type": "string"
+        },
+        "human_document_status": {
+          "type": "string"
+        },
+        "human_document_version": {
+          "type": "string"
+        },
+        "reconciliation_required": {
+          "type": "boolean"
+        },
+        "conflict_behavior": {
+          "const": "PAUSE_FOR_ACCOUNTABLE_HUMAN_RULING"
+        }
+      }
+    },
+    "current_open_trains": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "pr",
+          "title",
+          "status",
+          "head"
+        ],
+        "properties": {
+          "pr": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1
+          },
+          "head": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "artifact_id",
+          "path",
+          "kind",
+          "authority",
+          "maturity"
+        ],
+        "properties": {
+          "artifact_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "path": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "kind": {
+            "type": "string",
+            "minLength": 1
+          },
+          "authority": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maturity": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "page_count": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "source_snapshot_bound": {
+            "type": "boolean"
+          },
+          "source_filename": {
+            "type": "string",
+            "minLength": 1
+          },
+          "storage_status": {
+            "enum": [
+              "COMMITTED",
+              "VERIFIED_NOT_COMMITTED"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "missing_source_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "sha256",
+          "status"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "status": {
+            "const": "NOT_PROVIDED_IN_UPLOAD"
+          }
+        }
+      }
+    },
+    "gates": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "non_claims": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "external_action_performed": {
+      "const": false
+    }
+  }
+}
