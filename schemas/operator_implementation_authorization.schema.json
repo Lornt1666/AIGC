@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/operator_implementation_authorization.schema.json",
+  "title": "AIGC Operator Implementation Authorization",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_id",
+    "record_version",
+    "operator_identity",
+    "authorization_date",
+    "authorized_scope",
+    "branch",
+    "base_revision",
+    "merge_authorized",
+    "deployment_authorized",
+    "credential_use_authorized",
+    "external_action_authorized",
+    "operator_review_required",
+    "rollback_required",
+    "external_action_performed"
+  ],
+  "properties": {
+    "record_id": {
+      "const": "AIGC-OPERATOR-AUTH-CI-DUAL-REVISION-V2"
+    },
+    "record_version": {
+      "const": "1.0.0"
+    },
+    "operator_identity": {
+      "const": "Justice Gray Maciocha"
+    },
+    "authorization_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "authorized_scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "branch": {
+      "const": "codex/ci-dual-revision-evidence-gate-v2-current-main"
+    },
+    "base_revision": {
+      "const": "293de53489fe7212fad272c01c698c0ffe2da610"
+    },
+    "merge_authorized": {
+      "const": false
+    },
+    "deployment_authorized": {
+      "const": false
+    },
+    "credential_use_authorized": {
+      "const": false
+    },
+    "external_action_authorized": {
+      "const": false
+    },
+    "operator_review_required": {
+      "const": true
+    },
+    "rollback_required": {
+      "const": true
+    },
+    "external_action_performed": {
+      "const": false
+    }
+  }
+}
