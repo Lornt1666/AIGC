@@ -1,0 +1,65 @@
+{
+  "$id": "https://aigc.local/schemas/pr_platform_snapshot_request_receipt.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {"properties": {"conclusion": {"const": "COMPLETE"}}, "required": ["conclusion"]},
+      "then": {
+        "properties": {
+          "finding_count": {"const": 0},
+          "findings": {"maxItems": 0}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"conclusion": {"const": "INCOMPLETE"}}, "required": ["conclusion"]},
+      "then": {
+        "properties": {
+          "finding_count": {"minimum": 1},
+          "findings": {"minItems": 1}
+        }
+      }
+    }
+  ],
+  "properties": {
+    "automatic_mutation_allowed": {"const": false},
+    "conclusion": {"enum": ["COMPLETE", "INCOMPLETE"]},
+    "decision_gate_count": {"minimum": 0, "type": "integer"},
+    "evaluated_at": {"format": "date-time", "type": "string"},
+    "excluded_change_count": {"minimum": 0, "type": "integer"},
+    "external_action_performed": {"const": false},
+    "finding_count": {"minimum": 0, "type": "integer"},
+    "findings": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "change_id": {"minLength": 1, "type": "string"},
+          "code": {"minLength": 1, "type": "string"},
+          "expected": {},
+          "field": {"minLength": 1, "type": "string"},
+          "observed": {},
+          "severity": {"const": "BLOCKING"}
+        },
+        "required": ["severity", "code"],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "graph_digest": {"pattern": "^[0-9a-f]{64}$", "type": "string"},
+    "graph_id": {"const": "AIGC-PR-DEPENDENCY-GRAPH-001"},
+    "maximum_snapshot_age_seconds": {"minimum": 60, "type": "integer"},
+    "observed_at": {"format": "date-time", "type": "string"},
+    "operator_review_required": {"const": true},
+    "platform_snapshot_digest": {"pattern": "^[0-9a-f]{64}$", "type": "string"},
+    "platform_snapshot_id": {"const": "AIGC-PR-PLATFORM-SNAPSHOT-001"},
+    "pull_request_count": {"minimum": 0, "type": "integer"},
+    "receipt_id": {"pattern": "^AIGC-PR-SNAPSHOT-REQUEST-[0-9A-F]{16}$", "type": "string"},
+    "request_digest": {"pattern": "^[0-9a-f]{64}$", "type": "string"},
+    "request_id": {"const": "AIGC-PR-PLATFORM-SNAPSHOT-REQUEST-001"},
+    "snapshot_age_seconds": {"type": "integer"}
+  },
+  "required": ["receipt_id", "request_id", "request_digest", "graph_id", "graph_digest", "platform_snapshot_id", "platform_snapshot_digest", "evaluated_at", "observed_at", "snapshot_age_seconds", "maximum_snapshot_age_seconds", "pull_request_count", "decision_gate_count", "excluded_change_count", "finding_count", "findings", "conclusion", "operator_review_required", "automatic_mutation_allowed", "external_action_performed"],
+  "title": "AIGC Pull Request Platform Snapshot Request Receipt",
+  "type": "object"
+}
