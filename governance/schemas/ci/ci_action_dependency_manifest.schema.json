@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/governance/schemas/ci/ci_action_dependency_manifest.schema.json",
+  "title": "AIGC CI Action Dependency Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "manifest_id",
+    "version",
+    "status",
+    "accountable_operator",
+    "workflow_roots",
+    "update_policy",
+    "actions",
+    "external_action_performed"
+  ],
+  "properties": {
+    "manifest_id": {
+      "const": "AIGC-CI-ACTION-DEPENDENCIES-001"
+    },
+    "version": {
+      "const": "1.0.0"
+    },
+    "status": {
+      "enum": [
+        "proposed_review_branch",
+        "ratified_mainline"
+      ]
+    },
+    "accountable_operator": {
+      "type": "string",
+      "minLength": 1
+    },
+    "workflow_roots": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "const": ".github/workflows"
+      }
+    },
+    "update_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "require_full_commit_sha",
+        "reject_unknown_actions",
+        "operator_review_required",
+        "automatic_merge_allowed",
+        "rollback_required"
+      ],
+      "properties": {
+        "require_full_commit_sha": {
+          "const": true
+        },
+        "reject_unknown_actions": {
+          "const": true
+        },
+        "operator_review_required": {
+          "const": true
+        },
+        "automatic_merge_allowed": {
+          "const": false
+        },
+        "rollback_required": {
+          "const": true
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "action_repository",
+          "source_repository",
+          "compatibility_label",
+          "previous_reference",
+          "approved_revision",
+          "expected_occurrences",
+          "resolution_date",
+          "resolution_basis",
+          "rollback_strategy"
+        ],
+        "properties": {
+          "action_repository": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+(?:/.+)?$"
+          },
+          "source_repository": {
+            "type": "string",
+            "pattern": "^https://github\\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+          },
+          "compatibility_label": {
+            "type": "string",
+            "pattern": "^v[0-9]+$"
+          },
+          "previous_reference": {
+            "type": "string",
+            "pattern": "^v[0-9]+$"
+          },
+          "approved_revision": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "expected_occurrences": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "resolution_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "resolution_basis": {
+            "type": "array",
+            "minItems": 2,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "rollback_strategy": {
+            "const": "revert_manifest_and_workflow_change"
+          }
+        }
+      }
+    },
+    "external_action_performed": {
+      "const": false
+    }
+  }
+}
