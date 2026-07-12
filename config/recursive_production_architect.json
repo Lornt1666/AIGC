@@ -1,8 +1,8 @@
 {
   "architect_id": "AIGC-RECURSIVE-PRODUCTION-ARCHITECT-001",
-  "version": "2026-07-10",
-  "mode": "bounded_review_only_transformation_cycles",
-  "maximum_cycles_per_run": 3,
+  "version": "2026-07-12",
+  "mode": "single_snapshot_review_only",
+  "maximum_cycles_per_run": 1,
   "production_readiness_target": 90,
   "mandatory_gate": "Security & Privacy Wiring Gate",
   "paradigms": ["omni", "meta", "trans", "neo", "para"],
@@ -51,7 +51,7 @@
     "fabricated_completion_state"
   ],
   "stop_conditions": [
-    "maximum_cycles_reached",
+    "single_snapshot_complete",
     "operator_review_required",
     "hard_block_detected",
     "critical_file_change_proposed",
