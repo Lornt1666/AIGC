@@ -216,7 +216,12 @@ def evaluate_saturation(
     if saturated:
         prohibited_actions.insert(0, 'NEW_INDEPENDENT_IMPLEMENTATION_TRAIN')
 
-    identity_payload = {
+    stable_completeness = {
+        key: value
+        for key, value in completeness.items()
+        if key not in {'evaluated_at', 'snapshot_age_seconds'}
+    }
+    payload = {
         'schema_version': '1.0.0',
         'repository': policy['repository'],
         'policy_id': policy['policy_id'],
@@ -226,7 +231,7 @@ def evaluate_saturation(
         'graph_digest': sha256(_canonical(graph)).hexdigest(),
         'platform_snapshot_digest': sha256(_canonical(snapshot)).hexdigest(),
         'snapshot_completeness_receipt_id': completeness['receipt_id'],
-        'snapshot_completeness_receipt_digest': sha256(_canonical(completeness)).hexdigest(),
+        'snapshot_completeness_receipt_digest': sha256(_canonical(stable_completeness)).hexdigest(),
         'snapshot_completeness_conclusion': completeness['conclusion'],
         'snapshot_age_seconds': completeness['snapshot_age_seconds'],
         'open_critical_path_items': open_critical_path_items,
@@ -246,11 +251,16 @@ def evaluate_saturation(
         'automatic_mutation_allowed': policy['automatic_mutation_allowed'],
         'external_action_performed': policy['external_action_performed'],
     }
+    identity_payload = {
+        key: value
+        for key, value in payload.items()
+        if key != 'snapshot_age_seconds'
+    }
     identity = sha256(_canonical(identity_payload)).hexdigest().upper()[:16]
     receipt = {
         'receipt_id': f'AIGC-REVIEW-QUEUE-SATURATION-{identity}',
         'evaluated_at': timestamp,
-        **identity_payload,
+        **payload,
     }
     return receipt
 
