@@ -1,0 +1,113 @@
+{
+  "manifest_id": "AIGC-DOCS-CODEX-2026-07-11",
+  "repository": "Lornt1666/AIGC",
+  "snapshot": {
+    "date_local": "2026-07-11 (America/Edmonton)",
+    "main_sha": "293de53489fe7212fad272c01c698c0ffe2da610",
+    "default_branch": "main"
+  },
+  "authority": {
+    "constitution": "AEC-001",
+    "machine_registry_status": "ratified",
+    "human_document_reconciliation_required": true
+  },
+  "external_action_performed": false,
+  "marketplace_status": "PROCURED_TARGET_BLOCKED_FOR_PRODUCTION",
+  "open_draft_trains_observed": [
+    {
+      "pr": 63,
+      "title": "feat(api): persist authorization receipts across restart",
+      "status": "draft_open"
+    },
+    {
+      "pr": 64,
+      "title": "feat(jobs): add governed job state-machine kernel",
+      "status": "draft_open",
+      "head": "0058fb6a2c50c896d545f53253afaa57f48782e1"
+    }
+  ],
+  "files": [
+    {
+      "book": 0,
+      "path": "BOOK_00_THE_SOVEREIGN_KERNEL_AND_OPERATOR_QUICKSTART.md",
+      "status": "CURRENT OPERATOR MANUAL + CONTROLLED FUTURE MAP"
+    },
+    {
+      "book": 1,
+      "path": "BOOK_01_THE_REPOSITORY_TOTAL_SYNTHESIS_AND_TRUTH_MAP.md",
+      "status": "REPOSITORY ORIENTATION + ARCHITECTURAL TRUTH LEDGER"
+    },
+    {
+      "book": 2,
+      "path": "BOOK_02_THE_PLATFORM_ARCHITECTURE_AND_MARKETPLACE_REALMS.md",
+      "status": "PROCURED TARGET ARCHITECTURE - NOT A LIVE MARKETPLACE"
+    },
+    {
+      "book": 3,
+      "path": "BOOK_03_THE_AGENT_ORDERS_AND_AUTHORITY_PROTOCOLS.md",
+      "status": "IMPLEMENTED PRINCIPLES + PROCURED ROLE EXPANSION"
+    },
+    {
+      "book": 4,
+      "path": "BOOK_04_THE_OPPORTUNITY_DISCOVERY_AND_MARKET_INTAKE_SCRIPTURE.md",
+      "status": "CURRENT READ-ONLY DISCOVERY + FUTURE CONSENTED MARKET INTAKE"
+    },
+    {
+      "book": 5,
+      "path": "BOOK_05_THE_WORK_PRODUCTION_ENGINE_AND_WALKTHROUGH_GUIDE.md",
+      "status": "CURRENT INTERNAL PRODUCTION PRINCIPLES + TARGET WORK-ORDER ENGINE"
+    },
+    {
+      "book": 6,
+      "path": "BOOK_06_THE_GOVERNANCE_COMPLIANCE_TRUST_AND_SAFETY_SCRIPTURE.md",
+      "status": "CURRENT AEC-001 CONTROL BASE + REQUIRED MARKETPLACE GOVERNANCE"
+    },
+    {
+      "book": 7,
+      "path": "BOOK_07_THE_EVIDENCE_LEARNING_AND_EVOLUTION_SCRIPTURE.md",
+      "status": "CURRENT EIAP / EVOLUTION FOUNDATION + CONTROLLED LEARNING EXPANSION"
+    },
+    {
+      "book": 8,
+      "path": "BOOK_08_THE_ACCEPTANCE_DELIVERY_PAYMENT_AND_DISPUTE_SCRIPTURE.md",
+      "status": "PROCURED TARGET - EXTERNAL DELIVERY AND PAYMENT REMAIN BLOCKED"
+    },
+    {
+      "book": 9,
+      "path": "BOOK_09_THE_SYSTEM_INTEGRATION_DATAFLOW_AND_RUNLEVEL_SCRIPTURE.md",
+      "status": "ARCHITECTURAL INTEGRATION BLUEPRINT"
+    },
+    {
+      "book": 10,
+      "path": "BOOK_10_THE_DEPLOYMENT_OPERATIONS_RECOVERY_AND_LIVE_SERVICE_SCRIPTURE.md",
+      "status": "CURRENT LOCALHOST RUNBOOK + FUTURE STAGING/PRODUCTION PROGRAM"
+    },
+    {
+      "path": "AIGC_GAME_MANUAL_RESEARCH_SYNTHESIS.md",
+      "type": "research"
+    },
+    {
+      "path": "AIGC_MASTER_BOOKFORGE_PROMPT.md",
+      "type": "prompt"
+    },
+    {
+      "path": "AIGC_DOCS_INDEX.md",
+      "type": "index"
+    }
+  ],
+  "proposed_repo_placement": {
+    "index": "docs/manuals/AIGC_MANUAL_INDEX.md",
+    "research": "docs/manuals/research/AIGC_GAME_MANUAL_RESEARCH_SYNTHESIS.md",
+    "master_prompt": "docs/manuals/prompts/AIGC_MASTER_BOOKFORGE_PROMPT.md",
+    "books": "docs/manuals/books/",
+    "figures": "docs/manuals/figures/",
+    "registry": "governance/manuals/manual_registry.json"
+  },
+  "mandatory_pre_integration_actions": [
+    "Reconcile AIGC_ENGINEERING_CONSTITUTION.md version/status with aec_001.registry.json.",
+    "Review every proposed path against current repository conventions.",
+    "Open a bounded documentation PR; do not combine with runtime or deployment changes.",
+    "Run link, schema, secret, accessibility, and exact-revision documentation checks.",
+    "Obtain operator review before merge."
+  ]
+}
