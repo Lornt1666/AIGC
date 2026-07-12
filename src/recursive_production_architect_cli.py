@@ -13,7 +13,7 @@ from src.core.recursive_production_architect import run_recursive_production_arc
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run the bounded AIGC Recursive Production Architect.")
+    parser = argparse.ArgumentParser(description="Run the bounded AIGC evolution snapshot architect.")
     parser.add_argument("--root", type=Path, default=PROJECT_ROOT)
     parser.add_argument("--policy", type=Path)
     parser.add_argument("--artifact-root", type=Path)
