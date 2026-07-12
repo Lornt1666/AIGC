@@ -4,6 +4,7 @@
     "cycle_id",
     "created_at",
     "cycle_number",
+    "execution_mode",
     "decision_state",
     "ontology",
     "taxonomy",
@@ -18,7 +19,8 @@
   "properties": {
     "cycle_id": {"type": "string"},
     "created_at": {"type": "string"},
-    "cycle_number": {"type": "integer", "minimum": 1},
+    "cycle_number": {"type": "integer", "const": 1},
+    "execution_mode": {"type": "string", "const": "single_snapshot_review_only"},
     "decision_state": {"type": "string"},
     "ontology": {"type": "object"},
     "taxonomy": {"type": "object"},
@@ -27,7 +29,7 @@
     "transformation_backlog": {"type": "array", "items": {"type": "object"}},
     "preservation_controls": {"type": "object"},
     "stop_conditions": {"type": "array", "items": {"type": "string"}},
-    "operator_review_required": {"type": "boolean"},
-    "external_action_performed": {"type": "boolean"}
+    "operator_review_required": {"type": "boolean", "const": true},
+    "external_action_performed": {"type": "boolean", "const": false}
   }
 }
