@@ -10,6 +10,11 @@ from jsonschema import Draft202012Validator
 
 from src.core.pr_dependency_graph import load_graph, validate_graph
 from src.core.pr_dependency_graph_drift import load_platform_snapshot, validate_platform_snapshot
+from src.core.pr_platform_snapshot_request import (
+    evaluate_snapshot_request,
+    load_snapshot_request,
+    validate_request_receipt,
+)
 
 POLICY_PATH = Path('governance/evolution/review_queue_saturation_policy_v1.json')
 POLICY_SCHEMA_PATH = Path('governance/schemas/evolution/review_queue_saturation_policy.schema.json')
@@ -124,12 +129,13 @@ def validate_receipt(project_root: str | Path, receipt: Mapping[str, Any]) -> No
     if receipt['prohibited_actions'] != expected_prohibited:
         raise ReviewQueueSaturationError('receipt prohibited actions are inconsistent')
 
-    if receipt['new_independent_implementation_train_allowed'] is saturated:
+    if receipt['new_independent_implementation_train_allowed'] != (not saturated):
         raise ReviewQueueSaturationError('new implementation permission is inconsistent')
 
 
 def evaluate_saturation(
     policy: Mapping[str, Any],
+    request: Mapping[str, Any],
     graph: Mapping[str, Any],
     snapshot: Mapping[str, Any],
     *,
@@ -141,6 +147,14 @@ def evaluate_saturation(
 
     if policy['repository'] != graph['repository'] or policy['repository'] != snapshot['repository']:
         raise ReviewQueueSaturationError('policy, graph, and snapshot repositories differ')
+
+    timestamp = _timestamp(evaluated_at)
+    completeness = evaluate_snapshot_request(request, graph, snapshot, timestamp)
+    if completeness['conclusion'] != 'COMPLETE':
+        codes = ', '.join(finding['code'] for finding in completeness['findings'])
+        raise ReviewQueueSaturationError(
+            f'platform snapshot is not complete enough for saturation evaluation: {codes}'
+        )
 
     open_review_trains = sorted(
         item['change_id']
@@ -211,6 +225,10 @@ def evaluate_saturation(
         'policy_digest': sha256(_canonical(policy)).hexdigest(),
         'graph_digest': sha256(_canonical(graph)).hexdigest(),
         'platform_snapshot_digest': sha256(_canonical(snapshot)).hexdigest(),
+        'snapshot_completeness_receipt_id': completeness['receipt_id'],
+        'snapshot_completeness_receipt_digest': sha256(_canonical(completeness)).hexdigest(),
+        'snapshot_completeness_conclusion': completeness['conclusion'],
+        'snapshot_age_seconds': completeness['snapshot_age_seconds'],
         'open_critical_path_items': open_critical_path_items,
         'open_review_trains': open_review_trains,
         'open_decision_gates': open_decision_gates,
@@ -231,7 +249,7 @@ def evaluate_saturation(
     identity = sha256(_canonical(identity_payload)).hexdigest().upper()[:16]
     receipt = {
         'receipt_id': f'AIGC-REVIEW-QUEUE-SATURATION-{identity}',
-        'evaluated_at': _timestamp(evaluated_at),
+        'evaluated_at': timestamp,
         **identity_payload,
     }
     return receipt
@@ -243,11 +261,18 @@ def evaluate_repository_saturation(
     evaluated_at: str | None = None,
 ) -> dict[str, Any]:
     root = Path(project_root)
+    request = load_snapshot_request(root)
+    graph = load_graph(root)
+    snapshot = load_platform_snapshot(root)
+    timestamp = _timestamp(evaluated_at)
+    completeness = evaluate_snapshot_request(request, graph, snapshot, timestamp)
+    validate_request_receipt(root, completeness)
     receipt = evaluate_saturation(
         load_policy(root),
-        load_graph(root),
-        load_platform_snapshot(root),
-        evaluated_at=evaluated_at,
+        request,
+        graph,
+        snapshot,
+        evaluated_at=timestamp,
     )
     validate_receipt(root, receipt)
     return receipt
