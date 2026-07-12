@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/governance/schemas/jobs/job_lifecycle_contract.schema.json",
+  "title": "AIGC Canonical Job Lifecycle Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id",
+    "version",
+    "status",
+    "scope",
+    "states",
+    "transitions",
+    "authority_classes",
+    "compatibility_policy",
+    "governance",
+    "external_action_performed"
+  ],
+  "properties": {
+    "contract_id": {"type": "string", "pattern": "^[A-Z0-9-]+$"},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "status": {"enum": ["PROPOSED", "RATIFIED", "SUPERSEDED"]},
+    "scope": {"const": "END_TO_END_CANONICAL_JOB_LIFECYCLE"},
+    "states": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/state"}
+    },
+    "transitions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/transition"}
+    },
+    "authority_classes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[A-Z0-9_]+$"}
+    },
+    "compatibility_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unknown_state_policy",
+        "lossy_mapping_policy",
+        "persisted_state_requires_contract_version"
+      ],
+      "properties": {
+        "unknown_state_policy": {"const": "DENY"},
+        "lossy_mapping_policy": {"const": "OPERATOR_REVIEW_REQUIRED"},
+        "persisted_state_requires_contract_version": {"const": true}
+      }
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operator_review_required",
+        "production_identity_remains_blocking",
+        "security_privacy_wiring_gate_required",
+        "external_execution_separate"
+      ],
+      "properties": {
+        "operator_review_required": {"const": true},
+        "production_identity_remains_blocking": {"const": true},
+        "security_privacy_wiring_gate_required": {"const": true},
+        "external_execution_separate": {"const": true}
+      }
+    },
+    "external_action_performed": {"const": false}
+  },
+  "$defs": {
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state_id", "label", "meaning", "lifecycle_scope", "initial", "terminal"],
+      "properties": {
+        "state_id": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]*$"},
+        "label": {"type": "string", "minLength": 1},
+        "meaning": {"type": "string", "minLength": 1},
+        "lifecycle_scope": {"enum": ["ACQUISITION", "EXECUTION", "DELIVERY", "EXCEPTION"]},
+        "initial": {"type": "boolean"},
+        "terminal": {"type": "boolean"},
+        "deprecated_aliases": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]*$"}
+        }
+      }
+    },
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "transition_id",
+        "from_state",
+        "to_state",
+        "authority_class",
+        "action_effect",
+        "evidence_required",
+        "reason_required",
+        "rollback_class",
+        "external_action_boundary"
+      ],
+      "properties": {
+        "transition_id": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+        "from_state": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]*$"},
+        "to_state": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]*$"},
+        "authority_class": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+        "action_effect": {"enum": ["ANALYTICAL_ONLY", "INTERNAL_STATE_CHANGE", "EXTERNAL_PROPOSAL", "EXTERNALLY_CONSEQUENTIAL"]},
+        "evidence_required": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[A-Z0-9_]+$"}
+        },
+        "reason_required": {"type": "boolean"},
+        "rollback_class": {"enum": ["STATE_REVERSION", "COMPENSATION_REQUIRED", "TERMINAL_NO_ROLLBACK"]},
+        "external_action_boundary": {"enum": ["NONE", "SEPARATE_CONNECTOR_RECEIPT_REQUIRED", "COUNTERPARTY_EVIDENCE_REQUIRED"]}
+      }
+    }
+  }
+}
