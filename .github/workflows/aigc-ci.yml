@@ -17,6 +17,36 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+          show-progress: false
+
+      - name: Capture workflow action references
+        shell: bash
+        run: |
+          mkdir -p reports/ci
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import re
+
+          root = Path(".github/workflows")
+          pattern = re.compile(r"^\s*uses:\s*[\"']?([^\"'\s#]+)[\"']?", re.MULTILINE)
+          records = []
+          for path in sorted({*root.rglob("*.yml"), *root.rglob("*.yaml")}):
+              for token in pattern.findall(path.read_text(encoding="utf-8")):
+                  records.append({"workflow": path.as_posix(), "token": token})
+          Path("reports/ci/workflow_action_references.json").write_text(
+              json.dumps(records, indent=2) + "\n", encoding="utf-8"
+          )
+          PY
+
+      - name: Upload workflow action reference diagnostics
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: workflow-action-references-${{ github.sha }}
+          path: reports/ci/workflow_action_references.json
+          if-no-files-found: error
 
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
