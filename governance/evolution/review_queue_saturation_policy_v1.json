@@ -1,0 +1,19 @@
+{
+  "automatic_mutation_allowed": false,
+  "diagnostic_correction_allowed_when_saturated": true,
+  "evidence_refresh_allowed_when_saturated": true,
+  "existing_critical_train_correction_allowed_when_saturated": true,
+  "external_action_performed": false,
+  "maximum_open_critical_path_items": 2,
+  "maximum_open_review_trains": 10,
+  "new_independent_implementation_train_allowed_when_saturated": false,
+  "normal_mode": "BOUNDED_IMPLEMENTATION_ALLOWED",
+  "operator_override_required": true,
+  "operator_review_required": true,
+  "policy_id": "AIGC-REVIEW-QUEUE-SATURATION-001",
+  "repository": "Lornt1666/AIGC",
+  "review_support_allowed_when_saturated": true,
+  "rollback_preparation_allowed_when_saturated": true,
+  "saturated_mode": "REVIEW_SUPPORT_ONLY",
+  "schema_version": "1.0.0"
+}
