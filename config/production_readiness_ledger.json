@@ -1,6 +1,6 @@
 {
   "ledger_id": "AIGC-PRODUCTION-READINESS-LEDGER-001",
-  "version": "2026-07-10",
+  "version": "2026-07-12",
   "mode": "evidence_backed_completion_measurement",
   "production_readiness_threshold": 90,
   "status_multipliers": {
@@ -96,8 +96,17 @@
       "name": "Transactional database persistence and migrations",
       "dimension": "data",
       "weight": 9,
-      "declared_status": "partial",
-      "required_evidence": [],
+      "declared_status": "implemented_internal",
+      "required_evidence": [
+        "src/domain/repositories/contracts.py",
+        "src/infrastructure/persistence/sqlite/connection.py",
+        "src/infrastructure/persistence/sqlite/migrations.py",
+        "src/infrastructure/persistence/sqlite/operations.py",
+        "src/infrastructure/persistence/sqlite/repositories.py",
+        "migrations/sqlite/0001_transactional_storage.sql",
+        "scripts/storage_integrity.py",
+        "tests/persistence/test_sqlite_storage.py"
+      ],
       "blocking_for_production": true
     },
     {
