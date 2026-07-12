@@ -40,6 +40,26 @@ def test_production_readiness_report_is_evidence_backed(tmp_path: Path) -> None:
     assert Path(result["markdown_report_path"]).exists()
 
 
+def test_transactional_persistence_is_registered_as_evidenced_internal_capability() -> None:
+    ledger = load_ledger(PROJECT_ROOT / "config" / "production_readiness_ledger.json")
+    report = build_report(PROJECT_ROOT, ledger)
+    persistence = next(
+        item
+        for item in report["capability_results"]
+        if item["capability_id"] == "transactional_persistence"
+    )
+
+    assert persistence["declared_status"] == "implemented_internal"
+    assert persistence["effective_status"] == "implemented_internal"
+    assert persistence["evidence_complete"] is True
+    assert persistence["missing_evidence"] == []
+    assert persistence["readiness_percent"] == 75.0
+    assert persistence["blocking_for_production"] is True
+    assert report["dimension_scores"]["data"] == 75.0
+    assert report["overall_score"] == 58.85
+    assert "transactional_persistence" in report["blocking_gaps"]
+
+
 def test_missing_evidence_downgrades_completion_claim(tmp_path: Path) -> None:
     ledger = load_ledger(PROJECT_ROOT / "config" / "production_readiness_ledger.json")
     ledger = json.loads(json.dumps(ledger))
