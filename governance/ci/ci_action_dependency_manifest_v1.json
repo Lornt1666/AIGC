@@ -48,11 +48,12 @@
       "compatibility_label": "v4",
       "previous_reference": "v4",
       "approved_revision": "ea165f8d65b6e75b540449e92b4886f43607fa02",
-      "expected_occurrences": 2,
+      "expected_occurrences": 3,
       "resolution_date": "2026-07-12",
       "resolution_basis": [
         "official upstream repository revision",
-        "repository-wide AIGC workflow inventory"
+        "repository-wide AIGC workflow inventory",
+        "dedicated CI dependency review receipt artifact"
       ],
       "rollback_strategy": "revert_manifest_and_workflow_change"
     }
