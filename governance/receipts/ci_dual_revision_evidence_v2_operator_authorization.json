@@ -1,0 +1,16 @@
+{
+  "record_id": "AIGC-OPERATOR-AUTH-CI-DUAL-REVISION-V2",
+  "record_version": "1.0.0",
+  "operator_identity": "Justice Gray Maciocha",
+  "authorization_date": "2026-07-11",
+  "authorized_scope": "Update the AIGC repository on a separate reviewed branch with the inspected exact-revision findings, dual-revision CI evidence implementation, contracts, tests, procedure, evolution record, and assurance-index reconciliation.",
+  "branch": "codex/ci-dual-revision-evidence-gate-v2-current-main",
+  "base_revision": "293de53489fe7212fad272c01c698c0ffe2da610",
+  "merge_authorized": false,
+  "deployment_authorized": false,
+  "credential_use_authorized": false,
+  "external_action_authorized": false,
+  "operator_review_required": true,
+  "rollback_required": true,
+  "external_action_performed": false
+}
