@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/ci_merge_candidate_evidence_receipt.schema.json",
+  "title": "AIGC CI Pull Request Merge-Candidate Evidence Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "receipt_id",
+    "created_at",
+    "event_name",
+    "base_revision",
+    "head_revision",
+    "expected_merge_revision",
+    "actual_revision",
+    "base_is_ancestor",
+    "head_is_ancestor",
+    "verified",
+    "evidence_class",
+    "operator_review_required",
+    "external_action_performed"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.0.0"
+    },
+    "receipt_id": {
+      "type": "string",
+      "pattern": "^AIGC-CI-MERGE-[A-F0-9]{16}$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "event_name": {
+      "const": "pull_request"
+    },
+    "base_revision": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "head_revision": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "expected_merge_revision": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "actual_revision": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "base_is_ancestor": {
+      "type": "boolean"
+    },
+    "head_is_ancestor": {
+      "type": "boolean"
+    },
+    "verified": {
+      "type": "boolean"
+    },
+    "evidence_class": {
+      "const": "pull_request_merge_candidate"
+    },
+    "operator_review_required": {
+      "const": true
+    },
+    "external_action_performed": {
+      "const": false
+    }
+  }
+}
