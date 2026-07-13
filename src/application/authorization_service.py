@@ -5,7 +5,10 @@ from hashlib import sha256
 import json
 from typing import Any, Mapping, Sequence
 
-from src.core.identity.principal_authority_binding import PrincipalAuthorityBindingKernel
+from src.core.identity.principal_authority_binding import (
+    PERMIT,
+    PrincipalAuthorityBindingKernel,
+)
 from src.domain.repositories import AuthorizationReceiptRepository
 
 
@@ -57,7 +60,7 @@ class AuthorizationApplicationService:
         result = str(receipt.get("result") or "DENY")
         return {
             "result": result,
-            "passed": result == "PERMIT",
+            "passed": result == PERMIT,
             "reason_codes": list(receipt.get("reason_codes") or []),
             "receipt_id": receipt_id,
             "receipt": dict(receipt),
@@ -100,9 +103,15 @@ class AuthorizationApplicationService:
         )
         receipt = dict(decision.receipt)
         exact_revision = str(request.get("exact_revision") or "")
-        request_digest = str(receipt.get("request_digest") or request.get("request_digest") or "")
+        request_digest = str(
+            receipt.get("request_digest")
+            or request.get("request_digest")
+            or ""
+        )
         if not exact_revision or not request_digest:
-            raise ValueError("Authorization request requires exact_revision and request_digest")
+            raise ValueError(
+                "Authorization request requires exact_revision and request_digest"
+            )
 
         stored = self.receipt_repository.append(
             receipt_id,
@@ -116,3 +125,100 @@ class AuthorizationApplicationService:
     def get_receipt(self, receipt_id: str) -> dict[str, Any] | None:
         stored = self.receipt_repository.get(receipt_id)
         return dict(stored.payload) if stored else None
+
+    def verify_permit_receipt(
+        self,
+        receipt_id: str,
+        authorization_request: Mapping[str, Any],
+        *,
+        expected_exact_revision: str,
+        expected_resource_id: str,
+        expected_action: str,
+        expected_scopes: Sequence[str],
+        expected_purpose: str,
+        required_evidence_ids: Sequence[str],
+    ) -> dict[str, Any]:
+        """Verify an immutable PERMIT receipt against exact transition intent."""
+
+        request = dict(authorization_request)
+        contract_errors = self.kernel.validator.errors("request", request)
+        if contract_errors:
+            raise ValueError(
+                "Authorization request violates its contract: "
+                + "; ".join(contract_errors[:5])
+            )
+
+        stored = self.receipt_repository.get(receipt_id)
+        if stored is None:
+            raise ValueError(f"Authorization receipt not found: {receipt_id}")
+        receipt = dict(stored.payload)
+
+        if receipt.get("result") != PERMIT:
+            raise ValueError(
+                "Authorization receipt must contain a PERMIT decision"
+            )
+        if receipt.get("external_action_performed") is not False:
+            raise ValueError(
+                "Authorization receipt cannot record an external action"
+            )
+        if receipt.get("state_changed") is not False:
+            raise ValueError(
+                "Authorization evaluation receipt cannot mutate Quest state"
+            )
+
+        computed_digest = self.kernel.request_digest(request)
+        if request.get("request_digest") != computed_digest:
+            raise ValueError("Authorization request digest is invalid")
+        if receipt.get("request_digest") != computed_digest:
+            raise ValueError(
+                "Authorization receipt is not bound to the supplied request"
+            )
+
+        if request.get("exact_revision") != expected_exact_revision:
+            raise ValueError(
+                "Authorization request is not bound to the required revision"
+            )
+        if receipt.get("exact_revision") != expected_exact_revision:
+            raise ValueError(
+                "Authorization receipt is not bound to the required revision"
+            )
+
+        resource = request.get("resource")
+        if not isinstance(resource, Mapping):
+            raise ValueError("Authorization request lacks a resource binding")
+        if resource.get("resource_id") != expected_resource_id:
+            raise ValueError(
+                "Authorization request is not bound to the target Quest"
+            )
+        if request.get("action") != expected_action:
+            raise ValueError(
+                "Authorization request does not permit the required action"
+            )
+        if request.get("purpose") != expected_purpose:
+            raise ValueError(
+                "Authorization request does not match the required purpose"
+            )
+
+        scopes = {
+            str(value)
+            for value in request.get("scopes") or []
+            if str(value)
+        }
+        if not set(expected_scopes).issubset(scopes):
+            raise ValueError(
+                "Authorization request lacks the work-acceptance scope"
+            )
+
+        evidence_ids = {
+            str(value)
+            for value in request.get("evidence_ids") or []
+            if str(value)
+        }
+        missing_evidence = set(required_evidence_ids) - evidence_ids
+        if missing_evidence:
+            raise ValueError(
+                "Authorization request lacks transition evidence: "
+                + ", ".join(sorted(missing_evidence))
+            )
+
+        return receipt
