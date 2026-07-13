@@ -172,6 +172,9 @@ class QuestCandidateApplicationService:
     ) -> list[dict[str, Any]]:
         return self.catalog.list(category=category)
 
+    def get_candidate(self, candidate_id: str) -> StoredRecord | None:
+        return self.repository.get(candidate_id)
+
     def ingest(self, request: Mapping[str, Any]) -> StoredRecord:
         raw = dict(request)
         source_id = str(raw["source_id"]).strip()
