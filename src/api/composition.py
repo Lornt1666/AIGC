@@ -9,14 +9,17 @@ from src.application import (
     OpportunityScoutApplicationService,
     QuestApplicationService,
     QuestCandidateApplicationService,
+    QuestConductor,
 )
 from src.infrastructure.persistence.sqlite import (
+    SQLiteAgentHandoffRepository,
     SQLiteAuditEventRepository,
     SQLiteAuthorizationReceiptRepository,
     SQLiteConnectionFactory,
     SQLiteMigrator,
     SQLiteQuestCandidateRepository,
     SQLiteQuestRepository,
+    SQLiteReviewEvidencePacketRepository,
 )
 
 
@@ -27,6 +30,12 @@ WORK_SOURCE_CATALOG = ROOT / "config" / "aigc_work_source_gate_catalog.json"
 PHASE2_SOURCE_CONFIG = ROOT / "config" / "phase2_sources.json"
 QUEST_CANDIDATE_SCHEMA = ROOT / "schemas" / "quest_candidate.schema.json"
 QUEST_SCHEMA = ROOT / "schemas" / "quest.schema.json"
+AGENT_REGISTRY = ROOT / "config" / "agent_registry_v1.json"
+AGENT_REGISTRY_SCHEMA = ROOT / "schemas" / "agent_registry.schema.json"
+AGENT_HANDOFF_SCHEMA = ROOT / "schemas" / "agent_handoff.schema.json"
+REVIEW_EVIDENCE_PACKET_SCHEMA = (
+    ROOT / "schemas" / "review_evidence_packet.schema.json"
+)
 
 
 @dataclass(frozen=True)
@@ -36,6 +45,7 @@ class ApplicationContainer:
     opportunity_scout_service: OpportunityScoutApplicationService
     quest_candidate_service: QuestCandidateApplicationService
     quest_service: QuestApplicationService
+    quest_conductor: QuestConductor | None = None
 
 
 def build_container(
@@ -59,6 +69,8 @@ def build_container(
     audit_repository = SQLiteAuditEventRepository(factory)
     candidate_repository = SQLiteQuestCandidateRepository(factory)
     quest_repository = SQLiteQuestRepository(factory)
+    handoff_repository = SQLiteAgentHandoffRepository(factory)
+    review_repository = SQLiteReviewEvidencePacketRepository(factory)
 
     authorization_service = AuthorizationApplicationService(
         authorization_repository
@@ -67,6 +79,24 @@ def build_container(
         candidate_repository,
         catalog_path=WORK_SOURCE_CATALOG,
         schema_path=QUEST_CANDIDATE_SCHEMA,
+        exact_revision=exact_revision,
+    )
+    quest_service = QuestApplicationService(
+        candidate_repository,
+        quest_repository,
+        authorization_service,
+        schema_path=QUEST_SCHEMA,
+        exact_revision=exact_revision,
+    )
+    quest_conductor = QuestConductor(
+        quest_repository,
+        handoff_repository,
+        review_repository,
+        audit_repository,
+        registry_path=AGENT_REGISTRY,
+        registry_schema_path=AGENT_REGISTRY_SCHEMA,
+        handoff_schema_path=AGENT_HANDOFF_SCHEMA,
+        review_schema_path=REVIEW_EVIDENCE_PACKET_SCHEMA,
         exact_revision=exact_revision,
     )
 
@@ -80,11 +110,6 @@ def build_container(
             exact_revision=exact_revision,
         ),
         quest_candidate_service=candidate_service,
-        quest_service=QuestApplicationService(
-            candidate_repository,
-            quest_repository,
-            authorization_service,
-            schema_path=QUEST_SCHEMA,
-            exact_revision=exact_revision,
-        ),
+        quest_service=quest_service,
+        quest_conductor=quest_conductor,
     )

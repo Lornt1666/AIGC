@@ -1,0 +1,265 @@
+{
+  "registry_id": "AIGC-AGENT-REGISTRY-001",
+  "schema_version": "1.0.0",
+  "updated_at": "2026-07-13T22:15:00Z",
+  "conductor_agent_id": "AIGC-AGENT-OMEGA-X",
+  "default_handoff_sequence": [
+    "AIGC-AGENT-TASK-ARCHITECT",
+    "AIGC-AGENT-REQUIREMENT-EXTRACTOR",
+    "AIGC-AGENT-SKILL-SYNTHESIZER",
+    "AIGC-AGENT-EXECUTION-SPECIALIST",
+    "AIGC-AGENT-QUALITY-SENTINEL",
+    "AIGC-AGENT-COMPLIANCE-SENTINEL",
+    "AIGC-AGENT-AUDIT-SCRIBE",
+    "AIGC-AGENT-OPTIMIZATION-ORACLE"
+  ],
+  "required_approval_gates": [
+    "accountable_operator_work_acceptance",
+    "operator_review_before_external_action"
+  ],
+  "default_forbidden_actions": [
+    "send_external_message",
+    "submit_application",
+    "submit_deliverable",
+    "open_pull_request",
+    "post_issue_comment",
+    "bid",
+    "accept_contract",
+    "use_credentials",
+    "expand_scope_without_approval",
+    "modify_approved_artifact_without_reapproval"
+  ],
+  "default_quality_criteria": [
+    "requirements_traceable_to_quest",
+    "scope_is_bounded",
+    "unknowns_are_explicit",
+    "external_action_blocked",
+    "handoff_is_auditable"
+  ],
+  "agents": [
+    {
+      "agent_id": "AIGC-AGENT-OMEGA-X",
+      "role": "Quest Conductor",
+      "archetype": "orchestrator",
+      "purpose": "Build and govern internal Quest handoff plans without executing agents or performing external action.",
+      "allowed_actions": [
+        "read_quest",
+        "read_agent_registry",
+        "create_internal_handoff",
+        "record_review_evidence",
+        "write_audit_event"
+      ],
+      "input_artifact_types": [
+        "quest"
+      ],
+      "output_artifact_types": [
+        "agent_handoff_plan",
+        "review_evidence_index"
+      ],
+      "handoff_targets": [
+        "AIGC-AGENT-TASK-ARCHITECT"
+      ],
+      "approval_required": true,
+      "external_action_allowed": false,
+      "active": true,
+      "orchestration_rank": 0
+    },
+    {
+      "agent_id": "AIGC-AGENT-TASK-ARCHITECT",
+      "role": "Task Architect",
+      "archetype": "planner",
+      "purpose": "Break accepted internal work into bounded steps, dependencies, and acceptance criteria.",
+      "allowed_actions": [
+        "read_internal_artifacts",
+        "extract_requirements",
+        "draft_internal_notes",
+        "prepare_handoff"
+      ],
+      "input_artifact_types": [
+        "quest"
+      ],
+      "output_artifact_types": [
+        "task_architecture_brief"
+      ],
+      "handoff_targets": [
+        "AIGC-AGENT-REQUIREMENT-EXTRACTOR"
+      ],
+      "approval_required": true,
+      "external_action_allowed": false,
+      "active": true,
+      "orchestration_rank": 10
+    },
+    {
+      "agent_id": "AIGC-AGENT-REQUIREMENT-EXTRACTOR",
+      "role": "Requirement Extractor",
+      "archetype": "analyst",
+      "purpose": "Extract explicit requirements, unknowns, constraints, and clarifying questions.",
+      "allowed_actions": [
+        "read_internal_artifacts",
+        "extract_requirements",
+        "draft_internal_notes",
+        "prepare_handoff"
+      ],
+      "input_artifact_types": [
+        "task_architecture_brief"
+      ],
+      "output_artifact_types": [
+        "requirement_matrix"
+      ],
+      "handoff_targets": [
+        "AIGC-AGENT-SKILL-SYNTHESIZER"
+      ],
+      "approval_required": true,
+      "external_action_allowed": false,
+      "active": true,
+      "orchestration_rank": 20
+    },
+    {
+      "agent_id": "AIGC-AGENT-SKILL-SYNTHESIZER",
+      "role": "Skill Synthesizer",
+      "archetype": "capability_mapper",
+      "purpose": "Map the Quest to required capabilities, tools, research needs, and quality criteria.",
+      "allowed_actions": [
+        "read_internal_artifacts",
+        "extract_requirements",
+        "draft_internal_notes",
+        "prepare_handoff"
+      ],
+      "input_artifact_types": [
+        "requirement_matrix"
+      ],
+      "output_artifact_types": [
+        "skill_map"
+      ],
+      "handoff_targets": [
+        "AIGC-AGENT-EXECUTION-SPECIALIST"
+      ],
+      "approval_required": true,
+      "external_action_allowed": false,
+      "active": true,
+      "orchestration_rank": 30
+    },
+    {
+      "agent_id": "AIGC-AGENT-EXECUTION-SPECIALIST",
+      "role": "Execution Specialist",
+      "archetype": "executor",
+      "purpose": "Prepare bounded internal execution artifacts inside the accepted Quest scope.",
+      "allowed_actions": [
+        "read_internal_artifacts",
+        "draft_internal_notes",
+        "prepare_handoff"
+      ],
+      "input_artifact_types": [
+        "skill_map"
+      ],
+      "output_artifact_types": [
+        "internal_execution_artifact"
+      ],
+      "handoff_targets": [
+        "AIGC-AGENT-QUALITY-SENTINEL"
+      ],
+      "approval_required": true,
+      "external_action_allowed": false,
+      "active": true,
+      "orchestration_rank": 40
+    },
+    {
+      "agent_id": "AIGC-AGENT-QUALITY-SENTINEL",
+      "role": "Quality Sentinel",
+      "archetype": "reviewer",
+      "purpose": "Review internal artifacts for correctness, completeness, clarity, and acceptance-criteria alignment.",
+      "allowed_actions": [
+        "read_internal_artifacts",
+        "score_quality",
+        "review_handoff",
+        "prepare_handoff"
+      ],
+      "input_artifact_types": [
+        "internal_execution_artifact"
+      ],
+      "output_artifact_types": [
+        "quality_review"
+      ],
+      "handoff_targets": [
+        "AIGC-AGENT-COMPLIANCE-SENTINEL"
+      ],
+      "approval_required": true,
+      "external_action_allowed": false,
+      "active": true,
+      "orchestration_rank": 50
+    },
+    {
+      "agent_id": "AIGC-AGENT-COMPLIANCE-SENTINEL",
+      "role": "Compliance Sentinel",
+      "archetype": "compliance_reviewer",
+      "purpose": "Check policy, disclosure, privacy, regulated-domain, and scope concerns before operator review.",
+      "allowed_actions": [
+        "read_internal_artifacts",
+        "score_quality",
+        "review_handoff",
+        "prepare_handoff"
+      ],
+      "input_artifact_types": [
+        "quality_review",
+        "communication_brief"
+      ],
+      "output_artifact_types": [
+        "compliance_brief"
+      ],
+      "handoff_targets": [
+        "AIGC-AGENT-AUDIT-SCRIBE"
+      ],
+      "approval_required": true,
+      "external_action_allowed": false,
+      "active": true,
+      "orchestration_rank": 60
+    },
+    {
+      "agent_id": "AIGC-AGENT-AUDIT-SCRIBE",
+      "role": "Audit Scribe",
+      "archetype": "auditor",
+      "purpose": "Record assumptions, hashes, approvals, handoffs, and evidence for operator review.",
+      "allowed_actions": [
+        "read_internal_artifacts",
+        "write_audit_notes",
+        "prepare_handoff"
+      ],
+      "input_artifact_types": [
+        "compliance_brief"
+      ],
+      "output_artifact_types": [
+        "audit_notes"
+      ],
+      "handoff_targets": [
+        "AIGC-AGENT-OPTIMIZATION-ORACLE"
+      ],
+      "approval_required": true,
+      "external_action_allowed": false,
+      "active": true,
+      "orchestration_rank": 70
+    },
+    {
+      "agent_id": "AIGC-AGENT-OPTIMIZATION-ORACLE",
+      "role": "Optimization Oracle",
+      "archetype": "optimizer",
+      "purpose": "Recommend reusable patterns and future patch candidates without applying them.",
+      "allowed_actions": [
+        "read_internal_artifacts",
+        "draft_internal_notes",
+        "prepare_handoff"
+      ],
+      "input_artifact_types": [
+        "audit_notes"
+      ],
+      "output_artifact_types": [
+        "optimization_notes"
+      ],
+      "handoff_targets": [],
+      "approval_required": true,
+      "external_action_allowed": false,
+      "active": true,
+      "orchestration_rank": 80
+    }
+  ],
+  "external_action_performed": false
+}

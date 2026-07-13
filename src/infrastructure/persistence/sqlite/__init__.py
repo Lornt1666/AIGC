@@ -1,3 +1,7 @@
+from .agent_handoffs import (
+    SQLiteAgentHandoffRepository,
+    SQLiteReviewEvidencePacketRepository,
+)
 from .connection import SQLiteConnectionFactory
 from .migrations import MigrationResult, SQLiteMigrator
 from .operations import BackupReceipt, IntegrityReceipt, check_integrity, create_backup, write_receipt
@@ -13,6 +17,7 @@ __all__ = [
     "BackupReceipt",
     "IntegrityReceipt",
     "MigrationResult",
+    "SQLiteAgentHandoffRepository",
     "SQLiteAuditEventRepository",
     "SQLiteAuthorizationReceiptRepository",
     "SQLiteConnectionFactory",
@@ -20,6 +25,7 @@ __all__ = [
     "SQLiteQuestCandidateRepository",
     "SQLiteQuestRepository",
     "SQLiteRecordRepository",
+    "SQLiteReviewEvidencePacketRepository",
     "check_integrity",
     "create_backup",
     "write_receipt",

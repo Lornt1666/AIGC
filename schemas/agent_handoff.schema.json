@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/agent_handoff.schema.json",
+  "title": "AIGC Agent Handoff",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "handoff_id",
+    "schema_version",
+    "evidence_subject",
+    "quest_id",
+    "quest_revision",
+    "sequence",
+    "from_agent_id",
+    "to_agent_id",
+    "status",
+    "purpose",
+    "input_artifact_ids",
+    "input_artifact_types",
+    "expected_output_artifact_type",
+    "acceptance_criteria",
+    "required_approval_gates",
+    "handoff_digest",
+    "created_at",
+    "completed_at",
+    "review_packet_ids",
+    "last_review_verdict",
+    "exact_revision",
+    "authority_class",
+    "operator_review_required",
+    "external_action_performed"
+  ],
+  "properties": {
+    "handoff_id": {
+      "type": "string",
+      "pattern": "^handoff_[a-f0-9]{24}$"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "evidence_subject": {
+      "const": "INTERNAL_QUEST_HANDOFF"
+    },
+    "quest_id": {
+      "type": "string",
+      "pattern": "^quest_[A-Za-z0-9._:-]+$"
+    },
+    "quest_revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "from_agent_id": {
+      "type": "string",
+      "pattern": "^AIGC-AGENT-[A-Z0-9-]+$"
+    },
+    "to_agent_id": {
+      "type": "string",
+      "pattern": "^AIGC-AGENT-[A-Z0-9-]+$"
+    },
+    "source_handoff_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^handoff_[a-f0-9]{24}$"
+    },
+    "status": {
+      "enum": [
+        "PLANNED",
+        "READY",
+        "COMPLETED",
+        "REVIEW_REQUIRED",
+        "REWORK_REQUIRED",
+        "BLOCKED"
+      ]
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "input_artifact_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 300
+      }
+    },
+    "input_artifact_types": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 160
+      }
+    },
+    "expected_output_artifact_type": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 300
+      }
+    },
+    "required_approval_gates": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 160
+      }
+    },
+    "handoff_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "review_packet_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^review_[a-f0-9]{24}$"
+      }
+    },
+    "last_review_verdict": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "PASS",
+        "REWORK_REQUIRED",
+        "BLOCKED",
+        null
+      ]
+    },
+    "exact_revision": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "authority_class": {
+      "const": "ACCOUNTABLE_OPERATOR"
+    },
+    "operator_review_required": {
+      "const": true
+    },
+    "external_action_performed": {
+      "const": false
+    }
+  }
+}
