@@ -3,6 +3,7 @@ from __future__ import annotations
 from copy import deepcopy
 from hashlib import sha256
 import json
+import re
 from typing import Any, Mapping
 
 from src.phase2_radar import (
@@ -14,7 +15,6 @@ from src.phase2_radar import (
 
 
 _DOMAIN_MAP = {
-    "software_coding": "software_development",
     "api_documentation": "api_documentation",
     "research": "research",
     "data_analysis": "data_analysis",
@@ -26,6 +26,60 @@ _DOMAIN_MAP = {
     "customer_support": "customer_support",
     "cybersecurity_bug_bounty": "cybersecurity",
     "open_source_contribution": "open_source_contribution",
+    "software_coding": "software_development",
+}
+
+_SKILL_GROUPS = {
+    "frontend": (
+        "html",
+        "css",
+        "javascript",
+        "typescript",
+        "react",
+        "vue",
+        "angular",
+        "svelte",
+        "tailwind",
+        "next.js",
+        "nextjs",
+    ),
+    "backend": (
+        "python",
+        "node",
+        "node.js",
+        "django",
+        "flask",
+        "fastapi",
+        "express",
+        "java",
+        "spring",
+        "ruby on rails",
+        "postgresql",
+        "mysql",
+    ),
+    "machine_learning": (
+        "machine learning",
+        "artificial intelligence",
+        "llm",
+        "gpt",
+        "tensorflow",
+        "pytorch",
+        "scikit-learn",
+        "computer vision",
+        "natural language processing",
+    ),
+    "devops": (
+        "devops",
+        "docker",
+        "kubernetes",
+        "terraform",
+        "ansible",
+        "aws",
+        "azure",
+        "gcp",
+        "ci/cd",
+        "github actions",
+    ),
 }
 
 _SERIOUS_RISK_FLAGS = frozenset(
@@ -55,6 +109,11 @@ def _canonical(value: Mapping[str, Any]) -> str:
     )
 
 
+def _contains(text: str, keyword: str) -> bool:
+    pattern = rf"(?<![A-Za-z0-9_]){re.escape(keyword)}(?![A-Za-z0-9_])"
+    return re.search(pattern, text, flags=re.IGNORECASE) is not None
+
+
 class OlogyAssessor:
     """Classify an opportunity into disciplines, skills, tools, and AI signals."""
 
@@ -70,10 +129,31 @@ class OlogyAssessor:
     ) -> tuple[OpportunityRecord, dict[str, Any]]:
         classified = self.classifier.classify(record)
         disciplines = sorted(set(classified.discipline_taxonomy))
+        text = " ".join(
+            [
+                classified.title,
+                classified.description_plain,
+                " ".join(classified.requirements),
+                " ".join(classified.responsibilities),
+                " ".join(classified.deliverables),
+            ]
+        ).lower()
+
+        matched_groups: dict[str, list[str]] = {}
+        keyword_skills: set[str] = set()
+        for group, keywords in _SKILL_GROUPS.items():
+            matches = [keyword for keyword in keywords if _contains(text, keyword)]
+            if matches:
+                matched_groups[group] = matches
+                keyword_skills.update(matches)
+
         detected_skills = sorted(
             {
                 str(value).strip().lower()
-                for value in classified.skills_detected
+                for value in [
+                    *classified.skills_detected,
+                    *keyword_skills,
+                ]
                 if str(value).strip()
             }
         )[:100]
@@ -85,13 +165,9 @@ class OlogyAssessor:
             }
         )[:100]
         required_skills = sorted(set(detected_skills + detected_tools))[:100]
-        primary_domain = next(
-            (
-                _DOMAIN_MAP[discipline]
-                for discipline in disciplines
-                if discipline in _DOMAIN_MAP
-            ),
-            "general_remote_work",
+        primary_domain = self._primary_domain(
+            disciplines=disciplines,
+            matched_groups=matched_groups,
         )
 
         return classified, {
@@ -105,6 +181,47 @@ class OlogyAssessor:
             "automation_signals": dict(classified.automation_signals),
             "ai_use_signals": dict(classified.ai_use_signals),
         }
+
+    @staticmethod
+    def _primary_domain(
+        *,
+        disciplines: list[str],
+        matched_groups: Mapping[str, list[str]],
+    ) -> str:
+        for preferred in (
+            "api_documentation",
+            "cybersecurity_bug_bounty",
+            "data_analysis",
+            "research",
+            "prompt_engineering",
+            "qa_testing",
+            "design_ui_ux",
+        ):
+            if preferred in disciplines:
+                return _DOMAIN_MAP[preferred]
+
+        if "machine_learning" in matched_groups:
+            return "machine_learning"
+        if "devops" in matched_groups:
+            return "devops_cloud_engineering"
+        if {
+            "frontend",
+            "backend",
+        }.issubset(matched_groups):
+            return "full_stack_development"
+        if "frontend" in matched_groups:
+            return "frontend_development"
+        if "backend" in matched_groups:
+            return "backend_development"
+
+        return next(
+            (
+                _DOMAIN_MAP[discipline]
+                for discipline in disciplines
+                if discipline in _DOMAIN_MAP
+            ),
+            "general_remote_work",
+        )
 
 
 class RiskScout:
