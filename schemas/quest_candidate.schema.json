@@ -299,6 +299,9 @@
             "qualified_at",
             "quest_creation_authorized",
             "quest_created",
+            "quest_id",
+            "quest_created_at",
+            "quest_request_digest",
             "next_step"
           ],
           "properties": {
@@ -323,12 +326,79 @@
               "const": true
             },
             "quest_created": {
-              "const": false
+              "type": "boolean"
+            },
+            "quest_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^quest_[A-Za-z0-9_-]{6,100}$"
+            },
+            "quest_created_at": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            },
+            "quest_request_digest": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
             },
             "next_step": {
-              "const": "CREATE_QUEST_UNDER_CANONICAL_LIFECYCLE"
+              "enum": [
+                "CREATE_QUEST_UNDER_CANONICAL_LIFECYCLE",
+                "REQUEST_WORK_ACCEPTANCE"
+              ]
             }
-          }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "quest_created": {
+                    "const": true
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "quest_id": {
+                    "type": "string"
+                  },
+                  "quest_created_at": {
+                    "type": "string"
+                  },
+                  "quest_request_digest": {
+                    "type": "string"
+                  },
+                  "next_step": {
+                    "const": "REQUEST_WORK_ACCEPTANCE"
+                  }
+                }
+              },
+              "else": {
+                "properties": {
+                  "quest_id": {
+                    "type": "null"
+                  },
+                  "quest_created_at": {
+                    "type": "null"
+                  },
+                  "quest_request_digest": {
+                    "type": "null"
+                  },
+                  "next_step": {
+                    "const": "CREATE_QUEST_UNDER_CANONICAL_LIFECYCLE"
+                  }
+                }
+              }
+            }
+          ]
         }
       ]
     },
