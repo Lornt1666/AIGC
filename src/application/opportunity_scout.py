@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import asdict
 from datetime import datetime, timezone
 from hashlib import sha256
 import json
@@ -31,7 +30,9 @@ _CANDIDATE_SOURCE_IDS = {
     "remoteok": "remoteok",
     "github": "github_issues",
 }
-_ALLOWED_CONNECTORS = frozenset({"wwr_rss", "remotive", "remoteok", "github_search"})
+_ALLOWED_CONNECTORS = frozenset(
+    {"wwr_rss", "remotive", "remoteok", "github_search"}
+)
 _DOMAIN_MAP = {
     "software_coding": "software_development",
     "api_documentation": "api_documentation",
@@ -61,7 +62,12 @@ def _now() -> str:
 
 
 def _canonical(value: Mapping[str, Any]) -> str:
-    return json.dumps(dict(value), sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return json.dumps(
+        dict(value),
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    )
 
 
 def _record_response(record: StoredRecord) -> dict[str, Any]:
@@ -88,13 +94,7 @@ class OpportunityScoutUnavailable(OpportunityScoutError):
 
 
 class OpportunityScoutApplicationService:
-    """Runs fixed, reviewed Phase 2 read-only connectors and stores candidates.
-
-    The scout can only select connectors declared in the repository-owned source
-    configuration. It cannot accept arbitrary feed URLs, credentials, write
-    actions, application instructions, or connector definitions from an API
-    caller.
-    """
+    """Run fixed, reviewed Phase 2 readers and persist governed candidates."""
 
     def __init__(
         self,
@@ -112,7 +112,9 @@ class OpportunityScoutApplicationService:
         self.connector_registry: dict[str, type[BaseConnector]] = dict(
             connector_registry or CONNECTORS
         )
-        document = json.loads(self.source_config_path.read_text(encoding="utf-8"))
+        document = json.loads(
+            self.source_config_path.read_text(encoding="utf-8")
+        )
         if document.get("external_actions_allowed") is not False:
             raise OpportunityScoutPolicyError(
                 "Opportunity Scout configuration must prohibit external actions"
@@ -123,6 +125,8 @@ class OpportunityScoutApplicationService:
             for source in document.get("sources", [])
             if source.get("slug")
         }
+        self.classifier = Classifier()
+        self.scorer = RadarScorer()
 
     def discover(
         self,
@@ -134,6 +138,9 @@ class OpportunityScoutApplicationService:
             raise ValueError("limit must be between 1 and 25")
 
         requested_sources = self._normalize_source_ids(source_ids)
+        validated_sources = self._validate_sources_before_read(
+            requested_sources
+        )
         run_id = f"scout_{uuid4().hex}"
         started_at = _now()
         request_digest = sha256(
@@ -150,20 +157,11 @@ class OpportunityScoutApplicationService:
         assessed_records: list[tuple[str, OpportunityRecord]] = []
         successful_sources = 0
 
-        for source_id in requested_sources:
-            source = self._require_source(source_id)
-            connector_key = str(source["connector"])
-            connector_type = self.connector_registry.get(connector_key)
-            if connector_type is None:
-                raise OpportunityScoutPolicyError(
-                    f"No reviewed connector implementation is registered for {source_id}"
-                )
-
-            connector_run_config = {
-                **self.run_config,
-                "max_per_source": limit,
-            }
-            connector = connector_type(source, connector_run_config)
+        for source_id, source, connector_type in validated_sources:
+            connector = connector_type(
+                source,
+                {**self.run_config, "max_per_source": limit},
+            )
             try:
                 result: FetchResult = connector.fetch()
             except (
@@ -175,26 +173,12 @@ class OpportunityScoutApplicationService:
                 ValueError,
             ) as exc:
                 source_results.append(
-                    {
-                        "source_id": source_id,
-                        "source_name": source.get("name", source_id),
-                        "status": "error",
-                        "error_type": type(exc).__name__,
-                        "message": str(exc)[:1000],
-                        "records_fetched": 0,
-                    }
+                    self._source_error(source_id, source, exc)
                 )
                 continue
             except Exception as exc:
                 source_results.append(
-                    {
-                        "source_id": source_id,
-                        "source_name": source.get("name", source_id),
-                        "status": "error",
-                        "error_type": type(exc).__name__,
-                        "message": str(exc)[:1000],
-                        "records_fetched": 0,
-                    }
+                    self._source_error(source_id, source, exc)
                 )
                 continue
 
@@ -202,8 +186,8 @@ class OpportunityScoutApplicationService:
             eligible = 0
             rejected = 0
             for record in result.normalized_records:
-                assessed = Classifier().classify(record)
-                assessed = RadarScorer().score(assessed)
+                assessed = self.classifier.classify(record)
+                assessed = self.scorer.score(assessed)
                 if (
                     assessed.radar_decision == RadarDecision.REJECT.value
                     or assessed.forbidden_flags
@@ -224,7 +208,10 @@ class OpportunityScoutApplicationService:
                 }
             )
 
-        assessed_records.sort(
+        deduped_records, duplicates_removed = self._dedupe(
+            assessed_records
+        )
+        deduped_records.sort(
             key=lambda item: (
                 item[1].radar_score,
                 item[1].updated_at or item[1].posted_at,
@@ -232,7 +219,7 @@ class OpportunityScoutApplicationService:
             ),
             reverse=True,
         )
-        selected = assessed_records[:limit]
+        selected = deduped_records[:limit]
 
         candidates: list[dict[str, Any]] = []
         new_candidates = 0
@@ -240,10 +227,14 @@ class OpportunityScoutApplicationService:
         ingestion_errors: list[dict[str, Any]] = []
 
         for source_id, record in selected:
-            payload = self._candidate_payload(source_id, record)
-            candidate_id = str(payload["candidate_id"])
-            existed = self.candidate_service.get_candidate(candidate_id) is not None
+            candidate_id = f"cand_{record.opportunity_id}"
             try:
+                payload = self._candidate_payload(source_id, record)
+                candidate_id = str(payload["candidate_id"])
+                existed = (
+                    self.candidate_service.get_candidate(candidate_id)
+                    is not None
+                )
                 stored = self.candidate_service.ingest(payload)
             except Exception as exc:
                 ingestion_errors.append(
@@ -272,7 +263,10 @@ class OpportunityScoutApplicationService:
         completed_at = _now()
         if successful_sources == 0:
             status = "failed"
-        elif any(item["status"] == "error" for item in source_results) or ingestion_errors:
+        elif (
+            any(item["status"] == "error" for item in source_results)
+            or ingestion_errors
+        ):
             status = "partial"
         elif not candidates:
             status = "no_eligible_candidates"
@@ -288,9 +282,11 @@ class OpportunityScoutApplicationService:
             "scanned_sources": successful_sources,
             "source_results": source_results,
             "records_assessed": sum(
-                int(item.get("records_fetched", 0)) for item in source_results
+                int(item.get("records_fetched", 0))
+                for item in source_results
             ),
             "eligible_records": len(assessed_records),
+            "duplicates_removed": duplicates_removed,
             "selected_records": len(selected),
             "new_candidates": new_candidates,
             "existing_candidates": existing_candidates,
@@ -316,14 +312,36 @@ class OpportunityScoutApplicationService:
             if source_id and source_id not in normalized:
                 normalized.append(source_id)
         if not normalized:
-            raise OpportunityScoutPolicyError("At least one source must be selected")
+            raise OpportunityScoutPolicyError(
+                "At least one source must be selected"
+            )
         return tuple(normalized)
+
+    def _validate_sources_before_read(
+        self,
+        source_ids: Sequence[str],
+    ) -> tuple[tuple[str, dict[str, Any], type[BaseConnector]], ...]:
+        validated: list[
+            tuple[str, dict[str, Any], type[BaseConnector]]
+        ] = []
+        for source_id in source_ids:
+            source = self._require_source(source_id)
+            connector_key = str(source["connector"])
+            connector_type = self.connector_registry.get(connector_key)
+            if connector_type is None:
+                raise OpportunityScoutPolicyError(
+                    "No reviewed connector implementation is registered for "
+                    f"{source_id}"
+                )
+            validated.append((source_id, source, connector_type))
+        return tuple(validated)
 
     def _require_source(self, source_id: str) -> dict[str, Any]:
         source = self.sources.get(source_id)
         if source is None:
             raise OpportunityScoutPolicyError(
-                f"Unknown or unconfigured Opportunity Scout source: {source_id}"
+                "Unknown or unconfigured Opportunity Scout source: "
+                f"{source_id}"
             )
         if source_id not in _CANDIDATE_SOURCE_IDS:
             raise OpportunityScoutPolicyError(
@@ -342,16 +360,48 @@ class OpportunityScoutApplicationService:
             raise OpportunityScoutPolicyError(
                 f"Connector {connector_key or '<missing>'} is not allowlisted"
             )
-        if source.get("requires_api_key") or source.get("requires_app_registration"):
+        if (
+            source.get("requires_api_key")
+            or source.get("requires_app_registration")
+        ):
             raise OpportunityScoutPolicyError(
                 f"Source {source_id} requires credentials or registration"
             )
-        forbidden = set(source.get("forbidden_actions") or [])
-        if not forbidden:
+        if not set(source.get("forbidden_actions") or []):
             raise OpportunityScoutPolicyError(
                 f"Source {source_id} lacks an explicit forbidden-action policy"
             )
         return dict(source)
+
+    @staticmethod
+    def _source_error(
+        source_id: str,
+        source: Mapping[str, Any],
+        error: Exception,
+    ) -> dict[str, Any]:
+        return {
+            "source_id": source_id,
+            "source_name": source.get("name", source_id),
+            "status": "error",
+            "error_type": type(error).__name__,
+            "message": str(error)[:1000],
+            "records_fetched": 0,
+        }
+
+    @staticmethod
+    def _dedupe(
+        records: Sequence[tuple[str, OpportunityRecord]],
+    ) -> tuple[list[tuple[str, OpportunityRecord]], int]:
+        selected: dict[str, tuple[str, OpportunityRecord]] = {}
+        for source_id, record in records:
+            key = (
+                record.source_url.strip().lower()
+                or f"{source_id}:{record.opportunity_id}"
+            )
+            current = selected.get(key)
+            if current is None or record.radar_score > current[1].radar_score:
+                selected[key] = (source_id, record)
+        return list(selected.values()), len(records) - len(selected)
 
     def _candidate_payload(
         self,
@@ -363,12 +413,17 @@ class OpportunityScoutApplicationService:
         source_url = record.source_url.strip()
         description = record.description_plain.strip() or title
         if not title or not source_url.startswith(("http://", "https://")):
-            raise ValueError("Opportunity record lacks a valid title or source URL")
+            raise ValueError(
+                "Opportunity record lacks a valid title or source URL"
+            )
 
         skills = sorted(
             {
                 str(value).strip().lower()
-                for value in [*record.skills_detected, *record.tools_detected]
+                for value in [
+                    *record.skills_detected,
+                    *record.tools_detected,
+                ]
                 if str(value).strip()
             }
         )[:100]
@@ -396,11 +451,18 @@ class OpportunityScoutApplicationService:
                     (
                         f"{record.pay_min or '?'}-{record.pay_max or '?'}"
                         if record.pay_min != record.pay_max
-                        else str(record.pay_min or record.pay_max or "")
+                        else str(
+                            record.pay_min
+                            or record.pay_max
+                            or ""
+                        )
                     ),
-                    f"per {record.pay_interval}"
-                    if record.pay_interval and record.pay_interval != "unknown"
-                    else "",
+                    (
+                        f"per {record.pay_interval}"
+                        if record.pay_interval
+                        and record.pay_interval != "unknown"
+                        else ""
+                    ),
                 ]
                 if part
             ) or None
@@ -410,7 +472,11 @@ class OpportunityScoutApplicationService:
             risk_class = "restricted"
         elif risk_flags.intersection(_SERIOUS_RISK_FLAGS):
             risk_class = "high"
-        elif risk_flags or record.radar_decision == RadarDecision.HOLD_FOR_HUMAN_REVIEW.value:
+        elif (
+            risk_flags
+            or record.radar_decision
+            == RadarDecision.HOLD_FOR_HUMAN_REVIEW.value
+        ):
             risk_class = "medium"
         else:
             risk_class = "low"
@@ -457,6 +523,7 @@ class OpportunityScoutApplicationService:
             "scanned_sources": report["scanned_sources"],
             "records_assessed": report["records_assessed"],
             "eligible_records": report["eligible_records"],
+            "duplicates_removed": report["duplicates_removed"],
             "new_candidates": report["new_candidates"],
             "existing_candidates": report["existing_candidates"],
             "source_errors": [
@@ -468,7 +535,9 @@ class OpportunityScoutApplicationService:
                 if item["status"] == "error"
             ],
             "ingestion_error_count": len(report["ingestion_errors"]),
-            "external_reads_performed": report["external_reads_performed"],
+            "external_reads_performed": report[
+                "external_reads_performed"
+            ],
             "external_action_performed": False,
         }
         self.audit_repository.append(
