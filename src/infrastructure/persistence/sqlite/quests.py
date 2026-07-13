@@ -28,7 +28,12 @@ def _now() -> str:
 
 
 def _canonical(value: Mapping[str, Any]) -> str:
-    return json.dumps(dict(value), sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return json.dumps(
+        dict(value),
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    )
 
 
 def _stored(row: sqlite3.Row) -> StoredRecord:
@@ -43,11 +48,15 @@ def _stored(row: sqlite3.Row) -> StoredRecord:
     )
 
 
-def _restore(value: Mapping[str, Any]) -> QuestCreationResult:
+def _restore_creation(value: Mapping[str, Any]) -> QuestCreationResult:
     return QuestCreationResult(
         candidate=StoredRecord(**dict(value["candidate"])),
         quest=StoredRecord(**dict(value["quest"])),
     )
+
+
+def _restore_record(value: Mapping[str, Any]) -> StoredRecord:
+    return StoredRecord(**dict(value))
 
 
 def _append_audit_event(
@@ -104,7 +113,7 @@ def _append_audit_event(
 
 
 class SQLiteQuestRepository:
-    """Atomic persistence for canonical Quests and candidate conversion evidence."""
+    """Atomic persistence for canonical Quests and lifecycle evidence."""
 
     def __init__(self, factory: SQLiteConnectionFactory) -> None:
         self.factory = factory
@@ -136,7 +145,7 @@ class SQLiteQuestRepository:
                     raise QuestConflict(
                         "Quest-creation idempotency key was reused with different input"
                     )
-                return _restore(json.loads(cached["response_json"]))
+                return _restore_creation(json.loads(cached["response_json"]))
 
             candidate_row = connection.execute(
                 """
@@ -221,7 +230,13 @@ class SQLiteQuestRepository:
                     retention_state
                 ) VALUES (?, ?, 1, ?, ?, ?, 'ACTIVE')
                 """,
-                (_QUEST_COLLECTION, quest_id, _canonical(quest_payload), now, now),
+                (
+                    _QUEST_COLLECTION,
+                    quest_id,
+                    _canonical(quest_payload),
+                    now,
+                    now,
+                ),
             )
             quest_record = StoredRecord(
                 record_id=quest_id,
@@ -318,6 +333,138 @@ class SQLiteQuestRepository:
                 ),
             )
             return result
+
+    def transition(
+        self,
+        quest_id: str,
+        quest: Mapping[str, Any],
+        *,
+        expected_revision: int,
+        allowed_from: Sequence[str],
+        target_state: str,
+        event_type: str,
+        idempotency_key: str,
+        request_digest: str,
+        exact_revision: str,
+        audit_payload: Mapping[str, Any],
+    ) -> StoredRecord:
+        scope = f"quest-transition:{quest_id}"
+
+        with self.factory.transaction() as connection:
+            cached = connection.execute(
+                """
+                SELECT request_digest, response_json
+                FROM idempotency_records
+                WHERE scope = ? AND idempotency_key = ?
+                """,
+                (scope, idempotency_key),
+            ).fetchone()
+            if cached:
+                if cached["request_digest"] != request_digest:
+                    raise QuestConflict(
+                        "Quest-transition idempotency key was reused with different input"
+                    )
+                return _restore_record(json.loads(cached["response_json"]))
+
+            row = connection.execute(
+                """
+                SELECT * FROM records
+                WHERE collection = ? AND record_id = ?
+                """,
+                (_QUEST_COLLECTION, quest_id),
+            ).fetchone()
+            if not row:
+                raise QuestNotFound(quest_id)
+            if int(row["revision"]) != expected_revision:
+                raise QuestConflict(
+                    f"Expected Quest revision {expected_revision}, found {row['revision']}"
+                )
+
+            existing = json.loads(row["payload_json"])
+            current_state = str(existing.get("lifecycle_state") or "")
+            if current_state not in set(allowed_from):
+                raise QuestStateError(
+                    f"Quest {quest_id} cannot transition from {current_state} to {target_state}"
+                )
+            if quest.get("quest_id") != quest_id:
+                raise QuestStateError("Quest transition changed the Quest identity")
+            if quest.get("lifecycle_state") != target_state:
+                raise QuestStateError(
+                    f"Quest transition payload must end in {target_state}"
+                )
+            if quest.get("external_action_performed") is not False:
+                raise QuestStateError(
+                    "Internal Quest transitions cannot record an external action"
+                )
+
+            now = _now()
+            next_revision = expected_revision + 1
+            payload = dict(quest)
+            payload["created_at"] = existing["created_at"]
+            payload["updated_at"] = now
+            cursor = connection.execute(
+                """
+                UPDATE records
+                SET revision = ?, payload_json = ?, updated_at = ?
+                WHERE collection = ? AND record_id = ? AND revision = ?
+                """,
+                (
+                    next_revision,
+                    _canonical(payload),
+                    now,
+                    _QUEST_COLLECTION,
+                    quest_id,
+                    expected_revision,
+                ),
+            )
+            if cursor.rowcount != 1:
+                raise QuestConflict(
+                    "Quest revision changed during lifecycle transition"
+                )
+
+            record = StoredRecord(
+                record_id=quest_id,
+                revision=next_revision,
+                payload=payload,
+                created_at=row["created_at"],
+                updated_at=now,
+                revoked_at=row["revoked_at"],
+                retention_state=row["retention_state"],
+            )
+            _append_audit_event(
+                connection,
+                event_type=event_type,
+                exact_revision=exact_revision,
+                request_digest=request_digest,
+                payload={
+                    "quest_id": quest_id,
+                    "previous_state": current_state,
+                    "resulting_state": target_state,
+                    "previous_revision": expected_revision,
+                    "resulting_revision": next_revision,
+                    **dict(audit_payload),
+                    "external_action_performed": False,
+                },
+            )
+            connection.execute(
+                """
+                INSERT INTO idempotency_records(
+                    scope,
+                    idempotency_key,
+                    request_digest,
+                    response_json,
+                    created_at
+                ) VALUES (?, ?, ?, ?, ?)
+                """,
+                (
+                    scope,
+                    idempotency_key,
+                    request_digest,
+                    json.dumps(asdict(record), sort_keys=True),
+                    now,
+                ),
+            )
+            return record
 
     def get(self, quest_id: str) -> StoredRecord | None:
         with self.factory.connect() as connection:
