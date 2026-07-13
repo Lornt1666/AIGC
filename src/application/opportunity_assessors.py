@@ -195,7 +195,6 @@ class OlogyAssessor:
             "research",
             "prompt_engineering",
             "qa_testing",
-            "design_ui_ux",
         ):
             if preferred in disciplines:
                 return _DOMAIN_MAP[preferred]
