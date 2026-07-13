@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://aigc.local/schemas/quest.schema.json",
   "title": "AIGC Canonical Quest",
-  "description": "Versioned governed work aggregate created from a qualified opportunity candidate. Quest creation starts in PROPOSED and never grants work acceptance or external-action authority.",
+  "description": "Versioned governed work aggregate. Quest creation starts in PROPOSED; work acceptance and delivery acceptance remain separate, receipt-bound decisions.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -23,6 +23,9 @@
     "deadline_at",
     "source_snapshot",
     "created_from_candidate_revision",
+    "approval_request",
+    "work_acceptance",
+    "terminal_decision",
     "created_at",
     "updated_at",
     "external_action_performed"
@@ -200,6 +203,278 @@
       "type": "integer",
       "minimum": 1
     },
+    "approval_request": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "approval_request_id",
+            "requested_at",
+            "requested_by_role",
+            "reason",
+            "source_state",
+            "target_state",
+            "quest_revision",
+            "exact_revision",
+            "revision_binding_mode",
+            "transition_digest",
+            "request_digest",
+            "required_authorization",
+            "status",
+            "external_action_performed"
+          ],
+          "properties": {
+            "approval_request_id": {
+              "type": "string",
+              "pattern": "^approval_[A-Za-z0-9_-]{6,120}$"
+            },
+            "requested_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "requested_by_role": {
+              "const": "ACCOUNTABLE_OPERATOR"
+            },
+            "reason": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 4000
+            },
+            "source_state": {
+              "const": "PROPOSED"
+            },
+            "target_state": {
+              "const": "WORK_ACCEPTED"
+            },
+            "quest_revision": {
+              "type": "integer",
+              "minimum": 2
+            },
+            "exact_revision": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            "revision_binding_mode": {
+              "enum": [
+                "exact_source_revision",
+                "derived_local_simulation"
+              ]
+            },
+            "transition_digest": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "request_digest": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "required_authorization": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "resource_id",
+                "action",
+                "scopes",
+                "purpose",
+                "evidence_ids"
+              ],
+              "properties": {
+                "resource_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "action": {
+                  "const": "accept_work"
+                },
+                "scopes": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "purpose": {
+                  "const": "work_acceptance"
+                },
+                "evidence_ids": {
+                  "type": "array",
+                  "minItems": 2,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            },
+            "status": {
+              "enum": [
+                "PENDING",
+                "CONSUMED",
+                "REJECTED",
+                "CANCELLED"
+              ]
+            },
+            "external_action_performed": {
+              "const": false
+            }
+          }
+        }
+      ]
+    },
+    "work_acceptance": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "decision",
+            "operator_role",
+            "reason",
+            "accepted_at",
+            "approval_request_id",
+            "transition_digest",
+            "request_digest",
+            "authorization_receipt_id",
+            "authorization_decision_id",
+            "authorization_request_digest",
+            "authorization_exact_revision",
+            "principal_id",
+            "source_state",
+            "target_state",
+            "external_action_performed"
+          ],
+          "properties": {
+            "decision": {
+              "const": "WORK_ACCEPTED"
+            },
+            "operator_role": {
+              "const": "ACCOUNTABLE_OPERATOR"
+            },
+            "reason": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 4000
+            },
+            "accepted_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "approval_request_id": {
+              "type": "string",
+              "pattern": "^approval_[A-Za-z0-9_-]{6,120}$"
+            },
+            "transition_digest": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "request_digest": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "authorization_receipt_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            },
+            "authorization_decision_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            },
+            "authorization_request_digest": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "authorization_exact_revision": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            "principal_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            },
+            "source_state": {
+              "const": "APPROVAL_REQUIRED"
+            },
+            "target_state": {
+              "const": "WORK_ACCEPTED"
+            },
+            "external_action_performed": {
+              "const": false
+            }
+          }
+        }
+      ]
+    },
+    "terminal_decision": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "decision",
+            "operator_role",
+            "reason",
+            "decided_at",
+            "previous_state",
+            "request_digest",
+            "external_action_performed"
+          ],
+          "properties": {
+            "decision": {
+              "enum": [
+                "REJECTED",
+                "CANCELLED"
+              ]
+            },
+            "operator_role": {
+              "const": "ACCOUNTABLE_OPERATOR"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4000
+            },
+            "decided_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "previous_state": {
+              "enum": [
+                "PROPOSED",
+                "APPROVAL_REQUIRED",
+                "WORK_ACCEPTED"
+              ]
+            },
+            "request_digest": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "external_action_performed": {
+              "const": false
+            }
+          }
+        }
+      ]
+    },
     "created_at": {
       "type": "string",
       "format": "date-time"
@@ -223,8 +498,110 @@
       },
       "then": {
         "properties": {
-          "external_action_performed": {
-            "const": false
+          "approval_request": {
+            "type": "null"
+          },
+          "work_acceptance": {
+            "type": "null"
+          },
+          "terminal_decision": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_state": {
+            "const": "APPROVAL_REQUIRED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "approval_request": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "const": "PENDING"
+              }
+            }
+          },
+          "work_acceptance": {
+            "type": "null"
+          },
+          "terminal_decision": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_state": {
+            "const": "WORK_ACCEPTED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "approval_request": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "const": "CONSUMED"
+              }
+            }
+          },
+          "work_acceptance": {
+            "type": "object"
+          },
+          "terminal_decision": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_state": {
+            "const": "REJECTED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "terminal_decision": {
+            "type": "object",
+            "properties": {
+              "decision": {
+                "const": "REJECTED"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_state": {
+            "const": "CANCELLED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "terminal_decision": {
+            "type": "object",
+            "properties": {
+              "decision": {
+                "const": "CANCELLED"
+              }
+            }
           }
         }
       }
