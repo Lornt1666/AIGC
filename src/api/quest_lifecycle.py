@@ -95,6 +95,32 @@ def _raise_quest_error(exc: Exception, *, operation: str) -> None:
     raise exc
 
 
+def _terminal_replay_or_none(
+    container: Any,
+    quest_id: str,
+    request: QuestTerminalRequest,
+    *,
+    target_state: QuestLifecycleState,
+) -> Any | None:
+    """Recover an identical terminal command after a completed first write."""
+
+    record = container.quest_service.get(quest_id)
+    if record.payload.get("lifecycle_state") != target_state.value:
+        return None
+    terminal = dict(record.payload.get("terminal_decision") or {})
+    identical = (
+        record.revision == request.expected_revision + 1
+        and terminal.get("decision") == target_state.value
+        and terminal.get("operator_role") == request.operator_role
+        and terminal.get("reason") == request.reason.strip()
+    )
+    if identical:
+        return record
+    raise QuestConflict(
+        f"Quest already contains a different {target_state.value} decision"
+    )
+
+
 def build_quest_lifecycle_router(
     container: Any,
     *,
@@ -239,12 +265,19 @@ def build_quest_lifecycle_router(
         request: QuestTerminalRequest,
     ) -> dict[str, Any]:
         try:
-            record = container.quest_service.reject(
+            record = _terminal_replay_or_none(
+                container,
                 quest_id,
-                expected_revision=request.expected_revision,
-                operator_role=request.operator_role,
-                reason=request.reason,
+                request,
+                target_state=QuestLifecycleState.REJECTED,
             )
+            if record is None:
+                record = container.quest_service.reject(
+                    quest_id,
+                    expected_revision=request.expected_revision,
+                    operator_role=request.operator_role,
+                    reason=request.reason,
+                )
         except Exception as exc:
             _raise_quest_error(exc, operation="REJECT_QUEST")
             raise
@@ -260,12 +293,19 @@ def build_quest_lifecycle_router(
         request: QuestTerminalRequest,
     ) -> dict[str, Any]:
         try:
-            record = container.quest_service.cancel(
+            record = _terminal_replay_or_none(
+                container,
                 quest_id,
-                expected_revision=request.expected_revision,
-                operator_role=request.operator_role,
-                reason=request.reason,
+                request,
+                target_state=QuestLifecycleState.CANCELLED,
             )
+            if record is None:
+                record = container.quest_service.cancel(
+                    quest_id,
+                    expected_revision=request.expected_revision,
+                    operator_role=request.operator_role,
+                    reason=request.reason,
+                )
         except Exception as exc:
             _raise_quest_error(exc, operation="CANCEL_QUEST")
             raise
