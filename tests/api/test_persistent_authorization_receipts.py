@@ -106,5 +106,15 @@ def test_runtime_status_reports_integrated_local_sqlite(
     assert readiness["production_ready"] is False
     assert readiness["authorization_receipt_persistence"]["state"] == "implemented_internal"
     assert readiness["quest_creation_from_candidate"]["initial_state"] == "PROPOSED"
-    assert readiness["work_acceptance_transition"]["blocking"] is True
+    assert readiness["work_acceptance_transition"]["state"] == (
+        "implemented_internal_local_simulation"
+    )
+    assert readiness["work_acceptance_transition"]["blocking"] is False
+    assert readiness["work_acceptance_transition"][
+        "authorization_receipt_required"
+    ] is True
+    assert readiness["work_acceptance_transition"][
+        "production_identity_required_for_production_use"
+    ] is True
+    assert readiness["delivery_judgment_gate"]["blocking"] is True
     assert readiness["external_action_performed"] is False
