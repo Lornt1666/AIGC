@@ -31,10 +31,15 @@ def resolve_path(root: Path, value: str) -> Path:
     return path if path.is_absolute() else root / path
 
 
-def load_config(root: Path, config_path: str) -> Dict[str, Any]:
-    path = resolve_path(root, config_path)
-    if not path.exists():
+def load_config(root: Path, config_path: str | None) -> Dict[str, Any]:
+    if not config_path:
         return default_config()
+
+    path = resolve_path(root, config_path)
+    if not path.is_file():
+        raise FileNotFoundError(
+            f"Explicit Phase 26 configuration was not found: {path}"
+        )
     return load_json(path)
 
 
@@ -301,7 +306,20 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
 def main(argv: List[str] | None = None) -> int:
     args = parse_args(argv)
     root = args.project_root.resolve()
-    config = load_config(root, args.config)
+
+    try:
+        config = load_config(root, args.config)
+    except FileNotFoundError as exc:
+        print(json.dumps({
+            "phase": PHASE_NAME,
+            "status": "blocked_missing_explicit_configuration",
+            "missing_config_path": str(resolve_path(root, args.config)),
+            "error": str(exc),
+            "physical_moves_performed": False,
+            "external_action_performed": False,
+        }, indent=2))
+        return 2
+
     manifest_path = resolve_path(root, args.manifest or config.get("input_manifest", ""))
 
     if not manifest_path.exists():
