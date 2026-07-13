@@ -19,7 +19,7 @@ from src.core.review_queue_saturation import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
-EVALUATED_AT = '2026-07-12T15:27:38Z'
+EVALUATED_AT = '2026-07-13T16:30:45Z'
 
 
 def _inputs() -> tuple[dict, dict, dict, dict]:
@@ -43,10 +43,15 @@ def test_current_review_queue_is_saturated_and_review_support_only() -> None:
     validate_receipt(ROOT, receipt)
 
     assert receipt['snapshot_completeness_conclusion'] == 'COMPLETE'
+    assert receipt['open_decision_gates'] == ['AIGC-ISSUE-66']
+    assert receipt['open_coordination_gates'] == ['AIGC-ISSUE-76']
+    assert receipt['open_governance_gates'] == ['AIGC-ISSUE-66', 'AIGC-ISSUE-76']
     assert receipt['counts'] == {
         'open_critical_path_item_count': 4,
         'open_review_train_count': 13,
         'open_decision_gate_count': 1,
+        'open_coordination_gate_count': 1,
+        'open_governance_gate_count': 2,
     }
     assert receipt['excess'] == {
         'critical_path_item_count': 2,
@@ -70,14 +75,14 @@ def test_receipt_identity_is_stable_across_time_only_changes() -> None:
         request,
         graph,
         snapshot,
-        evaluated_at='2026-07-12T15:00:00Z',
+        evaluated_at='2026-07-13T16:30:45Z',
     )
     second = evaluate_saturation(
         policy,
         request,
         graph,
         snapshot,
-        evaluated_at='2026-07-12T15:30:00Z',
+        evaluated_at='2026-07-13T16:31:45Z',
     )
     assert first['receipt_id'] == second['receipt_id']
     assert first['snapshot_age_seconds'] != second['snapshot_age_seconds']
@@ -118,7 +123,7 @@ def test_stale_snapshot_fails_before_saturation_is_claimed() -> None:
             request,
             graph,
             snapshot,
-            evaluated_at='2026-07-12T18:00:00Z',
+            evaluated_at='2026-07-13T18:30:45Z',
         )
 
 
