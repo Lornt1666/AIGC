@@ -66,6 +66,9 @@ def validate_snapshot_request(request: Mapping[str, Any]) -> None:
         raise PlatformSnapshotRequestError('v1 permits only the self-referential implementation exclusion')
     if request['exclusion_policy']['maximum_exclusions'] > 1:
         raise PlatformSnapshotRequestError('v1 permits at most one declared exclusion')
+    if set(request['required_decision_gates']) & set(request['required_coordination_gates']):
+        raise PlatformSnapshotRequestError('decision and coordination gate registries must be disjoint')
+    _parse_timestamp(request['coordination_gate_contract_effective_at'])
 
 
 def load_snapshot_request(
@@ -85,6 +88,10 @@ def validate_request_receipt(project_root: str | Path, receipt: Mapping[str, Any
     _validate_schema(receipt, schema)
     if receipt['finding_count'] != len(receipt['findings']):
         raise PlatformSnapshotRequestError('finding_count does not match findings')
+    if receipt['governance_gate_count'] != (
+        receipt['decision_gate_count'] + receipt['coordination_gate_count']
+    ):
+        raise PlatformSnapshotRequestError('governance_gate_count does not match typed gate counts')
 
 
 def evaluate_snapshot_request(
@@ -99,6 +106,7 @@ def evaluate_snapshot_request(
 
     evaluated = _parse_timestamp(evaluated_at)
     observed = _parse_timestamp(snapshot['observed_at'])
+    coordination_effective = _parse_timestamp(request['coordination_gate_contract_effective_at'])
     snapshot_age_seconds = int((evaluated - observed).total_seconds())
     findings: list[dict[str, Any]] = []
 
@@ -153,6 +161,27 @@ def evaluate_snapshot_request(
         if change_id not in observed_gate_ids:
             add('REQUIRED_DECISION_GATE_MISSING', change_id=change_id)
 
+    coordination_gates = list(snapshot.get('coordination_gates', []))
+    coordination_required = observed >= coordination_effective
+    if coordination_required and snapshot.get('schema_version') != '1.1.0':
+        add(
+            'COORDINATION_GATE_SCHEMA_VERSION_REQUIRED',
+            expected='1.1.0',
+            observed=snapshot.get('schema_version'),
+        )
+    if coordination_required:
+        required_coordination_fields = set(request['required_coordination_gate_fields'])
+        observed_coordination_ids = {gate['change_id'] for gate in coordination_gates}
+        for gate in coordination_gates:
+            missing = sorted(required_coordination_fields - set(gate))
+            for field in missing:
+                add('COORDINATION_GATE_FIELD_MISSING', change_id=gate.get('change_id', '<unknown>'), field=field)
+        for change_id in request['required_coordination_gates']:
+            if change_id not in observed_coordination_ids:
+                add('REQUIRED_COORDINATION_GATE_MISSING', change_id=change_id)
+        for change_id in sorted(observed_coordination_ids - set(request['required_coordination_gates'])):
+            add('UNDECLARED_COORDINATION_GATE', change_id=change_id)
+
     exclusion_policy = request['exclusion_policy']
     exclusions = snapshot['excluded_changes']
     if len(exclusions) > exclusion_policy['maximum_exclusions']:
@@ -174,14 +203,14 @@ def evaluate_snapshot_request(
             add('EXCLUSION_NOTES_MISSING', change_id=exclusion['change_id'])
 
     graph_ids = {node['change_id'] for node in graph['nodes']}
-    platform_ids = {
+    graph_platform_ids = {
         change['change_id']
         for change in list(snapshot['pull_requests']) + list(snapshot['decision_gates'])
     }
     exclusion_ids = {entry['change_id'] for entry in exclusions}
-    for change_id in sorted(graph_ids - platform_ids):
+    for change_id in sorted(graph_ids - graph_platform_ids):
         add('GRAPH_CHANGE_MISSING_FROM_SNAPSHOT', change_id=change_id)
-    for change_id in sorted(platform_ids - graph_ids - exclusion_ids):
+    for change_id in sorted(graph_platform_ids - graph_ids - exclusion_ids):
         add('UNDECLARED_PLATFORM_CHANGE', change_id=change_id)
 
     conclusion = 'INCOMPLETE' if findings else 'COMPLETE'
@@ -198,6 +227,8 @@ def evaluate_snapshot_request(
         'maximum_snapshot_age_seconds': request['maximum_snapshot_age_seconds'],
         'pull_request_count': len(snapshot['pull_requests']),
         'decision_gate_count': len(snapshot['decision_gates']),
+        'coordination_gate_count': len(coordination_gates),
+        'governance_gate_count': len(snapshot['decision_gates']) + len(coordination_gates),
         'excluded_change_count': len(exclusions),
         'finding_count': len(findings),
         'findings': findings,
