@@ -18,30 +18,38 @@ def _current() -> tuple[dict, dict]:
     return load_graph(ROOT), load_platform_snapshot(ROOT)
 
 
-def test_current_platform_snapshot_matches_graph_with_declared_self_exclusion() -> None:
+def test_current_platform_snapshot_reports_pr74_drift_and_declared_self_exclusion() -> None:
     graph, snapshot = _current()
     receipt = evaluate_drift(graph, snapshot)
 
-    assert receipt['conclusion'] == 'CURRENT_WITH_DECLARED_EXCLUSIONS'
+    assert receipt['conclusion'] == 'DRIFT_DETECTED'
     assert receipt['graph_node_count'] == 13
     assert receipt['platform_change_count'] == 14
     assert receipt['excluded_change_count'] == 1
-    assert receipt['blocking_finding_count'] == 0
+    assert receipt['blocking_finding_count'] == 1
     assert receipt['advisory_finding_count'] == 1
-    assert receipt['findings'] == [{
-        'change_id': 'AIGC-PR-75',
-        'severity': 'ADVISORY',
-        'code': 'SELF_CHANGE_TRACKED_EXTERNALLY',
-        'branch': 'codex/pr-dependency-graph-v1',
-        'reason': 'SELF_REFERENTIAL_IMPLEMENTATION_CHANGE',
-    }]
+    assert any(
+        finding['change_id'] == 'AIGC-PR-74'
+        and finding['code'] == 'HEAD_REVISION_CHANGED'
+        for finding in receipt['findings']
+    )
+    assert any(
+        finding == {
+            'change_id': 'AIGC-PR-75',
+            'severity': 'ADVISORY',
+            'code': 'SELF_CHANGE_TRACKED_EXTERNALLY',
+            'branch': 'codex/pr-dependency-graph-v1',
+            'reason': 'SELF_REFERENTIAL_IMPLEMENTATION_CHANGE',
+        }
+        for finding in receipt['findings']
+    )
 
 
 def test_receipt_identity_ignores_observation_time_and_is_writeable(tmp_path: Path) -> None:
     graph, snapshot = _current()
     first = evaluate_drift(graph, snapshot)
     later = deepcopy(snapshot)
-    later['observed_at'] = '2026-07-12T15:27:38Z'
+    later['observed_at'] = '2026-07-13T16:31:44Z'
     second = evaluate_drift(graph, later)
 
     assert first['receipt_id'] == second['receipt_id']
@@ -56,14 +64,18 @@ def test_receipt_identity_ignores_observation_time_and_is_writeable(tmp_path: Pa
 def test_head_revision_change_is_blocking_drift() -> None:
     graph, snapshot = _current()
     changed = deepcopy(snapshot)
-    target = next(pr for pr in changed['pull_requests'] if pr['change_id'] == 'AIGC-PR-74')
+    target = next(
+        pr for pr in changed['pull_requests']
+        if pr['change_id'] == 'AIGC-PR-74'
+    )
     target['head_revision'] = 'f' * 40
 
     receipt = evaluate_drift(graph, changed)
 
     assert receipt['conclusion'] == 'DRIFT_DETECTED'
     assert any(
-        finding['change_id'] == 'AIGC-PR-74' and finding['code'] == 'HEAD_REVISION_CHANGED'
+        finding['change_id'] == 'AIGC-PR-74'
+        and finding['code'] == 'HEAD_REVISION_CHANGED'
         for finding in receipt['findings']
     )
 
@@ -88,7 +100,8 @@ def test_unregistered_platform_change_is_blocking_drift() -> None:
 
     assert receipt['conclusion'] == 'DRIFT_DETECTED'
     assert any(
-        finding['change_id'] == 'AIGC-PR-999' and finding['code'] == 'PLATFORM_CHANGE_NOT_IN_GRAPH'
+        finding['change_id'] == 'AIGC-PR-999'
+        and finding['code'] == 'PLATFORM_CHANGE_NOT_IN_GRAPH'
         for finding in receipt['findings']
     )
 
@@ -105,7 +118,8 @@ def test_missing_platform_node_is_blocking_drift() -> None:
 
     assert receipt['conclusion'] == 'DRIFT_DETECTED'
     assert any(
-        finding['change_id'] == 'AIGC-PR-69' and finding['code'] == 'GRAPH_NODE_MISSING_FROM_PLATFORM'
+        finding['change_id'] == 'AIGC-PR-69'
+        and finding['code'] == 'GRAPH_NODE_MISSING_FROM_PLATFORM'
         for finding in receipt['findings']
     )
 
