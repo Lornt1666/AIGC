@@ -45,7 +45,19 @@ jobs:
           python src/aigc.py validate --schema n8n_workflow_dispatch_bridge_packet --path data/n8n_bridge/aigc_n8n_workflow_dispatch_bridge_packet.json
 
       - name: Run tests
-        run: python -m pytest
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p reports/artifacts/test_results
+          python -m pytest 2>&1 | tee reports/artifacts/test_results/pytest.log
+
+      - name: Upload test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ github.sha }}
+          path: reports/artifacts/test_results
+          if-no-files-found: error
 
       - name: Evaluate production readiness evidence
         run: python src/aigc.py readiness
