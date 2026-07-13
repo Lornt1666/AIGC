@@ -2,19 +2,110 @@
   "$id": "https://aigc.local/schemas/pr_platform_snapshot.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": "1.1.0"
+          }
+        },
+        "required": [
+          "schema_version"
+        ]
+      },
+      "then": {
+        "required": [
+          "coordination_gates"
+        ]
+      }
+    }
+  ],
   "properties": {
-    "automatic_mutation_allowed": {"const": false},
-    "current_main_revision": {"pattern": "^[0-9a-f]{40}$", "type": "string"},
+    "automatic_mutation_allowed": {
+      "const": false
+    },
+    "coordination_gates": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "change_id": {
+            "pattern": "^AIGC-ISSUE-[0-9]+$",
+            "type": "string"
+          },
+          "decision_status": {
+            "enum": [
+              "UNRATIFIED",
+              "PARTIALLY_RATIFIED",
+              "RATIFIED",
+              "CHANGES_REQUESTED",
+              "SUPERSEDED"
+            ]
+          },
+          "gate_kind": {
+            "const": "PROGRAM_COORDINATION_GATE"
+          },
+          "number": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "state": {
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ]
+          },
+          "title": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "change_id",
+          "number",
+          "title",
+          "state",
+          "gate_kind",
+          "decision_status"
+        ],
+        "type": "object"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "current_main_revision": {
+      "pattern": "^[0-9a-f]{40}$",
+      "type": "string"
+    },
     "decision_gates": {
       "items": {
         "additionalProperties": false,
         "properties": {
-          "change_id": {"pattern": "^AIGC-ISSUE-[0-9]+$", "type": "string"},
-          "number": {"minimum": 1, "type": "integer"},
-          "state": {"enum": ["OPEN", "CLOSED"]},
-          "title": {"minLength": 1, "type": "string"}
+          "change_id": {
+            "pattern": "^AIGC-ISSUE-[0-9]+$",
+            "type": "string"
+          },
+          "number": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "state": {
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ]
+          },
+          "title": {
+            "minLength": 1,
+            "type": "string"
+          }
         },
-        "required": ["change_id", "number", "title", "state"],
+        "required": [
+          "change_id",
+          "number",
+          "title",
+          "state"
+        ],
         "type": "object"
       },
       "type": "array"
@@ -23,48 +114,146 @@
       "items": {
         "additionalProperties": false,
         "properties": {
-          "branch": {"minLength": 1, "type": "string"},
-          "change_id": {"pattern": "^AIGC-PR-[0-9]+$", "type": "string"},
-          "notes": {"minLength": 1, "type": "string"},
-          "reason": {"enum": ["SELF_REFERENTIAL_IMPLEMENTATION_CHANGE"]}
+          "branch": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "change_id": {
+            "pattern": "^AIGC-PR-[0-9]+$",
+            "type": "string"
+          },
+          "notes": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "reason": {
+            "enum": [
+              "SELF_REFERENTIAL_IMPLEMENTATION_CHANGE"
+            ]
+          }
         },
-        "required": ["change_id", "reason", "branch", "notes"],
+        "required": [
+          "change_id",
+          "reason",
+          "branch",
+          "notes"
+        ],
         "type": "object"
       },
       "type": "array",
       "uniqueItems": true
     },
-    "external_action_performed": {"const": false},
-    "observed_at": {"format": "date-time", "type": "string"},
-    "operator_id": {"minLength": 1, "type": "string"},
-    "operator_review_required": {"const": true},
+    "external_action_performed": {
+      "const": false
+    },
+    "observed_at": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "operator_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "operator_review_required": {
+      "const": true
+    },
     "pull_requests": {
       "items": {
         "additionalProperties": false,
         "properties": {
-          "base_branch": {"minLength": 1, "type": "string"},
-          "base_revision": {"pattern": "^[0-9a-f]{40}$", "type": "string"},
-          "branch": {"minLength": 1, "type": "string"},
-          "change_id": {"pattern": "^AIGC-PR-[0-9]+$", "type": "string"},
-          "draft": {"type": "boolean"},
-          "head_revision": {"pattern": "^[0-9a-f]{40}$", "type": "string"},
-          "mergeable": {"type": ["boolean", "null"]},
-          "number": {"minimum": 1, "type": "integer"},
-          "state": {"enum": ["OPEN", "CLOSED", "MERGED"]},
-          "title": {"minLength": 1, "type": "string"}
+          "base_branch": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "base_revision": {
+            "pattern": "^[0-9a-f]{40}$",
+            "type": "string"
+          },
+          "branch": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "change_id": {
+            "pattern": "^AIGC-PR-[0-9]+$",
+            "type": "string"
+          },
+          "draft": {
+            "type": "boolean"
+          },
+          "head_revision": {
+            "pattern": "^[0-9a-f]{40}$",
+            "type": "string"
+          },
+          "mergeable": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "number": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "state": {
+            "enum": [
+              "OPEN",
+              "CLOSED",
+              "MERGED"
+            ]
+          },
+          "title": {
+            "minLength": 1,
+            "type": "string"
+          }
         },
-        "required": ["change_id", "number", "title", "state", "draft", "mergeable", "branch", "base_branch", "base_revision", "head_revision"],
+        "required": [
+          "change_id",
+          "number",
+          "title",
+          "state",
+          "draft",
+          "mergeable",
+          "branch",
+          "base_branch",
+          "base_revision",
+          "head_revision"
+        ],
         "type": "object"
       },
       "minItems": 1,
       "type": "array"
     },
-    "repository": {"const": "Lornt1666/AIGC"},
-    "schema_version": {"const": "1.0.0"},
-    "snapshot_id": {"const": "AIGC-PR-PLATFORM-SNAPSHOT-001"},
-    "source": {"const": "GITHUB_CONNECTOR_READ_ONLY"}
+    "repository": {
+      "const": "Lornt1666/AIGC"
+    },
+    "schema_version": {
+      "enum": [
+        "1.0.0",
+        "1.1.0"
+      ]
+    },
+    "snapshot_id": {
+      "const": "AIGC-PR-PLATFORM-SNAPSHOT-001"
+    },
+    "source": {
+      "const": "GITHUB_CONNECTOR_READ_ONLY"
+    }
   },
-  "required": ["snapshot_id", "schema_version", "observed_at", "repository", "source", "current_main_revision", "operator_id", "operator_review_required", "automatic_mutation_allowed", "external_action_performed", "excluded_changes", "pull_requests", "decision_gates"],
+  "required": [
+    "snapshot_id",
+    "schema_version",
+    "observed_at",
+    "repository",
+    "source",
+    "current_main_revision",
+    "operator_id",
+    "operator_review_required",
+    "automatic_mutation_allowed",
+    "external_action_performed",
+    "excluded_changes",
+    "pull_requests",
+    "decision_gates"
+  ],
   "title": "AIGC Pull Request Platform Snapshot",
   "type": "object"
 }
