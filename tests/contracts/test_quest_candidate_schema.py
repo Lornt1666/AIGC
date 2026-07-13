@@ -14,6 +14,46 @@ SCHEMA = json.loads(
 VALIDATOR = Draft202012Validator(SCHEMA, format_checker=FormatChecker())
 
 
+def assessment() -> dict:
+    return {
+        "assessment_version": "1.0.0",
+        "status": "ASSESSED",
+        "basis_digest": "c" * 64,
+        "ology": {
+            "assessor_id": "AIGC-OLOGY-ASSESSOR-001",
+            "assessor_version": "1.0.0",
+            "primary_domain": "software_development",
+            "discipline_taxonomy": ["api_documentation", "software_coding"],
+            "detected_skills": ["python"],
+            "detected_tools": ["openapi", "python", "swagger"],
+            "required_skills": ["openapi", "python", "swagger"],
+            "automation_signals": {
+                "api_related": True,
+                "coding_related": True,
+            },
+            "ai_use_signals": {
+                "ai_allowed_explicit": False,
+                "ai_forbidden_explicit": False,
+                "ai_unclear": True,
+                "disclosure_needed": True,
+            },
+        },
+        "risk": {
+            "assessor_id": "AIGC-RISK-SCOUT-001",
+            "assessor_version": "1.0.0",
+            "risk_class": "low",
+            "radar_score": 88,
+            "radar_decision": "queue_for_phase_3",
+            "risk_flags": [],
+            "forbidden_flags": [],
+            "platform_policy_status": "green",
+            "operator_review_required": True,
+            "qualification_recommended": True,
+        },
+        "external_action_performed": False,
+    }
+
+
 def example() -> dict:
     return {
         "candidate_id": "cand_001example",
@@ -45,6 +85,7 @@ def example() -> dict:
             "discovery_mode": "manual_only",
             "external_action_mode": "operator authorization required",
         },
+        "assessment": None,
         "provenance": {
             "normalized_by": "QuestCandidateApplicationService",
             "catalog_version": "2.0.0",
@@ -82,8 +123,17 @@ def qualified_candidate(*, quest_created: bool) -> dict:
     return candidate
 
 
-def test_discovered_candidate_contract_is_valid() -> None:
+def test_discovered_manual_candidate_contract_is_valid() -> None:
     VALIDATOR.validate(example())
+
+
+def test_assessed_scout_candidate_contract_is_valid() -> None:
+    candidate = example()
+    candidate["source_id"] = "weworkremotely"
+    candidate["source_name"] = "We Work Remotely"
+    candidate["ingestion_channel"] = "existing_read_only_adapter"
+    candidate["assessment"] = assessment()
+    VALIDATOR.validate(candidate)
 
 
 def test_qualified_candidate_before_conversion_is_valid() -> None:
@@ -92,6 +142,20 @@ def test_qualified_candidate_before_conversion_is_valid() -> None:
 
 def test_converted_candidate_contract_is_valid() -> None:
     VALIDATOR.validate(qualified_candidate(quest_created=True))
+
+
+def test_assessment_requires_operator_review() -> None:
+    candidate = example()
+    candidate["assessment"] = assessment()
+    candidate["assessment"]["risk"]["operator_review_required"] = False
+    assert list(VALIDATOR.iter_errors(candidate))
+
+
+def test_assessment_cannot_record_external_action() -> None:
+    candidate = example()
+    candidate["assessment"] = assessment()
+    candidate["assessment"]["external_action_performed"] = True
+    assert list(VALIDATOR.iter_errors(candidate))
 
 
 def test_external_action_cannot_be_recorded_as_true() -> None:
