@@ -104,7 +104,7 @@ jobs:
 
       - name: Run Phase 26 planner
         run: |
-          python src/phase26_constellation_refactor.py --project-root . --config config/aigc_phase26_constellation_refactor.json
+          python src/phase26_constellation_refactor.py --project-root . --config config/phase26_constellation_refactor.json
 
       - name: Run employer deliverable procurement
         run: |
