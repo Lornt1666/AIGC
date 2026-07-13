@@ -20,8 +20,8 @@ External action performed: No
 - Targeted local verification: 18 PIBC-focused tests passed before publication.
 - Full repository CI: pending GitHub Actions at the time this receipt was written.
 - Production identity capability: not complete.
-- Merge authorization: not granted by this receipt.
-- Deployment authorization: not granted by this receipt.
+- Merge is not granted by this receipt.
+- Deployment is not granted by this receipt.
 
 ## Governing invariant
 
