@@ -13,13 +13,12 @@ from src.domain.repositories import AuditEventRepository, StoredRecord
 from src.phase2_radar import (
     CONNECTORS,
     BaseConnector,
-    Classifier,
     FetchResult,
     OpportunityRecord,
     RadarDecision,
-    RadarScorer,
 )
 
+from .opportunity_assessors import OpportunityAssessmentPipeline
 from .quest_candidates import QuestCandidateApplicationService
 
 
@@ -33,28 +32,6 @@ _CANDIDATE_SOURCE_IDS = {
 _ALLOWED_CONNECTORS = frozenset(
     {"wwr_rss", "remotive", "remoteok", "github_search"}
 )
-_DOMAIN_MAP = {
-    "software_coding": "software_development",
-    "api_documentation": "api_documentation",
-    "research": "research",
-    "data_analysis": "data_analysis",
-    "business_operations": "business_operations",
-    "prompt_engineering": "prompt_engineering",
-    "writing_content": "writing_content",
-    "design_ui_ux": "design_ui_ux",
-    "qa_testing": "qa_testing",
-    "customer_support": "customer_support",
-    "cybersecurity_bug_bounty": "cybersecurity",
-    "open_source_contribution": "open_source_contribution",
-}
-_SERIOUS_RISK_FLAGS = frozenset(
-    {
-        "regulated_or_sensitive_domain",
-        "ai_use_forbidden_or_restricted",
-        "privacy_or_security_sensitive",
-        "suspicious_payment_setup",
-    }
-)
 
 
 def _now() -> str:
@@ -67,6 +44,7 @@ def _canonical(value: Mapping[str, Any]) -> str:
         sort_keys=True,
         separators=(",", ":"),
         ensure_ascii=False,
+        default=str,
     )
 
 
@@ -94,7 +72,7 @@ class OpportunityScoutUnavailable(OpportunityScoutError):
 
 
 class OpportunityScoutApplicationService:
-    """Run fixed, reviewed Phase 2 readers and persist governed candidates."""
+    """Run fixed readers, assess results, and persist governed candidates."""
 
     def __init__(
         self,
@@ -104,6 +82,7 @@ class OpportunityScoutApplicationService:
         source_config_path: str | Path,
         exact_revision: str = "LOCAL_UNVERIFIED",
         connector_registry: Mapping[str, type[BaseConnector]] | None = None,
+        assessment_pipeline: OpportunityAssessmentPipeline | None = None,
     ) -> None:
         self.candidate_service = candidate_service
         self.audit_repository = audit_repository
@@ -111,6 +90,9 @@ class OpportunityScoutApplicationService:
         self.exact_revision = exact_revision
         self.connector_registry: dict[str, type[BaseConnector]] = dict(
             connector_registry or CONNECTORS
+        )
+        self.assessment_pipeline = (
+            assessment_pipeline or OpportunityAssessmentPipeline()
         )
         document = json.loads(
             self.source_config_path.read_text(encoding="utf-8")
@@ -125,8 +107,6 @@ class OpportunityScoutApplicationService:
             for source in document.get("sources", [])
             if source.get("slug")
         }
-        self.classifier = Classifier()
-        self.scorer = RadarScorer()
 
     def discover(
         self,
@@ -148,13 +128,18 @@ class OpportunityScoutApplicationService:
                 {
                     "limit": limit,
                     "source_ids": requested_sources,
+                    "assessment_version": (
+                        self.assessment_pipeline.ASSESSMENT_VERSION
+                    ),
                     "external_actions_allowed": False,
                 }
             ).encode("utf-8")
         ).hexdigest()
 
         source_results: list[dict[str, Any]] = []
-        assessed_records: list[tuple[str, OpportunityRecord]] = []
+        assessed_records: list[
+            tuple[str, OpportunityRecord, dict[str, Any]]
+        ] = []
         successful_sources = 0
 
         for source_id, source, connector_type in validated_sources:
@@ -185,17 +170,27 @@ class OpportunityScoutApplicationService:
             successful_sources += 1
             eligible = 0
             rejected = 0
+            assessment_errors = 0
             for record in result.normalized_records:
-                assessed = self.classifier.classify(record)
-                assessed = self.scorer.score(assessed)
+                try:
+                    assessed, assessment = self.assessment_pipeline.assess(
+                        record
+                    )
+                except Exception:
+                    assessment_errors += 1
+                    continue
+
+                risk = assessment["risk"]
                 if (
-                    assessed.radar_decision == RadarDecision.REJECT.value
-                    or assessed.forbidden_flags
+                    risk["radar_decision"] == RadarDecision.REJECT.value
+                    or risk["forbidden_flags"]
                 ):
                     rejected += 1
                     continue
                 eligible += 1
-                assessed_records.append((source_id, assessed))
+                assessed_records.append(
+                    (source_id, assessed, assessment)
+                )
 
             source_results.append(
                 {
@@ -205,6 +200,7 @@ class OpportunityScoutApplicationService:
                     "records_fetched": len(result.normalized_records),
                     "records_eligible": eligible,
                     "records_rejected": rejected,
+                    "assessment_errors": assessment_errors,
                 }
             )
 
@@ -213,7 +209,7 @@ class OpportunityScoutApplicationService:
         )
         deduped_records.sort(
             key=lambda item: (
-                item[1].radar_score,
+                int(item[2]["risk"]["radar_score"]),
                 item[1].updated_at or item[1].posted_at,
                 item[1].title,
             ),
@@ -226,10 +222,14 @@ class OpportunityScoutApplicationService:
         existing_candidates = 0
         ingestion_errors: list[dict[str, Any]] = []
 
-        for source_id, record in selected:
+        for source_id, record, assessment in selected:
             candidate_id = f"cand_{record.opportunity_id}"
             try:
-                payload = self._candidate_payload(source_id, record)
+                payload = self._candidate_payload(
+                    source_id,
+                    record,
+                    assessment,
+                )
                 candidate_id = str(payload["candidate_id"])
                 existed = (
                     self.candidate_service.get_candidate(candidate_id)
@@ -254,9 +254,16 @@ class OpportunityScoutApplicationService:
             candidates.append(
                 {
                     **_record_response(stored),
-                    "radar_score": record.radar_score,
-                    "radar_decision": record.radar_decision,
-                    "radar_risk_flags": list(record.risk_flags),
+                    "radar_score": assessment["risk"]["radar_score"],
+                    "radar_decision": assessment["risk"][
+                        "radar_decision"
+                    ],
+                    "radar_risk_flags": list(
+                        assessment["risk"]["risk_flags"]
+                    ),
+                    "qualification_recommended": assessment["risk"][
+                        "qualification_recommended"
+                    ],
                 }
             )
 
@@ -266,6 +273,10 @@ class OpportunityScoutApplicationService:
         elif (
             any(item["status"] == "error" for item in source_results)
             or ingestion_errors
+            or any(
+                int(item.get("assessment_errors", 0)) > 0
+                for item in source_results
+            )
         ):
             status = "partial"
         elif not candidates:
@@ -278,11 +289,18 @@ class OpportunityScoutApplicationService:
             "run_id": run_id,
             "started_at": started_at,
             "completed_at": completed_at,
+            "assessment_version": (
+                self.assessment_pipeline.ASSESSMENT_VERSION
+            ),
             "requested_sources": list(requested_sources),
             "scanned_sources": successful_sources,
             "source_results": source_results,
             "records_assessed": sum(
                 int(item.get("records_fetched", 0))
+                for item in source_results
+            ),
+            "assessment_errors": sum(
+                int(item.get("assessment_errors", 0))
                 for item in source_results
             ),
             "eligible_records": len(assessed_records),
@@ -386,27 +404,41 @@ class OpportunityScoutApplicationService:
             "error_type": type(error).__name__,
             "message": str(error)[:1000],
             "records_fetched": 0,
+            "assessment_errors": 0,
         }
 
     @staticmethod
     def _dedupe(
-        records: Sequence[tuple[str, OpportunityRecord]],
-    ) -> tuple[list[tuple[str, OpportunityRecord]], int]:
-        selected: dict[str, tuple[str, OpportunityRecord]] = {}
-        for source_id, record in records:
+        records: Sequence[
+            tuple[str, OpportunityRecord, dict[str, Any]]
+        ],
+    ) -> tuple[
+        list[tuple[str, OpportunityRecord, dict[str, Any]]],
+        int,
+    ]:
+        selected: dict[
+            str,
+            tuple[str, OpportunityRecord, dict[str, Any]],
+        ] = {}
+        for source_id, record, assessment in records:
             key = (
                 record.source_url.strip().lower()
                 or f"{source_id}:{record.opportunity_id}"
             )
             current = selected.get(key)
-            if current is None or record.radar_score > current[1].radar_score:
-                selected[key] = (source_id, record)
+            if (
+                current is None
+                or assessment["risk"]["radar_score"]
+                > current[2]["risk"]["radar_score"]
+            ):
+                selected[key] = (source_id, record, assessment)
         return list(selected.values()), len(records) - len(selected)
 
     def _candidate_payload(
         self,
         scout_source_id: str,
         record: OpportunityRecord,
+        assessment: Mapping[str, Any],
     ) -> dict[str, Any]:
         source_id = _CANDIDATE_SOURCE_IDS[scout_source_id]
         title = record.title.strip()
@@ -417,24 +449,8 @@ class OpportunityScoutApplicationService:
                 "Opportunity record lacks a valid title or source URL"
             )
 
-        skills = sorted(
-            {
-                str(value).strip().lower()
-                for value in [
-                    *record.skills_detected,
-                    *record.tools_detected,
-                ]
-                if str(value).strip()
-            }
-        )[:100]
-        domain = next(
-            (
-                _DOMAIN_MAP[value]
-                for value in record.discipline_taxonomy
-                if value in _DOMAIN_MAP
-            ),
-            "general_remote_work",
-        )
+        ology = dict(assessment["ology"])
+        risk = dict(assessment["risk"])
 
         budget_range: dict[str, Any] | None = None
         compensation_text: str | None = None
@@ -467,20 +483,6 @@ class OpportunityScoutApplicationService:
                 if part
             ) or None
 
-        risk_flags = set(record.risk_flags)
-        if record.forbidden_flags:
-            risk_class = "restricted"
-        elif risk_flags.intersection(_SERIOUS_RISK_FLAGS):
-            risk_class = "high"
-        elif (
-            risk_flags
-            or record.radar_decision
-            == RadarDecision.HOLD_FOR_HUMAN_REVIEW.value
-        ):
-            risk_class = "medium"
-        else:
-            risk_class = "low"
-
         return {
             "candidate_id": f"cand_{record.opportunity_id}",
             "source_id": source_id,
@@ -488,8 +490,8 @@ class OpportunityScoutApplicationService:
             "title": title[:500],
             "description": description[:50000],
             "proposed_quest_title": title[:500],
-            "domain": domain,
-            "required_skills": skills,
+            "domain": ology["primary_domain"],
+            "required_skills": list(ology["required_skills"]),
             "budget_range": budget_range,
             "compensation_text": compensation_text,
             "deadline_days": None,
@@ -501,13 +503,14 @@ class OpportunityScoutApplicationService:
                 else "unspecified"
             ),
             "issuer": (record.employer or record.client)[:500] or None,
-            "risk_class": risk_class,
+            "risk_class": risk["risk_class"],
             "rights_status": (
                 "official_api_record"
                 if record.source_type == "api"
                 else "public_posting"
             ),
             "ingestion_channel": "existing_read_only_adapter",
+            "assessment": dict(assessment),
         }
 
     def _record_run(
@@ -519,9 +522,11 @@ class OpportunityScoutApplicationService:
         summary = {
             "run_id": report["run_id"],
             "status": report["status"],
+            "assessment_version": report["assessment_version"],
             "requested_sources": report["requested_sources"],
             "scanned_sources": report["scanned_sources"],
             "records_assessed": report["records_assessed"],
+            "assessment_errors": report["assessment_errors"],
             "eligible_records": report["eligible_records"],
             "duplicates_removed": report["duplicates_removed"],
             "new_candidates": report["new_candidates"],
