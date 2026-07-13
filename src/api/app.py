@@ -11,6 +11,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from src.api.composition import build_container
 from src.api.quest_board import QUEST_BOARD_HTML
+from src.api.quest_lifecycle import build_quest_lifecycle_router
 from src.application import (
     OpportunityScoutPolicyError,
     OpportunityScoutUnavailable,
@@ -140,16 +141,22 @@ def create_app(database_path: str | Path | None = None) -> FastAPI:
     container = build_container(database_path)
     api = FastAPI(
         title="AIGC Local Operator API",
-        version="1.3.0-local",
+        version="1.4.0-local",
         description=(
             "Localhost-only, non-production AIGC control surface. "
             "IAL0/AAL0/FAL0. Opportunity discovery is fixed-source and "
-            "read-only; candidate intake and Quest creation are internal only; "
-            "external actions remain blocked."
+            "read-only; Quest work acceptance is an internal, receipt-bound "
+            "operator decision and never accepts an external contract."
         ),
     )
     api.state.container = container
     api.state.database_path = str(container.database_path)
+    api.include_router(
+        build_quest_lifecycle_router(
+            container,
+            identity_fixture_path=FIXTURE,
+        )
+    )
 
     @api.get("/", response_class=HTMLResponse)
     @api.get("/quest-board", response_class=HTMLResponse)
@@ -164,6 +171,7 @@ def create_app(database_path: str | Path | None = None) -> FastAPI:
             "persistence": "sqlite",
             "quest_board": "available",
             "opportunity_scout": "available_read_only",
+            "work_acceptance_gate": "available_internal_receipt_bound",
             "external_action_performed": False,
         }
 
@@ -181,10 +189,14 @@ def create_app(database_path: str | Path | None = None) -> FastAPI:
             "opportunity_scout": "fixed_source_read_only",
             "quest_candidate_intake": "internal_persistent",
             "quest_creation": "qualified_candidate_to_proposed_quest",
+            "work_acceptance_gate": (
+                "proposed_to_approval_required_to_receipt_bound_work_accepted"
+            ),
             "canonical_acceptance_semantics": {
                 "work_acceptance": "WORK_ACCEPTED",
                 "delivery_acceptance": "ACCEPTED_FOR_DELIVERY",
                 "generic_accepted_prohibited": True,
+                "external_contract_acceptance": False,
             },
             "production_identity_access": "blocking",
             "deployment_authorized": False,
@@ -220,6 +232,18 @@ def create_app(database_path: str | Path | None = None) -> FastAPI:
                 "blocking": False,
             },
             "work_acceptance_transition": {
+                "state": "implemented_internal_local_simulation",
+                "path": [
+                    "PROPOSED",
+                    "APPROVAL_REQUIRED",
+                    "WORK_ACCEPTED",
+                ],
+                "authorization_receipt_required": True,
+                "production_identity_required_for_production_use": True,
+                "external_contract_accepted": False,
+                "blocking": False,
+            },
+            "delivery_judgment_gate": {
                 "state": "not_implemented",
                 "blocking": True,
             },
