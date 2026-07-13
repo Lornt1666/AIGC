@@ -1,0 +1,205 @@
+{
+  "catalog_version": "2.0.0",
+  "display_name": "AIGC Work Source Gate Catalog Addendum",
+  "purpose": "Adds every work-related website example previously discussed in ChatGPT logs that was not already present in the base catalog.",
+  "authority_boundary": {
+    "catalog_inclusion_grants_access": false,
+    "catalog_inclusion_grants_external_action": false,
+    "default_external_action_performed": false
+  },
+  "sources": [
+    {
+      "id": "jobicy",
+      "name": "Jobicy",
+      "category": "remote_job_boards",
+      "base_url": "https://jobicy.com",
+      "access_mode": "read_only_official_feed_or_manual_entry",
+      "connector_status": "read_only_candidate",
+      "discovery_mode": "approved_read_only_adapter_or_manual_entry"
+    },
+    {
+      "id": "solidgigs",
+      "name": "SolidGigs",
+      "category": "remote_job_boards",
+      "base_url": "https://solidgigs.com",
+      "access_mode": "manual_entry_or_approved_account_connector_only",
+      "connector_status": "account_sensitive"
+    },
+    {
+      "id": "freelancermap",
+      "name": "freelancermap",
+      "category": "remote_job_boards",
+      "base_url": "https://www.freelancermap.com",
+      "access_mode": "manual_entry_or_approved_connector_only",
+      "connector_status": "review_required"
+    },
+    {
+      "id": "adzuna",
+      "name": "Adzuna",
+      "category": "general_job_boards",
+      "base_url": "https://www.adzuna.com",
+      "access_mode": "read_only_official_api_or_manual_entry",
+      "connector_status": "read_only_candidate",
+      "discovery_mode": "approved_read_only_adapter_or_manual_entry"
+    },
+    {
+      "id": "the_muse",
+      "name": "The Muse",
+      "category": "general_job_boards",
+      "base_url": "https://www.themuse.com",
+      "access_mode": "read_only_official_api_or_manual_entry",
+      "connector_status": "read_only_candidate",
+      "discovery_mode": "approved_read_only_adapter_or_manual_entry"
+    },
+    {
+      "id": "usajobs",
+      "name": "USAJOBS",
+      "category": "government_employment",
+      "base_url": "https://www.usajobs.gov",
+      "access_mode": "read_only_official_api_or_manual_entry_application_review_required",
+      "connector_status": "read_only_candidate",
+      "discovery_mode": "approved_read_only_adapter_or_manual_entry"
+    },
+    {
+      "id": "canada_job_bank",
+      "name": "Canada Job Bank",
+      "category": "government_employment",
+      "base_url": "https://www.jobbank.gc.ca",
+      "access_mode": "manual_entry_or_approved_official_interface_only",
+      "connector_status": "manual_only"
+    },
+    {
+      "id": "fiverr",
+      "name": "Fiverr",
+      "category": "freelance_marketplaces",
+      "base_url": "https://www.fiverr.com",
+      "access_mode": "manual_entry_and_manual_handoff_default",
+      "connector_status": "manual_only"
+    },
+    {
+      "id": "topcoder",
+      "name": "Topcoder",
+      "category": "developer_bounties",
+      "base_url": "https://www.topcoder.com",
+      "access_mode": "manual_entry_or_approved_official_interface_only",
+      "connector_status": "account_sensitive"
+    },
+    {
+      "id": "gitcoin",
+      "name": "Gitcoin",
+      "category": "developer_bounties",
+      "base_url": "https://www.gitcoin.co",
+      "access_mode": "manual_entry_or_approved_official_interface_only",
+      "connector_status": "financial_and_identity_sensitive",
+      "safety_notes": "No wallet, token, payment, or on-chain action is authorized by catalog inclusion."
+    },
+    {
+      "id": "hackerone",
+      "name": "HackerOne",
+      "category": "authorized_security_programs",
+      "base_url": "https://www.hackerone.com",
+      "access_mode": "manual_entry_or_approved_account_connector_only",
+      "connector_status": "high_risk_manual_only",
+      "safety_notes": "Only explicitly authorized programs and in-scope testing. Discovery does not authorize scanning or exploitation."
+    },
+    {
+      "id": "bugcrowd",
+      "name": "Bugcrowd",
+      "category": "authorized_security_programs",
+      "base_url": "https://www.bugcrowd.com",
+      "access_mode": "manual_entry_or_approved_account_connector_only",
+      "connector_status": "high_risk_manual_only",
+      "safety_notes": "Only explicitly authorized programs and in-scope testing. Discovery does not authorize scanning or exploitation."
+    },
+    {
+      "id": "facebook_marketplace",
+      "name": "Facebook Marketplace",
+      "category": "local_services_and_classifieds",
+      "base_url": "https://www.facebook.com/marketplace",
+      "access_mode": "manual_entry_only",
+      "connector_status": "identity_sensitive"
+    },
+    {
+      "id": "reddit_work_communities",
+      "name": "Reddit Work Communities",
+      "category": "community_work_leads",
+      "base_url": "https://www.reddit.com",
+      "access_mode": "manual_entry_or_approved_read_only_api",
+      "connector_status": "terms_sensitive",
+      "examples": [
+        "r/forhire",
+        "r/freelance",
+        "r/hiring",
+        "r/Entrepreneur"
+      ]
+    },
+    {
+      "id": "nextdoor",
+      "name": "Nextdoor",
+      "category": "local_services_and_communities",
+      "base_url": "https://nextdoor.com",
+      "access_mode": "manual_entry_only",
+      "connector_status": "identity_and_location_sensitive"
+    },
+    {
+      "id": "twitter_x",
+      "name": "X / Twitter",
+      "category": "professional_outreach_channels",
+      "platform_role": "lead_and_outreach_channel",
+      "base_url": "https://x.com",
+      "access_mode": "manual_research_and_operator_written_outreach_only",
+      "connector_status": "outreach_manual_only",
+      "external_action_mode": "no posting, messaging, or contact without separate operator authorization"
+    },
+    {
+      "id": "apollo_io",
+      "name": "Apollo.io",
+      "category": "professional_outreach_and_prospecting",
+      "platform_role": "prospecting_tool",
+      "base_url": "https://www.apollo.io",
+      "access_mode": "manual_research_or_approved_account_connector_only",
+      "connector_status": "privacy_and_outreach_sensitive",
+      "external_action_mode": "no contact export or messaging without separate authorization and lawful basis"
+    },
+    {
+      "id": "hunter_io",
+      "name": "Hunter.io",
+      "category": "professional_outreach_and_prospecting",
+      "platform_role": "prospecting_tool",
+      "base_url": "https://hunter.io",
+      "access_mode": "manual_research_or_approved_account_connector_only",
+      "connector_status": "privacy_and_outreach_sensitive",
+      "external_action_mode": "no contact export or messaging without separate authorization and lawful basis"
+    },
+    {
+      "id": "shopify",
+      "name": "Shopify",
+      "category": "self_employment_commerce_channels",
+      "platform_role": "commerce_channel",
+      "base_url": "https://www.shopify.com",
+      "access_mode": "manual_business_planning_or_approved_store_connector_only",
+      "connector_status": "commerce_and_financial_sensitive",
+      "external_action_mode": "no store, listing, order, payment, or customer action without separate authorization"
+    },
+    {
+      "id": "etsy",
+      "name": "Etsy",
+      "category": "self_employment_commerce_channels",
+      "platform_role": "commerce_channel",
+      "base_url": "https://www.etsy.com",
+      "access_mode": "manual_business_planning_or_approved_account_connector_only",
+      "connector_status": "commerce_and_financial_sensitive",
+      "external_action_mode": "no listing, shop, order, payment, or customer action without separate authorization"
+    },
+    {
+      "id": "redbubble",
+      "name": "Redbubble",
+      "category": "self_employment_commerce_channels",
+      "platform_role": "commerce_channel",
+      "base_url": "https://www.redbubble.com",
+      "access_mode": "manual_business_planning_and_manual_handoff_only",
+      "connector_status": "commerce_and_ip_sensitive",
+      "external_action_mode": "no listing, upload, sale, payment, or customer action without separate authorization"
+    }
+  ]
+}
