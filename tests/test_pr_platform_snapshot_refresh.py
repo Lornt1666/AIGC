@@ -95,7 +95,7 @@ def test_stale_snapshot_blocks_drift_evaluation(tmp_path: Path) -> None:
 
 
 def test_complete_snapshot_with_head_change_reports_drift(tmp_path: Path) -> None:
-    snapshot = deepcopy(load_platform_snapshot(ROOT))
+    snapshot = deepcopy(load_platform_snapshot(ROOT, SNAPSHOT_PATH))
     pr_74 = next(
         pr for pr in snapshot['pull_requests']
         if pr['change_id'] == 'AIGC-PR-74'
