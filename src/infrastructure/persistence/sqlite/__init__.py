@@ -1,6 +1,8 @@
 from .connection import SQLiteConnectionFactory
 from .migrations import MigrationResult, SQLiteMigrator
 from .operations import BackupReceipt, IntegrityReceipt, check_integrity, create_backup, write_receipt
+from .quest_candidates import SQLiteQuestCandidateRepository
+from .quests import SQLiteQuestRepository
 from .repositories import (
     SQLiteAuditEventRepository,
     SQLiteAuthorizationReceiptRepository,
@@ -15,6 +17,8 @@ __all__ = [
     "SQLiteAuthorizationReceiptRepository",
     "SQLiteConnectionFactory",
     "SQLiteMigrator",
+    "SQLiteQuestCandidateRepository",
+    "SQLiteQuestRepository",
     "SQLiteRecordRepository",
     "check_integrity",
     "create_backup",
