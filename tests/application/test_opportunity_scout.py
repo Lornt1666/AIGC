@@ -106,6 +106,26 @@ class FakeNoPayConnector:
         )
 
 
+class FakeMalformedConnector:
+    def __init__(self, source: dict, run_config: dict) -> None:
+        self.source = source
+        self.run_config = run_config
+
+    def fetch(self) -> FetchResult:
+        valid = strong_record(opportunity_id="e" * 24)
+        malformed = strong_record(opportunity_id="f" * 24)
+        malformed.source_url = ""
+        return FetchResult(
+            source_slug="weworkremotely",
+            source_name="We Work Remotely",
+            raw_records=[
+                {"id": valid.opportunity_id},
+                {"id": malformed.opportunity_id},
+            ],
+            normalized_records=[valid, malformed],
+        )
+
+
 class FailingConnector:
     def __init__(self, source: dict, run_config: dict) -> None:
         self.source = source
@@ -113,6 +133,14 @@ class FailingConnector:
 
     def fetch(self) -> FetchResult:
         raise URLError("offline test fixture")
+
+
+class CountingConnector(FakeWWRConnector):
+    fetch_calls = 0
+
+    def fetch(self) -> FetchResult:
+        type(self).fetch_calls += 1
+        return super().fetch()
 
 
 def build_scout(
@@ -137,7 +165,9 @@ def build_scout(
     return scout, factory
 
 
-def test_scout_filters_forbidden_records_and_persists_candidate(tmp_path: Path) -> None:
+def test_scout_filters_forbidden_records_and_persists_candidate(
+    tmp_path: Path,
+) -> None:
     scout, factory = build_scout(
         tmp_path,
         {"wwr_rss": FakeWWRConnector},
@@ -149,6 +179,7 @@ def test_scout_filters_forbidden_records_and_persists_candidate(tmp_path: Path) 
     assert report["scanned_sources"] == 1
     assert report["records_assessed"] == 2
     assert report["eligible_records"] == 1
+    assert report["duplicates_removed"] == 0
     assert report["new_candidates"] == 1
     assert report["existing_candidates"] == 0
     assert report["external_reads_performed"] is True
@@ -190,7 +221,10 @@ def test_scout_replay_is_idempotent_across_runs(tmp_path: Path) -> None:
     assert first["new_candidates"] == 1
     assert second["new_candidates"] == 0
     assert second["existing_candidates"] == 1
-    assert second["candidates"][0]["candidate_id"] == first["candidates"][0]["candidate_id"]
+    assert (
+        second["candidates"][0]["candidate_id"]
+        == first["candidates"][0]["candidate_id"]
+    )
 
 
 def test_scout_does_not_fabricate_budget_or_deadline(tmp_path: Path) -> None:
@@ -208,7 +242,42 @@ def test_scout_does_not_fabricate_budget_or_deadline(tmp_path: Path) -> None:
     assert candidate["deadline_at"] is None
 
 
-def test_scout_rejects_unconfigured_or_credential_sources(tmp_path: Path) -> None:
+def test_scout_validates_all_sources_before_any_read(tmp_path: Path) -> None:
+    CountingConnector.fetch_calls = 0
+    scout, _ = build_scout(
+        tmp_path,
+        {"wwr_rss": CountingConnector},
+    )
+
+    with pytest.raises(OpportunityScoutPolicyError):
+        scout.discover(
+            limit=1,
+            source_ids=["weworkremotely", "upwork"],
+        )
+
+    assert CountingConnector.fetch_calls == 0
+
+
+def test_scout_isolates_malformed_record_and_keeps_valid_candidate(
+    tmp_path: Path,
+) -> None:
+    scout, _ = build_scout(
+        tmp_path,
+        {"wwr_rss": FakeMalformedConnector},
+    )
+
+    report = scout.discover(limit=2, source_ids=["weworkremotely"])
+
+    assert report["status"] == "partial"
+    assert report["new_candidates"] == 1
+    assert len(report["ingestion_errors"]) == 1
+    assert report["ingestion_errors"][0]["candidate_id"] == f"cand_{'f' * 24}"
+    assert report["candidates"][0]["candidate_id"] == f"cand_{'e' * 24}"
+
+
+def test_scout_rejects_unconfigured_or_credential_sources(
+    tmp_path: Path,
+) -> None:
     scout, _ = build_scout(
         tmp_path,
         {"wwr_rss": FakeWWRConnector},
@@ -240,6 +309,7 @@ def test_scout_returns_evidenced_failure_when_every_source_is_unavailable(
 
     with factory.connect() as connection:
         row = connection.execute(
-            "SELECT event_type FROM audit_events WHERE event_type = 'opportunity_scout.completed'"
+            "SELECT event_type FROM audit_events "
+            "WHERE event_type = 'opportunity_scout.completed'"
         ).fetchone()
     assert row is not None
