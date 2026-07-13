@@ -1,4 +1,5 @@
 from .authorization_service import AuthorizationApplicationService
+from .identity_boundary import IdentityBoundaryService
 from .opportunity_assessors import (
     OlogyAssessor,
     OpportunityAssessmentPipeline,
@@ -15,6 +16,7 @@ from .quests import QuestApplicationService
 
 __all__ = [
     "AuthorizationApplicationService",
+    "IdentityBoundaryService",
     "OlogyAssessor",
     "OpportunityAssessmentPipeline",
     "OpportunityScoutApplicationService",
