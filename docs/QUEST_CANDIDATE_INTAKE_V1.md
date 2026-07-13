@@ -4,31 +4,31 @@ Status: bounded local implementation for draft review.
 
 ## Purpose
 
-Quest Candidate Intake converts a manually supplied opportunity record or an output from an already governed read-only adapter into a persistent, schema-valid candidate on the local Quest Board.
+Quest Candidate Intake converts a manually supplied opportunity record or output from an already governed read-only adapter into a persistent, schema-valid candidate on the local Quest Board.
 
 A candidate is not:
 
 - a Quest;
-- an application;
-- a proposal submission;
-- a bid;
+- an application or bid;
 - a contract;
 - permission to contact a person;
-- permission to use account credentials;
-- permission to perform any external action.
+- permission to use credentials;
+- permission to perform an external action.
 
-The candidate boundary is:
+The complete bounded intake path is:
 
 ```text
 manual entry or governed read-only adapter
 → source-catalog policy check
-→ candidate normalization
-→ JSON Schema validation
-→ atomic SQLite candidate + audit write
-→ Quest Board
+→ candidate normalization and schema validation
+→ Candidate DISCOVERED
 → accountable-operator qualification
-→ eligible for separate canonical Quest creation
+→ Candidate QUALIFIED
+→ separate atomic Quest creation command
+→ Quest PROPOSED
 ```
+
+Qualification and Quest creation do not authorize `WORK_ACCEPTED`.
 
 ## API surface
 
@@ -40,9 +40,7 @@ Catalog inclusion is informational and policy-bearing. It does not enable a conn
 
 ### `POST /api/v1/quests/candidates/ingest`
 
-Records and normalizes supplied candidate data.
-
-The route does not retrieve the supplied URL. Network retrieval remains inside separately reviewed read-only adapters.
+Records and normalizes supplied candidate data. The route does not retrieve the supplied URL.
 
 Example:
 
@@ -64,16 +62,14 @@ Example:
   "deadline_days": 14,
   "remote_status": "remote",
   "risk_class": "low",
-  "rights_status": "public_posting",
+  "rights_status": "manual_operator_entry",
   "ingestion_channel": "manual"
 }
 ```
 
 ### `GET /api/v1/quests/candidates`
 
-Lists persistent candidates.
-
-Optional status filter:
+Lists persistent candidates. Optional filters:
 
 ```text
 GET /api/v1/quests/candidates?status=DISCOVERED
@@ -82,20 +78,18 @@ GET /api/v1/quests/candidates?status=QUALIFIED
 
 ### `POST /api/v1/quests/candidates/{candidate_id}/qualify`
 
-Records the accountable operator's decision that a candidate may proceed to canonical Quest creation.
-
-Example:
+Records the accountable operator's decision that the candidate may proceed to Quest proposal creation.
 
 ```json
 {
   "expected_revision": 1,
   "decision": "QUALIFY",
   "operator_role": "ACCOUNTABLE_OPERATOR",
-  "reason": "Scope is sufficiently clear for governed quest drafting."
+  "reason": "Scope is sufficiently clear for governed Quest drafting."
 }
 ```
 
-Qualification sets:
+Qualification records:
 
 ```text
 status = QUALIFIED
@@ -104,26 +98,43 @@ quest_created = false
 next_step = CREATE_QUEST_UNDER_CANONICAL_LIFECYCLE
 ```
 
-This endpoint intentionally does not create the Quest aggregate. Quest creation remains a separate implementation step so the candidate train does not silently resolve or bypass the canonical lifecycle decision gate.
+### `POST /api/v1/quests/candidates/{candidate_id}/create-quest`
 
-## Persistence
+Creates a canonical Quest from a qualified candidate.
 
-Quest Candidate Intake uses the existing SQLite substrate:
+```json
+{
+  "expected_candidate_revision": 2,
+  "operator_role": "ACCOUNTABLE_OPERATOR"
+}
+```
 
-- `records` with collection `quest_candidates`;
-- optimistic revision checks;
-- idempotency records;
-- append-only audit events;
-- one transaction for candidate mutation and audit evidence;
-- restart-safe retrieval.
+The conversion transaction:
+
+1. verifies the exact candidate revision;
+2. verifies `QUALIFIED` and Quest-creation authorization;
+3. creates the Quest in `PROPOSED`;
+4. updates the candidate with the Quest identifier and conversion digest;
+5. appends audit evidence;
+6. stores the idempotent result.
+
+After conversion:
+
+```text
+candidate.qualification.quest_created = true
+candidate.qualification.next_step = REQUEST_WORK_ACCEPTANCE
+quest.lifecycle_state = PROPOSED
+work_accepted = false
+external_action_performed = false
+```
 
 ## Ingestion channels
 
 | Channel | Meaning |
 |---|---|
 | `manual` | The operator or another internal component supplies the posting data. No remote retrieval occurs. |
-| `existing_read_only_adapter` | One of the currently implemented Phase 2 read-only adapters supplies the data. |
-| `approved_read_only_adapter` | Reserved for a future adapter explicitly promoted to `read_only_enabled`. |
+| `existing_read_only_adapter` | An implemented Phase 2 read-only adapter supplies the data. |
+| `approved_read_only_adapter` | Reserved for an adapter separately promoted to `read_only_enabled`. |
 
 The current existing adapter allowlist is:
 
@@ -136,46 +147,40 @@ All other sources default to manual entry until their terms, interface, connecto
 
 ## Work-source coverage
 
-The combined catalog family contains every work-related website example previously discussed for AIGC, organized as:
+The combined catalog contains 52 work-related platforms and channels across remote jobs, general employment, government employment, freelance marketplaces, developer work, bounties, authorized security programs, procurement, classifieds, applicant-tracking systems, outreach tools, and commerce channels.
 
-- remote and curated job boards;
-- general employment boards;
-- government employment systems;
-- freelance marketplaces;
-- developer work and open-source issues;
-- coding bounties;
-- authorized security programs;
-- government and RFP procurement;
-- local services, communities, and classifieds;
-- company-direct applicant-tracking job boards;
-- professional outreach and prospecting tools;
-- self-employment commerce channels.
+Catalog inclusion never grants access or external-action authority.
 
-Examples include RemoteOK, Remotive, We Work Remotely, Wellfound, FlexJobs, Jobicy, SolidGigs, freelancermap, Indeed, LinkedIn Jobs, Glassdoor, ZipRecruiter, Adzuna, The Muse, USAJOBS, Canada Job Bank, Upwork, Freelancer.com, Guru, PeoplePerHour, Contra, Toptal, Fiverr, GitHub Issues, GitLab Issues, IssueHunt, Topcoder, Gitcoin, HackerOne, Bugcrowd, CanadaBuys, MERX, Alberta Purchasing Connection, SAM.gov, Kijiji, Craigslist, Facebook Groups, Facebook Marketplace, Reddit work communities, Nextdoor, Greenhouse, Lever, Workday, Ashby, SmartRecruiters, X/Twitter, Apollo.io, Hunter.io, Shopify, Etsy, and Redbubble.
+## Persistence
+
+The implementation uses the shared local SQLite substrate for:
+
+- candidate records;
+- Quest records;
+- authorization receipts;
+- optimistic revisions;
+- idempotency records;
+- append-only audit events;
+- restart-safe retrieval.
 
 ## Safety boundary
 
-The implementation performs no external action.
-
-Specifically, it does not:
+The implementation does not:
 
 - crawl or scrape a source;
-- authenticate to a source;
-- use credentials;
-- apply to a job;
-- submit a proposal;
-- bid;
+- authenticate to a work platform;
+- apply or bid;
 - send a message;
-- accept legal terms;
+- accept legal terms or work;
 - upload a deliverable;
-- purchase anything;
-- initiate payment;
+- purchase or pay;
 - post content;
 - perform security testing;
-- create a production identity;
-- deploy a public service.
+- use production identity;
+- invoke a live write connector;
+- deploy publicly.
 
-Every candidate and audit event records:
+Every candidate, Quest, and conversion receipt preserves:
 
 ```json
 {
@@ -185,22 +190,10 @@ Every candidate and audit event records:
 
 ## Validation
 
-Run:
-
 ```powershell
-python -m pytest tests/api/test_quest_candidates_api.py tests/contracts/test_quest_candidate_schema.py
+python -m pytest tests/api/test_quest_candidates_api.py
+python -m pytest tests/api/test_quest_creation_api.py
+python -m pytest tests/contracts/test_quest_candidate_schema.py
+python -m pytest tests/contracts/test_quest_schema.py
 python -m pytest
 ```
-
-The focused test suite covers:
-
-- ingestion;
-- normalization;
-- source-policy failure;
-- source catalog coverage;
-- idempotency;
-- persistent restart recovery;
-- qualification;
-- optimistic revision conflicts;
-- contract rejection of unknown fields;
-- prohibition on recording external action as true.
