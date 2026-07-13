@@ -26,6 +26,11 @@ QUEST_BOARD_HTML = r"""<!doctype html>
     .grid { display: grid; gap: 1rem; grid-template-columns: minmax(280px, .85fr) minmax(360px, 1.15fr) minmax(360px, 1.15fr); }
     .panel { border: 1px solid #28445e; border-radius: .75rem; background: #0d1b2d; padding: 1rem; min-width: 0; }
     .panel h2 { margin-top: 0; }
+    .scout-box { border: 1px solid #2f756e; background: #0b2630; padding: .8rem; border-radius: .65rem; margin-bottom: 1rem; }
+    .scout-box h3 { margin: 0 0 .35rem; }
+    fieldset { border: 1px solid #47647f; border-radius: .55rem; margin: .75rem 0; padding: .65rem; }
+    fieldset label { display: flex; gap: .45rem; align-items: center; margin: .35rem 0; font-weight: 500; }
+    fieldset input[type="checkbox"] { width: auto; }
     label { display: block; margin: .65rem 0 .25rem; font-weight: 650; }
     input, textarea, select { width: 100%; border: 1px solid #47647f; border-radius: .5rem; padding: .6rem; background: #07121f; color: #fff; }
     textarea { min-height: 7rem; resize: vertical; }
@@ -45,16 +50,32 @@ QUEST_BOARD_HTML = r"""<!doctype html>
 <body>
 <header>
   <h1>AIGC Quest Board</h1>
-  <p>Local governed opportunity intake and Quest proposal workspace.</p>
+  <p>Local governed opportunity discovery, intake, and Quest proposal workspace.</p>
 </header>
 <main>
   <section class="boundary" aria-label="Safety boundary">
-    <strong>Local operator boundary:</strong> this board records candidates and creates internal <code>PROPOSED</code> Quests. It does not apply, bid, message, accept work, deliver, pay, purchase, deploy, use credentials, or perform any external action.
+    <strong>Local operator boundary:</strong> the Opportunity Scout performs bounded read-only requests to fixed, repository-approved public sources. This board records candidates and creates internal <code>PROPOSED</code> Quests. It does not apply, bid, message, accept work, deliver, pay, purchase, deploy, use credentials, or perform any consequential external action.
   </section>
   <div id="status" class="status" role="status" aria-live="polite">Loading the local Quest Board…</div>
   <div class="grid">
     <section class="panel intake" aria-labelledby="intake-heading">
-      <h2 id="intake-heading">Add opportunity</h2>
+      <h2 id="intake-heading">Opportunity intake</h2>
+      <form id="scout-form" class="scout-box">
+        <h3>Read-only Opportunity Scout</h3>
+        <p class="small">Fetch public records only from fixed Phase 2 adapters. No arbitrary URL, credentials, application, message, bid, or submission.</p>
+        <fieldset>
+          <legend>Sources</legend>
+          <label><input type="checkbox" name="scout_source" value="weworkremotely" checked> We Work Remotely RSS</label>
+          <label><input type="checkbox" name="scout_source" value="remotive" checked> Remotive API</label>
+          <label><input type="checkbox" name="scout_source" value="remoteok"> RemoteOK API</label>
+          <label><input type="checkbox" name="scout_source" value="github"> GitHub public issues</label>
+        </fieldset>
+        <label for="scout_limit">Maximum candidates</label>
+        <input id="scout_limit" name="scout_limit" type="number" min="1" max="25" value="6" required>
+        <div class="actions"><button id="scout-button" type="submit">Discover opportunities</button></div>
+      </form>
+
+      <h3>Manual candidate</h3>
       <form id="candidate-form">
         <label for="source_id">Work source</label>
         <select id="source_id" name="source_id" required></select>
@@ -176,6 +197,30 @@ async function loadBoard() {
     setStatus(`Board load failed: ${error.message}`, true);
   }
 }
+
+document.getElementById('scout-form').addEventListener('submit', async event => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const button = document.getElementById('scout-button');
+  const sources = [...form.querySelectorAll('input[name="scout_source"]:checked')].map(input => input.value);
+  if (!sources.length) {
+    setStatus('Select at least one read-only source.', true);
+    return;
+  }
+  const params = new URLSearchParams({limit: String(form.scout_limit.value || 6)});
+  sources.forEach(source => params.append('source_id', source));
+  button.disabled = true;
+  setStatus('Opportunity Scout is performing bounded read-only discovery…');
+  try {
+    const result = await api(`/api/v1/opportunities/discover?${params.toString()}`, {method: 'POST'});
+    setStatus(`Scout ${result.status}: ${result.new_candidates} new, ${result.existing_candidates} existing candidate(s); ${result.scanned_sources} source(s) read. External action performed: false.`);
+    await loadBoard();
+  } catch (error) {
+    setStatus(`Opportunity discovery failed: ${error.message}`, true);
+  } finally {
+    button.disabled = false;
+  }
+});
 
 document.getElementById('candidate-form').addEventListener('submit', async event => {
   event.preventDefault();
