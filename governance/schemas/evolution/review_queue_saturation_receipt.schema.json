@@ -4,232 +4,83 @@
   "additionalProperties": false,
   "properties": {
     "allowed_actions": {
-      "items": {
-        "enum": [
-          "REVIEW_SUPPORT",
-          "EVIDENCE_REFRESH",
-          "DIAGNOSTIC_CORRECTION",
-          "ROLLBACK_PREPARATION",
-          "EXISTING_CRITICAL_TRAIN_CORRECTION",
-          "ONE_BOUNDED_IMPLEMENTATION_TRAIN"
-        ]
-      },
+      "items": {"enum": ["REVIEW_SUPPORT", "EVIDENCE_REFRESH", "DIAGNOSTIC_CORRECTION", "ROLLBACK_PREPARATION", "EXISTING_CRITICAL_TRAIN_CORRECTION", "ONE_BOUNDED_IMPLEMENTATION_TRAIN"]},
       "minItems": 1,
       "type": "array",
       "uniqueItems": true
     },
-    "automatic_mutation_allowed": {
-      "const": false
-    },
+    "automatic_mutation_allowed": {"const": false},
     "counts": {
       "additionalProperties": false,
       "properties": {
-        "open_critical_path_item_count": {
-          "minimum": 0,
-          "type": "integer"
-        },
-        "open_decision_gate_count": {
-          "minimum": 0,
-          "type": "integer"
-        },
-        "open_review_train_count": {
-          "minimum": 0,
-          "type": "integer"
-        }
+        "open_coordination_gate_count": {"minimum": 0, "type": "integer"},
+        "open_critical_path_item_count": {"minimum": 0, "type": "integer"},
+        "open_decision_gate_count": {"minimum": 0, "type": "integer"},
+        "open_governance_gate_count": {"minimum": 0, "type": "integer"},
+        "open_review_train_count": {"minimum": 0, "type": "integer"}
       },
-      "required": [
-        "open_critical_path_item_count",
-        "open_review_train_count",
-        "open_decision_gate_count"
-      ],
+      "required": ["open_critical_path_item_count", "open_review_train_count", "open_decision_gate_count", "open_coordination_gate_count", "open_governance_gate_count"],
       "type": "object"
     },
-    "evaluated_at": {
-      "format": "date-time",
-      "type": "string"
-    },
+    "evaluated_at": {"format": "date-time", "type": "string"},
     "excess": {
       "additionalProperties": false,
       "properties": {
-        "critical_path_item_count": {
-          "minimum": 0,
-          "type": "integer"
-        },
-        "review_train_count": {
-          "minimum": 0,
-          "type": "integer"
-        }
+        "critical_path_item_count": {"minimum": 0, "type": "integer"},
+        "review_train_count": {"minimum": 0, "type": "integer"}
       },
-      "required": [
-        "critical_path_item_count",
-        "review_train_count"
-      ],
+      "required": ["critical_path_item_count", "review_train_count"],
       "type": "object"
     },
-    "external_action_performed": {
-      "const": false
-    },
-    "graph_digest": {
-      "pattern": "^[0-9a-f]{64}$",
-      "type": "string"
-    },
-    "graph_id": {
-      "const": "AIGC-PR-DEPENDENCY-GRAPH-001"
-    },
-    "mode": {
-      "enum": [
-        "REVIEW_SUPPORT_ONLY",
-        "BOUNDED_IMPLEMENTATION_ALLOWED"
-      ]
-    },
-    "new_independent_implementation_train_allowed": {
-      "type": "boolean"
-    },
-    "open_critical_path_items": {
-      "items": {
-        "pattern": "^AIGC-(PR|ISSUE)-[0-9]+$",
-        "type": "string"
-      },
-      "type": "array",
-      "uniqueItems": true
-    },
-    "open_decision_gates": {
-      "items": {
-        "pattern": "^AIGC-ISSUE-[0-9]+$",
-        "type": "string"
-      },
-      "type": "array",
-      "uniqueItems": true
-    },
-    "open_review_trains": {
-      "items": {
-        "pattern": "^AIGC-PR-[0-9]+$",
-        "type": "string"
-      },
-      "type": "array",
-      "uniqueItems": true
-    },
-    "operator_override_required": {
-      "const": true
-    },
-    "operator_review_required": {
-      "const": true
-    },
-    "platform_snapshot_digest": {
-      "pattern": "^[0-9a-f]{64}$",
-      "type": "string"
-    },
-    "platform_snapshot_id": {
-      "const": "AIGC-PR-PLATFORM-SNAPSHOT-001"
-    },
-    "policy_digest": {
-      "pattern": "^[0-9a-f]{64}$",
-      "type": "string"
-    },
-    "policy_id": {
-      "const": "AIGC-REVIEW-QUEUE-SATURATION-001"
-    },
+    "external_action_performed": {"const": false},
+    "graph_digest": {"pattern": "^[0-9a-f]{64}$", "type": "string"},
+    "graph_id": {"const": "AIGC-PR-DEPENDENCY-GRAPH-001"},
+    "mode": {"enum": ["REVIEW_SUPPORT_ONLY", "BOUNDED_IMPLEMENTATION_ALLOWED"]},
+    "new_independent_implementation_train_allowed": {"type": "boolean"},
+    "open_coordination_gates": {"items": {"pattern": "^AIGC-ISSUE-[0-9]+$", "type": "string"}, "type": "array", "uniqueItems": true},
+    "open_critical_path_items": {"items": {"pattern": "^AIGC-(PR|ISSUE)-[0-9]+$", "type": "string"}, "type": "array", "uniqueItems": true},
+    "open_decision_gates": {"items": {"pattern": "^AIGC-ISSUE-[0-9]+$", "type": "string"}, "type": "array", "uniqueItems": true},
+    "open_governance_gates": {"items": {"pattern": "^AIGC-ISSUE-[0-9]+$", "type": "string"}, "type": "array", "uniqueItems": true},
+    "open_review_trains": {"items": {"pattern": "^AIGC-PR-[0-9]+$", "type": "string"}, "type": "array", "uniqueItems": true},
+    "operator_override_required": {"const": true},
+    "operator_review_required": {"const": true},
+    "platform_snapshot_digest": {"pattern": "^[0-9a-f]{64}$", "type": "string"},
+    "platform_snapshot_id": {"const": "AIGC-PR-PLATFORM-SNAPSHOT-001"},
+    "policy_digest": {"pattern": "^[0-9a-f]{64}$", "type": "string"},
+    "policy_id": {"const": "AIGC-REVIEW-QUEUE-SATURATION-001"},
     "prohibited_actions": {
-      "items": {
-        "enum": [
-          "NEW_INDEPENDENT_IMPLEMENTATION_TRAIN",
-          "AUTOMATIC_BRANCH_REBASE",
-          "AUTOMATIC_REVIEW_SUBMISSION",
-          "AUTOMATIC_MERGE"
-        ]
-      },
+      "items": {"enum": ["NEW_INDEPENDENT_IMPLEMENTATION_TRAIN", "AUTOMATIC_BRANCH_REBASE", "AUTOMATIC_REVIEW_SUBMISSION", "AUTOMATIC_MERGE"]},
       "minItems": 3,
       "type": "array",
       "uniqueItems": true
     },
-    "receipt_id": {
-      "pattern": "^AIGC-REVIEW-QUEUE-SATURATION-[0-9A-F]{16}$",
-      "type": "string"
-    },
-    "repository": {
-      "const": "Lornt1666/AIGC"
-    },
-    "saturated": {
-      "type": "boolean"
-    },
-    "saturation_reasons": {
-      "items": {
-        "enum": [
-          "CRITICAL_PATH_LIMIT_EXCEEDED",
-          "REVIEW_TRAIN_LIMIT_EXCEEDED"
-        ]
-      },
-      "type": "array",
-      "uniqueItems": true
-    },
-    "schema_version": {
-      "const": "1.0.0"
-    },
-    "snapshot_age_seconds": {
-      "minimum": 0,
-      "type": "integer"
-    },
-    "snapshot_completeness_conclusion": {
-      "const": "COMPLETE"
-    },
-    "snapshot_completeness_receipt_digest": {
-      "pattern": "^[0-9a-f]{64}$",
-      "type": "string"
-    },
-    "snapshot_completeness_receipt_id": {
-      "pattern": "^AIGC-PR-SNAPSHOT-REQUEST-[0-9A-F]{16}$",
-      "type": "string"
-    },
+    "receipt_id": {"pattern": "^AIGC-REVIEW-QUEUE-SATURATION-[0-9A-F]{16}$", "type": "string"},
+    "repository": {"const": "Lornt1666/AIGC"},
+    "saturated": {"type": "boolean"},
+    "saturation_reasons": {"items": {"enum": ["CRITICAL_PATH_LIMIT_EXCEEDED", "REVIEW_TRAIN_LIMIT_EXCEEDED"]}, "type": "array", "uniqueItems": true},
+    "schema_version": {"const": "1.1.0"},
+    "snapshot_age_seconds": {"minimum": 0, "type": "integer"},
+    "snapshot_completeness_conclusion": {"const": "COMPLETE"},
+    "snapshot_completeness_receipt_digest": {"pattern": "^[0-9a-f]{64}$", "type": "string"},
+    "snapshot_completeness_receipt_id": {"pattern": "^AIGC-PR-SNAPSHOT-REQUEST-[0-9A-F]{16}$", "type": "string"},
     "thresholds": {
       "additionalProperties": false,
       "properties": {
-        "maximum_open_critical_path_items": {
-          "minimum": 1,
-          "type": "integer"
-        },
-        "maximum_open_review_trains": {
-          "minimum": 1,
-          "type": "integer"
-        }
+        "maximum_open_critical_path_items": {"minimum": 1, "type": "integer"},
+        "maximum_open_review_trains": {"minimum": 1, "type": "integer"}
       },
-      "required": [
-        "maximum_open_critical_path_items",
-        "maximum_open_review_trains"
-      ],
+      "required": ["maximum_open_critical_path_items", "maximum_open_review_trains"],
       "type": "object"
     }
   },
   "required": [
-    "receipt_id",
-    "schema_version",
-    "evaluated_at",
-    "repository",
-    "policy_id",
-    "graph_id",
-    "platform_snapshot_id",
-    "policy_digest",
-    "graph_digest",
-    "platform_snapshot_digest",
-    "snapshot_completeness_receipt_id",
-    "snapshot_completeness_receipt_digest",
-    "snapshot_completeness_conclusion",
-    "snapshot_age_seconds",
-    "open_critical_path_items",
-    "open_review_trains",
-    "open_decision_gates",
-    "counts",
-    "thresholds",
-    "excess",
-    "saturation_reasons",
-    "saturated",
-    "mode",
-    "new_independent_implementation_train_allowed",
-    "allowed_actions",
-    "prohibited_actions",
-    "operator_override_required",
-    "operator_review_required",
-    "automatic_mutation_allowed",
-    "external_action_performed"
+    "receipt_id", "schema_version", "evaluated_at", "repository", "policy_id", "graph_id", "platform_snapshot_id",
+    "policy_digest", "graph_digest", "platform_snapshot_digest", "snapshot_completeness_receipt_id",
+    "snapshot_completeness_receipt_digest", "snapshot_completeness_conclusion", "snapshot_age_seconds",
+    "open_critical_path_items", "open_review_trains", "open_decision_gates", "open_coordination_gates",
+    "open_governance_gates", "counts", "thresholds", "excess", "saturation_reasons", "saturated", "mode",
+    "new_independent_implementation_train_allowed", "allowed_actions", "prohibited_actions", "operator_override_required",
+    "operator_review_required", "automatic_mutation_allowed", "external_action_performed"
   ],
   "title": "AIGC Review Queue Saturation Receipt",
   "type": "object"
