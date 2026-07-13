@@ -57,7 +57,7 @@ class FailingConnector:
         raise URLError("offline test fixture")
 
 
-def test_discovery_endpoint_persists_candidate_and_reports_read_only_boundary(
+def test_discovery_endpoint_persists_assessed_candidate_and_reports_boundary(
     tmp_path: Path,
 ) -> None:
     application = create_app(database_path=tmp_path / "operator.sqlite3")
@@ -74,14 +74,18 @@ def test_discovery_endpoint_persists_candidate_and_reports_read_only_boundary(
     assert response.status_code == 200, response.text
     body = response.json()
     assert body["status"] == "success"
+    assert body["assessment_version"] == "1.0.0"
     assert body["new_candidates"] == 1
     assert body["external_reads_performed"] is True
     assert body["external_action_performed"] is False
 
     candidates = client.get("/api/v1/quests/candidates").json()
     assert candidates["count"] == 1
-    assert candidates["items"][0]["source_id"] == "weworkremotely"
-    assert candidates["items"][0]["status"] == "DISCOVERED"
+    candidate = candidates["items"][0]
+    assert candidate["source_id"] == "weworkremotely"
+    assert candidate["status"] == "DISCOVERED"
+    assert candidate["assessment"]["status"] == "ASSESSED"
+    assert candidate["assessment"]["risk"]["operator_review_required"] is True
 
 
 def test_discovery_endpoint_fails_closed_for_unconfigured_source(
@@ -119,13 +123,16 @@ def test_discovery_endpoint_returns_structured_upstream_failure(
     assert detail["external_action_performed"] is False
 
 
-def test_quest_board_exposes_read_only_scout_controls(tmp_path: Path) -> None:
+def test_quest_board_exposes_assessed_read_only_scout_controls(
+    tmp_path: Path,
+) -> None:
     client = TestClient(create_app(database_path=tmp_path / "operator.sqlite3"))
 
     response = client.get("/quest-board")
 
     assert response.status_code == 200
     assert "Read-only Opportunity Scout" in response.text
-    assert "Discover opportunities" in response.text
+    assert "Discover and assess" in response.text
+    assert "Ology and risk assessment" in response.text
     assert "/api/v1/opportunities/discover" in response.text
     assert "No arbitrary URL" in response.text
