@@ -39,22 +39,27 @@ QUEST_BOARD_HTML = r"""<!doctype html>
     .card h3 { margin: 0 0 .3rem; font-size: 1rem; }
     .meta { color: #b6cce0; font-size: .88rem; overflow-wrap: anywhere; }
     .badge { display: inline-block; border: 1px solid #7691a9; border-radius: 999px; padding: .14rem .45rem; margin: .25rem .2rem .25rem 0; font-size: .76rem; }
+    .assessment { border-left: 3px solid #6dd8ce; margin: .7rem 0; padding: .5rem .65rem; background: #0b2630; }
+    .assessment h4 { margin: 0 0 .35rem; }
+    .assessment dl { display: grid; grid-template-columns: auto 1fr; gap: .2rem .55rem; margin: .35rem 0; font-size: .85rem; }
+    .assessment dt { font-weight: 700; }
+    .assessment dd { margin: 0; overflow-wrap: anywhere; }
     .actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .65rem; }
     .empty { color: #9eb5c9; font-style: italic; }
     .quest-state { font-weight: 750; }
     .small { font-size: .82rem; color: #9eb5c9; }
     @media (max-width: 1050px) { .grid { grid-template-columns: 1fr 1fr; } .intake { grid-column: 1 / -1; } }
-    @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } .intake { grid-column: auto; } header { position: static; } }
+    @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } .intake { grid-column: auto; } header { position: static; } .assessment dl { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 <header>
   <h1>AIGC Quest Board</h1>
-  <p>Local governed opportunity discovery, intake, and Quest proposal workspace.</p>
+  <p>Local governed opportunity discovery, assessment, intake, and Quest proposal workspace.</p>
 </header>
 <main>
   <section class="boundary" aria-label="Safety boundary">
-    <strong>Local operator boundary:</strong> the Opportunity Scout performs bounded read-only requests to fixed, repository-approved public sources. This board records candidates and creates internal <code>PROPOSED</code> Quests. It does not apply, bid, message, accept work, deliver, pay, purchase, deploy, use credentials, or perform any consequential external action.
+    <strong>Local operator boundary:</strong> the Opportunity Scout performs bounded read-only requests to fixed, repository-approved public sources. Ology and risk assessment inform review but never qualify a candidate automatically. This board does not apply, bid, message, accept work, deliver, pay, purchase, deploy, use credentials, or perform any consequential external action.
   </section>
   <div id="status" class="status" role="status" aria-live="polite">Loading the local Quest Board…</div>
   <div class="grid">
@@ -62,7 +67,7 @@ QUEST_BOARD_HTML = r"""<!doctype html>
       <h2 id="intake-heading">Opportunity intake</h2>
       <form id="scout-form" class="scout-box">
         <h3>Read-only Opportunity Scout</h3>
-        <p class="small">Fetch public records only from fixed Phase 2 adapters. No arbitrary URL, credentials, application, message, bid, or submission.</p>
+        <p class="small">Fetch, classify, and risk-score public records through fixed Phase 2 adapters. No arbitrary URL, credentials, application, message, bid, or submission.</p>
         <fieldset>
           <legend>Sources</legend>
           <label><input type="checkbox" name="scout_source" value="weworkremotely" checked> We Work Remotely RSS</label>
@@ -72,10 +77,11 @@ QUEST_BOARD_HTML = r"""<!doctype html>
         </fieldset>
         <label for="scout_limit">Maximum candidates</label>
         <input id="scout_limit" name="scout_limit" type="number" min="1" max="25" value="6" required>
-        <div class="actions"><button id="scout-button" type="submit">Discover opportunities</button></div>
+        <div class="actions"><button id="scout-button" type="submit">Discover and assess</button></div>
       </form>
 
       <h3>Manual candidate</h3>
+      <p class="small">Manual candidates remain explicitly unassessed until a separate governed assessment operation exists.</p>
       <form id="candidate-form">
         <label for="source_id">Work source</label>
         <select id="source_id" name="source_id" required></select>
@@ -89,7 +95,7 @@ QUEST_BOARD_HTML = r"""<!doctype html>
         <input id="domain" name="domain" required value="software_development" pattern="[a-z0-9][a-z0-9_-]+">
         <label for="skills">Required skills <span class="small">(comma separated)</span></label>
         <input id="skills" name="skills" placeholder="python, fastapi, sqlite">
-        <label for="risk_class">Risk class</label>
+        <label for="risk_class">Operator-entered risk class</label>
         <select id="risk_class" name="risk_class">
           <option value="unassessed">Unassessed</option>
           <option value="low">Low</option>
@@ -140,6 +146,26 @@ function setStatus(message, isError = false) {
   statusBox.style.border = isError ? '1px solid #d65b5b' : '1px solid #2f756e';
 }
 
+function renderAssessment(item) {
+  if (!item.assessment) {
+    return '<section class="assessment"><h4>Assessment</h4><p class="small">No governed assessment packet. Manual or legacy candidate.</p></section>';
+  }
+  const ology = item.assessment.ology || {};
+  const risk = item.assessment.risk || {};
+  const skills = ology.required_skills || [];
+  const flags = risk.risk_flags || [];
+  return `<section class="assessment" aria-label="Ology and risk assessment">
+    <h4>Assessment ${esc(item.assessment.assessment_version)}</h4>
+    <dl>
+      <dt>Domain</dt><dd>${esc(ology.primary_domain)}</dd>
+      <dt>Radar</dt><dd>${esc(risk.radar_score)} / 100 — ${esc(risk.radar_decision)}</dd>
+      <dt>Review</dt><dd>${risk.operator_review_required ? 'Operator review required' : 'No review recorded'}; qualification recommended: ${risk.qualification_recommended ? 'yes' : 'no'}</dd>
+    </dl>
+    <div>${skills.map(value => `<span class="badge">skill: ${esc(value)}</span>`).join('')}</div>
+    <div>${flags.map(value => `<span class="badge">risk: ${esc(value)}</span>`).join('')}</div>
+  </section>`;
+}
+
 function renderCandidates(items) {
   if (!items.length) {
     candidateList.innerHTML = '<p class="empty">No candidates recorded.</p>';
@@ -162,6 +188,7 @@ function renderCandidates(items) {
       <h3>${esc(item.proposed_quest_title)}</h3>
       <div><span class="badge">${esc(item.status)}</span><span class="badge">${esc(item.source_name)}</span><span class="badge">risk: ${esc(item.risk_class)}</span></div>
       <p>${esc(item.description)}</p>
+      ${renderAssessment(item)}
       <p class="meta"><a href="${esc(item.source_url)}" target="_blank" rel="noreferrer">Open source posting</a><br>Candidate ${esc(item.candidate_id)} · revision ${item.revision}</p>
       <div class="actions">${actions.join('')}</div>
     </article>`;
@@ -210,10 +237,10 @@ document.getElementById('scout-form').addEventListener('submit', async event => 
   const params = new URLSearchParams({limit: String(form.scout_limit.value || 6)});
   sources.forEach(source => params.append('source_id', source));
   button.disabled = true;
-  setStatus('Opportunity Scout is performing bounded read-only discovery…');
+  setStatus('Opportunity Scout is reading, classifying, and risk-scoring bounded public records…');
   try {
     const result = await api(`/api/v1/opportunities/discover?${params.toString()}`, {method: 'POST'});
-    setStatus(`Scout ${result.status}: ${result.new_candidates} new, ${result.existing_candidates} existing candidate(s); ${result.scanned_sources} source(s) read. External action performed: false.`);
+    setStatus(`Scout ${result.status}: ${result.new_candidates} new, ${result.existing_candidates} existing; ${result.records_assessed} assessed, ${result.assessment_errors} assessment error(s). External action performed: false.`);
     await loadBoard();
   } catch (error) {
     setStatus(`Opportunity discovery failed: ${error.message}`, true);
@@ -242,7 +269,7 @@ document.getElementById('candidate-form').addEventListener('submit', async event
       })
     });
     event.currentTarget.reset();
-    setStatus('Candidate recorded.');
+    setStatus('Candidate recorded as manually entered and unassessed.');
     await loadBoard();
   } catch (error) {
     setStatus(`Candidate ingestion failed: ${error.message}`, true);
@@ -261,10 +288,10 @@ candidateList.addEventListener('click', async event => {
           expected_revision: Number(button.dataset.revision),
           decision: 'QUALIFY',
           operator_role: 'ACCOUNTABLE_OPERATOR',
-          reason: 'Qualified through the local operator Quest Board.'
+          reason: 'Qualified through the local operator Quest Board after human review.'
         })
       });
-      setStatus('Candidate qualified. This has not accepted the work.');
+      setStatus('Candidate qualified by the operator. Assessment never auto-qualifies or accepts work.');
     } else if (button.dataset.action === 'create') {
       await api(`/api/v1/quests/candidates/${encodeURIComponent(button.dataset.id)}/create-quest`, {
         method: 'POST',
