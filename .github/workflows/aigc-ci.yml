@@ -47,6 +47,9 @@ jobs:
           python src/aigc.py validate --schema save_credential_broker_packet --path data/save_credential_broker/aigc_save_credential_broker_packet.json
           python src/aigc.py validate --schema n8n_workflow_dispatch_bridge_packet --path data/n8n_bridge/aigc_n8n_workflow_dispatch_bridge_packet.json
 
+      - name: Validate workflow invocation integrity
+        run: python -m pytest tests/test_workflow_reference_and_phase26_semantics.py -q
+
       - name: Validate CI dependency manifest
         run: python -m pytest tests/test_ci_action_pinning.py -q
 
