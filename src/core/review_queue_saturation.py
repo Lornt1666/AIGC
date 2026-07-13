@@ -76,7 +76,23 @@ def validate_receipt(project_root: str | Path, receipt: Mapping[str, Any]) -> No
     schema = _load(root / RECEIPT_SCHEMA_PATH)
     _validate_schema(receipt, schema)
 
+    expected_governance_gates = sorted(
+        set(receipt['open_decision_gates']) | set(receipt['open_coordination_gates'])
+    )
+    if receipt['open_governance_gates'] != expected_governance_gates:
+        raise ReviewQueueSaturationError('open governance gates do not match typed gate lists')
+
     counts = receipt['counts']
+    expected_counts = {
+        'open_critical_path_item_count': len(receipt['open_critical_path_items']),
+        'open_review_train_count': len(receipt['open_review_trains']),
+        'open_decision_gate_count': len(receipt['open_decision_gates']),
+        'open_coordination_gate_count': len(receipt['open_coordination_gates']),
+        'open_governance_gate_count': len(receipt['open_governance_gates']),
+    }
+    if counts != expected_counts:
+        raise ReviewQueueSaturationError('receipt counts do not match open item lists')
+
     thresholds = receipt['thresholds']
     expected_excess = {
         'critical_path_item_count': max(
@@ -166,6 +182,14 @@ def evaluate_saturation(
         for item in snapshot['decision_gates']
         if item['state'] == 'OPEN'
     )
+    open_coordination_gates = sorted(
+        item['change_id']
+        for item in snapshot.get('coordination_gates', [])
+        if item['state'] == 'OPEN'
+    )
+    open_governance_gates = sorted(
+        set(open_decision_gates) | set(open_coordination_gates)
+    )
     open_critical_path_items = sorted(
         node['change_id']
         for node in graph['nodes']
@@ -180,6 +204,8 @@ def evaluate_saturation(
         'open_critical_path_item_count': len(open_critical_path_items),
         'open_review_train_count': len(open_review_trains),
         'open_decision_gate_count': len(open_decision_gates),
+        'open_coordination_gate_count': len(open_coordination_gates),
+        'open_governance_gate_count': len(open_governance_gates),
     }
     excess = {
         'critical_path_item_count': max(
@@ -222,7 +248,7 @@ def evaluate_saturation(
         if key not in {'evaluated_at', 'snapshot_age_seconds'}
     }
     payload = {
-        'schema_version': '1.0.0',
+        'schema_version': '1.1.0',
         'repository': policy['repository'],
         'policy_id': policy['policy_id'],
         'graph_id': graph['graph_id'],
@@ -237,6 +263,8 @@ def evaluate_saturation(
         'open_critical_path_items': open_critical_path_items,
         'open_review_trains': open_review_trains,
         'open_decision_gates': open_decision_gates,
+        'open_coordination_gates': open_coordination_gates,
+        'open_governance_gates': open_governance_gates,
         'counts': counts,
         'thresholds': thresholds,
         'excess': excess,
@@ -257,12 +285,11 @@ def evaluate_saturation(
         if key != 'snapshot_age_seconds'
     }
     identity = sha256(_canonical(identity_payload)).hexdigest().upper()[:16]
-    receipt = {
+    return {
         'receipt_id': f'AIGC-REVIEW-QUEUE-SATURATION-{identity}',
         'evaluated_at': timestamp,
         **payload,
     }
-    return receipt
 
 
 def evaluate_repository_saturation(
