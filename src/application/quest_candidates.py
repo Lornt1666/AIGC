@@ -41,13 +41,57 @@ def _digest(value: Mapping[str, Any]) -> str:
 class WorkSourceCatalog:
     def __init__(self, path: str | Path) -> None:
         self.path = Path(path)
-        document = json.loads(self.path.read_text(encoding="utf-8"))
-        self.catalog_version = str(document["catalog_version"])
-        self.authority_boundary = dict(document["authority_boundary"])
-        self._sources = {
-            str(source["id"]): dict(source)
-            for source in document.get("sources", [])
-        }
+        documents = [json.loads(self.path.read_text(encoding="utf-8"))]
+        addendum_path = self.path.with_name(
+            "aigc_work_source_gate_catalog_addendum.json"
+        )
+        if addendum_path.exists():
+            documents.append(json.loads(addendum_path.read_text(encoding="utf-8")))
+
+        latest = documents[-1]
+        self.catalog_version = str(
+            latest.get("catalog_version")
+            or documents[0].get("catalog_version")
+            or "1.0.0"
+        )
+        self.authority_boundary = dict(
+            latest.get("authority_boundary")
+            or {
+                "catalog_inclusion_grants_access": False,
+                "catalog_inclusion_grants_external_action": False,
+                "default_external_action_performed": False,
+            }
+        )
+        self._sources: dict[str, dict[str, Any]] = {}
+        for document in documents:
+            for raw_source in document.get("sources", []):
+                source = dict(raw_source)
+                source_id = str(source["id"])
+                source.setdefault("platform_role", "opportunity_source")
+                source.setdefault(
+                    "terms_review_target",
+                    "official terms, platform rules, and interface policy review required",
+                )
+                source.setdefault(
+                    "api_or_feed",
+                    "official interface only if separately documented and approved",
+                )
+                source.setdefault(
+                    "access_mode",
+                    "manual_entry_or_approved_connector_only",
+                )
+                source.setdefault("connector_status", "review_required")
+                source.setdefault(
+                    "discovery_mode",
+                    "existing_read_only_adapter_or_manual_entry"
+                    if source_id in _EXISTING_READ_ONLY_ADAPTERS
+                    else "manual_only",
+                )
+                source.setdefault(
+                    "external_action_mode",
+                    "separate policy evaluation and accountable-operator authorization required",
+                )
+                self._sources[source_id] = source
         if not self._sources:
             raise RuntimeError("Work-source catalog must contain at least one source")
 
