@@ -60,6 +60,9 @@ def build_container(
     candidate_repository = SQLiteQuestCandidateRepository(factory)
     quest_repository = SQLiteQuestRepository(factory)
 
+    authorization_service = AuthorizationApplicationService(
+        authorization_repository
+    )
     candidate_service = QuestCandidateApplicationService(
         candidate_repository,
         catalog_path=WORK_SOURCE_CATALOG,
@@ -69,9 +72,7 @@ def build_container(
 
     return ApplicationContainer(
         database_path=resolved_path,
-        authorization_service=AuthorizationApplicationService(
-            authorization_repository
-        ),
+        authorization_service=authorization_service,
         opportunity_scout_service=OpportunityScoutApplicationService(
             candidate_service,
             audit_repository,
@@ -82,6 +83,7 @@ def build_container(
         quest_service=QuestApplicationService(
             candidate_repository,
             quest_repository,
+            authorization_service,
             schema_path=QUEST_SCHEMA,
             exact_revision=exact_revision,
         ),
