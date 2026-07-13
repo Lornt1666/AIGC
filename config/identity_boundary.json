@@ -1,0 +1,45 @@
+{
+  "contract_id": "AIGC-PIBC-CONFIG-001",
+  "version": "1.0.0",
+  "runtime_mode": "local_simulation",
+  "local_development_adapter_enabled": true,
+  "allowed_provider_classes": {
+    "local": [
+      "LOCAL_DEVELOPMENT"
+    ],
+    "production": [
+      "OIDC",
+      "WORKLOAD_IDENTITY"
+    ]
+  },
+  "minimum_assurance": {
+    "local": {
+      "ial": "IAL0",
+      "aal": "AAL0",
+      "fal": "FAL0"
+    },
+    "production": {
+      "ial": "IAL1",
+      "aal": "AAL1",
+      "fal": "FAL1"
+    }
+  },
+  "minimum_evidence_maturity": {
+    "local": "EA1_SCHEMA_VALID",
+    "production": "EA3_CI_EXECUTED"
+  },
+  "production_allowed_issuers": [],
+  "production_allowed_audiences": [],
+  "require_project_binding": true,
+  "require_exact_revision_in_production": true,
+  "session_max_age_seconds": {
+    "local": 604800,
+    "production": 43200
+  },
+  "retention_class": "IDENTITY_EVIDENCE_90D",
+  "persist_raw_assertions": false,
+  "persist_raw_tokens": false,
+  "persist_raw_nonce": false,
+  "operator_review_required": true,
+  "external_action_performed": false
+}
