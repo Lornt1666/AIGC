@@ -39,7 +39,9 @@ class AssessmentFixtureConnector:
             remote_status="remote",
             work_type="contract",
             description_plain=(
-                "Build a React TypeScript Tailwind CSS interface with tests."
+                "Build a React TypeScript Tailwind CSS dashboard, test cases, "
+                "technical documentation, an automation workflow, and a "
+                "clear report deliverable."
             ),
             platform_policy_status="green",
         )
@@ -77,7 +79,7 @@ def services(
 
 
 def test_scout_assessment_survives_restart(tmp_path: Path) -> None:
-    candidate_service, scout, factory = services(tmp_path)
+    _, scout, factory = services(tmp_path)
 
     report = scout.discover(limit=1, source_ids=["weworkremotely"])
     candidate = report["candidates"][0]
