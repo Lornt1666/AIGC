@@ -39,9 +39,8 @@ class AssessmentFixtureConnector:
             remote_status="remote",
             work_type="contract",
             description_plain=(
-                "Build a React TypeScript Tailwind CSS dashboard, test cases, "
-                "technical documentation, an automation workflow, and a "
-                "clear report deliverable."
+                "Build a React TypeScript Tailwind CSS dashboard, an automation "
+                "workflow, a repeatable process, and a clear code deliverable."
             ),
             platform_policy_status="green",
         )
