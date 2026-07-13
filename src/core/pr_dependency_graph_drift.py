@@ -9,7 +9,7 @@ from jsonschema import Draft202012Validator
 
 from src.core.pr_dependency_graph import load_graph, validate_graph
 
-SNAPSHOT_PATH = Path('governance/evolution/pr_platform_snapshot_2026_07_12T142738Z.json')
+SNAPSHOT_PATH = Path('governance/evolution/pr_platform_snapshot_2026_07_13T163044Z.json')
 SNAPSHOT_SCHEMA_PATH = Path('governance/schemas/evolution/pr_platform_snapshot.schema.json')
 
 
@@ -38,8 +38,9 @@ def _validate_schema(instance: Mapping[str, Any], schema: Mapping[str, Any]) -> 
 def validate_platform_snapshot(snapshot: Mapping[str, Any]) -> None:
     pull_requests = list(snapshot['pull_requests'])
     decision_gates = list(snapshot['decision_gates'])
+    coordination_gates = list(snapshot.get('coordination_gates', []))
     exclusions = list(snapshot['excluded_changes'])
-    all_changes = pull_requests + decision_gates
+    all_changes = pull_requests + decision_gates + coordination_gates
 
     by_id = {change['change_id']: change for change in all_changes}
     if len(by_id) != len(all_changes):
@@ -49,14 +50,34 @@ def validate_platform_snapshot(snapshot: Mapping[str, Any]) -> None:
         if change['number'] != int(change['change_id'].rsplit('-', 1)[1]):
             raise DependencyGraphDriftError(f"{change['change_id']} number does not match its identifier")
 
+    for gate in coordination_gates:
+        if gate.get('gate_kind') != 'PROGRAM_COORDINATION_GATE':
+            raise DependencyGraphDriftError(
+                f"{gate.get('change_id', '<unknown>')} has unsupported coordination gate kind"
+            )
+        decision_status = gate.get('decision_status')
+        if gate['state'] == 'OPEN' and decision_status in {'RATIFIED', 'SUPERSEDED'}:
+            raise DependencyGraphDriftError(
+                f"{gate['change_id']} open state conflicts with decision status {decision_status}"
+            )
+        if gate['state'] == 'CLOSED' and decision_status in {
+            'UNRATIFIED',
+            'PARTIALLY_RATIFIED',
+            'CHANGES_REQUESTED',
+        }:
+            raise DependencyGraphDriftError(
+                f"{gate['change_id']} closed state conflicts with decision status {decision_status}"
+            )
+
     exclusion_ids = [entry['change_id'] for entry in exclusions]
     if len(set(exclusion_ids)) != len(exclusion_ids):
         raise DependencyGraphDriftError('excluded change_id values must be unique')
+    pull_requests_by_id = {change['change_id']: change for change in pull_requests}
     for entry in exclusions:
-        change = by_id.get(entry['change_id'])
+        change = pull_requests_by_id.get(entry['change_id'])
         if change is None:
             raise DependencyGraphDriftError(
-                f"excluded change {entry['change_id']} is not present in the platform snapshot"
+                f"excluded change {entry['change_id']} is not a pull request in the platform snapshot"
             )
         if change.get('branch') != entry['branch']:
             raise DependencyGraphDriftError(
@@ -92,10 +113,7 @@ def _snapshot_state(snapshot: Mapping[str, Any]) -> dict[str, Any]:
     return {key: value for key, value in snapshot.items() if key != 'observed_at'}
 
 
-def evaluate_drift(
-    graph: Mapping[str, Any],
-    snapshot: Mapping[str, Any],
-) -> dict[str, Any]:
+def evaluate_drift(graph: Mapping[str, Any], snapshot: Mapping[str, Any]) -> dict[str, Any]:
     validate_graph(graph)
     validate_platform_snapshot(snapshot)
 
@@ -103,10 +121,11 @@ def evaluate_drift(
         raise DependencyGraphDriftError('graph and platform snapshot repositories differ')
 
     graph_by_id = {node['change_id']: node for node in graph['nodes']}
+    # Coordination gates are governed by snapshot completeness and saturation,
+    # not by the pull-request dependency graph.
     platform_changes = list(snapshot['pull_requests']) + list(snapshot['decision_gates'])
     platform_by_id = {change['change_id']: change for change in platform_changes}
     exclusions = {entry['change_id']: entry for entry in snapshot['excluded_changes']}
-
     findings: list[dict[str, Any]] = []
 
     if graph['current_main_revision'] != snapshot['current_main_revision']:
