@@ -36,6 +36,7 @@ def _canonical(value: Mapping[str, Any]) -> str:
         sort_keys=True,
         separators=(",", ":"),
         ensure_ascii=False,
+        default=str,
     )
 
 
@@ -221,6 +222,14 @@ class QuestCandidateApplicationService:
                     "budget_range.min must be less than or equal to budget_range.max"
                 )
 
+        assessment = raw.get("assessment")
+        if assessment is not None:
+            if ingestion_channel == "manual":
+                raise WorkSourcePolicyError(
+                    "Manual intake cannot inject trusted assessment evidence"
+                )
+            assessment = json.loads(_canonical(dict(assessment)))
+
         now = _utc_now()
         input_digest = _digest(raw)
         candidate: dict[str, Any] = {
@@ -255,6 +264,7 @@ class QuestCandidateApplicationService:
                 "discovery_mode": source["discovery_mode"],
                 "external_action_mode": source["external_action_mode"],
             },
+            "assessment": assessment,
             "provenance": {
                 "normalized_by": "QuestCandidateApplicationService",
                 "catalog_version": self.catalog.catalog_version,
