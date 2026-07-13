@@ -31,7 +31,12 @@ def _utc_now() -> str:
 
 
 def _canonical(value: Mapping[str, Any]) -> str:
-    return json.dumps(dict(value), sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return json.dumps(
+        dict(value),
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    )
 
 
 def _digest(value: Mapping[str, Any]) -> str:
@@ -46,7 +51,9 @@ class WorkSourceCatalog:
             "aigc_work_source_gate_catalog_addendum.json"
         )
         if addendum_path.exists():
-            documents.append(json.loads(addendum_path.read_text(encoding="utf-8")))
+            documents.append(
+                json.loads(addendum_path.read_text(encoding="utf-8"))
+            )
 
         latest = documents[-1]
         self.catalog_version = str(
@@ -104,10 +111,21 @@ class WorkSourceCatalog:
     def list(self, *, category: str | None = None) -> list[dict[str, Any]]:
         sources = list(self._sources.values())
         if category is not None:
-            sources = [source for source in sources if source["category"] == category]
-        return sorted((dict(source) for source in sources), key=lambda source: (source["category"], source["name"]))
+            sources = [
+                source
+                for source in sources
+                if source["category"] == category
+            ]
+        return sorted(
+            (dict(source) for source in sources),
+            key=lambda source: (source["category"], source["name"]),
+        )
 
-    def assert_ingestion_channel(self, source: Mapping[str, Any], channel: str) -> None:
+    def assert_ingestion_channel(
+        self,
+        source: Mapping[str, Any],
+        channel: str,
+    ) -> None:
         source_id = str(source["id"])
         connector_status = str(source["connector_status"])
         if channel == "manual":
@@ -124,7 +142,9 @@ class WorkSourceCatalog:
                     f"{source_id} has not been promoted to read_only_enabled"
                 )
             return
-        raise WorkSourcePolicyError(f"Unsupported ingestion channel: {channel}")
+        raise WorkSourcePolicyError(
+            f"Unsupported ingestion channel: {channel}"
+        )
 
 
 class QuestCandidateApplicationService:
@@ -145,7 +165,11 @@ class QuestCandidateApplicationService:
             format_checker=FormatChecker(),
         )
 
-    def list_sources(self, *, category: str | None = None) -> list[dict[str, Any]]:
+    def list_sources(
+        self,
+        *,
+        category: str | None = None,
+    ) -> list[dict[str, Any]]:
         return self.catalog.list(category=category)
 
     def ingest(self, request: Mapping[str, Any]) -> StoredRecord:
@@ -164,9 +188,13 @@ class QuestCandidateApplicationService:
         candidate_id = str(raw.get("candidate_id") or "").strip()
         if not candidate_id:
             material = f"{source_id}|{source_url}|{title}"
-            candidate_id = f"cand_{sha256(material.encode('utf-8')).hexdigest()[:16]}"
+            candidate_id = (
+                f"cand_{sha256(material.encode('utf-8')).hexdigest()[:16]}"
+            )
         if not _CANDIDATE_ID.fullmatch(candidate_id):
-            raise ValueError("candidate_id does not match the canonical cand_ format")
+            raise ValueError(
+                "candidate_id does not match the canonical cand_ format"
+            )
 
         skills: list[str] = []
         seen: set[str] = set()
@@ -181,8 +209,14 @@ class QuestCandidateApplicationService:
             budget_range = dict(budget_range)
             minimum = budget_range.get("min")
             maximum = budget_range.get("max")
-            if minimum is not None and maximum is not None and minimum > maximum:
-                raise ValueError("budget_range.min must be less than or equal to budget_range.max")
+            if (
+                minimum is not None
+                and maximum is not None
+                and minimum > maximum
+            ):
+                raise ValueError(
+                    "budget_range.min must be less than or equal to budget_range.max"
+                )
 
         now = _utc_now()
         input_digest = _digest(raw)
@@ -195,7 +229,9 @@ class QuestCandidateApplicationService:
             "platform_role": source["platform_role"],
             "title": title,
             "description": description,
-            "proposed_quest_title": str(raw.get("proposed_quest_title") or title).strip(),
+            "proposed_quest_title": str(
+                raw.get("proposed_quest_title") or title
+            ).strip(),
             "domain": str(raw["domain"]).strip().lower(),
             "required_skills": skills,
             "budget_range": budget_range,
@@ -230,7 +266,9 @@ class QuestCandidateApplicationService:
         self._validate(candidate)
         return self.repository.ingest(
             candidate,
-            idempotency_key=f"quest-candidate-ingest:{candidate_id}:{input_digest}",
+            idempotency_key=(
+                f"quest-candidate-ingest:{candidate_id}:{input_digest}"
+            ),
             exact_revision=self.exact_revision,
         )
 
@@ -243,7 +281,8 @@ class QuestCandidateApplicationService:
         if status is None:
             return records
         return tuple(
-            record for record in records
+            record
+            for record in records
             if record.payload.get("status") == status.value
         )
 
@@ -257,15 +296,27 @@ class QuestCandidateApplicationService:
         reason: str | None,
     ) -> StoredRecord:
         if operator_role != "ACCOUNTABLE_OPERATOR":
-            raise WorkSourcePolicyError("Only ACCOUNTABLE_OPERATOR may qualify a candidate")
+            raise WorkSourcePolicyError(
+                "Only ACCOUNTABLE_OPERATOR may qualify a candidate"
+            )
         if decision != "QUALIFY":
-            raise WorkSourcePolicyError("Qualification decision must be QUALIFY")
+            raise WorkSourcePolicyError(
+                "Qualification decision must be QUALIFY"
+            )
 
         existing = self.repository.get(candidate_id)
         if existing is None:
             raise QuestCandidateNotFound(candidate_id)
         current_status = str(existing.payload.get("status"))
         if current_status == QuestCandidateStatus.QUALIFIED.value:
+            if expected_revision not in {
+                existing.revision,
+                existing.revision - 1,
+            }:
+                raise QuestCandidateConflict(
+                    f"Expected revision {expected_revision}, "
+                    f"found {existing.revision}"
+                )
             return existing
         if current_status != QuestCandidateStatus.DISCOVERED.value:
             raise QuestCandidateStateError(
@@ -273,7 +324,8 @@ class QuestCandidateApplicationService:
             )
         if existing.revision != expected_revision:
             raise QuestCandidateConflict(
-                f"Expected revision {expected_revision}, found {existing.revision}"
+                f"Expected revision {expected_revision}, "
+                f"found {existing.revision}"
             )
 
         now = _utc_now()
@@ -286,6 +338,9 @@ class QuestCandidateApplicationService:
             "qualified_at": now,
             "quest_creation_authorized": True,
             "quest_created": False,
+            "quest_id": None,
+            "quest_created_at": None,
+            "quest_request_digest": None,
             "next_step": "CREATE_QUEST_UNDER_CANONICAL_LIFECYCLE",
         }
         candidate["external_action_performed"] = False
@@ -305,7 +360,10 @@ class QuestCandidateApplicationService:
         if not errors:
             return
         detail = "; ".join(
-            f"{'.'.join(str(part) for part in error.absolute_path) or '<root>'}: {error.message}"
+            f"{'.'.join(str(part) for part in error.absolute_path) or '<root>'}: "
+            f"{error.message}"
             for error in errors
         )
-        raise ValueError(f"Quest candidate contract validation failed: {detail}")
+        raise ValueError(
+            f"Quest candidate contract validation failed: {detail}"
+        )
