@@ -188,9 +188,28 @@ class OlogyAssessor:
         disciplines: list[str],
         matched_groups: Mapping[str, list[str]],
     ) -> str:
+        # High-assurance semantic categories remain authoritative.
         for preferred in (
             "api_documentation",
             "cybersecurity_bug_bounty",
+        ):
+            if preferred in disciplines:
+                return _DOMAIN_MAP[preferred]
+
+        # Explicit technology evidence outranks broad keyword taxonomies such as
+        # dashboard -> data_analysis or LLM -> prompt_engineering.
+        if "machine_learning" in matched_groups:
+            return "machine_learning"
+        if "devops" in matched_groups:
+            return "devops_cloud_engineering"
+        if {"frontend", "backend"}.issubset(matched_groups):
+            return "full_stack_development"
+        if "frontend" in matched_groups:
+            return "frontend_development"
+        if "backend" in matched_groups:
+            return "backend_development"
+
+        for preferred in (
             "data_analysis",
             "research",
             "prompt_engineering",
@@ -198,20 +217,6 @@ class OlogyAssessor:
         ):
             if preferred in disciplines:
                 return _DOMAIN_MAP[preferred]
-
-        if "machine_learning" in matched_groups:
-            return "machine_learning"
-        if "devops" in matched_groups:
-            return "devops_cloud_engineering"
-        if {
-            "frontend",
-            "backend",
-        }.issubset(matched_groups):
-            return "full_stack_development"
-        if "frontend" in matched_groups:
-            return "frontend_development"
-        if "backend" in matched_groups:
-            return "backend_development"
 
         return next(
             (
