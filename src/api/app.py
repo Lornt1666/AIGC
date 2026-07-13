@@ -11,6 +11,10 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from src.api.composition import build_container
 from src.api.quest_board import QUEST_BOARD_HTML
+from src.application import (
+    OpportunityScoutPolicyError,
+    OpportunityScoutUnavailable,
+)
 from src.domain.quests import (
     QuestCandidateConflict,
     QuestCandidateNotFound,
@@ -136,11 +140,12 @@ def create_app(database_path: str | Path | None = None) -> FastAPI:
     container = build_container(database_path)
     api = FastAPI(
         title="AIGC Local Operator API",
-        version="1.2.0-local",
+        version="1.3.0-local",
         description=(
             "Localhost-only, non-production AIGC control surface. "
-            "IAL0/AAL0/FAL0. Candidate intake and Quest creation are "
-            "internal only; external actions remain blocked."
+            "IAL0/AAL0/FAL0. Opportunity discovery is fixed-source and "
+            "read-only; candidate intake and Quest creation are internal only; "
+            "external actions remain blocked."
         ),
     )
     api.state.container = container
@@ -158,6 +163,7 @@ def create_app(database_path: str | Path | None = None) -> FastAPI:
             "mode": "local_simulation",
             "persistence": "sqlite",
             "quest_board": "available",
+            "opportunity_scout": "available_read_only",
             "external_action_performed": False,
         }
 
@@ -172,6 +178,7 @@ def create_app(database_path: str | Path | None = None) -> FastAPI:
                 "fal": "FAL0",
             },
             "authorization_receipt_persistence": "sqlite_local",
+            "opportunity_scout": "fixed_source_read_only",
             "quest_candidate_intake": "internal_persistent",
             "quest_creation": "qualified_candidate_to_proposed_quest",
             "canonical_acceptance_semantics": {
@@ -194,6 +201,12 @@ def create_app(database_path: str | Path | None = None) -> FastAPI:
             },
             "authorization_receipt_persistence": {
                 "state": "implemented_internal",
+                "blocking": False,
+            },
+            "opportunity_scout": {
+                "state": "implemented_internal_read_only",
+                "arbitrary_urls_allowed": False,
+                "credentials_used": False,
                 "blocking": False,
             },
             "quest_candidate_intake": {
@@ -277,6 +290,45 @@ def create_app(database_path: str | Path | None = None) -> FastAPI:
             "catalog_inclusion_grants_external_action": False,
             "external_action_performed": False,
         }
+
+    @api.post("/api/v1/opportunities/discover")
+    def discover_opportunities(
+        limit: int = Query(default=5, ge=1, le=25),
+        source_id: list[str] | None = Query(default=None),
+    ) -> dict[str, Any]:
+        try:
+            return container.opportunity_scout_service.discover(
+                limit=limit,
+                source_ids=source_id,
+            )
+        except OpportunityScoutPolicyError as exc:
+            raise HTTPException(
+                status_code=403,
+                detail={
+                    "code": "OPPORTUNITY_SCOUT_POLICY_DENIED",
+                    "message": str(exc),
+                    "external_action_performed": False,
+                },
+            ) from exc
+        except OpportunityScoutUnavailable as exc:
+            raise HTTPException(
+                status_code=502,
+                detail={
+                    "code": "OPPORTUNITY_SOURCES_UNAVAILABLE",
+                    "message": str(exc),
+                    "report": exc.report,
+                    "external_action_performed": False,
+                },
+            ) from exc
+        except ValueError as exc:
+            raise HTTPException(
+                status_code=422,
+                detail={
+                    "code": "OPPORTUNITY_SCOUT_INVALID_REQUEST",
+                    "message": str(exc),
+                    "external_action_performed": False,
+                },
+            ) from exc
 
     @api.post("/api/v1/quests/candidates/ingest", status_code=201)
     def ingest_quest_candidate(
