@@ -58,26 +58,61 @@ def example() -> dict:
     }
 
 
+def qualified_candidate(*, quest_created: bool) -> dict:
+    candidate = example()
+    candidate["status"] = "QUALIFIED"
+    candidate["qualification"] = {
+        "decision": "QUALIFY",
+        "operator_role": "ACCOUNTABLE_OPERATOR",
+        "reason": "Suitable for governed Quest proposal creation.",
+        "qualified_at": "2026-07-13T16:40:00+00:00",
+        "quest_creation_authorized": True,
+        "quest_created": quest_created,
+        "quest_id": "quest_001example" if quest_created else None,
+        "quest_created_at": (
+            "2026-07-13T16:45:00+00:00" if quest_created else None
+        ),
+        "quest_request_digest": "b" * 64 if quest_created else None,
+        "next_step": (
+            "REQUEST_WORK_ACCEPTANCE"
+            if quest_created
+            else "CREATE_QUEST_UNDER_CANONICAL_LIFECYCLE"
+        ),
+    }
+    return candidate
+
+
 def test_discovered_candidate_contract_is_valid() -> None:
     VALIDATOR.validate(example())
+
+
+def test_qualified_candidate_before_conversion_is_valid() -> None:
+    VALIDATOR.validate(qualified_candidate(quest_created=False))
+
+
+def test_converted_candidate_contract_is_valid() -> None:
+    VALIDATOR.validate(qualified_candidate(quest_created=True))
 
 
 def test_external_action_cannot_be_recorded_as_true() -> None:
     candidate = example()
     candidate["external_action_performed"] = True
-    errors = list(VALIDATOR.iter_errors(candidate))
-    assert errors
+    assert list(VALIDATOR.iter_errors(candidate))
 
 
 def test_qualified_candidate_requires_qualification_record() -> None:
     candidate = example()
     candidate["status"] = "QUALIFIED"
-    errors = list(VALIDATOR.iter_errors(candidate))
-    assert errors
+    assert list(VALIDATOR.iter_errors(candidate))
+
+
+def test_created_candidate_requires_quest_evidence() -> None:
+    candidate = qualified_candidate(quest_created=True)
+    candidate["qualification"]["quest_id"] = None
+    assert list(VALIDATOR.iter_errors(candidate))
 
 
 def test_unknown_fields_are_rejected() -> None:
     candidate = deepcopy(example())
     candidate["unexpected"] = "not allowed"
-    errors = list(VALIDATOR.iter_errors(candidate))
-    assert errors
+    assert list(VALIDATOR.iter_errors(candidate))
