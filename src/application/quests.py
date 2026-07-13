@@ -55,7 +55,12 @@ def _parse_datetime(value: Any) -> datetime | None:
 
 
 def _canonical(value: Mapping[str, Any]) -> str:
-    return json.dumps(dict(value), sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return json.dumps(
+        dict(value),
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    )
 
 
 class QuestApplicationService:
@@ -73,7 +78,10 @@ class QuestApplicationService:
         self.quest_repository = quest_repository
         self.exact_revision = exact_revision
         schema = json.loads(Path(schema_path).read_text(encoding="utf-8"))
-        self.validator = Draft202012Validator(schema, format_checker=FormatChecker())
+        self.validator = Draft202012Validator(
+            schema,
+            format_checker=FormatChecker(),
+        )
 
     def create_from_candidate(
         self,
@@ -96,11 +104,6 @@ class QuestApplicationService:
         candidate_record = self.candidate_repository.get(candidate_id)
         if candidate_record is None:
             raise QuestNotFound(f"Candidate not found: {candidate_id}")
-        if candidate_record.revision != expected_candidate_revision:
-            raise QuestConflict(
-                f"Expected candidate revision {expected_candidate_revision}, "
-                f"found {candidate_record.revision}"
-            )
 
         candidate = dict(candidate_record.payload)
         if candidate.get("status") != "QUALIFIED":
@@ -113,12 +116,23 @@ class QuestApplicationService:
                 f"Candidate {candidate_id} does not contain Quest-creation authorization"
             )
 
+        already_created = qualification.get("quest_created") is True
+        permitted_revisions = {candidate_record.revision}
+        if already_created:
+            permitted_revisions.add(candidate_record.revision - 1)
+        if expected_candidate_revision not in permitted_revisions:
+            raise QuestConflict(
+                f"Expected candidate revision {expected_candidate_revision}, "
+                f"found {candidate_record.revision}"
+            )
+
         suffix = candidate_id.removeprefix("cand_")
         quest_id = f"quest_{suffix}"
         if len(quest_id) > 106:
-            quest_id = f"quest_{sha256(candidate_id.encode('utf-8')).hexdigest()[:24]}"
+            quest_id = (
+                f"quest_{sha256(candidate_id.encode('utf-8')).hexdigest()[:24]}"
+            )
 
-        created_at = _now()
         resolved_deadline = _parse_datetime(deadline_at)
         if resolved_deadline is None:
             resolved_deadline = _parse_datetime(candidate.get("deadline_at"))
@@ -126,10 +140,12 @@ class QuestApplicationService:
             observed = _parse_datetime(
                 (candidate.get("provenance") or {}).get("observed_at")
                 or candidate.get("ingested_at")
-            ) or created_at
-            resolved_deadline = observed + timedelta(days=int(candidate["deadline_days"]))
+            ) or _now()
+            resolved_deadline = observed + timedelta(
+                days=int(candidate["deadline_days"])
+            )
 
-        criteria = []
+        criteria: list[str] = []
         seen: set[str] = set()
         for item in acceptance_criteria or _DEFAULT_ACCEPTANCE_CRITERIA:
             normalized = str(item).strip()
@@ -139,21 +155,64 @@ class QuestApplicationService:
         if not criteria:
             raise ValueError("At least one acceptance criterion is required")
 
-        resolved_budget = dict(budget) if budget is not None else candidate.get("budget_range")
+        resolved_budget = (
+            dict(budget)
+            if budget is not None
+            else candidate.get("budget_range")
+        )
         if resolved_budget is not None:
             resolved_budget = dict(resolved_budget)
             minimum = resolved_budget.get("min")
             maximum = resolved_budget.get("max")
-            if minimum is not None and maximum is not None and minimum > maximum:
-                raise ValueError("budget.min must be less than or equal to budget.max")
+            if (
+                minimum is not None
+                and maximum is not None
+                and minimum > maximum
+            ):
+                raise ValueError(
+                    "budget.min must be less than or equal to budget.max"
+                )
 
+        resolved_title = str(
+            candidate.get("proposed_quest_title")
+            or candidate.get("title")
+            or ""
+        ).strip()
+        resolved_purpose = str(
+            purpose or candidate.get("description") or ""
+        ).strip()
+        resolved_scope = str(scope or _DEFAULT_SCOPE).strip()
+        resolved_non_scope = str(non_scope or _DEFAULT_NON_SCOPE).strip()
+        resolved_deadline_text = (
+            _iso(resolved_deadline) if resolved_deadline else None
+        )
+
+        logical_request = {
+            "candidate_id": candidate_id,
+            "expected_candidate_revision": expected_candidate_revision,
+            "candidate_input_digest": candidate["provenance"]["input_digest"],
+            "operator_role": operator_role,
+            "quest_id": quest_id,
+            "title": resolved_title,
+            "purpose": resolved_purpose,
+            "scope": resolved_scope,
+            "non_scope": resolved_non_scope,
+            "acceptance_criteria": criteria,
+            "budget": resolved_budget,
+            "deadline_at": resolved_deadline_text,
+        }
+        request_digest = sha256(
+            _canonical(logical_request).encode("utf-8")
+        ).hexdigest()
+
+        created_at = _now()
         quest: dict[str, Any] = {
             "quest_id": quest_id,
             "source_candidate_id": candidate_id,
-            "title": str(candidate.get("proposed_quest_title") or candidate.get("title") or "").strip(),
-            "purpose": str(purpose or candidate.get("description") or "").strip(),
-            "scope": str(scope or _DEFAULT_SCOPE).strip(),
-            "non_scope": str(non_scope or _DEFAULT_NON_SCOPE).strip(),
+            "title": resolved_title,
+            "purpose": resolved_purpose,
+            "scope": resolved_scope,
+            "non_scope": resolved_non_scope,
             "owner_role": "ACCOUNTABLE_OPERATOR",
             "authority_class": "ACCOUNTABLE_OPERATOR",
             "risk_class": str(candidate.get("risk_class") or "unassessed"),
@@ -162,7 +221,7 @@ class QuestApplicationService:
             "lifecycle_contract_version": "1.0.0",
             "acceptance_criteria": criteria,
             "budget": resolved_budget,
-            "deadline_at": _iso(resolved_deadline) if resolved_deadline else None,
+            "deadline_at": resolved_deadline_text,
             "source_snapshot": {
                 "source_id": candidate["source_id"],
                 "source_name": candidate["source_name"],
@@ -178,18 +237,13 @@ class QuestApplicationService:
         }
         self._validate(quest)
 
-        request_material = {
-            "candidate_id": candidate_id,
-            "expected_candidate_revision": expected_candidate_revision,
-            "operator_role": operator_role,
-            "quest": quest,
-        }
-        request_digest = sha256(_canonical(request_material).encode("utf-8")).hexdigest()
         return self.quest_repository.create_from_candidate(
             candidate_id,
             quest,
             expected_candidate_revision=expected_candidate_revision,
-            idempotency_key=f"quest-create:{candidate_id}:{request_digest}",
+            idempotency_key=(
+                f"quest-create:{candidate_id}:{request_digest}"
+            ),
             request_digest=request_digest,
             exact_revision=self.exact_revision,
         )
@@ -222,7 +276,8 @@ class QuestApplicationService:
         if not errors:
             return
         detail = "; ".join(
-            f"{'.'.join(str(part) for part in error.absolute_path) or '<root>'}: {error.message}"
+            f"{'.'.join(str(part) for part in error.absolute_path) or '<root>'}: "
+            f"{error.message}"
             for error in errors
         )
         raise ValueError(f"Quest contract validation failed: {detail}")
