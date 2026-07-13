@@ -68,7 +68,7 @@ jobs:
         with:
           name: production-readiness-${{ github.sha }}
           path: reports/artifacts/production_readiness
-          if-no-files-found: warn
+          if-no-files-found: error
 
       - name: Upload CI dependency review receipt
         if: always()
