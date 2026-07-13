@@ -1,6 +1,6 @@
 {
   "ledger_id": "AIGC-PRODUCTION-READINESS-LEDGER-001",
-  "version": "2026-07-10",
+  "version": "2026-07-13",
   "mode": "evidence_backed_completion_measurement",
   "production_readiness_threshold": 90,
   "status_multipliers": {
@@ -105,8 +105,11 @@
       "name": "Production authentication, authorization, sessions, and tenant isolation",
       "dimension": "identity_access",
       "weight": 9,
-      "declared_status": "unimplemented",
-      "required_evidence": [],
+      "declared_status": "planned",
+      "required_evidence": [
+        "docs/EVOLUTION_PROCUREMENT_CYCLE_2026-07-13.md",
+        "data/evolution_procurement/aigc_evolution_procurement_cycle_2026-07-13.json"
+      ],
       "blocking_for_production": true
     },
     {
