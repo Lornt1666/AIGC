@@ -18,6 +18,7 @@ DEFAULT_STAGING_SCHEMA = ROOT / "schemas" / "staging_identity_authorization_rece
 DEFAULT_PRODUCTION_SCHEMA = ROOT / "schemas" / "production_deployment_authorization_receipt.schema.json"
 DEFAULT_EVALUATION_SCHEMA = ROOT / "schemas" / "exact_authorization_submission_evaluation.schema.json"
 _HEX40 = re.compile(r"^[a-f0-9]{40}$")
+_MAX_PACKET_LIFETIME_HOURS = 168
 
 
 class ExactAuthorizationSubmissionError(ValueError):
@@ -63,7 +64,7 @@ def _parse_time(value: object) -> datetime:
         return _utc(datetime.fromisoformat(str(value).replace("Z", "+00:00")))
     except ValueError as exc:
         raise ExactAuthorizationSubmissionError(
-            "Authorization receipt time is invalid"
+            "Authorization or packet time is invalid"
         ) from exc
 
 
@@ -99,6 +100,7 @@ def _strict_validate(schema_path: Path, value: Mapping[str, Any]) -> dict[str, A
 def load_identifier_packet(
     path: str | Path = DEFAULT_PACKET_PATH,
 ) -> dict[str, Any]:
+    """Load the committed packet template or a separately supplied submission."""
     try:
         value = json.loads(Path(path).read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
@@ -132,6 +134,33 @@ def _time_reasons(
     if lifetime_hours > maximum_hours:
         reasons.append(f"{prefix}_TTL_EXCEEDED")
     return reasons
+
+
+def _packet_lifecycle_reasons(
+    packet: Mapping[str, Any],
+    *,
+    now: datetime,
+) -> list[str]:
+    if packet["artifact_kind"] == "TEMPLATE":
+        return ["IDENTIFIER_PACKET_TEMPLATE_ONLY"]
+
+    lifecycle = dict(packet["lifecycle"])
+    created_at = _parse_time(lifecycle["created_at"])
+    expires_at = _parse_time(lifecycle["expires_at"])
+    reasons: list[str] = []
+
+    if expires_at <= created_at:
+        reasons.append("IDENTIFIER_PACKET_LIFETIME_INVALID")
+    if created_at > now:
+        reasons.append("IDENTIFIER_PACKET_FUTURE_DATED")
+    if now >= expires_at:
+        reasons.append("IDENTIFIER_PACKET_EXPIRED")
+    lifetime_hours = (expires_at - created_at).total_seconds() / 3600
+    if lifetime_hours > _MAX_PACKET_LIFETIME_HOURS:
+        reasons.append("IDENTIFIER_PACKET_TTL_EXCEEDED")
+    if lifecycle["revoked"] is True:
+        reasons.append("IDENTIFIER_PACKET_REVOKED")
+    return list(dict.fromkeys(reasons))
 
 
 def _staging_target_projection(packet: Mapping[str, Any]) -> dict[str, Any]:
@@ -175,16 +204,43 @@ def evaluate_exact_authorization_submission(
         else "unbound"
     )
     packet_hash = canonical_digest(packet)
-    packet_ready = (
-        packet["status"] == "READY_FOR_OPERATOR_REVIEW"
-        and packet["unresolved_identifiers"] == []
-        and revision != "unbound"
-        and packet["authorization_basis_revision"] == revision
+    lifecycle_reasons = _packet_lifecycle_reasons(packet, now=current)
+    lifecycle_active = (
+        packet["artifact_kind"] == "SUBMISSION" and not lifecycle_reasons
+    )
+    revision_bound = revision != "unbound"
+
+    lifecycle = dict(packet["lifecycle"])
+    staging_consumed = (
+        lifecycle["staging_consumption"]["status"] == "CONSUMED"
+    )
+    production_consumed = (
+        lifecycle["production_consumption"]["status"] == "CONSUMED"
+    )
+    staging_packet_ready = (
+        lifecycle_active
+        and revision_bound
+        and not staging_consumed
+        and packet["staging_status"] == "READY_FOR_OPERATOR_REVIEW"
+        and packet["unresolved_staging_identifiers"] == []
+    )
+    production_packet_ready = (
+        lifecycle_active
+        and revision_bound
+        and not production_consumed
+        and packet["production_status"] == "READY_FOR_OPERATOR_REVIEW"
+        and packet["unresolved_production_identifiers"] == []
     )
 
     staging_reasons: list[str] = []
     staging_valid = False
     staging_value: dict[str, Any] | None = None
+    if not staging_packet_ready:
+        staging_reasons.append("STAGING_PACKET_NOT_READY")
+    if staging_consumed:
+        staging_reasons.append("STAGING_PACKET_ALREADY_CONSUMED")
+    if not revision_bound:
+        staging_reasons.append("EVALUATED_REVISION_UNBOUND")
     if staging_identity_receipt is None:
         staging_reasons.append("STAGING_IDENTITY_RECEIPT_MISSING")
     else:
@@ -197,8 +253,6 @@ def evaluate_exact_authorization_submission(
             staging_reasons.append("STAGING_IDENTITY_RECEIPT_INVALID")
         else:
             staging_valid = True
-            if not packet_ready:
-                staging_reasons.append("IDENTIFIER_PACKET_NOT_READY")
             if staging_value["exact_revision"] != revision:
                 staging_reasons.append("STAGING_IDENTITY_REVISION_MISMATCH")
             if staging_value["identifier_packet_digest"] != packet_hash:
@@ -221,11 +275,17 @@ def evaluate_exact_authorization_submission(
     report = dict(readiness_report or {})
     score = float(report.get("overall_score") or 0)
     blocking_gaps = sorted(str(item) for item in report.get("blocking_gaps") or [])
-    production_ready = bool(report.get("production_ready"))
+    production_ready_truth = bool(report.get("production_ready"))
 
     production_reasons: list[str] = []
     production_valid = False
     production_value: dict[str, Any] | None = None
+    if not production_packet_ready:
+        production_reasons.append("PRODUCTION_PACKET_NOT_READY")
+    if production_consumed:
+        production_reasons.append("PRODUCTION_PACKET_ALREADY_CONSUMED")
+    if not revision_bound:
+        production_reasons.append("EVALUATED_REVISION_UNBOUND")
     if production_deployment_receipt is None:
         production_reasons.append("PRODUCTION_DEPLOYMENT_RECEIPT_MISSING")
     else:
@@ -238,8 +298,6 @@ def evaluate_exact_authorization_submission(
             production_reasons.append("PRODUCTION_DEPLOYMENT_RECEIPT_INVALID")
         else:
             production_valid = True
-            if not packet_ready:
-                production_reasons.append("IDENTIFIER_PACKET_NOT_READY")
             if production_value["exact_revision"] != revision:
                 production_reasons.append("PRODUCTION_DEPLOYMENT_REVISION_MISMATCH")
             if production_value["identifier_packet_digest"] != packet_hash:
@@ -279,7 +337,7 @@ def evaluate_exact_authorization_submission(
                     production_reasons.append("READINESS_SCORE_BELOW_THRESHOLD")
                 if blocking_gaps:
                     production_reasons.append("BLOCKING_GAPS_PRESENT")
-                if not production_ready:
+                if not production_ready_truth:
                     production_reasons.append("READINESS_NOT_PRODUCTION_READY")
 
     production_reasons = list(dict.fromkeys(production_reasons))
@@ -289,8 +347,11 @@ def evaluate_exact_authorization_submission(
         (
             revision,
             packet_hash,
+            ",".join(lifecycle_reasons),
+            packet["staging_status"],
             str(staging_value.get("receipt_id") if staging_value else ""),
             ",".join(staging_reasons),
+            packet["production_status"],
             str(production_value.get("receipt_id") if production_value else ""),
             ",".join(production_reasons),
             f"{score:.4f}",
@@ -299,23 +360,29 @@ def evaluate_exact_authorization_submission(
     )
     receipt = {
         "contract_id": "AIGC-EXACT-AUTHORIZATION-SUBMISSION-EVALUATION-001",
-        "contract_version": "1.0.0",
+        "contract_version": "1.1.0",
         "evaluation_id": "EAS-"
         + sha256(evaluation_material.encode("utf-8")).hexdigest()[:24].upper(),
-        "exact_revision": revision,
+        "evaluated_revision": revision,
         "identifier_packet_digest": packet_hash,
-        "packet_status": packet["status"],
-        "packet_ready_for_review": packet_ready,
+        "artifact_kind": packet["artifact_kind"],
+        "packet_id": packet["packet_id"],
+        "lifecycle_active": lifecycle_active,
+        "lifecycle_reason_codes": lifecycle_reasons,
+        "staging_packet_status": packet["staging_status"],
+        "staging_packet_ready_for_review": staging_packet_ready,
         "staging_identity_receipt_present": staging_identity_receipt is not None,
         "staging_identity_authorization_effective": staging_effective,
         "staging_identity_reason_codes": staging_reasons,
+        "production_packet_status": packet["production_status"],
+        "production_packet_ready_for_review": production_packet_ready,
         "production_deployment_receipt_present": (
             production_deployment_receipt is not None
         ),
         "production_deployment_authorization_effective": production_effective,
         "production_deployment_reason_codes": production_reasons,
         "readiness_score": score,
-        "production_ready": production_ready,
+        "production_ready": production_ready_truth,
         "blocking_gaps": blocking_gaps,
         "evaluated_at": current.isoformat(),
         "operator_review_required": True,
