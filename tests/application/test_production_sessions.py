@@ -171,7 +171,7 @@ def test_session_rotation_invalidates_old_credential_and_binds_replacement(
         issued.session_credential,
         verification=verification(),
         binding=stored_binding,
-        now=NOW + timedelta(minutes=10),
+        now=NOW + timedelta(minutes=9),
     )
 
     old_record = repository.get(issued.record.session_id)
@@ -184,11 +184,11 @@ def test_session_rotation_invalidates_old_credential_and_binds_replacement(
     with pytest.raises(ProductionSessionError, match="not active"):
         session_service.authenticate(
             issued.session_credential,
-            now=NOW + timedelta(minutes=11),
+            now=NOW + timedelta(minutes=10),
         )
     assert session_service.authenticate(
         rotated.session_credential,
-        now=NOW + timedelta(minutes=11),
+        now=NOW + timedelta(minutes=10),
     ).session_id == rotated.record.session_id
 
 
