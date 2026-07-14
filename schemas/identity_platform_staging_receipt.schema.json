@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/identity_platform_staging_receipt.schema.json",
+  "title": "AIGC Identity Platform Staging Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id",
+    "contract_version",
+    "receipt_id",
+    "environment",
+    "exact_revision",
+    "provider_service",
+    "project_reference",
+    "tenant_model",
+    "test_subject_reference",
+    "checks",
+    "raw_tokens_persisted",
+    "raw_tokens_logged",
+    "public_self_registration_enabled",
+    "production_users_used",
+    "result",
+    "reason_codes",
+    "operator_review_required",
+    "created_at",
+    "external_action_performed"
+  ],
+  "properties": {
+    "contract_id": {"const": "AIGC-IDENTITY-PLATFORM-STAGING-RECEIPT-001"},
+    "contract_version": {"const": "1.0.0"},
+    "receipt_id": {"type": "string", "pattern": "^IPR-[A-F0-9]{24}$"},
+    "environment": {"const": "isolated_staging"},
+    "exact_revision": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "provider_service": {"const": "google_cloud_identity_platform"},
+    "project_reference": {"type": "string", "pattern": "^gcp_project://[a-z][a-z0-9-]{4,29}$"},
+    "tenant_model": {"const": "single_accountable_tenant"},
+    "test_subject_reference": {"type": "string", "pattern": "^staging_subject://[A-Za-z0-9._:-]{4,200}$"},
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "google_sign_in",
+        "valid_signature",
+        "wrong_signature_denied",
+        "wrong_audience_denied",
+        "wrong_issuer_denied",
+        "expired_assertion_denied",
+        "replayed_assertion_denied",
+        "public_key_rotation",
+        "subject_mapping",
+        "revocation",
+        "session_issue",
+        "session_rotation",
+        "logout_revocation",
+        "restart_persistence",
+        "cross_tenant_denied",
+        "cross_project_denied",
+        "provider_outage_fail_closed",
+        "redaction_review"
+      ],
+      "properties": {
+        "google_sign_in": {"type": "boolean"},
+        "valid_signature": {"type": "boolean"},
+        "wrong_signature_denied": {"type": "boolean"},
+        "wrong_audience_denied": {"type": "boolean"},
+        "wrong_issuer_denied": {"type": "boolean"},
+        "expired_assertion_denied": {"type": "boolean"},
+        "replayed_assertion_denied": {"type": "boolean"},
+        "public_key_rotation": {"type": "boolean"},
+        "subject_mapping": {"type": "boolean"},
+        "revocation": {"type": "boolean"},
+        "session_issue": {"type": "boolean"},
+        "session_rotation": {"type": "boolean"},
+        "logout_revocation": {"type": "boolean"},
+        "restart_persistence": {"type": "boolean"},
+        "cross_tenant_denied": {"type": "boolean"},
+        "cross_project_denied": {"type": "boolean"},
+        "provider_outage_fail_closed": {"type": "boolean"},
+        "redaction_review": {"type": "boolean"}
+      }
+    },
+    "raw_tokens_persisted": {"const": false},
+    "raw_tokens_logged": {"const": false},
+    "public_self_registration_enabled": {"const": false},
+    "production_users_used": {"const": false},
+    "result": {"enum": ["PASS", "FAIL"]},
+    "reason_codes": {
+      "type": "array",
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]{2,99}$"}
+    },
+    "operator_review_required": {"const": true},
+    "created_at": {"type": "string", "format": "date-time"},
+    "external_action_performed": {"const": false}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"result": {"const": "PASS"}}},
+      "then": {
+        "properties": {
+          "reason_codes": {"maxItems": 0},
+          "checks": {
+            "properties": {
+              "google_sign_in": {"const": true},
+              "valid_signature": {"const": true},
+              "wrong_signature_denied": {"const": true},
+              "wrong_audience_denied": {"const": true},
+              "wrong_issuer_denied": {"const": true},
+              "expired_assertion_denied": {"const": true},
+              "replayed_assertion_denied": {"const": true},
+              "public_key_rotation": {"const": true},
+              "subject_mapping": {"const": true},
+              "revocation": {"const": true},
+              "session_issue": {"const": true},
+              "session_rotation": {"const": true},
+              "logout_revocation": {"const": true},
+              "restart_persistence": {"const": true},
+              "cross_tenant_denied": {"const": true},
+              "cross_project_denied": {"const": true},
+              "provider_outage_fail_closed": {"const": true},
+              "redaction_review": {"const": true}
+            }
+          }
+        }
+      },
+      "else": {"properties": {"reason_codes": {"minItems": 1}}}
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "ledger_id": "AIGC-PRODUCTION-READINESS-LEDGER-001",
-  "version": "2026-07-10",
+  "version": "2026-07-14.2",
   "mode": "evidence_backed_completion_measurement",
   "production_readiness_threshold": 90,
   "status_multipliers": {
@@ -58,11 +58,13 @@
       "name": "Work acquisition and counterparty intake",
       "dimension": "work_acquisition",
       "weight": 9,
-      "declared_status": "partial",
+      "declared_status": "implemented_internal",
       "required_evidence": [
-        "src/core/work_acquisition.py",
-        "src/core/counterparty_request_intake.py",
-        "config/work_domain_registry.json"
+        "src/application/opportunity_scout.py",
+        "src/application/quest_candidates.py",
+        "src/application/quests.py",
+        "src/infrastructure/persistence/sqlite/quest_candidates.py",
+        "tests/application/test_opportunity_scout.py"
       ],
       "blocking_for_production": false
     },
@@ -73,9 +75,12 @@
       "weight": 14,
       "declared_status": "implemented_internal",
       "required_evidence": [
-        "src/core/security_privacy_wiring.py",
-        "src/core/observer_authority_verification.py",
-        "config/sentinel_security_profile.json"
+        "config/production_security_privacy_baseline.json",
+        "config/production_threat_model.json",
+        "config/production_privacy_impact_register.json",
+        "src/api/security_hardened_app.py",
+        "src/security/production_http_security.py",
+        "tests/test_production_security_privacy_baseline.py"
       ],
       "blocking_for_production": true
     },
@@ -96,8 +101,18 @@
       "name": "Transactional database persistence and migrations",
       "dimension": "data",
       "weight": 9,
-      "declared_status": "partial",
-      "required_evidence": [],
+      "declared_status": "implemented_internal",
+      "required_evidence": [
+        "migrations/sqlite/0001_transactional_storage.sql",
+        "src/domain/repositories/contracts.py",
+        "src/infrastructure/persistence/sqlite/repositories.py",
+        "tests/persistence/test_sqlite_storage.py",
+        "config/production_persistence_baseline.json",
+        "migrations/postgresql/0001_transactional_storage.sql",
+        "src/infrastructure/persistence/postgresql/runtime.py",
+        "src/infrastructure/persistence/postgresql/migrations.py",
+        "tests/persistence/test_postgresql_baseline.py"
+      ],
       "blocking_for_production": true
     },
     {
@@ -105,8 +120,15 @@
       "name": "Production authentication, authorization, sessions, and tenant isolation",
       "dimension": "identity_access",
       "weight": 9,
-      "declared_status": "unimplemented",
-      "required_evidence": [],
+      "declared_status": "partial",
+      "required_evidence": [
+        "config/production_identity_platform_baseline.json",
+        "src/infrastructure/identity/google_identity_platform_adapter.py",
+        "src/application/production_sessions.py",
+        "migrations/sqlite/0004_production_identity_sessions.sql",
+        "migrations/postgresql/0004_production_identity_sessions.sql",
+        "tests/integration/test_identity_platform_session_pipeline.py"
+      ],
       "blocking_for_production": true
     },
     {
@@ -135,8 +157,14 @@
       "name": "Reproducible production deployment, rollback, monitoring, and recovery",
       "dimension": "deployment_operations",
       "weight": 6,
-      "declared_status": "unimplemented",
-      "required_evidence": [],
+      "declared_status": "planned",
+      "required_evidence": [
+        "config/production_environment_decision.json",
+        "config/production_release_gate.json",
+        "src/core/production_release_gate.py",
+        "docs/PRODUCTION_FINALIZATION_PROGRAM_V1.md",
+        "tests/test_production_release_gate.py"
+      ],
       "blocking_for_production": true
     }
   ],

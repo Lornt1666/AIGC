@@ -20,6 +20,18 @@ from .contracts import (
     SessionVerifier,
 )
 from .errors import IdentityBoundaryError, IdentityContractError, IdentityReplayConflict
+from .production_sessions import (
+    IssuedProductionSession,
+    ProductionSessionRecord,
+    ProductionSessionRepository,
+    ProductionSessionState,
+    ProviderRevocationEvidence,
+    ProviderRevocationResolver,
+    ProviderSubjectBinding,
+    ProviderSubjectBindingResolver,
+    ProviderSubjectState,
+    SessionCredentialDigester,
+)
 
 __all__ = [
     "AuthenticationAssuranceLevel",
@@ -36,12 +48,22 @@ __all__ = [
     "IdentityEvidenceReceiptRepository",
     "IdentityProviderClass",
     "IdentityReplayConflict",
+    "IssuedProductionSession",
     "MembershipBinding",
     "MembershipResolver",
     "MembershipState",
+    "ProductionSessionRecord",
+    "ProductionSessionRepository",
+    "ProductionSessionState",
+    "ProviderRevocationEvidence",
+    "ProviderRevocationResolver",
+    "ProviderSubjectBinding",
+    "ProviderSubjectBindingResolver",
+    "ProviderSubjectState",
     "ProviderVerification",
     "RuntimeAuthority",
     "SessionBinding",
+    "SessionCredentialDigester",
     "SessionState",
     "SessionVerifier",
 ]
