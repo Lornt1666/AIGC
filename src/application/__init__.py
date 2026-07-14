@@ -25,6 +25,11 @@ from .opportunity_scout import (
     OpportunityScoutPolicyError,
     OpportunityScoutUnavailable,
 )
+from .production_sessions import (
+    HmacSessionCredentialDigester,
+    ProductionSessionError,
+    ProductionSessionService,
+)
 from .quest_candidates import QuestCandidateApplicationService, WorkSourceCatalog
 from .quests import QuestApplicationService
 from .review_authorization_bridge import ReviewAuthorizationBridge
@@ -36,6 +41,7 @@ from .review_evidence_packet import (
 
 __all__ = [
     "AuthorizationApplicationService",
+    "HmacSessionCredentialDigester",
     "IdentityAuthorizationBridge",
     "IdentityBoundAuthorization",
     "IdentityBoundWorkAcceptanceHandler",
@@ -49,6 +55,8 @@ __all__ = [
     "OpportunityScoutError",
     "OpportunityScoutPolicyError",
     "OpportunityScoutUnavailable",
+    "ProductionSessionError",
+    "ProductionSessionService",
     "QuestApplicationService",
     "QuestCandidateApplicationService",
     "ReviewAuthorizationBridge",

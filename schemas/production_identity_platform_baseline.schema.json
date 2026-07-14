@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/production_identity_platform_baseline.schema.json",
+  "title": "AIGC Production Identity Platform Baseline v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id",
+    "contract_version",
+    "status",
+    "environment_decision_path",
+    "provider",
+    "claims",
+    "subject_mapping",
+    "sessions",
+    "tenant_isolation",
+    "operational_evidence",
+    "authority",
+    "external_action_performed"
+  ],
+  "properties": {
+    "contract_id": {"const": "AIGC-PRODUCTION-IDENTITY-PLATFORM-001"},
+    "contract_version": {"const": "1.0.0"},
+    "status": {"const": "IMPLEMENTED_INTERNAL_PENDING_PROVIDER_AND_STAGING_EVIDENCE"},
+    "environment_decision_path": {"const": "config/production_environment_decision.json"},
+    "provider": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "service",
+        "project_id",
+        "provider_tenant_id",
+        "issuer_template",
+        "public_keys_endpoint",
+        "algorithm",
+        "accepted_sign_in_providers",
+        "public_self_registration",
+        "clock_skew_seconds",
+        "max_token_age_seconds",
+        "evidence_maturity"
+      ],
+      "properties": {
+        "service": {"const": "google_cloud_identity_platform"},
+        "project_id": {"type": "null"},
+        "provider_tenant_id": {"type": "null"},
+        "issuer_template": {"const": "https://securetoken.google.com/{project_id}"},
+        "public_keys_endpoint": {"const": "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com"},
+        "algorithm": {"const": "RS256"},
+        "accepted_sign_in_providers": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {"const": "google.com"}
+        },
+        "public_self_registration": {"const": false},
+        "clock_skew_seconds": {"type": "integer", "minimum": 0, "maximum": 300},
+        "max_token_age_seconds": {"type": "integer", "minimum": 300, "maximum": 86400},
+        "evidence_maturity": {"const": "EA2_SEMANTICALLY_TESTED"}
+      }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "email_required",
+        "email_verified_required",
+        "auth_time_required",
+        "roles_from_provider_allowed",
+        "scopes_from_provider_allowed",
+        "tenant_from_provider_authoritative"
+      ],
+      "properties": {
+        "required": {
+          "type": "array",
+          "minItems": 8,
+          "uniqueItems": true,
+          "items": {"enum": ["alg", "kid", "aud", "iss", "sub", "iat", "exp", "auth_time", "firebase"]}
+        },
+        "email_required": {"const": true},
+        "email_verified_required": {"const": true},
+        "auth_time_required": {"const": true},
+        "roles_from_provider_allowed": {"const": false},
+        "scopes_from_provider_allowed": {"const": false},
+        "tenant_from_provider_authoritative": {"const": false}
+      }
+    },
+    "subject_mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "exactly_one_active_mapping_required",
+        "provider_subject_as_principal_allowed",
+        "email_as_principal_allowed",
+        "mapping_repository_status"
+      ],
+      "properties": {
+        "source": {"const": "trusted_persistence"},
+        "exactly_one_active_mapping_required": {"const": true},
+        "provider_subject_as_principal_allowed": {"const": false},
+        "email_as_principal_allowed": {"const": false},
+        "mapping_repository_status": {"const": "ADAPTER_AND_STAGING_EVIDENCE_REQUIRED"}
+      }
+    },
+    "sessions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cookie_name",
+        "secure",
+        "http_only",
+        "same_site",
+        "idle_timeout_seconds",
+        "absolute_timeout_seconds",
+        "rotation_required",
+        "revocation_required",
+        "credential_digest_algorithm",
+        "pepper_reference",
+        "raw_credential_persistence",
+        "repository_status"
+      ],
+      "properties": {
+        "cookie_name": {"const": "aigc_session"},
+        "secure": {"const": true},
+        "http_only": {"const": true},
+        "same_site": {"const": "strict"},
+        "idle_timeout_seconds": {"const": 1800},
+        "absolute_timeout_seconds": {"const": 43200},
+        "rotation_required": {"const": true},
+        "revocation_required": {"const": true},
+        "credential_digest_algorithm": {"const": "HMAC-SHA256"},
+        "pepper_reference": {"type": "string", "pattern": "^gcp_secret://[A-Za-z0-9._/-]+$"},
+        "raw_credential_persistence": {"const": false},
+        "repository_status": {"const": "CONTRACT_AND_LOCAL_TEST_BASELINE_ONLY"}
+      }
+    },
+    "tenant_isolation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model",
+        "aigc_tenant_id",
+        "project_binding_required",
+        "provider_tenant_id_required",
+        "cross_tenant_default_deny",
+        "public_tenant_discovery"
+      ],
+      "properties": {
+        "model": {"const": "single_accountable_tenant"},
+        "aigc_tenant_id": {"const": "tenant-primary"},
+        "project_binding_required": {"const": true},
+        "provider_tenant_id_required": {"const": false},
+        "cross_tenant_default_deny": {"const": true},
+        "public_tenant_discovery": {"const": false}
+      }
+    },
+    "operational_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identity_platform_project_configured",
+        "google_sign_in_observed",
+        "jwks_rotation_observed",
+        "revocation_observed",
+        "session_rotation_observed",
+        "logout_observed",
+        "restart_persistence_observed",
+        "cross_tenant_negative_passed",
+        "cross_project_negative_passed",
+        "provider_outage_test_passed",
+        "redaction_review_passed"
+      ],
+      "properties": {
+        "identity_platform_project_configured": {"const": false},
+        "google_sign_in_observed": {"const": false},
+        "jwks_rotation_observed": {"const": false},
+        "revocation_observed": {"const": false},
+        "session_rotation_observed": {"const": false},
+        "logout_observed": {"const": false},
+        "restart_persistence_observed": {"const": false},
+        "cross_tenant_negative_passed": {"const": false},
+        "cross_project_negative_passed": {"const": false},
+        "provider_outage_test_passed": {"const": false},
+        "redaction_review_passed": {"const": false}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "adapter_implementation_authorized",
+        "offline_cryptographic_testing_authorized",
+        "provider_configuration_authorized",
+        "secret_access_authorized",
+        "user_onboarding_authorized",
+        "production_identity_activation_authorized",
+        "production_deployment_authorized"
+      ],
+      "properties": {
+        "adapter_implementation_authorized": {"const": true},
+        "offline_cryptographic_testing_authorized": {"const": true},
+        "provider_configuration_authorized": {"const": false},
+        "secret_access_authorized": {"const": false},
+        "user_onboarding_authorized": {"const": false},
+        "production_identity_activation_authorized": {"const": false},
+        "production_deployment_authorized": {"const": false}
+      }
+    },
+    "external_action_performed": {"const": false}
+  }
+}
