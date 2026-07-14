@@ -66,6 +66,28 @@ def test_complete_connector_staging_receipt_can_pass() -> None:
     assert not list(validator().iter_errors(passing_receipt()))
 
 
+def test_secret_reference_enforces_google_project_id_boundaries() -> None:
+    maximum_project_id = "a" + ("b" * 28) + "1"
+    for project_id in ("abc123", maximum_project_id):
+        receipt = passing_receipt()
+        receipt["secret_reference"] = (
+            f"gcp_secret://{project_id}/aigc-github-app/1"
+        )
+        assert not list(validator().iter_errors(receipt))
+
+    for project_id in (
+        "short",
+        "approved_project",
+        "approved-project-",
+        "a" * 31,
+    ):
+        receipt = passing_receipt()
+        receipt["secret_reference"] = (
+            f"gcp_secret://{project_id}/aigc-github-app/1"
+        )
+        assert list(validator().iter_errors(receipt))
+
+
 def test_missing_terms_secret_audit_or_check_fails() -> None:
     terms = passing_receipt()
     terms["terms_review_approved"] = False
