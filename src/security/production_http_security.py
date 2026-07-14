@@ -10,6 +10,7 @@ import re
 import threading
 import time
 from typing import Any, Mapping
+from urllib.parse import urlsplit
 from uuid import uuid4
 
 from jsonschema import Draft202012Validator, FormatChecker
@@ -127,6 +128,10 @@ def evaluate_security_policy(policy: Mapping[str, Any]) -> ProductionSecurityEva
         provisional.append("deletion_export_policy")
     if value["secrets"]["rotation_procedure_status"] != "APPROVED":
         provisional.append("secret_rotation_procedure")
+    if "'unsafe-inline'" in value["http_security"]["response_headers"][
+        "content_security_policy"
+    ]:
+        provisional.append("csp_inline_script_refactor")
     if int(evidence.get("unresolved_high_critical_findings", 0)) > 0:
         blockers += ("unresolved_high_critical_findings",)
 
@@ -223,7 +228,7 @@ class ProductionSecurityMiddleware(BaseHTTPMiddleware):
             return self._error(400, "HOST_NOT_ALLOWED", request_id)
 
         origin = request.headers.get("origin")
-        if origin and origin not in self.allowed_origins:
+        if origin and not self._origin_allowed(request, origin):
             return self._error(403, "CROSS_ORIGIN_REQUEST_DENIED", request_id)
 
         content_length = request.headers.get("content-length")
@@ -252,6 +257,29 @@ class ProductionSecurityMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
         self._apply_headers(request, response, request_id)
         return response
+
+    def _origin_allowed(self, request: Request, origin: str) -> bool:
+        if origin in self.allowed_origins:
+            return True
+        try:
+            parsed = urlsplit(origin)
+            origin_port = parsed.port
+        except ValueError:
+            return False
+        if parsed.scheme not in {"http", "https"}:
+            return False
+        origin_host = (parsed.hostname or "").lower()
+        request_host = (request.url.hostname or "").lower()
+        request_port = request.url.port
+        normalized_origin_port = origin_port or (443 if parsed.scheme == "https" else 80)
+        normalized_request_port = request_port or (
+            443 if request.url.scheme == "https" else 80
+        )
+        return (
+            parsed.scheme == request.url.scheme
+            and origin_host == request_host
+            and normalized_origin_port == normalized_request_port
+        )
 
     @staticmethod
     def _request_id(request: Request) -> str:
