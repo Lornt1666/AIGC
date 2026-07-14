@@ -1,0 +1,127 @@
+{
+  "contract_id": "AIGC-PRODUCTION-PRIVACY-IMPACT-001",
+  "contract_version": "1.0.0",
+  "status": "DRAFT_REVIEW_REQUIRED",
+  "system_reference": "config/production_environment_decision.json",
+  "public_onboarding_allowed": false,
+  "purposes": [
+    {
+      "purpose_id": "PUR-GOVERNED-WORK",
+      "description": "Create, authorize, execute, review, and evidence bounded internal work through the Quest lifecycle.",
+      "minimum_necessary": true,
+      "legal_basis_status": "COUNSEL_REVIEW_REQUIRED"
+    },
+    {
+      "purpose_id": "PUR-SECURITY-AUDIT",
+      "description": "Protect the system, investigate incidents, preserve accountable decisions, and verify policy enforcement.",
+      "minimum_necessary": true,
+      "legal_basis_status": "COUNSEL_REVIEW_REQUIRED"
+    },
+    {
+      "purpose_id": "PUR-COUNTERPARTY-COMMUNICATION",
+      "description": "Prepare reviewed communications and evidence for an explicitly approved counterparty interaction.",
+      "minimum_necessary": true,
+      "legal_basis_status": "COUNSEL_REVIEW_REQUIRED"
+    }
+  ],
+  "data_subjects": [
+    "accountable_operator",
+    "authorized_collaborator",
+    "counterparty_contact",
+    "prospective_client",
+    "platform_account_holder"
+  ],
+  "data_categories": [
+    {
+      "category_id": "DAT-IDENTITY-BINDINGS",
+      "classification": "confidential",
+      "examples": ["principal identifiers", "membership bindings", "session identifiers"],
+      "raw_logging_allowed": false,
+      "external_sharing_default": false
+    },
+    {
+      "category_id": "DAT-AUTHORIZATION-EVIDENCE",
+      "classification": "internal",
+      "examples": ["decision identifiers", "scope and purpose bindings", "redacted reason codes"],
+      "raw_logging_allowed": false,
+      "external_sharing_default": false
+    },
+    {
+      "category_id": "DAT-QUEST-CONTENT",
+      "classification": "confidential",
+      "examples": ["work descriptions", "acceptance criteria", "unpublished artifacts"],
+      "raw_logging_allowed": false,
+      "external_sharing_default": false
+    },
+    {
+      "category_id": "DAT-COUNTERPARTY-DATA",
+      "classification": "confidential",
+      "examples": ["contact information", "communications", "project requirements"],
+      "raw_logging_allowed": false,
+      "external_sharing_default": false
+    },
+    {
+      "category_id": "DAT-SECRET-MATERIAL",
+      "classification": "restricted",
+      "examples": ["secret values", "provider tokens", "private keys", "recovery material"],
+      "raw_logging_allowed": false,
+      "external_sharing_default": false
+    },
+    {
+      "category_id": "DAT-OPERATIONAL-TELEMETRY",
+      "classification": "internal",
+      "examples": ["request identifiers", "status codes", "redacted security events"],
+      "raw_logging_allowed": false,
+      "external_sharing_default": false
+    }
+  ],
+  "processing_controls": {
+    "request_body_logging": false,
+    "query_value_logging": false,
+    "raw_token_persistence": false,
+    "raw_provider_claim_persistence": false,
+    "purpose_binding_required": true,
+    "tenant_project_binding_required": true,
+    "human_review_for_external_sharing": true
+  },
+  "retention": {
+    "application_logs_days": 30,
+    "identity_authorization_receipts_min_days": 90,
+    "deployment_incident_receipts_min_days": 365,
+    "review_packet_policy": "PROJECT_LIFECYCLE_PLUS_ARCHIVE_POLICY_TBD"
+  },
+  "rights_procedures": {
+    "access": "PROCEDURE_DRAFT_REQUIRED",
+    "correction": "PROCEDURE_DRAFT_REQUIRED",
+    "export": "PROCEDURE_DRAFT_REQUIRED",
+    "deletion": "PROCEDURE_DRAFT_REQUIRED",
+    "legal_hold": "PROCEDURE_DRAFT_REQUIRED",
+    "status": "INCOMPLETE"
+  },
+  "legal_review": {
+    "privacy_counsel_required": true,
+    "jurisdictional_review_required": true,
+    "status": "PENDING"
+  },
+  "residual_privacy_risks": [
+    {
+      "risk_id": "PRV-RETENTION-POLICY-INCOMPLETE",
+      "description": "Review-packet archival periods and deletion triggers are not yet finalized for each project and data category.",
+      "severity": "high",
+      "required_resolution": "Approve category-specific retention and automated deletion procedures before public onboarding."
+    },
+    {
+      "risk_id": "PRV-RIGHTS-PROCEDURES-INCOMPLETE",
+      "description": "Access, correction, export, deletion, and legal-hold procedures have not been operationally tested.",
+      "severity": "high",
+      "required_resolution": "Implement and test rights-request workflows with identity verification and immutable audit receipts."
+    },
+    {
+      "risk_id": "PRV-JURISDICTIONAL-REVIEW-PENDING",
+      "description": "The intended Canadian deployment and any future cross-border connector flows require professional jurisdictional review.",
+      "severity": "high",
+      "required_resolution": "Complete privacy counsel review before onboarding external users or enabling data-sharing connectors."
+    }
+  ],
+  "external_action_performed": false
+}
