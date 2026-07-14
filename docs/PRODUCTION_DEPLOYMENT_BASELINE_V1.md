@@ -84,6 +84,7 @@ Resource creation may later be requested only when all of the following are boun
 - valid project ID;
 - production domain for production;
 - candidate-bound production release-gate receipt;
+- unexpired release-gate validity deadline;
 - gate result `PERMIT`;
 - deployment authorization.
 
@@ -99,9 +100,18 @@ The current module defines no `google_*` resources. Later reviewed resource modu
 - the complete strict `production_release_gate_receipt` contract before trusting any gate field;
 - exact revision, image, project, domain, and release receipt;
 - gate revision/artifact binding;
+- gate evaluation time and authority validity deadline;
 - staging or production authority.
 
 An incomplete dictionary, an unknown field, or a contract-inconsistent `PERMIT` is classified as `RELEASE_GATE_RECEIPT_INVALID`. No unvalidated gate identifier is copied into the deployment receipt.
+
+Release-gate receipt contract `1.1.0` carries `valid_until`, calculated as the earlier of the release-manifest expiry and accountable-operator approval expiry. The deployment evaluator fails closed when:
+
+- the gate claims evaluation in the future;
+- `valid_until` is not later than `evaluated_at`;
+- the current time is equal to or later than `valid_until`.
+
+The deployment-plan receipt records the validated release-gate deadline for audit and deterministic receipt identity. A past permit cannot remain reusable merely because its revision and artifact digest still match.
 
 The real configuration returns `DENY`. A fully bound synthetic staging candidate may return `PLAN_ELIGIBLE`, but its receipt always records:
 
@@ -134,6 +144,8 @@ A rollback must bind failed and restored revisions and image digests, preserve a
 
 If schema compatibility is uncertain, do not point the prior application at the modified database. Restore to an isolated database, verify integrity, then promote only under a reviewed recovery procedure.
 
+The release-gate validity correction can be rolled back by restoring branch `codex/production-deployment-baseline-v1-pre-gate-validity` or reverting its bounded commit series. It creates no cloud or data rollback obligation.
+
 ## Required next sequence
 
 After project IDs, domain, technical contact, and explicit resource authority exist:
@@ -143,11 +155,12 @@ After project IDs, domain, technical contact, and explicit resource authority ex
 3. create staging project resources only;
 4. build immutable image with SBOM/provenance/signature;
 5. run release gate for exact staging candidate;
-6. apply staging plan under concurrency lock;
-7. run migrations and health/synthetic journeys;
-8. test alerts, canary, rollback, and database restore;
-9. emit staging deployment and rollback receipts;
-10. obtain accountable-operator review;
-11. promote readiness only through a separate evidence PR.
+6. consume the resulting permit before its recorded `valid_until` deadline;
+7. apply staging plan under concurrency lock;
+8. run migrations and health/synthetic journeys;
+9. test alerts, canary, rollback, and database restore;
+10. emit staging deployment and rollback receipts;
+11. obtain accountable-operator review;
+12. promote readiness only through a separate evidence PR.
 
-Production remains blocked until issue #91 produces a fresh candidate-bound release-gate `PERMIT`.
+Production remains blocked until issue #91 produces a fresh candidate-bound release-gate `PERMIT` that remains valid at deployment-plan evaluation time.
