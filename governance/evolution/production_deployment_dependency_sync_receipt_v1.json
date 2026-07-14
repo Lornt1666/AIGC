@@ -1,0 +1,53 @@
+{
+  "contract_id": "AIGC-STACKED-DEPENDENCY-SYNC-RECEIPT-001",
+  "contract_version": "1.0.0",
+  "receipt_id": "DSR-AF82279C5E875EE14DFABB31",
+  "receipt_digest": "af82279c5e875ee14dfabb312d17cca874007911a46d3f371ac6d473c573d9ba",
+  "status": "IMPLEMENTED_INTERNAL_PENDING_OPERATOR_REVIEW",
+  "upstream": {
+    "pull_request": 98,
+    "branch": "codex/production-connectors-secret-broker-v1",
+    "head": "f5ffdb4aaf60b09f40b1a8840ef5e5b62b49a141"
+  },
+  "downstream": {
+    "pull_request": 99,
+    "branch": "codex/production-deployment-baseline-v1",
+    "pre_synchronization_head": "70185cb0c9959dcf0f0e3b4123915c94c2c2bf79",
+    "synchronized_head": "1e2c859aa5edb6e9b5126df79996c86fb64d2003",
+    "dependency_merge_commit": "7ed7af471099c8343a355e966b8ab09790624ee0",
+    "dependency_parent_head": "f5ffdb4aaf60b09f40b1a8840ef5e5b62b49a141",
+    "rollback_branch": "codex/production-deployment-baseline-v1-pre-upstream-sync"
+  },
+  "alignment": {
+    "relation": "EXACT_UPSTREAM_HEAD_IMPORTED",
+    "ahead_by": 30,
+    "behind_by": 0,
+    "imported_paths": [
+      "src/application/governed_production_connectors.py",
+      "src/application/production_connectors.py",
+      "tests/application/test_connector_broker_execution_unification.py"
+    ]
+  },
+  "evidence": {
+    "combined_main_candidate": "d5c9142735d83111fe39cc583959deedba2e206a",
+    "stacked_merge_candidate": "7cd6951315899915aee9566be46e8368fcbdf98b",
+    "ci_run_number": 1406,
+    "tests_passed": 449,
+    "readiness_score": 53.9,
+    "production_ready": false
+  },
+  "verification": {
+    "combined_main_ci_required": true,
+    "stacked_base_restored": true,
+    "operator_review_required": true
+  },
+  "safety": {
+    "cloud_resources_changed": false,
+    "terraform_planned_or_applied": false,
+    "connector_activation_performed": false,
+    "credential_or_secret_accessed": false,
+    "external_action_performed": false,
+    "readiness_ledger_promoted": false
+  },
+  "recorded_at": "2026-07-14T07:46:33Z"
+}

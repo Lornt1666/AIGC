@@ -1,0 +1,26 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://aigc.local/schemas/staging_deployment_receipt.schema.json",
+  "title":"AIGC Staging Deployment Receipt v1",
+  "type":"object","additionalProperties":false,
+  "required":["contract_id","contract_version","receipt_id","environment","project_reference","exact_revision","image_digest","release_gate_receipt_id","terraform_fingerprint","checks","result","reason_codes","operator_review_required","production_data_used","external_action_performed","created_at"],
+  "properties":{
+    "contract_id":{"const":"AIGC-STAGING-DEPLOYMENT-RECEIPT-001"},
+    "contract_version":{"const":"1.0.0"},
+    "receipt_id":{"type":"string","pattern":"^SDR-[A-F0-9]{24}$"},
+    "environment":{"const":"isolated_staging"},
+    "project_reference":{"type":"string","pattern":"^gcp_project://[a-z][a-z0-9-]{4,28}[a-z0-9]$"},
+    "exact_revision":{"type":"string","pattern":"^[a-f0-9]{40}$"},
+    "image_digest":{"type":"string","pattern":"^sha256:[a-f0-9]{64}$"},
+    "release_gate_receipt_id":{"type":"string","pattern":"^PRG-[A-F0-9]{24}$"},
+    "terraform_fingerprint":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "checks":{"type":"object","additionalProperties":false,"required":["immutable_image","sbom","provenance","signature","non_root_runtime","migration","startup","liveness","readiness","identity_authorization_quest_review_journey","structured_logs","metrics","alert_delivery","budget_alerts","canary","rollback_ready","database_restore","secret_access_audit"],"properties":{"immutable_image":{"type":"boolean"},"sbom":{"type":"boolean"},"provenance":{"type":"boolean"},"signature":{"type":"boolean"},"non_root_runtime":{"type":"boolean"},"migration":{"type":"boolean"},"startup":{"type":"boolean"},"liveness":{"type":"boolean"},"readiness":{"type":"boolean"},"identity_authorization_quest_review_journey":{"type":"boolean"},"structured_logs":{"type":"boolean"},"metrics":{"type":"boolean"},"alert_delivery":{"type":"boolean"},"budget_alerts":{"type":"boolean"},"canary":{"type":"boolean"},"rollback_ready":{"type":"boolean"},"database_restore":{"type":"boolean"},"secret_access_audit":{"type":"boolean"}}},
+    "result":{"enum":["PASS","FAIL"]},
+    "reason_codes":{"type":"array","uniqueItems":true,"maxItems":100,"items":{"type":"string","pattern":"^[A-Z][A-Z0-9_]{2,99}$"}},
+    "operator_review_required":{"const":true},
+    "production_data_used":{"const":false},
+    "external_action_performed":{"const":false},
+    "created_at":{"type":"string","format":"date-time"}
+  },
+  "allOf":[{"if":{"properties":{"result":{"const":"PASS"}}},"then":{"properties":{"reason_codes":{"maxItems":0},"checks":{"additionalProperties":false,"properties":{"immutable_image":{"const":true},"sbom":{"const":true},"provenance":{"const":true},"signature":{"const":true},"non_root_runtime":{"const":true},"migration":{"const":true},"startup":{"const":true},"liveness":{"const":true},"readiness":{"const":true},"identity_authorization_quest_review_journey":{"const":true},"structured_logs":{"const":true},"metrics":{"const":true},"alert_delivery":{"const":true},"budget_alerts":{"const":true},"canary":{"const":true},"rollback_ready":{"const":true},"database_restore":{"const":true},"secret_access_audit":{"const":true}}}}},"else":{"properties":{"reason_codes":{"minItems":1}}}}]
+}
