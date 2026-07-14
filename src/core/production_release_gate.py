@@ -10,12 +10,17 @@ import re
 import sys
 from typing import Any, Mapping
 
+from jsonschema import Draft202012Validator, FormatChecker
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.core.contract_validator import validate_artifact  # noqa: E402
+from src.core.contract_validator import (  # noqa: E402
+    ContractValidationError,
+    load_schema,
+)
 from src.core.production_readiness_ledger import (  # noqa: E402
     build_report,
     load_ledger,
@@ -91,6 +96,39 @@ def _load_json(path: Path, *, label: str) -> dict[str, Any]:
     return payload
 
 
+def validate_release_contract(
+    schema_name: str,
+    value: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Enforce the complete Draft 2020-12 contract for release artifacts."""
+
+    schema = load_schema(schema_name)
+    Draft202012Validator.check_schema(schema)
+    validator = Draft202012Validator(
+        schema,
+        format_checker=FormatChecker(),
+    )
+    errors = sorted(
+        validator.iter_errors(dict(value)),
+        key=lambda error: list(error.absolute_path),
+    )
+    if errors:
+        messages: list[str] = []
+        for error in errors[:10]:
+            location = "$"
+            if error.absolute_path:
+                location += "".join(
+                    f"[{part}]" if isinstance(part, int) else f".{part}"
+                    for part in error.absolute_path
+                )
+            messages.append(f"{location}: {error.message}")
+        raise ContractValidationError(
+            f"{schema_name} strict validation failed: "
+            + "; ".join(messages)
+        )
+    return dict(value)
+
+
 def readiness_truth_projection(report: Mapping[str, Any]) -> dict[str, Any]:
     capabilities = []
     for item in report.get("capability_results") or []:
@@ -152,12 +190,12 @@ def evaluate_release_manifest(
     actual_revision: str | None = None,
     evaluated_at: datetime | None = None,
 ) -> ProductionReleaseEvaluation:
-    manifest_value = dict(manifest)
-    policy_value = dict(policy)
-    validate_artifact(_MANIFEST_SCHEMA, manifest_value)
-    validate_artifact(_POLICY_SCHEMA, policy_value)
-    approval = dict(manifest_value["operator_approval"])
-    validate_artifact(_APPROVAL_SCHEMA, approval)
+    manifest_value = validate_release_contract(_MANIFEST_SCHEMA, manifest)
+    policy_value = validate_release_contract(_POLICY_SCHEMA, policy)
+    approval = validate_release_contract(
+        _APPROVAL_SCHEMA,
+        dict(manifest_value["operator_approval"]),
+    )
 
     if readiness_report is None:
         ledger_path = project_root / str(policy_value["readiness_ledger_path"])
@@ -293,7 +331,7 @@ def evaluate_release_manifest(
         "evaluated_at": current.isoformat(),
         "external_action_performed": False,
     }
-    validate_artifact(_RECEIPT_SCHEMA, receipt)
+    receipt = validate_release_contract(_RECEIPT_SCHEMA, receipt)
     return ProductionReleaseEvaluation(
         receipt=receipt,
         readiness_report=report,
