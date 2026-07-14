@@ -1,0 +1,81 @@
+{
+  "contract_id": "AIGC-IDENTITY-STAGING-CONFIGURATION-DECISION-001",
+  "contract_version": "1.0.0",
+  "decision_status": "DEFERRED_IDENTIFIERS",
+  "decision_basis_revision": "a80a9458a50726ce175f6987155d84d44f6630e9",
+  "environment": "isolated_staging",
+  "provider": {
+    "service": "google_cloud_identity_platform",
+    "project_reference": null,
+    "accepted_sign_in_providers": [
+      "google.com"
+    ],
+    "public_self_registration": false,
+    "authorized_origins": [],
+    "authorized_redirect_uris": [],
+    "wildcard_origins_allowed": false
+  },
+  "workload_identity": {
+    "federation_source": "github_oidc",
+    "service_account_reference": null,
+    "repository_allowlist": [
+      "Lornt1666/AIGC"
+    ],
+    "long_lived_key_allowed": false,
+    "service_account_key_export_allowed": false,
+    "minimum_privilege_required": true
+  },
+  "session_pepper": {
+    "secret_reference": null,
+    "immutable_numeric_version_required": true,
+    "raw_value_repository_allowed": false,
+    "raw_value_receipt_allowed": false,
+    "rotation_before_staging_required": true
+  },
+  "test_subject": {
+    "subject_reference": null,
+    "operator_controlled": true,
+    "production_user_allowed": false,
+    "public_registration_allowed": false,
+    "maximum_subjects": 1,
+    "profile_data_persistence_allowed": false,
+    "email_in_receipts_allowed": false
+  },
+  "tenant_boundary": {
+    "model": "single_accountable_tenant",
+    "aigc_tenant_id": "tenant-primary",
+    "cross_tenant_default_deny": true,
+    "cross_project_default_deny": true,
+    "public_tenant_discovery": false
+  },
+  "evidence_binding": {
+    "operational_evidence_gate_path": "src/core/identity_operational_evidence.py",
+    "staging_receipt_schema_path": "schemas/identity_platform_staging_receipt.schema.json",
+    "exact_revision_required": true,
+    "exact_project_required": true,
+    "operator_disposition_required": true
+  },
+  "unresolved_identifiers": [
+    "staging_project_reference",
+    "workload_identity_service_account_reference",
+    "session_pepper_secret_reference",
+    "operator_controlled_test_subject_reference",
+    "authorized_origins_and_redirect_uris"
+  ],
+  "authority": {
+    "contract_implementation_authorized": true,
+    "offline_validation_authorized": true,
+    "staging_configuration_review_authorized": false,
+    "identity_platform_configuration_authorized": false,
+    "workload_identity_creation_authorized": false,
+    "session_pepper_creation_authorized": false,
+    "session_pepper_access_authorized": false,
+    "test_subject_onboarding_authorized": false,
+    "staging_sign_in_authorized": false,
+    "production_identity_activation_authorized": false,
+    "production_deployment_authorized": false
+  },
+  "operator_review_required": true,
+  "automatic_apply_allowed": false,
+  "external_action_performed": false
+}
