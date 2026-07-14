@@ -29,6 +29,8 @@ The dependency merge imports only the exact three-file connector-broker correcti
 
 The merge records PR #98 as a second parent so PR #99 is no longer behind its declared upstream branch. No deployment-specific implementation was rewritten, no production connector was enabled, and no provider or cloud action was performed.
 
+`docs/PRODUCTION_DEPLOYMENT_BASELINE_V1.md` now carries the same exact upstream head, dependency-merge identity, rollback branch, and canonical-broker regression requirement; the deployment runbook and this receipt no longer disagree about their dependency subject.
+
 ## Verification requirement
 
 PR #99 must be evaluated as a combined candidate against current `main` after this synchronization. The PR must then be restored to its stacked base on PR #98. Exact-head CI, artifacts, readiness truth, and the resulting stacked merge candidate must be recorded before operator review.
