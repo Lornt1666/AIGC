@@ -47,7 +47,10 @@
       "uniqueItems": true,
       "items": {"type": "string", "minLength": 1, "maxLength": 300}
     },
-    "secret_reference": {"type": "string", "pattern": "^gcp_secret://[a-z][a-z0-9-]{4,29}/[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$"},
+    "secret_reference": {
+      "type": "string",
+      "pattern": "^gcp_secret://[a-z](?:[a-z0-9-]{4,28}[a-z0-9])/[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$"
+    },
     "secret_access_audit_observed": {"type": "boolean"},
     "approved_test_destination": {"type": "string", "minLength": 1, "maxLength": 500},
     "checks": {
