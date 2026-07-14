@@ -8,6 +8,10 @@ from .operations import (
     create_backup,
     write_receipt,
 )
+from .production_identity import (
+    SQLiteProductionSessionRepository,
+    SQLiteProviderSubjectBindingRepository,
+)
 from .quest_candidates import SQLiteQuestCandidateRepository
 from .quests import SQLiteQuestRepository
 from .repositories import (
@@ -26,6 +30,8 @@ __all__ = [
     "SQLiteConnectionFactory",
     "SQLiteIdentityEvidenceReceiptRepository",
     "SQLiteMigrator",
+    "SQLiteProductionSessionRepository",
+    "SQLiteProviderSubjectBindingRepository",
     "SQLiteQuestCandidateRepository",
     "SQLiteQuestRepository",
     "SQLiteRecordRepository",
