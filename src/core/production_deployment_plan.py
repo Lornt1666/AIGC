@@ -14,10 +14,12 @@ from jsonschema import Draft202012Validator, FormatChecker
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG = ROOT / "config" / "production_deployment_baseline.json"
 DEFAULT_SCHEMA = ROOT / "schemas" / "production_deployment_baseline.schema.json"
+DEFAULT_RELEASE_GATE_RECEIPT_SCHEMA = (
+    ROOT / "schemas" / "production_release_gate_receipt.schema.json"
+)
 DEFAULT_TERRAFORM_ROOT = ROOT / "infra" / "terraform" / "gcp"
 _HEX40 = re.compile(r"^[a-f0-9]{40}$")
 _IMAGE_DIGEST = re.compile(r"^sha256:[a-f0-9]{64}$")
-_GATE_ID = re.compile(r"^PRG-[A-F0-9]{24}$")
 _PROJECT_ID = re.compile(r"^[a-z][a-z0-9-]{4,28}[a-z0-9]$")
 
 
@@ -39,7 +41,10 @@ def _strict_validate(schema_path: Path, value: Mapping[str, Any]) -> None:
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
     Draft202012Validator.check_schema(schema)
     validator = Draft202012Validator(schema, format_checker=FormatChecker())
-    errors = sorted(validator.iter_errors(dict(value)), key=lambda item: list(item.absolute_path))
+    errors = sorted(
+        validator.iter_errors(dict(value)),
+        key=lambda item: list(item.absolute_path),
+    )
     if errors:
         raise ProductionDeploymentPlanError(
             "Deployment contract validation failed: "
@@ -122,15 +127,18 @@ def evaluate_deployment_plan(
         reasons.append("RELEASE_GATE_RECEIPT_MISSING")
     else:
         gate = dict(release_gate_receipt)
-        gate_id = str(gate.get("gate_receipt_id") or "") or None
-        if not gate_id or not _GATE_ID.fullmatch(gate_id):
+        try:
+            _strict_validate(DEFAULT_RELEASE_GATE_RECEIPT_SCHEMA, gate)
+        except ProductionDeploymentPlanError:
             reasons.append("RELEASE_GATE_RECEIPT_INVALID")
-        if gate.get("result") != "PERMIT" or gate.get("deployment_authorized") is not True:
-            reasons.append("RELEASE_GATE_DENIED")
-        if gate.get("exact_revision") != exact_revision:
-            reasons.append("RELEASE_GATE_REVISION_MISMATCH")
-        if gate.get("release_artifact_digest") != image_digest:
-            reasons.append("RELEASE_GATE_ARTIFACT_MISMATCH")
+        else:
+            gate_id = str(gate["gate_receipt_id"])
+            if gate["result"] != "PERMIT" or gate["deployment_authorized"] is not True:
+                reasons.append("RELEASE_GATE_DENIED")
+            if gate["exact_revision"] != exact_revision:
+                reasons.append("RELEASE_GATE_REVISION_MISMATCH")
+            if gate["release_artifact_digest"] != image_digest:
+                reasons.append("RELEASE_GATE_ARTIFACT_MISMATCH")
 
     authority = dict(value["authority"])
     if environment == "staging":
@@ -165,7 +173,8 @@ def evaluate_deployment_plan(
     receipt = {
         "contract_id": "AIGC-DEPLOYMENT-PLAN-RECEIPT-001",
         "contract_version": "1.0.0",
-        "receipt_id": "DPR-" + sha256(receipt_material.encode("utf-8")).hexdigest()[:24].upper(),
+        "receipt_id": "DPR-"
+        + sha256(receipt_material.encode("utf-8")).hexdigest()[:24].upper(),
         "environment": environment if environment in {"staging", "production"} else "staging",
         "exact_revision": exact_revision or "unbound",
         "result": "PLAN_ELIGIBLE" if not reason_codes else "DENY",
