@@ -7,7 +7,7 @@ from typing import Any, Protocol
 
 
 _REFERENCE = re.compile(
-    r"^gcp_secret://(?P<project>[a-z][a-z0-9-]{4,29}|TBD_PROJECT)/"
+    r"^gcp_secret://(?P<project>[a-z](?:[a-z0-9-]{4,28}[a-z0-9])|TBD_PROJECT)/"
     r"(?P<secret>[A-Za-z0-9._-]{1,255})/(?P<version>[A-Za-z0-9._-]{1,63})$"
 )
 
