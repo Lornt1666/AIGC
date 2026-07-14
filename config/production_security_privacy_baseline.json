@@ -1,0 +1,135 @@
+{
+  "contract_id": "AIGC-PRODUCTION-SECURITY-PRIVACY-001",
+  "contract_version": "1.0.0",
+  "status": "IMPLEMENTED_INTERNAL_PENDING_OPERATIONAL_EVIDENCE",
+  "environment_decision_path": "config/production_environment_decision.json",
+  "http_security": {
+    "allowed_hosts": [
+      "testserver",
+      "localhost",
+      "127.0.0.1",
+      "::1"
+    ],
+    "production_domain_required": true,
+    "max_request_bytes": 1048576,
+    "requests_per_minute": 120,
+    "cors_allowed_origins": [],
+    "csrf_protected_cookie_names": [
+      "aigc_session"
+    ],
+    "csrf_cookie_name": "aigc_csrf",
+    "csrf_header_name": "x-csrf-token",
+    "trusted_proxy_headers": false,
+    "response_headers": {
+      "x_content_type_options": "nosniff",
+      "x_frame_options": "DENY",
+      "referrer_policy": "no-referrer",
+      "permissions_policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+      "content_security_policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'",
+      "cross_origin_opener_policy": "same-origin",
+      "cross_origin_resource_policy": "same-origin",
+      "strict_transport_security": "max-age=31536000; includeSubDomains"
+    },
+    "sensitive_path_prefixes": [
+      "/api/v1/identity",
+      "/api/v1/audit",
+      "/api/v1/quests",
+      "/api/v1/review-packets"
+    ]
+  },
+  "data_classification": {
+    "status": "PROVISIONAL_PENDING_OPERATOR_REVIEW",
+    "classes": [
+      {
+        "classification": "public",
+        "encryption_required": false,
+        "application_logging_allowed": true,
+        "external_sharing_default": false,
+        "examples": [
+          "published documentation",
+          "approved public status information"
+        ]
+      },
+      {
+        "classification": "internal",
+        "encryption_required": true,
+        "application_logging_allowed": true,
+        "external_sharing_default": false,
+        "examples": [
+          "Quest metadata",
+          "non-sensitive operational receipts"
+        ]
+      },
+      {
+        "classification": "confidential",
+        "encryption_required": true,
+        "application_logging_allowed": false,
+        "external_sharing_default": false,
+        "examples": [
+          "identity bindings",
+          "counterparty private data",
+          "unpublished work artifacts"
+        ]
+      },
+      {
+        "classification": "restricted",
+        "encryption_required": true,
+        "application_logging_allowed": false,
+        "external_sharing_default": false,
+        "examples": [
+          "secret values",
+          "raw provider tokens",
+          "private keys",
+          "recovery material"
+        ]
+      }
+    ]
+  },
+  "privacy": {
+    "request_body_logging": false,
+    "query_value_logging": false,
+    "header_logging_allowlist": [
+      "content-type",
+      "content-length",
+      "user-agent",
+      "x-request-id"
+    ],
+    "redaction_required": true,
+    "application_logs_online_days": 30,
+    "identity_authorization_receipts_min_days": 90,
+    "deployment_incident_receipts_min_days": 365,
+    "deletion_export_policy_status": "DRAFT_REQUIRED_BEFORE_PUBLIC_ONBOARDING"
+  },
+  "secrets": {
+    "provider": "google_secret_manager",
+    "access_mode": "workload_identity",
+    "raw_values_in_repository": false,
+    "raw_values_in_logs": false,
+    "raw_values_in_receipts": false,
+    "rotation_procedure_status": "DRAFT_REQUIRED_BEFORE_SECRET_ACCESS"
+  },
+  "identity": {
+    "public_self_registration": false,
+    "raw_tokens_in_logs": false,
+    "raw_provider_claims_in_logs": false,
+    "pibc_required": true,
+    "cross_tenant_default_deny": true
+  },
+  "operational_evidence": {
+    "staging_tls_observed": false,
+    "edge_rate_limit_observed": false,
+    "sbom_generated": false,
+    "vulnerability_scan_passed": false,
+    "incident_exercise_passed": false,
+    "independent_review_passed": false,
+    "unresolved_high_critical_findings": 0
+  },
+  "authority": {
+    "internal_control_implementation_authorized": true,
+    "staging_security_testing_authorized": true,
+    "secret_access_authorized": false,
+    "production_resource_changes_authorized": false,
+    "production_deployment_authorized": false
+  },
+  "external_action_performed": false
+}
