@@ -97,7 +97,7 @@ def test_malformed_github_event_is_rejected() -> None:
         )
 
 
-def test_current_github_actions_event_matches_the_dependency_contract() -> None:
+def test_current_github_actions_event_is_classified_against_dependency_contract() -> None:
     event_path = os.environ.get("GITHUB_EVENT_PATH")
     if not event_path:
         pytest.skip("GitHub event currentness gate runs inside GitHub Actions")
@@ -106,11 +106,28 @@ def test_current_github_actions_event_matches_the_dependency_contract() -> None:
     if not isinstance(event, dict) or "pull_request" not in event:
         pytest.skip("Current workflow event is not a pull-request event")
 
+    receipt = load_dependency_sync_receipt(RECEIPT)
+    pull_request = event["pull_request"]
+    is_recorded_downstream = (
+        int(pull_request.get("number", event.get("number", -1)))
+        == int(receipt["downstream"]["pull_request"])
+        and str(pull_request.get("head", {}).get("ref", ""))
+        == str(receipt["downstream"]["branch"])
+    )
+
     result = load_github_event_dependency_currentness(
         event_path=event_path,
         receipt_path=RECEIPT,
     )
 
-    assert result.state in {"CURRENT_STACK", "COMBINED_MAIN_EVALUATION"}
-    if result.state == "CURRENT_STACK":
-        assert result.current_stack is True
+    if is_recorded_downstream:
+        assert result.state in {"CURRENT_STACK", "COMBINED_MAIN_EVALUATION"}
+        if result.state == "CURRENT_STACK":
+            assert result.current_stack is True
+    else:
+        assert result.state == "STALE_STACK"
+        assert result.current_stack is False
+        assert {
+            "PULL_REQUEST_MISMATCH",
+            "DOWNSTREAM_BRANCH_MISMATCH",
+        }.intersection(result.reason_codes)
