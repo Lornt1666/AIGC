@@ -1,1 +1,166 @@
-{"contract_id":"AIGC-STAGING-IDENTITY-PROCUREMENT-READINESS-001","contract_version":"1.0.0","artifact_kind":"TEMPLATE","pack_id":null,"status":"AWAITING_PROVIDER_REFERENCES","project":{"project_id":null,"project_number":null,"billing_enabled_attestation":null,"identity_platform_enabled_attestation":null,"enabled_api_service_names":[]},"workload_identity":{"pool_resource_name":null,"provider_resource_name":null,"plan_service_account_reference":null,"apply_service_account_reference":null,"runtime_service_account_reference":null,"github_repository_id":1287333065,"github_repository_owner_id":236225491,"allowed_repository":"Lornt1666/AIGC","allowed_ref":"refs/heads/main","allowed_workflow_reference":"Lornt1666/AIGC/.github/workflows/aigc-ci.yml@refs/heads/main","attribute_mapping_fingerprint":null,"attribute_condition_fingerprint":null,"user_managed_keys_present":false},"identity_provider":{"google_oauth_web_client_id":null,"google_oauth_web_client_secret_reference":null,"oauth_consent_configuration_reference":null,"authorized_domain":null,"authorized_origin":null,"authorized_redirect_uri":null},"secrets":{"session_pepper_secret_reference":null,"oauth_client_secret_reference":null},"state_backend":{"remote_state_reference":null,"bucket_exists":null,"uniform_bucket_level_access":null,"public_access_prevention":null,"object_versioning_enabled":null,"retention_policy_documented":null,"state_locking_verified":null,"rollback_version_reference":null},"test_subject":{"reference":null,"production_identity":false,"email_committed":false},"unresolved_items":["staging_project","required_apis","workload_identity_pool","workload_identity_provider","plan_service_account","apply_service_account","runtime_service_account","attribute_mapping_and_condition","google_oauth_client","oauth_consent_configuration","oauth_client_secret_numeric_version","session_pepper_numeric_version","staging_domain_origin_redirect","remote_state_backend","operator_controlled_test_subject"],"raw_secret_values_present":false,"operator_review_required":true,"automatic_apply_allowed":false,"authorization_receipt_issued":false,"provider_action_performed":false,"terraform_apply_performed":false,"external_action_performed":false}
+{
+  "contract_id": "AIGC-STAGING-IDENTITY-PROCUREMENT-READINESS-001",
+  "contract_version": "1.1.0",
+  "artifact_kind": "TEMPLATE",
+  "template_id": "SIPT-STAGING-PROCUREMENT-STATE-MACHINE-V1-1",
+  "pack_id": null,
+  "status": "TARGET_SPECIFICATION",
+  "transition": {
+    "previous_status": null,
+    "transition_reason": null,
+    "transition_evidence_digest": null
+  },
+  "lifecycle": {
+    "created_at": null,
+    "expires_at": null,
+    "supersedes_pack_id": null,
+    "revoked": false,
+    "revoked_at": null,
+    "revocation_reason": null
+  },
+  "phase_consumption": {
+    "provider_discovery": {
+      "status": "NOT_APPLICABLE",
+      "consumed_at": null,
+      "consumed_by_receipt_id": null
+    },
+    "state_backend_plan": {
+      "status": "NOT_APPLICABLE",
+      "consumed_at": null,
+      "consumed_by_receipt_id": null
+    },
+    "state_backend_apply": {
+      "status": "NOT_APPLICABLE",
+      "consumed_at": null,
+      "consumed_by_receipt_id": null
+    },
+    "identity_bootstrap_plan": {
+      "status": "NOT_APPLICABLE",
+      "consumed_at": null,
+      "consumed_by_receipt_id": null
+    },
+    "identity_bootstrap_apply": {
+      "status": "NOT_APPLICABLE",
+      "consumed_at": null,
+      "consumed_by_receipt_id": null
+    },
+    "final_review": {
+      "status": "NOT_APPLICABLE",
+      "consumed_at": null,
+      "consumed_by_receipt_id": null
+    }
+  },
+  "target_specification": {
+    "project_reference": null,
+    "project_id": null,
+    "proposed_wif_pool_id": null,
+    "proposed_wif_provider_id": null,
+    "proposed_plan_service_account_id": null,
+    "proposed_apply_service_account_id": null,
+    "proposed_runtime_service_account_id": null,
+    "required_api_service_names": [
+      "cloudresourcemanager.googleapis.com",
+      "iam.googleapis.com",
+      "iamcredentials.googleapis.com",
+      "identitytoolkit.googleapis.com",
+      "secretmanager.googleapis.com",
+      "serviceusage.googleapis.com",
+      "storage.googleapis.com",
+      "sts.googleapis.com"
+    ],
+    "proposed_state_bucket_reference": null,
+    "proposed_staging_domain_reference": null,
+    "github_repository_id": 1287333065,
+    "github_repository_owner_id": 236225491,
+    "allowed_repository": "Lornt1666/AIGC",
+    "allowed_ref": "refs/heads/main",
+    "allowed_workflow_reference": "Lornt1666/AIGC/.github/workflows/aigc-ci.yml@refs/heads/main"
+  },
+  "verified_provider_state": {
+    "project": {
+      "project_number": null,
+      "billing_status": "UNVERIFIED",
+      "identity_platform_status": "UNVERIFIED",
+      "production_data_absent_status": "UNVERIFIED",
+      "enabled_api_service_names": []
+    },
+    "workload_identity": {
+      "pool_reference": null,
+      "provider_reference": null,
+      "plan_service_account_reference": null,
+      "apply_service_account_reference": null,
+      "runtime_service_account_reference": null,
+      "attribute_mapping_fingerprint": null,
+      "attribute_condition_fingerprint": null,
+      "key_status": "UNVERIFIED",
+      "verified_user_managed_key_count": null
+    },
+    "identity_provider": {
+      "google_oauth_web_client_id": null,
+      "oauth_client_secret_reference": null,
+      "oauth_consent_configuration_reference": null,
+      "authorized_domain_reference": null,
+      "authorized_origin": null,
+      "authorized_redirect_uri": null
+    },
+    "session_security": {
+      "session_pepper_secret_reference": null
+    },
+    "terraform_state": {
+      "bucket_reference": null,
+      "state_reference": null,
+      "bootstrap_status": "NOT_STARTED",
+      "bucket_preexists_backend_init_status": "UNVERIFIED",
+      "uniform_bucket_level_access_status": "UNVERIFIED",
+      "public_access_prevention_status": "UNVERIFIED",
+      "object_versioning_status": "UNVERIFIED",
+      "retention_policy_days": null,
+      "state_locking_status": "UNVERIFIED",
+      "rollback_generation_reference": null
+    },
+    "test_subject": {
+      "reference": null,
+      "operator_controlled_status": "UNVERIFIED",
+      "production_identity": false,
+      "email_committed": false
+    },
+    "iam_separation": {
+      "bootstrap_administrator_reference": null,
+      "bootstrap_administrator_separate": null,
+      "plan_apply_runtime_identities_distinct": null,
+      "owner_role_allowed": false,
+      "editor_role_allowed": false,
+      "least_privilege_required": true
+    }
+  },
+  "evidence_bindings": {
+    "discovery_evidence_receipt_id": null,
+    "discovery_evidence_digest": null,
+    "state_backend_operational_evidence_receipt_id": null,
+    "state_backend_operational_evidence_digest": null,
+    "identity_operational_evidence_receipt_id": null,
+    "identity_operational_evidence_digest": null
+  },
+  "unresolved_requirements": [
+    "target_project",
+    "target_wif_identifiers",
+    "target_service_account_identifiers",
+    "target_state_bucket",
+    "target_staging_domain",
+    "provider_discovery_evidence",
+    "state_backend_bootstrap_evidence",
+    "identity_bootstrap_evidence",
+    "google_oauth_client",
+    "oauth_client_secret_numeric_version",
+    "session_pepper_numeric_version",
+    "operator_controlled_test_subject"
+  ],
+  "raw_secret_values_present": false,
+  "operator_review_required": true,
+  "automatic_apply_allowed": false,
+  "authorization_receipt_issued": false,
+  "provider_action_performed": false,
+  "terraform_plan_performed": false,
+  "terraform_apply_performed": false,
+  "external_action_performed": false
+}
