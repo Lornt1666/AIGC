@@ -12,6 +12,29 @@ Deployment performed: **No**
 
 This baseline fixes the accepted Google Cloud deployment topology and makes every current plan fail closed. It defines no Google Cloud resources. The Terraform module contains version constraints, inputs, topology, outputs, and release guardrails only.
 
+## Connector dependency synchronization
+
+This deployment train is stacked above connector and Secret Manager PR `#98`.
+
+The deployment branch has been synchronized to the reviewed upstream correction head:
+
+```text
+upstream PR: #98
+upstream head: 1b08f5e698ce69270a44b74d82a19fc041e20760
+deployment synchronization head: 64163dc9e7a850409ee083b5d7999008f6ee11e1
+```
+
+The synchronized boundary enforces the same Google Cloud project-ID grammar in:
+
+- Secret Manager reference parsing;
+- connector staging receipt validation;
+- deployment plan evaluation;
+- connector and deployment boundary tests.
+
+Valid project IDs are 6–30 characters, begin with a lowercase letter, contain only lowercase letters, digits, or hyphens, and end with a lowercase letter or digit. `TBD_PROJECT` remains allowed only as the explicit unresolved marker in disabled connector configuration; it is not valid staging or deployment evidence.
+
+This synchronization does not merge PR `#98`, activate any connector, access Secret Manager, authorize Terraform, create a cloud resource, or deploy AIGC.
+
 ## Accepted topology
 
 - Cloud Run v2 in Toronto;
