@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/staging_identity_plan_authorization_receipt.schema.json",
+  "title": "AIGC Staging Identity Plan Authorization Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_id","contract_version","receipt_id","exact_revision","procurement_pack_digest","decision","reason_codes","approved_by_role","approved_by_name","issued_at","expires_at","phase","target_project_reference","allowed_actions","mutation_actions","single_use","operator_review_required","automatic_apply_allowed","provider_action_performed","terraform_plan_performed","terraform_apply_performed","external_action_performed"],
+  "properties": {
+    "contract_id": {"const": "AIGC-STAGING-IDENTITY-PLAN-AUTHORIZATION-RECEIPT-001"},
+    "contract_version": {"const": "1.0.0"},
+    "receipt_id": {"type":"string","pattern":"^SIPLAN-[A-Z0-9][A-Z0-9:-]{7,199}$"},
+    "exact_revision": {"type":"string","pattern":"^[a-f0-9]{40}$"},
+    "procurement_pack_digest": {"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "decision": {"enum":["APPROVED","DENIED"]},
+    "reason_codes": {"type":"array","maxItems":100,"uniqueItems":true,"items":{"type":"string","pattern":"^[A-Z][A-Z0-9_]{2,99}$"}},
+    "approved_by_role": {"const":"ACCOUNTABLE_OPERATOR"},
+    "approved_by_name": {"const":"Justice Gray Maciocha"},
+    "issued_at": {"type":"string","format":"date-time"},
+    "expires_at": {"type":"string","format":"date-time"},
+    "phase": {"enum":["STATE_BACKEND_BOOTSTRAP","STAGING_IDENTITY_CONFIGURATION"]},
+    "target_project_reference": {"$ref":"#/$defs/project_reference"},
+    "allowed_actions": {
+      "type":"object","additionalProperties":false,
+      "required":["read_project_metadata","validate_required_apis","validate_existing_resources","generate_terraform_plan","calculate_target_digest","calculate_plan_digest"],
+      "properties": {
+        "read_project_metadata":{"type":"boolean"},"validate_required_apis":{"type":"boolean"},"validate_existing_resources":{"type":"boolean"},"generate_terraform_plan":{"type":"boolean"},"calculate_target_digest":{"type":"boolean"},"calculate_plan_digest":{"type":"boolean"}
+      }
+    },
+    "mutation_actions": {
+      "type":"object","additionalProperties":false,
+      "required":["enable_api","create_update_delete_resource","iam_policy_mutation","secret_access","secret_create_update","terraform_apply","dns_mutation","identity_provider_configuration","test_subject_onboarding","staging_sign_in"],
+      "properties": {
+        "enable_api":{"const":false},"create_update_delete_resource":{"const":false},"iam_policy_mutation":{"const":false},"secret_access":{"const":false},"secret_create_update":{"const":false},"terraform_apply":{"const":false},"dns_mutation":{"const":false},"identity_provider_configuration":{"const":false},"test_subject_onboarding":{"const":false},"staging_sign_in":{"const":false}
+      }
+    },
+    "single_use":{"const":true},"operator_review_required":{"const":true},"automatic_apply_allowed":{"const":false},"provider_action_performed":{"const":false},"terraform_plan_performed":{"const":false},"terraform_apply_performed":{"const":false},"external_action_performed":{"const":false}
+  },
+  "allOf":[{
+    "if":{"required":["decision"],"properties":{"decision":{"const":"APPROVED"}}},
+    "then":{"properties":{"reason_codes":{"maxItems":0},"allowed_actions":{"properties":{"read_project_metadata":{"const":true},"validate_required_apis":{"const":true},"validate_existing_resources":{"const":true},"generate_terraform_plan":{"const":true},"calculate_target_digest":{"const":true},"calculate_plan_digest":{"const":true}}}}},
+    "else":{"properties":{"reason_codes":{"minItems":1},"allowed_actions":{"properties":{"read_project_metadata":{"const":false},"validate_required_apis":{"const":false},"validate_existing_resources":{"const":false},"generate_terraform_plan":{"const":false},"calculate_target_digest":{"const":false},"calculate_plan_digest":{"const":false}}}}}
+  }],
+  "$defs":{"project_reference":{"type":"string","pattern":"^gcp_project://[a-z][a-z0-9-]{4,28}[a-z0-9]$"}}
+}
