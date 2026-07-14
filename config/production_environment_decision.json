@@ -1,0 +1,108 @@
+{
+  "contract_id": "AIGC-PRODUCTION-ENVIRONMENT-DECISION-001",
+  "contract_version": "1.0.0",
+  "decision_status": "ACCEPTED_WITH_DEFERRED_IDENTIFIERS",
+  "source_issue": 85,
+  "approved_by": {
+    "role": "ACCOUNTABLE_OPERATOR",
+    "name": "Justice Gray Maciocha",
+    "aliases": [
+      "Satoshi",
+      "Lornt"
+    ],
+    "accepted_at": "2026-07-14T00:00:00Z"
+  },
+  "cloud": {
+    "provider": "google_cloud",
+    "staging_project_id": null,
+    "production_project_id": null,
+    "billing_account_status": "TBD",
+    "primary_region": "northamerica-northeast2",
+    "recovery_region": "northamerica-northeast1",
+    "data_residency_target": "CA"
+  },
+  "runtime": {
+    "platform": "cloud_run",
+    "container_non_root": true,
+    "immutable_artifact_required": true,
+    "ingress": "external_https_load_balancer",
+    "tls": "managed",
+    "public_ingress_default_deny": true,
+    "production_domain": null,
+    "domain_status": "TBD"
+  },
+  "database": {
+    "service": "cloud_sql",
+    "engine": "postgresql",
+    "rpo_minutes": 15,
+    "rto_minutes": 240,
+    "private_connectivity_required": true,
+    "backup_policy_status": "BASELINE_ACCEPTED_DETAILED_SCHEDULE_TBD"
+  },
+  "identity": {
+    "provider": "google_cloud_identity_platform",
+    "sign_in_methods": [
+      "google"
+    ],
+    "tenant_model": "single_accountable_tenant",
+    "public_self_registration": false,
+    "pibc_boundary_required": true
+  },
+  "secrets": {
+    "provider": "google_secret_manager",
+    "repository_secret_values_allowed": false,
+    "workload_identity_required": true,
+    "canada_constrained_replication_target": true
+  },
+  "connectors": {
+    "enabled": [],
+    "candidates": [
+      "github",
+      "google_drive",
+      "gmail"
+    ],
+    "default_deny": true
+  },
+  "retention": {
+    "application_logs_online_days": 30,
+    "identity_authorization_receipts_min_days": 90,
+    "review_packet_policy": "PROJECT_LIFECYCLE_PLUS_ARCHIVE_POLICY_TBD",
+    "deployment_and_incident_receipts_min_days": 365
+  },
+  "budget": {
+    "currency": "CAD",
+    "monthly_ceiling": 200,
+    "alert_percentages": [
+      50,
+      80,
+      100
+    ]
+  },
+  "operations": {
+    "incident_owner": "Justice Gray Maciocha",
+    "technical_escalation_contact_reference": "OUT_OF_BAND_SUPPLIED",
+    "phone_number_committed": false,
+    "production_change_window": "EXACT_RELEASE_CANDIDATE_APPROVAL_ONLY"
+  },
+  "unresolved_identifiers": [
+    "staging_project_id",
+    "production_project_id",
+    "billing_account",
+    "production_domain",
+    "dns_authority",
+    "detailed_backup_schedule",
+    "data_classification_register",
+    "secure_escalation_channel_reference"
+  ],
+  "authority": {
+    "contract_implementation_authorized": true,
+    "isolated_staging_preparation_authorized": true,
+    "billing_changes_authorized": false,
+    "resource_creation_authorized": false,
+    "secret_access_authorized": false,
+    "dns_changes_authorized": false,
+    "connector_activation_authorized": false,
+    "production_deployment_authorized": false
+  },
+  "external_action_performed": false
+}
