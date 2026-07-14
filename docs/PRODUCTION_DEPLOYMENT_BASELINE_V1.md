@@ -96,9 +96,12 @@ The current module defines no `google_*` resources. Later reviewed resource modu
 - deployment baseline schema;
 - Terraform fingerprint and required guard fragments;
 - absence of Google Cloud resources in the no-resource baseline;
+- the complete strict `production_release_gate_receipt` contract before trusting any gate field;
 - exact revision, image, project, domain, and release receipt;
 - gate revision/artifact binding;
 - staging or production authority.
+
+An incomplete dictionary, an unknown field, or a contract-inconsistent `PERMIT` is classified as `RELEASE_GATE_RECEIPT_INVALID`. No unvalidated gate identifier is copied into the deployment receipt.
 
 The real configuration returns `DENY`. A fully bound synthetic staging candidate may return `PLAN_ELIGIBLE`, but its receipt always records:
 
