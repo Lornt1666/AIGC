@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/production_privacy_impact_register.schema.json",
+  "title": "AIGC Production Privacy Impact Register v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id",
+    "contract_version",
+    "status",
+    "system_reference",
+    "public_onboarding_allowed",
+    "purposes",
+    "data_subjects",
+    "data_categories",
+    "processing_controls",
+    "retention",
+    "rights_procedures",
+    "legal_review",
+    "residual_privacy_risks",
+    "external_action_performed"
+  ],
+  "properties": {
+    "contract_id": {"const": "AIGC-PRODUCTION-PRIVACY-IMPACT-001"},
+    "contract_version": {"const": "1.0.0"},
+    "status": {"const": "DRAFT_REVIEW_REQUIRED"},
+    "system_reference": {"const": "config/production_environment_decision.json"},
+    "public_onboarding_allowed": {"const": false},
+    "purposes": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["purpose_id", "description", "minimum_necessary", "legal_basis_status"],
+        "properties": {
+          "purpose_id": {"type": "string", "pattern": "^PUR-[A-Z0-9-]{4,80}$"},
+          "description": {"type": "string", "minLength": 10, "maxLength": 1000},
+          "minimum_necessary": {"const": true},
+          "legal_basis_status": {"const": "COUNSEL_REVIEW_REQUIRED"}
+        }
+      }
+    },
+    "data_subjects": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "items": {"enum": ["accountable_operator", "authorized_collaborator", "counterparty_contact", "prospective_client", "platform_account_holder"]}
+    },
+    "data_categories": {
+      "type": "array",
+      "minItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["category_id", "classification", "examples", "raw_logging_allowed", "external_sharing_default"],
+        "properties": {
+          "category_id": {"type": "string", "pattern": "^DAT-[A-Z0-9-]{4,80}$"},
+          "classification": {"enum": ["public", "internal", "confidential", "restricted"]},
+          "examples": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"type": "string", "minLength": 1, "maxLength": 300}
+          },
+          "raw_logging_allowed": {"const": false},
+          "external_sharing_default": {"const": false}
+        }
+      }
+    },
+    "processing_controls": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "request_body_logging",
+        "query_value_logging",
+        "raw_token_persistence",
+        "raw_provider_claim_persistence",
+        "purpose_binding_required",
+        "tenant_project_binding_required",
+        "human_review_for_external_sharing"
+      ],
+      "properties": {
+        "request_body_logging": {"const": false},
+        "query_value_logging": {"const": false},
+        "raw_token_persistence": {"const": false},
+        "raw_provider_claim_persistence": {"const": false},
+        "purpose_binding_required": {"const": true},
+        "tenant_project_binding_required": {"const": true},
+        "human_review_for_external_sharing": {"const": true}
+      }
+    },
+    "retention": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["application_logs_days", "identity_authorization_receipts_min_days", "deployment_incident_receipts_min_days", "review_packet_policy"],
+      "properties": {
+        "application_logs_days": {"const": 30},
+        "identity_authorization_receipts_min_days": {"const": 90},
+        "deployment_incident_receipts_min_days": {"const": 365},
+        "review_packet_policy": {"const": "PROJECT_LIFECYCLE_PLUS_ARCHIVE_POLICY_TBD"}
+      }
+    },
+    "rights_procedures": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["access", "correction", "export", "deletion", "legal_hold", "status"],
+      "properties": {
+        "access": {"const": "PROCEDURE_DRAFT_REQUIRED"},
+        "correction": {"const": "PROCEDURE_DRAFT_REQUIRED"},
+        "export": {"const": "PROCEDURE_DRAFT_REQUIRED"},
+        "deletion": {"const": "PROCEDURE_DRAFT_REQUIRED"},
+        "legal_hold": {"const": "PROCEDURE_DRAFT_REQUIRED"},
+        "status": {"const": "INCOMPLETE"}
+      }
+    },
+    "legal_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["privacy_counsel_required", "jurisdictional_review_required", "status"],
+      "properties": {
+        "privacy_counsel_required": {"const": true},
+        "jurisdictional_review_required": {"const": true},
+        "status": {"const": "PENDING"}
+      }
+    },
+    "residual_privacy_risks": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["risk_id", "description", "severity", "required_resolution"],
+        "properties": {
+          "risk_id": {"type": "string", "pattern": "^PRV-[A-Z0-9-]{4,80}$"},
+          "description": {"type": "string", "minLength": 10, "maxLength": 1000},
+          "severity": {"enum": ["low", "medium", "high", "critical"]},
+          "required_resolution": {"type": "string", "minLength": 10, "maxLength": 1000}
+        }
+      }
+    },
+    "external_action_performed": {"const": false}
+  }
+}

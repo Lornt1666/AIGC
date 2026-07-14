@@ -1,0 +1,176 @@
+{
+  "contract_id": "AIGC-PRODUCTION-THREAT-MODEL-001",
+  "contract_version": "1.0.0",
+  "status": "DRAFT_REVIEW_REQUIRED",
+  "architecture_reference": "config/production_environment_decision.json",
+  "assets": [
+    "identity_evidence",
+    "authorization_receipts",
+    "quest_records",
+    "review_evidence_packets",
+    "audit_chain",
+    "secret_references",
+    "deployment_artifacts"
+  ],
+  "trust_boundaries": [
+    {
+      "boundary_id": "TB-BROWSER-API",
+      "source": "operator_browser",
+      "destination": "cloud_run_api",
+      "data_classes": ["public", "internal", "confidential"],
+      "default_decision": "DENY"
+    },
+    {
+      "boundary_id": "TB-API-IDENTITY",
+      "source": "cloud_run_api",
+      "destination": "identity_platform",
+      "data_classes": ["confidential", "restricted"],
+      "default_decision": "DENY"
+    },
+    {
+      "boundary_id": "TB-API-DATABASE",
+      "source": "cloud_run_api",
+      "destination": "cloud_sql_postgresql",
+      "data_classes": ["internal", "confidential"],
+      "default_decision": "DENY"
+    },
+    {
+      "boundary_id": "TB-API-SECRETS",
+      "source": "cloud_run_workload_identity",
+      "destination": "google_secret_manager",
+      "data_classes": ["restricted"],
+      "default_decision": "DENY"
+    },
+    {
+      "boundary_id": "TB-API-CONNECTORS",
+      "source": "aigc_connector_gateway",
+      "destination": "external_platform_apis",
+      "data_classes": ["internal", "confidential", "restricted"],
+      "default_decision": "DENY"
+    }
+  ],
+  "threats": [
+    {
+      "threat_id": "THR-IDENTITY-SPOOFING",
+      "category": "spoofing",
+      "scenario": "An attacker presents a forged or replayed identity assertion to obtain an AIGC principal binding.",
+      "affected_assets": ["identity_evidence", "authorization_receipts"],
+      "severity": "critical",
+      "mitigations": ["PIBC signature and issuer verification", "audience and expiry validation", "replay-bound evidence receipts", "server-owned membership and session resolution"],
+      "verification_status": "STAGING_EVIDENCE_REQUIRED"
+    },
+    {
+      "threat_id": "THR-AUTHORITY-INJECTION",
+      "category": "elevation_of_privilege",
+      "scenario": "A client attempts to inject roles, scopes, tenant identifiers, or assurance values into an authorization request.",
+      "affected_assets": ["authorization_receipts", "quest_records"],
+      "severity": "critical",
+      "mitigations": ["strict request contracts", "repository-owned authority resolution", "identity-to-authorization bridge", "unknown-field rejection"],
+      "verification_status": "IMPLEMENTED_INTERNAL"
+    },
+    {
+      "threat_id": "THR-CROSS-TENANT-ACCESS",
+      "category": "information_disclosure",
+      "scenario": "A valid principal attempts to read or mutate records belonging to another tenant or project.",
+      "affected_assets": ["quest_records", "review_evidence_packets", "audit_chain"],
+      "severity": "critical",
+      "mitigations": ["tenant and project binding", "database row-isolation design", "negative authorization tests", "default-deny resource checks"],
+      "verification_status": "STAGING_EVIDENCE_REQUIRED"
+    },
+    {
+      "threat_id": "THR-RECEIPT-TAMPERING",
+      "category": "tampering",
+      "scenario": "An attacker modifies identity, authorization, review, or release evidence after a governed decision.",
+      "affected_assets": ["identity_evidence", "authorization_receipts", "review_evidence_packets", "audit_chain"],
+      "severity": "high",
+      "mitigations": ["append-only database triggers", "deterministic digests", "exact-revision binding", "immutable release artifacts"],
+      "verification_status": "IMPLEMENTED_INTERNAL"
+    },
+    {
+      "threat_id": "THR-AUDIT-REPUDIATION",
+      "category": "repudiation",
+      "scenario": "A consequential decision cannot be attributed to the identity, evidence, revision, and operator judgment that produced it.",
+      "affected_assets": ["audit_chain", "authorization_receipts", "review_evidence_packets"],
+      "severity": "high",
+      "mitigations": ["hash-chained audit events", "identity-bound evidence IDs", "candidate-bound operator approvals", "retention requirements"],
+      "verification_status": "STAGING_EVIDENCE_REQUIRED"
+    },
+    {
+      "threat_id": "THR-SECRET-DISCLOSURE",
+      "category": "information_disclosure",
+      "scenario": "Raw credentials, provider tokens, private keys, or recovery material enter source control, logs, API responses, or evidence receipts.",
+      "affected_assets": ["secret_references", "identity_evidence", "audit_chain"],
+      "severity": "critical",
+      "mitigations": ["Google Secret Manager references", "workload identity", "committed-content redaction scan", "structured event redaction", "raw-value prohibition"],
+      "verification_status": "STAGING_EVIDENCE_REQUIRED"
+    },
+    {
+      "threat_id": "THR-REQUEST-ABUSE",
+      "category": "denial_of_service",
+      "scenario": "Oversized, high-rate, cross-origin, or malformed requests consume application resources or bypass expected browser boundaries.",
+      "affected_assets": ["quest_records", "audit_chain"],
+      "severity": "high",
+      "mitigations": ["request-size limit", "host allowlist", "origin default deny", "local rate limiter", "future edge rate limiting and WAF"],
+      "verification_status": "STAGING_EVIDENCE_REQUIRED"
+    },
+    {
+      "threat_id": "THR-CSRF-SESSION-ABUSE",
+      "category": "spoofing",
+      "scenario": "A malicious origin attempts a state-changing request using an authenticated browser session.",
+      "affected_assets": ["quest_records", "authorization_receipts"],
+      "severity": "high",
+      "mitigations": ["same-site session policy", "double-submit CSRF validation", "origin default deny", "no public self-registration"],
+      "verification_status": "IMPLEMENTED_INTERNAL"
+    },
+    {
+      "threat_id": "THR-SUPPLY-CHAIN",
+      "category": "supply_chain",
+      "scenario": "A compromised dependency, build action, or container layer alters the runtime or exposes protected data.",
+      "affected_assets": ["deployment_artifacts", "secret_references", "audit_chain"],
+      "severity": "critical",
+      "mitigations": ["dependency locking", "SBOM and vulnerability scanning", "immutable image digest", "build provenance and review"],
+      "verification_status": "INDEPENDENT_REVIEW_REQUIRED"
+    },
+    {
+      "threat_id": "THR-PRIVACY-OVERCOLLECTION",
+      "category": "privacy",
+      "scenario": "Request bodies, query values, identity claims, or counterparty information are collected or retained beyond a defined operational purpose.",
+      "affected_assets": ["identity_evidence", "quest_records", "review_evidence_packets", "audit_chain"],
+      "severity": "high",
+      "mitigations": ["request-body logging prohibited", "query-value logging prohibited", "minimum-necessary receipts", "retention schedule", "deletion and export procedure"],
+      "verification_status": "INDEPENDENT_REVIEW_REQUIRED"
+    }
+  ],
+  "residual_risks": [
+    {
+      "risk_id": "RSK-EDGE-CONTROLS-UNOBSERVED",
+      "description": "TLS termination, distributed rate limiting, edge filtering, and alerting have not yet been observed in an isolated staging environment.",
+      "severity": "high",
+      "required_evidence": ["staging TLS receipt", "edge rate-limit receipt", "abuse-control integration tests"]
+    },
+    {
+      "risk_id": "RSK-SUPPLY-CHAIN-EVIDENCE-MISSING",
+      "description": "The current repository has not yet produced and reviewed a release SBOM, vulnerability result, provenance record, and immutable container digest.",
+      "severity": "high",
+      "required_evidence": ["SBOM receipt", "vulnerability scan receipt", "build provenance receipt", "image digest"]
+    },
+    {
+      "risk_id": "RSK-INDEPENDENT-REVIEW-PENDING",
+      "description": "The threat model, privacy register, and staging security controls have not received independent professional review.",
+      "severity": "high",
+      "required_evidence": ["independent review findings", "finding disposition register", "zero unresolved high or critical findings"]
+    }
+  ],
+  "review_requirements": {
+    "accountable_operator_review": true,
+    "independent_security_review": true,
+    "staging_abuse_tests": true,
+    "review_status": "PENDING"
+  },
+  "authority": {
+    "defensive_testing_authorized": true,
+    "third_party_testing_authorized": false,
+    "production_testing_authorized": false
+  },
+  "external_action_performed": false
+}

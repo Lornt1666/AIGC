@@ -1,0 +1,239 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/production_security_privacy_baseline.schema.json",
+  "title": "AIGC Production Security and Privacy Baseline v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id",
+    "contract_version",
+    "status",
+    "environment_decision_path",
+    "http_security",
+    "data_classification",
+    "privacy",
+    "secrets",
+    "identity",
+    "operational_evidence",
+    "authority",
+    "external_action_performed"
+  ],
+  "properties": {
+    "contract_id": {"const": "AIGC-PRODUCTION-SECURITY-PRIVACY-001"},
+    "contract_version": {"const": "1.0.0"},
+    "status": {"const": "IMPLEMENTED_INTERNAL_PENDING_OPERATIONAL_EVIDENCE"},
+    "environment_decision_path": {"const": "config/production_environment_decision.json"},
+    "http_security": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed_hosts",
+        "production_domain_required",
+        "max_request_bytes",
+        "requests_per_minute",
+        "cors_allowed_origins",
+        "csrf_protected_cookie_names",
+        "csrf_cookie_name",
+        "csrf_header_name",
+        "trusted_proxy_headers",
+        "response_headers",
+        "sensitive_path_prefixes"
+      ],
+      "properties": {
+        "allowed_hosts": {
+          "type": "array",
+          "minItems": 4,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 253}
+        },
+        "production_domain_required": {"const": true},
+        "max_request_bytes": {"type": "integer", "minimum": 65536, "maximum": 10485760},
+        "requests_per_minute": {"type": "integer", "minimum": 10, "maximum": 10000},
+        "cors_allowed_origins": {"type": "array", "maxItems": 0},
+        "csrf_protected_cookie_names": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 100}
+        },
+        "csrf_cookie_name": {"type": "string", "minLength": 1, "maxLength": 100},
+        "csrf_header_name": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "trusted_proxy_headers": {"const": false},
+        "response_headers": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "x_content_type_options",
+            "x_frame_options",
+            "referrer_policy",
+            "permissions_policy",
+            "content_security_policy",
+            "cross_origin_opener_policy",
+            "cross_origin_resource_policy",
+            "strict_transport_security"
+          ],
+          "properties": {
+            "x_content_type_options": {"const": "nosniff"},
+            "x_frame_options": {"const": "DENY"},
+            "referrer_policy": {"const": "no-referrer"},
+            "permissions_policy": {"type": "string", "minLength": 1},
+            "content_security_policy": {"type": "string", "minLength": 1},
+            "cross_origin_opener_policy": {"const": "same-origin"},
+            "cross_origin_resource_policy": {"const": "same-origin"},
+            "strict_transport_security": {"type": "string", "minLength": 1}
+          }
+        },
+        "sensitive_path_prefixes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^/"}
+        }
+      }
+    },
+    "data_classification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "classes"],
+      "properties": {
+        "status": {"const": "PROVISIONAL_PENDING_OPERATOR_REVIEW"},
+        "classes": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "classification",
+              "encryption_required",
+              "application_logging_allowed",
+              "external_sharing_default",
+              "examples"
+            ],
+            "properties": {
+              "classification": {"enum": ["public", "internal", "confidential", "restricted"]},
+              "encryption_required": {"type": "boolean"},
+              "application_logging_allowed": {"type": "boolean"},
+              "external_sharing_default": {"const": false},
+              "examples": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {"type": "string", "minLength": 1, "maxLength": 200}
+              }
+            }
+          }
+        }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "request_body_logging",
+        "query_value_logging",
+        "header_logging_allowlist",
+        "redaction_required",
+        "application_logs_online_days",
+        "identity_authorization_receipts_min_days",
+        "deployment_incident_receipts_min_days",
+        "deletion_export_policy_status"
+      ],
+      "properties": {
+        "request_body_logging": {"const": false},
+        "query_value_logging": {"const": false},
+        "header_logging_allowlist": {
+          "type": "array",
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": {"enum": ["content-type", "content-length", "user-agent", "x-request-id"]}
+        },
+        "redaction_required": {"const": true},
+        "application_logs_online_days": {"const": 30},
+        "identity_authorization_receipts_min_days": {"const": 90},
+        "deployment_incident_receipts_min_days": {"const": 365},
+        "deletion_export_policy_status": {"const": "DRAFT_REQUIRED_BEFORE_PUBLIC_ONBOARDING"}
+      }
+    },
+    "secrets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "access_mode",
+        "raw_values_in_repository",
+        "raw_values_in_logs",
+        "raw_values_in_receipts",
+        "rotation_procedure_status"
+      ],
+      "properties": {
+        "provider": {"const": "google_secret_manager"},
+        "access_mode": {"const": "workload_identity"},
+        "raw_values_in_repository": {"const": false},
+        "raw_values_in_logs": {"const": false},
+        "raw_values_in_receipts": {"const": false},
+        "rotation_procedure_status": {"const": "DRAFT_REQUIRED_BEFORE_SECRET_ACCESS"}
+      }
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "public_self_registration",
+        "raw_tokens_in_logs",
+        "raw_provider_claims_in_logs",
+        "pibc_required",
+        "cross_tenant_default_deny"
+      ],
+      "properties": {
+        "public_self_registration": {"const": false},
+        "raw_tokens_in_logs": {"const": false},
+        "raw_provider_claims_in_logs": {"const": false},
+        "pibc_required": {"const": true},
+        "cross_tenant_default_deny": {"const": true}
+      }
+    },
+    "operational_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "staging_tls_observed",
+        "edge_rate_limit_observed",
+        "sbom_generated",
+        "vulnerability_scan_passed",
+        "incident_exercise_passed",
+        "independent_review_passed",
+        "unresolved_high_critical_findings"
+      ],
+      "properties": {
+        "staging_tls_observed": {"const": false},
+        "edge_rate_limit_observed": {"const": false},
+        "sbom_generated": {"const": false},
+        "vulnerability_scan_passed": {"const": false},
+        "incident_exercise_passed": {"const": false},
+        "independent_review_passed": {"const": false},
+        "unresolved_high_critical_findings": {"type": "integer", "minimum": 0}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "internal_control_implementation_authorized",
+        "staging_security_testing_authorized",
+        "secret_access_authorized",
+        "production_resource_changes_authorized",
+        "production_deployment_authorized"
+      ],
+      "properties": {
+        "internal_control_implementation_authorized": {"const": true},
+        "staging_security_testing_authorized": {"const": true},
+        "secret_access_authorized": {"const": false},
+        "production_resource_changes_authorized": {"const": false},
+        "production_deployment_authorized": {"const": false}
+      }
+    },
+    "external_action_performed": {"const": false}
+  }
+}
