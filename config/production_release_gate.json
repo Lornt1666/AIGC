@@ -1,0 +1,22 @@
+{
+  "contract_id": "AIGC-PRODUCTION-RELEASE-GATE-POLICY-001",
+  "version": "1.0.0",
+  "readiness_ledger_path": "config/production_readiness_ledger.json",
+  "minimum_readiness_score": 90,
+  "require_no_blocking_gaps": true,
+  "require_exact_revision": true,
+  "require_production_environment": true,
+  "manifest_ttl_hours": 24,
+  "required_receipt_groups": [
+    "ci",
+    "security",
+    "privacy",
+    "database_restore",
+    "rollback",
+    "monitoring",
+    "incident_response"
+  ],
+  "require_operator_approval": true,
+  "deployment_default_authorized": false,
+  "external_action_performed": false
+}
