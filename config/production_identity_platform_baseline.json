@@ -1,0 +1,92 @@
+{
+  "contract_id": "AIGC-PRODUCTION-IDENTITY-PLATFORM-001",
+  "contract_version": "1.0.0",
+  "status": "IMPLEMENTED_INTERNAL_PENDING_PROVIDER_AND_STAGING_EVIDENCE",
+  "environment_decision_path": "config/production_environment_decision.json",
+  "provider": {
+    "service": "google_cloud_identity_platform",
+    "project_id": null,
+    "provider_tenant_id": null,
+    "issuer_template": "https://securetoken.google.com/{project_id}",
+    "public_keys_endpoint": "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com",
+    "algorithm": "RS256",
+    "accepted_sign_in_providers": [
+      "google.com"
+    ],
+    "public_self_registration": false,
+    "clock_skew_seconds": 60,
+    "max_token_age_seconds": 3600,
+    "evidence_maturity": "EA2_SEMANTICALLY_TESTED"
+  },
+  "claims": {
+    "required": [
+      "alg",
+      "kid",
+      "aud",
+      "iss",
+      "sub",
+      "iat",
+      "exp",
+      "auth_time",
+      "firebase"
+    ],
+    "email_required": true,
+    "email_verified_required": true,
+    "auth_time_required": true,
+    "roles_from_provider_allowed": false,
+    "scopes_from_provider_allowed": false,
+    "tenant_from_provider_authoritative": false
+  },
+  "subject_mapping": {
+    "source": "trusted_persistence",
+    "exactly_one_active_mapping_required": true,
+    "provider_subject_as_principal_allowed": false,
+    "email_as_principal_allowed": false,
+    "mapping_repository_status": "ADAPTER_AND_STAGING_EVIDENCE_REQUIRED"
+  },
+  "sessions": {
+    "cookie_name": "aigc_session",
+    "secure": true,
+    "http_only": true,
+    "same_site": "strict",
+    "idle_timeout_seconds": 1800,
+    "absolute_timeout_seconds": 43200,
+    "rotation_required": true,
+    "revocation_required": true,
+    "credential_digest_algorithm": "HMAC-SHA256",
+    "pepper_reference": "gcp_secret://TBD_PROJECT/aigc-session-pepper",
+    "raw_credential_persistence": false,
+    "repository_status": "CONTRACT_AND_LOCAL_TEST_BASELINE_ONLY"
+  },
+  "tenant_isolation": {
+    "model": "single_accountable_tenant",
+    "aigc_tenant_id": "tenant-primary",
+    "project_binding_required": true,
+    "provider_tenant_id_required": false,
+    "cross_tenant_default_deny": true,
+    "public_tenant_discovery": false
+  },
+  "operational_evidence": {
+    "identity_platform_project_configured": false,
+    "google_sign_in_observed": false,
+    "jwks_rotation_observed": false,
+    "revocation_observed": false,
+    "session_rotation_observed": false,
+    "logout_observed": false,
+    "restart_persistence_observed": false,
+    "cross_tenant_negative_passed": false,
+    "cross_project_negative_passed": false,
+    "provider_outage_test_passed": false,
+    "redaction_review_passed": false
+  },
+  "authority": {
+    "adapter_implementation_authorized": true,
+    "offline_cryptographic_testing_authorized": true,
+    "provider_configuration_authorized": false,
+    "secret_access_authorized": false,
+    "user_onboarding_authorized": false,
+    "production_identity_activation_authorized": false,
+    "production_deployment_authorized": false
+  },
+  "external_action_performed": false
+}
