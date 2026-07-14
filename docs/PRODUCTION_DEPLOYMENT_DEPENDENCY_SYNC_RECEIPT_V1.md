@@ -75,6 +75,8 @@ The historical receipt is immutable evidence of a completed synchronization even
 
 The GitHub Actions regression test reads `GITHUB_EVENT_PATH` without making a provider API call. If PR #98 moves while the receipt still names the old upstream head, the exact-current stacked CI fails with `UPSTREAM_HEAD_DRIFT`. Combined-main evaluation remains distinguishable and is never reported as a current stack.
 
+Every currentness-code change requires a fresh pull-request CI run at the exact implementation head; a prior dependency-receipt run cannot be reused.
+
 This gate verifies pull-request currentness from the event snapshot supplied by GitHub Actions. It does not independently authenticate the event, query GitHub, inspect full commit history, or replace exact-head operator review.
 
 The currentness cycle is independently reversible through:
