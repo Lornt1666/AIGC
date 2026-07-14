@@ -2,20 +2,36 @@
 
 Status: `REVALIDATION_PENDING_CI_AND_OPERATOR_REVIEW`  
 Pull request: `#98`  
-Previous exact head: `f5ffdb4aaf60b09f40b1a8840ef5e5b62b49a141`  
+Previous verified head: `f5ffdb4aaf60b09f40b1a8840ef5e5b62b49a141`  
 Current canonical main: `d8cd4f5f17a727e16fc7f2ed966f3458cac0808f`  
 Rollback branch: `codex/production-connectors-secret-broker-v1-pre-post-readiness-revalidation`  
 External action performed: **No**
 
 ## Objective
 
-Revalidate the existing disabled production connector and Google Secret Manager broker baseline against the post-identity, post-readiness canonical mainline without rewriting the already reviewed connector artifacts.
+Revalidate the existing disabled production connector and Google Secret Manager broker baseline against the post-identity, post-readiness canonical mainline, correct bounded security findings from exact-head review, and preserve the internal/default-deny truth boundary.
 
 ## Repository relationship
 
-The connector train contains fifteen connector-specific additions and no file-level overlap with the identity baseline merged through PR #95 or the readiness ledger merged through PR #100. GitHub currently reports PR #98 as mergeable against `main`.
+The connector train contains connector-specific additions and no file-level overlap with the identity baseline merged through PR #95 or the readiness ledger merged through PR #100. GitHub reports PR #98 as mergeable against current `main`.
 
-A new exact-head commit is used only to trigger a fresh synthetic merge candidate and complete CI against current main. The original connector files remain byte-for-byte unchanged from the previously verified head.
+A fresh exact-head commit and synthetic merge candidate are required because earlier CI evidence predates the current mainline.
+
+## Exact-head security corrections
+
+Operator review identified two pre-merge truth defects:
+
+1. authorized Secret Manager access accepted symbolic versions such as `latest`, which is not an immutable rollback-safe version binding;
+2. adapter-facing secret material was copied into immutable `bytes`, so that copy was outside explicit zeroization.
+
+The corrected boundary now:
+
+- permits broad version syntax only while parsing disabled/unresolved configuration;
+- requires a positive numeric secret version before any authorized client call;
+- lends adapters a read-only `memoryview` backed by the resolver's mutable buffer;
+- zeroizes that same underlying buffer after adapter execution, including failure paths;
+- tests that a borrowed view observes zeroed bytes after close;
+- performs no Secret Manager request in the production configuration.
 
 ## Truth boundary
 
@@ -46,7 +62,7 @@ approved_external_connectors
 production_deployment
 ```
 
-PR #98 does not update the production-readiness ledger. `approved_external_connectors` remains `planned` until exact-revision operational staging evidence and a separate activation decision exist.
+PR #98 does not update the production-readiness ledger. `approved_external_connectors` remains `planned` until exact-revision operational staging evidence, durable idempotency, provider-effect reconciliation, and a separate activation decision exist.
 
 ## Required gates
 
