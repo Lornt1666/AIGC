@@ -16,10 +16,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+          show-progress: false
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.12"
 
@@ -44,6 +47,18 @@ jobs:
           python src/aigc.py validate --schema save_credential_broker_packet --path data/save_credential_broker/aigc_save_credential_broker_packet.json
           python src/aigc.py validate --schema n8n_workflow_dispatch_bridge_packet --path data/n8n_bridge/aigc_n8n_workflow_dispatch_bridge_packet.json
 
+      - name: Validate workflow invocation integrity
+        run: python -m pytest tests/test_workflow_reference_and_phase26_semantics.py -q
+
+      - name: Validate CI dependency manifest
+        run: python -m pytest tests/test_ci_action_pinning.py -q
+
+      - name: Generate CI dependency review receipt
+        run: >
+          python src/ci_dependency_review_receipt_cli.py
+          --project-root .
+          --output reports/artifacts/ci_dependency_review/ci_dependency_review_receipt.json
+
       - name: Run tests
         shell: bash
         run: |
@@ -64,8 +79,16 @@ jobs:
 
       - name: Upload production readiness receipt
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: production-readiness-${{ github.sha }}
           path: reports/artifacts/production_readiness
-          if-no-files-found: warn
+          if-no-files-found: error
+
+      - name: Upload CI dependency review receipt
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ci-dependency-review-${{ github.sha }}
+          path: reports/artifacts/ci_dependency_review
+          if-no-files-found: error
