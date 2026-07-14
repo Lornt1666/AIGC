@@ -48,7 +48,15 @@ def test_sensitive_api_responses_are_not_cacheable(tmp_path: Path) -> None:
     assert body["external_action_performed"] is False
 
 
-def test_unapproved_host_and_origin_are_denied(tmp_path: Path) -> None:
+def test_same_origin_is_allowed_while_unapproved_host_and_origin_are_denied(
+    tmp_path: Path,
+) -> None:
+    same_origin = client(tmp_path).get(
+        "/health",
+        headers={"origin": "http://testserver"},
+    )
+    assert same_origin.status_code == 200
+
     bad_host = client(tmp_path, base_url="http://evil.example").get("/health")
     assert bad_host.status_code == 400
     assert bad_host.json()["detail"]["code"] == "HOST_NOT_ALLOWED"
