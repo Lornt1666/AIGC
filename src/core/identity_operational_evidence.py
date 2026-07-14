@@ -17,6 +17,9 @@ DEFAULT_BASELINE_SCHEMA = ROOT / "schemas" / "production_identity_platform_basel
 DEFAULT_STAGING_RECEIPT_SCHEMA = ROOT / "schemas" / "identity_platform_staging_receipt.schema.json"
 DEFAULT_EVALUATION_SCHEMA = ROOT / "schemas" / "identity_operational_evidence_evaluation.schema.json"
 _HEX40 = re.compile(r"^[a-f0-9]{40}$")
+_PROJECT_REFERENCE = re.compile(
+    r"^gcp_project://[a-z][a-z0-9-]{4,28}[a-z0-9]$"
+)
 
 
 class IdentityOperationalEvidenceError(ValueError):
@@ -96,7 +99,7 @@ def load_identity_platform_baseline(
     return value
 
 
-def _configured_project_reference(policy: Mapping[str, Any]) -> str | None:
+def _baseline_project_reference(policy: Mapping[str, Any]) -> str | None:
     provider = dict(policy["provider"])
     project_id = provider.get("project_id")
     if project_id is None:
@@ -107,6 +110,8 @@ def _configured_project_reference(policy: Mapping[str, Any]) -> str | None:
 def _operational_evidence_codes(
     policy: Mapping[str, Any],
     staging_receipt: Mapping[str, Any] | None,
+    *,
+    project_observed: bool,
 ) -> list[str]:
     evidence = dict(policy["operational_evidence"])
     receipt_checks = dict(staging_receipt.get("checks", {})) if staging_receipt else {}
@@ -126,7 +131,9 @@ def _operational_evidence_codes(
     missing: list[str] = []
     for evidence_key, receipt_check in requirements.items():
         observed = evidence.get(evidence_key) is True
-        if receipt_check is not None:
+        if evidence_key == "identity_platform_project_configured":
+            observed = observed or project_observed
+        elif receipt_check is not None:
             observed = observed or receipt_checks.get(receipt_check) is True
         if not observed:
             missing.append(evidence_key.upper())
@@ -138,6 +145,7 @@ def evaluate_identity_operational_evidence(
     policy: Mapping[str, Any],
     exact_revision: str | None,
     staging_receipt: Mapping[str, Any] | None = None,
+    expected_project_reference: str | None = None,
     now: datetime | None = None,
 ) -> IdentityOperationalEvidenceEvaluation:
     value = dict(policy)
@@ -146,7 +154,14 @@ def evaluate_identity_operational_evidence(
 
     authority = dict(value["authority"])
     sessions = dict(value["sessions"])
-    project_reference = _configured_project_reference(value)
+    baseline_project_reference = _baseline_project_reference(value)
+    if expected_project_reference is not None and not _PROJECT_REFERENCE.fullmatch(
+        expected_project_reference
+    ):
+        raise IdentityOperationalEvidenceError(
+            "Expected Identity Platform project reference is malformed"
+        )
+    project_reference = baseline_project_reference or expected_project_reference
     revision = exact_revision if exact_revision and _HEX40.fullmatch(exact_revision) else "unbound"
 
     implemented_internal = (
@@ -158,8 +173,10 @@ def evaluate_identity_operational_evidence(
     )
 
     unresolved_configuration: list[str] = []
+    if baseline_project_reference is None:
+        unresolved_configuration.append("IDENTITY_PLATFORM_BASELINE_PROJECT_UNBOUND")
     if project_reference is None:
-        unresolved_configuration.append("IDENTITY_PLATFORM_PROJECT_UNCONFIGURED")
+        unresolved_configuration.append("IDENTITY_PLATFORM_PROJECT_REFERENCE_MISSING")
     if "TBD_PROJECT" in str(sessions.get("pepper_reference", "")):
         unresolved_configuration.append("SESSION_PEPPER_PROJECT_UNRESOLVED")
 
@@ -208,9 +225,8 @@ def evaluate_identity_operational_evidence(
     missing_operational_evidence = _operational_evidence_codes(
         value,
         receipt_value if accepted else None,
+        project_observed=accepted and project_reference is not None,
     )
-    if project_reference is None and "IDENTITY_PLATFORM_PROJECT_CONFIGURED" not in missing_operational_evidence:
-        missing_operational_evidence.append("IDENTITY_PLATFORM_PROJECT_CONFIGURED")
 
     readiness_review_eligible = (
         accepted
