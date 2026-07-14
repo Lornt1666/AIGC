@@ -97,6 +97,15 @@ class ProductionSessionRepository(Protocol):
         credential_digest: str,
     ) -> ProductionSessionRecord | None: ...
 
+    def touch(
+        self,
+        *,
+        session_id: str,
+        expected_revision: int,
+        seen_at: datetime,
+        idle_expires_at: datetime,
+    ) -> ProductionSessionRecord: ...
+
     def rotate(
         self,
         *,
