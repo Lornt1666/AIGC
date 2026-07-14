@@ -7,10 +7,16 @@ from hashlib import sha256
 import json
 from pathlib import Path
 import re
+import sys
 from typing import Any, Mapping
 
-from src.core.contract_validator import validate_artifact
-from src.core.production_readiness_ledger import (
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from src.core.contract_validator import validate_artifact  # noqa: E402
+from src.core.production_readiness_ledger import (  # noqa: E402
     build_report,
     load_ledger,
     repository_revision,
@@ -20,6 +26,7 @@ from src.core.production_readiness_ledger import (
 _HEX40 = re.compile(r"^[a-f0-9]{40}$")
 _POLICY_SCHEMA = "production_release_gate_policy"
 _MANIFEST_SCHEMA = "production_release_manifest"
+_APPROVAL_SCHEMA = "production_release_operator_approval"
 _RECEIPT_SCHEMA = "production_release_gate_receipt"
 
 
@@ -122,6 +129,20 @@ def readiness_truth_digest(report: Mapping[str, Any]) -> str:
     return _digest(readiness_truth_projection(report))
 
 
+def release_candidate_projection(manifest: Mapping[str, Any]) -> dict[str, Any]:
+    """Return the release candidate material excluding its later approval."""
+
+    return {
+        key: value
+        for key, value in dict(manifest).items()
+        if key != "operator_approval"
+    }
+
+
+def release_candidate_digest(manifest: Mapping[str, Any]) -> str:
+    return _digest(release_candidate_projection(manifest))
+
+
 def evaluate_release_manifest(
     *,
     project_root: Path,
@@ -135,6 +156,8 @@ def evaluate_release_manifest(
     policy_value = dict(policy)
     validate_artifact(_MANIFEST_SCHEMA, manifest_value)
     validate_artifact(_POLICY_SCHEMA, policy_value)
+    approval = dict(manifest_value["operator_approval"])
+    validate_artifact(_APPROVAL_SCHEMA, approval)
 
     if readiness_report is None:
         ledger_path = project_root / str(policy_value["readiness_ledger_path"])
@@ -144,6 +167,7 @@ def evaluate_release_manifest(
     current = _utc(evaluated_at or datetime.now(timezone.utc))
     revision = str(actual_revision or repository_revision(project_root))
     truth_digest = readiness_truth_digest(report)
+    candidate_digest = release_candidate_digest(manifest_value)
     manifest_digest = _digest(manifest_value)
     threshold = max(
         float(policy_value["minimum_readiness_score"]),
@@ -191,14 +215,6 @@ def evaluate_release_manifest(
             reasons.append("RELEASE_EVIDENCE_INCOMPLETE")
             break
 
-    decision = str(manifest_value.get("operator_decision") or "")
-    approval_receipt = manifest_value.get("operator_approval_receipt_id")
-    if policy_value.get("require_operator_approval") is True:
-        if decision == "DENIED":
-            reasons.append("OPERATOR_DENIED_RELEASE")
-        elif decision != "APPROVED" or not approval_receipt:
-            reasons.append("OPERATOR_APPROVAL_MISSING")
-
     created_at = _parse_time(manifest_value["created_at"])
     expires_at = _parse_time(manifest_value["expires_at"])
     if expires_at <= created_at:
@@ -209,6 +225,33 @@ def evaluate_release_manifest(
     if ttl_hours > int(policy_value["manifest_ttl_hours"]):
         reasons.append("MANIFEST_TTL_EXCEEDED")
 
+    approval_receipt = approval.get("receipt_id")
+    if policy_value.get("require_operator_approval") is True:
+        if approval.get("release_id") != manifest_value.get("release_id"):
+            reasons.append("OPERATOR_APPROVAL_RELEASE_MISMATCH")
+        if approval.get("exact_revision") != manifest_value.get("exact_revision"):
+            reasons.append("OPERATOR_APPROVAL_REVISION_MISMATCH")
+        if approval.get("release_candidate_digest") != candidate_digest:
+            reasons.append("OPERATOR_APPROVAL_CANDIDATE_MISMATCH")
+        if approval.get("decision") == "DENIED":
+            reasons.append("OPERATOR_DENIED_RELEASE")
+        elif (
+            approval.get("decision") != "APPROVED"
+            or approval.get("production_deployment_authorized") is not True
+        ):
+            reasons.append("OPERATOR_APPROVAL_MISSING")
+
+        approval_issued = _parse_time(approval["issued_at"])
+        approval_expires = _parse_time(approval["expires_at"])
+        if approval_expires <= approval_issued:
+            reasons.append("OPERATOR_APPROVAL_LIFETIME_INVALID")
+        if approval_issued < created_at:
+            reasons.append("OPERATOR_APPROVAL_PREDATES_MANIFEST")
+        if approval_expires > expires_at:
+            reasons.append("OPERATOR_APPROVAL_OUTLIVES_MANIFEST")
+        if current >= approval_expires:
+            reasons.append("OPERATOR_APPROVAL_EXPIRED")
+
     reason_codes = tuple(dict.fromkeys(reasons))
     permitted = not reason_codes
     gate_receipt_id = "PRG-" + sha256(
@@ -218,6 +261,8 @@ def evaluate_release_manifest(
             + revision
             + "|"
             + manifest_digest
+            + "|"
+            + candidate_digest
             + "|"
             + truth_digest
             + "|"
@@ -237,6 +282,7 @@ def evaluate_release_manifest(
         "required_readiness_score": threshold,
         "actual_blocking_gaps": blocking_gaps,
         "manifest_digest": manifest_digest,
+        "release_candidate_digest": candidate_digest,
         "readiness_truth_digest": truth_digest,
         "release_artifact_digest": artifact.get(
             "digest",
