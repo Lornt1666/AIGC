@@ -37,6 +37,17 @@ class DeploymentPlanEvaluation:
         return self.receipt["result"] == "PLAN_ELIGIBLE"
 
 
+def _utc(value: datetime) -> datetime:
+    if value.tzinfo is None:
+        return value.replace(tzinfo=timezone.utc)
+    return value.astimezone(timezone.utc)
+
+
+def _parse_time(value: Any) -> datetime:
+    parsed = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    return _utc(parsed)
+
+
 def _strict_validate(schema_path: Path, value: Mapping[str, Any]) -> None:
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
     Draft202012Validator.check_schema(schema)
@@ -111,6 +122,7 @@ def evaluate_deployment_plan(
 ) -> DeploymentPlanEvaluation:
     value = dict(policy)
     reasons: list[str] = []
+    current = _utc(now or datetime.now(timezone.utc))
     if environment not in {"staging", "production"}:
         reasons.append("ENVIRONMENT_INVALID")
     if not exact_revision or not _HEX40.fullmatch(exact_revision):
@@ -123,6 +135,7 @@ def evaluate_deployment_plan(
         reasons.append("PRODUCTION_DOMAIN_UNRESOLVED")
 
     gate_id: str | None = None
+    gate_valid_until: str | None = None
     if release_gate_receipt is None:
         reasons.append("RELEASE_GATE_RECEIPT_MISSING")
     else:
@@ -133,6 +146,15 @@ def evaluate_deployment_plan(
             reasons.append("RELEASE_GATE_RECEIPT_INVALID")
         else:
             gate_id = str(gate["gate_receipt_id"])
+            gate_evaluated_at = _parse_time(gate["evaluated_at"])
+            gate_valid_until_time = _parse_time(gate["valid_until"])
+            gate_valid_until = gate_valid_until_time.isoformat()
+            if gate_evaluated_at > current:
+                reasons.append("RELEASE_GATE_EVALUATED_IN_FUTURE")
+            if gate_valid_until_time <= gate_evaluated_at:
+                reasons.append("RELEASE_GATE_VALIDITY_WINDOW_INVALID")
+            if current >= gate_valid_until_time:
+                reasons.append("RELEASE_GATE_EXPIRED")
             if gate["result"] != "PERMIT" or gate["deployment_authorized"] is not True:
                 reasons.append("RELEASE_GATE_DENIED")
             if gate["exact_revision"] != exact_revision:
@@ -158,7 +180,6 @@ def evaluate_deployment_plan(
 
     fingerprint = terraform_fingerprint(terraform_root)
     reason_codes = tuple(dict.fromkeys(reasons))
-    current = now or datetime.now(timezone.utc)
     receipt_material = "|".join(
         (
             environment,
@@ -166,6 +187,7 @@ def evaluate_deployment_plan(
             project_id or "",
             image_digest or "",
             gate_id or "",
+            gate_valid_until or "",
             fingerprint,
             ",".join(reason_codes),
         )
@@ -181,11 +203,12 @@ def evaluate_deployment_plan(
         "reason_codes": list(reason_codes),
         "resource_creation_effective": False,
         "release_gate_receipt_id": gate_id,
+        "release_gate_valid_until": gate_valid_until,
         "image_digest": image_digest,
         "project_id": project_id,
         "production_domain": production_domain,
         "terraform_fingerprint": fingerprint,
-        "created_at": current.astimezone(timezone.utc).isoformat(),
+        "created_at": current.isoformat(),
         "operator_review_required": True,
         "external_action_performed": False,
     }
