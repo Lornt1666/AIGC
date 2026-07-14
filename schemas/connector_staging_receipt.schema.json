@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/connector_staging_receipt.schema.json",
+  "title": "AIGC Connector Staging Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id",
+    "contract_version",
+    "receipt_id",
+    "environment",
+    "exact_revision",
+    "connector_id",
+    "platform",
+    "official_api_verified",
+    "terms_review_approved",
+    "authentication_mode",
+    "least_privilege_scopes",
+    "secret_reference",
+    "secret_access_audit_observed",
+    "approved_test_destination",
+    "checks",
+    "production_account_used",
+    "raw_secret_logged",
+    "raw_secret_persisted",
+    "result",
+    "reason_codes",
+    "operator_review_required",
+    "created_at",
+    "external_action_performed"
+  ],
+  "properties": {
+    "contract_id": {"const": "AIGC-CONNECTOR-STAGING-RECEIPT-001"},
+    "contract_version": {"const": "1.0.0"},
+    "receipt_id": {"type": "string", "pattern": "^CSR-[A-F0-9]{24}$"},
+    "environment": {"const": "isolated_staging"},
+    "exact_revision": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "connector_id": {"enum": ["github", "google_drive", "gmail"]},
+    "platform": {"enum": ["GitHub", "Google Drive", "Gmail"]},
+    "official_api_verified": {"type": "boolean"},
+    "terms_review_approved": {"type": "boolean"},
+    "authentication_mode": {"enum": ["github_app", "oauth2"]},
+    "least_privilege_scopes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1, "maxLength": 300}
+    },
+    "secret_reference": {
+      "type": "string",
+      "pattern": "^gcp_secret://[a-z](?:[a-z0-9-]{4,28}[a-z0-9])/[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$"
+    },
+    "secret_access_audit_observed": {"type": "boolean"},
+    "approved_test_destination": {"type": "string", "minLength": 1, "maxLength": 500},
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "read_only_operation",
+        "dry_run_write_preparation",
+        "approval_gated_test_write",
+        "destination_allowlist",
+        "duplicate_prevention",
+        "idempotency_conflict_denial",
+        "rate_limit_behavior",
+        "credential_revocation",
+        "credential_rotation",
+        "adapter_disable",
+        "provider_outage_fail_closed",
+        "redaction_review"
+      ],
+      "properties": {
+        "read_only_operation": {"type": "boolean"},
+        "dry_run_write_preparation": {"type": "boolean"},
+        "approval_gated_test_write": {"type": "boolean"},
+        "destination_allowlist": {"type": "boolean"},
+        "duplicate_prevention": {"type": "boolean"},
+        "idempotency_conflict_denial": {"type": "boolean"},
+        "rate_limit_behavior": {"type": "boolean"},
+        "credential_revocation": {"type": "boolean"},
+        "credential_rotation": {"type": "boolean"},
+        "adapter_disable": {"type": "boolean"},
+        "provider_outage_fail_closed": {"type": "boolean"},
+        "redaction_review": {"type": "boolean"}
+      }
+    },
+    "production_account_used": {"const": false},
+    "raw_secret_logged": {"const": false},
+    "raw_secret_persisted": {"const": false},
+    "result": {"enum": ["PASS", "FAIL"]},
+    "reason_codes": {
+      "type": "array",
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]{2,99}$"}
+    },
+    "operator_review_required": {"const": true},
+    "created_at": {"type": "string", "format": "date-time"},
+    "external_action_performed": {"const": false}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"result": {"const": "PASS"}}},
+      "then": {
+        "properties": {
+          "official_api_verified": {"const": true},
+          "terms_review_approved": {"const": true},
+          "secret_access_audit_observed": {"const": true},
+          "reason_codes": {"maxItems": 0},
+          "checks": {
+            "properties": {
+              "read_only_operation": {"const": true},
+              "dry_run_write_preparation": {"const": true},
+              "approval_gated_test_write": {"const": true},
+              "destination_allowlist": {"const": true},
+              "duplicate_prevention": {"const": true},
+              "idempotency_conflict_denial": {"const": true},
+              "rate_limit_behavior": {"const": true},
+              "credential_revocation": {"const": true},
+              "credential_rotation": {"const": true},
+              "adapter_disable": {"const": true},
+              "provider_outage_fail_closed": {"const": true},
+              "redaction_review": {"const": true}
+            }
+          }
+        }
+      },
+      "else": {"properties": {"reason_codes": {"minItems": 1}}}
+    }
+  ]
+}
