@@ -16,12 +16,12 @@ This baseline fixes the accepted Google Cloud deployment topology and makes ever
 
 This deployment train is stacked above connector and Secret Manager PR `#98`.
 
-The deployment branch has been synchronized to the reviewed upstream correction head:
+The deployment branch is now rebased directly on the reviewed upstream correction head:
 
 ```text
 upstream PR: #98
 upstream head: 1b08f5e698ce69270a44b74d82a19fc041e20760
-deployment synchronization head: 64163dc9e7a850409ee083b5d7999008f6ee11e1
+rollback branch: codex/production-deployment-baseline-v1-pre-sync-rebase
 ```
 
 The synchronized boundary enforces the same Google Cloud project-ID grammar in:
