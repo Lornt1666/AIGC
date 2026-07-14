@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/review_judgment_receipt.schema.json",
+  "title": "AIGC Review Judgment Receipt v1",
+  "description": "Immutable accountable-operator judgment bound to one Review Evidence Packet and one authorization receipt. Acceptance for delivery does not perform delivery.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id",
+    "contract_version",
+    "judgment_id",
+    "packet_id",
+    "packet_digest",
+    "quest_id",
+    "quest_revision",
+    "source_state",
+    "target_state",
+    "exact_revision",
+    "identity_receipt_id",
+    "authorization_receipt_id",
+    "authorization_request_digest",
+    "reviewer_principal_id",
+    "operator_role",
+    "decision",
+    "reason",
+    "evidence_ids",
+    "decided_at",
+    "delivery_performed",
+    "state_changed",
+    "external_action_performed"
+  ],
+  "properties": {
+    "contract_id": {"const": "AIGC-REVIEW-JUDGMENT-RECEIPT-001"},
+    "contract_version": {"const": "1.0.0"},
+    "judgment_id": {"type": "string", "pattern": "^RJR-[A-F0-9]{24}$"},
+    "packet_id": {"type": "string", "pattern": "^REP-[A-F0-9]{24}$"},
+    "packet_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "quest_id": {"type": "string", "pattern": "^quest_[A-Za-z0-9_-]{6,100}$"},
+    "quest_revision": {"type": "integer", "minimum": 1},
+    "source_state": {"const": "REVIEW_REQUIRED"},
+    "target_state": {"enum": ["ACCEPTED_FOR_DELIVERY", "REWORK_REQUIRED"]},
+    "exact_revision": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "identity_receipt_id": {"type": "string", "pattern": "^IDR-[A-F0-9]{24}$"},
+    "authorization_receipt_id": {"type": "string", "minLength": 1, "maxLength": 300},
+    "authorization_request_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "reviewer_principal_id": {"type": "string", "minLength": 1, "maxLength": 160},
+    "operator_role": {"const": "ACCOUNTABLE_OPERATOR"},
+    "decision": {"enum": ["ACCEPTED_FOR_DELIVERY", "REWORK_REQUIRED"]},
+    "reason": {"type": "string", "minLength": 1, "maxLength": 8000},
+    "evidence_ids": {"type": "array", "minItems": 3, "maxItems": 1000, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 500}},
+    "decided_at": {"type": "string", "format": "date-time"},
+    "delivery_performed": {"const": false},
+    "state_changed": {"const": true},
+    "external_action_performed": {"const": false}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"decision": {"const": "ACCEPTED_FOR_DELIVERY"}}},
+      "then": {"properties": {"target_state": {"const": "ACCEPTED_FOR_DELIVERY"}}},
+      "else": {"properties": {"target_state": {"const": "REWORK_REQUIRED"}}}
+    }
+  ]
+}
