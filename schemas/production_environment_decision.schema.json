@@ -1,0 +1,260 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/production_environment_decision.schema.json",
+  "title": "AIGC Production Environment Decision v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id",
+    "contract_version",
+    "decision_status",
+    "source_issue",
+    "approved_by",
+    "cloud",
+    "runtime",
+    "database",
+    "identity",
+    "secrets",
+    "connectors",
+    "retention",
+    "budget",
+    "operations",
+    "unresolved_identifiers",
+    "authority",
+    "external_action_performed"
+  ],
+  "properties": {
+    "contract_id": {"const": "AIGC-PRODUCTION-ENVIRONMENT-DECISION-001"},
+    "contract_version": {"const": "1.0.0"},
+    "decision_status": {"const": "ACCEPTED_WITH_DEFERRED_IDENTIFIERS"},
+    "source_issue": {"const": 85},
+    "approved_by": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "name", "aliases", "accepted_at"],
+      "properties": {
+        "role": {"const": "ACCOUNTABLE_OPERATOR"},
+        "name": {"const": "Justice Gray Maciocha"},
+        "aliases": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {"enum": ["Satoshi", "Lornt"]}
+        },
+        "accepted_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "cloud": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "staging_project_id",
+        "production_project_id",
+        "billing_account_status",
+        "primary_region",
+        "recovery_region",
+        "data_residency_target"
+      ],
+      "properties": {
+        "provider": {"const": "google_cloud"},
+        "staging_project_id": {"type": "null"},
+        "production_project_id": {"type": "null"},
+        "billing_account_status": {"const": "TBD"},
+        "primary_region": {"const": "northamerica-northeast2"},
+        "recovery_region": {"const": "northamerica-northeast1"},
+        "data_residency_target": {"const": "CA"}
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "platform",
+        "container_non_root",
+        "immutable_artifact_required",
+        "ingress",
+        "tls",
+        "public_ingress_default_deny",
+        "production_domain",
+        "domain_status"
+      ],
+      "properties": {
+        "platform": {"const": "cloud_run"},
+        "container_non_root": {"const": true},
+        "immutable_artifact_required": {"const": true},
+        "ingress": {"const": "external_https_load_balancer"},
+        "tls": {"const": "managed"},
+        "public_ingress_default_deny": {"const": true},
+        "production_domain": {"type": "null"},
+        "domain_status": {"const": "TBD"}
+      }
+    },
+    "database": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "service",
+        "engine",
+        "rpo_minutes",
+        "rto_minutes",
+        "private_connectivity_required",
+        "backup_policy_status"
+      ],
+      "properties": {
+        "service": {"const": "cloud_sql"},
+        "engine": {"const": "postgresql"},
+        "rpo_minutes": {"const": 15},
+        "rto_minutes": {"const": 240},
+        "private_connectivity_required": {"const": true},
+        "backup_policy_status": {"const": "BASELINE_ACCEPTED_DETAILED_SCHEDULE_TBD"}
+      }
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "sign_in_methods",
+        "tenant_model",
+        "public_self_registration",
+        "pibc_boundary_required"
+      ],
+      "properties": {
+        "provider": {"const": "google_cloud_identity_platform"},
+        "sign_in_methods": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {"const": "google"}
+        },
+        "tenant_model": {"const": "single_accountable_tenant"},
+        "public_self_registration": {"const": false},
+        "pibc_boundary_required": {"const": true}
+      }
+    },
+    "secrets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "repository_secret_values_allowed",
+        "workload_identity_required",
+        "canada_constrained_replication_target"
+      ],
+      "properties": {
+        "provider": {"const": "google_secret_manager"},
+        "repository_secret_values_allowed": {"const": false},
+        "workload_identity_required": {"const": true},
+        "canada_constrained_replication_target": {"const": true}
+      }
+    },
+    "connectors": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "candidates", "default_deny"],
+      "properties": {
+        "enabled": {"type": "array", "maxItems": 0},
+        "candidates": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {"enum": ["github", "google_drive", "gmail"]}
+        },
+        "default_deny": {"const": true}
+      }
+    },
+    "retention": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "application_logs_online_days",
+        "identity_authorization_receipts_min_days",
+        "review_packet_policy",
+        "deployment_and_incident_receipts_min_days"
+      ],
+      "properties": {
+        "application_logs_online_days": {"const": 30},
+        "identity_authorization_receipts_min_days": {"const": 90},
+        "review_packet_policy": {"const": "PROJECT_LIFECYCLE_PLUS_ARCHIVE_POLICY_TBD"},
+        "deployment_and_incident_receipts_min_days": {"const": 365}
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["currency", "monthly_ceiling", "alert_percentages"],
+      "properties": {
+        "currency": {"const": "CAD"},
+        "monthly_ceiling": {"const": 200},
+        "alert_percentages": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "prefixItems": [{"const": 50}, {"const": 80}, {"const": 100}],
+          "items": false
+        }
+      }
+    },
+    "operations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "incident_owner",
+        "technical_escalation_contact_reference",
+        "phone_number_committed",
+        "production_change_window"
+      ],
+      "properties": {
+        "incident_owner": {"const": "Justice Gray Maciocha"},
+        "technical_escalation_contact_reference": {"const": "OUT_OF_BAND_SUPPLIED"},
+        "phone_number_committed": {"const": false},
+        "production_change_window": {"const": "EXACT_RELEASE_CANDIDATE_APPROVAL_ONLY"}
+      }
+    },
+    "unresolved_identifiers": {
+      "type": "array",
+      "minItems": 6,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "staging_project_id",
+          "production_project_id",
+          "billing_account",
+          "production_domain",
+          "dns_authority",
+          "detailed_backup_schedule",
+          "data_classification_register",
+          "secure_escalation_channel_reference"
+        ]
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_implementation_authorized",
+        "isolated_staging_preparation_authorized",
+        "billing_changes_authorized",
+        "resource_creation_authorized",
+        "secret_access_authorized",
+        "dns_changes_authorized",
+        "connector_activation_authorized",
+        "production_deployment_authorized"
+      ],
+      "properties": {
+        "contract_implementation_authorized": {"const": true},
+        "isolated_staging_preparation_authorized": {"const": true},
+        "billing_changes_authorized": {"const": false},
+        "resource_creation_authorized": {"const": false},
+        "secret_access_authorized": {"const": false},
+        "dns_changes_authorized": {"const": false},
+        "connector_activation_authorized": {"const": false},
+        "production_deployment_authorized": {"const": false}
+      }
+    },
+    "external_action_performed": {"const": false}
+  }
+}
