@@ -164,3 +164,5 @@ After project IDs, domain, technical contact, and explicit resource authority ex
 12. promote readiness only through a separate evidence PR.
 
 Production remains blocked until issue #91 produces a fresh candidate-bound release-gate `PERMIT` that remains valid at deployment-plan evaluation time.
+
+CI must preserve explicit coverage for a current permit, exact-expiry denial, future-dated evaluation denial, and an invalid authority window.
