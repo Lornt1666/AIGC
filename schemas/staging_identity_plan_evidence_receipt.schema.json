@@ -1,0 +1,24 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://aigc.local/schemas/staging_identity_plan_evidence_receipt.schema.json",
+  "title":"AIGC Staging Identity Plan Evidence Receipt v1",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["contract_id","contract_version","receipt_id","exact_revision","procurement_pack_digest","plan_authorization_receipt_id","phase","target_project_reference","plan_result","review_status","plan_artifact_digest","target_inventory_digest","iam_delta_digest","planned_resources","planned_iam_delta","authorized_origins","authorized_redirect_uris","secret_references","generated_at","reviewed_at","provider_read_performed","provider_mutation_performed","terraform_plan_performed","terraform_apply_performed","raw_secret_values_present","external_action_performed"],
+  "properties":{
+    "contract_id":{"const":"AIGC-STAGING-IDENTITY-PLAN-EVIDENCE-RECEIPT-001"},"contract_version":{"const":"1.0.0"},
+    "receipt_id":{"type":"string","pattern":"^SIPLANEV-[A-Z0-9][A-Z0-9:-]{7,199}$"},"exact_revision":{"type":"string","pattern":"^[a-f0-9]{40}$"},"procurement_pack_digest":{"type":"string","pattern":"^[a-f0-9]{64}$"},"plan_authorization_receipt_id":{"type":"string","pattern":"^SIPLAN-[A-Z0-9][A-Z0-9:-]{7,199}$"},
+    "phase":{"enum":["STATE_BACKEND_BOOTSTRAP","STAGING_IDENTITY_CONFIGURATION"]},"target_project_reference":{"$ref":"#/$defs/project_reference"},"plan_result":{"enum":["SUCCESS","FAILED"]},"review_status":{"enum":["PENDING_OPERATOR_REVIEW","ACCEPTED","REJECTED"]},
+    "plan_artifact_digest":{"type":"string","pattern":"^sha256:[a-f0-9]{64}$"},"target_inventory_digest":{"type":"string","pattern":"^[a-f0-9]{64}$"},"iam_delta_digest":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "planned_resources":{"type":"array","maxItems":200,"uniqueItems":true,"items":{"type":"string","pattern":"^[A-Za-z0-9._:/@-]{3,500}$"}},
+    "planned_iam_delta":{"type":"array","maxItems":200,"items":{"type":"object","additionalProperties":false,"required":["action","role","principal_reference","resource_reference"],"properties":{"action":{"enum":["ADD","REMOVE"]},"role":{"type":"string","pattern":"^roles/[A-Za-z0-9_.]+$"},"principal_reference":{"type":"string","pattern":"^[A-Za-z0-9._:/@-]{3,500}$"},"resource_reference":{"type":"string","pattern":"^[A-Za-z0-9._:/@-]{3,500}$"}}}},
+    "authorized_origins":{"type":"array","maxItems":20,"uniqueItems":true,"items":{"$ref":"#/$defs/origin"}},"authorized_redirect_uris":{"type":"array","maxItems":20,"uniqueItems":true,"items":{"$ref":"#/$defs/redirect"}},
+    "secret_references":{"type":"array","maxItems":20,"uniqueItems":true,"items":{"anyOf":[{"$ref":"#/$defs/session_secret_reference"},{"$ref":"#/$defs/oauth_secret_reference"}]}},
+    "generated_at":{"type":"string","format":"date-time"},"reviewed_at":{"anyOf":[{"type":"null"},{"type":"string","format":"date-time"}]},"provider_read_performed":{"type":"boolean"},"provider_mutation_performed":{"const":false},"terraform_plan_performed":{"type":"boolean"},"terraform_apply_performed":{"const":false},"raw_secret_values_present":{"const":false},"external_action_performed":{"type":"boolean"}
+  },
+  "allOf":[
+    {"if":{"required":["plan_result","review_status"],"properties":{"plan_result":{"const":"SUCCESS"},"review_status":{"const":"ACCEPTED"}}},"then":{"properties":{"planned_resources":{"minItems":1},"reviewed_at":{"type":"string","format":"date-time"},"provider_read_performed":{"const":true},"terraform_plan_performed":{"const":true},"external_action_performed":{"const":true}}}},
+    {"if":{"required":["review_status"],"properties":{"review_status":{"const":"PENDING_OPERATOR_REVIEW"}}},"then":{"properties":{"reviewed_at":{"const":null}}}}
+  ],
+  "$defs":{"project_reference":{"type":"string","pattern":"^gcp_project://[a-z][a-z0-9-]{4,28}[a-z0-9]$"},"origin":{"type":"string","pattern":"^https://[A-Za-z0-9.-]+(?::[0-9]{2,5})?$"},"redirect":{"type":"string","format":"uri","pattern":"^https://[A-Za-z0-9.-]+(?::[0-9]{2,5})?/[A-Za-z0-9._~!$&'()*+,;=:@%/-]*$"},"session_secret_reference":{"type":"string","pattern":"^gcp_secret://[a-z][a-z0-9-]{4,28}[a-z0-9]/aigc-session-pepper/[1-9][0-9]*$"},"oauth_secret_reference":{"type":"string","pattern":"^gcp_secret://[a-z][a-z0-9-]{4,28}[a-z0-9]/aigc-google-oauth-client-secret/[1-9][0-9]*$"}}
+}
