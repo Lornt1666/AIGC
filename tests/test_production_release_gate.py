@@ -144,11 +144,35 @@ def test_fully_evidenced_ready_release_can_receive_permit() -> None:
     )
 
     assert evaluation.permitted is True
+    assert evaluation.receipt["contract_version"] == "1.1.0"
     assert evaluation.receipt["result"] == "PERMIT"
     assert evaluation.receipt["reason_codes"] == []
     assert evaluation.receipt["deployment_authorized"] is True
     assert evaluation.receipt["release_candidate_digest"]
+    assert evaluation.receipt["valid_until"] == (
+        NOW + timedelta(hours=11, minutes=55)
+    ).isoformat()
     assert evaluation.receipt["external_action_performed"] is False
+
+
+def test_gate_receipt_validity_uses_earliest_authority_expiry() -> None:
+    report = ready_report()
+    value = manifest(report)
+    value["operator_approval"]["expires_at"] = (NOW + timedelta(hours=2)).isoformat()
+
+    evaluation = evaluate_release_manifest(
+        project_root=ROOT,
+        manifest=value,
+        policy=policy(),
+        readiness_report=report,
+        actual_revision=REVISION,
+        evaluated_at=NOW + timedelta(hours=1),
+    )
+
+    assert evaluation.permitted is True
+    assert evaluation.receipt["valid_until"] == (
+        NOW + timedelta(hours=2)
+    ).isoformat()
 
 
 def test_actual_repository_is_denied_even_with_complete_release_manifest(
@@ -267,4 +291,5 @@ def test_gate_receipt_can_be_written_without_deployment(tmp_path: Path) -> None:
     stored = json.loads(path.read_text(encoding="utf-8"))
 
     assert stored == evaluation.receipt
+    assert stored["valid_until"]
     assert stored["external_action_performed"] is False
