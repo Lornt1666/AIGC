@@ -31,6 +31,7 @@
       "strict_transport_security": "max-age=31536000; includeSubDomains"
     },
     "sensitive_path_prefixes": [
+      "/api/v1/security",
       "/api/v1/identity",
       "/api/v1/audit",
       "/api/v1/quests",
