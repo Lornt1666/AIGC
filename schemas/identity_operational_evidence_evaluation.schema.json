@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/identity_operational_evidence_evaluation.schema.json",
+  "title": "AIGC Identity Operational Evidence Evaluation v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id",
+    "contract_version",
+    "evaluation_id",
+    "status",
+    "exact_revision",
+    "implemented_internal",
+    "staging_evidence_accepted",
+    "readiness_review_eligible",
+    "production_complete",
+    "production_activation_authorized",
+    "project_reference",
+    "staging_receipt_id",
+    "unresolved_configuration",
+    "missing_operational_evidence",
+    "authority_blockers",
+    "reason_codes",
+    "evaluated_at",
+    "operator_review_required",
+    "external_action_performed"
+  ],
+  "properties": {
+    "contract_id": {
+      "const": "AIGC-IDENTITY-OPERATIONAL-EVIDENCE-EVALUATION-001"
+    },
+    "contract_version": {
+      "const": "1.0.0"
+    },
+    "evaluation_id": {
+      "type": "string",
+      "pattern": "^IOE-[A-F0-9]{24}$"
+    },
+    "status": {
+      "enum": [
+        "INTERNAL_ONLY",
+        "STAGING_EVIDENCE_REJECTED",
+        "STAGING_EVIDENCE_ACCEPTED_PENDING_OPERATOR_REVIEW"
+      ]
+    },
+    "exact_revision": {
+      "type": "string",
+      "pattern": "^(?:[a-f0-9]{40}|unbound)$"
+    },
+    "implemented_internal": {
+      "type": "boolean"
+    },
+    "staging_evidence_accepted": {
+      "type": "boolean"
+    },
+    "readiness_review_eligible": {
+      "type": "boolean"
+    },
+    "production_complete": {
+      "const": false
+    },
+    "production_activation_authorized": {
+      "type": "boolean"
+    },
+    "project_reference": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "pattern": "^gcp_project://[a-z][a-z0-9-]{4,28}[a-z0-9]$"
+        }
+      ]
+    },
+    "staging_receipt_id": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "pattern": "^IPR-[A-F0-9]{24}$"
+        }
+      ]
+    },
+    "unresolved_configuration": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z][A-Z0-9_]{2,99}$"
+      }
+    },
+    "missing_operational_evidence": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z][A-Z0-9_]{2,99}$"
+      }
+    },
+    "authority_blockers": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z][A-Z0-9_]{2,99}$"
+      }
+    },
+    "reason_codes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z][A-Z0-9_]{2,99}$"
+      }
+    },
+    "evaluated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "operator_review_required": {
+      "const": true
+    },
+    "external_action_performed": {
+      "const": false
+    }
+  }
+}
