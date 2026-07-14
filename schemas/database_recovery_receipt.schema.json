@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/database_recovery_receipt.schema.json",
+  "title": "AIGC Database Recovery Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id",
+    "contract_version",
+    "receipt_id",
+    "environment",
+    "exact_revision",
+    "source_backup_reference",
+    "source_backup_digest",
+    "restore_target_reference",
+    "started_at",
+    "completed_at",
+    "measured_rpo_minutes",
+    "measured_rto_minutes",
+    "integrity_checks",
+    "audit_chain_preserved",
+    "append_only_receipts_preserved",
+    "tenant_isolation_negative_passed",
+    "result",
+    "reason_codes",
+    "operator_review_required",
+    "production_data_used",
+    "external_action_performed"
+  ],
+  "properties": {
+    "contract_id": {"const": "AIGC-DATABASE-RECOVERY-RECEIPT-001"},
+    "contract_version": {"const": "1.0.0"},
+    "receipt_id": {"type": "string", "pattern": "^DBR-[A-F0-9]{24}$"},
+    "environment": {"const": "isolated_staging"},
+    "exact_revision": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "source_backup_reference": {"type": "string", "minLength": 1, "maxLength": 1000},
+    "source_backup_digest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "restore_target_reference": {"type": "string", "minLength": 1, "maxLength": 1000},
+    "started_at": {"type": "string", "format": "date-time"},
+    "completed_at": {"type": "string", "format": "date-time"},
+    "measured_rpo_minutes": {"type": "number", "minimum": 0},
+    "measured_rto_minutes": {"type": "number", "minimum": 0},
+    "integrity_checks": {
+      "type": "array",
+      "minItems": 5,
+      "uniqueItems": true,
+      "items": {"enum": [
+        "schema_migrations",
+        "record_counts",
+        "foreign_keys",
+        "receipt_digests",
+        "audit_chain",
+        "tenant_project_bindings",
+        "application_health"
+      ]}
+    },
+    "audit_chain_preserved": {"type": "boolean"},
+    "append_only_receipts_preserved": {"type": "boolean"},
+    "tenant_isolation_negative_passed": {"type": "boolean"},
+    "result": {"enum": ["PASS", "FAIL"]},
+    "reason_codes": {
+      "type": "array",
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]{2,99}$"}
+    },
+    "operator_review_required": {"const": true},
+    "production_data_used": {"const": false},
+    "external_action_performed": {"const": false}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"result": {"const": "PASS"}}},
+      "then": {
+        "properties": {
+          "reason_codes": {"maxItems": 0},
+          "audit_chain_preserved": {"const": true},
+          "append_only_receipts_preserved": {"const": true},
+          "tenant_isolation_negative_passed": {"const": true},
+          "measured_rpo_minutes": {"maximum": 15},
+          "measured_rto_minutes": {"maximum": 240}
+        }
+      },
+      "else": {"properties": {"reason_codes": {"minItems": 1}}}
+    }
+  ]
+}
