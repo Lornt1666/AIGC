@@ -12,6 +12,7 @@ from .operations import (
     write_receipt,
 )
 from .production_identity import SQLiteProviderSubjectBindingRepository
+from .provider_revocation import SQLiteProviderRevocationRepository
 from .quest_candidates import SQLiteQuestCandidateRepository
 from .quests import SQLiteQuestRepository
 from .repositories import (
@@ -31,6 +32,7 @@ __all__ = [
     "SQLiteIdentityEvidenceReceiptRepository",
     "SQLiteMigrator",
     "SQLiteProductionSessionRepository",
+    "SQLiteProviderRevocationRepository",
     "SQLiteProviderSubjectBindingRepository",
     "SQLiteQuestCandidateRepository",
     "SQLiteQuestRepository",
