@@ -11,6 +11,7 @@ from src.core.production_readiness_ledger import build_report, load_ledger
 from src.core.production_release_gate import (
     evaluate_release_manifest,
     readiness_truth_digest,
+    release_candidate_digest,
     write_gate_receipt,
 )
 
@@ -72,12 +73,11 @@ def manifest(
     *,
     exact_revision: str = REVISION,
     operator_decision: str = "APPROVED",
-    approval_receipt: str | None = "OPR-RELEASE:ABC12345",
     created_at: datetime = NOW,
     expires_at: datetime | None = None,
 ) -> dict[str, object]:
     expiry = expires_at or (created_at + timedelta(hours=12))
-    return {
+    value: dict[str, object] = {
         "contract_id": "AIGC-PRODUCTION-RELEASE-MANIFEST-001",
         "contract_version": "1.0.0",
         "release_id": "REL-TEST-0001",
@@ -92,18 +92,35 @@ def manifest(
             "immutable": True,
         },
         "evidence_receipts": evidence_receipts(),
-        "operator_decision": operator_decision,
-        "operator_approval_receipt_id": approval_receipt,
         "created_at": created_at.isoformat(),
         "expires_at": expiry.isoformat(),
         "external_action_performed": False,
     }
+    approved = operator_decision == "APPROVED"
+    value["operator_approval"] = {
+        "contract_id": "AIGC-PRODUCTION-RELEASE-OPERATOR-APPROVAL-001",
+        "contract_version": "1.0.0",
+        "receipt_id": "OPR-RELEASE:ABC12345",
+        "release_id": value["release_id"],
+        "exact_revision": exact_revision,
+        "release_candidate_digest": release_candidate_digest(value),
+        "decision": operator_decision,
+        "approved_by_role": "ACCOUNTABLE_OPERATOR",
+        "reason": "Reviewed the exact release candidate and evidence packet.",
+        "issued_at": (created_at + timedelta(minutes=5)).isoformat(),
+        "expires_at": (expiry - timedelta(minutes=5)).isoformat(),
+        "production_deployment_authorized": approved,
+        "external_action_performed": False,
+    }
+    return value
 
 
 def test_release_contracts_and_policy_are_strict() -> None:
     report = ready_report()
+    value = manifest(report)
     validate_artifact("production_release_gate_policy", policy())
-    validate_artifact("production_release_manifest", manifest(report))
+    validate_artifact("production_release_operator_approval", value["operator_approval"])
+    validate_artifact("production_release_manifest", value)
 
     injected = manifest(report)
     injected["claimed_readiness_score"] = 100
@@ -119,17 +136,18 @@ def test_fully_evidenced_ready_release_can_receive_permit() -> None:
         policy=policy(),
         readiness_report=report,
         actual_revision=REVISION,
-        evaluated_at=NOW,
+        evaluated_at=NOW + timedelta(hours=1),
     )
 
     assert evaluation.permitted is True
     assert evaluation.receipt["result"] == "PERMIT"
     assert evaluation.receipt["reason_codes"] == []
     assert evaluation.receipt["deployment_authorized"] is True
+    assert evaluation.receipt["release_candidate_digest"]
     assert evaluation.receipt["external_action_performed"] is False
 
 
-def test_actual_repository_is_denied_even_with_fabricated_release_evidence(
+def test_actual_repository_is_denied_even_with_complete_release_manifest(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setenv("GITHUB_SHA", REVISION)
@@ -143,7 +161,7 @@ def test_actual_repository_is_denied_even_with_fabricated_release_evidence(
         policy=policy(),
         readiness_report=report,
         actual_revision=REVISION,
-        evaluated_at=NOW,
+        evaluated_at=NOW + timedelta(hours=1),
     )
 
     assert evaluation.permitted is False
@@ -154,23 +172,36 @@ def test_actual_repository_is_denied_even_with_fabricated_release_evidence(
     assert evaluation.receipt["actual_blocking_gaps"]
 
 
-def test_operator_approval_is_mandatory() -> None:
+def test_operator_denial_is_mandatory_gate_failure() -> None:
     report = ready_report()
     evaluation = evaluate_release_manifest(
         project_root=ROOT,
-        manifest=manifest(
-            report,
-            operator_decision="PENDING",
-            approval_receipt=None,
-        ),
+        manifest=manifest(report, operator_decision="DENIED"),
         policy=policy(),
         readiness_report=report,
         actual_revision=REVISION,
-        evaluated_at=NOW,
+        evaluated_at=NOW + timedelta(hours=1),
     )
 
     assert evaluation.permitted is False
-    assert "OPERATOR_APPROVAL_MISSING" in evaluation.receipt["reason_codes"]
+    assert "OPERATOR_DENIED_RELEASE" in evaluation.receipt["reason_codes"]
+
+
+def test_operator_approval_is_bound_to_candidate_digest() -> None:
+    report = ready_report()
+    changed = manifest(report)
+    changed["operator_approval"]["release_candidate_digest"] = "d" * 64
+    evaluation = evaluate_release_manifest(
+        project_root=ROOT,
+        manifest=changed,
+        policy=policy(),
+        readiness_report=report,
+        actual_revision=REVISION,
+        evaluated_at=NOW + timedelta(hours=1),
+    )
+
+    assert evaluation.permitted is False
+    assert "OPERATOR_APPROVAL_CANDIDATE_MISMATCH" in evaluation.receipt["reason_codes"]
 
 
 def test_revision_and_readiness_digest_are_bound() -> None:
@@ -183,7 +214,7 @@ def test_revision_and_readiness_digest_are_bound() -> None:
         policy=policy(),
         readiness_report=report,
         actual_revision=REVISION,
-        evaluated_at=NOW,
+        evaluated_at=NOW + timedelta(hours=1),
     )
 
     assert evaluation.permitted is False
@@ -209,6 +240,7 @@ def test_expired_or_overlong_manifest_is_denied() -> None:
     assert evaluation.permitted is False
     assert "MANIFEST_EXPIRED" in evaluation.receipt["reason_codes"]
     assert "MANIFEST_TTL_EXCEEDED" in evaluation.receipt["reason_codes"]
+    assert "OPERATOR_APPROVAL_EXPIRED" in evaluation.receipt["reason_codes"]
 
 
 def test_gate_receipt_can_be_written_without_deployment(tmp_path: Path) -> None:
@@ -219,7 +251,7 @@ def test_gate_receipt_can_be_written_without_deployment(tmp_path: Path) -> None:
         policy=policy(),
         readiness_report=report,
         actual_revision=REVISION,
-        evaluated_at=NOW,
+        evaluated_at=NOW + timedelta(hours=1),
     )
     path = write_gate_receipt(
         ROOT,
