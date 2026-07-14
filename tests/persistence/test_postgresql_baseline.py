@@ -135,7 +135,7 @@ def test_policy_and_four_migration_plan_remain_internal_only() -> None:
     assert evaluation.production_deployment_authorized is False
 
 
-def test_migration_plan_preserves_required_relations_and_append_only_evidence() -> None:
+def test_migration_plan_preserves_relations_and_append_only_evidence() -> None:
     first = load_postgres_migration_plan(MIGRATION_ROOT)
     second = load_postgres_migration_plan(MIGRATION_ROOT)
 
@@ -151,6 +151,7 @@ def test_migration_plan_preserves_required_relations_and_append_only_evidence() 
         "review_evidence_packets",
         "review_judgment_receipts",
         "provider_subject_bindings",
+        "provider_subject_revocation_state",
         "production_identity_sessions",
     }
     assert set(first.append_only_relations) == {
@@ -281,7 +282,10 @@ def test_migrator_is_idempotent_locked_and_checksum_bound() -> None:
 
     first_migration = plan.migrations[0]
     connection.migration_checksums[first_migration.version] = "f" * 64
-    with pytest.raises(ProductionPersistenceConfigurationError, match="checksum mismatch"):
+    with pytest.raises(
+        ProductionPersistenceConfigurationError,
+        match="checksum mismatch",
+    ):
         migrator.apply_all()
 
 
