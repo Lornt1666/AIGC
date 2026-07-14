@@ -1,6 +1,6 @@
 {
   "ledger_id": "AIGC-PRODUCTION-READINESS-LEDGER-001",
-  "version": "2026-07-14.2",
+  "version": "2026-07-14.3",
   "mode": "evidence_backed_completion_measurement",
   "production_readiness_threshold": 90,
   "status_multipliers": {
@@ -136,8 +136,17 @@
       "name": "Platform-compliant external connectors and secret broker",
       "dimension": "integrations",
       "weight": 8,
-      "declared_status": "planned",
-      "required_evidence": [],
+      "declared_status": "implemented_internal",
+      "required_evidence": [
+        "config/production_connector_secret_broker.json",
+        "schemas/production_connector_secret_broker.schema.json",
+        "src/application/production_connectors.py",
+        "src/infrastructure/secrets/google_secret_manager.py",
+        "tests/application/test_production_connector_broker.py",
+        "tests/application/test_connector_broker_execution_unification.py",
+        "tests/infrastructure/test_google_secret_manager_resolver.py",
+        "docs/PRODUCTION_CONNECTOR_SECRET_BROKER_V1.md"
+      ],
       "blocking_for_production": true
     },
     {
@@ -157,13 +166,18 @@
       "name": "Reproducible production deployment, rollback, monitoring, and recovery",
       "dimension": "deployment_operations",
       "weight": 6,
-      "declared_status": "planned",
+      "declared_status": "implemented_internal",
       "required_evidence": [
-        "config/production_environment_decision.json",
-        "config/production_release_gate.json",
+        "config/production_deployment_baseline.json",
+        "schemas/production_deployment_baseline.schema.json",
+        "src/core/production_deployment_plan.py",
         "src/core/production_release_gate.py",
-        "docs/PRODUCTION_FINALIZATION_PROGRAM_V1.md",
-        "tests/test_production_release_gate.py"
+        "schemas/production_release_gate_receipt.schema.json",
+        "infra/terraform/gcp/guardrails.tf",
+        "infra/terraform/gcp/main.tf",
+        "tests/test_production_deployment_plan.py",
+        "tests/test_production_release_gate.py",
+        "docs/PRODUCTION_DEPLOYMENT_BASELINE_V1.md"
       ],
       "blocking_for_production": true
     }

@@ -33,6 +33,28 @@ EXPECTED_IDENTITY_EVIDENCE = {
     "migrations/postgresql/0004_production_identity_sessions.sql",
     "tests/integration/test_identity_platform_session_pipeline.py",
 }
+EXPECTED_CONNECTOR_EVIDENCE = {
+    "config/production_connector_secret_broker.json",
+    "schemas/production_connector_secret_broker.schema.json",
+    "src/application/production_connectors.py",
+    "src/infrastructure/secrets/google_secret_manager.py",
+    "tests/application/test_production_connector_broker.py",
+    "tests/application/test_connector_broker_execution_unification.py",
+    "tests/infrastructure/test_google_secret_manager_resolver.py",
+    "docs/PRODUCTION_CONNECTOR_SECRET_BROKER_V1.md",
+}
+EXPECTED_DEPLOYMENT_EVIDENCE = {
+    "config/production_deployment_baseline.json",
+    "schemas/production_deployment_baseline.schema.json",
+    "src/core/production_deployment_plan.py",
+    "src/core/production_release_gate.py",
+    "schemas/production_release_gate_receipt.schema.json",
+    "infra/terraform/gcp/guardrails.tf",
+    "infra/terraform/gcp/main.tf",
+    "tests/test_production_deployment_plan.py",
+    "tests/test_production_release_gate.py",
+    "docs/PRODUCTION_DEPLOYMENT_BASELINE_V1.md",
+}
 
 
 def capability_map(report: dict[str, object]) -> dict[str, dict[str, object]]:
@@ -42,6 +64,14 @@ def capability_map(report: dict[str, object]) -> dict[str, dict[str, object]]:
     }
 
 
+def ledger_capability(ledger: dict[str, object], capability_id: str) -> dict[str, object]:
+    return next(
+        item
+        for item in ledger["capabilities"]  # type: ignore[index]
+        if item["capability_id"] == capability_id
+    )
+
+
 def test_production_readiness_report_is_evidence_backed(tmp_path: Path) -> None:
     ledger = load_ledger(PROJECT_ROOT / "config" / "production_readiness_ledger.json")
     report = build_report(PROJECT_ROOT, ledger)
@@ -49,14 +79,14 @@ def test_production_readiness_report_is_evidence_backed(tmp_path: Path) -> None:
     assert report["external_action_performed"] is False
     assert report["operator_review_required"] is True
     assert report["production_ready"] is False
-    assert report["overall_score"] == pytest.approx(66.8)
+    assert report["overall_score"] == pytest.approx(74.5)
     assert report["overall_score"] < report["production_readiness_threshold"]
     assert report["evidence_model"] == "structural_repository_evidence_v2"
     assert report["evidence_strength"] == "structural_not_operational_proof"
     assert report["source_revision"]
     assert report["governance_summary"]["operational_proof_claimed"] is False
     assert set(report["blocking_gaps"]) == EXPECTED_BLOCKING_GAPS
-    assert report["highest_impact_next_step"]["capability_id"] == "approved_external_connectors"
+    assert report["highest_impact_next_step"]["capability_id"] == "production_identity_access"
 
     result = run_production_readiness_ledger(PROJECT_ROOT, artifact_root=tmp_path)
     assert Path(result["report_path"]).exists()
@@ -73,7 +103,8 @@ def test_merged_capabilities_receive_only_supported_structural_credit() -> None:
         "security_privacy_wiring": "implemented_internal",
         "transactional_persistence": "implemented_internal",
         "production_identity_access": "partial",
-        "production_deployment": "planned",
+        "approved_external_connectors": "implemented_internal",
+        "production_deployment": "implemented_internal",
     }
     for capability_id, expected_status in expected_statuses.items():
         result = capabilities[capability_id]
@@ -84,16 +115,13 @@ def test_merged_capabilities_receive_only_supported_structural_credit() -> None:
     assert report["dimension_scores"]["work_acquisition"] == pytest.approx(75.0)
     assert report["dimension_scores"]["data"] == pytest.approx(75.0)
     assert report["dimension_scores"]["identity_access"] == pytest.approx(50.0)
-    assert report["dimension_scores"]["deployment_operations"] == pytest.approx(20.0)
+    assert report["dimension_scores"]["integrations"] == pytest.approx(75.0)
+    assert report["dimension_scores"]["deployment_operations"] == pytest.approx(75.0)
 
 
 def test_identity_partial_credit_is_bound_to_merged_identity_platform_baseline() -> None:
     ledger = load_ledger(PROJECT_ROOT / "config" / "production_readiness_ledger.json")
-    identity = next(
-        item
-        for item in ledger["capabilities"]
-        if item["capability_id"] == "production_identity_access"
-    )
+    identity = ledger_capability(ledger, "production_identity_access")
     assert identity["declared_status"] == "partial"
     assert set(identity["required_evidence"]) == EXPECTED_IDENTITY_EVIDENCE
 
@@ -103,6 +131,44 @@ def test_identity_partial_credit_is_bound_to_merged_identity_platform_baseline()
     assert result["evidence_complete"] is True
     assert result["blocking_for_production"] is True
     assert result["readiness_percent"] == pytest.approx(50.0)
+
+
+def test_connector_internal_credit_is_bound_to_disabled_default_deny_baseline() -> None:
+    ledger = load_ledger(PROJECT_ROOT / "config" / "production_readiness_ledger.json")
+    connector = ledger_capability(ledger, "approved_external_connectors")
+    assert connector["declared_status"] == "implemented_internal"
+    assert set(connector["required_evidence"]) == EXPECTED_CONNECTOR_EVIDENCE
+
+    report = build_report(PROJECT_ROOT, ledger)
+    result = capability_map(report)["approved_external_connectors"]
+    assert result["effective_status"] == "implemented_internal"
+    assert result["evidence_complete"] is True
+    assert result["blocking_for_production"] is True
+    assert result["readiness_percent"] == pytest.approx(75.0)
+
+
+def test_deployment_internal_credit_is_bound_to_no_resource_baseline() -> None:
+    ledger = load_ledger(PROJECT_ROOT / "config" / "production_readiness_ledger.json")
+    deployment = ledger_capability(ledger, "production_deployment")
+    assert deployment["declared_status"] == "implemented_internal"
+    assert set(deployment["required_evidence"]) == EXPECTED_DEPLOYMENT_EVIDENCE
+
+    report = build_report(PROJECT_ROOT, ledger)
+    result = capability_map(report)["production_deployment"]
+    assert result["effective_status"] == "implemented_internal"
+    assert result["evidence_complete"] is True
+    assert result["blocking_for_production"] is True
+    assert result["readiness_percent"] == pytest.approx(75.0)
+
+
+def test_status_distribution_reflects_merged_internal_foundations() -> None:
+    ledger = load_ledger(PROJECT_ROOT / "config" / "production_readiness_ledger.json")
+    report = build_report(PROJECT_ROOT, ledger)
+    assert report["status_counts"] == {
+        "complete": 1,
+        "implemented_internal": 8,
+        "partial": 2,
+    }
 
 
 def test_missing_evidence_downgrades_completion_claim(tmp_path: Path) -> None:
