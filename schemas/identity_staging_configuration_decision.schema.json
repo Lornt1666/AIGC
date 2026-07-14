@@ -1,0 +1,383 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/identity_staging_configuration_decision.schema.json",
+  "title": "AIGC Isolated Staging Identity Configuration Decision v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id",
+    "contract_version",
+    "decision_status",
+    "decision_basis_revision",
+    "environment",
+    "provider",
+    "workload_identity",
+    "session_pepper",
+    "test_subject",
+    "tenant_boundary",
+    "evidence_binding",
+    "unresolved_identifiers",
+    "authority",
+    "operator_review_required",
+    "automatic_apply_allowed",
+    "external_action_performed"
+  ],
+  "properties": {
+    "contract_id": {
+      "const": "AIGC-IDENTITY-STAGING-CONFIGURATION-DECISION-001"
+    },
+    "contract_version": {
+      "const": "1.0.0"
+    },
+    "decision_status": {
+      "enum": [
+        "DEFERRED_IDENTIFIERS",
+        "READY_FOR_OPERATOR_REVIEW"
+      ]
+    },
+    "decision_basis_revision": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}$"
+    },
+    "environment": {
+      "const": "isolated_staging"
+    },
+    "provider": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "service",
+        "project_reference",
+        "accepted_sign_in_providers",
+        "public_self_registration",
+        "authorized_origins",
+        "authorized_redirect_uris",
+        "wildcard_origins_allowed"
+      ],
+      "properties": {
+        "service": {
+          "const": "google_cloud_identity_platform"
+        },
+        "project_reference": {
+          "anyOf": [
+            {"type": "null"},
+            {
+              "type": "string",
+              "pattern": "^gcp_project://[a-z][a-z0-9-]{4,28}[a-z0-9]$"
+            }
+          ]
+        },
+        "accepted_sign_in_providers": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "uniqueItems": true,
+          "items": {"const": "google.com"}
+        },
+        "public_self_registration": {
+          "const": false
+        },
+        "authorized_origins": {
+          "type": "array",
+          "maxItems": 20,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^https://[A-Za-z0-9.-]+(?::[0-9]{2,5})?$"
+          }
+        },
+        "authorized_redirect_uris": {
+          "type": "array",
+          "maxItems": 20,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://[A-Za-z0-9.-]+(?::[0-9]{2,5})?/[A-Za-z0-9._~!$&'()*+,;=:@%/-]*$"
+          }
+        },
+        "wildcard_origins_allowed": {
+          "const": false
+        }
+      }
+    },
+    "workload_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "federation_source",
+        "service_account_reference",
+        "repository_allowlist",
+        "long_lived_key_allowed",
+        "service_account_key_export_allowed",
+        "minimum_privilege_required"
+      ],
+      "properties": {
+        "federation_source": {
+          "const": "github_oidc"
+        },
+        "service_account_reference": {
+          "anyOf": [
+            {"type": "null"},
+            {
+              "type": "string",
+              "pattern": "^gcp_service_account://[a-z][a-z0-9-]{4,28}[a-z0-9]/[A-Za-z0-9._-]{6,100}@[a-z][a-z0-9-]{4,28}[a-z0-9]\\.iam\\.gserviceaccount\\.com$"
+            }
+          ]
+        },
+        "repository_allowlist": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+          }
+        },
+        "long_lived_key_allowed": {
+          "const": false
+        },
+        "service_account_key_export_allowed": {
+          "const": false
+        },
+        "minimum_privilege_required": {
+          "const": true
+        }
+      }
+    },
+    "session_pepper": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "secret_reference",
+        "immutable_numeric_version_required",
+        "raw_value_repository_allowed",
+        "raw_value_receipt_allowed",
+        "rotation_before_staging_required"
+      ],
+      "properties": {
+        "secret_reference": {
+          "anyOf": [
+            {"type": "null"},
+            {
+              "type": "string",
+              "pattern": "^gcp_secret://[a-z][a-z0-9-]{4,28}[a-z0-9]/aigc-session-pepper/[1-9][0-9]*$"
+            }
+          ]
+        },
+        "immutable_numeric_version_required": {
+          "const": true
+        },
+        "raw_value_repository_allowed": {
+          "const": false
+        },
+        "raw_value_receipt_allowed": {
+          "const": false
+        },
+        "rotation_before_staging_required": {
+          "const": true
+        }
+      }
+    },
+    "test_subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject_reference",
+        "operator_controlled",
+        "production_user_allowed",
+        "public_registration_allowed",
+        "maximum_subjects",
+        "profile_data_persistence_allowed",
+        "email_in_receipts_allowed"
+      ],
+      "properties": {
+        "subject_reference": {
+          "anyOf": [
+            {"type": "null"},
+            {
+              "type": "string",
+              "pattern": "^staging_subject://[A-Za-z0-9._:-]{4,200}$"
+            }
+          ]
+        },
+        "operator_controlled": {
+          "const": true
+        },
+        "production_user_allowed": {
+          "const": false
+        },
+        "public_registration_allowed": {
+          "const": false
+        },
+        "maximum_subjects": {
+          "const": 1
+        },
+        "profile_data_persistence_allowed": {
+          "const": false
+        },
+        "email_in_receipts_allowed": {
+          "const": false
+        }
+      }
+    },
+    "tenant_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model",
+        "aigc_tenant_id",
+        "cross_tenant_default_deny",
+        "cross_project_default_deny",
+        "public_tenant_discovery"
+      ],
+      "properties": {
+        "model": {
+          "const": "single_accountable_tenant"
+        },
+        "aigc_tenant_id": {
+          "const": "tenant-primary"
+        },
+        "cross_tenant_default_deny": {
+          "const": true
+        },
+        "cross_project_default_deny": {
+          "const": true
+        },
+        "public_tenant_discovery": {
+          "const": false
+        }
+      }
+    },
+    "evidence_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operational_evidence_gate_path",
+        "staging_receipt_schema_path",
+        "exact_revision_required",
+        "exact_project_required",
+        "operator_disposition_required"
+      ],
+      "properties": {
+        "operational_evidence_gate_path": {
+          "const": "src/core/identity_operational_evidence.py"
+        },
+        "staging_receipt_schema_path": {
+          "const": "schemas/identity_platform_staging_receipt.schema.json"
+        },
+        "exact_revision_required": {
+          "const": true
+        },
+        "exact_project_required": {
+          "const": true
+        },
+        "operator_disposition_required": {
+          "const": true
+        }
+      }
+    },
+    "unresolved_identifiers": {
+      "type": "array",
+      "maxItems": 20,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "staging_project_reference",
+          "workload_identity_service_account_reference",
+          "session_pepper_secret_reference",
+          "operator_controlled_test_subject_reference",
+          "authorized_origins_and_redirect_uris"
+        ]
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_implementation_authorized",
+        "offline_validation_authorized",
+        "staging_configuration_review_authorized",
+        "identity_platform_configuration_authorized",
+        "workload_identity_creation_authorized",
+        "session_pepper_creation_authorized",
+        "session_pepper_access_authorized",
+        "test_subject_onboarding_authorized",
+        "staging_sign_in_authorized",
+        "production_identity_activation_authorized",
+        "production_deployment_authorized"
+      ],
+      "properties": {
+        "contract_implementation_authorized": {"const": true},
+        "offline_validation_authorized": {"const": true},
+        "staging_configuration_review_authorized": {"const": false},
+        "identity_platform_configuration_authorized": {"const": false},
+        "workload_identity_creation_authorized": {"const": false},
+        "session_pepper_creation_authorized": {"const": false},
+        "session_pepper_access_authorized": {"const": false},
+        "test_subject_onboarding_authorized": {"const": false},
+        "staging_sign_in_authorized": {"const": false},
+        "production_identity_activation_authorized": {"const": false},
+        "production_deployment_authorized": {"const": false}
+      }
+    },
+    "operator_review_required": {
+      "const": true
+    },
+    "automatic_apply_allowed": {
+      "const": false
+    },
+    "external_action_performed": {
+      "const": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "decision_status": {"const": "DEFERRED_IDENTIFIERS"}
+        }
+      },
+      "then": {
+        "properties": {
+          "unresolved_identifiers": {"minItems": 1}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision_status": {"const": "READY_FOR_OPERATOR_REVIEW"}
+        }
+      },
+      "then": {
+        "properties": {
+          "provider": {
+            "properties": {
+              "project_reference": {"type": "string"},
+              "authorized_origins": {"minItems": 1},
+              "authorized_redirect_uris": {"minItems": 1}
+            }
+          },
+          "workload_identity": {
+            "properties": {
+              "service_account_reference": {"type": "string"}
+            }
+          },
+          "session_pepper": {
+            "properties": {
+              "secret_reference": {"type": "string"}
+            }
+          },
+          "test_subject": {
+            "properties": {
+              "subject_reference": {"type": "string"}
+            }
+          },
+          "unresolved_identifiers": {"maxItems": 0}
+        }
+      }
+    }
+  ]
+}
