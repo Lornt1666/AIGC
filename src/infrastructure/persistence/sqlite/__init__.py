@@ -15,6 +15,7 @@ from .repositories import (
     SQLiteAuthorizationReceiptRepository,
     SQLiteRecordRepository,
 )
+from .review_evidence import SQLiteReviewEvidenceRepository
 
 __all__ = [
     "BackupReceipt",
@@ -28,6 +29,7 @@ __all__ = [
     "SQLiteQuestCandidateRepository",
     "SQLiteQuestRepository",
     "SQLiteRecordRepository",
+    "SQLiteReviewEvidenceRepository",
     "check_integrity",
     "create_backup",
     "write_receipt",
