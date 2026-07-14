@@ -66,7 +66,7 @@ def test_reference_parser_is_strict() -> None:
             parse_secret_reference(value)
 
 
-def test_unauthorized_placeholder_and_cross_project_access_fail_before_client() -> None:
+def test_unauthorized_placeholder_cross_project_and_symbolic_version_fail_before_client() -> None:
     client = FakeClient()
 
     unauthorized = GoogleSecretManagerResolver(
@@ -84,6 +84,11 @@ def test_unauthorized_placeholder_and_cross_project_access_fail_before_client() 
         access_authorized=True,
         client=client,
     )
+    symbolic_version = GoogleSecretManagerResolver(
+        expected_project_id="approved-project",
+        access_authorized=True,
+        client=client,
+    )
 
     with pytest.raises(SecretManagerPolicyError, match="not authorized"):
         unauthorized.access(
@@ -96,6 +101,10 @@ def test_unauthorized_placeholder_and_cross_project_access_fail_before_client() 
     with pytest.raises(SecretManagerPolicyError, match="not allowlisted"):
         cross_project.access(
             "gcp_secret://other-project/aigc-github-app/latest"
+        )
+    with pytest.raises(SecretManagerPolicyError, match="immutable numeric version"):
+        symbolic_version.access(
+            "gcp_secret://approved-project/aigc-github-app/latest"
         )
 
     assert client.requests == []
@@ -115,7 +124,9 @@ def test_authorized_fake_access_returns_redacted_receipt_and_zeroizable_material
     material = resolved.bytes()
     receipt = resolved.receipt.to_dict()
 
-    assert material == b"offline-secret-material"
+    assert isinstance(material, memoryview)
+    assert material.readonly is True
+    assert material.tobytes() == b"offline-secret-material"
     assert receipt["reference"] == (
         "gcp_secret://approved-project/aigc-github-app/1"
     )
@@ -132,6 +143,8 @@ def test_authorized_fake_access_returns_redacted_receipt_and_zeroizable_material
         }
     ]
 
+    material_length = len(material)
     resolved.close()
+    assert material.tobytes() == b"\x00" * material_length
     with pytest.raises(SecretManagerPolicyError, match="closed"):
         resolved.bytes()
