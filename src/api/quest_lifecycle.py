@@ -7,6 +7,7 @@ from typing import Any, Literal
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, ConfigDict, Field
 
+from src.api.review_evidence import register_review_evidence_routes
 from src.domain.quests import (
     QuestConflict,
     QuestLifecycleState,
@@ -402,4 +403,5 @@ def build_quest_lifecycle_router(
             "external_action_performed": False,
         }
 
+    register_review_evidence_routes(router, container)
     return router
