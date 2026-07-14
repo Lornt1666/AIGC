@@ -31,10 +31,15 @@ def prepared(tmp_path: Path) -> SQLiteConnectionFactory:
 def test_migration_ledger_and_foreign_keys(tmp_path: Path) -> None:
     factory = prepared(tmp_path)
     second = SQLiteMigrator(factory, MIGRATIONS).apply_all()
-    assert second and second[0].applied is False
+    assert second and all(result.applied is False for result in second)
     with factory.connect() as connection:
         assert connection.execute("PRAGMA foreign_keys").fetchone()[0] == 1
-        assert connection.execute("SELECT COUNT(*) FROM schema_migrations").fetchone()[0] == 1
+        assert (
+            connection.execute(
+                "SELECT COUNT(*) FROM schema_migrations"
+            ).fetchone()[0]
+            == len(second)
+        )
 
 
 def test_restart_persistence_and_optimistic_revision(tmp_path: Path) -> None:
