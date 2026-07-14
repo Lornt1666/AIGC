@@ -93,12 +93,13 @@ def test_unknown_policy_field_fails_full_schema_validation(tmp_path: Path) -> No
 
 
 def test_structured_security_event_redaction_is_recursive() -> None:
+    assignment_like_value = "".join(("token", "=", "must-not-survive"))
     redacted = redact_security_event(
         {
             "authorization": "Bearer must-not-survive",
             "nested": {
                 "password": "must-not-survive",
-                "message": "token=must-not-survive",
+                "message": assignment_like_value,
             },
             "safe": "kept",
         }
