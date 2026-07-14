@@ -110,6 +110,8 @@ class ConnectorBaselineEvaluation:
 
 
 class MemoryConnectorIdempotencyStore:
+    """Process-local test baseline; production writes require durable storage."""
+
     def __init__(self) -> None:
         self._records: dict[str, str] = {}
 
@@ -197,7 +199,9 @@ def load_connector_policy(
     return policy
 
 
-def definitions_from_policy(policy: Mapping[str, Any]) -> dict[str, ConnectorDefinition]:
+def definitions_from_policy(
+    policy: Mapping[str, Any],
+) -> dict[str, ConnectorDefinition]:
     definitions: dict[str, ConnectorDefinition] = {}
     for raw in policy["connectors"]:
         connector = dict(raw)
@@ -230,7 +234,9 @@ def definitions_from_policy(policy: Mapping[str, Any]) -> dict[str, ConnectorDef
     return definitions
 
 
-def evaluate_connector_policy(policy: Mapping[str, Any]) -> ConnectorBaselineEvaluation:
+def evaluate_connector_policy(
+    policy: Mapping[str, Any],
+) -> ConnectorBaselineEvaluation:
     definitions = definitions_from_policy(policy)
     authority = dict(policy["authority"])
     evidence = dict(policy["operational_evidence"])
@@ -275,6 +281,14 @@ def evaluate_connector_policy(policy: Mapping[str, Any]) -> ConnectorBaselineEva
 
 
 class ProductionConnectorBroker:
+    """Canonical fail-closed production connector execution boundary.
+
+    The broker completes every local policy, approval, adapter, and idempotency
+    precondition before secret access. For write operations, a failed adapter call
+    is conservatively recorded as a possible external action only after the
+    adapter was actually invoked.
+    """
+
     def __init__(
         self,
         *,
@@ -385,6 +399,10 @@ class ProductionConnectorBroker:
                 except ProductionConnectorPolicyError:
                     reasons.append("ACTION_APPROVAL_INVALID")
 
+        adapter = self.adapters.get(definition.connector_id)
+        if adapter is None:
+            reasons.append("CONNECTOR_ADAPTER_MISSING")
+
         if reasons:
             return self._receipt(
                 prepared,
@@ -428,25 +446,13 @@ class ProductionConnectorBroker:
                 external_action_performed=False,
             )
 
-        adapter = self.adapters.get(definition.connector_id)
-        if adapter is None:
-            return self._receipt(
-                prepared,
-                result="DENY",
-                reason_codes=("CONNECTOR_ADAPTER_MISSING",),
-                approval_id=approval_id,
-                secret_access_receipt=None,
-                adapter_result_digest=None,
-                now=current,
-                external_action_performed=False,
-            )
-
         resolved = None
         secret_receipt: dict[str, object] | None = None
-        external_write = operation.mode == "write"
+        adapter_invoked = False
         try:
             resolved = self.secret_resolver.access(definition.secret_reference)
             secret_receipt = resolved.receipt.to_dict()
+            adapter_invoked = True
             adapter_result = adapter.execute(
                 operation_id=operation.operation_id,
                 destination=str(request["destination"]),
@@ -463,7 +469,9 @@ class ProductionConnectorBroker:
                 secret_access_receipt=secret_receipt,
                 adapter_result_digest=None,
                 now=current,
-                external_action_performed=external_write,
+                external_action_performed=(
+                    adapter_invoked and operation.mode == "write"
+                ),
             )
         finally:
             if resolved is not None:
@@ -477,7 +485,7 @@ class ProductionConnectorBroker:
             secret_access_receipt=secret_receipt,
             adapter_result_digest=adapter_result_digest,
             now=current,
-            external_action_performed=external_write,
+            external_action_performed=operation.mode == "write",
         )
 
     @staticmethod
