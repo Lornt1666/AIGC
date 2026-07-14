@@ -1,0 +1,91 @@
+{
+  "contract_id": "AIGC-PRODUCTION-PERSISTENCE-001",
+  "contract_version": "1.0.0",
+  "status": "IMPLEMENTED_INTERNAL_PENDING_STAGING_EVIDENCE",
+  "environment_decision_path": "config/production_environment_decision.json",
+  "engine": {
+    "service": "cloud_sql",
+    "database": "postgresql",
+    "driver": "psycopg3",
+    "primary_region": "northamerica-northeast2",
+    "recovery_region": "northamerica-northeast1"
+  },
+  "connection": {
+    "dsn_reference": "gcp_secret://TBD_PROJECT/aigc-postgres-dsn",
+    "raw_dsn_in_repository": false,
+    "pool_min_size": 1,
+    "pool_max_size": 10,
+    "pool_timeout_seconds": 30,
+    "connect_timeout_seconds": 10,
+    "statement_timeout_ms": 30000,
+    "lock_timeout_ms": 5000,
+    "application_name": "aigc-production",
+    "ssl_mode": "verify-full"
+  },
+  "transactions": {
+    "default_isolation": "READ COMMITTED",
+    "governed_transition_isolation": "SERIALIZABLE",
+    "max_attempts": 4,
+    "base_backoff_ms": 50,
+    "max_backoff_ms": 1000,
+    "retryable_sqlstates": [
+      "40001",
+      "40P01",
+      "08000",
+      "08003",
+      "08006",
+      "08001",
+      "57P01"
+    ]
+  },
+  "migrations": {
+    "root": "migrations/postgresql",
+    "ledger_table": "schema_migrations",
+    "checksum_required": true,
+    "advisory_lock_required": true,
+    "forward_only": true,
+    "transaction_per_migration": true
+  },
+  "tenant_isolation": {
+    "tenant_context_required": true,
+    "project_context_required": true,
+    "database_rls_status": "ADAPTER_AND_STAGING_EVIDENCE_REQUIRED",
+    "cross_tenant_default_deny": true
+  },
+  "backup_recovery": {
+    "rpo_minutes": 15,
+    "rto_minutes": 240,
+    "point_in_time_recovery_required": true,
+    "encrypted_backups_required": true,
+    "restore_to_isolated_environment_required": true,
+    "receipt_integrity_required": true,
+    "detailed_schedule_status": "TBD_BEFORE_RESOURCE_CREATION"
+  },
+  "compatibility": {
+    "sqlite_local_mode_retained": true,
+    "shared_domain_contracts_required": true,
+    "postgres_repository_adapter_status": "CONNECTION_AND_MIGRATION_BASELINE_ONLY"
+  },
+  "operational_evidence": {
+    "cloud_sql_instance_observed": false,
+    "migration_lock_observed": false,
+    "prior_schema_upgrade_passed": false,
+    "concurrent_transition_passed": false,
+    "connection_loss_retry_passed": false,
+    "backup_integrity_passed": false,
+    "isolated_restore_passed": false,
+    "rpo_measured_minutes": null,
+    "rto_measured_minutes": null,
+    "cross_tenant_negative_passed": false
+  },
+  "authority": {
+    "adapter_implementation_authorized": true,
+    "migration_definition_authorized": true,
+    "local_simulation_authorized": true,
+    "cloud_sql_resource_creation_authorized": false,
+    "secret_access_authorized": false,
+    "data_migration_authorized": false,
+    "production_deployment_authorized": false
+  },
+  "external_action_performed": false
+}
