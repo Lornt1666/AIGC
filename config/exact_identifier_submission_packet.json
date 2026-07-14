@@ -1,9 +1,29 @@
 {
   "contract_id": "AIGC-EXACT-IDENTIFIER-SUBMISSION-PACKET-001",
-  "contract_version": "1.0.0",
-  "packet_id": "EIP-000000000000000000000000",
-  "status": "AWAITING_IDENTIFIERS",
-  "authorization_basis_revision": "f5a264de374fe18b1db0090acaa8935ac55bb975",
+  "contract_version": "1.1.0",
+  "artifact_kind": "TEMPLATE",
+  "template_id": "EIPT-EXACT-IDENTIFIER-V1-1",
+  "packet_id": null,
+  "staging_status": "AWAITING_IDENTIFIERS",
+  "production_status": "AWAITING_IDENTIFIERS",
+  "lifecycle": {
+    "created_at": null,
+    "expires_at": null,
+    "supersedes_packet_id": null,
+    "revoked": false,
+    "revoked_at": null,
+    "revocation_reason": null,
+    "staging_consumption": {
+      "status": "NOT_APPLICABLE",
+      "consumed_at": null,
+      "consumed_by_receipt_id": null
+    },
+    "production_consumption": {
+      "status": "NOT_APPLICABLE",
+      "consumed_at": null,
+      "consumed_by_receipt_id": null
+    }
+  },
   "staging_identity": {
     "project_reference": null,
     "workload_identity_service_account_reference": null,
@@ -24,12 +44,14 @@
     "remote_state_reference": null,
     "production_release_gate_receipt_id": null
   },
-  "unresolved_identifiers": [
+  "unresolved_staging_identifiers": [
     "staging_project_reference",
     "staging_workload_identity_service_account_reference",
     "staging_session_pepper_secret_reference",
     "staging_test_subject_reference",
-    "staging_authorized_origins_and_redirect_uris",
+    "staging_authorized_origins_and_redirect_uris"
+  ],
+  "unresolved_production_identifiers": [
     "production_project_reference",
     "production_deployment_workload_identity_reference",
     "production_release_identifiers",
