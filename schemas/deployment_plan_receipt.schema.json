@@ -1,0 +1,26 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://aigc.local/schemas/deployment_plan_receipt.schema.json",
+  "title":"AIGC Deployment Plan Receipt v1",
+  "type":"object","additionalProperties":false,
+  "required":["contract_id","contract_version","receipt_id","environment","exact_revision","result","reason_codes","resource_creation_effective","release_gate_receipt_id","image_digest","project_id","production_domain","terraform_fingerprint","created_at","operator_review_required","external_action_performed"],
+  "properties":{
+    "contract_id":{"const":"AIGC-DEPLOYMENT-PLAN-RECEIPT-001"},
+    "contract_version":{"const":"1.0.0"},
+    "receipt_id":{"type":"string","pattern":"^DPR-[A-F0-9]{24}$"},
+    "environment":{"enum":["staging","production"]},
+    "exact_revision":{"type":"string","minLength":1,"maxLength":80},
+    "result":{"enum":["PLAN_ELIGIBLE","DENY"]},
+    "reason_codes":{"type":"array","uniqueItems":true,"maxItems":100,"items":{"type":"string","pattern":"^[A-Z][A-Z0-9_]{2,99}$"}},
+    "resource_creation_effective":{"const":false},
+    "release_gate_receipt_id":{"type":["string","null"],"maxLength":100},
+    "image_digest":{"type":["string","null"],"maxLength":100},
+    "project_id":{"type":["string","null"],"maxLength":100},
+    "production_domain":{"type":["string","null"],"maxLength":300},
+    "terraform_fingerprint":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "created_at":{"type":"string","format":"date-time"},
+    "operator_review_required":{"const":true},
+    "external_action_performed":{"const":false}
+  },
+  "allOf":[{"if":{"properties":{"result":{"const":"PLAN_ELIGIBLE"}}},"then":{"properties":{"reason_codes":{"maxItems":0}}},"else":{"properties":{"reason_codes":{"minItems":1}}}}]
+}
