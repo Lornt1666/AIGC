@@ -41,6 +41,7 @@ def test_security_baseline_is_implemented_internal_not_production_complete() -> 
         "data_classification_register",
         "deletion_export_policy",
         "secret_rotation_procedure",
+        "csp_inline_script_refactor",
     }
     assert evaluation.enabled_production_connectors == ()
     assert evaluation.external_action_performed is False
