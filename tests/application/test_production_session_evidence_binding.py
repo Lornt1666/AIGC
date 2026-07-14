@@ -114,12 +114,18 @@ def test_idle_renewal_never_exceeds_absolute_expiry(tmp_path: Path) -> None:
         binding=binding(),
         now=NOW,
     )
+    first_renewal = current_service.authenticate(
+        issued.session_credential,
+        now=NOW + timedelta(minutes=25),
+    )
     authenticated = current_service.authenticate(
         issued.session_credential,
-        now=NOW + timedelta(minutes=45),
+        now=NOW + timedelta(minutes=50),
     )
 
+    assert first_renewal.idle_expires_at == NOW + timedelta(minutes=55)
     assert authenticated.idle_expires_at == issued.record.absolute_expires_at
+    assert authenticated.revision == 3
 
 
 def test_expired_future_wrong_provider_and_wrong_subject_evidence_is_rejected(
