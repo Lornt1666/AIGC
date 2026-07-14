@@ -10,9 +10,12 @@ from src.application import (
     IdentityBoundWorkAcceptanceHandler,
     IdentityBoundaryService,
     LocalOperatorIdentityPreflightService,
+    LocalReviewIdentityPreflightService,
     OpportunityScoutApplicationService,
     QuestApplicationService,
     QuestCandidateApplicationService,
+    ReviewAuthorizationBridge,
+    ReviewEvidencePacketService,
 )
 from src.infrastructure.identity import LocalDevelopmentIdentityAdapter
 from src.infrastructure.persistence.sqlite import (
@@ -23,6 +26,7 @@ from src.infrastructure.persistence.sqlite import (
     SQLiteMigrator,
     SQLiteQuestCandidateRepository,
     SQLiteQuestRepository,
+    SQLiteReviewEvidenceRepository,
 )
 
 
@@ -41,6 +45,10 @@ IDENTITY_CONTEXT_SCHEMA = ROOT / "schemas" / "identity_boundary.schema.json"
 IDENTITY_RECEIPT_SCHEMA = (
     ROOT / "schemas" / "identity_evidence_receipt.schema.json"
 )
+REVIEW_PACKET_SCHEMA = ROOT / "schemas" / "review_evidence_packet.schema.json"
+REVIEW_JUDGMENT_SCHEMA = (
+    ROOT / "schemas" / "review_judgment_receipt.schema.json"
+)
 
 
 @dataclass(frozen=True)
@@ -48,8 +56,11 @@ class ApplicationContainer:
     database_path: Path
     identity_boundary_service: IdentityBoundaryService
     local_identity_preflight_service: LocalOperatorIdentityPreflightService
+    local_review_identity_preflight_service: LocalReviewIdentityPreflightService
     identity_authorization_bridge: IdentityAuthorizationBridge
     identity_bound_work_acceptance_handler: IdentityBoundWorkAcceptanceHandler
+    review_authorization_bridge: ReviewAuthorizationBridge
+    review_evidence_service: ReviewEvidencePacketService
     authorization_service: AuthorizationApplicationService
     opportunity_scout_service: OpportunityScoutApplicationService
     quest_candidate_service: QuestCandidateApplicationService
@@ -77,6 +88,7 @@ def build_container(
     identity_receipt_repository = SQLiteIdentityEvidenceReceiptRepository(
         factory
     )
+    review_repository = SQLiteReviewEvidenceRepository(factory)
     audit_repository = SQLiteAuditEventRepository(factory)
     candidate_repository = SQLiteQuestCandidateRepository(factory)
     quest_repository = SQLiteQuestRepository(factory)
@@ -115,22 +127,49 @@ def build_container(
         quest_service=quest_service,
         identity_fixture_path=LOCAL_IDENTITY_FIXTURE,
     )
+    review_authorization_bridge = ReviewAuthorizationBridge(
+        identity_receipt_repository=identity_receipt_repository,
+        authorization_service=authorization_service,
+        quest_service=quest_service,
+        identity_fixture_path=LOCAL_IDENTITY_FIXTURE,
+    )
     local_identity_preflight_service = LocalOperatorIdentityPreflightService(
         identity_boundary_service=identity_boundary_service,
         quest_service=quest_service,
         identity_fixture_path=LOCAL_IDENTITY_FIXTURE,
     )
+    local_review_identity_preflight_service = (
+        LocalReviewIdentityPreflightService(
+            identity_boundary_service=identity_boundary_service,
+            quest_service=quest_service,
+            identity_fixture_path=LOCAL_IDENTITY_FIXTURE,
+        )
+    )
     identity_bound_handler = IdentityBoundWorkAcceptanceHandler(
         identity_authorization_bridge=identity_authorization_bridge,
         quest_service=quest_service,
+    )
+    review_evidence_service = ReviewEvidencePacketService(
+        review_repository=review_repository,
+        identity_receipt_repository=identity_receipt_repository,
+        authorization_service=authorization_service,
+        review_authorization_bridge=review_authorization_bridge,
+        quest_service=quest_service,
+        packet_schema_path=REVIEW_PACKET_SCHEMA,
+        judgment_schema_path=REVIEW_JUDGMENT_SCHEMA,
     )
 
     return ApplicationContainer(
         database_path=resolved_path,
         identity_boundary_service=identity_boundary_service,
         local_identity_preflight_service=local_identity_preflight_service,
+        local_review_identity_preflight_service=(
+            local_review_identity_preflight_service
+        ),
         identity_authorization_bridge=identity_authorization_bridge,
         identity_bound_work_acceptance_handler=identity_bound_handler,
+        review_authorization_bridge=review_authorization_bridge,
+        review_evidence_service=review_evidence_service,
         authorization_service=authorization_service,
         opportunity_scout_service=OpportunityScoutApplicationService(
             candidate_service,
