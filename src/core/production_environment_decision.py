@@ -26,6 +26,10 @@ _SENSITIVE_KEY_FRAGMENTS = (
     "recovery_code",
     "phone_number",
 )
+_SAFE_NEGATIVE_CONTROL_KEYS = {
+    "repository_secret_values_allowed",
+    "phone_number_committed",
+}
 _PHONE_LIKE = re.compile(r"(?<![A-Za-z0-9])\+?\d[\d .()-]{8,}\d(?![A-Za-z0-9])")
 
 
@@ -93,7 +97,10 @@ def _walk(value: Any, path: str = "$") -> list[tuple[str, Any]]:
 def _validate_privacy_boundary(value: Mapping[str, Any]) -> None:
     for path, item in _walk(value):
         key = path.rsplit(".", 1)[-1].lower()
-        if any(fragment in key for fragment in _SENSITIVE_KEY_FRAGMENTS):
+        if (
+            key not in _SAFE_NEGATIVE_CONTROL_KEYS
+            and any(fragment in key for fragment in _SENSITIVE_KEY_FRAGMENTS)
+        ):
             raise ProductionEnvironmentDecisionError(
                 f"Sensitive field is prohibited in the environment decision: {path}"
             )
