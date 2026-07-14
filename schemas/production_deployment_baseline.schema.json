@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/production_deployment_baseline.schema.json",
+  "title": "AIGC Production Deployment Baseline v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id","contract_version","status","environment_decision_path",
+    "cloud","artifact","runtime","network","database","secrets","release_gate",
+    "rollout","observability","recovery","infrastructure_as_code",
+    "operational_evidence","authority","external_action_performed"
+  ],
+  "properties": {
+    "contract_id": {"const": "AIGC-PRODUCTION-DEPLOYMENT-001"},
+    "contract_version": {"const": "1.0.0"},
+    "status": {"const": "IMPLEMENTED_INTERNAL_PENDING_ENVIRONMENT_AND_STAGING_EVIDENCE"},
+    "environment_decision_path": {"const": "config/production_environment_decision.json"},
+    "cloud": {
+      "type":"object","additionalProperties":false,
+      "required":["provider","staging_project_id","production_project_id","primary_region","recovery_region","monthly_budget_cad"],
+      "properties": {
+        "provider":{"const":"google_cloud"},
+        "staging_project_id":{"type":"null"},
+        "production_project_id":{"type":"null"},
+        "primary_region":{"const":"northamerica-northeast2"},
+        "recovery_region":{"const":"northamerica-northeast1"},
+        "monthly_budget_cad":{"const":200}
+      }
+    },
+    "artifact": {
+      "type":"object","additionalProperties":false,
+      "required":["kind","image_reference","image_digest","immutable","sbom_required","provenance_required","signature_required","non_root_required"],
+      "properties": {
+        "kind":{"const":"container_image"},
+        "image_reference":{"type":"null"},
+        "image_digest":{"type":"null"},
+        "immutable":{"const":true},
+        "sbom_required":{"const":true},
+        "provenance_required":{"const":true},
+        "signature_required":{"const":true},
+        "non_root_required":{"const":true}
+      }
+    },
+    "runtime": {
+      "type":"object","additionalProperties":false,
+      "required":["service","port","ingress","min_instances","max_instances","concurrency","request_timeout_seconds","startup_probe_path","liveness_probe_path","readiness_probe_path","workload_service_account"],
+      "properties": {
+        "service":{"const":"cloud_run_v2"},
+        "port":{"const":8080},
+        "ingress":{"const":"external_https_load_balancer_only"},
+        "min_instances":{"const":0},
+        "max_instances":{"const":5},
+        "concurrency":{"const":20},
+        "request_timeout_seconds":{"const":300},
+        "startup_probe_path":{"const":"/health"},
+        "liveness_probe_path":{"const":"/health"},
+        "readiness_probe_path":{"const":"/health"},
+        "workload_service_account":{"type":"null"}
+      }
+    },
+    "network": {
+      "type":"object","additionalProperties":false,
+      "required":["production_domain","external_https_load_balancer","managed_tls","cloud_armor_required","private_database_connectivity","network_reference","dns_owner_status"],
+      "properties": {
+        "production_domain":{"type":"null"},
+        "external_https_load_balancer":{"const":true},
+        "managed_tls":{"const":true},
+        "cloud_armor_required":{"const":true},
+        "private_database_connectivity":{"const":true},
+        "network_reference":{"type":"null"},
+        "dns_owner_status":{"const":"TBD"}
+      }
+    },
+    "database": {
+      "type":"object","additionalProperties":false,
+      "required":["service","engine","availability","primary_region","recovery_region","point_in_time_recovery","rpo_minutes","rto_minutes","instance_reference"],
+      "properties": {
+        "service":{"const":"cloud_sql"},
+        "engine":{"const":"postgresql"},
+        "availability":{"const":"regional_high_availability"},
+        "primary_region":{"const":"northamerica-northeast2"},
+        "recovery_region":{"const":"northamerica-northeast1"},
+        "point_in_time_recovery":{"const":true},
+        "rpo_minutes":{"const":15},
+        "rto_minutes":{"const":240},
+        "instance_reference":{"type":"null"}
+      }
+    },
+    "secrets": {
+      "type":"object","additionalProperties":false,
+      "required":["provider","project_id","workload_identity_required","repository_values_allowed"],
+      "properties": {
+        "provider":{"const":"google_secret_manager"},
+        "project_id":{"type":"null"},
+        "workload_identity_required":{"const":true},
+        "repository_values_allowed":{"const":false}
+      }
+    },
+    "release_gate": {
+      "type":"object","additionalProperties":false,
+      "required":["policy_path","manifest_required","permit_required","exact_revision_required","artifact_digest_required","operator_approval_required","gate_receipt_id"],
+      "properties": {
+        "policy_path":{"const":"config/production_release_gate.json"},
+        "manifest_required":{"const":true},
+        "permit_required":{"const":true},
+        "exact_revision_required":{"const":true},
+        "artifact_digest_required":{"const":true},
+        "operator_approval_required":{"const":true},
+        "gate_receipt_id":{"type":"null"}
+      }
+    },
+    "rollout": {
+      "type":"object","additionalProperties":false,
+      "required":["strategy","initial_traffic_percent","observation_minutes","automatic_rollback_on_health_failure","concurrency_lock_required"],
+      "properties": {
+        "strategy":{"const":"canary"},
+        "initial_traffic_percent":{"const":5},
+        "observation_minutes":{"const":30},
+        "automatic_rollback_on_health_failure":{"const":true},
+        "concurrency_lock_required":{"const":true}
+      }
+    },
+    "observability": {
+      "type":"object","additionalProperties":false,
+      "required":["structured_logs","metrics","alerting","budget_alert_thresholds_percent","slo_availability_percent","slo_latency_p95_ms","alert_recipients_status"],
+      "properties": {
+        "structured_logs":{"const":true},
+        "metrics":{"const":true},
+        "alerting":{"const":true},
+        "budget_alert_thresholds_percent":{"const":[50,80,100]},
+        "slo_availability_percent":{"const":99.5},
+        "slo_latency_p95_ms":{"const":2000},
+        "alert_recipients_status":{"const":"TBD_TECHNICAL_CONTACT"}
+      }
+    },
+    "recovery": {
+      "type":"object","additionalProperties":false,
+      "required":["rollback_to_prior_digest","database_restore_drill_required","disaster_recovery_drill_required","emergency_stop_required","rollback_receipt_required"],
+      "properties": {
+        "rollback_to_prior_digest":{"const":true},
+        "database_restore_drill_required":{"const":true},
+        "disaster_recovery_drill_required":{"const":true},
+        "emergency_stop_required":{"const":true},
+        "rollback_receipt_required":{"const":true}
+      }
+    },
+    "infrastructure_as_code": {
+      "type":"object","additionalProperties":false,
+      "required":["root","tool","minimum_version","resource_creation_default","apply_requires_gate_permit","state_backend_status","plan_only_authorized"],
+      "properties": {
+        "root":{"const":"infra/terraform/gcp"},
+        "tool":{"const":"terraform"},
+        "minimum_version":{"const":"1.7.0"},
+        "resource_creation_default":{"const":false},
+        "apply_requires_gate_permit":{"const":true},
+        "state_backend_status":{"const":"TBD_BEFORE_RESOURCE_CREATION"},
+        "plan_only_authorized":{"const":true}
+      }
+    },
+    "operational_evidence": {
+      "type":"object","additionalProperties":false,
+      "required":["immutable_image_built","sbom_generated","provenance_generated","signature_verified","staging_apply_observed","migration_observed","health_observed","synthetic_journey_passed","alert_delivery_passed","canary_passed","rollback_passed","database_restore_passed","disaster_recovery_passed","secret_access_audit_passed","cost_guardrail_passed"],
+      "properties": {
+        "immutable_image_built":{"const":false},
+        "sbom_generated":{"const":false},
+        "provenance_generated":{"const":false},
+        "signature_verified":{"const":false},
+        "staging_apply_observed":{"const":false},
+        "migration_observed":{"const":false},
+        "health_observed":{"const":false},
+        "synthetic_journey_passed":{"const":false},
+        "alert_delivery_passed":{"const":false},
+        "canary_passed":{"const":false},
+        "rollback_passed":{"const":false},
+        "database_restore_passed":{"const":false},
+        "disaster_recovery_passed":{"const":false},
+        "secret_access_audit_passed":{"const":false},
+        "cost_guardrail_passed":{"const":false}
+      }
+    },
+    "authority": {
+      "type":"object","additionalProperties":false,
+      "required":["internal_iac_implementation_authorized","offline_plan_validation_authorized","staging_resource_creation_authorized","staging_apply_authorized","production_resource_creation_authorized","production_apply_authorized","dns_change_authorized","production_deployment_authorized"],
+      "properties": {
+        "internal_iac_implementation_authorized":{"const":true},
+        "offline_plan_validation_authorized":{"const":true},
+        "staging_resource_creation_authorized":{"const":false},
+        "staging_apply_authorized":{"const":false},
+        "production_resource_creation_authorized":{"const":false},
+        "production_apply_authorized":{"const":false},
+        "dns_change_authorized":{"const":false},
+        "production_deployment_authorized":{"const":false}
+      }
+    },
+    "external_action_performed":{"const":false}
+  }
+}

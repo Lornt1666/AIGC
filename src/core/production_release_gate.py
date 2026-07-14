@@ -255,6 +255,9 @@ def evaluate_release_manifest(
 
     created_at = _parse_time(manifest_value["created_at"])
     expires_at = _parse_time(manifest_value["expires_at"])
+    approval_issued = _parse_time(approval["issued_at"])
+    approval_expires = _parse_time(approval["expires_at"])
+    valid_until = min(expires_at, approval_expires)
     if expires_at <= created_at:
         reasons.append("MANIFEST_LIFETIME_INVALID")
     if current >= expires_at:
@@ -279,8 +282,6 @@ def evaluate_release_manifest(
         ):
             reasons.append("OPERATOR_APPROVAL_MISSING")
 
-        approval_issued = _parse_time(approval["issued_at"])
-        approval_expires = _parse_time(approval["expires_at"])
         if approval_expires <= approval_issued:
             reasons.append("OPERATOR_APPROVAL_LIFETIME_INVALID")
         if approval_issued < created_at:
@@ -310,7 +311,7 @@ def evaluate_release_manifest(
 
     receipt = {
         "contract_id": "AIGC-PRODUCTION-RELEASE-GATE-RECEIPT-001",
-        "contract_version": "1.0.0",
+        "contract_version": "1.1.0",
         "gate_receipt_id": gate_receipt_id,
         "release_id": manifest_value["release_id"],
         "exact_revision": revision or "unbound",
@@ -329,6 +330,7 @@ def evaluate_release_manifest(
         "operator_approval_receipt_id": approval_receipt,
         "deployment_authorized": permitted,
         "evaluated_at": current.isoformat(),
+        "valid_until": valid_until.isoformat(),
         "external_action_performed": False,
     }
     receipt = validate_release_contract(_RECEIPT_SCHEMA, receipt)
@@ -376,44 +378,3 @@ def write_gate_receipt(
         encoding="utf-8",
     )
     return path
-
-
-def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(
-        description="Evaluate a production release manifest without deploying."
-    )
-    parser.add_argument("--project-root", type=Path, default=Path.cwd())
-    parser.add_argument("--manifest", type=Path, required=True)
-    parser.add_argument("--policy", type=Path)
-    parser.add_argument("--artifact-root", type=Path)
-    parser.add_argument("--write", action="store_true")
-    parser.add_argument("--require-permit", action="store_true")
-    args = parser.parse_args(argv)
-
-    project_root = args.project_root.resolve()
-    evaluation = evaluate_release_manifest_file(
-        project_root=project_root,
-        manifest_path=args.manifest.resolve(),
-        policy_path=args.policy.resolve() if args.policy else None,
-    )
-    payload = evaluation.to_dict()
-    if args.write:
-        payload["written_receipt_path"] = str(
-            write_gate_receipt(
-                project_root,
-                evaluation,
-                artifact_root=(
-                    args.artifact_root.resolve()
-                    if args.artifact_root
-                    else None
-                ),
-            )
-        )
-    print(json.dumps(payload, indent=2, sort_keys=True))
-    if args.require_permit and not evaluation.permitted:
-        return 3
-    return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
