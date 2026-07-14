@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/identity_bound_work_acceptance.schema.json",
+  "title": "AIGC Identity-Bound Work Acceptance Command v1",
+  "description": "Command contract for binding an immutable PIBC receipt to the existing authorization kernel and canonical Quest transition. The caller cannot supply principal, tenant, project, roles, scopes, assurance, or authorization evidence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "expected_revision",
+    "identity_receipt_id",
+    "operator_role",
+    "reason"
+  ],
+  "properties": {
+    "expected_revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "identity_receipt_id": {
+      "type": "string",
+      "pattern": "^IDR-[A-F0-9]{24}$"
+    },
+    "operator_role": {
+      "const": "ACCOUNTABLE_OPERATOR"
+    },
+    "reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 4000
+    }
+  }
+}

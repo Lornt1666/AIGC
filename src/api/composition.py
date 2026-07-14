@@ -6,7 +6,10 @@ from pathlib import Path
 
 from src.application import (
     AuthorizationApplicationService,
+    IdentityAuthorizationBridge,
+    IdentityBoundWorkAcceptanceHandler,
     IdentityBoundaryService,
+    LocalOperatorIdentityPreflightService,
     OpportunityScoutApplicationService,
     QuestApplicationService,
     QuestCandidateApplicationService,
@@ -44,6 +47,9 @@ IDENTITY_RECEIPT_SCHEMA = (
 class ApplicationContainer:
     database_path: Path
     identity_boundary_service: IdentityBoundaryService
+    local_identity_preflight_service: LocalOperatorIdentityPreflightService
+    identity_authorization_bridge: IdentityAuthorizationBridge
+    identity_bound_work_acceptance_handler: IdentityBoundWorkAcceptanceHandler
     authorization_service: AuthorizationApplicationService
     opportunity_scout_service: OpportunityScoutApplicationService
     quest_candidate_service: QuestCandidateApplicationService
@@ -96,10 +102,35 @@ def build_container(
         schema_path=QUEST_CANDIDATE_SCHEMA,
         exact_revision=exact_revision,
     )
+    quest_service = QuestApplicationService(
+        candidate_repository,
+        quest_repository,
+        authorization_service,
+        schema_path=QUEST_SCHEMA,
+        exact_revision=exact_revision,
+    )
+    identity_authorization_bridge = IdentityAuthorizationBridge(
+        identity_receipt_repository=identity_receipt_repository,
+        authorization_service=authorization_service,
+        quest_service=quest_service,
+        identity_fixture_path=LOCAL_IDENTITY_FIXTURE,
+    )
+    local_identity_preflight_service = LocalOperatorIdentityPreflightService(
+        identity_boundary_service=identity_boundary_service,
+        quest_service=quest_service,
+        identity_fixture_path=LOCAL_IDENTITY_FIXTURE,
+    )
+    identity_bound_handler = IdentityBoundWorkAcceptanceHandler(
+        identity_authorization_bridge=identity_authorization_bridge,
+        quest_service=quest_service,
+    )
 
     return ApplicationContainer(
         database_path=resolved_path,
         identity_boundary_service=identity_boundary_service,
+        local_identity_preflight_service=local_identity_preflight_service,
+        identity_authorization_bridge=identity_authorization_bridge,
+        identity_bound_work_acceptance_handler=identity_bound_handler,
         authorization_service=authorization_service,
         opportunity_scout_service=OpportunityScoutApplicationService(
             candidate_service,
@@ -108,11 +139,5 @@ def build_container(
             exact_revision=exact_revision,
         ),
         quest_candidate_service=candidate_service,
-        quest_service=QuestApplicationService(
-            candidate_repository,
-            quest_repository,
-            authorization_service,
-            schema_path=QUEST_SCHEMA,
-            exact_revision=exact_revision,
-        ),
+        quest_service=quest_service,
     )

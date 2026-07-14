@@ -60,11 +60,11 @@ QUEST_BOARD_HTML = r"""<!doctype html>
 <body>
 <header>
   <h1>AIGC Quest Board</h1>
-  <p>Local governed opportunity discovery, assessment, Quest proposal, and internal work-acceptance workspace.</p>
+  <p>Local governed opportunity discovery, assessment, Quest proposal, and identity-bound internal work acceptance.</p>
 </header>
 <main>
   <section class="boundary" aria-label="Safety boundary">
-    <strong>Local operator boundary:</strong> the Opportunity Scout performs bounded read-only requests to fixed, repository-approved public sources. Ology + Risk Scout assessment never auto-qualifies. <strong>WORK_ACCEPTED</strong> means permission to undertake bounded internal work; it does not accept an external contract. <strong>ACCEPTED_FOR_DELIVERY</strong> is a later, separate completed-work Judgment Gate. This board does not apply, bid, message, deliver, pay, purchase, deploy, use credentials, or perform any consequential external action.
+    <strong>Local operator boundary:</strong> the Opportunity Scout performs bounded read-only requests to fixed, repository-approved public sources. Ology + Risk Scout assessment never auto-qualifies. <strong>WORK_ACCEPTED</strong> requires a persisted PIBC identity receipt and a separate authorization receipt; it means permission to undertake bounded internal work and does not accept an external contract. <strong>ACCEPTED_FOR_DELIVERY</strong> is a later, separate completed-work Judgment Gate. This board does not apply, bid, message, deliver, pay, purchase, deploy, use credentials, or perform any consequential external action.
   </section>
   <div id="status" class="status" role="status" aria-live="polite">Loading the local Quest Board…</div>
   <div id="stats" class="stats" aria-label="Quest Board statistics"></div>
@@ -212,7 +212,7 @@ function gateDetails(item) {
       <dt>Approval request</dt><dd>${esc(approval && approval.approval_request_id)}</dd>
       <dt>Approval status</dt><dd>${esc(approval && approval.status)}</dd>
       <dt>Transition digest</dt><dd>${esc(approval && approval.transition_digest)}</dd>
-      <dt>Receipt</dt><dd>${esc(acceptance && acceptance.authorization_receipt_id)}</dd>
+      <dt>Authorization receipt</dt><dd>${esc(acceptance && acceptance.authorization_receipt_id)}</dd>
     </dl>
   </section>`;
 }
@@ -247,7 +247,7 @@ function renderQuests(items) {
     const next = item.lifecycle_state === 'PROPOSED'
       ? 'Request work approval.'
       : item.lifecycle_state === 'APPROVAL_REQUIRED'
-        ? 'Obtain a bound authorization receipt, then accept work.'
+        ? 'Obtain a PIBC receipt, authorize the exact action, then accept work.'
         : item.lifecycle_state === 'WORK_ACCEPTED'
           ? 'Bounded internal work is authorized; delivery acceptance remains separate.'
           : 'Terminal or later lifecycle state.';
@@ -284,7 +284,7 @@ async function loadBoard() {
     renderCandidates(board.candidates);
     renderQuests(board.active_quests);
     renderStats(board.stats);
-    setStatus(`${board.stats.total_candidates} candidate(s), ${board.stats.total_quests} Quest(s). External action performed: false.`);
+    setStatus(`${board.stats.total_candidates} candidate(s), ${board.stats.total_quests} Quest(s). Identity-bound acceptance: ${board.identity_bound_acceptance_available ? 'available' : 'unavailable'}. External action performed: false.`);
   } catch (error) {
     setStatus(`Board load failed: ${error.message}`, true);
   }
@@ -387,7 +387,7 @@ questList.addEventListener('click', async event => {
     reasonInput && reasonInput.focus();
     return;
   }
-  if (action === 'accept' && !window.confirm('Authorize and record WORK_ACCEPTED for bounded internal work? This does not accept an external contract.')) {
+  if (action === 'accept' && !window.confirm('Verify local PIBC identity, authorize, and record WORK_ACCEPTED for bounded internal work? This does not accept an external contract.')) {
     return;
   }
   button.disabled = true;
@@ -403,25 +403,24 @@ questList.addEventListener('click', async event => {
       });
       setStatus('Work approval requested. Quest is APPROVAL_REQUIRED; work is not accepted yet.');
     } else if (action === 'accept') {
-      const prepared = await api(`/api/v1/quests/${encodeURIComponent(id)}/work-acceptance-authorization-bundle`);
-      const authorization = await api('/api/v1/identity/authorize', {
-        method: 'POST',
-        body: JSON.stringify(prepared.bundle)
-      });
-      if (!authorization.passed || authorization.result !== 'PERMIT') {
-        throw new Error(`Authorization did not permit work acceptance: ${authorization.reason_codes.join(', ')}`);
-      }
-      await api(`/api/v1/quests/${encodeURIComponent(id)}/accept-work`, {
+      setStatus('Verifying repository-owned local identity through PIBC-v1…');
+      const identity = await api(`/api/v1/quests/${encodeURIComponent(id)}/local-identity-preflight`, {
         method: 'POST',
         body: JSON.stringify({
           expected_revision: revision,
-          operator_role: 'ACCOUNTABLE_OPERATOR',
-          authorization_receipt_id: authorization.receipt_id,
-          authorization_request: prepared.bundle.request,
-          reason: reason || 'Bounded internal work accepted through the local Quest Board.'
+          operator_role: 'ACCOUNTABLE_OPERATOR'
         })
       });
-      setStatus('WORK_ACCEPTED recorded with durable authorization evidence. No external contract or action was accepted.');
+      const accepted = await api(`/api/v1/quests/${encodeURIComponent(id)}/identity-bound-accept-work`, {
+        method: 'POST',
+        body: JSON.stringify({
+          expected_revision: revision,
+          identity_receipt_id: identity.identity_receipt_id,
+          operator_role: 'ACCOUNTABLE_OPERATOR',
+          reason: reason || 'Bounded internal work accepted through the PIBC-bound local Quest Board.'
+        })
+      });
+      setStatus(`WORK_ACCEPTED recorded with PIBC receipt ${accepted.identity_receipt_id} and authorization receipt ${accepted.authorization_receipt_id}. No external contract or action was accepted.`);
     } else if (action === 'reject') {
       await api(`/api/v1/quests/${encodeURIComponent(id)}/reject`, {
         method: 'POST',

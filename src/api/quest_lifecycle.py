@@ -24,6 +24,25 @@ class WorkApprovalRequest(BaseModel):
     reason: str | None = Field(default=None, max_length=4000)
 
 
+class LocalIdentityPreflightRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    expected_revision: int = Field(ge=1)
+    operator_role: Literal["ACCOUNTABLE_OPERATOR"]
+
+
+class IdentityBoundWorkAcceptanceRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    expected_revision: int = Field(ge=1)
+    identity_receipt_id: str = Field(
+        pattern=r"^IDR-[A-F0-9]{24}$",
+        max_length=28,
+    )
+    operator_role: Literal["ACCOUNTABLE_OPERATOR"]
+    reason: str | None = Field(default=None, max_length=4000)
+
+
 class WorkAcceptanceRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -182,6 +201,8 @@ def build_quest_lifecycle_router(
                 "aal": "AAL0",
                 "fal": "FAL0",
             },
+            "identity_bound_acceptance_available": True,
+            "production_identity_authorized": False,
             "external_action_performed": False,
         }
 
@@ -202,8 +223,75 @@ def build_quest_lifecycle_router(
             raise
         return {
             "quest": _record_response(record),
-            "next_step": "OBTAIN_BOUND_AUTHORIZATION_RECEIPT",
+            "next_step": "OBTAIN_PIBC_IDENTITY_RECEIPT",
             "work_accepted": False,
+            "external_action_performed": False,
+        }
+
+    @router.post("/api/v1/quests/{quest_id}/local-identity-preflight")
+    def local_identity_preflight(
+        quest_id: str,
+        request: LocalIdentityPreflightRequest,
+    ) -> dict[str, Any]:
+        try:
+            evaluation = (
+                container.local_identity_preflight_service.issue_for_quest(
+                    quest_id=quest_id,
+                    expected_revision=request.expected_revision,
+                    operator_role=request.operator_role,
+                )
+            )
+        except Exception as exc:
+            _raise_quest_error(exc, operation="LOCAL_IDENTITY_PREFLIGHT")
+            raise
+        receipt = evaluation.receipt.to_dict()
+        return {
+            "quest_id": quest_id,
+            "quest_revision": request.expected_revision,
+            "identity_receipt_id": receipt["receipt_id"],
+            "result": receipt["result"],
+            "principal_id": receipt["principal_id"],
+            "tenant_id": receipt["tenant_id"],
+            "project_id": receipt["project_id"],
+            "runtime_authority": receipt["runtime_authority"],
+            "expires_at": receipt["expires_at"],
+            "production_identity_authorized": False,
+            "external_action_performed": False,
+        }
+
+    @router.post(
+        "/api/v1/quests/{quest_id}/identity-bound-accept-work"
+    )
+    def identity_bound_accept_work(
+        quest_id: str,
+        request: IdentityBoundWorkAcceptanceRequest,
+    ) -> dict[str, Any]:
+        try:
+            result = (
+                container.identity_bound_work_acceptance_handler.execute(
+                    quest_id=quest_id,
+                    expected_revision=request.expected_revision,
+                    identity_receipt_id=request.identity_receipt_id,
+                    operator_role=request.operator_role,
+                    reason=request.reason,
+                )
+            )
+        except Exception as exc:
+            _raise_quest_error(
+                exc,
+                operation="IDENTITY_BOUND_ACCEPT_WORK",
+            )
+            raise
+        return {
+            "quest": _record_response(result.quest),
+            "identity_receipt_id": result.identity_receipt_id,
+            "authorization_receipt_id": result.authorization_receipt_id,
+            "authorization_request_digest": (
+                result.authorization_request_digest
+            ),
+            "work_accepted": True,
+            "external_contract_accepted": False,
+            "production_identity_authorized": False,
             "external_action_performed": False,
         }
 
