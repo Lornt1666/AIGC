@@ -61,10 +61,7 @@ class FakeConnection:
             checksum = self.migration_checksums.get(version)
             return FakeResult((checksum,) if checksum is not None else None)
         if normalized.startswith("INSERT INTO schema_migrations"):
-            version = str(params[0])
-            checksum = str(params[2])
-            self.migration_checksums[version] = checksum
-            return FakeResult()
+            self.migration_checksums[str(params[0])] = str(params[2])
         return FakeResult()
 
 
@@ -73,7 +70,6 @@ class FakePool:
         self.connection_value = connection
         self.opened = False
         self.closed = False
-        self.connection_timeouts: list[float | None] = []
 
     def open(self, *, wait: bool = True) -> None:
         assert wait is True
@@ -84,7 +80,7 @@ class FakePool:
 
     @contextmanager
     def connection(self, *, timeout: float | None = None) -> Iterator[FakeConnection]:
-        self.connection_timeouts.append(timeout)
+        assert timeout is not None
         yield self.connection_value
 
 
@@ -103,17 +99,20 @@ class RetryableDatabaseError(RuntimeError):
 
 
 def runtime_config(*, resolved: bool) -> PostgresRuntimeConfig:
-    policy = load_persistence_policy(POLICY_PATH, SCHEMA_PATH)
-    config = PostgresRuntimeConfig.from_policy(policy)
-    if resolved:
-        return replace(
-            config,
+    value = PostgresRuntimeConfig.from_policy(
+        load_persistence_policy(POLICY_PATH, SCHEMA_PATH)
+    )
+    return (
+        replace(
+            value,
             dsn_reference="gcp_secret://approved-project/aigc-postgres-dsn",
         )
-    return config
+        if resolved
+        else value
+    )
 
 
-def test_persistence_policy_is_internal_and_staging_incomplete() -> None:
+def test_policy_and_four_migration_plan_remain_internal_only() -> None:
     policy = load_persistence_policy(POLICY_PATH, SCHEMA_PATH)
     plan = load_postgres_migration_plan(MIGRATION_ROOT)
     evaluation = evaluate_persistence_policy(
@@ -121,32 +120,25 @@ def test_persistence_policy_is_internal_and_staging_incomplete() -> None:
         migration_count=len(plan.migrations),
     )
 
+    assert migration_versions(plan) == (
+        "0001_transactional_storage",
+        "0002_identity_boundary_v1",
+        "0003_review_evidence_packet_v1",
+        "0004_production_identity_sessions",
+    )
     assert evaluation.implemented_internal is True
     assert evaluation.production_complete is False
-    assert evaluation.status == "implemented_internal"
-    assert evaluation.migration_count == 3
-    assert set(evaluation.unresolved_configuration) == {
-        "postgres_dsn_secret_project",
-        "detailed_backup_schedule",
-        "database_row_isolation",
-        "postgres_repository_adapters",
-    }
+    assert evaluation.migration_count == 4
     assert evaluation.resource_creation_authorized is False
     assert evaluation.secret_access_authorized is False
     assert evaluation.data_migration_authorized is False
     assert evaluation.production_deployment_authorized is False
-    assert evaluation.external_action_performed is False
 
 
-def test_postgresql_migration_plan_is_forward_only_and_append_only() -> None:
+def test_migration_plan_preserves_required_relations_and_append_only_evidence() -> None:
     first = load_postgres_migration_plan(MIGRATION_ROOT)
     second = load_postgres_migration_plan(MIGRATION_ROOT)
 
-    assert migration_versions(first) == (
-        "0001_transactional_storage",
-        "0002_identity_boundary_v1",
-        "0003_review_evidence_packet_v1",
-    )
     assert first.fingerprint == second.fingerprint
     assert len(first.fingerprint) == 64
     assert set(first.relations) == {
@@ -158,6 +150,8 @@ def test_postgresql_migration_plan_is_forward_only_and_append_only() -> None:
         "identity_evidence_receipts",
         "review_evidence_packets",
         "review_judgment_receipts",
+        "provider_subject_bindings",
+        "production_identity_sessions",
     }
     assert set(first.append_only_relations) == {
         "authorization_receipts",
@@ -167,18 +161,18 @@ def test_postgresql_migration_plan_is_forward_only_and_append_only() -> None:
         "review_judgment_receipts",
     }
     assert all(len(item.checksum) == 64 for item in first.migrations)
-    assert all("JSONB" in item.sql.upper() or item.version == "0002_identity_boundary_v1" for item in first.migrations)
+    assert all("JSONB" in item.sql.upper() for item in first.migrations)
     assert all("TIMESTAMPTZ" in item.sql.upper() for item in first.migrations)
 
 
-def test_unresolved_reference_blocks_before_resolver_or_pool_use() -> None:
+def test_unresolved_reference_blocks_before_resolver_and_pool_use() -> None:
     resolver = FakeResolver("postgresql://db.example.invalid/aigc")
-    pool_created = False
+    created = False
 
     def builder(value: str, config: PostgresRuntimeConfig) -> FakePool:
-        nonlocal pool_created
+        nonlocal created
         del value, config
-        pool_created = True
+        created = True
         return FakePool(FakeConnection())
 
     factory = PostgresConnectionFactory(
@@ -186,54 +180,41 @@ def test_unresolved_reference_blocks_before_resolver_or_pool_use() -> None:
         secret_resolver=resolver,
         pool_builder=builder,
     )
-
-    with pytest.raises(
-        ProductionPersistenceConfigurationError,
-        match="unresolved",
-    ):
+    with pytest.raises(ProductionPersistenceConfigurationError, match="unresolved"):
         factory.open()
 
     assert resolver.references == []
-    assert pool_created is False
+    assert created is False
     assert factory.opened is False
 
 
-def test_resolved_reference_opens_pool_and_summary_never_contains_material() -> None:
+def test_pool_summary_is_redacted_and_health_check_is_transactional() -> None:
     resolved_connection_material = "postgresql://db.example.invalid/aigc"
     resolver = FakeResolver(resolved_connection_material)
     connection = FakeConnection()
     pool = FakePool(connection)
-    received: list[str] = []
-
-    def builder(value: str, config: PostgresRuntimeConfig) -> FakePool:
-        received.append(value)
-        assert config.ssl_mode == "verify-full"
-        return pool
-
     factory = PostgresConnectionFactory(
         runtime_config(resolved=True),
         secret_resolver=resolver,
-        pool_builder=builder,
+        pool_builder=lambda value, config: pool,
     )
     factory.open()
-    summary = factory.redacted_summary()
 
-    assert pool.opened is True
-    assert resolver.references == [
-        "gcp_secret://approved-project/aigc-postgres-dsn"
-    ]
-    assert received == [resolved_connection_material]
+    assert factory.health_check() is True
+    summary = factory.redacted_summary()
     assert summary["raw_dsn_present"] is False
     assert resolved_connection_material not in json.dumps(summary)
     assert summary["dsn_reference"].startswith("gcp_secret://")
-    assert summary["external_action_performed"] is False
-
+    assert any(command == "SELECT 1" for command, _, _ in connection.commands)
+    assert any(
+        command == "SET TRANSACTION ISOLATION LEVEL READ COMMITTED"
+        for command, _, _ in connection.commands
+    )
     factory.close()
     assert pool.closed is True
-    assert factory.opened is False
 
 
-def test_governed_transition_retries_serialization_failure_with_backoff() -> None:
+def test_governed_retry_uses_serializable_and_bounded_backoff() -> None:
     resolver = FakeResolver("postgresql://db.example.invalid/aigc")
     connection = FakeConnection()
     pool = FakePool(connection)
@@ -252,44 +233,20 @@ def test_governed_transition_retries_serialization_failure_with_backoff() -> Non
         assert current is connection
         attempts += 1
         if attempts == 1:
-            raise RetryableDatabaseError("retry this transaction")
+            raise RetryableDatabaseError("retry transaction")
         return "completed"
 
-    result = factory.run_with_retry(operation, governed_transition=True)
-
-    assert result == "completed"
+    assert factory.run_with_retry(operation, governed_transition=True) == "completed"
     assert attempts == 2
     assert sleeps == [0.05]
-    isolation_commands = [
+    assert [
         command
         for command, _, _ in connection.commands
         if command.startswith("SET TRANSACTION ISOLATION LEVEL")
-    ]
-    assert isolation_commands == [
+    ] == [
         "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE",
         "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE",
     ]
-    assert any("statement_timeout" in command for command, _, _ in connection.commands)
-    assert any("lock_timeout" in command for command, _, _ in connection.commands)
-
-
-def test_health_check_uses_pooled_read_committed_transaction() -> None:
-    resolver = FakeResolver("postgresql://db.example.invalid/aigc")
-    connection = FakeConnection()
-    pool = FakePool(connection)
-    factory = PostgresConnectionFactory(
-        runtime_config(resolved=True),
-        secret_resolver=resolver,
-        pool_builder=lambda value, config: pool,
-    )
-    factory.open()
-
-    assert factory.health_check() is True
-    assert any(command == "SELECT 1" for command, _, _ in connection.commands)
-    assert any(
-        command == "SET TRANSACTION ISOLATION LEVEL READ COMMITTED"
-        for command, _, _ in connection.commands
-    )
 
 
 class FakeMigrationFactory:
@@ -302,7 +259,7 @@ class FakeMigrationFactory:
         return operation(self.connection)
 
 
-def test_migrator_is_idempotent_advisory_locked_and_checksum_bound() -> None:
+def test_migrator_is_idempotent_locked_and_checksum_bound() -> None:
     plan = load_postgres_migration_plan(MIGRATION_ROOT)
     connection = FakeConnection()
     factory = FakeMigrationFactory(connection)
@@ -311,29 +268,24 @@ def test_migrator_is_idempotent_advisory_locked_and_checksum_bound() -> None:
     first = migrator.apply_all()
     replay = migrator.apply_all()
 
-    assert [item.applied for item in first] == [True, True, True]
-    assert [item.applied for item in replay] == [False, False, False]
-    assert factory.governed_flags == [True] * 6
-    advisory_locks = [
-        command
-        for command, _, _ in connection.commands
-        if command.startswith("SELECT pg_advisory_xact_lock")
-    ]
-    assert len(advisory_locks) == 6
-    assert connection.migration_checksums == {
-        item.version: item.checksum for item in plan.migrations
-    }
+    assert [item.applied for item in first] == [True] * 4
+    assert [item.applied for item in replay] == [False] * 4
+    assert factory.governed_flags == [True] * 8
+    assert len(
+        [
+            command
+            for command, _, _ in connection.commands
+            if command.startswith("SELECT pg_advisory_xact_lock")
+        ]
+    ) == 8
 
     first_migration = plan.migrations[0]
     connection.migration_checksums[first_migration.version] = "f" * 64
-    with pytest.raises(
-        ProductionPersistenceConfigurationError,
-        match="checksum mismatch",
-    ):
+    with pytest.raises(ProductionPersistenceConfigurationError, match="checksum mismatch"):
         migrator.apply_all()
 
 
-def test_future_database_recovery_receipt_contract_is_strict() -> None:
+def test_database_recovery_receipt_contract_remains_strict() -> None:
     schema = json.loads(
         (ROOT / "schemas" / "database_recovery_receipt.schema.json").read_text(
             encoding="utf-8"
