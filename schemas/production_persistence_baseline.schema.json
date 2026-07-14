@@ -1,0 +1,201 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/production_persistence_baseline.schema.json",
+  "title": "AIGC Production Persistence Baseline v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id",
+    "contract_version",
+    "status",
+    "environment_decision_path",
+    "engine",
+    "connection",
+    "transactions",
+    "migrations",
+    "tenant_isolation",
+    "backup_recovery",
+    "compatibility",
+    "operational_evidence",
+    "authority",
+    "external_action_performed"
+  ],
+  "properties": {
+    "contract_id": {"const": "AIGC-PRODUCTION-PERSISTENCE-001"},
+    "contract_version": {"const": "1.0.0"},
+    "status": {"const": "IMPLEMENTED_INTERNAL_PENDING_STAGING_EVIDENCE"},
+    "environment_decision_path": {"const": "config/production_environment_decision.json"},
+    "engine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["service", "database", "driver", "primary_region", "recovery_region"],
+      "properties": {
+        "service": {"const": "cloud_sql"},
+        "database": {"const": "postgresql"},
+        "driver": {"const": "psycopg3"},
+        "primary_region": {"const": "northamerica-northeast2"},
+        "recovery_region": {"const": "northamerica-northeast1"}
+      }
+    },
+    "connection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dsn_reference",
+        "raw_dsn_in_repository",
+        "pool_min_size",
+        "pool_max_size",
+        "pool_timeout_seconds",
+        "connect_timeout_seconds",
+        "statement_timeout_ms",
+        "lock_timeout_ms",
+        "application_name",
+        "ssl_mode"
+      ],
+      "properties": {
+        "dsn_reference": {"type": "string", "pattern": "^gcp_secret://[A-Za-z0-9._/-]+$"},
+        "raw_dsn_in_repository": {"const": false},
+        "pool_min_size": {"type": "integer", "minimum": 1, "maximum": 20},
+        "pool_max_size": {"type": "integer", "minimum": 1, "maximum": 100},
+        "pool_timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 120},
+        "connect_timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 60},
+        "statement_timeout_ms": {"type": "integer", "minimum": 1000, "maximum": 300000},
+        "lock_timeout_ms": {"type": "integer", "minimum": 100, "maximum": 60000},
+        "application_name": {"const": "aigc-production"},
+        "ssl_mode": {"const": "verify-full"}
+      }
+    },
+    "transactions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "default_isolation",
+        "governed_transition_isolation",
+        "max_attempts",
+        "base_backoff_ms",
+        "max_backoff_ms",
+        "retryable_sqlstates"
+      ],
+      "properties": {
+        "default_isolation": {"const": "READ COMMITTED"},
+        "governed_transition_isolation": {"const": "SERIALIZABLE"},
+        "max_attempts": {"type": "integer", "minimum": 1, "maximum": 10},
+        "base_backoff_ms": {"type": "integer", "minimum": 1, "maximum": 1000},
+        "max_backoff_ms": {"type": "integer", "minimum": 10, "maximum": 10000},
+        "retryable_sqlstates": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": {"enum": ["40001", "40P01", "08000", "08003", "08006", "08001", "57P01"]}
+        }
+      }
+    },
+    "migrations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["root", "ledger_table", "checksum_required", "advisory_lock_required", "forward_only", "transaction_per_migration"],
+      "properties": {
+        "root": {"const": "migrations/postgresql"},
+        "ledger_table": {"const": "schema_migrations"},
+        "checksum_required": {"const": true},
+        "advisory_lock_required": {"const": true},
+        "forward_only": {"const": true},
+        "transaction_per_migration": {"const": true}
+      }
+    },
+    "tenant_isolation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tenant_context_required", "project_context_required", "database_rls_status", "cross_tenant_default_deny"],
+      "properties": {
+        "tenant_context_required": {"const": true},
+        "project_context_required": {"const": true},
+        "database_rls_status": {"const": "ADAPTER_AND_STAGING_EVIDENCE_REQUIRED"},
+        "cross_tenant_default_deny": {"const": true}
+      }
+    },
+    "backup_recovery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rpo_minutes",
+        "rto_minutes",
+        "point_in_time_recovery_required",
+        "encrypted_backups_required",
+        "restore_to_isolated_environment_required",
+        "receipt_integrity_required",
+        "detailed_schedule_status"
+      ],
+      "properties": {
+        "rpo_minutes": {"const": 15},
+        "rto_minutes": {"const": 240},
+        "point_in_time_recovery_required": {"const": true},
+        "encrypted_backups_required": {"const": true},
+        "restore_to_isolated_environment_required": {"const": true},
+        "receipt_integrity_required": {"const": true},
+        "detailed_schedule_status": {"const": "TBD_BEFORE_RESOURCE_CREATION"}
+      }
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sqlite_local_mode_retained", "shared_domain_contracts_required", "postgres_repository_adapter_status"],
+      "properties": {
+        "sqlite_local_mode_retained": {"const": true},
+        "shared_domain_contracts_required": {"const": true},
+        "postgres_repository_adapter_status": {"const": "CONNECTION_AND_MIGRATION_BASELINE_ONLY"}
+      }
+    },
+    "operational_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cloud_sql_instance_observed",
+        "migration_lock_observed",
+        "prior_schema_upgrade_passed",
+        "concurrent_transition_passed",
+        "connection_loss_retry_passed",
+        "backup_integrity_passed",
+        "isolated_restore_passed",
+        "rpo_measured_minutes",
+        "rto_measured_minutes",
+        "cross_tenant_negative_passed"
+      ],
+      "properties": {
+        "cloud_sql_instance_observed": {"const": false},
+        "migration_lock_observed": {"const": false},
+        "prior_schema_upgrade_passed": {"const": false},
+        "concurrent_transition_passed": {"const": false},
+        "connection_loss_retry_passed": {"const": false},
+        "backup_integrity_passed": {"const": false},
+        "isolated_restore_passed": {"const": false},
+        "rpo_measured_minutes": {"type": "null"},
+        "rto_measured_minutes": {"type": "null"},
+        "cross_tenant_negative_passed": {"const": false}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "adapter_implementation_authorized",
+        "migration_definition_authorized",
+        "local_simulation_authorized",
+        "cloud_sql_resource_creation_authorized",
+        "secret_access_authorized",
+        "data_migration_authorized",
+        "production_deployment_authorized"
+      ],
+      "properties": {
+        "adapter_implementation_authorized": {"const": true},
+        "migration_definition_authorized": {"const": true},
+        "local_simulation_authorized": {"const": true},
+        "cloud_sql_resource_creation_authorized": {"const": false},
+        "secret_access_authorized": {"const": false},
+        "data_migration_authorized": {"const": false},
+        "production_deployment_authorized": {"const": false}
+      }
+    },
+    "external_action_performed": {"const": false}
+  }
+}
