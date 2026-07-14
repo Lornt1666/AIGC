@@ -59,6 +59,8 @@ The machine-readable record describes the completed PR #98 → PR #99 synchroniz
 
 PR #99 must be evaluated as a combined candidate against current `main` after dependency or evidence changes. The PR must then remain or be restored to its stacked base on PR #98. Exact-head CI, artifacts, readiness truth, and the resulting stacked merge candidate must be recorded before operator review.
 
+CI run #1406 predates the dependency-receipt contract and cannot be reused as current evidence for the contract-cycle head. A fresh combined-main run is mandatory.
+
 Any change to the upstream head, dependency parent, imported paths, synchronized event head, or evidence candidates invalidates the committed receipt digest and requires a new versioned receipt rather than silent mutation.
 
 ## Rollback
