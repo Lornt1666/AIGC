@@ -16,12 +16,13 @@ This baseline fixes the accepted Google Cloud deployment topology and makes ever
 
 This deployment train is stacked above connector and Secret Manager PR `#98`.
 
-The deployment branch is now rebased directly on the reviewed upstream correction head:
+The deployment branch records the exact upstream correction as a second-parent dependency merge:
 
 ```text
 upstream PR: #98
-upstream head: 1b08f5e698ce69270a44b74d82a19fc041e20760
-rollback branch: codex/production-deployment-baseline-v1-pre-sync-rebase
+upstream head: f5ffdb4aaf60b09f40b1a8840ef5e5b62b49a141
+dependency merge commit: 7ed7af471099c8343a355e966b8ab09790624ee0
+rollback branch: codex/production-deployment-baseline-v1-pre-upstream-sync
 ```
 
 The synchronized boundary enforces the same Google Cloud project-ID grammar in:
@@ -30,6 +31,8 @@ The synchronized boundary enforces the same Google Cloud project-ID grammar in:
 - connector staging receipt validation;
 - deployment plan evaluation;
 - connector and deployment boundary tests.
+
+It also imports the canonical single-path connector broker and its compatibility-parity regression tests, so the deployment candidate cannot silently retain the superseded duplicate execution path.
 
 Valid project IDs are 6–30 characters, begin with a lowercase letter, contain only lowercase letters, digits, or hyphens, and end with a lowercase letter or digit. `TBD_PROJECT` remains allowed only as the explicit unresolved marker in disabled connector configuration; it is not valid staging or deployment evidence.
 
@@ -144,6 +147,8 @@ A rollback must bind failed and restored revisions and image digests, preserve a
 
 If schema compatibility is uncertain, do not point the prior application at the modified database. Restore to an isolated database, verify integrity, then promote only under a reviewed recovery procedure.
 
+The dependency synchronization can be rolled back by restoring branch `codex/production-deployment-baseline-v1-pre-upstream-sync` or reverting its bounded merge and documentation commits. It creates no cloud or data rollback obligation.
+
 The release-gate validity correction can be rolled back by restoring branch `codex/production-deployment-baseline-v1-pre-gate-validity` or reverting its bounded commit series. It creates no cloud or data rollback obligation.
 
 ## Required next sequence
@@ -165,4 +170,4 @@ After project IDs, domain, technical contact, and explicit resource authority ex
 
 Production remains blocked until issue #91 produces a fresh candidate-bound release-gate `PERMIT` that remains valid at deployment-plan evaluation time.
 
-CI must preserve explicit coverage for a current permit, exact-expiry denial, future-dated evaluation denial, and an invalid authority window.
+CI must preserve explicit coverage for a current permit, exact-expiry denial, future-dated evaluation denial, an invalid authority window, and the canonical connector-broker execution path imported from the exact PR #98 dependency head.
