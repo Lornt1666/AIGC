@@ -1,0 +1,248 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/stacked_dependency_sync_receipt.schema.json",
+  "title": "AIGC Stacked Dependency Synchronization Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id",
+    "contract_version",
+    "receipt_id",
+    "receipt_digest",
+    "status",
+    "upstream",
+    "downstream",
+    "alignment",
+    "evidence",
+    "verification",
+    "safety",
+    "recorded_at"
+  ],
+  "properties": {
+    "contract_id": {
+      "const": "AIGC-STACKED-DEPENDENCY-SYNC-RECEIPT-001"
+    },
+    "contract_version": {
+      "const": "1.0.0"
+    },
+    "receipt_id": {
+      "type": "string",
+      "pattern": "^DSR-[A-F0-9]{24}$"
+    },
+    "receipt_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "status": {
+      "const": "IMPLEMENTED_INTERNAL_PENDING_OPERATOR_REVIEW"
+    },
+    "upstream": {
+      "$ref": "#/$defs/upstream"
+    },
+    "downstream": {
+      "$ref": "#/$defs/downstream"
+    },
+    "alignment": {
+      "$ref": "#/$defs/alignment"
+    },
+    "evidence": {
+      "$ref": "#/$defs/evidence"
+    },
+    "verification": {
+      "$ref": "#/$defs/verification"
+    },
+    "safety": {
+      "$ref": "#/$defs/safety"
+    },
+    "recorded_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "$defs": {
+    "git_sha": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}$"
+    },
+    "branch_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240,
+      "pattern": "^[A-Za-z0-9._/-]+$"
+    },
+    "repo_path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500,
+      "pattern": "^[A-Za-z0-9._/-]+$"
+    },
+    "upstream": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pull_request", "branch", "head"],
+      "properties": {
+        "pull_request": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "branch": {
+          "$ref": "#/$defs/branch_name"
+        },
+        "head": {
+          "$ref": "#/$defs/git_sha"
+        }
+      }
+    },
+    "downstream": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pull_request",
+        "branch",
+        "pre_synchronization_head",
+        "synchronized_head",
+        "dependency_merge_commit",
+        "dependency_parent_head",
+        "rollback_branch"
+      ],
+      "properties": {
+        "pull_request": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "branch": {
+          "$ref": "#/$defs/branch_name"
+        },
+        "pre_synchronization_head": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "synchronized_head": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "dependency_merge_commit": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "dependency_parent_head": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "rollback_branch": {
+          "$ref": "#/$defs/branch_name"
+        }
+      }
+    },
+    "alignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relation", "ahead_by", "behind_by", "imported_paths"],
+      "properties": {
+        "relation": {
+          "const": "EXACT_UPSTREAM_HEAD_IMPORTED"
+        },
+        "ahead_by": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "behind_by": {
+          "const": 0
+        },
+        "imported_paths": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 200,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/repo_path"
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "combined_main_candidate",
+        "stacked_merge_candidate",
+        "ci_run_number",
+        "tests_passed",
+        "readiness_score",
+        "production_ready"
+      ],
+      "properties": {
+        "combined_main_candidate": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "stacked_merge_candidate": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "ci_run_number": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "tests_passed": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "readiness_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "production_ready": {
+          "const": false
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "combined_main_ci_required",
+        "stacked_base_restored",
+        "operator_review_required"
+      ],
+      "properties": {
+        "combined_main_ci_required": {
+          "const": true
+        },
+        "stacked_base_restored": {
+          "const": true
+        },
+        "operator_review_required": {
+          "const": true
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cloud_resources_changed",
+        "terraform_planned_or_applied",
+        "connector_activation_performed",
+        "credential_or_secret_accessed",
+        "external_action_performed",
+        "readiness_ledger_promoted"
+      ],
+      "properties": {
+        "cloud_resources_changed": {
+          "const": false
+        },
+        "terraform_planned_or_applied": {
+          "const": false
+        },
+        "connector_activation_performed": {
+          "const": false
+        },
+        "credential_or_secret_accessed": {
+          "const": false
+        },
+        "external_action_performed": {
+          "const": false
+        },
+        "readiness_ledger_promoted": {
+          "const": false
+        }
+      }
+    }
+  }
+}
