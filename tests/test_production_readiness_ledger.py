@@ -18,6 +18,20 @@ from src.core.production_readiness_ledger import (
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+EXPECTED_BLOCKING_GAPS = {
+    "security_privacy_wiring",
+    "transactional_persistence",
+    "production_identity_access",
+    "approved_external_connectors",
+    "production_deployment",
+}
+
+
+def capability_map(report: dict[str, object]) -> dict[str, dict[str, object]]:
+    return {
+        str(item["capability_id"]): item
+        for item in report["capability_results"]  # type: ignore[index]
+    }
 
 
 def test_production_readiness_report_is_evidence_backed(tmp_path: Path) -> None:
@@ -27,17 +41,42 @@ def test_production_readiness_report_is_evidence_backed(tmp_path: Path) -> None:
     assert report["external_action_performed"] is False
     assert report["operator_review_required"] is True
     assert report["production_ready"] is False
+    assert report["overall_score"] == pytest.approx(66.8)
     assert report["overall_score"] < report["production_readiness_threshold"]
     assert report["evidence_model"] == "structural_repository_evidence_v2"
     assert report["evidence_strength"] == "structural_not_operational_proof"
     assert report["source_revision"]
     assert report["governance_summary"]["operational_proof_claimed"] is False
-    assert "production_identity_access" in report["blocking_gaps"]
-    assert report["highest_impact_next_step"]["capability_id"] == "production_identity_access"
+    assert set(report["blocking_gaps"]) == EXPECTED_BLOCKING_GAPS
+    assert report["highest_impact_next_step"]["capability_id"] == "approved_external_connectors"
 
     result = run_production_readiness_ledger(PROJECT_ROOT, artifact_root=tmp_path)
     assert Path(result["report_path"]).exists()
     assert Path(result["markdown_report_path"]).exists()
+
+
+def test_merged_capabilities_receive_only_supported_structural_credit() -> None:
+    ledger = load_ledger(PROJECT_ROOT / "config" / "production_readiness_ledger.json")
+    report = build_report(PROJECT_ROOT, ledger)
+    capabilities = capability_map(report)
+
+    expected_statuses = {
+        "work_acquisition": "implemented_internal",
+        "security_privacy_wiring": "implemented_internal",
+        "transactional_persistence": "implemented_internal",
+        "production_identity_access": "partial",
+        "production_deployment": "planned",
+    }
+    for capability_id, expected_status in expected_statuses.items():
+        result = capabilities[capability_id]
+        assert result["effective_status"] == expected_status
+        assert result["evidence_complete"] is True
+        assert result["missing_evidence"] == []
+
+    assert report["dimension_scores"]["work_acquisition"] == pytest.approx(75.0)
+    assert report["dimension_scores"]["data"] == pytest.approx(75.0)
+    assert report["dimension_scores"]["identity_access"] == pytest.approx(50.0)
+    assert report["dimension_scores"]["deployment_operations"] == pytest.approx(20.0)
 
 
 def test_missing_evidence_downgrades_completion_claim(tmp_path: Path) -> None:
