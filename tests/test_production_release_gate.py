@@ -6,12 +6,13 @@ from pathlib import Path
 
 import pytest
 
-from src.core.contract_validator import ContractValidationError, validate_artifact
+from src.core.contract_validator import ContractValidationError
 from src.core.production_readiness_ledger import build_report, load_ledger
 from src.core.production_release_gate import (
     evaluate_release_manifest,
     readiness_truth_digest,
     release_candidate_digest,
+    validate_release_contract,
     write_gate_receipt,
 )
 
@@ -118,14 +119,17 @@ def manifest(
 def test_release_contracts_and_policy_are_strict() -> None:
     report = ready_report()
     value = manifest(report)
-    validate_artifact("production_release_gate_policy", policy())
-    validate_artifact("production_release_operator_approval", value["operator_approval"])
-    validate_artifact("production_release_manifest", value)
+    validate_release_contract("production_release_gate_policy", policy())
+    validate_release_contract(
+        "production_release_operator_approval",
+        value["operator_approval"],
+    )
+    validate_release_contract("production_release_manifest", value)
 
     injected = manifest(report)
     injected["claimed_readiness_score"] = 100
     with pytest.raises(ContractValidationError):
-        validate_artifact("production_release_manifest", injected)
+        validate_release_contract("production_release_manifest", injected)
 
 
 def test_fully_evidenced_ready_release_can_receive_permit() -> None:
@@ -201,7 +205,9 @@ def test_operator_approval_is_bound_to_candidate_digest() -> None:
     )
 
     assert evaluation.permitted is False
-    assert "OPERATOR_APPROVAL_CANDIDATE_MISMATCH" in evaluation.receipt["reason_codes"]
+    assert "OPERATOR_APPROVAL_CANDIDATE_MISMATCH" in evaluation.receipt[
+        "reason_codes"
+    ]
 
 
 def test_revision_and_readiness_digest_are_bound() -> None:
