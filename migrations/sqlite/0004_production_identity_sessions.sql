@@ -13,6 +13,17 @@ CREATE TABLE IF NOT EXISTS provider_subject_bindings (
     PRIMARY KEY (provider_binding_id, provider_subject)
 );
 
+CREATE TABLE IF NOT EXISTS provider_subject_revocation_state (
+    provider_binding_id TEXT NOT NULL,
+    provider_subject TEXT NOT NULL,
+    disabled INTEGER NOT NULL CHECK (disabled IN (0, 1)),
+    valid_after TEXT NOT NULL,
+    checked_at TEXT NOT NULL,
+    evidence_id TEXT NOT NULL,
+    revision INTEGER NOT NULL CHECK (revision >= 1),
+    PRIMARY KEY (provider_binding_id, provider_subject)
+);
+
 CREATE TABLE IF NOT EXISTS production_identity_sessions (
     session_id TEXT PRIMARY KEY,
     credential_digest TEXT NOT NULL UNIQUE CHECK (length(credential_digest) = 64),
@@ -38,6 +49,9 @@ ON provider_subject_bindings(principal_id, state);
 
 CREATE INDEX IF NOT EXISTS idx_provider_subject_tenant_project
 ON provider_subject_bindings(tenant_id, project_id, state);
+
+CREATE INDEX IF NOT EXISTS idx_provider_revocation_checked
+ON provider_subject_revocation_state(checked_at);
 
 CREATE INDEX IF NOT EXISTS idx_production_sessions_principal
 ON production_identity_sessions(principal_id, state);
