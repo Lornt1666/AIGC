@@ -36,7 +36,7 @@ def _utc(value: datetime) -> datetime:
 
 
 class HmacSessionCredentialDigester:
-    """Digest session credentials with an in-memory pepper resolved elsewhere."""
+    """Digest session credentials with in-memory pepper material."""
 
     def __init__(self, pepper_material: bytes) -> None:
         if len(pepper_material) < 32:
@@ -64,6 +64,7 @@ class ProductionSessionService:
         idle_timeout_seconds: int = 1800,
         absolute_timeout_seconds: int = 43200,
         credential_factory: Callable[[], str] | None = None,
+        provider_clock_skew_seconds: int = 60,
     ) -> None:
         if idle_timeout_seconds <= 0 or absolute_timeout_seconds <= 0:
             raise ProductionSessionError("Session timeouts must be positive")
@@ -71,10 +72,13 @@ class ProductionSessionService:
             raise ProductionSessionError(
                 "Session idle timeout cannot exceed absolute timeout"
             )
+        if provider_clock_skew_seconds < 0 or provider_clock_skew_seconds > 300:
+            raise ProductionSessionError("Provider clock skew must be 0..300 seconds")
         self.repository = repository
         self.digester = digester
         self.idle_timeout_seconds = idle_timeout_seconds
         self.absolute_timeout_seconds = absolute_timeout_seconds
+        self.provider_clock_skew_seconds = provider_clock_skew_seconds
         self.credential_factory = credential_factory or (
             lambda: secrets.token_urlsafe(48)
         )
@@ -88,7 +92,7 @@ class ProductionSessionService:
         rotated_from_session_id: str | None = None,
     ) -> IssuedProductionSession:
         current = _utc(now or datetime.now(timezone.utc))
-        self._require_verified_binding(verification, binding)
+        self._require_verified_binding(verification, binding, current=current)
         session_credential = self.credential_factory()
         credential_digest = self.digester.digest(session_credential)
         session_id = "sess_" + uuid4().hex
@@ -97,8 +101,11 @@ class ProductionSessionService:
                 (
                     *verification.evidence_ids,
                     *binding.evidence_ids,
-                    "EVID-SESSION-ISSUED-" + sha256(
-                        (session_id + "|" + verification.assertion_id).encode("utf-8")
+                    "EVID-SESSION-ISSUED-"
+                    + sha256(
+                        (session_id + "|" + verification.assertion_id).encode(
+                            "utf-8"
+                        )
                     ).hexdigest()[:20].upper(),
                 )
             )
@@ -134,6 +141,7 @@ class ProductionSessionService:
         now: datetime | None = None,
         expected_tenant_id: str | None = None,
         expected_project_id: str | None = None,
+        refresh_idle: bool = True,
     ) -> ProductionSessionRecord:
         current = _utc(now or datetime.now(timezone.utc))
         credential_digest = self.digester.digest(session_credential)
@@ -148,7 +156,21 @@ class ProductionSessionService:
             raise ProductionSessionError("Production session tenant mismatch")
         if expected_project_id is not None and record.project_id != expected_project_id:
             raise ProductionSessionError("Production session project mismatch")
-        return record
+        if not refresh_idle:
+            return record
+
+        renewed_idle_expiry = min(
+            current + timedelta(seconds=self.idle_timeout_seconds),
+            record.absolute_expires_at,
+        )
+        if current == record.last_seen_at and renewed_idle_expiry == record.idle_expires_at:
+            return record
+        return self.repository.touch(
+            session_id=record.session_id,
+            expected_revision=record.revision,
+            seen_at=current,
+            idle_expires_at=renewed_idle_expiry,
+        )
 
     def rotate(
         self,
@@ -159,15 +181,18 @@ class ProductionSessionService:
         now: datetime | None = None,
     ) -> IssuedProductionSession:
         current = _utc(now or datetime.now(timezone.utc))
+        self._require_verified_binding(verification, binding, current=current)
         existing = self.authenticate(
             session_credential,
             now=current,
             expected_tenant_id=binding.tenant_id,
             expected_project_id=binding.project_id,
+            refresh_idle=False,
         )
-        self._require_verified_binding(verification, binding)
         if existing.principal_id != binding.principal_id:
             raise ProductionSessionError("Production session principal mismatch")
+        if existing.membership_id != binding.membership_id:
+            raise ProductionSessionError("Production session membership mismatch")
         replacement_credential = self.credential_factory()
         replacement = ProductionSessionRecord(
             session_id="sess_" + uuid4().hex,
@@ -189,10 +214,13 @@ class ProductionSessionService:
                     (
                         *verification.evidence_ids,
                         *binding.evidence_ids,
-                        "EVID-SESSION-ROTATED-" + sha256(
-                            (existing.session_id + "|" + verification.assertion_id).encode(
-                                "utf-8"
-                            )
+                        "EVID-SESSION-ROTATED-"
+                        + sha256(
+                            (
+                                existing.session_id
+                                + "|"
+                                + verification.assertion_id
+                            ).encode("utf-8")
                         ).hexdigest()[:20].upper(),
                     )
                 )
@@ -237,7 +265,8 @@ class ProductionSessionService:
             SessionState.ACTIVE
             if record.state is ProductionSessionState.ACTIVE
             else SessionState.REVOKED
-            if record.state in {
+            if record.state
+            in {
                 ProductionSessionState.REVOKED,
                 ProductionSessionState.ROTATED,
             }
@@ -257,10 +286,12 @@ class ProductionSessionService:
             evidence_ids=record.evidence_ids,
         )
 
-    @staticmethod
     def _require_verified_binding(
+        self,
         verification: ProviderVerification,
         binding: ProviderSubjectBinding,
+        *,
+        current: datetime,
     ) -> None:
         if not verification.verified:
             raise ProductionSessionError(
@@ -270,6 +301,14 @@ class ProductionSessionService:
             raise ProductionSessionError(
                 "Production-verified provider authority is required"
             )
+        if verification.provider_binding_id != binding.provider_binding_id:
+            raise ProductionSessionError(
+                "Provider evidence binding does not match subject mapping"
+            )
+        if verification.subject != binding.provider_subject:
+            raise ProductionSessionError(
+                "Provider evidence subject does not match subject mapping"
+            )
         if verification.principal_id != binding.principal_id:
             raise ProductionSessionError("Provider principal does not match binding")
         if binding.state is not ProviderSubjectState.ACTIVE:
@@ -278,3 +317,10 @@ class ProductionSessionService:
             raise ProductionSessionError(
                 "Authentication assurance is insufficient for a session"
             )
+        permitted_future = current + timedelta(
+            seconds=self.provider_clock_skew_seconds
+        )
+        if _utc(verification.issued_at) > permitted_future:
+            raise ProductionSessionError("Provider evidence was issued in the future")
+        if _utc(verification.expires_at) <= current:
+            raise ProductionSessionError("Provider evidence has expired")
