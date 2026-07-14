@@ -1,0 +1,13 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://aigc.local/schemas/staging_identity_procurement_evaluation.schema.json",
+  "title":"AIGC Staging Identity Procurement Evaluation v1",
+  "type":"object","additionalProperties":false,
+  "required":["contract_id","contract_version","evaluation_id","exact_revision","procurement_pack_digest","pack_artifact_kind","pack_status","pack_ready_for_plan_review","pack_reason_codes","plan_authorization_receipt_present","plan_authorization_effective","plan_authorization_reason_codes","plan_evidence_receipt_present","plan_evidence_accepted","plan_evidence_reason_codes","apply_authorization_receipt_present","apply_authorization_effective","apply_authorization_reason_codes","evaluated_at","authorization_receipt_issued_by_evaluator","provider_action_performed","terraform_plan_performed","terraform_apply_performed","operator_review_required","automatic_apply_allowed","external_action_performed"],
+  "properties":{
+    "contract_id":{"const":"AIGC-STAGING-IDENTITY-PROCUREMENT-EVALUATION-001"},"contract_version":{"const":"1.0.0"},"evaluation_id":{"type":"string","pattern":"^SIPE-[A-F0-9]{24}$"},"exact_revision":{"type":"string","pattern":"^(?:[a-f0-9]{40}|unbound)$"},"procurement_pack_digest":{"type":"string","pattern":"^[a-f0-9]{64}$"},"pack_artifact_kind":{"enum":["TEMPLATE","SUBMISSION"]},"pack_status":{"enum":["AWAITING_PROVIDER_REFERENCES","READY_FOR_PLAN_REVIEW","SUPERSEDED"]},"pack_ready_for_plan_review":{"type":"boolean"},
+    "pack_reason_codes":{"$ref":"#/$defs/reasons"},"plan_authorization_receipt_present":{"type":"boolean"},"plan_authorization_effective":{"type":"boolean"},"plan_authorization_reason_codes":{"$ref":"#/$defs/reasons"},"plan_evidence_receipt_present":{"type":"boolean"},"plan_evidence_accepted":{"type":"boolean"},"plan_evidence_reason_codes":{"$ref":"#/$defs/reasons"},"apply_authorization_receipt_present":{"type":"boolean"},"apply_authorization_effective":{"type":"boolean"},"apply_authorization_reason_codes":{"$ref":"#/$defs/reasons"},"evaluated_at":{"type":"string","format":"date-time"},
+    "authorization_receipt_issued_by_evaluator":{"const":false},"provider_action_performed":{"const":false},"terraform_plan_performed":{"const":false},"terraform_apply_performed":{"const":false},"operator_review_required":{"const":true},"automatic_apply_allowed":{"const":false},"external_action_performed":{"const":false}
+  },
+  "$defs":{"reasons":{"type":"array","uniqueItems":true,"items":{"type":"string","pattern":"^[A-Z][A-Z0-9_]{2,99}$"}}}
+}
