@@ -62,7 +62,7 @@ class SecretAccessReceipt:
 
 
 class ResolvedSecret:
-    """In-memory secret material that can be explicitly zeroized."""
+    """In-memory secret material backed by an explicitly zeroizable buffer."""
 
     def __init__(self, material: bytes, receipt: SecretAccessReceipt) -> None:
         if not material:
@@ -71,10 +71,11 @@ class ResolvedSecret:
         self.receipt = receipt
         self._closed = False
 
-    def bytes(self) -> bytes:
+    def bytes(self) -> memoryview:
+        """Borrow a read-only view of the zeroizable buffer without copying it."""
         if self._closed:
             raise SecretManagerPolicyError("Resolved secret material is closed")
-        return bytes(self._material)
+        return memoryview(self._material).toreadonly()
 
     def close(self) -> None:
         if self._closed:
@@ -122,6 +123,10 @@ class GoogleSecretManagerResolver:
             raise SecretManagerPolicyError("Secret Manager project remains unresolved")
         if reference.project_id != self.expected_project_id:
             raise SecretManagerPolicyError("Secret Manager project is not allowlisted")
+        if not reference.version.isdigit() or int(reference.version) <= 0:
+            raise SecretManagerPolicyError(
+                "Secret Manager access requires an immutable numeric version"
+            )
         client = self._client or self._default_client()
         try:
             response = client.access_secret_version(
