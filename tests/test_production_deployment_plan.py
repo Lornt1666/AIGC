@@ -30,6 +30,13 @@ def gate_receipt() -> dict[str, object]:
     }
 
 
+def staging_authorized_policy() -> dict[str, object]:
+    policy = deepcopy(load_deployment_policy(CONFIG, SCHEMA))
+    policy["authority"]["staging_resource_creation_authorized"] = True
+    policy["authority"]["staging_apply_authorized"] = True
+    return policy
+
+
 def test_real_deployment_policy_is_denied_and_creates_no_resources() -> None:
     policy = load_deployment_policy(CONFIG, SCHEMA)
     evaluation = evaluate_deployment_plan(
@@ -61,12 +68,8 @@ def test_real_deployment_policy_is_denied_and_creates_no_resources() -> None:
 
 
 def test_synthetic_bound_candidate_can_be_plan_eligible_without_apply() -> None:
-    policy = deepcopy(load_deployment_policy(CONFIG, SCHEMA))
-    policy["authority"]["staging_resource_creation_authorized"] = True
-    policy["authority"]["staging_apply_authorized"] = True
-
     evaluation = evaluate_deployment_plan(
-        policy=policy,
+        policy=staging_authorized_policy(),
         environment="staging",
         exact_revision=REVISION,
         project_id="aigc-staging-example",
@@ -84,16 +87,52 @@ def test_synthetic_bound_candidate_can_be_plan_eligible_without_apply() -> None:
     assert evaluation.receipt["external_action_performed"] is False
 
 
+def test_deployment_project_id_matches_secret_manager_boundary() -> None:
+    maximum_project_id = "a" + ("b" * 28) + "1"
+    for project_id in ("abc123", maximum_project_id):
+        evaluation = evaluate_deployment_plan(
+            policy=staging_authorized_policy(),
+            environment="staging",
+            exact_revision=REVISION,
+            project_id=project_id,
+            image_digest=IMAGE_DIGEST,
+            release_gate_receipt=gate_receipt(),
+            production_domain=None,
+            terraform_root=TERRAFORM,
+            now=NOW,
+        )
+        assert evaluation.plan_eligible is True
+        assert "PROJECT_ID_UNRESOLVED" not in evaluation.receipt["reason_codes"]
+
+    for project_id in (
+        "short",
+        "approved_project",
+        "approved-project-",
+        "a" * 31,
+    ):
+        evaluation = evaluate_deployment_plan(
+            policy=staging_authorized_policy(),
+            environment="staging",
+            exact_revision=REVISION,
+            project_id=project_id,
+            image_digest=IMAGE_DIGEST,
+            release_gate_receipt=gate_receipt(),
+            production_domain=None,
+            terraform_root=TERRAFORM,
+            now=NOW,
+        )
+        assert evaluation.plan_eligible is False
+        assert "PROJECT_ID_UNRESOLVED" in evaluation.receipt["reason_codes"]
+        assert evaluation.receipt["resource_creation_effective"] is False
+
+
 def test_gate_revision_and_artifact_are_candidate_bound() -> None:
-    policy = deepcopy(load_deployment_policy(CONFIG, SCHEMA))
-    policy["authority"]["staging_resource_creation_authorized"] = True
-    policy["authority"]["staging_apply_authorized"] = True
     gate = gate_receipt()
     gate["exact_revision"] = "c" * 40
     gate["release_artifact_digest"] = "sha256:" + "d" * 64
 
     evaluation = evaluate_deployment_plan(
-        policy=policy,
+        policy=staging_authorized_policy(),
         environment="staging",
         exact_revision=REVISION,
         project_id="aigc-staging-example",
