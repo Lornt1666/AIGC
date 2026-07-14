@@ -46,11 +46,21 @@ def test_reference_parser_is_strict() -> None:
         "projects/approved-project/secrets/aigc-github-app/versions/latest"
     )
 
+    minimum = parse_secret_reference("gcp_secret://abc123/value/latest")
+    maximum_project_id = "a" + ("b" * 28) + "1"
+    maximum = parse_secret_reference(
+        f"gcp_secret://{maximum_project_id}/value/latest"
+    )
+    assert minimum.project_id == "abc123"
+    assert maximum.project_id == maximum_project_id
+
     for value in (
         "https://example.invalid/secret",
         "gcp_secret://short/value/latest",
         "gcp_secret://approved-project/value",
         "gcp_secret://approved_project/value/latest",
+        "gcp_secret://approved-project-/value/latest",
+        f"gcp_secret://{'a' * 31}/value/latest",
     ):
         with pytest.raises(SecretManagerPolicyError):
             parse_secret_reference(value)
