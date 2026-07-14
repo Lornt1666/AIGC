@@ -1,0 +1,28 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://aigc.local/schemas/deployment_rollback_receipt.schema.json",
+  "title":"AIGC Deployment Rollback Receipt v1",
+  "type":"object","additionalProperties":false,
+  "required":["contract_id","contract_version","receipt_id","environment","failed_revision","failed_image_digest","restored_revision","restored_image_digest","trigger","started_at","completed_at","database_action","health_restored","audit_evidence_preserved","result","reason_codes","operator_review_required","external_action_performed"],
+  "properties":{
+    "contract_id":{"const":"AIGC-DEPLOYMENT-ROLLBACK-RECEIPT-001"},
+    "contract_version":{"const":"1.0.0"},
+    "receipt_id":{"type":"string","pattern":"^DRR-[A-F0-9]{24}$"},
+    "environment":{"enum":["isolated_staging","production"]},
+    "failed_revision":{"type":"string","pattern":"^[a-f0-9]{40}$"},
+    "failed_image_digest":{"type":"string","pattern":"^sha256:[a-f0-9]{64}$"},
+    "restored_revision":{"type":"string","pattern":"^[a-f0-9]{40}$"},
+    "restored_image_digest":{"type":"string","pattern":"^sha256:[a-f0-9]{64}$"},
+    "trigger":{"type":"string","minLength":1,"maxLength":1000},
+    "started_at":{"type":"string","format":"date-time"},
+    "completed_at":{"type":"string","format":"date-time"},
+    "database_action":{"enum":["none_compatible_schema","restore_isolated_then_promote","forward_fix_required"]},
+    "health_restored":{"type":"boolean"},
+    "audit_evidence_preserved":{"type":"boolean"},
+    "result":{"enum":["PASS","FAIL"]},
+    "reason_codes":{"type":"array","uniqueItems":true,"maxItems":100,"items":{"type":"string","pattern":"^[A-Z][A-Z0-9_]{2,99}$"}},
+    "operator_review_required":{"const":true},
+    "external_action_performed":{"type":"boolean"}
+  },
+  "allOf":[{"if":{"properties":{"result":{"const":"PASS"}}},"then":{"properties":{"reason_codes":{"maxItems":0},"health_restored":{"const":true},"audit_evidence_preserved":{"const":true}}},"else":{"properties":{"reason_codes":{"minItems":1}}}}]
+}
