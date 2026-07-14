@@ -9,6 +9,7 @@ import re
 from typing import Any, Mapping, Protocol
 from urllib.request import Request, urlopen
 
+from cryptography import x509
 from jsonschema import Draft202012Validator, FormatChecker
 import jwt
 
@@ -217,6 +218,27 @@ def _digest_mapping(value: Mapping[str, Any]) -> str:
     return sha256(payload.encode("utf-8")).hexdigest()
 
 
+def _verification_key(certificate_or_key_pem: str) -> Any:
+    """Return a PyJWT-compatible verification key from Google X.509 material.
+
+    PyJWT does not accept certificate PEM as an RSA verification key on current
+    releases. Google publishes X.509 certificates, so the adapter must parse the
+    certificate and pass its public key to PyJWT. Public-key PEM remains accepted
+    for injected test providers and future provider adapters.
+    """
+
+    material = certificate_or_key_pem.strip()
+    if material.startswith("-----BEGIN CERTIFICATE-----"):
+        try:
+            certificate = x509.load_pem_x509_certificate(material.encode("utf-8"))
+        except (TypeError, ValueError) as exc:
+            raise IdentityPlatformConfigurationError(
+                "Identity Platform public certificate is malformed"
+            ) from exc
+        return certificate.public_key()
+    return material
+
+
 def load_identity_platform_policy(
     policy_path: str | Path = DEFAULT_POLICY_PATH,
     schema_path: str | Path = DEFAULT_SCHEMA_PATH,
@@ -407,9 +429,10 @@ class GoogleIdentityPlatformAdapter:
                 key_id=key_id,
                 now=current,
             )
+            verification_key = _verification_key(key_evidence.certificate_pem)
             claims = jwt.decode(
                 signed_assertion,
-                key_evidence.certificate_pem,
+                verification_key,
                 algorithms=[self.settings.algorithm],
                 audience=self.settings.project_id,
                 issuer=self.settings.issuer,
@@ -483,7 +506,10 @@ class GoogleIdentityPlatformAdapter:
                 reasons=(IdentityDenialReason.PROVIDER_NOT_ALLOWED,),
             )
         provider_tenant = firebase_claim.get("tenant")
-        if self.settings.provider_tenant_id is not None and provider_tenant != self.settings.provider_tenant_id:
+        if (
+            self.settings.provider_tenant_id is not None
+            and provider_tenant != self.settings.provider_tenant_id
+        ):
             return self._denied(
                 current=current,
                 assertion_id=assertion_id,
