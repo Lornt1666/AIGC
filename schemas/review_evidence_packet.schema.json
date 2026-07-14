@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/review_evidence_packet.schema.json",
+  "title": "AIGC Review Evidence Packet v1",
+  "description": "Immutable, advisory evidence packet for accountable human review. Packet generation never changes Quest state, accepts delivery, or performs external action.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id",
+    "contract_version",
+    "packet_id",
+    "packet_digest",
+    "request_digest",
+    "quest_id",
+    "quest_revision",
+    "source_state",
+    "exact_revision",
+    "principal_id",
+    "tenant_id",
+    "project_id",
+    "identity_receipt_id",
+    "work_authorization_receipt_id",
+    "work_acceptance_request_digest",
+    "operator_role",
+    "executive_summary",
+    "acceptance_criteria",
+    "artifacts",
+    "test_receipts",
+    "source_references",
+    "findings",
+    "unresolved_blockers",
+    "rework_recommendations",
+    "readiness",
+    "evidence_ids",
+    "generated_at",
+    "retention_class",
+    "advisory_only",
+    "human_judgment_required",
+    "state_changed",
+    "external_action_performed"
+  ],
+  "properties": {
+    "contract_id": {"const": "AIGC-REVIEW-EVIDENCE-PACKET-001"},
+    "contract_version": {"const": "1.0.0"},
+    "packet_id": {"type": "string", "pattern": "^REP-[A-F0-9]{24}$"},
+    "packet_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "request_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "quest_id": {"type": "string", "pattern": "^quest_[A-Za-z0-9_-]{6,100}$"},
+    "quest_revision": {"type": "integer", "minimum": 1},
+    "source_state": {"enum": ["WORK_ACCEPTED", "REWORK_REQUIRED"]},
+    "exact_revision": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "principal_id": {"type": "string", "minLength": 1, "maxLength": 160},
+    "tenant_id": {"type": "string", "minLength": 1, "maxLength": 160},
+    "project_id": {"type": "string", "minLength": 1, "maxLength": 160},
+    "identity_receipt_id": {"type": "string", "pattern": "^IDR-[A-F0-9]{24}$"},
+    "work_authorization_receipt_id": {"type": "string", "minLength": 1, "maxLength": 300},
+    "work_acceptance_request_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "operator_role": {"const": "ACCOUNTABLE_OPERATOR"},
+    "executive_summary": {"type": "string", "minLength": 1, "maxLength": 12000},
+    "acceptance_criteria": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["criterion_index", "criterion_text", "status", "evidence_refs", "notes"],
+        "properties": {
+          "criterion_index": {"type": "integer", "minimum": 0},
+          "criterion_text": {"type": "string", "minLength": 1, "maxLength": 2000},
+          "status": {"enum": ["SATISFIED", "PARTIAL", "UNSATISFIED"]},
+          "evidence_refs": {
+            "type": "array",
+            "maxItems": 100,
+            "uniqueItems": true,
+            "items": {"type": "string", "minLength": 1, "maxLength": 500}
+          },
+          "notes": {"type": ["string", "null"], "maxLength": 4000}
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["artifact_id", "path", "sha256", "media_type", "size_bytes", "evidence_state", "source", "description"],
+        "properties": {
+          "artifact_id": {"type": "string", "pattern": "^artifact_[A-Za-z0-9_-]{6,120}$"},
+          "path": {"type": "string", "minLength": 1, "maxLength": 2000},
+          "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "media_type": {"type": "string", "minLength": 1, "maxLength": 200},
+          "size_bytes": {"type": "integer", "minimum": 0},
+          "evidence_state": {"enum": ["DECLARED", "HASH_VERIFIED", "TESTED", "CI_OBSERVED"]},
+          "source": {"enum": ["OPERATOR_DECLARED", "REPOSITORY_ARTIFACT", "CI_ARTIFACT"]},
+          "description": {"type": ["string", "null"], "maxLength": 4000}
+        }
+      }
+    },
+    "test_receipts": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["test_id", "command", "result", "exact_revision", "observed_at", "evidence_ref", "notes"],
+        "properties": {
+          "test_id": {"type": "string", "pattern": "^test_[A-Za-z0-9_-]{4,120}$"},
+          "command": {"type": "string", "minLength": 1, "maxLength": 4000},
+          "result": {"enum": ["PASS", "FAIL", "NOT_APPLICABLE"]},
+          "exact_revision": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+          "observed_at": {"type": "string", "format": "date-time"},
+          "evidence_ref": {"type": ["string", "null"], "maxLength": 2000},
+          "notes": {"type": ["string", "null"], "maxLength": 4000}
+        }
+      }
+    },
+    "source_references": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_id", "title", "reference", "rights_status"],
+        "properties": {
+          "source_id": {"type": "string", "pattern": "^source_[A-Za-z0-9_-]{4,120}$"},
+          "title": {"type": "string", "minLength": 1, "maxLength": 1000},
+          "reference": {"type": "string", "minLength": 1, "maxLength": 4000},
+          "rights_status": {"enum": ["PUBLIC", "CONSENTED", "OFFICIAL_API", "OPERATOR_PROVIDED", "INTERNAL"]}
+        }
+      }
+    },
+    "findings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["security", "privacy", "policy"],
+      "properties": {
+        "security": {"type": "array", "maxItems": 200, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 4000}},
+        "privacy": {"type": "array", "maxItems": 200, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 4000}},
+        "policy": {"type": "array", "maxItems": 200, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 4000}}
+      }
+    },
+    "unresolved_blockers": {"type": "array", "maxItems": 200, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 4000}},
+    "rework_recommendations": {"type": "array", "maxItems": 200, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 4000}},
+    "readiness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["packet_complete", "criteria_satisfied", "tests_acceptable", "no_unresolved_blockers", "delivery_candidate", "recommended_decision"],
+      "properties": {
+        "packet_complete": {"const": true},
+        "criteria_satisfied": {"type": "boolean"},
+        "tests_acceptable": {"type": "boolean"},
+        "no_unresolved_blockers": {"type": "boolean"},
+        "delivery_candidate": {"type": "boolean"},
+        "recommended_decision": {"enum": ["ACCEPTED_FOR_DELIVERY", "REWORK_REQUIRED"]}
+      }
+    },
+    "evidence_ids": {"type": "array", "minItems": 2, "maxItems": 1000, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 500}},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "retention_class": {"const": "REVIEW_EVIDENCE_365D"},
+    "advisory_only": {"const": true},
+    "human_judgment_required": {"const": true},
+    "state_changed": {"const": false},
+    "external_action_performed": {"const": false}
+  }
+}
