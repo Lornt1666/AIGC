@@ -472,6 +472,12 @@ class GoogleIdentityPlatformAdapter:
         issued_at = _timestamp(claims["iat"])
         expires_at = _timestamp(claims["exp"])
         authentication_time = _timestamp(claims["auth_time"])
+        if expires_at <= current:
+            return self._denied(
+                current=current,
+                assertion_id=assertion_id,
+                reasons=(IdentityDenialReason.PROVIDER_ASSERTION_EXPIRED,),
+            )
         if issued_at > current + timedelta(seconds=self.settings.clock_skew_seconds):
             return self._denied(
                 current=current,
