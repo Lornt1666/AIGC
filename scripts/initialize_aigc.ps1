@@ -42,5 +42,5 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host "Initialization completed. Launching the local Operator Cockpit." -ForegroundColor Green
-Invoke-Python -Arguments @("-m", "streamlit", "run", "src/dashboard/operator_cockpit_app.py")
+Invoke-Python -Arguments @("-m", "streamlit", "run", "src/dashboard/operator_cockpit_v2_app.py")
 exit $LASTEXITCODE
