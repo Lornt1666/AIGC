@@ -58,6 +58,7 @@ print(Path(sys.argv[1]).resolve())
 PY
 )"
 VERIFICATION_RECEIPT="${OUTPUT_ROOT}.verification.json"
+VERIFICATION_LOG="${OUTPUT_ROOT}.verification.log"
 
 CURRENT_STAGE="initialization"
 mkdir -p \
@@ -114,7 +115,6 @@ import json
 import sys
 
 expected_pr = int(sys.argv[6]) if sys.argv[6] else None
-clean_material = b""
 payload = {
     "contract_id": "AIGC-LOCAL-CI-REPOSITORY-STATE-001",
     "source_revision": sys.argv[2],
@@ -127,7 +127,7 @@ payload = {
     "index_clean": True,
     "tracked_diff_clean": True,
     "untracked_clean": True,
-    "clean_status_sha256": sha256(clean_material).hexdigest(),
+    "clean_status_sha256": sha256(b"").hexdigest(),
     "recorded_at": datetime.now(timezone.utc).isoformat(),
 }
 Path(sys.argv[1]).write_text(
@@ -303,9 +303,10 @@ python scripts/verify_evidence_manifest.py \
   "$OUTPUT_ROOT" \
   --expected-revision "$REVISION" \
   --output "$VERIFICATION_RECEIPT" \
-  2>&1 | tee "$OUTPUT_ROOT/logs/manifest-verification.log"
+  2>&1 | tee "$VERIFICATION_LOG"
 
 CURRENT_STAGE="complete"
 printf 'Local supplemental evidence generated at:\n%s\n' "$OUTPUT_ROOT"
 printf 'Manifest verification receipt:\n%s\n' "$VERIFICATION_RECEIPT"
+printf 'Manifest verification log:\n%s\n' "$VERIFICATION_LOG"
 printf 'This bundle does not replace a successful hosted GitHub Actions run.\n'
