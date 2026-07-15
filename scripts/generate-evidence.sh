@@ -19,9 +19,35 @@ REVISION="$(git rev-parse HEAD)"
 [[ "$REVISION" =~ ^[0-9a-f]{40}$ ]] \
   || fail "Evidence generation requires an exact 40-character Git revision"
 
-if [[ -n "$(git status --porcelain)" ]]; then
-  fail "Evidence generation requires a clean working tree"
+HEAD_OBJECT_TYPE="$(git cat-file -t HEAD)"
+[[ "$HEAD_OBJECT_TYPE" == "commit" ]] \
+  || fail "HEAD must resolve to a commit object"
+
+EXPECTED_REVISION="${AIGC_EXPECTED_REVISION:-}"
+if [[ -n "$EXPECTED_REVISION" ]]; then
+  [[ "$EXPECTED_REVISION" =~ ^[0-9a-f]{40}$ ]] \
+    || fail "AIGC_EXPECTED_REVISION must be an exact lowercase 40-character Git SHA"
+  [[ "$REVISION" == "$EXPECTED_REVISION" ]] \
+    || fail "Current revision does not match AIGC_EXPECTED_REVISION"
 fi
+
+EXPECTED_PR_NUMBER="${AIGC_EXPECTED_PR_NUMBER:-}"
+if [[ -n "$EXPECTED_PR_NUMBER" ]]; then
+  [[ "$EXPECTED_PR_NUMBER" =~ ^[1-9][0-9]*$ ]] \
+    || fail "AIGC_EXPECTED_PR_NUMBER must be a positive integer"
+fi
+
+BRANCH_NAME="$(git branch --show-current)"
+PORCELAIN_STATUS="$(git status --porcelain=v1 --untracked-files=all)"
+[[ -z "$PORCELAIN_STATUS" ]] \
+  || fail "Evidence generation requires a clean working tree"
+git diff --quiet \
+  || fail "Tracked working-tree changes are present"
+git diff --cached --quiet \
+  || fail "Staged index changes are present"
+UNTRACKED_FILES="$(git ls-files --others --exclude-standard)"
+[[ -z "$UNTRACKED_FILES" ]] \
+  || fail "Untracked non-ignored files are present"
 
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 OUTPUT_ROOT="${1:-reports/artifacts/local_ci_evidence/${REVISION}/${STAMP}}"
@@ -31,6 +57,7 @@ import sys
 print(Path(sys.argv[1]).resolve())
 PY
 )"
+VERIFICATION_RECEIPT="${OUTPUT_ROOT}.verification.json"
 
 CURRENT_STAGE="initialization"
 mkdir -p \
@@ -73,17 +100,63 @@ on_exit() {
 }
 trap on_exit EXIT
 
-python - "$OUTPUT_ROOT/evidence-context.json" "$REVISION" <<'PY'
+python - \
+  "$OUTPUT_ROOT/repository-state.json" \
+  "$REVISION" \
+  "$BRANCH_NAME" \
+  "$HEAD_OBJECT_TYPE" \
+  "$EXPECTED_REVISION" \
+  "$EXPECTED_PR_NUMBER" <<'PY'
+from datetime import datetime, timezone
+from hashlib import sha256
+from pathlib import Path
+import json
+import sys
+
+expected_pr = int(sys.argv[6]) if sys.argv[6] else None
+clean_material = b""
+payload = {
+    "contract_id": "AIGC-LOCAL-CI-REPOSITORY-STATE-001",
+    "source_revision": sys.argv[2],
+    "branch_name": sys.argv[3],
+    "head_object_type": sys.argv[4],
+    "expected_revision": sys.argv[5],
+    "expected_pr_number": expected_pr,
+    "expected_pr_assertion_source": "operator_environment" if expected_pr else "not_supplied",
+    "worktree_clean": True,
+    "index_clean": True,
+    "tracked_diff_clean": True,
+    "untracked_clean": True,
+    "clean_status_sha256": sha256(clean_material).hexdigest(),
+    "recorded_at": datetime.now(timezone.utc).isoformat(),
+}
+Path(sys.argv[1]).write_text(
+    json.dumps(payload, indent=2, sort_keys=True) + "\n",
+    encoding="utf-8",
+)
+PY
+
+python - \
+  "$OUTPUT_ROOT/evidence-context.json" \
+  "$REVISION" \
+  "$BRANCH_NAME" \
+  "$EXPECTED_REVISION" \
+  "$EXPECTED_PR_NUMBER" <<'PY'
 from datetime import datetime, timezone
 from pathlib import Path
 import json
 import sys
 
+expected_pr = int(sys.argv[5]) if sys.argv[5] else None
 Path(sys.argv[1]).write_text(
     json.dumps(
         {
             "contract_id": "AIGC-LOCAL-CI-EVIDENCE-CONTEXT-001",
+            "contract_version": "1.1.0",
             "source_revision": sys.argv[2],
+            "branch_name": sys.argv[3],
+            "expected_revision": sys.argv[4],
+            "expected_pr_number": expected_pr,
             "generated_at": datetime.now(timezone.utc).isoformat(),
             "mode": "LOCAL_SUPPLEMENTAL_FAIL_CLOSED",
             "hosted_ci_replacement": False,
@@ -195,8 +268,10 @@ import sys
 root = Path(sys.argv[1])
 entries = []
 for path in sorted(root.rglob("*")):
-    if not path.is_file() or path.name == "evidence-manifest.json":
+    if not path.is_file() or path.name in {"evidence-manifest.json", "run-status.json"}:
         continue
+    if path.is_symlink():
+        raise SystemExit(f"Symlink prohibited in evidence bundle: {path}")
     entries.append(
         {
             "path": path.relative_to(root).as_posix(),
@@ -206,6 +281,7 @@ for path in sorted(root.rglob("*")):
     )
 manifest = {
     "contract_id": "AIGC-LOCAL-CI-EVIDENCE-MANIFEST-001",
+    "contract_version": "1.1.0",
     "source_revision": sys.argv[2],
     "generated_at": datetime.now(timezone.utc).isoformat(),
     "artifact_count": len(entries),
@@ -222,6 +298,14 @@ manifest = {
 )
 PY
 
+CURRENT_STAGE="manifest_verification"
+python scripts/verify_evidence_manifest.py \
+  "$OUTPUT_ROOT" \
+  --expected-revision "$REVISION" \
+  --output "$VERIFICATION_RECEIPT" \
+  2>&1 | tee "$OUTPUT_ROOT/logs/manifest-verification.log"
+
 CURRENT_STAGE="complete"
 printf 'Local supplemental evidence generated at:\n%s\n' "$OUTPUT_ROOT"
+printf 'Manifest verification receipt:\n%s\n' "$VERIFICATION_RECEIPT"
 printf 'This bundle does not replace a successful hosted GitHub Actions run.\n'
