@@ -29,13 +29,18 @@ jobs:
       - name: Validate contracts
         run: python src/aigc.py validate
 
+      - name: Validate provider discovery kit contracts
+        run: |
+          python src/aigc.py validate --schema provider_discovery_command_catalog --path config/provider_discovery_command_catalog.json
+          python src/aigc.py validate --schema provider_discovery_mock_fixture --path config/provider_discovery_mock_fixture.json
+
       - name: Validate AEC-001 constitutional substrate
         run: python src/validate_aec_001.py
 
       - name: Scan committed content for secret-like content
         run: >
           python src/security/redaction_scanner.py
-          --paths src config docs governance README.md AGENTS.md AIGC_MASTER_PROMPT.md OMEGA_X_CONSTITUTION.md schemas tests reports Dockerfile render.yaml fly.toml Procfile
+          --paths src scripts config docs governance README.md AGENTS.md AIGC_MASTER_PROMPT.md OMEGA_X_CONSTITUTION.md schemas tests reports Dockerfile render.yaml fly.toml Procfile
 
       - name: Run procurement smoke stages
         run: |
@@ -43,6 +48,20 @@ jobs:
           python src/n8n_workflow_dispatch_bridge_procurement.py --project-root . --config config/aigc_n8n_workflow_dispatch_bridge.json
           python src/aigc.py validate --schema save_credential_broker_packet --path data/save_credential_broker/aigc_save_credential_broker_packet.json
           python src/aigc.py validate --schema n8n_workflow_dispatch_bridge_packet --path data/n8n_bridge/aigc_n8n_workflow_dispatch_bridge_packet.json
+
+      - name: Run provider discovery mock-only smoke
+        run: |
+          python scripts/run_provider_discovery_mock.py \
+            --repository-revision "${GITHUB_SHA}" \
+            --created-at "2026-07-15T00:00:00Z" \
+            --output-dir reports/artifacts/provider_discovery_simulation
+
+      - name: Upload provider discovery simulation
+        uses: actions/upload-artifact@v4
+        with:
+          name: provider-discovery-simulation-${{ github.sha }}
+          path: reports/artifacts/provider_discovery_simulation
+          if-no-files-found: error
 
       - name: Run tests
         shell: bash

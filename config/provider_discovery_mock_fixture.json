@@ -1,0 +1,220 @@
+{
+  "contract_id": "AIGC-PROVIDER-DISCOVERY-MOCK-FIXTURE-001",
+  "contract_version": "1.0.0",
+  "fixture_id": "PDF-SYNTHETIC-STAGING-001",
+  "synthetic": true,
+  "captured_at": "2026-07-15T00:00:00Z",
+  "parameters": {
+    "project_id": "aigc-staging-001",
+    "project_reference": "gcp_project://aigc-staging-001",
+    "wif_pool_id": "aigc-github-pool",
+    "wif_provider_id": "aigc-github-provider",
+    "plan_service_account_id": "aigc-plan-sa",
+    "apply_service_account_id": "aigc-apply-sa",
+    "runtime_service_account_id": "aigc-runtime-sa",
+    "plan_service_account_email": "aigc-plan-sa@aigc-staging-001.iam.gserviceaccount.com",
+    "apply_service_account_email": "aigc-apply-sa@aigc-staging-001.iam.gserviceaccount.com",
+    "runtime_service_account_email": "aigc-runtime-sa@aigc-staging-001.iam.gserviceaccount.com",
+    "oauth_secret_id": "aigc-google-oauth-client-secret",
+    "session_pepper_secret_id": "aigc-session-pepper",
+    "state_bucket_url": "gs://aigc-staging-001-tfstate",
+    "state_bucket_reference": "gcs_bucket://aigc-staging-001/aigc-staging-001-tfstate",
+    "staging_domain_reference": "dns_name://staging.aigc.example"
+  },
+  "responses": {
+    "project_describe": {
+      "attempts": [
+        {
+          "outcome": "SUCCESS",
+          "exit_code": 0,
+          "stdout_json": {
+            "projectId": "aigc-staging-001",
+            "projectNumber": "123456789012",
+            "lifecycleState": "ACTIVE",
+            "name": "AIGC Synthetic Staging"
+          },
+          "stderr": "",
+          "duration_ms": 15
+        }
+      ]
+    },
+    "enabled_services": {
+      "attempts": [
+        {
+          "outcome": "SUCCESS",
+          "exit_code": 0,
+          "stdout_json": [
+            {"config": {"name": "cloudresourcemanager.googleapis.com"}},
+            {"config": {"name": "iam.googleapis.com"}},
+            {"config": {"name": "iamcredentials.googleapis.com"}},
+            {"config": {"name": "serviceusage.googleapis.com"}},
+            {"config": {"name": "sts.googleapis.com"}}
+          ],
+          "stderr": "",
+          "duration_ms": 20
+        }
+      ]
+    },
+    "project_iam_policy": {
+      "attempts": [
+        {
+          "outcome": "SUCCESS",
+          "exit_code": 0,
+          "stdout_json": {
+            "version": 1,
+            "bindings": [
+              {
+                "role": "roles/viewer",
+                "members": [
+                  "serviceAccount:aigc-plan-sa@aigc-staging-001.iam.gserviceaccount.com"
+                ]
+              }
+            ]
+          },
+          "stderr": "",
+          "duration_ms": 18
+        }
+      ]
+    },
+    "service_accounts": {
+      "attempts": [
+        {
+          "outcome": "SUCCESS",
+          "exit_code": 0,
+          "stdout_json": [
+            {
+              "email": "aigc-plan-sa@aigc-staging-001.iam.gserviceaccount.com",
+              "disabled": false
+            },
+            {
+              "email": "aigc-apply-sa@aigc-staging-001.iam.gserviceaccount.com",
+              "disabled": false
+            },
+            {
+              "email": "aigc-runtime-sa@aigc-staging-001.iam.gserviceaccount.com",
+              "disabled": false
+            }
+          ],
+          "stderr": "",
+          "duration_ms": 22
+        }
+      ]
+    },
+    "plan_service_account_keys": {
+      "attempts": [
+        {
+          "outcome": "SUCCESS",
+          "exit_code": 0,
+          "stdout_json": [],
+          "stderr": "",
+          "duration_ms": 12
+        }
+      ]
+    },
+    "apply_service_account_keys": {
+      "attempts": [
+        {
+          "outcome": "SUCCESS",
+          "exit_code": 0,
+          "stdout_json": [],
+          "stderr": "",
+          "duration_ms": 12
+        }
+      ]
+    },
+    "runtime_service_account_keys": {
+      "attempts": [
+        {
+          "outcome": "SUCCESS",
+          "exit_code": 0,
+          "stdout_json": [],
+          "stderr": "",
+          "duration_ms": 12
+        }
+      ]
+    },
+    "wif_pools": {
+      "attempts": [
+        {
+          "outcome": "SUCCESS",
+          "exit_code": 0,
+          "stdout_json": [],
+          "stderr": "",
+          "duration_ms": 18
+        }
+      ]
+    },
+    "wif_providers": {
+      "attempts": [
+        {
+          "outcome": "SUCCESS",
+          "exit_code": 0,
+          "stdout_json": [],
+          "stderr": "",
+          "duration_ms": 18
+        }
+      ]
+    },
+    "secrets": {
+      "attempts": [
+        {
+          "outcome": "SUCCESS",
+          "exit_code": 0,
+          "stdout_json": [],
+          "stderr": "",
+          "duration_ms": 15
+        }
+      ]
+    },
+    "oauth_secret_versions": {
+      "attempts": [
+        {
+          "outcome": "FAILED",
+          "exit_code": 1,
+          "stdout_json": null,
+          "stderr": "synthetic resource not found",
+          "duration_ms": 10
+        }
+      ]
+    },
+    "session_pepper_versions": {
+      "attempts": [
+        {
+          "outcome": "FAILED",
+          "exit_code": 1,
+          "stdout_json": null,
+          "stderr": "synthetic resource not found",
+          "duration_ms": 10
+        }
+      ]
+    },
+    "state_bucket": {
+      "attempts": [
+        {
+          "outcome": "FAILED",
+          "exit_code": 1,
+          "stdout_json": null,
+          "stderr": "synthetic bucket not found",
+          "duration_ms": 11
+        }
+      ]
+    }
+  },
+  "manual_checks": {
+    "IDENTITY_PLATFORM_CONFIGURATION_REVIEW": {
+      "status": "PENDING",
+      "notes": "Synthetic fixture does not establish provider configuration."
+    },
+    "OAUTH_CONSENT_CONFIGURATION_REVIEW": {
+      "status": "PENDING",
+      "notes": "Synthetic fixture does not establish consent configuration."
+    },
+    "BILLING_LINKAGE_REVIEW": {
+      "status": "PENDING",
+      "notes": "Synthetic fixture does not establish billing linkage."
+    }
+  },
+  "raw_secret_values_present": false,
+  "provider_action_performed": false,
+  "external_action_performed": false
+}
