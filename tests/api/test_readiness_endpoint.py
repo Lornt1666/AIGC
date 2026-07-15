@@ -34,6 +34,19 @@ def test_readiness_endpoint_matches_canonical_ledger(tmp_path: Path) -> None:
     )
 
 
+def test_readiness_top_level_aliases_remain_backward_compatible(
+    tmp_path: Path,
+) -> None:
+    client = TestClient(create_app(tmp_path / "operator.sqlite3"))
+
+    payload = client.get("/api/v1/readiness").json()
+
+    assert payload["production_ready"] == payload["current"]["production_ready"]
+    assert payload["structural_score"] == payload["current"]["structural_score"]
+    assert payload["blocking_gaps"] == payload["current"]["blocking_gaps"]
+    assert payload["evidence_strength"] == payload["current"]["evidence_strength"]
+
+
 def test_readiness_projection_never_grants_current_authority(
     tmp_path: Path,
 ) -> None:
