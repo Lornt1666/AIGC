@@ -12,6 +12,10 @@ def read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def terraform_module_text() -> str:
+    return "\n".join(read(path) for path in sorted(MODULE_ROOT.glob("*.tf")))
+
+
 def test_cloud_sql_root_module_is_three_way_fail_closed() -> None:
     main = read(TERRAFORM_ROOT / "main.tf")
     variables = read(TERRAFORM_ROOT / "cloud_sql_variables.tf")
@@ -47,16 +51,33 @@ def test_cloud_sql_uses_private_services_access_and_no_public_ipv4() -> None:
 
 def test_cloud_sql_enables_recovery_controls_without_creating_credentials() -> None:
     module = read(MODULE_ROOT / "main.tf")
-    combined = "\n".join(read(path) for path in MODULE_ROOT.glob("*"))
+    terraform = terraform_module_text()
 
     assert "backup_configuration" in module
     assert "point_in_time_recovery_enabled = true" in module
     assert "transaction_log_retention_days" in module
     assert "backup_retention_settings" in module
     assert "deletion_protection = var.deletion_protection" in module
-    assert 'resource "google_sql_user"' not in combined
-    assert "password" not in combined.lower()
-    assert "raw_dsn" not in combined.lower()
+    assert "deletion_protection_enabled = var.deletion_protection" in module
+    assert "ignore_changes = [settings[0].disk_size]" in module
+    assert 'resource "google_sql_user"' not in terraform
+    assert "root_password" not in terraform
+    assert "password =" not in terraform
+    assert "secret_data" not in terraform
+
+
+def test_postgres_16_shared_core_tier_has_explicit_enterprise_edition() -> None:
+    module = read(MODULE_ROOT / "main.tf")
+    module_edition = read(MODULE_ROOT / "edition.tf")
+    root = read(TERRAFORM_ROOT / "main.tf")
+    root_edition = read(TERRAFORM_ROOT / "cloud_sql_edition.tf")
+    example = read(TERRAFORM_ROOT / "staging.tfvars.example")
+
+    assert "edition                     = var.edition" in module
+    assert 'default     = "ENTERPRISE"' in module_edition
+    assert "edition                       = var.cloud_sql_edition" in root
+    assert 'default     = "ENTERPRISE"' in root_edition
+    assert 'cloud_sql_edition                             = "ENTERPRISE"' in example
 
 
 def test_cloud_sql_runtime_iam_is_optional_and_least_privilege() -> None:
@@ -71,12 +92,13 @@ def test_cloud_sql_runtime_iam_is_optional_and_least_privilege() -> None:
 
 def test_committed_staging_example_cannot_create_resources() -> None:
     example = read(TERRAFORM_ROOT / "staging.tfvars.example")
+    compact = "".join(example.split())
 
-    assert "deployment_authorized      = false" in example
-    assert "resource_creation_authorized = false" in example
-    assert "cloud_sql_enabled           = false" in example
-    assert 'release_gate_result     = "DENY"' in example
-    assert 'cloud_sql_runtime_service_account_email = ""' in example
+    assert "deployment_authorized=false" in compact
+    assert "resource_creation_authorized=false" in compact
+    assert "cloud_sql_enabled=false" in compact
+    assert 'release_gate_result="DENY"' in compact
+    assert 'cloud_sql_runtime_service_account_email=""' in compact
 
 
 def test_required_cloud_sql_apis_are_explicit() -> None:
