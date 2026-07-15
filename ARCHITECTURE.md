@@ -87,7 +87,7 @@ DISCOVERED
 Target geography:
 
 - Toronto primary: `northamerica-northeast2`
-- Montreal recovery: `northamerica-northeast1`
+- Montréal recovery: `northamerica-northeast1`
 
 The Infrastructure Plane may act only through exact-revision, time-bounded, phase-specific authorization.
 
@@ -119,7 +119,7 @@ Accountable Operator
         v
 Governance Plane
         | grants bounded authority
-        +----------------------+ 
+        +----------------------+
         v                      v
 Phase / Batch Plane      Quest / Product Plane
         |                      |
