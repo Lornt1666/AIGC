@@ -129,7 +129,11 @@ def repository_revision(project_root: str | Path = ROOT) -> str:
 
 def recursive_terraform_fingerprint(terraform_root: str | Path = TERRAFORM_ROOT) -> str:
     root = Path(terraform_root)
-    files = sorted(path for path in root.rglob("*.tf") if path.is_file())
+    files = sorted(
+        path
+        for path in root.rglob("*.tf")
+        if path.is_file() and ".terraform" not in path.relative_to(root).parts
+    )
     if not files:
         raise StagingInfrastructureAuthorizationError("Terraform root contains no .tf files")
     material = []
