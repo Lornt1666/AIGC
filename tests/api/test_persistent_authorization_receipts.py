@@ -116,5 +116,6 @@ def test_runtime_status_reports_integrated_local_sqlite(
     assert readiness["work_acceptance_transition"][
         "production_identity_required_for_production_use"
     ] is True
-    assert readiness["delivery_judgment_gate"]["blocking"] is True
+    assert readiness["delivery_judgment_gate"]["state"] == "implemented_internal"
+    assert readiness["delivery_judgment_gate"]["blocking"] is False
     assert readiness["external_action_performed"] is False
