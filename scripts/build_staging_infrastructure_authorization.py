@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime, timedelta, timezone
-from hashlib import sha256
 import json
 from pathlib import Path
 import sys
@@ -13,13 +12,16 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from src.core.staging_infrastructure_authorization import (  # noqa: E402
     APPLY_SCHEMA,
+    DISCOVERY_SCHEMA,
     PLAN_SCHEMA,
     TERRAFORM_ROOT,
     canonical_digest,
     file_digest,
     load_json,
+    parse_time,
     recursive_terraform_fingerprint,
     repository_revision,
+    validate_plan_authorization,
     validate_schema,
 )
 
@@ -88,7 +90,10 @@ def build_plan(args: argparse.Namespace) -> dict[str, object]:
     if args.monthly_budget_cad <= 0 or args.monthly_budget_cad > 50:
         raise SystemExit("Staging monthly budget must be greater than 0 and at most CAD 50")
 
-    discovery = load_json(args.discovery_evidence)
+    discovery = validate_schema(
+        DISCOVERY_SCHEMA,
+        load_json(args.discovery_evidence),
+    )
     revision = repository_revision(PROJECT_ROOT)
     fingerprint = recursive_terraform_fingerprint(TERRAFORM_ROOT)
     now = utc_now()
@@ -99,7 +104,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, object]:
         "revision": revision,
         "project_id": args.project_id,
         "terraform_fingerprint": fingerprint,
-        "discovery_receipt_id": discovery.get("receipt_id"),
+        "discovery_receipt_id": discovery["receipt_id"],
         "discovery_digest": canonical_digest(discovery),
         "issued_at": now.isoformat(),
     }
@@ -133,7 +138,22 @@ def build_plan(args: argparse.Namespace) -> dict[str, object]:
         "automatic_apply_allowed": False,
         "external_action_performed": False,
     }
-    return validate_schema(PLAN_SCHEMA, receipt)
+    receipt = validate_schema(PLAN_SCHEMA, receipt)
+    if approved:
+        evaluation = validate_plan_authorization(
+            authorization=receipt,
+            discovery_evidence=discovery,
+            project_root=PROJECT_ROOT,
+            terraform_root=TERRAFORM_ROOT,
+            exact_revision=revision,
+            evaluated_at=now,
+        )
+        if not evaluation.effective:
+            raise SystemExit(
+                "Approved plan authority is ineffective: "
+                + ",".join(evaluation.reason_codes)
+            )
+    return receipt
 
 
 def build_apply(args: argparse.Namespace) -> dict[str, object]:
@@ -143,7 +163,7 @@ def build_apply(args: argparse.Namespace) -> dict[str, object]:
         PLAN_SCHEMA,
         load_json(args.plan_authorization),
     )
-    plan_path = Path(args.saved_plan)
+    plan_path = Path(args.saved_plan).resolve()
     if not plan_path.is_file():
         raise SystemExit(f"Saved plan does not exist: {plan_path}")
 
@@ -152,6 +172,21 @@ def build_apply(args: argparse.Namespace) -> dict[str, object]:
     now = utc_now()
     reasons = reason_codes(args)
     approved = args.decision == "APPROVED"
+    if approved:
+        plan_reasons: list[str] = []
+        if plan_authorization["decision"] != "APPROVED":
+            plan_reasons.append("PLAN_AUTHORIZATION_DENIED")
+        if plan_authorization["exact_revision"] != revision:
+            plan_reasons.append("PLAN_AUTHORIZATION_REVISION_MISMATCH")
+        if plan_authorization["terraform_fingerprint"] != fingerprint:
+            plan_reasons.append("PLAN_AUTHORIZATION_TERRAFORM_DRIFT")
+        if now >= parse_time(plan_authorization["expires_at"]):
+            plan_reasons.append("PLAN_AUTHORIZATION_EXPIRED")
+        if plan_reasons:
+            raise SystemExit(
+                "Apply authority cannot be approved: " + ",".join(plan_reasons)
+            )
+
     saved_plan_digest = file_digest(plan_path)
     material = {
         "decision": args.decision,
