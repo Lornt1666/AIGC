@@ -1,0 +1,313 @@
+{
+  "contract_id": "AIGC-PROVIDER-DISCOVERY-COMMAND-CATALOG-001",
+  "contract_version": "1.0.0",
+  "artifact_kind": "TEMPLATE",
+  "execution_mode": "MOCK_ONLY",
+  "provider": "GOOGLE_CLOUD",
+  "shell_execution_allowed": false,
+  "live_execution_enabled": false,
+  "commands": [
+    {
+      "command_id": "PROJECT_DESCRIBE",
+      "authorization_action": "READ_PROJECT_METADATA",
+      "argv_template": [
+        "gcloud",
+        "projects",
+        "describe",
+        "{project_id}",
+        "--format=json"
+      ],
+      "classification": "READ_ONLY",
+      "network_required": true,
+      "mutation_performed": false,
+      "secret_value_access": false,
+      "timeout_seconds": 30,
+      "max_attempts": 2,
+      "fixture_key": "project_describe",
+      "output_sensitivity": "PUBLIC_METADATA"
+    },
+    {
+      "command_id": "ENABLED_SERVICES_LIST",
+      "authorization_action": "READ_ENABLED_APIS",
+      "argv_template": [
+        "gcloud",
+        "services",
+        "list",
+        "--enabled",
+        "--project={project_id}",
+        "--format=json"
+      ],
+      "classification": "READ_ONLY",
+      "network_required": true,
+      "mutation_performed": false,
+      "secret_value_access": false,
+      "timeout_seconds": 30,
+      "max_attempts": 2,
+      "fixture_key": "enabled_services",
+      "output_sensitivity": "PUBLIC_METADATA"
+    },
+    {
+      "command_id": "PROJECT_IAM_POLICY",
+      "authorization_action": "READ_EXISTING_IAM",
+      "argv_template": [
+        "gcloud",
+        "projects",
+        "get-iam-policy",
+        "{project_id}",
+        "--format=json"
+      ],
+      "classification": "READ_ONLY",
+      "network_required": true,
+      "mutation_performed": false,
+      "secret_value_access": false,
+      "timeout_seconds": 30,
+      "max_attempts": 2,
+      "fixture_key": "project_iam_policy",
+      "output_sensitivity": "SECURITY_METADATA"
+    },
+    {
+      "command_id": "SERVICE_ACCOUNTS_LIST",
+      "authorization_action": "READ_EXISTING_IAM",
+      "argv_template": [
+        "gcloud",
+        "iam",
+        "service-accounts",
+        "list",
+        "--project={project_id}",
+        "--format=json"
+      ],
+      "classification": "READ_ONLY",
+      "network_required": true,
+      "mutation_performed": false,
+      "secret_value_access": false,
+      "timeout_seconds": 30,
+      "max_attempts": 2,
+      "fixture_key": "service_accounts",
+      "output_sensitivity": "SECURITY_METADATA"
+    },
+    {
+      "command_id": "PLAN_SERVICE_ACCOUNT_KEYS",
+      "authorization_action": "READ_SERVICE_ACCOUNT_KEY_COUNTS",
+      "argv_template": [
+        "gcloud",
+        "iam",
+        "service-accounts",
+        "keys",
+        "list",
+        "--iam-account={plan_service_account_email}",
+        "--managed-by=user",
+        "--format=json"
+      ],
+      "classification": "READ_ONLY",
+      "network_required": true,
+      "mutation_performed": false,
+      "secret_value_access": false,
+      "timeout_seconds": 30,
+      "max_attempts": 2,
+      "fixture_key": "plan_service_account_keys",
+      "output_sensitivity": "SECURITY_METADATA"
+    },
+    {
+      "command_id": "APPLY_SERVICE_ACCOUNT_KEYS",
+      "authorization_action": "READ_SERVICE_ACCOUNT_KEY_COUNTS",
+      "argv_template": [
+        "gcloud",
+        "iam",
+        "service-accounts",
+        "keys",
+        "list",
+        "--iam-account={apply_service_account_email}",
+        "--managed-by=user",
+        "--format=json"
+      ],
+      "classification": "READ_ONLY",
+      "network_required": true,
+      "mutation_performed": false,
+      "secret_value_access": false,
+      "timeout_seconds": 30,
+      "max_attempts": 2,
+      "fixture_key": "apply_service_account_keys",
+      "output_sensitivity": "SECURITY_METADATA"
+    },
+    {
+      "command_id": "RUNTIME_SERVICE_ACCOUNT_KEYS",
+      "authorization_action": "READ_SERVICE_ACCOUNT_KEY_COUNTS",
+      "argv_template": [
+        "gcloud",
+        "iam",
+        "service-accounts",
+        "keys",
+        "list",
+        "--iam-account={runtime_service_account_email}",
+        "--managed-by=user",
+        "--format=json"
+      ],
+      "classification": "READ_ONLY",
+      "network_required": true,
+      "mutation_performed": false,
+      "secret_value_access": false,
+      "timeout_seconds": 30,
+      "max_attempts": 2,
+      "fixture_key": "runtime_service_account_keys",
+      "output_sensitivity": "SECURITY_METADATA"
+    },
+    {
+      "command_id": "WIF_POOLS_LIST",
+      "authorization_action": "READ_EXISTING_IAM",
+      "argv_template": [
+        "gcloud",
+        "iam",
+        "workload-identity-pools",
+        "list",
+        "--location=global",
+        "--project={project_id}",
+        "--format=json"
+      ],
+      "classification": "READ_ONLY",
+      "network_required": true,
+      "mutation_performed": false,
+      "secret_value_access": false,
+      "timeout_seconds": 30,
+      "max_attempts": 2,
+      "fixture_key": "wif_pools",
+      "output_sensitivity": "SECURITY_METADATA"
+    },
+    {
+      "command_id": "WIF_PROVIDERS_LIST",
+      "authorization_action": "READ_EXISTING_IAM",
+      "argv_template": [
+        "gcloud",
+        "iam",
+        "workload-identity-pools",
+        "providers",
+        "list",
+        "--workload-identity-pool={wif_pool_id}",
+        "--location=global",
+        "--project={project_id}",
+        "--format=json"
+      ],
+      "classification": "READ_ONLY",
+      "network_required": true,
+      "mutation_performed": false,
+      "secret_value_access": false,
+      "timeout_seconds": 30,
+      "max_attempts": 2,
+      "fixture_key": "wif_providers",
+      "output_sensitivity": "SECURITY_METADATA"
+    },
+    {
+      "command_id": "SECRETS_LIST",
+      "authorization_action": "READ_EXISTING_IAM",
+      "argv_template": [
+        "gcloud",
+        "secrets",
+        "list",
+        "--project={project_id}",
+        "--format=json"
+      ],
+      "classification": "READ_ONLY",
+      "network_required": true,
+      "mutation_performed": false,
+      "secret_value_access": false,
+      "timeout_seconds": 30,
+      "max_attempts": 2,
+      "fixture_key": "secrets",
+      "output_sensitivity": "SECRET_METADATA_NO_VALUES"
+    },
+    {
+      "command_id": "OAUTH_SECRET_VERSIONS_LIST",
+      "authorization_action": "READ_EXISTING_IAM",
+      "argv_template": [
+        "gcloud",
+        "secrets",
+        "versions",
+        "list",
+        "{oauth_secret_id}",
+        "--project={project_id}",
+        "--format=json"
+      ],
+      "classification": "READ_ONLY",
+      "network_required": true,
+      "mutation_performed": false,
+      "secret_value_access": false,
+      "timeout_seconds": 30,
+      "max_attempts": 2,
+      "fixture_key": "oauth_secret_versions",
+      "output_sensitivity": "SECRET_METADATA_NO_VALUES"
+    },
+    {
+      "command_id": "SESSION_PEPPER_VERSIONS_LIST",
+      "authorization_action": "READ_EXISTING_IAM",
+      "argv_template": [
+        "gcloud",
+        "secrets",
+        "versions",
+        "list",
+        "{session_pepper_secret_id}",
+        "--project={project_id}",
+        "--format=json"
+      ],
+      "classification": "READ_ONLY",
+      "network_required": true,
+      "mutation_performed": false,
+      "secret_value_access": false,
+      "timeout_seconds": 30,
+      "max_attempts": 2,
+      "fixture_key": "session_pepper_versions",
+      "output_sensitivity": "SECRET_METADATA_NO_VALUES"
+    },
+    {
+      "command_id": "STATE_BUCKET_DESCRIBE",
+      "authorization_action": "READ_STATE_BACKEND_METADATA",
+      "argv_template": [
+        "gcloud",
+        "storage",
+        "buckets",
+        "describe",
+        "{state_bucket_url}",
+        "--format=json"
+      ],
+      "classification": "READ_ONLY",
+      "network_required": true,
+      "mutation_performed": false,
+      "secret_value_access": false,
+      "timeout_seconds": 30,
+      "max_attempts": 2,
+      "fixture_key": "state_bucket",
+      "output_sensitivity": "SECURITY_METADATA"
+    }
+  ],
+  "manual_checks": [
+    {
+      "check_id": "IDENTITY_PLATFORM_CONFIGURATION_REVIEW",
+      "authorization_action": "READ_IDENTITY_PLATFORM_CONFIGURATION",
+      "classification": "READ_ONLY_MANUAL",
+      "instructions": "Review Identity Platform configuration metadata without changing provider settings and without copying OAuth secret values.",
+      "required": true,
+      "mutation_performed": false,
+      "secret_value_access": false
+    },
+    {
+      "check_id": "OAUTH_CONSENT_CONFIGURATION_REVIEW",
+      "authorization_action": "READ_IDENTITY_PLATFORM_CONFIGURATION",
+      "classification": "READ_ONLY_MANUAL",
+      "instructions": "Review OAuth consent and authorized-domain metadata without changing configuration and without copying client-secret values.",
+      "required": true,
+      "mutation_performed": false,
+      "secret_value_access": false
+    },
+    {
+      "check_id": "BILLING_LINKAGE_REVIEW",
+      "authorization_action": "READ_PROJECT_METADATA",
+      "classification": "READ_ONLY_MANUAL",
+      "instructions": "Confirm billing linkage status by metadata-only review; do not attach, detach, or change a billing account.",
+      "required": true,
+      "mutation_performed": false,
+      "secret_value_access": false
+    }
+  ],
+  "raw_secret_values_present": false,
+  "authorization_receipt_issued": false,
+  "provider_action_performed": false,
+  "external_action_performed": false
+}
