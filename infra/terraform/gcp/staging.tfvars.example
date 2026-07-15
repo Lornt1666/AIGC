@@ -1,0 +1,43 @@
+environment = "staging"
+project_id  = "aigc-staging-001"
+
+primary_region  = "northamerica-northeast2"
+recovery_region = "northamerica-northeast1"
+
+# Exact evidence bindings. Replace only from reviewed receipts.
+exact_revision          = "0000000000000000000000000000000000000000"
+image_digest            = "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+release_gate_receipt_id = "PRG-000000000000000000000000"
+release_gate_result     = "DENY"
+
+# Authority remains closed in the committed example.
+deployment_authorized        = false
+resource_creation_authorized = false
+cloud_sql_enabled             = false
+
+monthly_budget_cad = 50
+
+cloud_sql_instance_name                       = "aigc-staging-postgres"
+cloud_sql_network_name                        = "aigc-staging-sql"
+cloud_sql_private_service_range_name          = "aigc-staging-sql-range"
+cloud_sql_private_service_prefix_length       = 20
+cloud_sql_database_version                    = "POSTGRES_16"
+cloud_sql_edition                             = "ENTERPRISE"
+cloud_sql_tier                                = "db-f1-micro"
+cloud_sql_availability_type                   = "ZONAL"
+cloud_sql_disk_type                           = "PD_SSD"
+cloud_sql_disk_size_gb                        = 10
+cloud_sql_deletion_protection                 = true
+cloud_sql_database_name                       = "aigc"
+cloud_sql_backup_start_time                   = "03:00"
+cloud_sql_backup_retention_count              = 7
+cloud_sql_transaction_log_retention_days      = 7
+cloud_sql_ssl_mode                            = "ENCRYPTED_ONLY"
+cloud_sql_maintenance_day                     = 7
+cloud_sql_maintenance_hour                    = 4
+cloud_sql_query_insights_enabled              = true
+cloud_sql_runtime_service_account_email       = ""
+
+cloud_sql_labels = {
+  cost_center = "aigc-staging"
+}
