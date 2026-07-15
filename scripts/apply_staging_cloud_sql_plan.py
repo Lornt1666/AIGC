@@ -134,7 +134,7 @@ def main() -> int:
         raise SystemExit("terraform is required for --execute")
 
     completed = subprocess.run(
-        [terraform, "apply", "-input=false", "-auto-approve", str(plan_path)],
+        [terraform, "apply", "-input=false", str(plan_path)],
         cwd=Path(args.terraform_root),
         check=False,
     )
