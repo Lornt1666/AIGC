@@ -16,10 +16,11 @@ Authorization is not evidence of execution. Apply authorization is not a post-ap
 ```text
 provider discovery accepted
 -> exact staging project resolved
+-> verified remote Terraform state backend
 -> WIF or accountable operator identity established
 -> staging plan authorization issued
 -> Terraform initialization and validation
--> saved plan generated
+-> saved plan generated against the verified backend
 -> saved plan digest recorded
 -> accountable review of the exact plan
 -> single-use apply authorization issued
@@ -41,40 +42,83 @@ AND var.cloud_sql_enabled
 
 For staging, `local.resource_creation_effective` is derived from a valid staging infrastructure plan-authorization receipt rather than a production release-gate receipt.
 
-## Plan command
+## Build the plan authorization
 
-The activation tooling writes an ephemeral auto-tfvars file after validating the plan authorization:
+```bash
+python scripts/build_staging_infrastructure_authorization.py plan \
+  --discovery-evidence artifacts/staging/provider-discovery-evidence.json \
+  --project-id YOUR_STAGING_PROJECT_ID \
+  --monthly-budget-cad 50 \
+  --ttl-minutes 120 \
+  --operator-name "Justice Gray Maciocha" \
+  --decision APPROVED \
+  --output artifacts/staging/plan-authorization.json
+```
+
+## Prepare activation variables
 
 ```bash
 python scripts/prepare_staging_cloud_sql_plan.py \
   --authorization artifacts/staging/plan-authorization.json \
+  --discovery-evidence artifacts/staging/provider-discovery-evidence.json \
   --output-dir artifacts/staging/cloud-sql-plan
-
-cd infra/terraform/gcp
-terraform init -backend=false
-terraform fmt -check -recursive
-terraform validate
-terraform plan \
-  -var-file=../../../artifacts/staging/cloud-sql-plan/activation.auto.tfvars.json \
-  -out=../../../artifacts/staging/cloud-sql-plan/cloud-sql.tfplan
-terraform show -json ../../../artifacts/staging/cloud-sql-plan/cloud-sql.tfplan \
-  > ../../../artifacts/staging/cloud-sql-plan/cloud-sql.plan.json
 ```
 
-The saved plan must be reviewed before any apply authorization is issued.
+The command validates the exact revision, project, discovery receipt, budget, authorization lifetime, and recursive Terraform fingerprint. It writes an ephemeral `activation.auto.tfvars.json`. It does not contact Google Cloud or authorize apply.
 
-## Apply command
+## Initialize and create the saved plan
 
-The apply wrapper validates that the single-use apply receipt binds the exact revision, project, Terraform fingerprint, saved-plan digest, and Cloud SQL component:
+Offline syntax validation may use `terraform init -backend=false`, but an applyable saved plan must be created after the real remote state backend has been bootstrapped and verified.
+
+```bash
+terraform -chdir=infra/terraform/gcp fmt -check -recursive
+terraform -chdir=infra/terraform/gcp init -reconfigure \
+  -backend-config=PATH_TO_REVIEWED_BACKEND_CONFIG
+terraform -chdir=infra/terraform/gcp validate
+terraform -chdir=infra/terraform/gcp plan \
+  -var-file=../../../artifacts/staging/cloud-sql-plan/activation.auto.tfvars.json \
+  -out=../../../artifacts/staging/cloud-sql-plan/cloud-sql.tfplan
+terraform -chdir=infra/terraform/gcp show -json \
+  ../../../artifacts/staging/cloud-sql-plan/cloud-sql.tfplan \
+  > artifacts/staging/cloud-sql-plan/cloud-sql.plan.json
+```
+
+Review the saved plan and its JSON rendering before issuing apply authority.
+
+## Build the single-use apply authorization
+
+```bash
+python scripts/build_staging_infrastructure_authorization.py apply \
+  --plan-authorization artifacts/staging/plan-authorization.json \
+  --saved-plan artifacts/staging/cloud-sql-plan/cloud-sql.tfplan \
+  --ttl-minutes 30 \
+  --operator-name "Justice Gray Maciocha" \
+  --decision APPROVED \
+  --output artifacts/staging/apply-authorization.json
+```
+
+## Validate or apply the exact saved plan
+
+Validation only:
 
 ```bash
 python scripts/apply_staging_cloud_sql_plan.py \
   --authorization artifacts/staging/apply-authorization.json \
+  --plan-authorization artifacts/staging/plan-authorization.json \
+  --plan artifacts/staging/cloud-sql-plan/cloud-sql.tfplan
+```
+
+Provider mutation:
+
+```bash
+python scripts/apply_staging_cloud_sql_plan.py \
+  --authorization artifacts/staging/apply-authorization.json \
+  --plan-authorization artifacts/staging/plan-authorization.json \
   --plan artifacts/staging/cloud-sql-plan/cloud-sql.tfplan \
   --execute
 ```
 
-Without `--execute`, the wrapper performs validation only and does not invoke Terraform.
+Without `--execute`, the wrapper performs validation only and does not invoke Terraform. With `--execute`, it applies only the exact saved plan whose digest is bound to the unexpired single-use receipt.
 
 ## External prerequisites
 
@@ -87,7 +131,7 @@ Before a provider-backed plan or apply:
 - Workload Identity Federation or an accountable interactive identity must be configured;
 - Terraform must be installed;
 - the Google provider must initialize successfully;
-- remote Terraform state must be separately bootstrapped and verified before shared use.
+- remote Terraform state must be separately bootstrapped and verified.
 
 ## Evidence after apply
 
