@@ -71,12 +71,18 @@ jobs:
 
       - name: Validate inert Terraform staging foundation
         shell: bash
+        env:
+          # Non-secret placeholder used only to prevent ADC lookup in a zero-resource,
+          # refresh-disabled plan. The plan is asserted to contain no resources.
+          GOOGLE_OAUTH_ACCESS_TOKEN: "aigc-offline-inert-plan-no-provider-action"
         run: |
           set -o pipefail
           mkdir -p reports/artifacts/terraform_validation
           {
             terraform -chdir=infra/terraform/gcp fmt -check -recursive
             terraform -chdir=infra/terraform/gcp init -backend=false -input=false
+            cp infra/terraform/gcp/.terraform.lock.hcl \
+              reports/artifacts/terraform_validation/terraform.lock.hcl
             terraform -chdir=infra/terraform/gcp validate
             terraform -chdir=infra/terraform/gcp plan \
               -input=false \
@@ -87,6 +93,34 @@ jobs:
             terraform -chdir=infra/terraform/gcp show -json \
               /tmp/aigc-staging-inert.tfplan \
               > reports/artifacts/terraform_validation/inert-plan.json
+            python - <<'PY'
+          import json
+          from pathlib import Path
+
+          plan_path = Path("reports/artifacts/terraform_validation/inert-plan.json")
+          plan = json.loads(plan_path.read_text(encoding="utf-8"))
+          resources = plan.get("resource_changes") or []
+          if resources:
+              addresses = [str(item.get("address")) for item in resources]
+              raise SystemExit(
+                  "Inert Terraform plan unexpectedly contains resource changes: "
+                  + ", ".join(addresses)
+              )
+          Path("reports/artifacts/terraform_validation/inert-plan-summary.json").write_text(
+              json.dumps(
+                  {
+                      "resource_change_count": 0,
+                      "provider_action_performed": False,
+                      "terraform_apply_performed": False,
+                      "external_action_performed": False,
+                  },
+                  indent=2,
+                  sort_keys=True,
+              )
+              + "\n",
+              encoding="utf-8",
+          )
+          PY
           } 2>&1 | tee reports/artifacts/terraform_validation/terraform-validation.log
 
       - name: Upload Terraform validation evidence
