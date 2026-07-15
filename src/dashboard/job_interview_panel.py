@@ -6,26 +6,32 @@ from pathlib import Path
 from src.core.job_interview_cockpit import (
     BLOCKED_ACTIONS,
     load_job_packets,
+    load_radar_opportunities,
     prepare_job_packet,
+    prepare_job_packet_from_opportunity,
     record_interview_invitation,
     record_job_decision,
 )
+from src.core.operator_cockpit import build_aigc_command, run_command
 
 
 def render_jobs_interviews_tab(st, root: Path) -> None:
     st.header("Jobs & Interviews")
     st.write(
-        "Prepare truthful application and interview packets, review them, and approve them for manual operator submission. "
+        "Refresh AIGC's read-only opportunity radar or enter an official posting manually, prepare truthful application and interview packets, review them, and approve them for manual operator submission. "
         "This workspace never logs in, fills a form, applies, sends a message, schedules an interview, or accepts an offer."
     )
     with st.expander("Blocked automation", expanded=False):
         for action in BLOCKED_ACTIONS:
             st.markdown(f"- `{action}`")
 
+    render_radar_opportunity_section(st, root)
     render_job_packet_form(st, root)
     packets = load_job_packets(root)
     if not packets:
-        st.info("No job packets exist yet. Prepare one above or run the read-only work-acquisition workflow.")
+        st.info(
+            "No job packets exist yet. Import a radar opportunity or prepare one manually."
+        )
         return
 
     st.subheader("Review Queue")
@@ -37,6 +43,9 @@ def render_jobs_interviews_tab(st, root: Path) -> None:
                 "organization": item.get("organization"),
                 "decision": item.get("decision"),
                 "interview": item.get("interview_state"),
+                "radar_score": dict(item.get("source_metadata") or {}).get(
+                    "radar_score"
+                ),
                 "external_action": item.get("external_action_performed"),
             }
             for item in packets
@@ -49,12 +58,135 @@ def render_jobs_interviews_tab(st, root: Path) -> None:
         [str(item.get("packet_id")) for item in packets],
         key="selected_job_packet",
     )
-    selected = next(item for item in packets if str(item.get("packet_id")) == selected_id)
+    selected = next(
+        item for item in packets if str(item.get("packet_id")) == selected_id
+    )
     render_selected_packet(st, root, selected)
 
 
+def render_radar_opportunity_section(st, root: Path) -> None:
+    st.subheader("Read-Only Opportunity Radar")
+    st.caption(
+        "Refresh queries only AIGC's approved public/API/RSS sources, writes the Phase 2 queue, and stops before applying, messaging, credential use, or platform action."
+    )
+    if st.button(
+        "Refresh read-only opportunities",
+        use_container_width=True,
+        key="refresh_phase2_opportunities",
+    ):
+        result = run_command(build_aigc_command(root, "run", "phase2"), root)
+        if result.ok:
+            st.success(
+                "Opportunity radar refreshed. No application, message, login, or external commitment occurred."
+            )
+        else:
+            st.error(f"Opportunity refresh failed with exit code {result.returncode}.")
+        if result.stdout:
+            st.code(result.stdout[-4000:], language="text")
+        if result.stderr:
+            st.code(result.stderr[-4000:], language="text")
+
+    try:
+        opportunities = load_radar_opportunities(root)
+    except Exception as exc:
+        st.error(f"Unable to load the Phase 2 opportunity queue: {exc}")
+        return
+    if not opportunities:
+        st.info(
+            "No eligible job opportunities are currently in the Phase 2 queue. Refresh the radar or enter a posting manually below."
+        )
+        return
+
+    st.dataframe(
+        [
+            {
+                "opportunity_id": item.get("opportunity_id"),
+                "title": item.get("title"),
+                "employer": item.get("employer") or item.get("client"),
+                "source": item.get("source_platform"),
+                "score": item.get("radar_score"),
+                "decision": item.get("radar_decision"),
+                "risks": ", ".join(str(value) for value in item.get("risk_flags") or []),
+            }
+            for item in opportunities
+        ],
+        use_container_width=True,
+    )
+    by_id = {str(item.get("opportunity_id")): item for item in opportunities}
+    selected_id = st.selectbox(
+        "Select an eligible radar opportunity",
+        list(by_id),
+        format_func=lambda value: (
+            f"{by_id[value].get('title', 'Untitled')} — "
+            f"{by_id[value].get('employer') or by_id[value].get('client') or by_id[value].get('source_platform')} "
+            f"(score {by_id[value].get('radar_score', 0)})"
+        ),
+        key="selected_radar_opportunity",
+    )
+    selected = by_id[selected_id]
+    source_url = str(selected.get("source_url") or "")
+    if source_url:
+        st.link_button(
+            "Open selected official posting",
+            source_url,
+            use_container_width=True,
+        )
+    with st.expander("Radar evidence and risks", expanded=False):
+        st.json(
+            {
+                "radar_score": selected.get("radar_score"),
+                "radar_decision": selected.get("radar_decision"),
+                "platform_policy_status": selected.get("platform_policy_status"),
+                "risk_flags": selected.get("risk_flags") or [],
+                "forbidden_flags": selected.get("forbidden_flags") or [],
+                "approval_required_before": selected.get(
+                    "approval_required_before"
+                )
+                or [],
+                "external_action_performed": False,
+            }
+        )
+
+    with st.form("radar_job_packet_form"):
+        truthful_qualifications = st.text_area(
+            "Your truthful qualifications for this opportunity",
+            key="radar_truthful_qualifications",
+            help="Use only verified skills, education, projects, and experience.",
+        )
+        application_draft = st.text_area(
+            "Optional application draft override",
+            key="radar_application_draft",
+        )
+        interview_notes = st.text_area(
+            "Optional interview-preparation override",
+            key="radar_interview_notes",
+        )
+        prepared = st.form_submit_button(
+            "Prepare selected opportunity for review",
+            type="primary",
+            use_container_width=True,
+        )
+    if not prepared:
+        return
+    try:
+        packet = prepare_job_packet_from_opportunity(
+            selected_id,
+            truthful_qualifications=truthful_qualifications,
+            application_draft=application_draft,
+            interview_notes=interview_notes,
+            root=root,
+        )
+    except Exception as exc:
+        st.error(f"Opportunity packet preparation failed: {exc}")
+        return
+    st.success(
+        "Radar opportunity converted into an internal review packet. Nothing was submitted or sent."
+    )
+    st.json(packet)
+
+
 def render_job_packet_form(st, root: Path) -> None:
-    st.subheader("Prepare Application & Interview Packet")
+    st.subheader("Manual Posting Entry")
     with st.form("job_packet_form"):
         source_url = st.text_input("Official posting URL")
         role_title = st.text_input("Role title")
@@ -77,7 +209,6 @@ def render_job_packet_form(st, root: Path) -> None:
         )
         submitted = st.form_submit_button(
             "Prepare internal job packet",
-            type="primary",
             use_container_width=True,
         )
 
@@ -110,6 +241,11 @@ def render_selected_packet(st, root: Path, packet: dict[str, object]) -> None:
     if source_url:
         st.link_button("Open official posting", source_url, use_container_width=True)
 
+    source_metadata = dict(packet.get("source_metadata") or {})
+    if source_metadata:
+        with st.expander("Source and radar evidence", expanded=False):
+            st.json(source_metadata)
+
     st.markdown("#### Posting Summary")
     st.write(str(packet.get("posting_summary", "")))
     st.markdown("#### Verified Qualifications")
@@ -138,7 +274,7 @@ def render_selected_packet(st, root: Path, packet: dict[str, object]) -> None:
             key=f"job_accept_phrase_{packet.get('packet_id')}",
         )
         reviewed = st.checkbox(
-            "I reviewed the posting, truthful qualifications, draft, source URL, and manual-submission boundary.",
+            "I reviewed the posting, truthful qualifications, draft, source URL, risks, and manual-submission boundary.",
             key=f"job_reviewed_{packet.get('packet_id')}",
         )
         accept_disabled = not reviewed or typed_phrase != required_phrase
@@ -158,7 +294,9 @@ def render_selected_packet(st, root: Path, packet: dict[str, object]) -> None:
                         phrase=typed_phrase,
                         root=root,
                     )
-                    st.success("Approved for your manual submission. No external action occurred.")
+                    st.success(
+                        "Approved for your manual submission. No external action occurred."
+                    )
                     st.json(updated)
                 except Exception as exc:
                     st.error(str(exc))
@@ -199,7 +337,9 @@ def render_selected_packet(st, root: Path, packet: dict[str, object]) -> None:
                 invitation_notes=invitation_notes,
                 root=root,
             )
-            st.success("Interview invitation recorded internally. No reply or scheduling occurred.")
+            st.success(
+                "Interview invitation recorded internally. No reply or scheduling occurred."
+            )
             st.json(updated)
         except Exception as exc:
             st.error(str(exc))
