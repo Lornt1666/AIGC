@@ -6,6 +6,16 @@
 - [`REVIEW_EVIDENCE_PACKET_V1.md`](REVIEW_EVIDENCE_PACKET_V1.md) — review evidence and accountable human judgment.
 - [`PRODUCTION_DEPLOYMENT_BASELINE_V1.md`](PRODUCTION_DEPLOYMENT_BASELINE_V1.md) — fail-closed deployment baseline.
 
+## Operator cockpit
+
+- [`ONE_CLICK_OPERATOR_COCKPIT.md`](ONE_CLICK_OPERATOR_COCKPIT.md) — double-click initialization, Jobs & Interviews, manual-submission approval, exact-phrase review, and external-action boundaries.
+
+Start on Windows with:
+
+```text
+INITIALIZE_AIGC.bat
+```
+
 ## Staging preparation
 
 - [`STAGING_BOOTSTRAP.md`](STAGING_BOOTSTRAP.md) — mock-only staging preparation runbook.
