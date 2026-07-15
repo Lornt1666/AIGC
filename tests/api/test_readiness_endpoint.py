@@ -45,6 +45,11 @@ def test_readiness_top_level_aliases_remain_backward_compatible(
     assert payload["structural_score"] == payload["current"]["structural_score"]
     assert payload["blocking_gaps"] == payload["current"]["blocking_gaps"]
     assert payload["evidence_strength"] == payload["current"]["evidence_strength"]
+    assert payload["production_identity_access"]["blocking"] is True
+    assert payload["authorization_receipt_persistence"] == {
+        "state": "implemented_internal",
+        "blocking": False,
+    }
 
 
 def test_readiness_projection_never_grants_current_authority(
@@ -79,5 +84,6 @@ def test_delivery_judgment_gate_reports_implemented_internal(
         "accountable_human_judgment": True,
         "accepted_for_delivery_supported": True,
         "delivery_performed": False,
+        "blocking": False,
         "external_action_performed": False,
     }
