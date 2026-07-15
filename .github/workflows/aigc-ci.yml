@@ -130,6 +130,95 @@ jobs:
           PY
           } 2>&1 | tee reports/artifacts/terraform_validation/terraform-validation.log
 
+      - name: Validate provider-free Terraform evidence contract
+        shell: bash
+        env:
+          AIGC_PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -o pipefail
+          {
+            evidence_root="infra/terraform/gcp/evidence_only"
+            plan_path="/tmp/aigc-terraform-evidence-contract.tfplan"
+            plan_json="reports/artifacts/terraform_validation/evidence-contract-plan.json"
+            pr_args=()
+            if [[ -n "${AIGC_PR_NUMBER:-}" ]]; then
+              pr_args+=("-var=expected_pr_number=${AIGC_PR_NUMBER}")
+            fi
+
+            terraform -chdir="${evidence_root}" fmt -check -recursive
+            terraform -chdir="${evidence_root}" init -backend=false -input=false
+            terraform -chdir="${evidence_root}" validate
+            terraform -chdir="${evidence_root}" plan \
+              -input=false \
+              -lock=false \
+              -refresh=false \
+              -var-file=evidence.tfvars.example \
+              -var="source_revision=${GITHUB_SHA}" \
+              -var="branch_name=${GITHUB_REF_NAME}" \
+              "${pr_args[@]}" \
+              -out="${plan_path}"
+            terraform -chdir="${evidence_root}" show -json "${plan_path}" > "${plan_json}"
+
+            python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          plan_path = Path("reports/artifacts/terraform_validation/evidence-contract-plan.json")
+          summary_path = Path("reports/artifacts/terraform_validation/evidence-contract-summary.json")
+          plan = json.loads(plan_path.read_text(encoding="utf-8"))
+          resources = plan.get("resource_changes") or []
+          if resources:
+              addresses = [str(item.get("address")) for item in resources]
+              raise SystemExit(
+                  "Provider-free evidence plan unexpectedly contains resource changes: "
+                  + ", ".join(addresses)
+              )
+
+          output = (
+              plan.get("planned_values", {})
+              .get("outputs", {})
+              .get("evidence_contract", {})
+              .get("value")
+          )
+          if not isinstance(output, dict):
+              raise SystemExit("Terraform evidence_contract output is missing")
+
+          expected = {
+              "contract_id": "AIGC-TERRAFORM-INERT-EVIDENCE-CONTRACT-001",
+              "source_revision": os.environ["GITHUB_SHA"],
+              "repository_clean": True,
+              "resource_change_count": 0,
+              "evidence_contract_safe": True,
+              "hosted_ci_replacement": False,
+              "operator_review_required": True,
+              "provider_action_performed": False,
+              "terraform_apply_performed": False,
+              "external_action_performed": False,
+          }
+          mismatches = {
+              key: {"expected": value, "actual": output.get(key)}
+              for key, value in expected.items()
+              if output.get(key) != value
+          }
+          if output.get("provider_lock_present") is not True:
+              mismatches["provider_lock_present"] = {
+                  "expected": True,
+                  "actual": output.get("provider_lock_present"),
+              }
+          if mismatches:
+              raise SystemExit(
+                  "Terraform evidence contract mismatch: "
+                  + json.dumps(mismatches, sort_keys=True)
+              )
+
+          summary_path.write_text(
+              json.dumps(output, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          PY
+          } 2>&1 | tee reports/artifacts/terraform_validation/evidence-contract-validation.log
+
       - name: Upload Terraform validation evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # upload-artifact v4
