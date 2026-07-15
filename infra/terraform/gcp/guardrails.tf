@@ -81,7 +81,7 @@ locals {
   resource_creation_effective = var.resource_creation_authorized && local.release_permitted
 }
 
-check "resource_creation_requires_environment_authority" {
+check "resource_creation_requires_release_permit" {
   assert {
     condition     = !var.resource_creation_authorized || local.release_permitted
     error_message = "Resource definition requires exact revision and project binding plus a current staging plan authorization or production release permit, according to environment."
