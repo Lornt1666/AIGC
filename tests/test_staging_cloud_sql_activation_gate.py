@@ -64,11 +64,11 @@ def test_plan_preparation_does_not_authorize_apply() -> None:
 def test_apply_wrapper_requires_explicit_execute_and_exact_saved_plan() -> None:
     script = read(ROOT / "scripts" / "apply_staging_cloud_sql_plan.py")
 
-    assert 'parser.add_argument("--execute"' not in script
     assert '"--execute"' in script
+    assert '"--plan-authorization"' in script
     assert "validate_apply_authorization" in script
-    assert "APPLY_SAVED_PLAN_DIGEST_MISMATCH" not in script
-    assert '[terraform, "apply", "-input=false", "-auto-approve", str(plan_path)]' in script
+    assert '[terraform, "apply", "-input=false", str(plan_path)]' in script
+    assert "-auto-approve" not in script
     assert "if not args.execute" in script
     assert "VALIDATED_NOT_EXECUTED" in script
 
