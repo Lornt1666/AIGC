@@ -12,6 +12,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from src.api.composition import build_container
 from src.api.quest_board import QUEST_BOARD_HTML
 from src.api.quest_lifecycle import build_quest_lifecycle_router
+from src.api.readiness import build_readiness_payload
 from src.application import (
     OpportunityScoutPolicyError,
     OpportunityScoutUnavailable,
@@ -205,52 +206,7 @@ def create_app(database_path: str | Path | None = None) -> FastAPI:
 
     @api.get("/api/v1/readiness")
     def readiness() -> dict[str, Any]:
-        return {
-            "production_ready": False,
-            "production_identity_access": {
-                "state": "partial",
-                "blocking": True,
-            },
-            "authorization_receipt_persistence": {
-                "state": "implemented_internal",
-                "blocking": False,
-            },
-            "opportunity_scout": {
-                "state": "implemented_internal_read_only",
-                "arbitrary_urls_allowed": False,
-                "credentials_used": False,
-                "blocking": False,
-            },
-            "quest_candidate_intake": {
-                "state": "implemented_internal",
-                "blocking": False,
-            },
-            "quest_creation_from_candidate": {
-                "state": "implemented_internal",
-                "initial_state": "PROPOSED",
-                "work_accepted": False,
-                "blocking": False,
-            },
-            "work_acceptance_transition": {
-                "state": "implemented_internal_local_simulation",
-                "path": [
-                    "PROPOSED",
-                    "APPROVAL_REQUIRED",
-                    "WORK_ACCEPTED",
-                ],
-                "authorization_receipt_required": True,
-                "production_identity_required_for_production_use": True,
-                "external_contract_accepted": False,
-                "blocking": False,
-            },
-            "delivery_judgment_gate": {
-                "state": "not_implemented",
-                "blocking": True,
-            },
-            "evidence_scope": "local_behavioral_simulation",
-            "exact_main_ci_observed": False,
-            "external_action_performed": False,
-        }
+        return build_readiness_payload(ROOT)
 
     @api.get("/api/v1/identity/contracts")
     def identity_contracts() -> dict[str, Any]:
