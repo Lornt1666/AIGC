@@ -16,6 +16,16 @@ function Resolve-PythonCommand {
     throw "Python 3 was not found. Install Python 3 and the repository requirements before initializing AIGC."
 }
 
+function Invoke-Python {
+    param([string[]]$Arguments)
+    if ($script:Python.Count -eq 2) {
+        & $script:Python[0] $script:Python[1] @Arguments
+    }
+    else {
+        & $script:Python[0] @Arguments
+    }
+}
+
 $Python = Resolve-PythonCommand
 $InitializeArgs = @("scripts/initialize_aigc.py")
 if ($ContinueOnFailure) {
@@ -25,12 +35,12 @@ if ($ContinueOnFailure) {
 Write-Host "=== AIGC Safe Initialization ===" -ForegroundColor Cyan
 Write-Host "No login, provider mutation, Terraform apply, job submission, message, contract, or interview scheduling will occur."
 
-& $Python[0] @($Python[1..($Python.Length - 1)]) @InitializeArgs
+Invoke-Python -Arguments $InitializeArgs
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Initialization is blocked. Review the receipt output before continuing." -ForegroundColor Red
     exit $LASTEXITCODE
 }
 
 Write-Host "Initialization completed. Launching the local Operator Cockpit." -ForegroundColor Green
-& $Python[0] @($Python[1..($Python.Length - 1)]) -m streamlit run src/dashboard/operator_cockpit_app.py
+Invoke-Python -Arguments @("-m", "streamlit", "run", "src/dashboard/operator_cockpit_app.py")
 exit $LASTEXITCODE
