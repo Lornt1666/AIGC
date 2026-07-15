@@ -6,6 +6,7 @@ from hashlib import sha256
 import json
 from pathlib import Path
 import subprocess
+import sys
 from typing import Any, Iterable
 
 from src.core.operator_cockpit import (
@@ -94,7 +95,7 @@ def build_initialization_commands(root: Path = PROJECT_ROOT) -> list[GovernedCom
         GovernedCommand(
             "Run mock-only provider discovery",
             [
-                str(Path(subprocess.check_output(["python", "-c", "import sys; print(sys.executable)"], text=True).strip())),
+                sys.executable,
                 str(root / "scripts" / "run_provider_discovery_mock.py"),
                 "--repository-revision",
                 revision,
