@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/staging_infrastructure_plan_authorization.schema.json",
+  "title": "AIGC Staging Infrastructure Plan Authorization v1",
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "hex40": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "hex64": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "project_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]{4,28}[a-z0-9]$"},
+    "datetime": {"type": "string", "format": "date-time"}
+  },
+  "required": [
+    "contract_id",
+    "contract_version",
+    "receipt_id",
+    "decision",
+    "reason_codes",
+    "approved_by_role",
+    "approved_by_name",
+    "environment",
+    "exact_revision",
+    "project_id",
+    "terraform_root",
+    "terraform_fingerprint",
+    "component",
+    "monthly_budget_cad",
+    "provider_discovery_evidence_receipt_id",
+    "provider_discovery_evidence_digest",
+    "issued_at",
+    "expires_at",
+    "resource_creation_authorized",
+    "cloud_sql_enabled",
+    "terraform_plan_authorized",
+    "terraform_apply_authorized",
+    "provider_mutation_authorized",
+    "production_deployment_authorized",
+    "production_data_allowed",
+    "operator_review_required",
+    "automatic_apply_allowed",
+    "external_action_performed"
+  ],
+  "properties": {
+    "contract_id": {"const": "AIGC-STAGING-INFRASTRUCTURE-PLAN-AUTHORIZATION-001"},
+    "contract_version": {"const": "1.0.0"},
+    "receipt_id": {"type": "string", "pattern": "^SIP-[A-F0-9]{24}$"},
+    "decision": {"enum": ["APPROVED", "DENIED"]},
+    "reason_codes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]{2,99}$"}
+    },
+    "approved_by_role": {"const": "ACCOUNTABLE_OPERATOR"},
+    "approved_by_name": {"type": "string", "minLength": 1, "maxLength": 200},
+    "environment": {"const": "isolated_staging"},
+    "exact_revision": {"$ref": "#/$defs/hex40"},
+    "project_id": {"$ref": "#/$defs/project_id"},
+    "terraform_root": {"const": "infra/terraform/gcp"},
+    "terraform_fingerprint": {"$ref": "#/$defs/hex64"},
+    "component": {"const": "cloud_sql"},
+    "monthly_budget_cad": {"type": "number", "exclusiveMinimum": 0, "maximum": 50},
+    "provider_discovery_evidence_receipt_id": {
+      "type": "string",
+      "pattern": "^SDE-[A-Z0-9][A-Z0-9:-]{7,199}$"
+    },
+    "provider_discovery_evidence_digest": {"$ref": "#/$defs/hex64"},
+    "issued_at": {"$ref": "#/$defs/datetime"},
+    "expires_at": {"$ref": "#/$defs/datetime"},
+    "resource_creation_authorized": {"type": "boolean"},
+    "cloud_sql_enabled": {"type": "boolean"},
+    "terraform_plan_authorized": {"type": "boolean"},
+    "terraform_apply_authorized": {"const": false},
+    "provider_mutation_authorized": {"const": false},
+    "production_deployment_authorized": {"const": false},
+    "production_data_allowed": {"const": false},
+    "operator_review_required": {"const": true},
+    "automatic_apply_allowed": {"const": false},
+    "external_action_performed": {"const": false}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"decision": {"const": "APPROVED"}}, "required": ["decision"]},
+      "then": {
+        "properties": {
+          "reason_codes": {"maxItems": 0},
+          "resource_creation_authorized": {"const": true},
+          "cloud_sql_enabled": {"const": true},
+          "terraform_plan_authorized": {"const": true}
+        }
+      },
+      "else": {
+        "properties": {
+          "reason_codes": {"minItems": 1},
+          "resource_creation_authorized": {"const": false},
+          "cloud_sql_enabled": {"const": false},
+          "terraform_plan_authorized": {"const": false}
+        }
+      }
+    }
+  ]
+}
