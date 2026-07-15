@@ -34,15 +34,41 @@ It does not install packages, log in, use credentials, contact job platforms, su
 
 ## Jobs & Interviews
 
-The Jobs & Interviews tab lets the operator:
+The Jobs & Interviews tab supports two governed intake paths.
 
-- record an official posting URL;
-- enter the role and organization;
-- summarize posting requirements;
+### Read-only opportunity radar
+
+The operator may click:
+
+```text
+Refresh read-only opportunities
+```
+
+This runs AIGC Phase 2 against the currently approved public API/RSS sources. It collects, normalizes, classifies, scores, and queues opportunities. It does not log in, use credentials, apply, message an employer, submit a proposal, or make an external commitment.
+
+Eligible job records may then be selected from the Phase 2 queue and converted into internal review packets. Rejected records and non-job/open-source records are not imported into the job-application queue.
+
+Each imported packet retains:
+
+- source platform and official URL;
+- radar score and decision;
+- platform-policy status;
+- risk and forbidden flags;
+- approval requirements;
+- source-attribution requirements.
+
+### Manual posting entry
+
+The operator may alternatively record an official posting URL and enter the role, organization, requirements, and verified qualifications directly.
+
+### Review and acceptance
+
+For either intake path, the operator may:
+
 - enter verified qualifications;
 - prepare or edit an application draft;
 - prepare interview notes;
-- review the complete packet;
+- review the complete packet and radar evidence;
 - type an exact acceptance phrase;
 - approve the packet for **manual operator submission only**;
 - open the official posting and submit manually;
