@@ -43,6 +43,7 @@ module "cloud_sql_staging" {
   private_service_range_name    = var.cloud_sql_private_service_range_name
   private_service_prefix_length = var.cloud_sql_private_service_prefix_length
   database_version              = var.cloud_sql_database_version
+  edition                       = var.cloud_sql_edition
   tier                          = var.cloud_sql_tier
   availability_type             = var.cloud_sql_availability_type
   disk_type                     = var.cloud_sql_disk_type
