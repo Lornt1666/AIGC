@@ -166,7 +166,7 @@ def validate_manifest(root: Path, expected_revision: str | None = None) -> dict[
     missing_required = sorted(REQUIRED_FILES - set(actual))
     if missing_required:
         raise EvidenceManifestError(f"Required evidence files are missing: {missing_required}")
-    readiness_json = list((root / "production_readiness").glob("*.json"))
+    readiness_json = list((root / "production_readiness").rglob("*.json"))
     if not readiness_json:
         raise EvidenceManifestError("Canonical production-readiness JSON evidence is missing")
 
