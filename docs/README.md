@@ -9,6 +9,7 @@
 ## Staging preparation
 
 - [`STAGING_BOOTSTRAP.md`](STAGING_BOOTSTRAP.md) — mock-only staging preparation runbook.
+- [`CLOUD_SQL_STAGING_FOUNDATION.md`](CLOUD_SQL_STAGING_FOUNDATION.md) — private-IP Cloud SQL Terraform module, gates, validation, and operational-evidence requirements.
 - [`governance/evolution/AIGC_PROVIDER_DISCOVERY_AUTOMATION_KIT_V1.md`](governance/evolution/AIGC_PROVIDER_DISCOVERY_AUTOMATION_KIT_V1.md) — provider-discovery command and simulation boundary.
 - [`governance/evolution/AIGC_STAGING_PROCUREMENT_STATE_MACHINE_V1_1.md`](governance/evolution/AIGC_STAGING_PROCUREMENT_STATE_MACHINE_V1_1.md) — exact staging procurement state machine.
 
@@ -19,6 +20,16 @@ bash scripts/bootstrap-staging.sh
 ```
 
 The command is revision-bound and mock-only. It stops before live provider discovery authorization and performs no external action.
+
+Validate the inert Terraform definitions with:
+
+```bash
+terraform -chdir=infra/terraform/gcp fmt -check -recursive
+terraform -chdir=infra/terraform/gcp init -backend=false
+terraform -chdir=infra/terraform/gcp validate
+```
+
+The committed Terraform example keeps resource and subsystem authority disabled.
 
 ## Runtime truth
 
