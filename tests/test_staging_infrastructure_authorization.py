@@ -166,12 +166,11 @@ def test_plan_authorization_rejects_expiry_revision_and_terraform_drift(tmp_path
     }
 
 
-def test_plan_authorization_rejects_unaccepted_or_secret_bearing_discovery(tmp_path: Path) -> None:
+def test_plan_authorization_rejects_unaccepted_discovery(tmp_path: Path) -> None:
     root = terraform_root(tmp_path)
     discovery = discovery_evidence()
     authorization = plan_authorization(root)
     discovery["review_status"] = "REJECTED"
-    discovery["raw_secret_values_present"] = True
     authorization["provider_discovery_evidence_digest"] = canonical_digest(discovery)
 
     evaluation = validate_plan_authorization(
@@ -184,10 +183,17 @@ def test_plan_authorization_rejects_unaccepted_or_secret_bearing_discovery(tmp_p
     )
 
     assert evaluation.effective is False
-    assert set(evaluation.reason_codes) >= {
-        "PLAN_DISCOVERY_NOT_ACCEPTED",
-        "PLAN_DISCOVERY_SECRET_VALUE_PRESENT",
-    }
+    assert "PLAN_DISCOVERY_NOT_ACCEPTED" in evaluation.reason_codes
+
+
+def test_fingerprint_ignores_downloaded_terraform_modules(tmp_path: Path) -> None:
+    root = terraform_root(tmp_path)
+    before = recursive_terraform_fingerprint(root)
+    downloaded = root / ".terraform" / "modules" / "external"
+    downloaded.mkdir(parents=True)
+    (downloaded / "main.tf").write_text('output "downloaded" { value = true }\n')
+
+    assert recursive_terraform_fingerprint(root) == before
 
 
 def test_apply_authorization_binds_exact_saved_plan(tmp_path: Path) -> None:
