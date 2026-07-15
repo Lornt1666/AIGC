@@ -10,6 +10,7 @@
 
 - [`STAGING_BOOTSTRAP.md`](STAGING_BOOTSTRAP.md) — mock-only staging preparation runbook.
 - [`CLOUD_SQL_STAGING_FOUNDATION.md`](CLOUD_SQL_STAGING_FOUNDATION.md) — private-IP Cloud SQL Terraform module, gates, validation, and operational-evidence requirements.
+- [`TERRAFORM_INERT_EVIDENCE_CONTRACT.md`](TERRAFORM_INERT_EVIDENCE_CONTRACT.md) — provider-free, no-resource Terraform evidence contract, source fingerprinting, lockfile binding, and CI assertions.
 - [`governance/evolution/AIGC_PROVIDER_DISCOVERY_AUTOMATION_KIT_V1.md`](governance/evolution/AIGC_PROVIDER_DISCOVERY_AUTOMATION_KIT_V1.md) — provider-discovery command and simulation boundary.
 - [`governance/evolution/AIGC_STAGING_PROCUREMENT_STATE_MACHINE_V1_1.md`](governance/evolution/AIGC_STAGING_PROCUREMENT_STATE_MACHINE_V1_1.md) — exact staging procurement state machine.
 
@@ -29,7 +30,21 @@ terraform -chdir=infra/terraform/gcp init -backend=false
 terraform -chdir=infra/terraform/gcp validate
 ```
 
-The committed Terraform example keeps resource and subsystem authority disabled.
+Validate the provider-free evidence contract with:
+
+```bash
+terraform -chdir=infra/terraform/gcp/evidence_only fmt -check -recursive
+terraform -chdir=infra/terraform/gcp/evidence_only init -backend=false -input=false
+terraform -chdir=infra/terraform/gcp/evidence_only validate
+terraform -chdir=infra/terraform/gcp/evidence_only plan \
+  -input=false \
+  -lock=false \
+  -refresh=false \
+  -var-file=evidence.tfvars.example \
+  -out=/tmp/aigc-terraform-evidence-contract.tfplan
+```
+
+Both committed examples keep resource authority closed. The evidence-only root has no provider, resource, or data blocks.
 
 ## Runtime truth
 

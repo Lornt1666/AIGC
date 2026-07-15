@@ -1,0 +1,4 @@
+source_revision    = "0000000000000000000000000000000000000000"
+expected_pr_number = null
+branch_name        = "local-or-detached-head"
+repository_clean   = true
