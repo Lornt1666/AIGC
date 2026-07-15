@@ -52,7 +52,11 @@ def projected_completion_score(
 
 
 def build_readiness_payload(project_root: Path) -> dict[str, Any]:
-    """Return a truth-preserving readiness projection for the operator API."""
+    """Return canonical readiness plus a non-authoritative projection.
+
+    Top-level readiness fields remain for API compatibility. The nested
+    ``current`` object is the canonical structured representation.
+    """
 
     root = project_root.resolve()
     ledger = load_ledger(root / "config" / "production_readiness_ledger.json")
@@ -60,16 +64,23 @@ def build_readiness_payload(project_root: Path) -> dict[str, Any]:
     projected_score = projected_completion_score(ledger, report)
     threshold = float(report["production_readiness_threshold"])
 
+    current = {
+        "structural_score": report["overall_score"],
+        "threshold": threshold,
+        "production_ready": report["production_ready"],
+        "blocking_gaps": report["blocking_gaps"],
+        "source_revision": report["source_revision"],
+        "evaluated_at": report["created_at"],
+        "evidence_strength": report["evidence_strength"],
+    }
+
     return {
-        "current": {
-            "structural_score": report["overall_score"],
-            "threshold": threshold,
-            "production_ready": report["production_ready"],
-            "blocking_gaps": report["blocking_gaps"],
-            "source_revision": report["source_revision"],
-            "evaluated_at": report["created_at"],
-            "evidence_strength": report["evidence_strength"],
-        },
+        # Compatibility aliases retained for existing API consumers.
+        "structural_score": current["structural_score"],
+        "production_ready": current["production_ready"],
+        "blocking_gaps": current["blocking_gaps"],
+        "evidence_strength": current["evidence_strength"],
+        "current": current,
         "projection": {
             "structural_score": projected_score,
             "production_ready_if_evidence_is_accepted": (
