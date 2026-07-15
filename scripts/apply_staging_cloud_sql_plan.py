@@ -18,6 +18,12 @@ from src.core.staging_infrastructure_authorization import (  # noqa: E402
     file_digest,
     load_json,
     validate_apply_authorization,
+    validate_schema,
+)
+
+
+EXECUTION_SCHEMA = (
+    PROJECT_ROOT / "schemas" / "staging_infrastructure_apply_execution.schema.json"
 )
 
 
@@ -80,6 +86,7 @@ def write_receipt(
         "post_apply_evidence_required": True,
         "external_action_performed": external_action_performed,
     }
+    receipt = validate_schema(EXECUTION_SCHEMA, receipt)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
         json.dumps(receipt, indent=2, sort_keys=True) + "\n",
