@@ -12,10 +12,10 @@ locals {
 
   labels = merge(
     {
-      component  = "cloud-sql"
+      component   = "cloud-sql"
       environment = "staging"
-      managed_by = "terraform"
-      system     = "aigc"
+      managed_by  = "terraform"
+      system      = "aigc"
     },
     var.labels,
   )
@@ -65,13 +65,15 @@ resource "google_sql_database_instance" "postgres" {
   deletion_protection = var.deletion_protection
 
   settings {
-    tier              = var.tier
-    availability_type = var.availability_type
-    activation_policy = "ALWAYS"
-    disk_type          = var.disk_type
-    disk_size          = var.disk_size_gb
-    disk_autoresize    = true
-    user_labels        = local.labels
+    tier                        = var.tier
+    edition                     = var.edition
+    availability_type           = var.availability_type
+    activation_policy           = "ALWAYS"
+    deletion_protection_enabled = var.deletion_protection
+    disk_type                   = var.disk_type
+    disk_size                   = var.disk_size_gb
+    disk_autoresize             = true
+    user_labels                 = local.labels
 
     backup_configuration {
       enabled                        = true
@@ -119,6 +121,10 @@ resource "google_sql_database_instance" "postgres" {
     google_project_service.required,
     google_service_networking_connection.private_vpc_connection,
   ]
+
+  lifecycle {
+    ignore_changes = [settings[0].disk_size]
+  }
 
   timeouts {
     create = "60m"
