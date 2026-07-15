@@ -148,4 +148,8 @@ A successful Terraform exit code is insufficient. Collect:
 - cost and budget evidence;
 - rollback instructions and receipt.
 
+## Admission evidence
+
+Repository admission requires a complete main-targeted CI run. A GitHub Actions runner failure that produces no executed steps, logs, or artifacts is infrastructure noise and must be rerun or replaced by a fresh run; it is never accepted as repository evidence.
+
 `transactional_persistence` remains incomplete until the operational evidence is accepted.
