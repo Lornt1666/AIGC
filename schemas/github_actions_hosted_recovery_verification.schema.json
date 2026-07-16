@@ -26,6 +26,9 @@
     "issue_number",
     "pull_request_number",
     "exact_head",
+    "verification_tooling_revision",
+    "verification_tooling_branch",
+    "target_is_ancestor_of_verification_tooling_revision",
     "remediation_receipt_id",
     "remediation_receipt_digest",
     "workflow_run_id",
@@ -63,7 +66,7 @@
       "const": "AIGC-GITHUB-ACTIONS-HOSTED-RECOVERY-VERIFICATION-001"
     },
     "contract_version": {
-      "const": "1.0.0"
+      "const": "1.1.0"
     },
     "receipt_id": {
       "type": "string",
@@ -80,6 +83,17 @@
     },
     "exact_head": {
       "$ref": "#/$defs/hex40"
+    },
+    "verification_tooling_revision": {
+      "$ref": "#/$defs/hex40"
+    },
+    "verification_tooling_branch": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "target_is_ancestor_of_verification_tooling_revision": {
+      "const": true
     },
     "remediation_receipt_id": {
       "type": "string",
