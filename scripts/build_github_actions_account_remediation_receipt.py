@@ -15,6 +15,7 @@ from src.core.github_actions_account_remediation import (  # noqa: E402
     exact_git_revision,
     git_branch,
     git_is_ancestor,
+    git_repository_clean,
     parse_time,
 )
 
@@ -75,6 +76,13 @@ def main() -> int:
     args = parse_args()
     tooling_revision = exact_git_revision(PROJECT_ROOT)
     tooling_branch = git_branch(PROJECT_ROOT)
+    tooling_clean = git_repository_clean(PROJECT_ROOT)
+    if not tooling_clean:
+        raise SystemExit(
+            "The remediation-tooling checkout is not clean. Commit, discard, or move "
+            "all tracked, staged, and untracked changes before issuing a GAR receipt."
+        )
+
     exact_head = args.exact_head.strip()
     target_is_ancestor = git_is_ancestor(
         exact_head,
@@ -92,6 +100,7 @@ def main() -> int:
         exact_head=exact_head,
         tooling_revision=tooling_revision,
         tooling_branch=tooling_branch,
+        tooling_repository_clean=tooling_clean,
         target_is_ancestor_of_tooling_revision=target_is_ancestor,
         operator_name=args.operator_name,
         observed_banner=args.observed_banner,
@@ -118,6 +127,7 @@ def main() -> int:
                 "exact_head": receipt["exact_head"],
                 "tooling_revision": receipt["tooling_revision"],
                 "tooling_branch": receipt["tooling_branch"],
+                "tooling_repository_clean": True,
                 "target_is_ancestor_of_tooling_revision": True,
                 "hosted_rerun_requested": receipt["hosted_rerun_requested"],
                 "hosted_rerun_id": receipt["hosted_rerun_id"],
