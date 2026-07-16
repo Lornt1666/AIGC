@@ -14,6 +14,9 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from src.core.github_actions_account_remediation import (  # noqa: E402
     GitHubActionsRemediationError,
+    exact_git_revision,
+    git_branch,
+    git_is_ancestor,
     load_json,
     verify_hosted_recovery_observation,
 )
@@ -72,6 +75,9 @@ def gh_api(gh: str, endpoint: str) -> dict[str, Any]:
 
 def filtered_observation(
     *,
+    tooling_revision: str,
+    tooling_branch: str,
+    target_is_ancestor: bool,
     pull_request: dict[str, Any],
     workflow_run: dict[str, Any],
     workflow_jobs: dict[str, Any],
@@ -86,6 +92,9 @@ def filtered_observation(
     )
     return {
         "contract_id": "AIGC-GITHUB-ACTIONS-HOSTED-RECOVERY-OBSERVATION-001",
+        "verification_tooling_revision": tooling_revision,
+        "verification_tooling_branch": tooling_branch,
+        "target_is_ancestor_of_verification_tooling_revision": target_is_ancestor,
         "pull_request": {
             "number": pull_request.get("number"),
             "state": pull_request.get("state"),
@@ -161,6 +170,19 @@ def main() -> int:
     if args.pr_number != 123:
         raise SystemExit("This recovery contract is bound to PR #123")
 
+    tooling_revision = exact_git_revision(PROJECT_ROOT)
+    tooling_branch = git_branch(PROJECT_ROOT)
+    target_is_ancestor = git_is_ancestor(
+        args.expected_head,
+        tooling_revision,
+        project_root=PROJECT_ROOT,
+    )
+    if not target_is_ancestor:
+        raise SystemExit(
+            "The expected PR #123 head is not an ancestor of the current verification "
+            "tooling checkout. Use the approved stacked tooling branch."
+        )
+
     gh = shutil.which("gh")
     if gh is None:
         raise SystemExit("GitHub CLI is required. Install gh and run gh auth login first.")
@@ -198,6 +220,9 @@ def main() -> int:
             )
 
     observation = filtered_observation(
+        tooling_revision=tooling_revision,
+        tooling_branch=tooling_branch,
+        target_is_ancestor=target_is_ancestor,
         pull_request=pull_request,
         workflow_run=workflow_run,
         workflow_jobs=workflow_jobs,
@@ -217,6 +242,9 @@ def main() -> int:
         workflow_jobs=workflow_jobs,
         workflow_artifacts=workflow_artifacts,
         expected_head=args.expected_head,
+        verification_tooling_revision=tooling_revision,
+        verification_tooling_branch=tooling_branch,
+        target_is_ancestor_of_verification_tooling_revision=target_is_ancestor,
     )
     output = resolve_output(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -231,6 +259,10 @@ def main() -> int:
                 "observation_path": str(observation_path),
                 "receipt_id": verification["receipt_id"],
                 "workflow_run_id": verification["workflow_run_id"],
+                "exact_head": verification["exact_head"],
+                "verification_tooling_revision": tooling_revision,
+                "verification_tooling_branch": tooling_branch,
+                "target_is_ancestor_of_verification_tooling_revision": True,
                 "checkout_executed": True,
                 "steps_executed": True,
                 "required_artifacts_present": True,
