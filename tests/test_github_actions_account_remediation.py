@@ -23,6 +23,7 @@ def build(**overrides: object) -> dict[str, object]:
         "exact_head": HEAD,
         "tooling_revision": TOOLING,
         "tooling_branch": TOOLING_BRANCH,
+        "tooling_repository_clean": True,
         "target_is_ancestor_of_tooling_revision": True,
         "operator_name": "Justice Gray Maciocha",
         "observed_banner": (
@@ -51,7 +52,7 @@ def test_remediation_receipt_binds_target_and_tooling_provenance() -> None:
     receipt = valid_receipt()
 
     assert receipt["contract_id"] == "AIGC-GITHUB-ACTIONS-ACCOUNT-REMEDIATION-001"
-    assert receipt["contract_version"] == "1.1.0"
+    assert receipt["contract_version"] == "1.2.0"
     assert receipt["receipt_id"].startswith("GAR-")
     assert receipt["repository"] == "Lornt1666/AIGC"
     assert receipt["issue_number"] == 124
@@ -59,6 +60,7 @@ def test_remediation_receipt_binds_target_and_tooling_provenance() -> None:
     assert receipt["exact_head"] == HEAD
     assert receipt["tooling_revision"] == TOOLING
     assert receipt["tooling_branch"] == TOOLING_BRANCH
+    assert receipt["tooling_repository_clean"] is True
     assert receipt["target_is_ancestor_of_tooling_revision"] is True
     assert receipt["hosted_rerun_requested"] is True
     assert receipt["hosted_rerun_id"] == 123456789
@@ -121,3 +123,8 @@ def test_remediation_receipt_rejects_head_mismatch() -> None:
 def test_remediation_receipt_rejects_unproven_tooling_ancestry() -> None:
     with pytest.raises(GitHubActionsRemediationError, match="must be an ancestor"):
         build(target_is_ancestor_of_tooling_revision=False)
+
+
+def test_remediation_receipt_rejects_dirty_tooling_state() -> None:
+    with pytest.raises(GitHubActionsRemediationError, match="checkout must be clean"):
+        build(tooling_repository_clean=False)
