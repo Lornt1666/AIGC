@@ -6,14 +6,18 @@ This runbook coordinates the next admissible action for AIGC issue #124 without 
 
 The repository cannot modify GitHub account billing, Actions budgets, payment methods, included-minutes allocation, organization policy, or hosted-runner policy. The accountable operator performs that action in GitHub. The repository records and verifies the result through contract-bound receipts.
 
-## Bound candidate
+## Bound target and tooling provenance
+
+The remediation tools are intentionally developed in a separate stacked draft so PR #123 remains unchanged.
 
 ```text
 repository: Lornt1666/AIGC
 issue: #124
-pull_request: #123
-expected_head: 8f6285db20d08ab1ebfabb5dd757bb9e186cf5e0
-base: main
+target_pull_request: #123
+target_exact_head: 8f6285db20d08ab1ebfabb5dd757bb9e186cf5e0
+target_base: main
+tooling_branch: agent/github-actions-account-remediation-v1
+target_must_be_ancestor_of_tooling_revision: true
 operator_review_required: true
 hosted_ci_replacement: false
 merge_authorized: false
@@ -21,7 +25,13 @@ terraform_apply_authorized: false
 external_action_performed: false
 ```
 
-If PR #123 changes head, stop. Rebind the process to the new exact head before producing any receipt.
+The target PR head and the tooling revision are different facts:
+
+- `exact_head` identifies the unchanged PR #123 candidate being recovered;
+- `tooling_revision` identifies the reviewed stacked checkout that generated or verified the receipt;
+- Git ancestry must prove the target PR #123 head is contained in the tooling revision.
+
+If PR #123 changes head, stop. Rebind the process to the new exact target before producing any receipt.
 
 ## Procurement state machine
 
@@ -29,7 +39,7 @@ If PR #123 changes head, stop. Rebind the process to the new exact head before p
 ACCOUNT_RESTRICTION_OBSERVED
 → ACCOUNT_REMEDIATION_PERFORMED
 → GAR REMEDIATION RECEIPT ISSUED
-→ EXACT-HEAD HOSTED RERUN REQUESTED
+→ EXACT-TARGET HOSTED RERUN REQUESTED
 → HOSTED RUN COMPLETES WITH REAL STEPS
 → REQUIRED ARTIFACTS OBSERVED
 → GHR RECOVERY VERIFICATION ISSUED
@@ -63,9 +73,31 @@ Do not place card numbers, security codes, bank details, access tokens, or scree
 
 Retain a private screenshot or account reference and record only a non-sensitive evidence reference.
 
-## 2. Build the GAR remediation receipt
+## 2. Prepare the stacked remediation-tooling checkout
 
-From a clean checkout of the exact PR #123 head:
+Use the dedicated stacked remediation branch—not the PR #123 branch itself:
+
+```bash
+git fetch origin
+git checkout agent/github-actions-account-remediation-v1
+git pull --ff-only
+
+git merge-base --is-ancestor \
+  8f6285db20d08ab1ebfabb5dd757bb9e186cf5e0 \
+  HEAD
+```
+
+The ancestry command must exit `0`. The receipt builder performs the same check internally.
+
+The tooling checkout must be clean before receipt generation:
+
+```bash
+git status --short
+```
+
+## 3. Build the GAR remediation receipt
+
+From the clean stacked remediation-tooling branch:
 
 ```bash
 python scripts/build_github_actions_account_remediation_receipt.py \
@@ -90,30 +122,41 @@ RUNNER_POLICY
 OTHER
 ```
 
+The GAR receipt records both:
+
+```text
+exact_head: <PR #123 TARGET SHA>
+tooling_revision: <CURRENT STACKED TOOLING SHA>
+tooling_branch: agent/github-actions-account-remediation-v1
+target_is_ancestor_of_tooling_revision: true
+```
+
 The builder fails if:
 
-- the checkout does not match the exact head;
+- the target head is not an ancestor of the tooling revision;
 - required fields are placeholders;
 - raw payment details are present;
 - the attestation is altered;
 - the receipt would authorize merge, apply, provider mutation, or external action.
 
-## 3. Post the remediation attestation to issue #124
+## 4. Post the remediation attestation to issue #124
 
 Post the non-sensitive receipt fields and attach the JSON receipt. Use this wording:
 
 ```markdown
 ## SIG-124 account remediation completed
 
-Exact PR: #123  
-Exact head: `8f6285db20d08ab1ebfabb5dd757bb9e186cf5e0`  
+Exact target PR: #123  
+Exact target head: `8f6285db20d08ab1ebfabb5dd757bb9e186cf5e0`  
+Tooling revision: `<STACKED TOOLING SHA>`  
+Tooling branch: `agent/github-actions-account-remediation-v1`  
 GAR receipt: `<GAR-RECEIPT-ID>`  
 Observed GitHub banner: `<ACTUAL NON-SENSITIVE BANNER>`  
 Restriction category: `<CATEGORY>`  
 Remediation performed: `<NON-SENSITIVE SUMMARY>`  
 Remediation completed at: `<UTC OR OFFSET TIMESTAMP>`
 
-The attached receipt contains no raw payment details or secrets.
+The attached receipt contains no raw payment details or secrets. Git ancestry confirms the exact PR #123 target head is contained in the tooling revision.
 
 ```text
 operator_review_required: true
@@ -127,9 +170,9 @@ external_action_performed: false
 Issue #124 remains open pending successful exact-head hosted execution and required artifacts.
 ```
 
-## 4. Request an exact-head hosted rerun
+## 5. Request an exact-head hosted rerun
 
-Prefer rerunning the existing PR #123 workflow rather than pushing a trivial commit, because a new commit invalidates the bound candidate and all prior signatures.
+Prefer rerunning the existing PR #123 workflow rather than pushing a trivial commit, because a new PR #123 commit invalidates the bound target and all prior signatures.
 
 GitHub UI:
 
@@ -145,9 +188,9 @@ gh run rerun <FAILED_RUN_ID> --failed --repo Lornt1666/AIGC
 
 After the rerun is created, rebuild the GAR receipt with `--hosted-rerun-id <RUN_ID>` if the first receipt did not include it. A changed receipt receives a new receipt ID and digest.
 
-## 5. Verify hosted recovery through read-only API calls
+## 6. Verify hosted recovery through read-only API calls
 
-Only after the hosted run reports success:
+Remain on a clean approved remediation-tooling branch. Only after the hosted run reports success:
 
 ```bash
 python scripts/verify_github_actions_hosted_recovery.py \
@@ -162,8 +205,10 @@ python scripts/verify_github_actions_hosted_recovery.py \
 
 The verifier uses only read-only `gh api --method GET` calls. It requires:
 
+- the target PR #123 head is an ancestor of the verification tooling revision;
 - PR #123 is still open;
-- the current PR head equals the expected SHA;
+- the current PR head equals the expected target SHA;
+- the run ID matches the GAR-signed rerun ID when one was recorded;
 - the run is an `AIGC CI` pull-request run;
 - the run started after the account remediation;
 - the run is complete and successful;
@@ -172,7 +217,16 @@ The verifier uses only read-only `gh api --method GET` calls. It requires:
 - every required workflow step completed successfully;
 - the provider-discovery, Terraform, test, and readiness artifacts are present and unexpired.
 
-The resulting GHR receipt always retains:
+The GHR receipt records:
+
+```text
+exact_head: <PR #123 TARGET SHA>
+verification_tooling_revision: <CURRENT STACKED TOOLING SHA>
+verification_tooling_branch: agent/github-actions-account-remediation-v1
+target_is_ancestor_of_verification_tooling_revision: true
+```
+
+It always retains:
 
 ```text
 operator_review_required: true
@@ -183,7 +237,7 @@ provider_mutation_authorized: false
 external_action_performed: false
 ```
 
-## 6. Close issue #124 only after evidence review
+## 7. Close issue #124 only after evidence review
 
 Attach or reference:
 
@@ -191,13 +245,15 @@ Attach or reference:
 - GHR hosted-recovery verification receipt;
 - read-only hosted-recovery observation;
 - successful workflow run ID;
-- four required artifact names.
+- four required artifact names;
+- target and tooling revision ancestry proof.
 
 Issue #124 may close only when:
 
 ```text
 account_remediation_attestation_present=true
 current_pr_head_matches_expected=true
+target_is_ancestor_of_tooling_revision=true
 hosted_checkout_executed=true
 hosted_steps_executed=true
 provider_discovery_artifact_present=true
@@ -209,7 +265,7 @@ operator_review_completed=true
 
 Closing issue #124 does not approve PR #123 and does not authorize merge.
 
-## 7. Resume PR #123 admission
+## 8. Resume PR #123 admission
 
 After issue #124 closes:
 
