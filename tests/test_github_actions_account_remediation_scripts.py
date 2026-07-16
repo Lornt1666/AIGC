@@ -15,7 +15,9 @@ def test_remediation_builder_binds_target_and_tooling_without_authority() -> Non
     assert "exact_git_revision" in text
     assert "git_branch" in text
     assert "git_is_ancestor" in text
+    assert "git_repository_clean" in text
     assert "target_is_ancestor_of_tooling_revision" in text
+    assert "remediation-tooling checkout is not clean" in text
     assert "not an ancestor of the current remediation-tooling checkout" in text
     assert '"merge_authorized": False' in text
     assert '"terraform_apply_authorized": False' in text
@@ -56,6 +58,8 @@ def test_hosted_recovery_verifier_binds_signed_rerun_and_tooling_provenance() ->
     assert "exact_git_revision" in text
     assert "git_branch" in text
     assert "git_is_ancestor" in text
+    assert "git_repository_clean" in text
+    assert "verification-tooling checkout is not clean" in text
     assert "target_is_ancestor_of_verification_tooling_revision" in text
 
 
@@ -69,3 +73,5 @@ def test_runbook_preserves_operator_only_account_action_and_later_review() -> No
     assert "Do not use that wording before every prerequisite is satisfied" in text
     assert "target PR #123 head" in text
     assert "stacked remediation-tooling branch" in text
+    assert "tooling_repository_clean" in text
+    assert "verification_tooling_repository_clean" in text
