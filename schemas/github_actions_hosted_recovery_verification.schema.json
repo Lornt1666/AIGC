@@ -28,6 +28,7 @@
     "exact_head",
     "verification_tooling_revision",
     "verification_tooling_branch",
+    "verification_tooling_repository_clean",
     "target_is_ancestor_of_verification_tooling_revision",
     "remediation_receipt_id",
     "remediation_receipt_digest",
@@ -66,7 +67,7 @@
       "const": "AIGC-GITHUB-ACTIONS-HOSTED-RECOVERY-VERIFICATION-001"
     },
     "contract_version": {
-      "const": "1.1.0"
+      "const": "1.2.0"
     },
     "receipt_id": {
       "type": "string",
@@ -91,6 +92,9 @@
       "type": "string",
       "minLength": 1,
       "maxLength": 300
+    },
+    "verification_tooling_repository_clean": {
+      "const": true
     },
     "target_is_ancestor_of_verification_tooling_revision": {
       "const": true
