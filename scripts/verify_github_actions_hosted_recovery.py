@@ -17,6 +17,7 @@ from src.core.github_actions_account_remediation import (  # noqa: E402
     exact_git_revision,
     git_branch,
     git_is_ancestor,
+    git_repository_clean,
     load_json,
     verify_hosted_recovery_observation,
 )
@@ -77,6 +78,7 @@ def filtered_observation(
     *,
     tooling_revision: str,
     tooling_branch: str,
+    tooling_repository_clean: bool,
     target_is_ancestor: bool,
     pull_request: dict[str, Any],
     workflow_run: dict[str, Any],
@@ -94,6 +96,7 @@ def filtered_observation(
         "contract_id": "AIGC-GITHUB-ACTIONS-HOSTED-RECOVERY-OBSERVATION-001",
         "verification_tooling_revision": tooling_revision,
         "verification_tooling_branch": tooling_branch,
+        "verification_tooling_repository_clean": tooling_repository_clean,
         "target_is_ancestor_of_verification_tooling_revision": target_is_ancestor,
         "pull_request": {
             "number": pull_request.get("number"),
@@ -172,6 +175,12 @@ def main() -> int:
 
     tooling_revision = exact_git_revision(PROJECT_ROOT)
     tooling_branch = git_branch(PROJECT_ROOT)
+    tooling_clean = git_repository_clean(PROJECT_ROOT)
+    if not tooling_clean:
+        raise SystemExit(
+            "The verification-tooling checkout is not clean. Commit, discard, or move "
+            "all tracked, staged, and untracked changes before issuing a GHR receipt."
+        )
     target_is_ancestor = git_is_ancestor(
         args.expected_head,
         tooling_revision,
@@ -222,6 +231,7 @@ def main() -> int:
     observation = filtered_observation(
         tooling_revision=tooling_revision,
         tooling_branch=tooling_branch,
+        tooling_repository_clean=tooling_clean,
         target_is_ancestor=target_is_ancestor,
         pull_request=pull_request,
         workflow_run=workflow_run,
@@ -244,6 +254,7 @@ def main() -> int:
         expected_head=args.expected_head,
         verification_tooling_revision=tooling_revision,
         verification_tooling_branch=tooling_branch,
+        verification_tooling_repository_clean=tooling_clean,
         target_is_ancestor_of_verification_tooling_revision=target_is_ancestor,
     )
     output = resolve_output(args.output)
@@ -262,6 +273,7 @@ def main() -> int:
                 "exact_head": verification["exact_head"],
                 "verification_tooling_revision": tooling_revision,
                 "verification_tooling_branch": tooling_branch,
+                "verification_tooling_repository_clean": True,
                 "target_is_ancestor_of_verification_tooling_revision": True,
                 "checkout_executed": True,
                 "steps_executed": True,
