@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/github_actions_hosted_recovery_verification.schema.json",
+  "title": "AIGC GitHub Actions Hosted Recovery Verification v1",
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "hex40": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}$"
+    },
+    "hex64": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "datetime": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "contract_id",
+    "contract_version",
+    "receipt_id",
+    "repository",
+    "issue_number",
+    "pull_request_number",
+    "exact_head",
+    "remediation_receipt_id",
+    "remediation_receipt_digest",
+    "workflow_run_id",
+    "workflow_name",
+    "workflow_event",
+    "workflow_status",
+    "workflow_conclusion",
+    "workflow_head_sha",
+    "workflow_head_branch",
+    "run_started_at",
+    "run_completed_at",
+    "current_pr_head_matches_expected",
+    "run_pr_binding_observed",
+    "checkout_executed",
+    "steps_executed",
+    "required_steps",
+    "artifact_names",
+    "provider_discovery_artifact_present",
+    "terraform_artifact_present",
+    "test_artifact_present",
+    "readiness_artifact_present",
+    "github_api_read_performed",
+    "github_api_mutation_performed",
+    "verification_mode",
+    "operator_review_required",
+    "hosted_ci_replacement",
+    "merge_authorized",
+    "terraform_apply_authorized",
+    "provider_mutation_authorized",
+    "external_action_performed",
+    "verified_at"
+  ],
+  "properties": {
+    "contract_id": {
+      "const": "AIGC-GITHUB-ACTIONS-HOSTED-RECOVERY-VERIFICATION-001"
+    },
+    "contract_version": {
+      "const": "1.0.0"
+    },
+    "receipt_id": {
+      "type": "string",
+      "pattern": "^GHR-[A-F0-9]{24}$"
+    },
+    "repository": {
+      "const": "Lornt1666/AIGC"
+    },
+    "issue_number": {
+      "const": 124
+    },
+    "pull_request_number": {
+      "const": 123
+    },
+    "exact_head": {
+      "$ref": "#/$defs/hex40"
+    },
+    "remediation_receipt_id": {
+      "type": "string",
+      "pattern": "^GAR-[A-F0-9]{24}$"
+    },
+    "remediation_receipt_digest": {
+      "$ref": "#/$defs/hex64"
+    },
+    "workflow_run_id": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "workflow_name": {
+      "const": "AIGC CI"
+    },
+    "workflow_event": {
+      "const": "pull_request"
+    },
+    "workflow_status": {
+      "const": "completed"
+    },
+    "workflow_conclusion": {
+      "const": "success"
+    },
+    "workflow_head_sha": {
+      "$ref": "#/$defs/hex40"
+    },
+    "workflow_head_branch": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "run_started_at": {
+      "$ref": "#/$defs/datetime"
+    },
+    "run_completed_at": {
+      "$ref": "#/$defs/datetime"
+    },
+    "current_pr_head_matches_expected": {
+      "const": true
+    },
+    "run_pr_binding_observed": {
+      "const": true
+    },
+    "checkout_executed": {
+      "const": true
+    },
+    "steps_executed": {
+      "const": true
+    },
+    "required_steps": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "status", "conclusion"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "const": "completed"
+          },
+          "conclusion": {
+            "const": "success"
+          }
+        }
+      }
+    },
+    "artifact_names": {
+      "type": "array",
+      "minItems": 4,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "provider_discovery_artifact_present": {
+      "const": true
+    },
+    "terraform_artifact_present": {
+      "const": true
+    },
+    "test_artifact_present": {
+      "const": true
+    },
+    "readiness_artifact_present": {
+      "const": true
+    },
+    "github_api_read_performed": {
+      "const": true
+    },
+    "github_api_mutation_performed": {
+      "const": false
+    },
+    "verification_mode": {
+      "const": "READ_ONLY_GITHUB_API"
+    },
+    "operator_review_required": {
+      "const": true
+    },
+    "hosted_ci_replacement": {
+      "const": false
+    },
+    "merge_authorized": {
+      "const": false
+    },
+    "terraform_apply_authorized": {
+      "const": false
+    },
+    "provider_mutation_authorized": {
+      "const": false
+    },
+    "external_action_performed": {
+      "const": false
+    },
+    "verified_at": {
+      "$ref": "#/$defs/datetime"
+    }
+  }
+}
