@@ -143,26 +143,61 @@ def validate_schema(
     return dict(value)
 
 
-def exact_git_revision(project_root: str | Path = ROOT) -> str:
+def _run_git(
+    args: Sequence[str],
+    *,
+    project_root: str | Path = ROOT,
+    check: bool = True,
+) -> subprocess.CompletedProcess[str]:
     try:
-        completed = subprocess.run(
-            ["git", "rev-parse", "HEAD"],
+        return subprocess.run(
+            ["git", *args],
             cwd=Path(project_root),
-            check=True,
+            check=check,
             capture_output=True,
             text=True,
-            timeout=10,
+            timeout=15,
         )
     except (OSError, subprocess.CalledProcessError) as exc:
         raise GitHubActionsRemediationError(
-            "Unable to resolve the exact repository revision"
+            "Unable to inspect the local Git repository"
         ) from exc
+
+
+def exact_git_revision(project_root: str | Path = ROOT) -> str:
+    completed = _run_git(["rev-parse", "HEAD"], project_root=project_root)
     revision = completed.stdout.strip()
     if not HEX40.fullmatch(revision):
         raise GitHubActionsRemediationError(
             "Repository revision is not an exact lowercase 40-character SHA"
         )
     return revision
+
+
+def git_branch(project_root: str | Path = ROOT) -> str:
+    completed = _run_git(["branch", "--show-current"], project_root=project_root)
+    branch = completed.stdout.strip()
+    return branch or "DETACHED_HEAD"
+
+
+def git_is_ancestor(
+    ancestor: str,
+    descendant: str,
+    *,
+    project_root: str | Path = ROOT,
+) -> bool:
+    if not HEX40.fullmatch(ancestor) or not HEX40.fullmatch(descendant):
+        raise GitHubActionsRemediationError(
+            "Git ancestry checks require exact lowercase 40-character SHAs"
+        )
+    completed = _run_git(
+        ["merge-base", "--is-ancestor", ancestor, descendant],
+        project_root=project_root,
+        check=False,
+    )
+    if completed.returncode not in {0, 1}:
+        raise GitHubActionsRemediationError("Unable to determine Git ancestry")
+    return completed.returncode == 0
 
 
 def remediation_attestation(operator_name: str) -> str:
@@ -200,6 +235,9 @@ def _receipt_id(prefix: str, material: Mapping[str, Any]) -> str:
 def build_account_remediation_receipt(
     *,
     exact_head: str,
+    tooling_revision: str,
+    tooling_branch: str,
+    target_is_ancestor_of_tooling_revision: bool,
     operator_name: str,
     observed_banner: str,
     restriction_category: str,
@@ -217,6 +255,17 @@ def build_account_remediation_receipt(
         )
     if not HEX40.fullmatch(exact_head):
         raise GitHubActionsRemediationError("exact_head must be an exact Git SHA")
+    if not HEX40.fullmatch(tooling_revision):
+        raise GitHubActionsRemediationError(
+            "tooling_revision must be an exact Git SHA"
+        )
+    tooling_branch = tooling_branch.strip()
+    if not tooling_branch:
+        raise GitHubActionsRemediationError("tooling_branch is required")
+    if target_is_ancestor_of_tooling_revision is not True:
+        raise GitHubActionsRemediationError(
+            "The target PR head must be an ancestor of the remediation tooling revision"
+        )
 
     operator_name = operator_name.strip()
     observed_banner = observed_banner.strip()
@@ -244,6 +293,8 @@ def build_account_remediation_receipt(
         "issue_number": ISSUE_NUMBER,
         "pull_request_number": PULL_REQUEST_NUMBER,
         "exact_head": exact_head,
+        "tooling_revision": tooling_revision,
+        "tooling_branch": tooling_branch,
         "operator_name": operator_name,
         "restriction_category": restriction_category,
         "remediation_completed_at": completed.isoformat(),
@@ -252,12 +303,15 @@ def build_account_remediation_receipt(
     }
     receipt = {
         "contract_id": "AIGC-GITHUB-ACTIONS-ACCOUNT-REMEDIATION-001",
-        "contract_version": "1.0.0",
+        "contract_version": "1.1.0",
         "receipt_id": _receipt_id("GAR", material),
         "repository": REPOSITORY,
         "issue_number": ISSUE_NUMBER,
         "pull_request_number": PULL_REQUEST_NUMBER,
         "exact_head": exact_head,
+        "tooling_revision": tooling_revision,
+        "tooling_branch": tooling_branch,
+        "target_is_ancestor_of_tooling_revision": True,
         "operator_role": "ACCOUNTABLE_OPERATOR",
         "operator_name": operator_name,
         "observed_banner": observed_banner,
@@ -314,6 +368,10 @@ def validate_account_remediation_receipt(
         str(value["remediation_summary"]),
         str(value["billing_ui_evidence_reference"]),
     )
+    if value["target_is_ancestor_of_tooling_revision"] is not True:
+        raise GitHubActionsRemediationError(
+            "Remediation tooling is not proven to contain the target PR head"
+        )
     completed = parse_time(value["remediation_completed_at"])
     created = parse_time(value["created_at"])
     now = utc(evaluated_at)
@@ -374,6 +432,9 @@ def verify_hosted_recovery_observation(
     workflow_jobs: Mapping[str, Any] | Sequence[Any],
     workflow_artifacts: Mapping[str, Any] | Sequence[Any],
     expected_head: str,
+    verification_tooling_revision: str,
+    verification_tooling_branch: str,
+    target_is_ancestor_of_verification_tooling_revision: bool,
     evaluated_at: datetime | None = None,
 ) -> dict[str, Any]:
     remediation = validate_account_remediation_receipt(
@@ -381,6 +442,20 @@ def verify_hosted_recovery_observation(
         expected_head=expected_head,
         evaluated_at=evaluated_at,
     )
+    if not HEX40.fullmatch(verification_tooling_revision):
+        raise GitHubActionsRemediationError(
+            "verification_tooling_revision must be an exact Git SHA"
+        )
+    verification_tooling_branch = verification_tooling_branch.strip()
+    if not verification_tooling_branch:
+        raise GitHubActionsRemediationError(
+            "verification_tooling_branch is required"
+        )
+    if target_is_ancestor_of_verification_tooling_revision is not True:
+        raise GitHubActionsRemediationError(
+            "The target PR head must be an ancestor of the verification tooling revision"
+        )
+
     pr = _as_object(pull_request, label="pull_request")
     run = _as_object(workflow_run, label="workflow_run")
     if pr.get("number") != PULL_REQUEST_NUMBER:
@@ -393,6 +468,12 @@ def verify_hosted_recovery_observation(
 
     if run.get("id") is None or int(run["id"]) < 1:
         raise GitHubActionsRemediationError("Workflow run ID is missing")
+    run_id = int(run["id"])
+    if remediation["hosted_rerun_requested"] is True:
+        if remediation["hosted_rerun_id"] != run_id:
+            raise GitHubActionsRemediationError(
+                "Hosted workflow run does not match the GAR-signed rerun ID"
+            )
     if run.get("name") != "AIGC CI":
         raise GitHubActionsRemediationError("Unexpected workflow name")
     if run.get("event") != "pull_request":
@@ -492,7 +573,7 @@ def verify_hosted_recovery_observation(
         workflow_ref = item.get("workflow_run")
         if isinstance(workflow_ref, dict) and workflow_ref.get("id") not in {
             None,
-            run["id"],
+            run_id,
         }:
             continue
         name = str(item.get("name", ""))
@@ -515,21 +596,25 @@ def verify_hosted_recovery_observation(
         "repository": REPOSITORY,
         "pull_request_number": PULL_REQUEST_NUMBER,
         "exact_head": expected_head,
+        "verification_tooling_revision": verification_tooling_revision,
         "remediation_receipt_id": remediation["receipt_id"],
-        "workflow_run_id": int(run["id"]),
+        "workflow_run_id": run_id,
         "verified_at": verified.isoformat(),
     }
     receipt = {
         "contract_id": "AIGC-GITHUB-ACTIONS-HOSTED-RECOVERY-VERIFICATION-001",
-        "contract_version": "1.0.0",
+        "contract_version": "1.1.0",
         "receipt_id": _receipt_id("GHR", material),
         "repository": REPOSITORY,
         "issue_number": ISSUE_NUMBER,
         "pull_request_number": PULL_REQUEST_NUMBER,
         "exact_head": expected_head,
+        "verification_tooling_revision": verification_tooling_revision,
+        "verification_tooling_branch": verification_tooling_branch,
+        "target_is_ancestor_of_verification_tooling_revision": True,
         "remediation_receipt_id": remediation["receipt_id"],
         "remediation_receipt_digest": canonical_digest(remediation),
-        "workflow_run_id": int(run["id"]),
+        "workflow_run_id": run_id,
         "workflow_name": "AIGC CI",
         "workflow_event": "pull_request",
         "workflow_status": "completed",
