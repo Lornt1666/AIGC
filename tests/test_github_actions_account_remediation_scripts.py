@@ -73,5 +73,5 @@ def test_runbook_preserves_operator_only_account_action_and_later_review() -> No
     assert "Do not use that wording before every prerequisite is satisfied" in text
     assert "target PR #123 head" in text
     assert "stacked remediation-tooling branch" in text
-    assert "tooling_repository_clean" in text
-    assert "verification_tooling_repository_clean" in text
+    assert "The tooling checkout must be clean before receipt generation" in text
+    assert "Remain on a clean approved remediation-tooling branch" in text
