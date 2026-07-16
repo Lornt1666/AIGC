@@ -13,6 +13,8 @@ if str(PROJECT_ROOT) not in sys.path:
 from src.core.github_actions_account_remediation import (  # noqa: E402
     build_account_remediation_receipt,
     exact_git_revision,
+    git_branch,
+    git_is_ancestor,
     parse_time,
 )
 
@@ -30,7 +32,7 @@ RESTRICTION_CATEGORIES = (
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "Build a contract-valid, exact-head GitHub Actions account-remediation "
+            "Build a contract-valid, exact-target GitHub Actions account-remediation "
             "receipt. Do not include card numbers, security codes, bank details, or secrets."
         )
     )
@@ -50,8 +52,11 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--exact-head",
-        default="",
-        help="Expected PR #123 head. Defaults to the current local Git HEAD.",
+        required=True,
+        help=(
+            "Exact PR #123 target head. It must be an ancestor of the current "
+            "remediation-tooling checkout."
+        ),
     )
     parser.add_argument(
         "--hosted-rerun-id",
@@ -68,17 +73,26 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    local_head = exact_git_revision(PROJECT_ROOT)
-    exact_head = args.exact_head.strip() or local_head
-    if exact_head != local_head:
+    tooling_revision = exact_git_revision(PROJECT_ROOT)
+    tooling_branch = git_branch(PROJECT_ROOT)
+    exact_head = args.exact_head.strip()
+    target_is_ancestor = git_is_ancestor(
+        exact_head,
+        tooling_revision,
+        project_root=PROJECT_ROOT,
+    )
+    if not target_is_ancestor:
         raise SystemExit(
-            "The requested exact head does not match the current checkout. "
-            "Checkout the exact PR #123 candidate before signing remediation evidence."
+            "The requested PR #123 target head is not an ancestor of the current "
+            "remediation-tooling checkout. Use the approved stacked tooling branch."
         )
 
     completed_at: datetime = parse_time(args.remediation_completed_at)
     receipt = build_account_remediation_receipt(
         exact_head=exact_head,
+        tooling_revision=tooling_revision,
+        tooling_branch=tooling_branch,
+        target_is_ancestor_of_tooling_revision=target_is_ancestor,
         operator_name=args.operator_name,
         observed_banner=args.observed_banner,
         restriction_category=args.restriction_category,
@@ -102,6 +116,9 @@ def main() -> int:
                 "receipt_path": str(output),
                 "receipt_id": receipt["receipt_id"],
                 "exact_head": receipt["exact_head"],
+                "tooling_revision": receipt["tooling_revision"],
+                "tooling_branch": receipt["tooling_branch"],
+                "target_is_ancestor_of_tooling_revision": True,
                 "hosted_rerun_requested": receipt["hosted_rerun_requested"],
                 "hosted_rerun_id": receipt["hosted_rerun_id"],
                 "merge_authorized": False,
