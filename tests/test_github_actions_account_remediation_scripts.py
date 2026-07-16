@@ -9,11 +9,14 @@ VERIFIER = ROOT / "scripts" / "verify_github_actions_hosted_recovery.py"
 RUNBOOK = ROOT / "docs" / "GITHUB_ACTIONS_ACCOUNT_REMEDIATION_PROCUREMENT.md"
 
 
-def test_remediation_builder_is_exact_head_bound_and_non_authorizing() -> None:
+def test_remediation_builder_binds_target_and_tooling_without_authority() -> None:
     text = BUILDER.read_text(encoding="utf-8")
 
     assert "exact_git_revision" in text
-    assert "The requested exact head does not match the current checkout" in text
+    assert "git_branch" in text
+    assert "git_is_ancestor" in text
+    assert "target_is_ancestor_of_tooling_revision" in text
+    assert "not an ancestor of the current remediation-tooling checkout" in text
     assert '"merge_authorized": False' in text
     assert '"terraform_apply_authorized": False' in text
     assert '"external_action_performed": False' in text
@@ -44,12 +47,16 @@ def test_hosted_recovery_verifier_uses_read_only_github_api() -> None:
         assert marker not in text
 
 
-def test_hosted_recovery_verifier_binds_signed_rerun_id() -> None:
+def test_hosted_recovery_verifier_binds_signed_rerun_and_tooling_provenance() -> None:
     text = VERIFIER.read_text(encoding="utf-8")
 
     assert 'remediation_receipt.get("hosted_rerun_requested") is True' in text
     assert 'signed_run_id = remediation_receipt.get("hosted_rerun_id")' in text
     assert "The GAR receipt is bound to a different hosted rerun ID" in text
+    assert "exact_git_revision" in text
+    assert "git_branch" in text
+    assert "git_is_ancestor" in text
+    assert "target_is_ancestor_of_verification_tooling_revision" in text
 
 
 def test_runbook_preserves_operator_only_account_action_and_later_review() -> None:
@@ -60,3 +67,5 @@ def test_runbook_preserves_operator_only_account_action_and_later_review() -> No
     assert "Prefer rerunning the existing PR #123 workflow" in text
     assert "Closing issue #124 does not approve PR #123" in text
     assert "Do not use that wording before every prerequisite is satisfied" in text
+    assert "target PR #123 head" in text
+    assert "stacked remediation-tooling branch" in text
