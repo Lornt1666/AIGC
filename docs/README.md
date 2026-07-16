@@ -6,6 +6,13 @@
 - [`REVIEW_EVIDENCE_PACKET_V1.md`](REVIEW_EVIDENCE_PACKET_V1.md) — review evidence and accountable human judgment.
 - [`PRODUCTION_DEPLOYMENT_BASELINE_V1.md`](PRODUCTION_DEPLOYMENT_BASELINE_V1.md) — fail-closed deployment baseline.
 
+## CI evidence and recovery
+
+- [`GITHUB_ACTIONS_RUNNER_RECOVERY.md`](GITHUB_ACTIONS_RUNNER_RECOVERY.md) — zero-step hosted-runner diagnosis and recovery boundary.
+- [`LOCAL_CI_EVIDENCE_BUNDLE.md`](LOCAL_CI_EVIDENCE_BUNDLE.md) — supplemental local evidence generation and non-substitution rule.
+- [`CI_EVIDENCE_ADMISSION_DECISION.md`](CI_EVIDENCE_ADMISSION_DECISION.md) — admitted and rejected CI evidence paths.
+- [`GITHUB_ACTIONS_ACCOUNT_REMEDIATION_PROCUREMENT.md`](GITHUB_ACTIONS_ACCOUNT_REMEDIATION_PROCUREMENT.md) — schema-bound account remediation, exact-head hosted rerun, read-only verification, and issue #124 closure sequence.
+
 ## Staging preparation
 
 - [`STAGING_BOOTSTRAP.md`](STAGING_BOOTSTRAP.md) — mock-only staging preparation runbook.
