@@ -24,6 +24,7 @@
     "exact_head",
     "tooling_revision",
     "tooling_branch",
+    "tooling_repository_clean",
     "target_is_ancestor_of_tooling_revision",
     "operator_role",
     "operator_name",
@@ -51,7 +52,7 @@
       "const": "AIGC-GITHUB-ACTIONS-ACCOUNT-REMEDIATION-001"
     },
     "contract_version": {
-      "const": "1.1.0"
+      "const": "1.2.0"
     },
     "receipt_id": {
       "type": "string",
@@ -76,6 +77,9 @@
       "type": "string",
       "minLength": 1,
       "maxLength": 300
+    },
+    "tooling_repository_clean": {
+      "const": true
     },
     "target_is_ancestor_of_tooling_revision": {
       "const": true
