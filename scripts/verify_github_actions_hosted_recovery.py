@@ -189,6 +189,13 @@ def main() -> int:
         f"repos/{repository}/actions/runs/{args.run_id}/artifacts?per_page=100",
     )
     remediation_receipt = load_json(args.remediation_receipt)
+    if remediation_receipt.get("hosted_rerun_requested") is True:
+        signed_run_id = remediation_receipt.get("hosted_rerun_id")
+        if signed_run_id != args.run_id:
+            raise SystemExit(
+                "The GAR receipt is bound to a different hosted rerun ID. "
+                "Issue a new remediation receipt for the run being verified."
+            )
 
     observation = filtered_observation(
         pull_request=pull_request,
