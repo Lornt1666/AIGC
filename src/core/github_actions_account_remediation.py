@@ -180,6 +180,14 @@ def git_branch(project_root: str | Path = ROOT) -> str:
     return branch or "DETACHED_HEAD"
 
 
+def git_repository_clean(project_root: str | Path = ROOT) -> bool:
+    completed = _run_git(
+        ["status", "--porcelain=v1", "--untracked-files=all"],
+        project_root=project_root,
+    )
+    return not completed.stdout.strip()
+
+
 def git_is_ancestor(
     ancestor: str,
     descendant: str,
@@ -237,6 +245,7 @@ def build_account_remediation_receipt(
     exact_head: str,
     tooling_revision: str,
     tooling_branch: str,
+    tooling_repository_clean: bool,
     target_is_ancestor_of_tooling_revision: bool,
     operator_name: str,
     observed_banner: str,
@@ -262,6 +271,10 @@ def build_account_remediation_receipt(
     tooling_branch = tooling_branch.strip()
     if not tooling_branch:
         raise GitHubActionsRemediationError("tooling_branch is required")
+    if tooling_repository_clean is not True:
+        raise GitHubActionsRemediationError(
+            "The remediation tooling checkout must be clean"
+        )
     if target_is_ancestor_of_tooling_revision is not True:
         raise GitHubActionsRemediationError(
             "The target PR head must be an ancestor of the remediation tooling revision"
@@ -295,6 +308,7 @@ def build_account_remediation_receipt(
         "exact_head": exact_head,
         "tooling_revision": tooling_revision,
         "tooling_branch": tooling_branch,
+        "tooling_repository_clean": True,
         "operator_name": operator_name,
         "restriction_category": restriction_category,
         "remediation_completed_at": completed.isoformat(),
@@ -303,7 +317,7 @@ def build_account_remediation_receipt(
     }
     receipt = {
         "contract_id": "AIGC-GITHUB-ACTIONS-ACCOUNT-REMEDIATION-001",
-        "contract_version": "1.1.0",
+        "contract_version": "1.2.0",
         "receipt_id": _receipt_id("GAR", material),
         "repository": REPOSITORY,
         "issue_number": ISSUE_NUMBER,
@@ -311,6 +325,7 @@ def build_account_remediation_receipt(
         "exact_head": exact_head,
         "tooling_revision": tooling_revision,
         "tooling_branch": tooling_branch,
+        "tooling_repository_clean": True,
         "target_is_ancestor_of_tooling_revision": True,
         "operator_role": "ACCOUNTABLE_OPERATOR",
         "operator_name": operator_name,
@@ -368,6 +383,10 @@ def validate_account_remediation_receipt(
         str(value["remediation_summary"]),
         str(value["billing_ui_evidence_reference"]),
     )
+    if value["tooling_repository_clean"] is not True:
+        raise GitHubActionsRemediationError(
+            "Remediation tooling is not recorded as clean"
+        )
     if value["target_is_ancestor_of_tooling_revision"] is not True:
         raise GitHubActionsRemediationError(
             "Remediation tooling is not proven to contain the target PR head"
@@ -434,6 +453,7 @@ def verify_hosted_recovery_observation(
     expected_head: str,
     verification_tooling_revision: str,
     verification_tooling_branch: str,
+    verification_tooling_repository_clean: bool,
     target_is_ancestor_of_verification_tooling_revision: bool,
     evaluated_at: datetime | None = None,
 ) -> dict[str, Any]:
@@ -450,6 +470,10 @@ def verify_hosted_recovery_observation(
     if not verification_tooling_branch:
         raise GitHubActionsRemediationError(
             "verification_tooling_branch is required"
+        )
+    if verification_tooling_repository_clean is not True:
+        raise GitHubActionsRemediationError(
+            "The hosted-recovery verification tooling checkout must be clean"
         )
     if target_is_ancestor_of_verification_tooling_revision is not True:
         raise GitHubActionsRemediationError(
@@ -597,13 +621,14 @@ def verify_hosted_recovery_observation(
         "pull_request_number": PULL_REQUEST_NUMBER,
         "exact_head": expected_head,
         "verification_tooling_revision": verification_tooling_revision,
+        "verification_tooling_repository_clean": True,
         "remediation_receipt_id": remediation["receipt_id"],
         "workflow_run_id": run_id,
         "verified_at": verified.isoformat(),
     }
     receipt = {
         "contract_id": "AIGC-GITHUB-ACTIONS-HOSTED-RECOVERY-VERIFICATION-001",
-        "contract_version": "1.1.0",
+        "contract_version": "1.2.0",
         "receipt_id": _receipt_id("GHR", material),
         "repository": REPOSITORY,
         "issue_number": ISSUE_NUMBER,
@@ -611,6 +636,7 @@ def verify_hosted_recovery_observation(
         "exact_head": expected_head,
         "verification_tooling_revision": verification_tooling_revision,
         "verification_tooling_branch": verification_tooling_branch,
+        "verification_tooling_repository_clean": True,
         "target_is_ancestor_of_verification_tooling_revision": True,
         "remediation_receipt_id": remediation["receipt_id"],
         "remediation_receipt_digest": canonical_digest(remediation),
