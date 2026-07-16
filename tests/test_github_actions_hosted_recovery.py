@@ -26,6 +26,7 @@ def remediation_receipt() -> dict[str, object]:
         exact_head=HEAD,
         tooling_revision=TOOLING,
         tooling_branch=TOOLING_BRANCH,
+        tooling_repository_clean=True,
         target_is_ancestor_of_tooling_revision=True,
         operator_name="Justice Gray Maciocha",
         observed_banner="GitHub Actions was blocked by the private-repository spending limit.",
@@ -136,6 +137,7 @@ def verify(**overrides: object) -> dict[str, object]:
         "expected_head": HEAD,
         "verification_tooling_revision": TOOLING,
         "verification_tooling_branch": TOOLING_BRANCH,
+        "verification_tooling_repository_clean": True,
         "target_is_ancestor_of_verification_tooling_revision": True,
         "evaluated_at": NOW,
     }
@@ -147,13 +149,14 @@ def test_successful_hosted_recovery_is_evidence_only_and_non_authorizing() -> No
     receipt = verify()
 
     assert receipt["contract_id"] == "AIGC-GITHUB-ACTIONS-HOSTED-RECOVERY-VERIFICATION-001"
-    assert receipt["contract_version"] == "1.1.0"
+    assert receipt["contract_version"] == "1.2.0"
     assert receipt["receipt_id"].startswith("GHR-")
     assert receipt["workflow_run_id"] == RUN_ID
     assert receipt["workflow_conclusion"] == "success"
     assert receipt["exact_head"] == HEAD
     assert receipt["verification_tooling_revision"] == TOOLING
     assert receipt["verification_tooling_branch"] == TOOLING_BRANCH
+    assert receipt["verification_tooling_repository_clean"] is True
     assert receipt["target_is_ancestor_of_verification_tooling_revision"] is True
     assert receipt["current_pr_head_matches_expected"] is True
     assert receipt["run_pr_binding_observed"] is True
@@ -230,3 +233,8 @@ def test_signed_rerun_id_mismatch_fails_closed() -> None:
 def test_unproven_verifier_tooling_ancestry_fails_closed() -> None:
     with pytest.raises(GitHubActionsRemediationError, match="must be an ancestor"):
         verify(target_is_ancestor_of_verification_tooling_revision=False)
+
+
+def test_dirty_verifier_tooling_state_fails_closed() -> None:
+    with pytest.raises(GitHubActionsRemediationError, match="checkout must be clean"):
+        verify(verification_tooling_repository_clean=False)
