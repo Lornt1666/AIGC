@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/github_actions_account_remediation_receipt.schema.json",
+  "title": "AIGC GitHub Actions Account Remediation Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "hex40": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}$"
+    },
+    "datetime": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "contract_id",
+    "contract_version",
+    "receipt_id",
+    "repository",
+    "issue_number",
+    "pull_request_number",
+    "exact_head",
+    "operator_role",
+    "operator_name",
+    "observed_banner",
+    "restriction_category",
+    "remediation_summary",
+    "billing_ui_evidence_reference",
+    "remediation_completed_at",
+    "hosted_rerun_requested",
+    "hosted_rerun_id",
+    "attestation",
+    "account_restriction_confirmed",
+    "raw_payment_details_present",
+    "raw_secret_values_present",
+    "operator_review_required",
+    "hosted_ci_replacement",
+    "merge_authorized",
+    "terraform_apply_authorized",
+    "provider_mutation_authorized",
+    "external_action_performed",
+    "created_at"
+  ],
+  "properties": {
+    "contract_id": {
+      "const": "AIGC-GITHUB-ACTIONS-ACCOUNT-REMEDIATION-001"
+    },
+    "contract_version": {
+      "const": "1.0.0"
+    },
+    "receipt_id": {
+      "type": "string",
+      "pattern": "^GAR-[A-F0-9]{24}$"
+    },
+    "repository": {
+      "const": "Lornt1666/AIGC"
+    },
+    "issue_number": {
+      "const": 124
+    },
+    "pull_request_number": {
+      "const": 123
+    },
+    "exact_head": {
+      "$ref": "#/$defs/hex40"
+    },
+    "operator_role": {
+      "const": "ACCOUNTABLE_OPERATOR"
+    },
+    "operator_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "observed_banner": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "restriction_category": {
+      "enum": [
+        "ACTIONS_MINUTES",
+        "SPENDING_LIMIT",
+        "BILLING_PAYMENT",
+        "ACTIONS_POLICY",
+        "RUNNER_POLICY",
+        "OTHER"
+      ]
+    },
+    "remediation_summary": {
+      "type": "string",
+      "minLength": 12,
+      "maxLength": 4000
+    },
+    "billing_ui_evidence_reference": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "remediation_completed_at": {
+      "$ref": "#/$defs/datetime"
+    },
+    "hosted_rerun_requested": {
+      "type": "boolean"
+    },
+    "hosted_rerun_id": {
+      "type": ["integer", "null"],
+      "minimum": 1
+    },
+    "attestation": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "account_restriction_confirmed": {
+      "const": true
+    },
+    "raw_payment_details_present": {
+      "const": false
+    },
+    "raw_secret_values_present": {
+      "const": false
+    },
+    "operator_review_required": {
+      "const": true
+    },
+    "hosted_ci_replacement": {
+      "const": false
+    },
+    "merge_authorized": {
+      "const": false
+    },
+    "terraform_apply_authorized": {
+      "const": false
+    },
+    "provider_mutation_authorized": {
+      "const": false
+    },
+    "external_action_performed": {
+      "const": false
+    },
+    "created_at": {
+      "$ref": "#/$defs/datetime"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "hosted_rerun_requested": {
+            "const": true
+          }
+        },
+        "required": ["hosted_rerun_requested"]
+      },
+      "then": {
+        "properties": {
+          "hosted_rerun_id": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "hosted_rerun_id": {
+            "const": null
+          }
+        }
+      }
+    }
+  ]
+}
