@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/canonical_deployment_and_autonomy_sequence.schema.json",
+  "title": "AIGC Canonical Deployment and Autonomy Sequence",
+  "type": "object",
+  "required": [
+    "contract_id",
+    "contract_version",
+    "observed_at",
+    "repository",
+    "bindings",
+    "current_truth",
+    "critical_path",
+    "canaries",
+    "authority",
+    "next_admissible_action"
+  ],
+  "properties": {
+    "contract_id": {
+      "type": "string",
+      "enum": ["AIGC-CANONICAL-DEPLOYMENT-AUTONOMY-SEQUENCE-001"]
+    },
+    "contract_version": {"type": "string"},
+    "observed_at": {"type": "string"},
+    "repository": {
+      "type": "object",
+      "required": ["full_name", "default_branch"],
+      "properties": {
+        "full_name": {"type": "string"},
+        "default_branch": {"type": "string"}
+      }
+    },
+    "bindings": {
+      "type": "object",
+      "required": [
+        "main_sha",
+        "ci_hardening_pr",
+        "staging_authorization_pr",
+        "cockpit_pr",
+        "ci_incident_issue",
+        "employer_duty_issue",
+        "rebind_required_on_revision_change"
+      ],
+      "properties": {
+        "main_sha": {"type": "string"},
+        "ci_hardening_pr": {"type": "object"},
+        "staging_authorization_pr": {"type": "object"},
+        "cockpit_pr": {"type": "object"},
+        "ci_incident_issue": {"type": "integer"},
+        "employer_duty_issue": {"type": "integer"},
+        "rebind_required_on_revision_change": {"type": "boolean"}
+      }
+    },
+    "current_truth": {
+      "type": "object",
+      "required": [
+        "hosted_ci_recovered",
+        "pr_123_admitted",
+        "cloud_run_runtime_implemented",
+        "canary_a_passed",
+        "canary_b_passed",
+        "external_action_performed"
+      ],
+      "properties": {
+        "hosted_ci_recovered": {"type": "boolean"},
+        "pr_123_admitted": {"type": "boolean"},
+        "cloud_run_runtime_implemented": {"type": "boolean"},
+        "canary_a_passed": {"type": "boolean"},
+        "canary_b_passed": {"type": "boolean"},
+        "external_action_performed": {"type": "boolean"}
+      }
+    },
+    "critical_path": {
+      "type": "array",
+      "minItems": 9,
+      "items": {
+        "type": "object",
+        "required": [
+          "stage_id",
+          "order",
+          "name",
+          "status",
+          "depends_on",
+          "authority_mode",
+          "entry_criteria",
+          "exit_criteria",
+          "operator_review_required",
+          "external_action_performed"
+        ],
+        "properties": {
+          "stage_id": {"type": "string"},
+          "order": {"type": "integer"},
+          "name": {"type": "string"},
+          "status": {
+            "type": "string",
+            "enum": ["blocked", "planned", "ready", "in_progress", "complete"]
+          },
+          "depends_on": {"type": "array", "items": {"type": "string"}},
+          "authority_mode": {
+            "type": "string",
+            "enum": ["internal_only", "separately_authorized_external"]
+          },
+          "references": {"type": "object"},
+          "entry_criteria": {"type": "array", "items": {"type": "string"}},
+          "exit_criteria": {"type": "array", "items": {"type": "string"}},
+          "operator_review_required": {"type": "boolean"},
+          "external_action_performed": {"type": "boolean"}
+        }
+      }
+    },
+    "canaries": {
+      "type": "object",
+      "required": ["canary_a", "canary_b"],
+      "properties": {
+        "canary_a": {"type": "object"},
+        "canary_b": {"type": "object"}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "autonomous_internal_planning",
+        "autonomous_internal_work_order_creation",
+        "autonomous_progress_analysis",
+        "autonomous_internal_reconciliation",
+        "automatic_external_commitment_allowed",
+        "self_approval_allowed",
+        "automatic_merge_allowed",
+        "external_action_performed",
+        "matrix"
+      ],
+      "properties": {
+        "autonomous_internal_planning": {"type": "boolean"},
+        "autonomous_internal_work_order_creation": {"type": "boolean"},
+        "autonomous_progress_analysis": {"type": "boolean"},
+        "autonomous_internal_reconciliation": {"type": "boolean"},
+        "automatic_external_commitment_allowed": {"type": "boolean"},
+        "self_approval_allowed": {"type": "boolean"},
+        "automatic_merge_allowed": {"type": "boolean"},
+        "external_action_performed": {"type": "boolean"},
+        "matrix": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["action", "automatic", "separate_approval_required"],
+            "properties": {
+              "action": {"type": "string"},
+              "automatic": {"type": "boolean"},
+              "separate_approval_required": {"type": "boolean"}
+            }
+          }
+        }
+      }
+    },
+    "next_admissible_action": {
+      "type": "object",
+      "required": ["stage_id", "instruction", "completion_evidence"],
+      "properties": {
+        "stage_id": {"type": "string"},
+        "instruction": {"type": "string"},
+        "completion_evidence": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}
