@@ -4,6 +4,7 @@
 
 - [`../ARCHITECTURE.md`](../ARCHITECTURE.md) — canonical five-plane architecture, authority boundaries, plane ownership, and architectural invariants.
 - [`CANONICAL_DEPLOYMENT_AND_AUTONOMY_SEQUENCE.md`](CANONICAL_DEPLOYMENT_AND_AUTONOMY_SEQUENCE.md) — contract-backed critical path from hosted-CI recovery through Cloud Run staging, Canary A platform proof, Canary B employer-duty autonomy, and one read-only connector.
+- [`CURRENT_REPOSITORY_TRUTH_PROCUREMENT.md`](CURRENT_REPOSITORY_TRUTH_PROCUREMENT.md) — evidence-backed procurement of unresolved completion targets while preserving false safety invariants such as no self-approval, no automatic merge, and no automatic external commitments.
 - [`REVIEW_EVIDENCE_PACKET_V1.md`](REVIEW_EVIDENCE_PACKET_V1.md) — review evidence and accountable human judgment.
 - [`PRODUCTION_DEPLOYMENT_BASELINE_V1.md`](PRODUCTION_DEPLOYMENT_BASELINE_V1.md) — fail-closed deployment baseline.
 
@@ -14,7 +15,14 @@ python -m src.core.canonical_deployment_sequence
 pytest -q tests/test_canonical_deployment_sequence.py
 ```
 
-The resulting receipt identifies the first incomplete stage and grants no merge, cloud, credential, submission, communication, scheduling, contract, delivery, or production authority.
+Validate the current repository truth-procurement program with:
+
+```bash
+python -m src.core.current_repository_truth_procurement
+pytest -q tests/test_current_repository_truth_procurement.py
+```
+
+The resulting receipts identify the first incomplete stage or truth transition and grant no merge, cloud, credential, submission, communication, scheduling, contract, delivery, payment, or production authority.
 
 ## Staging preparation
 
