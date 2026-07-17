@@ -1,0 +1,34 @@
+name: AIGC Runner Preflight - Shell Only
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/aigc-runner-preflight-shell.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aigc-runner-preflight-shell-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  acquire-runner:
+    name: acquire-runner-shell-only
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Prove runner acquisition without actions
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "runner_acquired=true"
+          echo "repository=${GITHUB_REPOSITORY}"
+          echo "workflow=${GITHUB_WORKFLOW}"
+          echo "event=${GITHUB_EVENT_NAME}"
+          echo "sha=${GITHUB_SHA}"
+          uname -a
+          python3 --version
