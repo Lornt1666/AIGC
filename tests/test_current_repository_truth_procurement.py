@@ -7,6 +7,7 @@ import pytest
 
 from src.core.current_repository_truth_procurement import (
     DEFAULT_CONFIG_PATH,
+    NON_BLOCKING_SUPPORT_TARGETS,
     TruthProcurementError,
     build_receipt,
     evaluate_completion_request,
@@ -39,10 +40,32 @@ def test_receipt_preserves_safety_and_identifies_next_actor() -> None:
     receipt = build_receipt(_payload())
     assert receipt.next_transition_id == "T1_HOSTED_VALIDATION_SUCCESSFUL"
     assert receipt.next_accountable_actor == "GITHUB_ACCOUNT_ADMIN_AND_ACCOUNTABLE_OPERATOR"
+    assert receipt.parallel_ready_transition_ids == []
     assert receipt.safety_invariants_preserved is True
     assert receipt.automatic_merge_allowed is False
     assert receipt.automatic_external_commitment_allowed is False
     assert receipt.external_action_performed is False
+
+
+def test_pr129_coordination_admission_does_not_block_pr121_deployment_path() -> None:
+    payload = deepcopy(_payload())
+    for item in payload["transition_targets"][:3]:
+        item["current_value"] = True
+        item["status"] = "completed"
+    payload["current_summary"]["completed_transition_count"] = 3
+    payload["current_summary"]["next_transition_id"] = (
+        "T5_PR_121_RECONSTRUCTED_AND_ADMITTED"
+    )
+
+    transition = first_incomplete_transition(payload)
+    receipt = build_receipt(payload)
+
+    assert "T4_PR_129_REBOUND_VALIDATED_AND_ADMITTED" in NON_BLOCKING_SUPPORT_TARGETS
+    assert transition is not None
+    assert transition["truth_id"] == "T5_PR_121_RECONSTRUCTED_AND_ADMITTED"
+    assert receipt.parallel_ready_transition_ids == [
+        "T4_PR_129_REBOUND_VALIDATED_AND_ADMITTED"
+    ]
 
 
 def test_false_safety_invariants_are_not_treated_as_completion_targets() -> None:
@@ -68,19 +91,20 @@ def test_completion_request_fails_without_dependencies_evidence_and_attestation(
     assert evaluation.external_action_performed is False
 
 
-def test_hosted_ci_completion_request_requires_all_evidence_slots() -> None:
+def test_hosted_ci_completion_request_requires_unique_evidence_slots() -> None:
     payload = _payload()
     target = payload["transition_targets"][0]
     required_count = len(target["required_evidence"])
     evaluation = evaluate_completion_request(
         payload,
         target["truth_id"],
-        evidence_ids=["evidence-1"] * (required_count - 1),
+        evidence_ids=["duplicate-evidence"] * required_count,
         operator_attested=True,
     )
     assert evaluation.ready is False
+    assert evaluation.evidence_count == 1
     assert evaluation.required_evidence_count == required_count
-    assert "Insufficient evidence references" in " ".join(evaluation.reasons)
+    assert "Insufficient unique evidence references" in " ".join(evaluation.reasons)
 
 
 def test_transition_order_must_be_contiguous() -> None:
