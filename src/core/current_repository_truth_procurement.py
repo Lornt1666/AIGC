@@ -14,6 +14,9 @@ from src.core.contract_validator import validate_artifact
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG_PATH = PROJECT_ROOT / "config" / "current_repository_truth_procurement.json"
 SCHEMA_NAME = "current_repository_truth_procurement"
+NON_BLOCKING_SUPPORT_TARGETS = frozenset(
+    {"T4_PR_129_REBOUND_VALIDATED_AND_ADMITTED"}
+)
 
 
 class TruthProcurementError(ValueError):
@@ -39,6 +42,7 @@ class ProcurementReceipt:
     required_actions: list[str]
     required_evidence: list[str]
     stop_conditions: list[str]
+    parallel_ready_transition_ids: list[str]
     safety_invariants_preserved: bool
     automatic_merge_allowed: bool
     automatic_external_commitment_allowed: bool
@@ -75,6 +79,45 @@ def _digest(payload: Mapping[str, Any]) -> str:
     return hashlib.sha256(_canonical(payload).encode("utf-8")).hexdigest()
 
 
+def _ordered_transitions(payload: Mapping[str, Any]) -> list[dict[str, Any]]:
+    return sorted(
+        (dict(item) for item in payload.get("transition_targets") or []),
+        key=lambda item: int(item["order"]),
+    )
+
+
+def _next_transition(payload: Mapping[str, Any]) -> dict[str, Any] | None:
+    transitions = _ordered_transitions(payload)
+    critical = [
+        item
+        for item in transitions
+        if item.get("current_value") is False
+        and str(item["truth_id"]) not in NON_BLOCKING_SUPPORT_TARGETS
+    ]
+    if critical:
+        return critical[0]
+    return next(
+        (item for item in transitions if item.get("current_value") is False),
+        None,
+    )
+
+
+def _parallel_ready_transition_ids(payload: Mapping[str, Any]) -> list[str]:
+    transitions = _ordered_transitions(payload)
+    by_id = {str(item["truth_id"]): item for item in transitions}
+    ready: list[str] = []
+    for item in transitions:
+        truth_id = str(item["truth_id"])
+        if truth_id not in NON_BLOCKING_SUPPORT_TARGETS:
+            continue
+        if item.get("current_value") is True:
+            continue
+        dependencies = [str(value) for value in item.get("dependencies") or []]
+        if all(by_id[dependency]["current_value"] is True for dependency in dependencies):
+            ready.append(truth_id)
+    return ready
+
+
 def load_procurement(path: str | Path = DEFAULT_CONFIG_PATH) -> dict[str, Any]:
     config_path = Path(path)
     payload = json.loads(config_path.read_text(encoding="utf-8"))
@@ -104,6 +147,12 @@ def validate_semantics(payload: Mapping[str, Any]) -> None:
         raise TruthProcurementError(
             "A truth cannot be both a completion target and a safety invariant: "
             + ", ".join(sorted(overlap))
+        )
+    missing_support_targets = NON_BLOCKING_SUPPORT_TARGETS.difference(transition_ids)
+    if missing_support_targets:
+        raise TruthProcurementError(
+            "Configured non-blocking support targets are missing: "
+            + ", ".join(sorted(missing_support_targets))
         )
 
     orders = [int(item["order"]) for item in transitions]
@@ -185,7 +234,7 @@ def validate_semantics(payload: Mapping[str, Any]) -> None:
 
     summary = dict(payload.get("current_summary") or {})
     completed_count = sum(1 for item in transitions if item["current_value"] is True)
-    next_item = next((item for item in transitions if item["current_value"] is False), None)
+    next_item = _next_transition(payload)
     expected_next = str(next_item["truth_id"]) if next_item else "ALL_TRANSITIONS_COMPLETE"
     if int(summary.get("transition_target_count", -1)) != len(transitions):
         raise TruthProcurementError("current_summary transition target count is stale")
@@ -205,21 +254,15 @@ def validate_semantics(payload: Mapping[str, Any]) -> None:
 
 def first_incomplete_transition(payload: Mapping[str, Any]) -> dict[str, Any] | None:
     validate_semantics(payload)
-    return next(
-        (
-            dict(item)
-            for item in payload.get("transition_targets") or []
-            if item.get("current_value") is False
-        ),
-        None,
-    )
+    next_item = _next_transition(payload)
+    return dict(next_item) if next_item else None
 
 
 def build_receipt(payload: Mapping[str, Any]) -> ProcurementReceipt:
     validate_semantics(payload)
-    transitions = [dict(item) for item in payload["transition_targets"]]
+    transitions = _ordered_transitions(payload)
     invariants = [dict(item) for item in payload["safety_invariants"]]
-    next_item = first_incomplete_transition(payload)
+    next_item = _next_transition(payload)
     if next_item is None:
         next_item = {
             "truth_id": "ALL_TRANSITIONS_COMPLETE",
@@ -254,6 +297,7 @@ def build_receipt(payload: Mapping[str, Any]) -> ProcurementReceipt:
         required_actions=[str(value) for value in next_item["required_actions"]],
         required_evidence=[str(value) for value in next_item["required_evidence"]],
         stop_conditions=[str(value) for value in next_item["stop_conditions"]],
+        parallel_ready_transition_ids=_parallel_ready_transition_ids(payload),
         safety_invariants_preserved=all(
             item["current_value"] is False and item["required_value"] is False
             for item in invariants
@@ -285,7 +329,13 @@ def evaluate_completion_request(
         for dependency in target.get("dependencies") or []
         if transitions[dependency]["current_value"] is not True
     ]
-    normalized_evidence = [str(value).strip() for value in evidence_ids if str(value).strip()]
+    normalized_evidence = list(
+        dict.fromkeys(
+            str(value).strip()
+            for value in evidence_ids
+            if str(value).strip()
+        )
+    )
     required_evidence_count = len(target.get("required_evidence") or [])
     reasons: list[str] = []
     if target["current_value"] is True:
@@ -293,7 +343,7 @@ def evaluate_completion_request(
     if missing_dependencies:
         reasons.append("Required predecessor transitions are incomplete")
     if len(normalized_evidence) < required_evidence_count:
-        reasons.append("Insufficient evidence references for the configured completion rule")
+        reasons.append("Insufficient unique evidence references for the configured completion rule")
     if not operator_attested:
         reasons.append("Accountable operator attestation is required")
     if target["status"] == "blocked" and not normalized_evidence:
