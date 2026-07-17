@@ -1,0 +1,347 @@
+{
+  "contract_id": "AIGC-CANONICAL-DEPLOYMENT-AUTONOMY-SEQUENCE-001",
+  "contract_version": "1.0.0",
+  "observed_at": "2026-07-17T03:40:00Z",
+  "repository": {
+    "full_name": "Lornt1666/AIGC",
+    "default_branch": "main"
+  },
+  "bindings": {
+    "main_sha": "84d8fbe57e65eb9b93070646934b71863ac5a4db",
+    "ci_hardening_pr": {
+      "number": 123,
+      "head_sha": "8f6285db20d08ab1ebfabb5dd757bb9e186cf5e0",
+      "issue": 124
+    },
+    "staging_authorization_pr": {
+      "number": 121,
+      "head_sha": "bccce481fb1efae8deb52fbc41eec209620031fa",
+      "reconstruct_after_pr_123": true
+    },
+    "cockpit_pr": {
+      "number": 122,
+      "head_sha": "f2e69ed5e4622aa1e83fddebaa18e449da23bd54",
+      "reconstruct_after_canary_a": true
+    },
+    "ci_incident_issue": 124,
+    "employer_duty_issue": 128,
+    "rebind_required_on_revision_change": true
+  },
+  "current_truth": {
+    "hosted_ci_recovered": false,
+    "pr_123_admitted": false,
+    "cloud_run_runtime_implemented": false,
+    "canary_a_passed": false,
+    "canary_b_passed": false,
+    "external_action_performed": false
+  },
+  "critical_path": [
+    {
+      "stage_id": "S1_HOSTED_CI_RECOVERY",
+      "order": 1,
+      "name": "Restore trustworthy hosted CI",
+      "status": "blocked",
+      "depends_on": [],
+      "authority_mode": "separately_authorized_external",
+      "references": {
+        "issues": [124, 127],
+        "pull_requests": [123, 126]
+      },
+      "entry_criteria": [
+        "Exact PR #123 head remains 8f6285db20d08ab1ebfabb5dd757bb9e186cf5e0",
+        "Accountable operator observes the actual non-sensitive GitHub Actions restriction"
+      ],
+      "exit_criteria": [
+        "Valid GAR remediation receipt exists",
+        "Hosted PR #123 workflow executes checkout and real steps",
+        "Tests pass",
+        "Provider-discovery, Terraform, test and readiness artifact families exist",
+        "Valid GHR recovery verification exists",
+        "Issue #124 is reviewed and closed"
+      ],
+      "operator_review_required": true,
+      "external_action_performed": false
+    },
+    {
+      "stage_id": "S2_PR123_MAINLINE_ADMISSION",
+      "order": 2,
+      "name": "Admit CI hardening and converge main",
+      "status": "planned",
+      "depends_on": ["S1_HOSTED_CI_RECOVERY"],
+      "authority_mode": "separately_authorized_external",
+      "references": {
+        "pull_requests": [123]
+      },
+      "entry_criteria": [
+        "S1 complete",
+        "Exact-head technical review completed"
+      ],
+      "exit_criteria": [
+        "Separate accountable-operator disposition recorded",
+        "PR #123 merged with expected-head protection",
+        "Exact new main recorded",
+        "Hosted mainline CI passes"
+      ],
+      "operator_review_required": true,
+      "external_action_performed": false
+    },
+    {
+      "stage_id": "S3_STAGING_AUTHORIZATION_RECONSTRUCTION",
+      "order": 3,
+      "name": "Reconstruct staging plan and apply authorization gates",
+      "status": "planned",
+      "depends_on": ["S2_PR123_MAINLINE_ADMISSION"],
+      "authority_mode": "internal_only",
+      "references": {
+        "pull_requests": [121],
+        "issues": [116]
+      },
+      "entry_criteria": [
+        "New exact main verified",
+        "PR #121 scope reconstructed rather than retargeted blindly"
+      ],
+      "exit_criteria": [
+        "SIP plan authorization remains exact-revision and project bound",
+        "SIA apply authorization remains exact-plan digest bound and single use",
+        "Repository and Terraform CI pass",
+        "Exact-head review and separate merge disposition complete"
+      ],
+      "operator_review_required": true,
+      "external_action_performed": false
+    },
+    {
+      "stage_id": "S4_CLOUD_RUN_STAGING_RUNTIME",
+      "order": 4,
+      "name": "Implement bounded Cloud Run staging runtime",
+      "status": "planned",
+      "depends_on": ["S3_STAGING_AUTHORIZATION_RECONSTRUCTION"],
+      "authority_mode": "internal_only",
+      "references": {
+        "baseline": "config/production_deployment_baseline.json"
+      },
+      "entry_criteria": [
+        "Staging authorization framework admitted",
+        "No new broad product train competes with runtime implementation"
+      ],
+      "exit_criteria": [
+        "Non-root container definition exists",
+        "Health endpoint is available at /health",
+        "Cloud Run v2 Terraform module is resource gated",
+        "Artifact Registry, runtime service account, Secret Manager references and private Cloud SQL connectivity are defined",
+        "Build path produces immutable digest, SBOM, provenance, signature, vulnerability scan and deployment manifest",
+        "No production authority is granted"
+      ],
+      "operator_review_required": true,
+      "external_action_performed": false
+    },
+    {
+      "stage_id": "S5_ISOLATED_STAGING_ACTIVATION",
+      "order": 5,
+      "name": "Activate isolated Google Cloud staging environment",
+      "status": "planned",
+      "depends_on": ["S4_CLOUD_RUN_STAGING_RUNTIME"],
+      "authority_mode": "separately_authorized_external",
+      "references": {
+        "issues": [116]
+      },
+      "entry_criteria": [
+        "Dedicated staging project selected",
+        "Approved billing and CAD 50 budget recorded",
+        "Remote state, WIF and least-privilege IAM reviewed",
+        "Read-only provider discovery accepted",
+        "Provider-backed plan reviewed"
+      ],
+      "exit_criteria": [
+        "Exact-plan apply authorization issued",
+        "Cloud SQL and Cloud Run staging resources applied",
+        "No production resources or customer data used",
+        "Execution receipts preserved"
+      ],
+      "operator_review_required": true,
+      "external_action_performed": false
+    },
+    {
+      "stage_id": "S6_CANARY_A_PLATFORM_PROOF",
+      "order": 6,
+      "name": "Complete Canary A platform proof",
+      "status": "planned",
+      "depends_on": ["S5_ISOLATED_STAGING_ACTIVATION"],
+      "authority_mode": "internal_only",
+      "references": {
+        "canary": "A"
+      },
+      "entry_criteria": [
+        "Cloud Run and Cloud SQL staging are available",
+        "Allowlisted operator identity configured"
+      ],
+      "exit_criteria": [
+        "Operator authentication succeeds",
+        "/health passes",
+        "PostgreSQL connection and migrations succeed",
+        "Basic internal work order produces governance artifacts",
+        "Data and audit evidence persist",
+        "Logs, metrics, alerts and budget notifications are observed",
+        "Rollback and isolated database restore are demonstrated"
+      ],
+      "operator_review_required": true,
+      "external_action_performed": false
+    },
+    {
+      "stage_id": "S7_PR122_RECONSTRUCTION",
+      "order": 7,
+      "name": "Reconstruct Jobs, Interviews and cockpit surface",
+      "status": "planned",
+      "depends_on": ["S6_CANARY_A_PLATFORM_PROOF"],
+      "authority_mode": "internal_only",
+      "references": {
+        "pull_requests": [122],
+        "issues": [128]
+      },
+      "entry_criteria": [
+        "Canary A accepted",
+        "PR #122 reconstructed on the proven live-capable mainline"
+      ],
+      "exit_criteria": [
+        "Read-only opportunity discovery and truthful qualification controls preserved",
+        "EmployerDutyWorkOrderSynthesizer implemented as required scope",
+        "Complete CI, exact-head review and separate disposition complete"
+      ],
+      "operator_review_required": true,
+      "external_action_performed": false
+    },
+    {
+      "stage_id": "S8_CANARY_B_EMPLOYER_DUTY_AUTONOMY",
+      "order": 8,
+      "name": "Complete Canary B autonomous accepted-work proof",
+      "status": "planned",
+      "depends_on": ["S7_PR122_RECONSTRUCTION"],
+      "authority_mode": "internal_only",
+      "references": {
+        "issues": [128],
+        "canary": "B"
+      },
+      "entry_criteria": [
+        "Verified employer source exists",
+        "Candidate is qualified",
+        "Quest lifecycle is WORK_ACCEPTED or equivalent verified assignment evidence exists"
+      ],
+      "exit_criteria": [
+        "Employer duties are normalized with fact/inference separation",
+        "Traceability, best-practice mapping and capability-gap analysis pass",
+        "Autonomous work breakdown and KPI plan are generated",
+        "Governed work-order execution is idempotent and deterministic",
+        "One verified employer amendment produces a revision diff and impact analysis",
+        "Consequential changes escalate for accountable review"
+      ],
+      "operator_review_required": true,
+      "external_action_performed": false
+    },
+    {
+      "stage_id": "S9_READ_ONLY_CONNECTOR_CANARY",
+      "order": 9,
+      "name": "Enable one separately approved read-only connector",
+      "status": "planned",
+      "depends_on": ["S8_CANARY_B_EMPLOYER_DUTY_AUTONOMY"],
+      "authority_mode": "separately_authorized_external",
+      "references": {
+        "preferred_candidates": ["gmail_read_only", "google_drive_read_only"]
+      },
+      "entry_criteria": [
+        "Canary B accepted",
+        "Connector terms, consent, OAuth scopes and revocation path reviewed"
+      ],
+      "exit_criteria": [
+        "Least-privilege read-only scope proven",
+        "Secret Manager resolution and audit attribution proven",
+        "Rate limits, emergency stop and token revocation tested",
+        "No send, submission, scheduling, mutation or external commitment capability enabled"
+      ],
+      "operator_review_required": true,
+      "external_action_performed": false
+    }
+  ],
+  "canaries": {
+    "canary_a": {
+      "stage_id": "S6_CANARY_A_PLATFORM_PROOF",
+      "purpose": "Prove the platform can run, persist, observe and recover safely before autonomous product behaviour is introduced.",
+      "journey": [
+        "operator_authenticates",
+        "health_check_passes",
+        "postgresql_connects",
+        "basic_internal_work_order_created",
+        "governance_artifacts_generated",
+        "data_persists",
+        "audit_record_written",
+        "logs_metrics_alerts_observed",
+        "rollback_tested"
+      ]
+    },
+    "canary_b": {
+      "stage_id": "S8_CANARY_B_EMPLOYER_DUTY_AUTONOMY",
+      "purpose": "Prove accepted employer work can be autonomously decomposed, governed, measured and reconciled without external commitments.",
+      "journey": [
+        "verified_job_source",
+        "qualified_candidate",
+        "accepted_quest",
+        "employer_duty_normalization",
+        "requirements_traceability",
+        "best_practice_mapping",
+        "capability_gap_analysis",
+        "autonomous_work_breakdown_and_kpi_plan",
+        "governed_execution",
+        "employer_instruction_reconciliation"
+      ],
+      "release_gates": [
+        "traceability",
+        "determinism",
+        "idempotency",
+        "contradiction_control",
+        "capability_truth",
+        "best_practice_precedence",
+        "analytical_integrity",
+        "revision_governance",
+        "external_action_isolation"
+      ]
+    }
+  },
+  "authority": {
+    "autonomous_internal_planning": true,
+    "autonomous_internal_work_order_creation": true,
+    "autonomous_progress_analysis": true,
+    "autonomous_internal_reconciliation": true,
+    "automatic_external_commitment_allowed": false,
+    "self_approval_allowed": false,
+    "automatic_merge_allowed": false,
+    "external_action_performed": false,
+    "matrix": [
+      {"action": "read_approved_employer_evidence", "automatic": true, "separate_approval_required": false},
+      {"action": "extract_duties_and_requirements", "automatic": true, "separate_approval_required": false},
+      {"action": "generate_internal_work_order_after_accepted_trigger", "automatic": true, "separate_approval_required": false},
+      {"action": "assign_approved_internal_agents", "automatic": true, "separate_approval_required": false},
+      {"action": "measure_progress_and_quality", "automatic": true, "separate_approval_required": false},
+      {"action": "apply_low_risk_internal_clarification", "automatic": true, "separate_approval_required": true},
+      {"action": "change_committed_scope", "automatic": false, "separate_approval_required": true},
+      {"action": "change_price_or_deadline_commitment", "automatic": false, "separate_approval_required": true},
+      {"action": "send_employer_communication", "automatic": false, "separate_approval_required": true},
+      {"action": "submit_application_or_deliverable", "automatic": false, "separate_approval_required": true},
+      {"action": "accept_employment_or_contract", "automatic": false, "separate_approval_required": true},
+      {"action": "use_credentials_or_create_cloud_resources", "automatic": false, "separate_approval_required": true}
+    ]
+  },
+  "next_admissible_action": {
+    "stage_id": "S1_HOSTED_CI_RECOVERY",
+    "instruction": "Correct the actual GitHub Actions account or runner-allocation restriction, create a valid GAR receipt from genuine non-sensitive observations, and rerun unchanged PR #123 until checkout, real steps and mandatory artifacts execute successfully.",
+    "completion_evidence": [
+      "actual non-sensitive GitHub banner and restriction category",
+      "valid GAR receipt",
+      "successful exact-head hosted run",
+      "real workflow steps and logs",
+      "provider-discovery artifact",
+      "Terraform artifact",
+      "test artifact",
+      "readiness artifact",
+      "valid GHR receipt",
+      "operator evidence review"
+    ]
+  }
+}
