@@ -36,7 +36,7 @@ Run the collector from an authenticated checkout:
 python scripts/collect_github_actions_preflight.py
 ```
 
-The collector requires `GH_TOKEN` or `GITHUB_TOKEN` with repository Administration read and Actions read permissions. It performs GET requests only, never records the token, and writes:
+The collector requires `GH_TOKEN` or `GITHUB_TOKEN` with repository **Administration: read** and **Actions: read** permissions. Add **Checks: read** to retrieve check-run annotations for final cause attribution. A classic token may use the repository `repo` scope. The collector performs GET requests only, never records the token, and writes:
 
 ```text
 reports/artifacts/governance/github-actions-zero-step-live-diagnosis.json
