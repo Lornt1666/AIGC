@@ -1,9 +1,15 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import json
+from pathlib import Path
+
+from jsonschema import Draft202012Validator
 
 from scripts.collect_github_actions_preflight import classify_live_snapshot
-from src.core.contract_validator import validate_file
+
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
 def _status(description: str = "All Systems Operational") -> dict:
@@ -11,12 +17,25 @@ def _status(description: str = "All Systems Operational") -> dict:
 
 
 def test_committed_zero_step_diagnosis_matches_contract() -> None:
-    result = validate_file(
-        "github_actions_zero_step_diagnosis",
-        "config/github_actions_zero_step_diagnosis.json",
+    schema = json.loads(
+        (
+            PROJECT_ROOT
+            / "schemas"
+            / "github_actions_zero_step_diagnosis.schema.json"
+        ).read_text(encoding="utf-8")
     )
-    assert result.valid is True
-    assert result.record_count == 1
+    payload = json.loads(
+        (
+            PROJECT_ROOT
+            / "config"
+            / "github_actions_zero_step_diagnosis.json"
+        ).read_text(encoding="utf-8")
+    )
+    errors = sorted(
+        Draft202012Validator(schema).iter_errors(payload),
+        key=lambda error: list(error.absolute_path),
+    )
+    assert errors == []
 
 
 def test_shell_only_zero_step_operational_status_is_runner_eligibility_block() -> None:
