@@ -1,0 +1,129 @@
+{
+  "contract_id": "AIGC-GITHUB-ACTIONS-ZERO-STEP-DIAGNOSIS-001",
+  "contract_version": "1.0.0",
+  "observed_at": "2026-07-17T05:20:00Z",
+  "repository": {
+    "full_name": "Lornt1666/AIGC",
+    "visibility": "private",
+    "owner_type": "user"
+  },
+  "evidence": {
+    "last_successful_run": {
+      "pull_request": 120,
+      "head_sha": "94086c703d1809c46cf9a0d790cd7ca289d310bb",
+      "workflow": "AIGC CI",
+      "run_id": 29426049478,
+      "conclusion": "success",
+      "job_id": 87388608275,
+      "job_name": "validate",
+      "step_count": 21,
+      "logs_available": true,
+      "artifacts_present": true,
+      "uses_actions": true,
+      "uses_third_party_actions": true
+    },
+    "first_observed_zero_step_run": {
+      "pull_request": 121,
+      "head_sha": "bccce481fb1efae8deb52fbc41eec209620031fa",
+      "workflow": "AIGC CI",
+      "run_id": 29427396627,
+      "conclusion": "failure",
+      "job_id": 87393668509,
+      "job_name": "validate",
+      "step_count": 0,
+      "logs_available": false,
+      "artifacts_present": false,
+      "uses_actions": true,
+      "uses_third_party_actions": true
+    },
+    "shell_only_probe": {
+      "pull_request": 129,
+      "head_sha": "007930374f029a4790945bf564c0e99e528d47d4",
+      "workflow": "AIGC Runner Preflight - Shell Only",
+      "run_id": 29556582162,
+      "conclusion": "failure",
+      "job_id": 87809827885,
+      "job_name": "acquire-runner-shell-only",
+      "step_count": 0,
+      "logs_available": false,
+      "artifacts_present": false,
+      "uses_actions": false,
+      "uses_third_party_actions": false
+    },
+    "github_owned_action_probe": {
+      "pull_request": 129,
+      "head_sha": "007930374f029a4790945bf564c0e99e528d47d4",
+      "workflow": "AIGC Runner Preflight - GitHub Owned Action",
+      "run_id": 29556582122,
+      "conclusion": "failure",
+      "job_id": 87809827769,
+      "job_name": "github-owned-checkout",
+      "step_count": 0,
+      "logs_available": false,
+      "artifacts_present": false,
+      "uses_actions": true,
+      "uses_third_party_actions": false
+    },
+    "verified_third_party_action_probe": {
+      "pull_request": 129,
+      "head_sha": "007930374f029a4790945bf564c0e99e528d47d4",
+      "workflow": "AIGC Runner Preflight - Verified Third-Party Action",
+      "run_id": 29556582153,
+      "conclusion": "failure",
+      "job_id": 87809827938,
+      "job_name": "verified-hashicorp-setup-terraform",
+      "step_count": 0,
+      "logs_available": false,
+      "artifacts_present": false,
+      "uses_actions": true,
+      "uses_third_party_actions": true
+    },
+    "github_status": {
+      "actions_component": "operational",
+      "recent_incidents_resolved": true,
+      "source": "https://www.githubstatus.com/"
+    }
+  },
+  "conclusion": {
+    "classification": "HOSTED_RUNNER_NOT_ALLOCATED_ACCOUNT_OR_REPOSITORY_ELIGIBILITY_BLOCK",
+    "confidence": "high",
+    "runner_allocated": false,
+    "repository_commands_executed": false,
+    "primary_candidate_causes": [
+      "private-repository included GitHub Actions minutes exhausted",
+      "Actions budget or spending hard stop",
+      "missing or invalid payment method after included quota exhaustion",
+      "repository or account Actions permission restriction",
+      "GitHub-hosted runner eligibility or account restriction",
+      "legacy per-repository plan incompatibility"
+    ],
+    "ruled_out_primary_causes": [
+      "Python test failure",
+      "Terraform command failure",
+      "repository checkout failure",
+      "mutable versus immutable action reference",
+      "third-party action allowlist as the primary cause",
+      "new truth-procurement implementation",
+      "current public GitHub Actions outage"
+    ],
+    "exact_annotation_required_for_final_attribution": true
+  },
+  "required_operator_checks": [
+    "Open shell-only run 29556582162 and copy the exact non-sensitive annotation text",
+    "Check Settings > Actions > General for repository Actions enablement and allowed actions",
+    "Check Settings > Billing and licensing > Usage for Actions minutes and storage",
+    "Check Settings > Billing and licensing > Budgets and alerts for a hard stop or zero budget",
+    "Confirm a valid payment method if included minutes are exhausted",
+    "Confirm the account is not on a legacy per-repository plan",
+    "If all settings are valid, open a GitHub Support case with the run IDs and zero-step evidence"
+  ],
+  "official_sources": [
+    "https://docs.github.com/en/actions/concepts/billing-and-usage",
+    "https://docs.github.com/en/billing/concepts/product-billing/github-actions",
+    "https://docs.github.com/en/billing/concepts/budgets-and-alerts",
+    "https://docs.github.com/en/rest/actions/permissions",
+    "https://docs.github.com/en/actions/reference/runners/github-hosted-runners",
+    "https://www.githubstatus.com/"
+  ],
+  "external_action_performed": false
+}
