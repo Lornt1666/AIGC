@@ -24,6 +24,32 @@ pytest -q tests/test_current_repository_truth_procurement.py
 
 The resulting receipts identify the first incomplete stage or truth transition and grant no merge, cloud, credential, submission, communication, scheduling, contract, delivery, payment, or production authority.
 
+## CI diagnosis and recovery
+
+- [`GITHUB_ACTIONS_ZERO_STEP_ROOT_CAUSE.md`](GITHUB_ACTIONS_ZERO_STEP_ROOT_CAUSE.md) — evidence-backed isolation of the hosted-runner zero-step failure, ranked remaining account/repository causes, operator inspection order, remediation branches, and support escalation packet.
+- [`../config/github_actions_zero_step_diagnosis.json`](../config/github_actions_zero_step_diagnosis.json) — machine-readable success-to-failure boundary and three-probe diagnosis.
+- [`../scripts/collect_github_actions_preflight.py`](../scripts/collect_github_actions_preflight.py) — read-only collector for repository Actions permissions, exact run/job state, check annotations, artifacts, and current public GitHub status.
+
+Run the collector from an authenticated checkout:
+
+```bash
+python scripts/collect_github_actions_preflight.py
+```
+
+The collector requires `GH_TOKEN` or `GITHUB_TOKEN` with repository Administration read and Actions read permissions. It performs GET requests only, never records the token, and writes:
+
+```text
+reports/artifacts/governance/github-actions-zero-step-live-diagnosis.json
+```
+
+Validate the committed diagnosis and classifier with:
+
+```bash
+pytest -q tests/test_github_actions_zero_step_diagnosis.py
+```
+
+The current diagnosis is a runner-allocation/account-or-repository eligibility block. No repository command executed in the zero-step runs, so Python, Terraform, tests, checkout and artifact upload are downstream rather than primary causes.
+
 ## Staging preparation
 
 - [`STAGING_BOOTSTRAP.md`](STAGING_BOOTSTRAP.md) — mock-only staging preparation runbook.
