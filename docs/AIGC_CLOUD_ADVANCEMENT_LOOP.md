@@ -93,6 +93,146 @@ blocking, failure, and lease expiry. Raw secrets, credentials, private keys,
 tokens, and external-action claims are prohibited. A changed program digest,
 broken predecessor hash, or modified event payload blocks future claims.
 
+## Quantitative assurance
+
+The assurance plane is separately digested so the accepted cloud action
+program and its historical event hashes remain unchanged.
+
+Quantitative observations:
+
+- accept finite plain decimal strings only;
+- use `Decimal` precision 50 with half-even rounding;
+- reject binary floats, exponent notation, NaN, infinity, unknown units,
+  insufficient samples, confidence below policy, or excessive tolerance;
+- calculate `max(absolute_tolerance, abs(expected) * relative_tolerance)`;
+- use absolute tolerance only when the expected value is zero;
+- bind every observation to paired source references and content SHA-256
+  digests;
+- retain failed observations, while the latest observation per metric controls
+  the current verdict;
+- never convert a metric result into action completion or Phase 5 authority.
+
+The v1 mode is `exact`. Each required metric is defined by policy with an
+immutable unit, target, zero tolerance, source file, JSON pointer, extractor,
+and definition digest. Callers cannot choose a target or register a new metric.
+The completed-action metric derives the count of unique completed action
+identifiers from `/executed_actions`; it does not trust a receipt's summary
+field. The execution receipt has a policy-pinned file SHA-256, every referenced
+action must belong to the bound program, and any locally present action ledger
+must contain the matching terminal completion.
+Statistical confidence intervals and cross-unit aggregation are deliberately
+not claimed by v1.
+
+## Working memory
+
+Working memory is advisory context, never execution authority. It uses a
+separate append-only SQLite chain and stores only closed, non-sensitive
+operational facts:
+
+```json
+{
+  "fact_type": "blocker",
+  "subject_ref": "github.issue.124",
+  "value": "open_zero_step_ci",
+  "reason_codes": ["hosted_ci_zero_steps"],
+  "tags": ["ci", "cloud"]
+}
+```
+
+Arbitrary prose, prompts, logs, nested objects, names, email addresses, phone
+numbers, payment data, credentials, tokens, numeric fact values, and
+secret-like values are rejected. Quantities belong in the quantitative
+assurance plane. Facts require exact scope, confidence, salience, TTL,
+provenance, source digests, source revision, a lowercase opaque actor
+identifier, and an idempotency key.
+
+Subject references must use an allowlisted operational namespace. Sensitive
+semantic components, person-name-shaped values, and compact high-entropy
+credential-like values are rejected even when they satisfy the token syntax.
+Provenance files are opened once, size-checked on the open descriptor, read
+within a fixed byte bound, and rejected if their size changes during that read.
+
+Limits are fail-closed: 32 active facts, 4 KiB per fact, 64 KiB per exact
+scope, a 32 KiB recall response, 4,096 total assurance events, and an 8 MiB
+database epoch. Default TTL is 24 hours and maximum TTL is seven days. Expiry
+is derived at recall and never deletes history.
+
+Supersession appends a new same-scope fact. The predecessor never revives when
+its replacement expires. Recall is deterministic by salience, confidence,
+sequence, and identity, and returns only the largest ordered prefix within the
+byte budget. A repeated identical idempotency request returns the original
+event even if ambient repository state changed; reuse with different content
+fails. Recall always requires one exact `program`, `action`, or `run` scope.
+Backdated writes are rejected before insertion, and historical recall selects
+the latest fact that existed at the requested time. TTL values must be actual
+integers and are never coerced from booleans, strings, or floats. Run-scoped
+facts are accepted only for run/action pairs present in the configured trusted
+execution receipt whose exact file digest is pinned in assurance policy.
+
+Source digests are checked when a fact is ingested and again for active facts
+during current assurance. Later source drift does not make the append-only
+history unreadable. It sets `sources_current` to false, increments
+`source_drift_count`, fails current working-memory assurance, and prevents
+recall of the affected scope until a new provenanced fact supersedes it.
+
+## Processing speed
+
+Performance results are local observations, not production capacity promises
+or comparisons with another system. They are hot-cache SQLite and bounded
+workspace probes, not process-startup, cold-disk, network, end-to-end request,
+or production throughput measurements. Verification records the exact event
+and metric-source workload and uses the monotonic `perf_counter_ns` clock, ten
+warmups, and 100 retained samples for:
+
+- SQLite quick-check plus assurance-history replay;
+- deterministic working-memory recall;
+- quantitative metric summarization.
+
+The receipt stores every warmup and measured nanosecond duration, plus minimum,
+integer mean, p50, p95, p99, maximum, and the p95 budget. Percentiles use the
+nearest-rank method and no sample is trimmed, retried, or hidden.
+
+## Rigorous verification
+
+Verification runs against a consistent in-memory SQLite snapshot and proves:
+
+- strict program, assurance, and receipt schemas;
+- SQLite integrity and enabled foreign keys with at least one declared
+  relationship and zero violations;
+- immutable binding and event triggers;
+- functional append-only trigger probes before every behavior-changing write;
+- contiguous sequence, nondecreasing UTC time, exact hash replay, and program
+  plus assurance digest binding;
+- exact memory supersession, expiry, scope, size, run ancestry, and
+  non-sensitive payload rules;
+- current active-memory source-drift detection without mutating history;
+- exact metric recomputation from decimal inputs and evidence digests;
+- read-only validation of the original action ledger when it exists;
+- required implementation artifact existence, byte size, and SHA-256;
+- all local p95 processing budgets;
+- extension of the strongest independently discovered trusted assurance
+  checkpoint after the first receipt.
+
+The configured baseline receipt and immutable `*.json` receipts in the runtime
+checkpoint directory are discovered independently of SQLite. The strongest
+valid receipt anchors the assurance event count and head hash. Later
+verification fails if that receipt disappears, the local history is shorter,
+the history no longer contains its exact anchored prefix, or the named
+checkpoint digest does not own the exact count/head tuple claimed by the later
+receipt.
+`assurance_passed` reports only these assurance checks, while
+`execution_authorized` is always false. Phase 5 remains the only route to
+external execution authority.
+
+Current receipt validation rechecks active source provenance. Historical
+checkpoint replay intentionally preserves the source-currentness observation
+made when that receipt was created, while current `verify` recomputes the
+working-memory verdict and all performance samples. Raw historical timing
+samples are self-digest protected for internal consistency, not
+cryptographically authenticated measurements. A later retained checkpoint,
+Git review, or separately approved signature/WORM control must pin historical
+receipt authenticity.
+
 The committed catalog and schema remain:
 
 ```text
@@ -107,6 +247,68 @@ Inspect current state:
 ```powershell
 python .\scripts\cloud_advancement_loop.py status --markdown
 ```
+
+Record one typed working-memory fact:
+
+```powershell
+python .\scripts\cloud_advancement_assurance.py remember `
+  --key cloud.current-blocker `
+  --scope program `
+  --value-json '{"fact_type":"blocker","subject_ref":"github.issue.124","value":"open_zero_step_ci","reason_codes":["hosted_ci_zero_steps"],"tags":["ci","cloud"]}' `
+  --actor accountable-operator `
+  --source-ref reports/artifacts/cloud_advancement/initial_execution_receipt.json `
+  --source-sha256 SHA256 `
+  --idempotency-key cloud-blocker-2026-07-20 `
+  --derivation-type direct_observation
+```
+
+Record one exact metric:
+
+```powershell
+python .\scripts\cloud_advancement_assurance.py measure `
+  --metric-id cloud.action_catalog_count `
+  --idempotency-key cloud-catalog-count-2026-07-20 `
+  --actor accountable-operator
+```
+
+Recall only program-scoped memory:
+
+```powershell
+python .\scripts\cloud_advancement_assurance.py recall `
+  --scope program `
+  --query cloud
+```
+
+Run rigorous verification:
+
+```powershell
+python .\scripts\cloud_advancement_assurance.py verify
+```
+
+Write a new immutable checkpoint only after verification passes:
+
+```powershell
+python .\scripts\cloud_advancement_assurance.py checkpoint `
+  --output reports/artifacts/cloud_advancement/cloud_advancement_assurance_baseline_receipt.json
+```
+
+Exit code `0` means every assurance check and budget passed, while execution
+authority remains false. Exit code `10` means contract, database, history,
+anchor, or receipt verification could not be completed. Exit code `11` means
+verification completed but an active-memory provenance check, current metric,
+memory minimum, or local performance budget did not pass.
+
+`verify` is read-only and never creates the assurance database. `checkpoint`
+refuses an existing destination, rechecks the event count and history head,
+flushes the new receipt to a temporary file, and atomically publishes it with
+a no-replace filesystem operation without changing SQLite. Output is limited
+to the configured baseline or a direct `*.json` child of
+`.aigc/cloud_advancement/checkpoints/`, ensuring every accepted checkpoint is
+discoverable by future verification. A privileged owner capable of deleting
+the newest checkpoint and rolling back the SQLite database, or rewriting every
+independently retained receipt, remains outside the guarantees of this local
+control; production assurance requires a separately approved signed, WORM, or
+externally stored checkpoint catalog.
 
 Execute one safe built-in action:
 

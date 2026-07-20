@@ -1,0 +1,173 @@
+{
+  "assurance_id": "AIGC-CLOUD-ADVANCEMENT-ASSURANCE-001",
+  "version": "1.0.0",
+  "program_config": "config/cloud_advancement_loop.json",
+  "state": {
+    "sqlite_path": ".aigc/cloud_advancement/cloud_assurance.sqlite",
+    "append_only_events": true,
+    "accepted_history_mutation_allowed": false,
+    "busy_timeout_ms": 30000,
+    "max_total_events": 4096,
+    "max_database_bytes": 8388608
+  },
+  "provenance": {
+    "source_scope": "workspace_files_only",
+    "max_source_bytes": 3145728,
+    "require_sha256_match": true
+  },
+  "quantitative_accuracy": {
+    "numeric_representation": "finite_decimal_string",
+    "precision_digits": 50,
+    "max_significant_digits": 24,
+    "max_scale_digits": 12,
+    "rounding": "ROUND_HALF_EVEN",
+    "minimum_confidence": "0.95",
+    "maximum_relative_tolerance": "0.05",
+    "minimum_sample_size": 1,
+    "minimum_distinct_metrics": 2,
+    "allowed_units": [
+      "count",
+      "ratio_0_1",
+      "percent_0_100",
+      "millisecond",
+      "minute",
+      "byte",
+      "CAD_per_month",
+      "action",
+      "event",
+      "nanosecond"
+    ],
+    "allowed_measurement_modes": [
+      "exact"
+    ],
+    "metric_definitions": [
+      {
+        "metric_id": "cloud.action_catalog_count",
+        "required": true,
+        "unit": "action",
+        "measurement_mode": "exact",
+        "comparator": "equal",
+        "expected": "12",
+        "absolute_tolerance": "0",
+        "relative_tolerance": "0",
+        "confidence": "1",
+        "source_ref": "config/cloud_advancement_loop.json",
+        "extractor": {
+          "type": "json_pointer_length",
+          "pointer": "/actions"
+        }
+      },
+      {
+        "metric_id": "cloud.completed_unique_action_count",
+        "required": true,
+        "unit": "action",
+        "measurement_mode": "exact",
+        "comparator": "equal",
+        "expected": "1",
+        "absolute_tolerance": "0",
+        "relative_tolerance": "0",
+        "confidence": "1",
+        "source_ref": "reports/artifacts/cloud_advancement/initial_execution_receipt.json",
+        "extractor": {
+          "type": "execution_receipt_completed_unique_count",
+          "pointer": "/executed_actions"
+        }
+      }
+    ],
+    "require_unit": true,
+    "require_source_refs": true,
+    "require_source_digests": true,
+    "zero_expected_uses_absolute_tolerance_only": true,
+    "latest_metric_per_id_must_pass": true
+  },
+  "working_memory": {
+    "max_active_entries": 32,
+    "minimum_active_entries": 1,
+    "max_value_bytes": 4096,
+    "max_active_bytes_per_scope": 65536,
+    "max_recall_bytes": 32768,
+    "default_ttl_hours": 24,
+    "max_ttl_hours": 168,
+    "default_recall_limit": 10,
+    "max_recall_limit": 20,
+    "minimum_recall_confidence": "0.50",
+    "allowed_scopes": [
+      "program",
+      "action",
+      "run"
+    ],
+    "allowed_fact_types": [
+      "state",
+      "blocker",
+      "decision",
+      "reference",
+      "measurement"
+    ],
+    "allowed_derivation_types": [
+      "direct_observation",
+      "deterministic_derivation"
+    ],
+    "data_classification": "non_sensitive_operational",
+    "require_provenance": true,
+    "require_expiry": true,
+    "append_only_supersession": true,
+    "raw_secrets_allowed": false
+  },
+  "performance": {
+    "clock": "perf_counter_ns",
+    "warmup_iterations": 10,
+    "sample_count": 100,
+    "percentile_method": "nearest_rank",
+    "budgets_ms": {
+      "integrity_check_p95": "500.000",
+      "memory_recall_p95": "100.000",
+      "metric_summary_p95": "100.000"
+    },
+    "environment_bound_observations": true,
+    "cross_host_performance_claims_allowed": false
+  },
+  "verification": {
+    "fail_closed": true,
+    "loop_state_policy": "verify_if_present",
+    "anchor_policy": "required_if_present",
+    "anchor_receipt": "reports/artifacts/cloud_advancement/cloud_advancement_assurance_baseline_receipt.json",
+    "checkpoint_directory": ".aigc/cloud_advancement/checkpoints",
+    "trusted_loop_receipt": "reports/artifacts/cloud_advancement/initial_execution_receipt.json",
+    "trusted_loop_receipt_sha256": "61534869c0b215900a3bb8efc077ac9f7db9a046e3e21f885c8080d749908b8f",
+    "require_sqlite_integrity": true,
+    "require_foreign_key_integrity": true,
+    "require_append_only_triggers": true,
+    "require_hash_chain": true,
+    "require_program_binding": true,
+    "require_assurance_binding": true,
+    "require_metric_recomputation": true,
+    "require_memory_invariants": true,
+    "require_performance_budgets": true,
+    "required_artifacts": [
+      "config/cloud_advancement_loop.json",
+      "config/cloud_advancement_assurance.json",
+      "schemas/cloud_advancement_loop.schema.json",
+      "schemas/cloud_advancement_execution_receipt.schema.json",
+      "schemas/cloud_advancement_assurance.schema.json",
+      "schemas/cloud_advancement_verification_receipt.schema.json",
+      "src/core/cloud_advancement_loop.py",
+      "src/core/cloud_advancement_assurance.py",
+      "scripts/cloud_advancement_loop.py",
+      "scripts/cloud_advancement_assurance.py",
+      "tests/test_cloud_advancement_loop.py",
+      "tests/test_cloud_advancement_assurance.py",
+      "docs/AIGC_CLOUD_ADVANCEMENT_LOOP.md",
+      "governance/evolution/cloud_advancement_assurance_patch_v1.json"
+    ],
+    "receipt_schema": "schemas/cloud_advancement_verification_receipt.schema.json"
+  },
+  "governance": {
+    "operator_review_required": true,
+    "automation_can_self_approve": false,
+    "automation_can_expand_scope": false,
+    "accepted_history_mutation_allowed": false,
+    "credential_access_allowed": false,
+    "provider_resource_mutation_allowed": false,
+    "external_action_performed": false
+  }
+}

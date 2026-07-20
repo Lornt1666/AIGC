@@ -1,0 +1,575 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/cloud_advancement_assurance.schema.json",
+  "title": "AIGC Cloud Advancement Assurance",
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "nonempty": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "decimal": {
+      "type": "string",
+      "pattern": "^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?$",
+      "maxLength": 80
+    },
+    "nonnegative_decimal": {
+      "type": "string",
+      "pattern": "^(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?$",
+      "maxLength": 80
+    },
+    "relative_decimal": {
+      "type": "string",
+      "pattern": "^(?:0(?:\\.[0-9]+)?|1(?:\\.0+)?)$",
+      "maxLength": 80
+    },
+    "metric_definition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metric_id",
+        "required",
+        "unit",
+        "measurement_mode",
+        "comparator",
+        "expected",
+        "absolute_tolerance",
+        "relative_tolerance",
+        "confidence",
+        "source_ref",
+        "extractor"
+      ],
+      "properties": {
+        "metric_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._/-]{2,127}$"
+        },
+        "required": {
+          "const": true
+        },
+        "unit": {
+          "$ref": "#/$defs/nonempty"
+        },
+        "measurement_mode": {
+          "const": "exact"
+        },
+        "comparator": {
+          "const": "equal"
+        },
+        "expected": {
+          "$ref": "#/$defs/decimal"
+        },
+        "absolute_tolerance": {
+          "$ref": "#/$defs/nonnegative_decimal"
+        },
+        "relative_tolerance": {
+          "$ref": "#/$defs/relative_decimal"
+        },
+        "confidence": {
+          "$ref": "#/$defs/relative_decimal"
+        },
+        "source_ref": {
+          "type": "string",
+          "pattern": "^(?![A-Za-z]:)(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$",
+          "maxLength": 500
+        },
+        "extractor": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "pointer"
+          ],
+          "properties": {
+            "type": {
+              "enum": [
+                "json_pointer_length",
+                "json_pointer_value",
+                "execution_receipt_completed_unique_count"
+              ]
+            },
+            "pointer": {
+              "type": "string",
+              "pattern": "^/(?:[^~/]|~[01])+(?:/(?:[^~/]|~[01])+)*$",
+              "maxLength": 500
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "assurance_id",
+    "version",
+    "program_config",
+    "state",
+    "provenance",
+    "quantitative_accuracy",
+    "working_memory",
+    "performance",
+    "verification",
+    "governance"
+  ],
+  "properties": {
+    "assurance_id": {
+      "const": "AIGC-CLOUD-ADVANCEMENT-ASSURANCE-001"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "program_config": {
+      "const": "config/cloud_advancement_loop.json"
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sqlite_path",
+        "append_only_events",
+        "accepted_history_mutation_allowed",
+        "busy_timeout_ms",
+        "max_total_events",
+        "max_database_bytes"
+      ],
+      "properties": {
+        "sqlite_path": {
+          "type": "string",
+          "pattern": "^\\.aigc/.+\\.sqlite$"
+        },
+        "append_only_events": {
+          "const": true
+        },
+        "accepted_history_mutation_allowed": {
+          "const": false
+        },
+        "busy_timeout_ms": {
+          "type": "integer",
+          "minimum": 1000,
+          "maximum": 60000
+        },
+        "max_total_events": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 1000000
+        },
+        "max_database_bytes": {
+          "type": "integer",
+          "minimum": 1048576,
+          "maximum": 1073741824
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_scope",
+        "max_source_bytes",
+        "require_sha256_match"
+      ],
+      "properties": {
+        "source_scope": {
+          "const": "workspace_files_only"
+        },
+        "max_source_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 104857600
+        },
+        "require_sha256_match": {
+          "const": true
+        }
+      }
+    },
+    "quantitative_accuracy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "numeric_representation",
+        "precision_digits",
+        "max_significant_digits",
+        "max_scale_digits",
+        "rounding",
+        "minimum_confidence",
+        "maximum_relative_tolerance",
+        "minimum_sample_size",
+        "minimum_distinct_metrics",
+        "allowed_units",
+        "allowed_measurement_modes",
+        "metric_definitions",
+        "require_unit",
+        "require_source_refs",
+        "require_source_digests",
+        "zero_expected_uses_absolute_tolerance_only",
+        "latest_metric_per_id_must_pass"
+      ],
+      "properties": {
+        "numeric_representation": {
+          "const": "finite_decimal_string"
+        },
+        "precision_digits": {
+          "const": 50
+        },
+        "max_significant_digits": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 24
+        },
+        "max_scale_digits": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 12
+        },
+        "rounding": {
+          "const": "ROUND_HALF_EVEN"
+        },
+        "minimum_confidence": {
+          "$ref": "#/$defs/relative_decimal"
+        },
+        "maximum_relative_tolerance": {
+          "$ref": "#/$defs/relative_decimal"
+        },
+        "minimum_sample_size": {
+          "const": 1
+        },
+        "minimum_distinct_metrics": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "allowed_units": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonempty"
+          }
+        },
+        "allowed_measurement_modes": {
+          "type": "array",
+          "const": [
+            "exact"
+          ]
+        },
+        "metric_definitions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/$defs/metric_definition"
+          }
+        },
+        "require_unit": {
+          "const": true
+        },
+        "require_source_refs": {
+          "const": true
+        },
+        "require_source_digests": {
+          "const": true
+        },
+        "zero_expected_uses_absolute_tolerance_only": {
+          "const": true
+        },
+        "latest_metric_per_id_must_pass": {
+          "const": true
+        }
+      }
+    },
+    "working_memory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_active_entries",
+        "minimum_active_entries",
+        "max_value_bytes",
+        "max_active_bytes_per_scope",
+        "max_recall_bytes",
+        "default_ttl_hours",
+        "max_ttl_hours",
+        "default_recall_limit",
+        "max_recall_limit",
+        "minimum_recall_confidence",
+        "allowed_scopes",
+        "allowed_fact_types",
+        "allowed_derivation_types",
+        "data_classification",
+        "require_provenance",
+        "require_expiry",
+        "append_only_supersession",
+        "raw_secrets_allowed"
+      ],
+      "properties": {
+        "max_active_entries": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "minimum_active_entries": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "max_value_bytes": {
+          "type": "integer",
+          "minimum": 128,
+          "maximum": 1048576
+        },
+        "max_active_bytes_per_scope": {
+          "type": "integer",
+          "minimum": 1024,
+          "maximum": 10485760
+        },
+        "max_recall_bytes": {
+          "type": "integer",
+          "minimum": 1024,
+          "maximum": 1048576
+        },
+        "default_ttl_hours": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8760
+        },
+        "max_ttl_hours": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8760
+        },
+        "default_recall_limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "max_recall_limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "minimum_recall_confidence": {
+          "$ref": "#/$defs/relative_decimal"
+        },
+        "allowed_scopes": {
+          "type": "array",
+          "const": [
+            "program",
+            "action",
+            "run"
+          ]
+        },
+        "allowed_fact_types": {
+          "type": "array",
+          "const": [
+            "state",
+            "blocker",
+            "decision",
+            "reference",
+            "measurement"
+          ]
+        },
+        "allowed_derivation_types": {
+          "type": "array",
+          "const": [
+            "direct_observation",
+            "deterministic_derivation"
+          ]
+        },
+        "data_classification": {
+          "const": "non_sensitive_operational"
+        },
+        "require_provenance": {
+          "const": true
+        },
+        "require_expiry": {
+          "const": true
+        },
+        "append_only_supersession": {
+          "const": true
+        },
+        "raw_secrets_allowed": {
+          "const": false
+        }
+      }
+    },
+    "performance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "clock",
+        "warmup_iterations",
+        "sample_count",
+        "percentile_method",
+        "budgets_ms",
+        "environment_bound_observations",
+        "cross_host_performance_claims_allowed"
+      ],
+      "properties": {
+        "clock": {
+          "const": "perf_counter_ns"
+        },
+        "warmup_iterations": {
+          "const": 10
+        },
+        "sample_count": {
+          "const": 100
+        },
+        "percentile_method": {
+          "const": "nearest_rank"
+        },
+        "budgets_ms": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "integrity_check_p95",
+            "memory_recall_p95",
+            "metric_summary_p95"
+          ],
+          "properties": {
+            "integrity_check_p95": {
+              "$ref": "#/$defs/nonnegative_decimal"
+            },
+            "memory_recall_p95": {
+              "$ref": "#/$defs/nonnegative_decimal"
+            },
+            "metric_summary_p95": {
+              "$ref": "#/$defs/nonnegative_decimal"
+            }
+          }
+        },
+        "environment_bound_observations": {
+          "const": true
+        },
+        "cross_host_performance_claims_allowed": {
+          "const": false
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fail_closed",
+        "loop_state_policy",
+        "anchor_policy",
+        "anchor_receipt",
+        "checkpoint_directory",
+        "trusted_loop_receipt",
+        "trusted_loop_receipt_sha256",
+        "require_sqlite_integrity",
+        "require_foreign_key_integrity",
+        "require_append_only_triggers",
+        "require_hash_chain",
+        "require_program_binding",
+        "require_assurance_binding",
+        "require_metric_recomputation",
+        "require_memory_invariants",
+        "require_performance_budgets",
+        "required_artifacts",
+        "receipt_schema"
+      ],
+      "properties": {
+        "fail_closed": {
+          "const": true
+        },
+        "loop_state_policy": {
+          "const": "verify_if_present"
+        },
+        "anchor_policy": {
+          "const": "required_if_present"
+        },
+        "anchor_receipt": {
+          "const": "reports/artifacts/cloud_advancement/cloud_advancement_assurance_baseline_receipt.json"
+        },
+        "checkpoint_directory": {
+          "const": ".aigc/cloud_advancement/checkpoints"
+        },
+        "trusted_loop_receipt": {
+          "const": "reports/artifacts/cloud_advancement/initial_execution_receipt.json"
+        },
+        "trusted_loop_receipt_sha256": {
+          "const": "61534869c0b215900a3bb8efc077ac9f7db9a046e3e21f885c8080d749908b8f"
+        },
+        "require_sqlite_integrity": {
+          "const": true
+        },
+        "require_foreign_key_integrity": {
+          "const": true
+        },
+        "require_append_only_triggers": {
+          "const": true
+        },
+        "require_hash_chain": {
+          "const": true
+        },
+        "require_program_binding": {
+          "const": true
+        },
+        "require_assurance_binding": {
+          "const": true
+        },
+        "require_metric_recomputation": {
+          "const": true
+        },
+        "require_memory_invariants": {
+          "const": true
+        },
+        "require_performance_budgets": {
+          "const": true
+        },
+        "required_artifacts": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^(?![A-Za-z]:)(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$",
+            "maxLength": 500
+          }
+        },
+        "receipt_schema": {
+          "const": "schemas/cloud_advancement_verification_receipt.schema.json"
+        }
+      }
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operator_review_required",
+        "automation_can_self_approve",
+        "automation_can_expand_scope",
+        "accepted_history_mutation_allowed",
+        "credential_access_allowed",
+        "provider_resource_mutation_allowed",
+        "external_action_performed"
+      ],
+      "properties": {
+        "operator_review_required": {
+          "const": true
+        },
+        "automation_can_self_approve": {
+          "const": false
+        },
+        "automation_can_expand_scope": {
+          "const": false
+        },
+        "accepted_history_mutation_allowed": {
+          "const": false
+        },
+        "credential_access_allowed": {
+          "const": false
+        },
+        "provider_resource_mutation_allowed": {
+          "const": false
+        },
+        "external_action_performed": {
+          "const": false
+        }
+      }
+    }
+  }
+}
