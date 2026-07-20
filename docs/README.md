@@ -3,10 +3,18 @@
 ## Architecture
 
 - [`../ARCHITECTURE.md`](../ARCHITECTURE.md) — canonical five-plane architecture, authority boundaries, plane ownership, and architectural invariants.
+- [`AIGC_OMEGA_PRIME_ENGINEERING_EXECUTION_DIRECTIVE.md`](AIGC_OMEGA_PRIME_ENGINEERING_EXECUTION_DIRECTIVE.md) — master evidence-bound engineering prompt for Codex, ChatGPT, local operation, the ChatGPT app, continuous agents, staging, Canary A, Canary B, and production evidence.
+- [`CHATGPT_CODEX_REPOSITORY_INTEGRATION.md`](CHATGPT_CODEX_REPOSITORY_INTEGRATION.md) — exact connection path for the GitHub app in ChatGPT, a Codex repository environment, an installable Skill, and a private AIGC MCP app.
 - [`CANONICAL_DEPLOYMENT_AND_AUTONOMY_SEQUENCE.md`](CANONICAL_DEPLOYMENT_AND_AUTONOMY_SEQUENCE.md) — contract-backed critical path from hosted-CI recovery through Cloud Run staging, Canary A platform proof, Canary B employer-duty autonomy, and one read-only connector.
 - [`CURRENT_REPOSITORY_TRUTH_PROCUREMENT.md`](CURRENT_REPOSITORY_TRUTH_PROCUREMENT.md) — evidence-backed procurement of unresolved completion targets while preserving false safety invariants such as no self-approval, no automatic merge, and no automatic external commitments.
 - [`REVIEW_EVIDENCE_PACKET_V1.md`](REVIEW_EVIDENCE_PACKET_V1.md) — review evidence and accountable human judgment.
 - [`PRODUCTION_DEPLOYMENT_BASELINE_V1.md`](PRODUCTION_DEPLOYMENT_BASELINE_V1.md) — fail-closed deployment baseline.
+
+## Reusable engineering Skill
+
+- [`../skills/aigc-omega-prime-engineering/SKILL.md`](../skills/aigc-omega-prime-engineering/SKILL.md) — Agent Skills bundle entrypoint for governed AIGC engineering in ChatGPT, Codex, and compatible agent runtimes.
+
+The Skill must refetch live repository state before using stored revisions and grants no merge, deployment, credential, external-submission, or production authority.
 
 Validate the canonical deployment sequence with:
 
