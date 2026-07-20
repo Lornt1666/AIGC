@@ -1,0 +1,422 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/cloud_advancement_loop.schema.json",
+  "title": "AIGC Cloud Advancement Loop",
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "nonempty": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "string_array": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/nonempty"
+      }
+    },
+    "action_id": {
+      "type": "string",
+      "pattern": "^CLD-[0-9]{3}$"
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action_id",
+        "title",
+        "stage",
+        "category",
+        "priority",
+        "execution_class",
+        "executor",
+        "objective",
+        "rationale",
+        "dependencies",
+        "retry_policy",
+        "max_attempts",
+        "retry_cooldown_hours",
+        "requires_clean_worktree",
+        "phase5_required",
+        "best_practices",
+        "required_outputs",
+        "acceptance_checks"
+      ],
+      "properties": {
+        "action_id": {
+          "$ref": "#/$defs/action_id"
+        },
+        "title": {
+          "$ref": "#/$defs/nonempty"
+        },
+        "stage": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 99
+        },
+        "category": {
+          "enum": [
+            "governance",
+            "ci_assurance",
+            "source_control",
+            "software_supply_chain",
+            "data_platform",
+            "identity",
+            "connectors",
+            "infrastructure_as_code",
+            "staging",
+            "security_observability",
+            "reliability",
+            "production_deployment"
+          ]
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "execution_class": {
+          "enum": [
+            "automatic_read_only",
+            "agent_internal",
+            "phase5_external"
+          ]
+        },
+        "executor": {
+          "enum": [
+            "baseline_snapshot",
+            "github_actions_gate",
+            "agent_internal",
+            "phase5_external"
+          ]
+        },
+        "objective": {
+          "$ref": "#/$defs/nonempty"
+        },
+        "rationale": {
+          "$ref": "#/$defs/nonempty"
+        },
+        "dependencies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/action_id"
+          }
+        },
+        "retry_policy": {
+          "enum": [
+            "never",
+            "necessity_monitor",
+            "operator_necessity_only"
+          ]
+        },
+        "max_attempts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "retry_cooldown_hours": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8760
+        },
+        "requires_clean_worktree": {
+          "type": "boolean"
+        },
+        "phase5_required": {
+          "type": "boolean"
+        },
+        "best_practices": {
+          "$ref": "#/$defs/string_array"
+        },
+        "required_outputs": {
+          "$ref": "#/$defs/string_array"
+        },
+        "acceptance_checks": {
+          "$ref": "#/$defs/string_array"
+        }
+      }
+    }
+  },
+  "required": [
+    "program_id",
+    "version",
+    "status",
+    "mode",
+    "repository",
+    "schedule",
+    "state",
+    "selection_policy",
+    "safety",
+    "hosted_ci_gate",
+    "actions",
+    "governance"
+  ],
+  "properties": {
+    "program_id": {
+      "const": "AIGC-CLOUD-ADVANCEMENT-LOOP-001"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "status": {
+      "const": "proposed_internal_execution_enabled_external_mutation_disabled"
+    },
+    "mode": {
+      "const": "dependency_ordered_non_repeating_cloud_advancement"
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "full_name",
+        "default_branch"
+      ],
+      "properties": {
+        "full_name": {
+          "$ref": "#/$defs/nonempty"
+        },
+        "default_branch": {
+          "$ref": "#/$defs/nonempty"
+        }
+      }
+    },
+    "schedule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "timezone",
+        "cadence",
+        "local_time",
+        "max_actions_per_run"
+      ],
+      "properties": {
+        "timezone": {
+          "const": "America/Edmonton"
+        },
+        "cadence": {
+          "const": "daily"
+        },
+        "local_time": {
+          "type": "string",
+          "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$"
+        },
+        "max_actions_per_run": {
+          "const": 1
+        }
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sqlite_path",
+        "evidence_root",
+        "append_only_events",
+        "accepted_history_mutation_allowed"
+      ],
+      "properties": {
+        "sqlite_path": {
+          "type": "string",
+          "pattern": "^\\.aigc/.+\\.sqlite$"
+        },
+        "evidence_root": {
+          "type": "string",
+          "pattern": "^\\.aigc/.+"
+        },
+        "append_only_events": {
+          "const": true
+        },
+        "accepted_history_mutation_allowed": {
+          "const": false
+        }
+      }
+    },
+    "selection_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dependency_completion_required",
+        "completed_action_reselection_allowed",
+        "semantic_duplicate_actions_allowed",
+        "retry_requires_recorded_necessity",
+        "claim_lease_minutes",
+        "default_retry_cooldown_hours",
+        "max_consecutive_no_progress_runs",
+        "agent_internal_requires_clean_worktree"
+      ],
+      "properties": {
+        "dependency_completion_required": {
+          "const": true
+        },
+        "completed_action_reselection_allowed": {
+          "const": false
+        },
+        "semantic_duplicate_actions_allowed": {
+          "const": false
+        },
+        "retry_requires_recorded_necessity": {
+          "const": true
+        },
+        "claim_lease_minutes": {
+          "type": "integer",
+          "minimum": 5,
+          "maximum": 1440
+        },
+        "default_retry_cooldown_hours": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8760
+        },
+        "max_consecutive_no_progress_runs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 365
+        },
+        "agent_internal_requires_clean_worktree": {
+          "const": true
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "direct_main_write_allowed",
+        "automatic_merge_allowed",
+        "git_push_allowed_by_loop",
+        "terraform_apply_allowed",
+        "provider_resource_mutation_allowed",
+        "credential_access_allowed",
+        "raw_secrets_in_state_or_evidence_allowed",
+        "phase5_required_for_external_mutation",
+        "read_only_github_observation_allowed",
+        "external_action_performed"
+      ],
+      "properties": {
+        "direct_main_write_allowed": {
+          "const": false
+        },
+        "automatic_merge_allowed": {
+          "const": false
+        },
+        "git_push_allowed_by_loop": {
+          "const": false
+        },
+        "terraform_apply_allowed": {
+          "const": false
+        },
+        "provider_resource_mutation_allowed": {
+          "const": false
+        },
+        "credential_access_allowed": {
+          "const": false
+        },
+        "raw_secrets_in_state_or_evidence_allowed": {
+          "const": false
+        },
+        "phase5_required_for_external_mutation": {
+          "const": true
+        },
+        "read_only_github_observation_allowed": {
+          "const": true
+        },
+        "external_action_performed": {
+          "const": false
+        }
+      }
+    },
+    "hosted_ci_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "issue_number",
+        "pr_number",
+        "required_head_sha",
+        "required_workflow",
+        "required_job",
+        "require_issue_closed",
+        "require_successful_run",
+        "require_nonempty_steps"
+      ],
+      "properties": {
+        "repository": {
+          "$ref": "#/$defs/nonempty"
+        },
+        "issue_number": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "pr_number": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "required_head_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "required_workflow": {
+          "$ref": "#/$defs/nonempty"
+        },
+        "required_job": {
+          "$ref": "#/$defs/nonempty"
+        },
+        "require_issue_closed": {
+          "const": true
+        },
+        "require_successful_run": {
+          "const": true
+        },
+        "require_nonempty_steps": {
+          "const": true
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 50,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/action"
+      }
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operator_review_required",
+        "canonical_state_changed",
+        "automation_can_self_approve",
+        "automation_can_expand_scope",
+        "automation_can_mutate_accepted_history",
+        "external_action_performed"
+      ],
+      "properties": {
+        "operator_review_required": {
+          "const": true
+        },
+        "canonical_state_changed": {
+          "const": false
+        },
+        "automation_can_self_approve": {
+          "const": false
+        },
+        "automation_can_expand_scope": {
+          "const": false
+        },
+        "automation_can_mutate_accepted_history": {
+          "const": false
+        },
+        "external_action_performed": {
+          "const": false
+        }
+      }
+    }
+  }
+}

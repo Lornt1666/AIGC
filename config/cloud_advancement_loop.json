@@ -1,0 +1,528 @@
+{
+  "program_id": "AIGC-CLOUD-ADVANCEMENT-LOOP-001",
+  "version": "1.0.0",
+  "status": "proposed_internal_execution_enabled_external_mutation_disabled",
+  "mode": "dependency_ordered_non_repeating_cloud_advancement",
+  "repository": {
+    "full_name": "Lornt1666/AIGC",
+    "default_branch": "main"
+  },
+  "schedule": {
+    "timezone": "America/Edmonton",
+    "cadence": "daily",
+    "local_time": "06:00",
+    "max_actions_per_run": 1
+  },
+  "state": {
+    "sqlite_path": ".aigc/cloud_advancement/cloud_advancement.sqlite",
+    "evidence_root": ".aigc/cloud_advancement/evidence",
+    "append_only_events": true,
+    "accepted_history_mutation_allowed": false
+  },
+  "selection_policy": {
+    "dependency_completion_required": true,
+    "completed_action_reselection_allowed": false,
+    "semantic_duplicate_actions_allowed": false,
+    "retry_requires_recorded_necessity": true,
+    "claim_lease_minutes": 120,
+    "default_retry_cooldown_hours": 24,
+    "max_consecutive_no_progress_runs": 7,
+    "agent_internal_requires_clean_worktree": true
+  },
+  "safety": {
+    "direct_main_write_allowed": false,
+    "automatic_merge_allowed": false,
+    "git_push_allowed_by_loop": false,
+    "terraform_apply_allowed": false,
+    "provider_resource_mutation_allowed": false,
+    "credential_access_allowed": false,
+    "raw_secrets_in_state_or_evidence_allowed": false,
+    "phase5_required_for_external_mutation": true,
+    "read_only_github_observation_allowed": true,
+    "external_action_performed": false
+  },
+  "hosted_ci_gate": {
+    "repository": "Lornt1666/AIGC",
+    "issue_number": 124,
+    "pr_number": 123,
+    "required_head_sha": "8f6285db20d08ab1ebfabb5dd757bb9e186cf5e0",
+    "required_workflow": "AIGC CI",
+    "required_job": "validate",
+    "require_issue_closed": true,
+    "require_successful_run": true,
+    "require_nonempty_steps": true
+  },
+  "actions": [
+    {
+      "action_id": "CLD-001",
+      "title": "Establish the governed cloud advancement baseline",
+      "stage": 1,
+      "category": "governance",
+      "priority": 100,
+      "execution_class": "automatic_read_only",
+      "executor": "baseline_snapshot",
+      "objective": "Validate the closed cloud action catalog, initialize append-only local state, and bind the loop to repository revision and worktree state.",
+      "rationale": "A persistent, concurrency-safe baseline is required before recurring agents can select work without duplication.",
+      "dependencies": [],
+      "retry_policy": "operator_necessity_only",
+      "max_attempts": 2,
+      "retry_cooldown_hours": 0,
+      "requires_clean_worktree": false,
+      "phase5_required": false,
+      "best_practices": [
+        "strict configuration validation",
+        "append-only SQLite events",
+        "program-bound SHA-256 event chain",
+        "one active claim at a time",
+        "revision and worktree-state binding",
+        "semantic action fingerprinting"
+      ],
+      "required_outputs": [
+        "validated action graph",
+        "local state database",
+        "revision-bound baseline evidence"
+      ],
+      "acceptance_checks": [
+        "all action identifiers and semantic fingerprints are unique",
+        "the dependency graph is acyclic",
+        "every safety invariant remains fail-closed",
+        "no provider mutation or credential access occurs"
+      ]
+    },
+    {
+      "action_id": "CLD-002",
+      "title": "Verify hosted GitHub Actions recovery",
+      "stage": 2,
+      "category": "ci_assurance",
+      "priority": 99,
+      "execution_class": "automatic_read_only",
+      "executor": "github_actions_gate",
+      "objective": "Observe issue 124 and PR 123 until the exact required head has a successful hosted workflow with real job steps.",
+      "rationale": "A zero-step hosted failure is not repository evidence and blocks trustworthy admission of every later cloud change.",
+      "dependencies": [
+        "CLD-001"
+      ],
+      "retry_policy": "necessity_monitor",
+      "max_attempts": 365,
+      "retry_cooldown_hours": 24,
+      "requires_clean_worktree": false,
+      "phase5_required": false,
+      "best_practices": [
+        "read-only GitHub observation",
+        "exact head SHA binding",
+        "real-step and log evidence",
+        "blocker fingerprinting",
+        "bounded daily recheck"
+      ],
+      "required_outputs": [
+        "issue state evidence",
+        "exact-head workflow evidence",
+        "job-step count",
+        "blocker or completion receipt"
+      ],
+      "acceptance_checks": [
+        "issue 124 is closed when required",
+        "the observed run targets the required head SHA",
+        "the required workflow and job conclude successfully",
+        "the required job contains one or more executed steps"
+      ]
+    },
+    {
+      "action_id": "CLD-003",
+      "title": "Bind and review the source change train",
+      "stage": 3,
+      "category": "source_control",
+      "priority": 90,
+      "execution_class": "agent_internal",
+      "executor": "agent_internal",
+      "objective": "Separate intentional cloud changes into a bounded branch with exact base and head revisions, reviewed scope, rollback, and no unrelated files.",
+      "rationale": "Cloud delivery must begin from a clean, attributable, reviewable source state.",
+      "dependencies": [
+        "CLD-002"
+      ],
+      "retry_policy": "operator_necessity_only",
+      "max_attempts": 2,
+      "retry_cooldown_hours": 24,
+      "requires_clean_worktree": true,
+      "phase5_required": false,
+      "best_practices": [
+        "small reviewable change sets",
+        "protected default branch",
+        "exact revision binding",
+        "rollback before merge",
+        "no unrelated staging"
+      ],
+      "required_outputs": [
+        "bounded diff manifest",
+        "base and head revision record",
+        "rollback plan",
+        "review packet"
+      ],
+      "acceptance_checks": [
+        "the worktree is clean before claim",
+        "the change scope is explicit",
+        "direct writes to main remain disabled",
+        "required reviewers and checks are declared"
+      ]
+    },
+    {
+      "action_id": "CLD-004",
+      "title": "Prove release-gate and immutable build integrity",
+      "stage": 4,
+      "category": "software_supply_chain",
+      "priority": 88,
+      "execution_class": "agent_internal",
+      "executor": "agent_internal",
+      "objective": "Produce a non-root immutable container, pinned build inputs, SBOM, vulnerability results, provenance, and exact-revision release receipts.",
+      "rationale": "A deployable artifact must be reproducible, inspectable, non-root, and cryptographically bound to reviewed source.",
+      "dependencies": [
+        "CLD-003"
+      ],
+      "retry_policy": "operator_necessity_only",
+      "max_attempts": 2,
+      "retry_cooldown_hours": 24,
+      "requires_clean_worktree": true,
+      "phase5_required": false,
+      "best_practices": [
+        "multi-stage minimal container",
+        "non-root runtime",
+        "pinned dependencies and actions",
+        "SBOM and vulnerability scanning",
+        "signed provenance and immutable digest"
+      ],
+      "required_outputs": [
+        "container digest",
+        "SBOM",
+        "vulnerability report",
+        "provenance receipt",
+        "release-gate receipt"
+      ],
+      "acceptance_checks": [
+        "the runtime user is non-root",
+        "the image is bound to the exact source revision",
+        "no unresolved critical or high release finding remains",
+        "rollback identifies the prior immutable digest"
+      ]
+    },
+    {
+      "action_id": "CLD-005",
+      "title": "Complete durable PostgreSQL execution",
+      "stage": 5,
+      "category": "data_platform",
+      "priority": 86,
+      "execution_class": "agent_internal",
+      "executor": "agent_internal",
+      "objective": "Finish transaction, migration, tenant isolation, idempotency, backup, restore, and recovery behavior for the production PostgreSQL path.",
+      "rationale": "Durable identity and work execution cannot safely precede proven transactional persistence and recovery.",
+      "dependencies": [
+        "CLD-004"
+      ],
+      "retry_policy": "operator_necessity_only",
+      "max_attempts": 2,
+      "retry_cooldown_hours": 24,
+      "requires_clean_worktree": true,
+      "phase5_required": false,
+      "best_practices": [
+        "transactional migrations",
+        "least-privilege database roles",
+        "tenant isolation",
+        "idempotent job claims",
+        "tested backup and point-in-time recovery"
+      ],
+      "required_outputs": [
+        "migration evidence",
+        "isolation tests",
+        "idempotency tests",
+        "backup plan",
+        "restore receipt"
+      ],
+      "acceptance_checks": [
+        "migrations are forward and rollback tested",
+        "cross-tenant access fails closed",
+        "duplicate execution is prevented",
+        "restore meets approved recovery objectives"
+      ]
+    },
+    {
+      "action_id": "CLD-006",
+      "title": "Complete production identity and session controls",
+      "stage": 6,
+      "category": "identity",
+      "priority": 84,
+      "execution_class": "agent_internal",
+      "executor": "agent_internal",
+      "objective": "Wire production authentication, authorization, durable sessions, tenant administration, workload identity, and revocation without raw token persistence.",
+      "rationale": "Every human and workload action needs attributable identity, bounded authority, and revocable session ancestry.",
+      "dependencies": [
+        "CLD-005"
+      ],
+      "retry_policy": "operator_necessity_only",
+      "max_attempts": 2,
+      "retry_cooldown_hours": 24,
+      "requires_clean_worktree": true,
+      "phase5_required": false,
+      "best_practices": [
+        "default-deny authorization",
+        "short-lived workload identity",
+        "durable revocable sessions",
+        "tenant and project binding",
+        "no raw token logging"
+      ],
+      "required_outputs": [
+        "identity contract evidence",
+        "authorization matrix",
+        "session revocation tests",
+        "tenant isolation tests",
+        "workload identity plan"
+      ],
+      "acceptance_checks": [
+        "anonymous and cross-tenant access fail closed",
+        "revoked sessions cannot resume",
+        "workload identities are least privilege",
+        "raw tokens and claims are absent from logs and storage"
+      ]
+    },
+    {
+      "action_id": "CLD-007",
+      "title": "Wire the secret broker and governed connectors",
+      "stage": 7,
+      "category": "connectors",
+      "priority": 82,
+      "execution_class": "agent_internal",
+      "executor": "agent_internal",
+      "objective": "Complete the brokered secret-reference path, connector authorization, idempotency, uncertain-write handling, revocation, and audit receipts.",
+      "rationale": "Connectors must not gain direct secret access or create duplicate consequential writes.",
+      "dependencies": [
+        "CLD-006"
+      ],
+      "retry_policy": "operator_necessity_only",
+      "max_attempts": 2,
+      "retry_cooldown_hours": 24,
+      "requires_clean_worktree": true,
+      "phase5_required": false,
+      "best_practices": [
+        "secret references only",
+        "brokered workload identity",
+        "idempotency keys",
+        "uncertain-write quarantine",
+        "per-connector revocation"
+      ],
+      "required_outputs": [
+        "secret broker tests",
+        "connector permission manifest",
+        "duplicate prevention tests",
+        "revocation receipt",
+        "redacted audit contract"
+      ],
+      "acceptance_checks": [
+        "agents cannot directly read raw secrets",
+        "changed intent invalidates prior approval",
+        "ambiguous writes do not auto-retry",
+        "connector access can be fully revoked"
+      ]
+    },
+    {
+      "action_id": "CLD-008",
+      "title": "Complete governed Terraform planning",
+      "stage": 8,
+      "category": "infrastructure_as_code",
+      "priority": 80,
+      "execution_class": "agent_internal",
+      "executor": "agent_internal",
+      "objective": "Validate least-privilege, private-networked, policy-checked Terraform with remote-state, drift, cost, and plan-approval controls while apply remains disabled.",
+      "rationale": "Infrastructure must be reviewable as an exact plan before any resource mutation is considered.",
+      "dependencies": [
+        "CLD-007"
+      ],
+      "retry_policy": "operator_necessity_only",
+      "max_attempts": 2,
+      "retry_cooldown_hours": 24,
+      "requires_clean_worktree": true,
+      "phase5_required": false,
+      "best_practices": [
+        "remote encrypted state design",
+        "private networking",
+        "least-privilege IAM",
+        "policy and cost checks",
+        "saved-plan approval binding"
+      ],
+      "required_outputs": [
+        "formatted validated Terraform",
+        "provider-free static checks",
+        "policy results",
+        "cost estimate",
+        "exact saved-plan contract"
+      ],
+      "acceptance_checks": [
+        "terraform apply remains disabled",
+        "public ingress is denied by default",
+        "IAM changes are explicit and least privilege",
+        "the plan is bound to reviewed source and variables"
+      ]
+    },
+    {
+      "action_id": "CLD-009",
+      "title": "Prepare the isolated staging authorization packet",
+      "stage": 9,
+      "category": "staging",
+      "priority": 78,
+      "execution_class": "agent_internal",
+      "executor": "agent_internal",
+      "objective": "Prepare the exact isolated staging target, saved-plan, data-boundary, cost, observability, rollback, and single-use authorization packet without contacting or mutating a provider.",
+      "rationale": "The provider-facing staging action must be fully reviewable before Phase 5 can authorize a bounded mutation.",
+      "dependencies": [
+        "CLD-008"
+      ],
+      "retry_policy": "operator_necessity_only",
+      "max_attempts": 2,
+      "retry_cooldown_hours": 24,
+      "requires_clean_worktree": true,
+      "phase5_required": false,
+      "best_practices": [
+        "environment isolation design",
+        "synthetic data only",
+        "exact target and saved-plan binding",
+        "migration and rollback preflight",
+        "single-use authorization contract"
+      ],
+      "required_outputs": [
+        "staging authorization packet",
+        "exact target manifest",
+        "saved-plan digest contract",
+        "cost and quota review",
+        "rollback and evidence plan"
+      ],
+      "acceptance_checks": [
+        "no provider command or mutation is performed",
+        "no production or employer data is permitted",
+        "the target artifact and plan are immutable",
+        "the packet requires Phase 5 before use"
+      ]
+    },
+    {
+      "action_id": "CLD-010",
+      "title": "Execute approved staging and operational assurance",
+      "stage": 10,
+      "category": "security_observability",
+      "priority": 76,
+      "execution_class": "phase5_external",
+      "executor": "phase5_external",
+      "objective": "Under one exact Phase 5 staging permit, apply the accepted plan, deploy the immutable digest, and exercise TLS, edge controls, identity, persistence, detection, redaction, alerting, and incident response.",
+      "rationale": "A running service is not ready until abuse, detection, escalation, and evidence quality are observed.",
+      "dependencies": [
+        "CLD-009"
+      ],
+      "retry_policy": "operator_necessity_only",
+      "max_attempts": 2,
+      "retry_cooldown_hours": 24,
+      "requires_clean_worktree": true,
+      "phase5_required": true,
+      "best_practices": [
+        "structured redacted telemetry",
+        "service-level objectives",
+        "actionable alerts",
+        "vulnerability retest",
+        "incident tabletop"
+      ],
+      "required_outputs": [
+        "security test receipt",
+        "vulnerability report",
+        "alert evidence",
+        "incident exercise receipt",
+        "independent review record"
+      ],
+      "acceptance_checks": [
+        "registered operational security checks pass",
+        "alerts identify owner and response",
+        "logs contain no raw secrets or unnecessary personal data",
+        "high and critical findings are resolved"
+      ]
+    },
+    {
+      "action_id": "CLD-011",
+      "title": "Execute approved restore rollback and canary safety",
+      "stage": 11,
+      "category": "reliability",
+      "priority": 74,
+      "execution_class": "phase5_external",
+      "executor": "phase5_external",
+      "objective": "Under an exact Phase 5 exercise permit, perform database restore, deployment rollback, canary health gates, automatic stop conditions, and operator-controlled recovery in isolated staging.",
+      "rationale": "Cloud continuation is justified by tested recovery, not only successful forward deployment.",
+      "dependencies": [
+        "CLD-010"
+      ],
+      "retry_policy": "operator_necessity_only",
+      "max_attempts": 2,
+      "retry_cooldown_hours": 24,
+      "requires_clean_worktree": true,
+      "phase5_required": true,
+      "best_practices": [
+        "defined RTO and RPO",
+        "isolated restore exercise",
+        "immutable rollback target",
+        "bounded canary",
+        "automatic stop with human continuation"
+      ],
+      "required_outputs": [
+        "restore receipt",
+        "rollback receipt",
+        "canary evidence",
+        "stop-condition evidence",
+        "operator review packet"
+      ],
+      "acceptance_checks": [
+        "restore meets approved recovery objectives",
+        "rollback returns to the prior healthy digest",
+        "canary failure stops continuation",
+        "operator approval is required for broader rollout"
+      ]
+    },
+    {
+      "action_id": "CLD-012",
+      "title": "Submit the production deployment packet",
+      "stage": 12,
+      "category": "production_deployment",
+      "priority": 72,
+      "execution_class": "phase5_external",
+      "executor": "phase5_external",
+      "objective": "Assemble the exact production plan, evidence, residual risks, costs, canary, rollback, restore, and communication scope for Justice Gray Maciocha's Phase 5 decision.",
+      "rationale": "Production resource mutation and release are consequential external actions and cannot be authorized by the loop.",
+      "dependencies": [
+        "CLD-011"
+      ],
+      "retry_policy": "never",
+      "max_attempts": 1,
+      "retry_cooldown_hours": 0,
+      "requires_clean_worktree": true,
+      "phase5_required": true,
+      "best_practices": [
+        "exact immutable execution packet",
+        "separation of duties",
+        "residual risk disclosure",
+        "canary and rollback binding",
+        "operator-controlled go or no-go"
+      ],
+      "required_outputs": [
+        "production execution packet",
+        "evidence index",
+        "risk acceptance record",
+        "cost and quota record",
+        "rollback and restore plan"
+      ],
+      "acceptance_checks": [
+        "all dependencies have accepted evidence",
+        "the exact artifact and infrastructure plan are immutable",
+        "no unresolved blocking finding remains",
+        "Phase 5 approval is explicit, scoped, current, and attributable"
+      ]
+    }
+  ],
+  "governance": {
+    "operator_review_required": true,
+    "canonical_state_changed": false,
+    "automation_can_self_approve": false,
+    "automation_can_expand_scope": false,
+    "automation_can_mutate_accepted_history": false,
+    "external_action_performed": false
+  }
+}
