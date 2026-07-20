@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/chatgpt_operational_readiness.schema.json",
+  "title": "AIGC ChatGPT Operational Readiness",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_id","schema_version","target","score_max","score_policy","categories","evidence_truths","safety_invariants","current_authority"],
+  "properties": {
+    "$schema": {"type":"string"},
+    "contract_id": {"const":"AIGC-CHATGPT-OPERATIONAL-READINESS-001"},
+    "schema_version": {"const":"1.0.0"},
+    "target": {"const":"PRIVATE_CHATGPT_OPERATIONAL_WITH_GOVERNED_EXTERNAL_ACTION"},
+    "score_max": {"const":100},
+    "score_policy": {
+      "type":"object",
+      "required":["DEFINED","IMPLEMENTED_LOCAL","VERIFIED_LOCAL","HOSTED_CI_VERIFIED","STAGING_VERIFIED","PRODUCTION_ACCEPTED"],
+      "additionalProperties":false,
+      "properties": {
+        "DEFINED":{"const":0.25},
+        "IMPLEMENTED_LOCAL":{"const":0.5},
+        "VERIFIED_LOCAL":{"const":0.65},
+        "HOSTED_CI_VERIFIED":{"const":0.75},
+        "STAGING_VERIFIED":{"const":0.9},
+        "PRODUCTION_ACCEPTED":{"const":1.0}
+      }
+    },
+    "categories": {
+      "type":"array","minItems":10,"maxItems":10,
+      "items": {
+        "type":"object","additionalProperties":false,
+        "required":["category_id","name","weight","status","required_for_100"],
+        "properties": {
+          "category_id":{"type":"string","pattern":"^C[0-9]+_[A-Z0-9_]+$"},
+          "name":{"type":"string","minLength":1},
+          "weight":{"type":"integer","minimum":1},
+          "status":{"enum":["DEFINED","IMPLEMENTED_LOCAL","VERIFIED_LOCAL","HOSTED_CI_VERIFIED","STAGING_VERIFIED","PRODUCTION_ACCEPTED"]},
+          "required_for_100":{"const":true}
+        }
+      }
+    },
+    "evidence_truths": {
+      "type":"object","additionalProperties":false,
+      "required":["external_action_receipt_present","staging_operational_evidence_present","production_evidence_present","hosted_ci_evidence_present","chatgpt_developer_mode_connected","chatgpt_end_to_end_acceptance_passed"],
+      "properties": {
+        "external_action_receipt_present":{"type":"boolean"},
+        "staging_operational_evidence_present":{"type":"boolean"},
+        "production_evidence_present":{"type":"boolean"},
+        "hosted_ci_evidence_present":{"type":"boolean"},
+        "chatgpt_developer_mode_connected":{"type":"boolean"},
+        "chatgpt_end_to_end_acceptance_passed":{"type":"boolean"}
+      }
+    },
+    "safety_invariants": {
+      "type":"object","additionalProperties":false,
+      "required":["hosted_ci_replacement_allowed","self_approval_allowed","automatic_merge_allowed","automatic_external_commitment_allowed","raw_secret_values_allowed","unreviewed_terraform_apply_allowed","mass_auto_apply_allowed"],
+      "properties": {
+        "hosted_ci_replacement_allowed":{"const":false},
+        "self_approval_allowed":{"const":false},
+        "automatic_merge_allowed":{"const":false},
+        "automatic_external_commitment_allowed":{"const":false},
+        "raw_secret_values_allowed":{"const":false},
+        "unreviewed_terraform_apply_allowed":{"const":false},
+        "mass_auto_apply_allowed":{"const":false}
+      }
+    },
+    "current_authority": {
+      "type":"object","additionalProperties":false,
+      "required":["operator_review_required","external_action_default","production_authority","terraform_apply_authorized"],
+      "properties": {
+        "operator_review_required":{"const":true},
+        "external_action_default":{"const":false},
+        "production_authority":{"type":"boolean"},
+        "terraform_apply_authorized":{"type":"boolean"}
+      }
+    }
+  }
+}
