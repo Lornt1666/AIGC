@@ -10,6 +10,22 @@
 - [`REVIEW_EVIDENCE_PACKET_V1.md`](REVIEW_EVIDENCE_PACKET_V1.md) — review evidence and accountable human judgment.
 - [`PRODUCTION_DEPLOYMENT_BASELINE_V1.md`](PRODUCTION_DEPLOYMENT_BASELINE_V1.md) — fail-closed deployment baseline.
 
+## ChatGPT operational acceptance
+
+- [`CHATGPT_OPERATIONAL_ACCEPTANCE_STANDARD.md`](CHATGPT_OPERATIONAL_ACCEPTANCE_STANDARD.md) — definition of evidence-backed `100/100` for a completely functional AIGC application in ChatGPT.
+- [`CHATGPT_100_POINT_EXECUTION_CHECKLIST.md`](CHATGPT_100_POINT_EXECUTION_CHECKLIST.md) — attributable execution checklist from local contracts through Developer Mode, hosted CI, staging, Canary A, Canary B, a bounded external action, and final disposition.
+- [`../config/chatgpt_operational_readiness.json`](../config/chatgpt_operational_readiness.json) — ten-category weighted readiness ledger and evidence truths.
+- [`../src/core/chatgpt_operational_readiness.py`](../src/core/chatgpt_operational_readiness.py) — fail-closed readiness evaluator.
+
+Validate the ChatGPT operational-readiness program with:
+
+```bash
+python -m src.core.chatgpt_operational_readiness
+pytest -q tests/test_chatgpt_operational_readiness.py
+```
+
+A numerical score cannot synthesize missing evidence or grant authority. `release_100_permitted=true` requires every category at `PRODUCTION_ACCEPTED`, every evidence truth true, every safety invariant preserved, and accountable acceptance.
+
 ## Reusable engineering Skill
 
 - [`../skills/aigc-omega-prime-engineering/SKILL.md`](../skills/aigc-omega-prime-engineering/SKILL.md) — Agent Skills bundle entrypoint for governed AIGC engineering in ChatGPT, Codex, and compatible agent runtimes.
