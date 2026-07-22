@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/omnarchon_hlx2_parameters.schema.json",
+  "title": "AIGC OMNARCHON-OMEGA-X HLX2 Parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id",
+    "contract_version",
+    "status",
+    "repository",
+    "architecture",
+    "activation",
+    "hlx2_sequence",
+    "epistemic_governance",
+    "scale_lattice",
+    "metatranscended_archetype_engine",
+    "solution_classes",
+    "optimization",
+    "tribunal",
+    "aigc_binding",
+    "procurement_output",
+    "validation",
+    "safety_and_authority"
+  ],
+  "$defs": {
+    "nonempty": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+    "unique_strings": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonempty"}
+    }
+  },
+  "properties": {
+    "contract_id": {"const": "AIGC-OMNARCHON-HLX2-PARAMETERS-001"},
+    "contract_version": {"const": "1.0.0"},
+    "status": {"const": "proposed_internal_reasoning_enabled_external_authority_unchanged"},
+    "repository": {"const": "Lornt1666/AIGC"},
+    "architecture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "execution_kernel", "supersedes_prompt_architecture", "purpose", "governing_doctrine"],
+      "properties": {
+        "name": {"const": "OMNARCHON-OMEGA-X"},
+        "execution_kernel": {"const": "HLX2"},
+        "supersedes_prompt_architecture": {"const": "PANTHEON-X"},
+        "purpose": {"$ref": "#/$defs/nonempty"},
+        "governing_doctrine": {"$ref": "#/$defs/unique_strings"}
+      }
+    },
+    "activation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["default_enabled", "complexity_proportional", "simple_tasks_must_remain_concise", "maximum_reasoning_depth_requires_material_relevance", "symbolic_language_is_not_evidence"],
+      "properties": {
+        "default_enabled": {"const": true},
+        "complexity_proportional": {"const": true},
+        "simple_tasks_must_remain_concise": {"const": true},
+        "maximum_reasoning_depth_requires_material_relevance": {"const": true},
+        "symbolic_language_is_not_evidence": {"const": true}
+      }
+    },
+    "hlx2_sequence": {
+      "type": "array",
+      "const": ["receive", "interpret", "decompose", "expand", "contextualize", "verify", "scale", "archetypize", "counter_archetypize", "transcend", "model", "generate", "compare", "red_team", "reconcile", "optimize", "architect", "procure", "program", "validate", "communicate", "evolve"]
+    },
+    "epistemic_governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim_classes", "major_claims_require", "omniscient_scale_approximation", "literal_omniscience_claim_allowed", "epistemic_saturation_threshold"],
+      "properties": {
+        "claim_classes": {"$ref": "#/$defs/unique_strings"},
+        "major_claims_require": {"$ref": "#/$defs/unique_strings"},
+        "omniscient_scale_approximation": {"const": true},
+        "literal_omniscience_claim_allowed": {"const": false},
+        "epistemic_saturation_threshold": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["enabled", "stop_when"],
+          "properties": {
+            "enabled": {"const": true},
+            "stop_when": {"$ref": "#/$defs/unique_strings"}
+          }
+        }
+      }
+    },
+    "scale_lattice": {"$ref": "#/$defs/unique_strings"},
+    "metatranscended_archetype_engine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "sequence", "generated_archetype_requires", "decorative_archetypes_allowed"],
+      "properties": {
+        "enabled": {"const": true},
+        "sequence": {"$ref": "#/$defs/unique_strings"},
+        "generated_archetype_requires": {"$ref": "#/$defs/unique_strings"},
+        "decorative_archetypes_allowed": {"const": false}
+      }
+    },
+    "solution_classes": {"$ref": "#/$defs/unique_strings"},
+    "optimization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "objectives", "hypermaximegatrix_rule", "complexity_for_prestige_allowed"],
+      "properties": {
+        "mode": {"const": "panharmonic_multi_objective"},
+        "objectives": {"$ref": "#/$defs/unique_strings"},
+        "hypermaximegatrix_rule": {"$ref": "#/$defs/nonempty"},
+        "complexity_for_prestige_allowed": {"const": false}
+      }
+    },
+    "tribunal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "reviewers", "unresolved_objections_must_be_disclosed"],
+      "properties": {
+        "enabled": {"const": true},
+        "reviewers": {"$ref": "#/$defs/unique_strings"},
+        "unresolved_objections_must_be_disclosed": {"const": true}
+      }
+    },
+    "aigc_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["applies_to", "must_not_replace", "agent_task_limits"],
+      "properties": {
+        "applies_to": {"$ref": "#/$defs/unique_strings"},
+        "must_not_replace": {"$ref": "#/$defs/unique_strings"},
+        "agent_task_limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["max_depth", "max_children", "max_steps", "uncontrolled_recursive_self_prompting_allowed"],
+          "properties": {
+            "max_depth": {"type": "integer", "minimum": 1, "maximum": 16},
+            "max_children": {"type": "integer", "minimum": 1, "maximum": 32},
+            "max_steps": {"type": "integer", "minimum": 1, "maximum": 200},
+            "uncontrolled_recursive_self_prompting_allowed": {"const": false}
+          }
+        }
+      }
+    },
+    "procurement_output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required_sections", "proportional_output_allowed"],
+      "properties": {
+        "required_sections": {"$ref": "#/$defs/unique_strings"},
+        "proportional_output_allowed": {"const": true}
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["audit_passes", "completion_requires"],
+      "properties": {
+        "audit_passes": {"$ref": "#/$defs/unique_strings"},
+        "completion_requires": {"$ref": "#/$defs/unique_strings"}
+      }
+    },
+    "safety_and_authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operator_review_required", "automation_can_self_approve", "automatic_merge_allowed", "automatic_external_commitment_allowed", "direct_main_write_allowed", "terraform_apply_allowed", "provider_resource_mutation_allowed", "credential_access_allowed", "raw_secrets_allowed", "hosted_ci_replacement_allowed", "external_action_performed"],
+      "properties": {
+        "operator_review_required": {"const": true},
+        "automation_can_self_approve": {"const": false},
+        "automatic_merge_allowed": {"const": false},
+        "automatic_external_commitment_allowed": {"const": false},
+        "direct_main_write_allowed": {"const": false},
+        "terraform_apply_allowed": {"const": false},
+        "provider_resource_mutation_allowed": {"const": false},
+        "credential_access_allowed": {"const": false},
+        "raw_secrets_allowed": {"const": false},
+        "hosted_ci_replacement_allowed": {"const": false},
+        "external_action_performed": {"const": false}
+      }
+    }
+  }
+}
