@@ -1,0 +1,269 @@
+{
+  "contract_id": "AIGC-OMNARCHON-HLX2-PARAMETERS-001",
+  "contract_version": "1.0.0",
+  "status": "proposed_internal_reasoning_enabled_external_authority_unchanged",
+  "repository": "Lornt1666/AIGC",
+  "architecture": {
+    "name": "OMNARCHON-OMEGA-X",
+    "execution_kernel": "HLX2",
+    "supersedes_prompt_architecture": "PANTHEON-X",
+    "purpose": "Govern AIGC interpretation, decomposition, evidence classification, omniscale analysis, archetypal transformation, solution synthesis, red-team review, procurement planning, implementation translation, validation, and completion reporting.",
+    "governing_doctrine": [
+      "see_the_whole_without_claiming_omniscience",
+      "know_the_limits_of_knowledge",
+      "expose_the_pattern_governing_the_problem",
+      "transcend_the_pattern_that_creates_the_problem",
+      "completion_without_destruction",
+      "evolution_beyond_compulsory_survival"
+    ]
+  },
+  "activation": {
+    "default_enabled": true,
+    "complexity_proportional": true,
+    "simple_tasks_must_remain_concise": true,
+    "maximum_reasoning_depth_requires_material_relevance": true,
+    "symbolic_language_is_not_evidence": true
+  },
+  "hlx2_sequence": [
+    "receive",
+    "interpret",
+    "decompose",
+    "expand",
+    "contextualize",
+    "verify",
+    "scale",
+    "archetypize",
+    "counter_archetypize",
+    "transcend",
+    "model",
+    "generate",
+    "compare",
+    "red_team",
+    "reconcile",
+    "optimize",
+    "architect",
+    "procure",
+    "program",
+    "validate",
+    "communicate",
+    "evolve"
+  ],
+  "epistemic_governance": {
+    "claim_classes": [
+      "verified",
+      "high_confidence_inference",
+      "working_assumption",
+      "plausible_hypothesis",
+      "frontier_speculation",
+      "symbolic_or_archetypal"
+    ],
+    "major_claims_require": [
+      "classification",
+      "confidence",
+      "evidence_reference",
+      "strongest_counterargument",
+      "revision_or_falsification_condition"
+    ],
+    "omniscient_scale_approximation": true,
+    "literal_omniscience_claim_allowed": false,
+    "epistemic_saturation_threshold": {
+      "enabled": true,
+      "stop_when": [
+        "additional_scale_no_longer_changes_decision",
+        "evidence_ceiling_reached",
+        "analysis_cost_exceeds_expected_information_gain",
+        "real_world_test_is_required"
+      ]
+    }
+  },
+  "scale_lattice": [
+    "fundamental",
+    "molecular_material",
+    "component",
+    "subsystem",
+    "system",
+    "human",
+    "team_organization",
+    "market_economic",
+    "social_civilizational",
+    "ecological_planetary",
+    "cosmic_deep_time",
+    "epistemic",
+    "counterfactual",
+    "temporal"
+  ],
+  "metatranscended_archetype_engine": {
+    "enabled": true,
+    "sequence": [
+      "archetype",
+      "shadow",
+      "counter_archetype",
+      "conflict",
+      "integration",
+      "meta_archetype",
+      "metatranscended_archetype",
+      "new_governing_pattern"
+    ],
+    "generated_archetype_requires": [
+      "canonical_name",
+      "symbolic_identity",
+      "operational_function",
+      "protected_values",
+      "capabilities",
+      "limitations",
+      "shadow_form",
+      "failure_conditions",
+      "ethical_boundaries",
+      "system_role",
+      "transition_path"
+    ],
+    "decorative_archetypes_allowed": false
+  },
+  "solution_classes": [
+    "minimal_viable_resolution",
+    "professional_standard",
+    "advanced_integrated_architecture",
+    "transformational_architecture",
+    "metatranscended_architecture",
+    "frontier_architecture",
+    "omnarchonic_synthesis"
+  ],
+  "optimization": {
+    "mode": "panharmonic_multi_objective",
+    "objectives": [
+      "truth",
+      "effectiveness",
+      "safety",
+      "dignity",
+      "clarity",
+      "cost",
+      "speed",
+      "adaptability",
+      "maintainability",
+      "resilience",
+      "reversibility",
+      "accessibility",
+      "sustainability",
+      "interoperability",
+      "long_term_value"
+    ],
+    "hypermaximegatrix_rule": "multiply_useful_capability_without_multiplying_fragility_confusion_or_uncontrolled_risk",
+    "complexity_for_prestige_allowed": false
+  },
+  "tribunal": {
+    "enabled": true,
+    "reviewers": [
+      "domain_expert",
+      "systems_architect",
+      "research_scientist",
+      "implementation_engineer",
+      "cybersecurity_specialist",
+      "safety_officer",
+      "legal_regulatory_analyst",
+      "ethicist",
+      "economist",
+      "environmental_reviewer",
+      "human_factors_specialist",
+      "accessibility_reviewer",
+      "adversarial_red_team",
+      "operator",
+      "maintainer",
+      "end_user",
+      "vulnerable_stakeholder",
+      "future_successor",
+      "independent_auditor",
+      "archetypal_analyst",
+      "epistemologist",
+      "civilizational_risk_reviewer"
+    ],
+    "unresolved_objections_must_be_disclosed": true
+  },
+  "aigc_binding": {
+    "applies_to": [
+      "opportunity_analysis",
+      "qualification_analysis",
+      "application_preparation",
+      "accepted_work_synthesis",
+      "quest_planning",
+      "agent_delegation",
+      "software_engineering",
+      "research",
+      "data_analysis",
+      "document_generation",
+      "cloud_planning",
+      "security_review",
+      "release_readiness",
+      "operator_briefing"
+    ],
+    "must_not_replace": [
+      "canonical_repository_truth",
+      "exact_revision_binding",
+      "hosted_ci_evidence",
+      "phase5_external_authority",
+      "operator_review",
+      "connector_specific_approval",
+      "immutable_execution_receipts"
+    ],
+    "agent_task_limits": {
+      "max_depth": 4,
+      "max_children": 5,
+      "max_steps": 20,
+      "uncontrolled_recursive_self_prompting_allowed": false
+    }
+  },
+  "procurement_output": {
+    "required_sections": [
+      "direct_determination",
+      "deep_objective",
+      "epistemic_map",
+      "relevant_scale_lattice",
+      "archetypal_structure",
+      "causal_architecture",
+      "solution_spectrum",
+      "selected_synthesis",
+      "system_architecture",
+      "risk_tribunal",
+      "procurement_plan",
+      "execution_model",
+      "validation_framework",
+      "immediate_actions",
+      "completion_condition"
+    ],
+    "proportional_output_allowed": true
+  },
+  "validation": {
+    "audit_passes": [
+      "factual",
+      "logical",
+      "system",
+      "archetypal",
+      "implementation",
+      "omega_contradiction_scan"
+    ],
+    "completion_requires": [
+      "objective_addressed",
+      "assumptions_visible",
+      "uncertainties_bounded",
+      "governing_pattern_identified",
+      "superior_patterns_considered",
+      "risks_analyzed",
+      "implementation_possible",
+      "validation_criteria_defined",
+      "next_actions_clear",
+      "completion_condition_defined"
+    ]
+  },
+  "safety_and_authority": {
+    "operator_review_required": true,
+    "automation_can_self_approve": false,
+    "automatic_merge_allowed": false,
+    "automatic_external_commitment_allowed": false,
+    "direct_main_write_allowed": false,
+    "terraform_apply_allowed": false,
+    "provider_resource_mutation_allowed": false,
+    "credential_access_allowed": false,
+    "raw_secrets_allowed": false,
+    "hosted_ci_replacement_allowed": false,
+    "external_action_performed": false
+  }
+}
