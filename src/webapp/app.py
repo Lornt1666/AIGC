@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import html
 import base64
 import hmac
 import json
@@ -12,6 +11,7 @@ import uuid
 from dataclasses import asdict
 from pathlib import Path
 from typing import Any, Dict, List
+from urllib.parse import urlsplit
 
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -32,6 +32,7 @@ from src.core.operator_cockpit import (  # noqa: E402
     run_command,
     summarize_authorizations,
 )
+from src.gemini_workflow.api import create_router, safe_status  # noqa: E402
 
 app = FastAPI(
     title="AIGC Governed Worker Command Center",
@@ -69,6 +70,7 @@ BUSINESS_CYCLE = [
 
 
 def require_operator_auth(request: Request) -> bool:
+    _require_same_origin_for_mutation(request)
     expected = os.environ.get(COMMAND_CENTER_TOKEN_ENV, "").strip()
     if not expected:
         raise HTTPException(
@@ -83,6 +85,21 @@ def require_operator_auth(request: Request) -> bool:
             headers={"WWW-Authenticate": 'Basic realm="AIGC Command Center"'},
         )
     return True
+
+
+def _require_same_origin_for_mutation(request: Request) -> None:
+    if request.method.upper() in {"GET", "HEAD", "OPTIONS"}:
+        return
+    origin = request.headers.get("origin", "").strip()
+    if not origin:
+        return
+    origin_host = urlsplit(origin).netloc.lower()
+    request_host = request.headers.get("host", "").strip().lower()
+    if not origin_host or origin_host != request_host:
+        raise HTTPException(
+            status_code=403,
+            detail="Cross-origin state-changing request rejected.",
+        )
 
 
 def extract_operator_token(request: Request) -> str:
@@ -105,6 +122,9 @@ def extract_operator_token(request: Request) -> str:
     return ""
 
 
+app.include_router(create_router(require_operator_auth))
+
+
 @app.get("/health")
 def health() -> Dict[str, Any]:
     return {
@@ -112,6 +132,7 @@ def health() -> Dict[str, Any]:
         "mode": "governed_command_center",
         "auth_required": True,
         "auth_configured": bool(os.environ.get(COMMAND_CENTER_TOKEN_ENV, "").strip()),
+        "gemini_workflow": safe_status(),
     }
 
 
@@ -289,11 +310,38 @@ def render_ui() -> str:
     <div id="reviews"></div>
   </div>
   <div class="card">
+    <h2>Governed Gemini Opportunity Assessment</h2>
+    <p>A live assessment calls the configured Vertex AI model, then creates an internal draft and a create-only evidence record. It never performs an external business action.</p>
+    <label>Opportunity title</label>
+    <input id="gemini-title" maxlength="200" placeholder="Permissioned opportunity" />
+    <label>HTTPS source URL</label>
+    <input id="gemini-source" placeholder="https://example.com/opportunity" />
+    <label>Description</label>
+    <textarea id="gemini-description" maxlength="12000" placeholder="Describe the opportunity without credentials or unnecessary personal information."></textarea>
+    <label>Constraints (one per line)</label>
+    <textarea id="gemini-constraints" placeholder="No external business action&#10;Human review required"></textarea>
+    <label><input id="gemini-permitted" type="checkbox" /> AI assistance is permitted for this intake</label>
+    <label><input id="gemini-disclosure" type="checkbox" checked /> AI-use disclosure is required</label>
+    <button class="primary" onclick="runGeminiAssessment()">RUN GOVERNED GEMINI ASSESSMENT</button>
+    <p id="gemini-status"></p>
+    <pre id="gemini-output"></pre>
+    <div id="gemini-decision-panel" style="display:none">
+      <label>Human decision reason</label>
+      <textarea id="gemini-decision-reason" placeholder="Document the accountable human reason."></textarea>
+      <label>Revision instructions (required only for revise)</label>
+      <textarea id="gemini-revision" placeholder="State the exact required revision."></textarea>
+      <button onclick="decideGemini('approve')">Approve Internal Use</button>
+      <button onclick="decideGemini('deny')">Deny</button>
+      <button onclick="decideGemini('revise')">Request Revision</button>
+    </div>
+  </div>
+  <div class="card">
     <h2>Emergency Control</h2>
     <button class="danger" onclick="stopNow()">Enable Emergency Stop</button>
     <pre id="stop-output"></pre>
   </div>
 <script>
+let currentGeminiRunId = '';
 async function runCycle() {{
   const r = await fetch('/api/run', {{method: 'POST'}});
   const data = await r.json();
@@ -310,22 +358,62 @@ async function loadReviews() {{
   const r = await fetch('/api/reviews');
   const data = await r.json();
   const root = document.getElementById('reviews');
-  root.innerHTML = '';
+  root.replaceChildren();
   data.reviews.forEach(item => {{
     const div = document.createElement('div');
     div.className = 'card';
-    div.innerHTML = `<h3>${{escapeHtml(item.action_id)}} — ${{escapeHtml(item.recipient)}}</h3>
-      <p>Status: ${{escapeHtml(item.decision)}} | Expired: ${{item.expired}} | Risk: ${{escapeHtml(item.risk_class)}} / ${{escapeHtml(item.safety_status)}}</p>
-      <p>Quality: ${{escapeHtml(item.quality_state)}}</p>
-      <pre>${{escapeHtml(item.artifact_preview || '').slice(0, 1600)}}</pre>
-      <p>Type exact acceptance phrase only after review:</p>
-      <input id="phrase-${{item.action_id}}" placeholder="Exact acceptance phrase" />
-      <button onclick="acceptItem('${{item.action_id}}')">Accept Selected</button>
-      <button onclick="denyItem('${{item.action_id}}')">Deny</button>
-      <textarea id="revise-${{item.action_id}}" placeholder="Revision instructions"></textarea>
-      <button onclick="reviseItem('${{item.action_id}}')">Request Revision</button>`;
+    appendTextElement(
+      div,
+      'h3',
+      String(item.action_id) + ' — ' + String(item.recipient)
+    );
+    appendTextElement(
+      div,
+      'p',
+      'Status: ' + String(item.decision)
+        + ' | Expired: ' + String(item.expired)
+        + ' | Risk: ' + String(item.risk_class)
+        + ' / ' + String(item.safety_status)
+    );
+    appendTextElement(div, 'p', 'Quality: ' + String(item.quality_state));
+    appendTextElement(
+      div,
+      'pre',
+      String(item.artifact_preview || '').slice(0, 1600)
+    );
+    appendTextElement(
+      div,
+      'p',
+      'Type exact acceptance phrase only after review:'
+    );
+    const phrase = document.createElement('input');
+    phrase.id = 'phrase-' + String(item.action_id);
+    phrase.placeholder = 'Exact acceptance phrase';
+    div.appendChild(phrase);
+    const acceptButton = document.createElement('button');
+    acceptButton.textContent = 'Accept Selected';
+    acceptButton.addEventListener('click', () => acceptItem(item.action_id));
+    div.appendChild(acceptButton);
+    const denyButton = document.createElement('button');
+    denyButton.textContent = 'Deny';
+    denyButton.addEventListener('click', () => denyItem(item.action_id));
+    div.appendChild(denyButton);
+    const revision = document.createElement('textarea');
+    revision.id = 'revise-' + String(item.action_id);
+    revision.placeholder = 'Revision instructions';
+    div.appendChild(revision);
+    const reviseButton = document.createElement('button');
+    reviseButton.textContent = 'Request Revision';
+    reviseButton.addEventListener('click', () => reviseItem(item.action_id));
+    div.appendChild(reviseButton);
     root.appendChild(div);
   }});
+}}
+function appendTextElement(parent, tag, value) {{
+  const element = document.createElement(tag);
+  element.textContent = value;
+  parent.appendChild(element);
+  return element;
 }}
 async function acceptItem(id) {{
   const phrase = document.getElementById('phrase-' + id).value;
@@ -344,14 +432,65 @@ async function reviseItem(id) {{
   alert(JSON.stringify(await r.json(), null, 2));
   loadReviews();
 }}
+async function loadGeminiStatus() {{
+  const r = await fetch('/api/gemini/status');
+  const data = await r.json();
+  document.getElementById('gemini-status').textContent =
+    data.configured
+      ? 'Configured: ' + data.provider + ' / ' + data.model + ' / ' + data.location
+      : 'Gemini workflow is disabled or incomplete. No model call will run.';
+}}
+async function runGeminiAssessment() {{
+  const payload = {{
+    title: document.getElementById('gemini-title').value,
+    source_url: document.getElementById('gemini-source').value,
+    description: document.getElementById('gemini-description').value,
+    constraints: document.getElementById('gemini-constraints').value
+      .split('\\n').map(value => value.trim()).filter(Boolean),
+    ai_assistance_permitted: document.getElementById('gemini-permitted').checked,
+    ai_disclosure_required: document.getElementById('gemini-disclosure').checked
+  }};
+  const r = await fetch('/api/gemini/workflows', {{
+    method: 'POST',
+    headers: {{'Content-Type':'application/json'}},
+    body: JSON.stringify(payload)
+  }});
+  const data = await r.json();
+  document.getElementById('gemini-output').textContent = JSON.stringify(data, null, 2);
+  if (!r.ok) {{
+    currentGeminiRunId = '';
+    document.getElementById('gemini-decision-panel').style.display = 'none';
+    return;
+  }}
+  currentGeminiRunId = data.run_id;
+  document.getElementById('gemini-decision-panel').style.display =
+    data.status === 'pending_human_review' ? 'block' : 'none';
+}}
+async function decideGemini(decision) {{
+  if (!currentGeminiRunId) return;
+  const payload = {{
+    decision,
+    reason: document.getElementById('gemini-decision-reason').value,
+    revision_instructions: document.getElementById('gemini-revision').value
+  }};
+  const r = await fetch(
+    '/api/gemini/workflows/' + encodeURIComponent(currentGeminiRunId) + '/decision',
+    {{
+      method: 'POST',
+      headers: {{'Content-Type':'application/json'}},
+      body: JSON.stringify(payload)
+    }}
+  );
+  const data = await r.json();
+  document.getElementById('gemini-output').textContent = JSON.stringify(data, null, 2);
+  if (r.ok) document.getElementById('gemini-decision-panel').style.display = 'none';
+}}
 async function stopNow() {{
   const r = await fetch('/api/emergency-stop', {{method:'POST'}});
   document.getElementById('stop-output').textContent = JSON.stringify(await r.json(), null, 2);
 }}
-function escapeHtml(value) {{
-  return String(value).replace(/[&<>'"]/g, c => ({{'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}}[c]));
-}}
 loadReviews();
+loadGeminiStatus();
 </script>
 </body>
 </html>
