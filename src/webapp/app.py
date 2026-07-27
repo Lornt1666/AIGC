@@ -792,6 +792,6 @@ if __name__ == "__main__":
     uvicorn.run(
         "src.webapp.app:app",
         host=os.environ.get("AIGC_WEBAPP_HOST", os.environ.get("HOST", "127.0.0.1")),
-        port=int(os.environ.get("PORT", "8000")),
+        port=int(os.environ.get("PORT", "8080")),
         reload=False,
     )

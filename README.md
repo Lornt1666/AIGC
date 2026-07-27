@@ -19,7 +19,9 @@ The integration is disabled until an operator supplies exact Google Cloud,
 model, service-identity, and durable-evidence configuration. Offline CI uses a
 named stub and cannot be represented as a live Gemini call. See
 `docs/DEVPOST_GEMINI_WORKFLOW.md` for the API, deployment prerequisites, and
-claim boundaries.
+claim boundaries. The deployment helper also fails closed while the repository
+authority records deny production deployment and without an unexpired,
+exact-target permit.
 
 Phase 2 is a read-only opportunity radar. It reads approved API/RSS/public feed sources, normalizes records, classifies them, filters unsafe targets, scores radar fit, and writes an opportunity queue.
 

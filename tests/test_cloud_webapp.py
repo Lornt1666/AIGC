@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import base64
 import hashlib
+import json
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -259,6 +260,11 @@ def test_deployment_defaults_require_private_auth_boundary() -> None:
     batch_launcher = Path("RUN_AIGC_WEBAPP.bat").read_text(encoding="utf-8")
     dockerfile = Path("Dockerfile").read_text(encoding="utf-8")
     dockerignore = Path(".dockerignore").read_text(encoding="utf-8")
+    permit_example = json.loads(
+        Path("config/gemini_deployment_permit.example.json").read_text(
+            encoding="utf-8"
+        )
+    )
 
     assert "--allow-unauthenticated" not in deploy_script
     assert "--no-allow-unauthenticated" in deploy_script
@@ -271,7 +277,16 @@ def test_deployment_defaults_require_private_auth_boundary() -> None:
     assert "--service-account" in deploy_script
     assert "docker.pkg.dev" in deploy_script
     assert "gcr.io" not in deploy_script
-    assert "--max-instances 3" in deploy_script
+    assert "$DeploymentBaseline.runtime.max_instances" in deploy_script
+    assert "$DeploymentBaseline.runtime.concurrency" in deploy_script
+    assert "$DeploymentBaseline.runtime.request_timeout_seconds" in deploy_script
+    assert "$DeploymentBaseline.runtime.port" in deploy_script
+    assert "production_deployment_authorized" in deploy_script
+    assert "production_resource_creation_authorized" in deploy_script
+    assert "production_apply_authorized" in deploy_script
+    assert "DeploymentPermitPath" in deploy_script
+    assert "operator_approval_recorded" in deploy_script
+    assert "expires_at" in deploy_script
     assert "ReleaseRevision" in deploy_script
     assert "git rev-parse HEAD" in deploy_script
     assert "git status --porcelain --untracked-files=all" in deploy_script
@@ -290,4 +305,9 @@ def test_deployment_defaults_require_private_auth_boundary() -> None:
     assert "root.innerHTML" not in webapp_source
     assert "div.innerHTML" not in webapp_source
     assert "USER aigc" in dockerfile
+    assert "ENV PORT=8080" in dockerfile
+    assert "EXPOSE 8080" in dockerfile
     assert "*service-account*.json" in dockerignore
+    assert permit_example["deployment_authorized"] is False
+    assert permit_example["operator_approval_recorded"] is False
+    assert permit_example["expires_at"] == "1970-01-01T00:00:00Z"

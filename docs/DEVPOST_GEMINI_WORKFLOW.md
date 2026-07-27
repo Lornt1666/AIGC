@@ -68,18 +68,26 @@ read evidence objects. Do not create or commit a service-account key file.
 
 The deployment script deliberately requires the project, service account,
 regions, model, evidence bucket, Artifact Registry repository, exact Git
-revision, and pinned secret versions as operator inputs. It tags the build with
-that revision, resolves the registry digest, and deploys the digest rather than
-a mutable tag. Before building, it verifies that the exact revision is checked
-out, that the tracked and untracked working tree is clean, and that every native
-Git/Google Cloud command succeeds. The registry repository, evidence bucket,
-service account, IAM bindings, and secret version must already exist and must
-be reviewed before use. Running the script is an external action and requires
-explicit authorization.
+revision, pinned secret versions, and an exact-target deployment permit as
+operator inputs. Before any Git or Google Cloud command, it also requires the
+accepted environment decision and deployment baseline to authorize production
+resource creation, apply, and deployment. Both currently deny those actions, so
+the script fails closed. The committed permit is an expired, unauthorized
+example and cannot enable deployment.
+
+After those separately governed files are approved, the script tags the build
+with the authorized revision, resolves the registry digest, and deploys the
+digest rather than a mutable tag. Before building, it verifies that the exact
+revision is checked out, that the tracked and untracked working tree is clean,
+that the target region matches the accepted primary region, and that every
+native Git/Google Cloud command succeeds. The registry repository, evidence
+bucket, service account, IAM bindings, and secret versions must already exist
+and must be reviewed before use. Running the script is an external action and
+requires explicit authorization.
 
 The container runs as an unprivileged `aigc` user. The deploy command bounds
-instances, concurrency, and request timeout; those values are conservative
-starting limits, not proof of load capacity.
+instances, concurrency, request timeout, and port from the accepted baseline;
+those values are policy inputs, not proof of load capacity.
 
 ## API
 
@@ -136,6 +144,30 @@ Do not update Devpost capability claims until all of the following are captured:
 - redacted screenshot or dashboard view;
 - exact Git revision and passing CI;
 - customer consent where a real customer input is used.
+
+## Critical activation blockers
+
+The repository intentionally does not represent these as completed:
+
+- an authorized Google Cloud staging/production environment and runtime
+  receipts;
+- a Gemini-aware durable emergency stop checked before and after the provider
+  call;
+- a judge-safe, read-only identity role or independently hosted redacted demo;
+- durable idempotency, per-operator rate limits, and evidenced cloud budget or
+  quota enforcement;
+- a dedicated Gemini-only production surface or remediation of the legacy
+  command-center endpoints that share the current app;
+- an explicit production image allowlist that excludes internal repository data;
+- a readiness probe that verifies required runtime dependencies without
+  presenting liveness as operational proof;
+- Cloud Storage handoff receipts containing object URI and generation;
+- the accepted load-balancer, Cloud Armor, identity-provider, and Secret Broker
+  chain required by the canonical production baseline.
+
+Until these are resolved and the acceptance evidence above exists, keep the PR
+draft and describe the feature as an implemented, offline-validated workflow,
+not as production-deployed or competition-submitted.
 
 The shared-token session proves possession of the operator credential and
 records a domain-separated HMAC subject identifier using a dedicated production

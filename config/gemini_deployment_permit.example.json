@@ -1,0 +1,12 @@
+{
+  "permit_id": "REPLACE_WITH_APPROVED_PERMIT_ID",
+  "environment": "production",
+  "deployment_authorized": false,
+  "operator_approval_recorded": false,
+  "release_revision": "REPLACE_WITH_EXACT_40_CHARACTER_GIT_SHA",
+  "project_id": "REPLACE_WITH_APPROVED_PROJECT_ID",
+  "region": "northamerica-northeast2",
+  "service_name": "aigc-governed-worker",
+  "expires_at": "1970-01-01T00:00:00Z",
+  "external_action_performed": false
+}
