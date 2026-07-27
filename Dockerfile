@@ -10,8 +10,13 @@ RUN python -m pip install --upgrade pip
 COPY requirements.txt /app/requirements.txt
 RUN python -m pip install --no-cache-dir -r /app/requirements.txt
 
-COPY . /app
+RUN groupadd --system aigc \
+    && useradd --system --gid aigc --create-home --home-dir /home/aigc aigc
+
+COPY --chown=aigc:aigc . /app
 
 EXPOSE 8000
+
+USER aigc
 
 CMD ["sh", "-c", "uvicorn src.webapp.app:app --host 0.0.0.0 --port ${PORT}"]
