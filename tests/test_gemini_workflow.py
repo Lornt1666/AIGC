@@ -535,16 +535,30 @@ def test_live_provider_contract_is_bounded_without_network(tmp_path: Path) -> No
 
 
 class FakeBlob:
-    def __init__(self, name: str, objects: dict[str, str]) -> None:
+    def __init__(
+        self,
+        name: str,
+        objects: dict[str, str],
+        generation: int | None = None,
+    ) -> None:
         self.name = name
         self.objects = objects
+        self.generation = generation or 1
+        self.metageneration = 1
+        self.etag = "synthetic-etag"
+        self.crc32c = "synthetic-crc32c"
 
     def upload_from_string(self, value: str, **_kwargs) -> None:
         if self.name in self.objects:
             raise RuntimeError("create-only object already exists")
         self.objects[self.name] = value
 
-    def download_as_text(self) -> str:
+    def reload(self, *, if_generation_match: int) -> None:
+        assert if_generation_match == self.generation
+        if self.name not in self.objects:
+            raise RuntimeError("missing")
+
+    def download_as_text(self, **_kwargs) -> str:
         return self.objects[self.name]
 
 
@@ -552,8 +566,12 @@ class FakeBucket:
     def __init__(self, objects: dict[str, str]) -> None:
         self.objects = objects
 
-    def blob(self, name: str) -> FakeBlob:
-        return FakeBlob(name, self.objects)
+    def blob(
+        self,
+        name: str,
+        generation: int | None = None,
+    ) -> FakeBlob:
+        return FakeBlob(name, self.objects, generation)
 
 
 class FakeStorageClient:

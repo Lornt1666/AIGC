@@ -118,18 +118,37 @@ class HumanDecisionRequest(StrictModel):
 
 
 class OperatorIdentity(StrictModel):
+    principal_id: str | None = Field(
+        default=None,
+        pattern=r"^[a-f0-9]{64}$",
+        description=(
+            "Stable authenticated credential or identity-provider principal. "
+            "Self-attested labels must never be used to reset runtime limits."
+        ),
+    )
     subject_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    role: Literal["operator", "judge", "runtime_admin"] = "operator"
     auth_method: Literal[
         "shared_token_session",
         "shared_token_header",
+        "shared_judge_token_header",
+        "verified_identity_provider",
         "local_authorization_fallback",
         "offline_test",
     ]
     identity_assurance: Literal[
         "operator_attestation",
         "shared_credential_holder",
+        "judge_credential_holder",
+        "verified_identity_provider",
         "offline_test",
     ]
+
+    @property
+    def stable_principal_id(self) -> str:
+        """Use the authenticated principal, with a test/legacy fallback."""
+
+        return self.principal_id or self.subject_sha256
 
 
 class WorkflowRecord(StrictModel):
@@ -151,6 +170,19 @@ class WorkflowRecord(StrictModel):
         "confirmed",
     ] = "not_attempted"
     model_api_call_performed: bool | None = False
-    external_business_action_performed: bool = False
-    external_action_performed: bool = False
-    record_sha256: str
+    external_business_action_performed: Literal[False] = False
+    external_action_performed: Literal[False] = Field(
+        default=False,
+        description=(
+            "Deprecated compatibility alias for external business action; "
+            "it does not mean that provider or storage infrastructure was "
+            "unused."
+        ),
+    )
+    record_sha256: str = Field(
+        pattern=r"^[a-f0-9]{64}$",
+        description=(
+            "Canonical record self-integrity checksum, not independent "
+            "tamper-proof attestation."
+        ),
+    )

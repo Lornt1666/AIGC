@@ -10,19 +10,24 @@ requires an authorized deployment and retained runtime receipts.
 ## Workflow
 
 1. Cloud Run IAM authenticates access to the private service. The application
-   then issues a signed, HTTP-only operator session after a separate
-   command-token check, so the app does not reuse Cloud Run's `Authorization`
-   header.
+   separately authenticates the operator, runtime-administrator, or judge role
+   with an application-specific header. It does not reuse Cloud Run's
+   `Authorization` header.
 2. An authenticated operator submits a permitted opportunity. URL credentials
    and recognized credential patterns—including incomplete private-key
    blocks—fail closed; common contact data is redacted, and only the
    credential-free source origin is sent or stored. Pattern detection is a
    defense-in-depth control, not a guarantee that arbitrary secrets can be
    identified.
-3. The application writes a `workflow_started` audit event before attempting a
-   provider call. If this write fails, Gemini is not called.
-4. The deployed application calls Gemini through Vertex AI using its Cloud Run
-   service identity and Application Default Credentials. No API key is stored.
+3. The application reserves the stable principal, idempotency key, request
+   hash, stop epoch, rate windows, and reserved-token budget in the durable
+   control store. It then writes a `workflow_started` event. A control or start
+   evidence failure prevents the provider call.
+4. The deployed application calls Gemini through Vertex AI using its dedicated
+   Cloud Run service identity and Application Default Credentials. Application
+   secrets resolve only by exact Secret Manager version through Omega-X
+   Orchestrator → Ultra-Secrets Agent → Secret Broker → Google Cloud Secret
+   Manager. No model API key or service-account key file is stored.
 5. Gemini returns a Pydantic-constrained assessment with pointers to the exact
    supplied fields used as evidence.
 6. Deterministic policy validates those pointers and evaluates AI permission,
@@ -30,30 +35,43 @@ requires an authorized deployment and retained runtime receipts.
    flag.
 7. The application records a create-only success or failure event with an
    integrity hash and explicit call status: not attempted, confirmed, or
-   attempted with outcome unknown.
+   attempted with outcome unknown. A success is visible as completed only
+   after the durable control record binds its exact event ID, `gs://` URI, and
+   object generation.
 8. The authenticated operator records exactly one approve, deny, or revise
-   attestation. Approval is available only after the deterministic policy
-   permits an internal draft; deny/revise remain available for policy findings.
+   attestation. The decision has its own create-only evidence object and
+   durable completion binding. Approval is available only after deterministic
+   policy permits an internal draft; deny/revise remain available for policy
+   findings.
 9. Approval authorizes internal use only. It never performs an external
    business action.
+10. A separate provider-free judge service can read only a prepublished,
+    sanitized, generation-pinned receipt. Publication requires a byte-exact,
+    content-bound human confirmation.
 
 ## Required environment
 
 | Variable | Requirement |
 |---|---|
-| `AIGC_COMMAND_CENTER_TOKEN` | Secret Manager reference used by the existing operator boundary |
-| `AIGC_OPERATOR_SUBJECT_KEY` | Separate Secret Manager pepper used for domain-separated HMAC operator identifiers; required in production |
+| `AIGC_SURFACE` | Explicitly `operator` or `judge`; production has no implicit default |
 | `AIGC_RELEASE_REVISION` | Exact 40-character Git SHA embedded in runtime evidence |
+| `AIGC_IMAGE_DIGEST` | Exact `sha256:` image digest; required in production |
 | `AIGC_GEMINI_ENABLED` | Must be exactly enabled only after deployment approval |
 | `GOOGLE_CLOUD_PROJECT` | Exact Google Cloud project ID |
-| `GOOGLE_CLOUD_LOCATION` | Approved Vertex AI location compatible with the selected model |
+| `GOOGLE_CLOUD_LOCATION` | `northamerica-northeast1` (Montréal), the currently listed Canadian regional Gemini endpoint; recheck the exact model before deployment |
 | `AIGC_GEMINI_MODEL` | Exact deployed Gemini model name; no silent default |
 | `AIGC_GEMINI_EVIDENCE_BACKEND` | `gcs` in production |
 | `AIGC_GEMINI_EVIDENCE_BUCKET` | Dedicated evidence bucket |
 | `AIGC_GEMINI_EVIDENCE_PREFIX` | Defaults to `product-evidence/gemini` |
+| `AIGC_GEMINI_CONTROL_DSN_SECRET_REF` | Exact numeric Secret Manager version for the durable PostgreSQL control store |
+| `AIGC_OPERATOR_*_SECRET_REF` | Separate exact-version operator token and principal-binding references |
+| `AIGC_RUNTIME_ADMIN_*_SECRET_REF` | Pairwise-distinct runtime-admin token and binding references |
+| `AIGC_JUDGE_*_SECRET_REF` | Judge-only token and binding references used only by the judge surface |
+| `AIGC_SECRET_ACCESS_MANIFEST_PATH` | Container path to the governed purpose-to-reference manifest |
+| `AIGC_DEPLOYMENT_AUTHORIZATION_SHA256` | Canonical hash binding secret access to the reviewed deployment authorization |
 | `AIGC_GEMINI_TIMEOUT_SECONDS` | Hard SDK request timeout; defaults to `30` |
 | `AIGC_GEMINI_MAX_OUTPUT_TOKENS` | Bounded output budget; defaults to `1200` |
-| `AIGC_GEMINI_MAX_ATTEMPTS` | Total attempts, including the first; maximum `3` |
+| `AIGC_GEMINI_MAX_ATTEMPTS` | Exactly `1` in production; no hidden provider retry |
 | `AIGC_ENV` | `production` on Cloud Run |
 | `K_REVISION` | Cloud Run-provided runtime revision; required in production |
 
@@ -62,55 +80,56 @@ filesystem is ephemeral.
 
 ## Service identity
 
-Use a dedicated Cloud Run service account. Grant only the minimum Vertex AI
-prediction permission and bucket-scoped permissions needed to create, list, and
-read evidence objects. Do not create or commit a service-account key file.
+Use separate operator and judge Cloud Run service accounts. Grant the operator
+only the minimum Vertex prediction, Cloud SQL, evidence-object, and exact-secret
+access required by the reviewed design. The judge identity must have no Vertex
+permission, control-store write permission, or operator/runtime-admin secret
+access; it reads only the sanitized receipt prefix. Do not create or commit a
+service-account key file.
 
-The deployment script deliberately requires the project, service account,
-regions, model, evidence bucket, Artifact Registry repository, exact Git
-revision, pinned secret versions, and an exact-target deployment permit as
-operator inputs. Before any Git or Google Cloud command, it also requires the
-accepted environment decision and deployment baseline to authorize production
-resource creation, apply, and deployment. Both currently deny those actions, so
-the script fails closed. The committed permit is an expired, unauthorized
-example and cannot enable deployment.
+The staging deployment helper requires an unexpired, exact-target authorization
+for the project, Canadian regions, model, Artifact Registry repository, Cloud
+SQL instance, evidence buckets, separate service accounts, exact numeric secret
+versions, IAM review, and CAD ceiling. The committed example is default-deny
+and cannot authorize an action.
 
-After those separately governed files are approved, the script tags the build
-with the authorized revision, resolves the registry digest, and deploys the
-digest rather than a mutable tag. Before building, it verifies that the exact
-revision is checked out, that the tracked and untracked working tree is clean,
-that the target region matches the accepted primary region, and that every
-native Git/Google Cloud command succeeds. The registry repository, evidence
-bucket, service account, IAM bindings, and secret versions must already exist
-and must be reviewed before use. Running the script is an external action and
-requires explicit authorization.
+After a separately stored authorization passes, the helper performs read-only
+prerequisite inspections, requires the exact clean Git revision, builds the
+allowlisted container, resolves the registry digest, and deploys separate
+private operator and judge candidates by digest with no traffic. It never
+creates foundational resources or changes traffic. Running it with `--execute`
+is an external action and requires explicit authorization.
 
-The container runs as an unprivileged `aigc` user. The deploy command bounds
-instances, concurrency, request timeout, and port from the accepted baseline;
-those values are policy inputs, not proof of load capacity.
+The container runs as an unprivileged `aigc` user. Its Docker and Cloud Build
+contexts use exact file allowlists rather than copying the repository. The
+deploy command bounds instances, concurrency, and request timeout; those values
+are policy inputs, not proof of load capacity.
 
 ## API
 
-- `GET /api/session`
-- `POST /api/session`
-- `POST /api/session/logout`
 - `GET /api/gemini/status`
+- `GET /api/gemini/runtime/emergency-stop`
+- `POST /api/gemini/runtime/emergency-stop`
+- `POST /api/gemini/runtime/emergency-stop/clear`
 - `POST /api/gemini/workflows`
 - `GET /api/gemini/workflows/{run_id}`
 - `POST /api/gemini/workflows/{run_id}/decision`
+- judge surface only: `GET /api/judge/receipts/{receipt_id}`
 
-Gemini routes require either the signed operator-session cookie or the
-application-specific `X-AIGC-Command-Token` header. In production,
-`Authorization` is reserved for Cloud Run IAM. Basic/Bearer application-token
-fallback exists only in non-production local development.
+Operator routes require `X-AIGC-Operator-Token`; clearing the stop requires the
+separate `X-AIGC-Runtime-Admin-Token`; the judge read requires
+`X-AIGC-Judge-Token`. In production, `Authorization` remains reserved for Cloud
+Run IAM. The attested operator or judge label is not a trusted identity and
+does not define the stable rate-limit principal.
 
-Example intake:
+Minimal synthetic intake shape (the controlled staging fixture is
+`config/gemini_canary_intake.example.json`):
 
 ```json
 {
-  "title": "Permissioned opportunity",
-  "description": "A real description with customer-private details removed.",
-  "source_url": "https://example.com/opportunity",
+  "title": "Synthetic permissioned opportunity",
+  "description": "Assess a fictional internal opportunity using only this synthetic description.",
+  "source_url": "https://example.com/controlled-example",
   "constraints": ["No external business action", "Human review required"],
   "ai_assistance_permitted": true,
   "ai_disclosure_required": true
@@ -120,7 +139,7 @@ Example intake:
 ## Validation
 
 ```bash
-python -m pytest tests/test_gemini_workflow.py tests/test_cloud_webapp.py
+python -m pytest
 python scripts/run_gemini_workflow_smoke.py
 ```
 
@@ -139,7 +158,8 @@ Do not update Devpost capability claims until all of the following are captured:
   `model_api_call_performed: true` and `live_model_call: true`;
 - model usage and latency metadata;
 - deterministic policy result;
-- operator attestation bound to the assessment hash and release revision;
+- `human_review_required: true`; if a completed operator review is claimed,
+  its generation-bound decision receipt and release/assessment bindings;
 - durable Cloud Storage evidence object identifiers;
 - redacted screenshot or dashboard view;
 - exact Git revision and passing CI;
@@ -147,33 +167,27 @@ Do not update Devpost capability claims until all of the following are captured:
 
 ## Critical activation blockers
 
-The repository intentionally does not represent these as completed:
+The remaining blockers are external receipts, not additional capability claims:
 
-- an authorized Google Cloud staging/production environment and runtime
-  receipts;
-- a Gemini-aware durable emergency stop checked before and after the provider
-  call;
-- a judge-safe, read-only identity role or independently hosted redacted demo;
-- durable idempotency, per-operator rate limits, and evidenced cloud budget or
-  quota enforcement;
-- a dedicated Gemini-only production surface or remediation of the legacy
-  command-center endpoints that share the current app;
-- an explicit production image allowlist that excludes internal repository data;
-- a readiness probe that verifies required runtime dependencies without
-  presenting liveness as operational proof;
-- Cloud Storage handoff receipts containing object URI and generation;
-- the accepted load-balancer, Cloud Armor, identity-provider, and Secret Broker
-  chain required by the canonical production baseline.
+- a passing hosted CI receipt for the exact release SHA;
+- an explicitly authorized and inspected Canadian staging configuration;
+- an immutable-digest deployment receipt for both no-traffic candidates;
+- one permit-bound synthetic live runtime receipt;
+- one explicitly authorized sanitized judge receipt and redacted media
+  manifest;
+- PR approval, required-check success and merge receipt; and
+- a reviewed Devpost preview and submission confirmation.
 
-Until these are resolved and the acceptance evidence above exists, keep the PR
-draft and describe the feature as an implemented, offline-validated workflow,
-not as production-deployed or competition-submitted.
+Until those receipts exist, keep the PR draft and describe the feature as
+repository-implemented and locally test-covered, not as deployed, publicly
+available, merged, or competition-submitted. See
+`docs/GEMINI_REQUIREMENTS_EVIDENCE_MATRIX.md` for the exact claim boundaries.
 
-The shared-token session proves possession of the operator credential and
-records a domain-separated HMAC subject identifier using a dedicated production
-pepper. The raw label and pepper are not written to workflow evidence. This
-does not independently prove that the actor was human. Do not describe the event
-as verified human identity without a separately evidenced identity provider and
+The shared role token proves possession of that credential and records a
+domain-separated principal identifier using a separate binding key. The raw
+label and binding key are not written to workflow evidence. This does not
+independently prove that the actor was human. Do not describe the event as
+verified human identity without a separately evidenced identity provider and
 trusted principal.
 
 Model evidence pointers prove only that the cited input field existed. The

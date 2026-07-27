@@ -40,6 +40,10 @@ class GeminiWorkflowSettings:
     max_attempts: int
     source_revision: str
     runtime_revision: str
+    control_dsn: str = ""
+    control_dsn_secret_ref: str = ""
+    surface: str = "operator"
+    image_digest: str = ""
 
     @classmethod
     def from_env(cls) -> "GeminiWorkflowSettings":
@@ -67,11 +71,27 @@ class GeminiWorkflowSettings:
             max_output_tokens=_int_env(
                 "AIGC_GEMINI_MAX_OUTPUT_TOKENS", 1200
             ),
-            max_attempts=_int_env("AIGC_GEMINI_MAX_ATTEMPTS", 3),
+            max_attempts=_int_env("AIGC_GEMINI_MAX_ATTEMPTS", 1),
             source_revision=os.environ.get(
                 "AIGC_RELEASE_REVISION", ""
             ).strip().lower(),
             runtime_revision=os.environ.get("K_REVISION", "").strip(),
+            control_dsn=os.environ.get(
+                "AIGC_GEMINI_CONTROL_DSN",
+                "",
+            ).strip(),
+            control_dsn_secret_ref=os.environ.get(
+                "AIGC_GEMINI_CONTROL_DSN_SECRET_REF",
+                "",
+            ).strip(),
+            surface=os.environ.get(
+                "AIGC_SURFACE",
+                "operator",
+            ).strip().lower(),
+            image_digest=os.environ.get(
+                "AIGC_IMAGE_DIGEST",
+                "",
+            ).strip().lower(),
         )
         settings.validate()
         return settings
@@ -121,6 +141,45 @@ class GeminiWorkflowSettings:
             raise GeminiWorkflowConfigurationError(
                 "Production requires the Cloud Run K_REVISION runtime value"
             )
+        if self.environment == "production" and not re.fullmatch(
+            r"sha256:[a-f0-9]{64}",
+            self.image_digest,
+        ):
+            raise GeminiWorkflowConfigurationError(
+                "Production requires AIGC_IMAGE_DIGEST as an immutable "
+                "sha256 image digest"
+            )
+        if (
+            self.environment == "production"
+            and self.location != "northamerica-northeast1"
+        ):
+            raise GeminiWorkflowConfigurationError(
+                "Production requires the currently supported Canadian regional "
+                "Gemini endpoint northamerica-northeast1"
+            )
+        if self.surface not in {"operator", "judge"}:
+            raise GeminiWorkflowConfigurationError(
+                "AIGC_SURFACE must be operator or judge"
+            )
+        if (
+            self.environment == "production"
+            and self.surface == "operator"
+            and not self.control_dsn_secret_ref
+        ):
+            raise GeminiWorkflowConfigurationError(
+                "Production operator surface requires the durable Cloud SQL "
+                "runtime-control Secret Manager reference"
+            )
+        if (
+            self.environment == "production"
+            and self.surface == "operator"
+            and self.control_dsn
+        ):
+            raise GeminiWorkflowConfigurationError(
+                "Production must configure the runtime-control connection by "
+                "exact Secret Manager version reference, not a raw environment "
+                "value"
+            )
         if not 5 <= self.timeout_seconds <= 120:
             raise GeminiWorkflowConfigurationError(
                 "AIGC_GEMINI_TIMEOUT_SECONDS must be between 5 and 120"
@@ -132,4 +191,9 @@ class GeminiWorkflowSettings:
         if not 1 <= self.max_attempts <= 3:
             raise GeminiWorkflowConfigurationError(
                 "AIGC_GEMINI_MAX_ATTEMPTS must be between 1 and 3"
+            )
+        if self.environment == "production" and self.max_attempts != 1:
+            raise GeminiWorkflowConfigurationError(
+                "Production permits exactly one provider transport attempt so "
+                "the emergency-stop epoch covers every dispatch"
             )

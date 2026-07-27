@@ -140,6 +140,7 @@ def _operator_identity_from_request(
     session_identity = _identity_from_session_cookie(
         request.cookies.get(SESSION_COOKIE_NAME, ""),
         expected_token,
+        subject_key,
     )
     if session_identity is not None:
         return session_identity
@@ -151,6 +152,7 @@ def _operator_identity_from_request(
             or "unlabeled-api-operator"
         )
         return OperatorIdentity(
+            principal_id=_shared_credential_principal(subject_key),
             subject_sha256=_subject_hash(label, subject_key),
             auth_method="shared_token_header",
             identity_assurance="shared_credential_holder",
@@ -174,6 +176,7 @@ def _operator_identity_from_request(
             username, provided = "local-operator", decoded
         if provided and hmac.compare_digest(provided, expected_token):
             return OperatorIdentity(
+                principal_id=_shared_credential_principal(subject_key),
                 subject_sha256=_subject_hash(
                     username or "local-operator",
                     subject_key,
@@ -190,6 +193,7 @@ def _operator_identity_from_request(
             or "local-bearer-operator"
         )
         return OperatorIdentity(
+            principal_id=_shared_credential_principal(subject_key),
             subject_sha256=_subject_hash(label, subject_key),
             auth_method="local_authorization_fallback",
             identity_assurance="shared_credential_holder",
@@ -219,12 +223,21 @@ def _subject_hash(label: str, subject_key: str) -> str:
     ).hexdigest()
 
 
+def _shared_credential_principal(subject_key: str) -> str:
+    return hmac.new(
+        subject_key.encode("utf-8"),
+        b"aigc/shared-operator-principal/v1",
+        hashlib.sha256,
+    ).hexdigest()
+
+
 def _session_cookie(identity: OperatorIdentity, secret: str) -> str:
     expires_at = int(time.time()) + SESSION_TTL_SECONDS
     payload = json.dumps(
         {
             "exp": expires_at,
             "sub": identity.subject_sha256,
+            "pid": identity.stable_principal_id,
         },
         sort_keys=True,
         separators=(",", ":"),
@@ -241,6 +254,7 @@ def _session_cookie(identity: OperatorIdentity, secret: str) -> str:
 def _identity_from_session_cookie(
     value: str,
     secret: str,
+    subject_key: str,
 ) -> OperatorIdentity | None:
     try:
         encoded, supplied_signature = value.split(".", 1)
@@ -259,6 +273,7 @@ def _identity_from_session_cookie(
             return None
         subject = str(payload["sub"])
         return OperatorIdentity(
+            principal_id=_shared_credential_principal(subject_key),
             subject_sha256=subject,
             auth_method="shared_token_session",
             identity_assurance="operator_attestation",
@@ -312,6 +327,7 @@ def create_session(request: Request, session: SessionRequest) -> JSONResponse:
     if not hmac.compare_digest(session.token, expected):
         raise HTTPException(status_code=401, detail="Operator login failed.")
     identity = OperatorIdentity(
+        principal_id=_shared_credential_principal(subject_key),
         subject_sha256=_subject_hash(session.operator_label, subject_key),
         auth_method="shared_token_session",
         identity_assurance="operator_attestation",

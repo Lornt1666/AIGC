@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "surface": "aigc-gemini-only",
+  "server": {
+    "workers": 1,
+    "concurrency_limit": 8,
+    "keep_alive_seconds": 5
+  },
+  "readiness": {
+    "cache_ttl_seconds": 10,
+    "probe_timeout_seconds": 5,
+    "required_probes": [
+      "configuration",
+      "application_secrets",
+      "runtime_limits",
+      "gcs_evidence_read",
+      "runtime_control_database",
+      "vertex_model_metadata"
+    ]
+  },
+  "security": {
+    "legacy_routes_allowed": false,
+    "generative_readiness_probe_allowed": false,
+    "external_business_action_allowed": false,
+    "provider_transport_attempts": 1
+  }
+}

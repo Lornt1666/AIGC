@@ -3,13 +3,18 @@ name: AIGC CI
 on:
   push:
     branches:
-      - "**"
+      - main
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
   contents: read
+
+concurrency:
+  group: aigc-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   validate:
@@ -30,7 +35,7 @@ jobs:
           terraform_wrapper: false
 
       - name: Install dependencies
-        run: python -m pip install -r requirements.txt
+        run: python -m pip install -r requirements.txt -r requirements-gemini.txt
 
       - name: Validate contracts
         run: python src/aigc.py validate

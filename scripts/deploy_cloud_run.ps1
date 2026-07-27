@@ -145,8 +145,8 @@ gcloud run deploy $ServiceName `
     --max-instances $DeploymentBaseline.runtime.max_instances `
     --concurrency $DeploymentBaseline.runtime.concurrency `
     --timeout $DeploymentBaseline.runtime.request_timeout_seconds `
-    --set-env-vars "AIGC_ENV=production,PORT=$($DeploymentBaseline.runtime.port),AIGC_RELEASE_REVISION=$ReleaseRevision,AIGC_GEMINI_ENABLED=true,GOOGLE_CLOUD_PROJECT=$ProjectId,GOOGLE_CLOUD_LOCATION=$VertexLocation,AIGC_GEMINI_MODEL=$GeminiModel,AIGC_GEMINI_EVIDENCE_BACKEND=gcs,AIGC_GEMINI_EVIDENCE_BUCKET=$EvidenceBucket,AIGC_GEMINI_EVIDENCE_PREFIX=product-evidence/gemini" `
+    --set-env-vars "AIGC_ENV=production,PORT=$($DeploymentBaseline.runtime.port),AIGC_RELEASE_REVISION=$ReleaseRevision,AIGC_GEMINI_ENABLED=false,GOOGLE_CLOUD_PROJECT=$ProjectId,GOOGLE_CLOUD_LOCATION=$VertexLocation,AIGC_GEMINI_MODEL=$GeminiModel,AIGC_GEMINI_EVIDENCE_BACKEND=gcs,AIGC_GEMINI_EVIDENCE_BUCKET=$EvidenceBucket,AIGC_GEMINI_EVIDENCE_PREFIX=product-evidence/gemini" `
     --set-secrets "AIGC_COMMAND_CENTER_TOKEN=$CommandCenterTokenSecret`:$CommandCenterTokenSecretVersion,AIGC_OPERATOR_SUBJECT_KEY=$OperatorSubjectKeySecret`:$OperatorSubjectKeySecretVersion"
 Assert-NativeSuccess "Deploy Cloud Run release"
 
-Write-Host "Deployment command completed only after repository authority and exact-target permit checks, with authenticated invoker, dedicated service identity, immutable Artifact Registry digest $ImageDigest, exact release revision, bounded scaling, Vertex AI Gemini configuration, durable evidence storage, and pinned command-token and operator-subject-key Secret Manager versions."
+Write-Host "Legacy command-center deployment completed with governed Gemini disabled. Gemini must be deployed only through the isolated, permit-bound staging process in scripts/deploy_gemini_staging.py."

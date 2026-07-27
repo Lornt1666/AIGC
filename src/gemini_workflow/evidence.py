@@ -5,8 +5,10 @@ import hashlib
 import json
 from pathlib import Path
 import threading
-from typing import Any, Protocol
+from typing import Any, Literal, Protocol
 import uuid
+
+from pydantic import BaseModel, ConfigDict, Field
 
 from .models import WorkflowRecord
 
@@ -19,9 +21,46 @@ class EvidenceConflictError(EvidenceStoreError):
     """Raised when a single-use evidence transition already exists."""
 
 
+class EvidenceWriteReceipt(BaseModel):
+    """Storage-location receipt; never contains a signed or public URL."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    backend: Literal["gcs", "jsonl_test"]
+    object_uri: str | None = None
+    generation: int | None = Field(default=None, gt=0)
+    metageneration: int | None = Field(default=None, gt=0)
+    etag: str | None = None
+    crc32c: str | None = None
+    record_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+
+
+class StoredWorkflowEvent(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    record: WorkflowRecord
+    receipt: EvidenceWriteReceipt
+
+
 class EvidenceStore(Protocol):
     def append(self, event: dict[str, Any]) -> WorkflowRecord: ...
     def append_operator_decision(self, event: dict[str, Any]) -> WorkflowRecord: ...
+    def append_with_receipt(
+        self,
+        event: dict[str, Any],
+    ) -> StoredWorkflowEvent: ...
+    def append_operator_decision_with_receipt(
+        self,
+        event: dict[str, Any],
+    ) -> StoredWorkflowEvent: ...
+    def event_by_receipt(
+        self,
+        *,
+        run_id: str,
+        event_id: str,
+        object_uri: str | None,
+        generation: int | None,
+    ) -> WorkflowRecord: ...
     def events_for_run(self, run_id: str) -> list[WorkflowRecord]: ...
 
 
@@ -66,6 +105,12 @@ class JsonlEvidenceStore:
         self._lock = threading.Lock()
 
     def append(self, event: dict[str, Any]) -> WorkflowRecord:
+        return self.append_with_receipt(event).record
+
+    def append_with_receipt(
+        self,
+        event: dict[str, Any],
+    ) -> StoredWorkflowEvent:
         record = finalize_event(event)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         line = record.model_dump_json() + "\n"
@@ -73,9 +118,21 @@ class JsonlEvidenceStore:
             with self.path.open("a", encoding="utf-8") as handle:
                 handle.write(line)
                 handle.flush()
-        return record
+        return StoredWorkflowEvent(
+            record=record,
+            receipt=EvidenceWriteReceipt(
+                backend="jsonl_test",
+                record_sha256=record.record_sha256,
+            ),
+        )
 
     def append_operator_decision(self, event: dict[str, Any]) -> WorkflowRecord:
+        return self.append_operator_decision_with_receipt(event).record
+
+    def append_operator_decision_with_receipt(
+        self,
+        event: dict[str, Any],
+    ) -> StoredWorkflowEvent:
         record = finalize_event(event)
         if record.event_type != "operator_decision":
             raise EvidenceStoreError(
@@ -95,7 +152,13 @@ class JsonlEvidenceStore:
             with self.path.open("a", encoding="utf-8") as handle:
                 handle.write(record.model_dump_json() + "\n")
                 handle.flush()
-        return record
+        return StoredWorkflowEvent(
+            record=record,
+            receipt=EvidenceWriteReceipt(
+                backend="jsonl_test",
+                record_sha256=record.record_sha256,
+            ),
+        )
 
     def events_for_run(self, run_id: str) -> list[WorkflowRecord]:
         with self._lock:
@@ -104,6 +167,26 @@ class JsonlEvidenceStore:
             [item for item in records if item.run_id == run_id],
             key=lambda item: item.created_at,
         )
+
+    def event_by_receipt(
+        self,
+        *,
+        run_id: str,
+        event_id: str,
+        object_uri: str | None,
+        generation: int | None,
+    ) -> WorkflowRecord:
+        if object_uri is not None or generation is not None:
+            raise EvidenceStoreError(
+                "JSONL test evidence must not claim a GCS receipt"
+            )
+        records = self.events_for_run(run_id)
+        matches = [item for item in records if item.event_id == event_id]
+        if len(matches) != 1:
+            raise EvidenceStoreError(
+                "Exact JSONL evidence event could not be resolved"
+            )
+        return matches[0]
 
     def _read_records_unlocked(self) -> list[WorkflowRecord]:
         if not self.path.exists():
@@ -149,24 +232,36 @@ class GcsEvidenceStore:
         return self._client
 
     def append(self, event: dict[str, Any]) -> WorkflowRecord:
+        return self.append_with_receipt(event).record
+
+    def append_with_receipt(
+        self,
+        event: dict[str, Any],
+    ) -> StoredWorkflowEvent:
         record = finalize_event(event)
         safe_time = record.created_at.replace(":", "-")
         object_name = (
             f"{self.prefix}/{record.run_id}/"
             f"{safe_time}-{record.event_id}.json"
         )
-        self._upload_record(record, object_name)
-        return record
+        receipt = self._upload_record(record, object_name)
+        return StoredWorkflowEvent(record=record, receipt=receipt)
 
     def append_operator_decision(self, event: dict[str, Any]) -> WorkflowRecord:
+        return self.append_operator_decision_with_receipt(event).record
+
+    def append_operator_decision_with_receipt(
+        self,
+        event: dict[str, Any],
+    ) -> StoredWorkflowEvent:
         record = finalize_event(event)
         if record.event_type != "operator_decision":
             raise EvidenceStoreError(
                 "append_operator_decision accepts only operator-decision events"
             )
         object_name = f"{self.prefix}/{record.run_id}/operator-decision.json"
-        self._upload_record(record, object_name, single_use=True)
-        return record
+        receipt = self._upload_record(record, object_name, single_use=True)
+        return StoredWorkflowEvent(record=record, receipt=receipt)
 
     def _upload_record(
         self,
@@ -174,7 +269,7 @@ class GcsEvidenceStore:
         object_name: str,
         *,
         single_use: bool = False,
-    ) -> None:
+    ) -> EvidenceWriteReceipt:
         try:
             blob = self._get_client().bucket(self.bucket_name).blob(object_name)
             blob.upload_from_string(
@@ -182,7 +277,36 @@ class GcsEvidenceStore:
                 content_type="application/json",
                 if_generation_match=0,
             )
+            generation = _positive_int(getattr(blob, "generation", None))
+            metageneration = _positive_int(
+                getattr(blob, "metageneration", None)
+            )
+            if generation is None:
+                raise EvidenceStoreError(
+                    "Cloud Storage did not return an object generation receipt"
+                )
+            object_uri = f"gs://{self.bucket_name}/{object_name}"
+            expected_prefix = (
+                f"gs://{self.bucket_name}/{self.prefix}/"
+                if self.prefix
+                else f"gs://{self.bucket_name}/"
+            )
+            if not object_uri.startswith(expected_prefix):
+                raise EvidenceStoreError(
+                    "Cloud Storage evidence receipt escaped its configured prefix"
+                )
+            return EvidenceWriteReceipt(
+                backend="gcs",
+                object_uri=object_uri,
+                generation=generation,
+                metageneration=metageneration,
+                etag=_optional_text(getattr(blob, "etag", None)),
+                crc32c=_optional_text(getattr(blob, "crc32c", None)),
+                record_sha256=record.record_sha256,
+            )
         except Exception as exc:
+            if isinstance(exc, EvidenceStoreError):
+                raise
             if single_use and type(exc).__name__ in {
                 "Conflict",
                 "PreconditionFailed",
@@ -215,3 +339,82 @@ class GcsEvidenceStore:
             if canonical_hash(raw) != expected:
                 raise EvidenceStoreError("Evidence record integrity check failed")
         return sorted(records, key=lambda item: item.created_at)
+
+    def event_by_receipt(
+        self,
+        *,
+        run_id: str,
+        event_id: str,
+        object_uri: str | None,
+        generation: int | None,
+    ) -> WorkflowRecord:
+        if not object_uri or generation is None or generation <= 0:
+            raise EvidenceStoreError(
+                "GCS evidence requires an exact object URI and generation"
+            )
+        expected_prefix = (
+            f"gs://{self.bucket_name}/{self.prefix}/"
+            if self.prefix
+            else f"gs://{self.bucket_name}/"
+        )
+        if (
+            not object_uri.startswith(expected_prefix)
+            or "?" in object_uri
+            or "#" in object_uri
+        ):
+            raise EvidenceStoreError(
+                "GCS evidence receipt escaped its configured bucket or prefix"
+            )
+        object_name = object_uri.removeprefix(
+            f"gs://{self.bucket_name}/"
+        )
+        expected_run_prefix = f"{self.prefix}/{run_id}/"
+        if not object_name.startswith(expected_run_prefix):
+            raise EvidenceStoreError(
+                "GCS evidence receipt does not match the requested run"
+            )
+        try:
+            blob = self._get_client().bucket(self.bucket_name).blob(
+                object_name,
+                generation=generation,
+            )
+            blob.reload(if_generation_match=generation)
+            if int(getattr(blob, "generation", 0)) != generation:
+                raise EvidenceStoreError(
+                    "GCS evidence generation does not match its receipt"
+                )
+            record = WorkflowRecord.model_validate_json(
+                blob.download_as_text(
+                    if_generation_match=generation,
+                    checksum="crc32c",
+                )
+            )
+        except EvidenceStoreError:
+            raise
+        except Exception as exc:
+            raise EvidenceStoreError(
+                f"Generation-pinned evidence read failed: {type(exc).__name__}"
+            ) from exc
+        raw = record.model_dump(mode="json")
+        expected_hash = raw.pop("record_sha256")
+        if canonical_hash(raw) != expected_hash:
+            raise EvidenceStoreError("Evidence record integrity check failed")
+        if record.run_id != run_id or record.event_id != event_id:
+            raise EvidenceStoreError(
+                "Generation-pinned evidence identity does not match"
+            )
+        return record
+
+
+def _positive_int(value: Any) -> int | None:
+    if value is None:
+        return None
+    parsed = int(value)
+    return parsed if parsed > 0 else None
+
+
+def _optional_text(value: Any) -> str | None:
+    if value is None:
+        return None
+    normalized = str(value).strip()
+    return normalized or None

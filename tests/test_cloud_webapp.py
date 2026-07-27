@@ -272,7 +272,8 @@ def test_deployment_defaults_require_private_auth_boundary() -> None:
     assert "AIGC_COMMAND_CENTER_TOKEN" in deploy_script
     assert "AIGC_OPERATOR_SUBJECT_KEY" in deploy_script
     assert "OperatorSubjectKeySecretVersion" in deploy_script
-    assert "AIGC_GEMINI_ENABLED=true" in deploy_script
+    assert "AIGC_GEMINI_ENABLED=false" in deploy_script
+    assert "AIGC_GEMINI_ENABLED=true" not in deploy_script
     assert "AIGC_GEMINI_EVIDENCE_BACKEND=gcs" in deploy_script
     assert "--service-account" in deploy_script
     assert "docker.pkg.dev" in deploy_script
