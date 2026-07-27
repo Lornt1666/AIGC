@@ -4,6 +4,21 @@ Copyright (c) 2026 Justice Gray Maciocha. All Rights Reserved.
 
 This project implements the internal-only AIGC MVP kernel.
 
+## Governed Gemini opportunity workflow
+
+The authenticated command center includes an optional Vertex AI Gemini
+opportunity-assessment path. It redacts common sensitive strings, requests a
+strict structured assessment with input evidence pointers, applies
+deterministic policy, records write-once evidence, and requires exactly one
+human approve, deny, or revise decision. Approval is internal-use-only and
+never authorizes an external business action.
+
+The integration is disabled until an operator supplies exact Google Cloud,
+model, service-identity, and durable-evidence configuration. Offline CI uses a
+named stub and cannot be represented as a live Gemini call. See
+`docs/DEVPOST_GEMINI_WORKFLOW.md` for the API, deployment prerequisites, and
+claim boundaries.
+
 Phase 2 is a read-only opportunity radar. It reads approved API/RSS/public feed sources, normalizes records, classifies them, filters unsafe targets, scores radar fit, and writes an opportunity queue.
 
 Phase 3 is an internal ology assessment engine. It reads the Phase 2 queue and produces assessment dossiers. It does not apply, message, bid, submit, use credentials, or contact employers.
