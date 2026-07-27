@@ -1,9 +1,6 @@
 name: AIGC CI
 
 on:
-  push:
-    branches:
-      - "**"
   pull_request:
     branches:
       - main
@@ -46,7 +43,7 @@ jobs:
       - name: Scan committed content for secret-like content
         run: >
           python src/security/redaction_scanner.py
-          --paths src scripts config docs governance README.md AGENTS.md AIGC_MASTER_PROMPT.md OMEGA_X_CONSTITUTION.md schemas tests reports Dockerfile render.yaml fly.toml Procfile
+          --paths src scripts config docs governance "product evidence" README.md AGENTS.md AIGC_MASTER_PROMPT.md OMEGA_X_CONSTITUTION.md schemas tests reports Dockerfile .dockerignore render.yaml fly.toml Procfile
 
       - name: Run procurement smoke stages
         run: |
@@ -67,6 +64,18 @@ jobs:
         with:
           name: provider-discovery-simulation-${{ github.sha }}
           path: reports/artifacts/provider_discovery_simulation
+          if-no-files-found: error
+
+      - name: Run governed Gemini workflow offline smoke
+        run: |
+          python scripts/run_gemini_workflow_smoke.py \
+            --output-dir reports/artifacts/gemini_workflow_smoke
+
+      - name: Upload governed Gemini workflow smoke
+        uses: actions/upload-artifact@v4
+        with:
+          name: gemini-workflow-offline-smoke-${{ github.sha }}
+          path: reports/artifacts/gemini_workflow_smoke
           if-no-files-found: error
 
       - name: Validate inert Terraform staging foundation
