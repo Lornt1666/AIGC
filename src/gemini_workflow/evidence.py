@@ -21,7 +21,7 @@ class EvidenceConflictError(EvidenceStoreError):
 
 class EvidenceStore(Protocol):
     def append(self, event: dict[str, Any]) -> WorkflowRecord: ...
-    def append_human_decision(self, event: dict[str, Any]) -> WorkflowRecord: ...
+    def append_operator_decision(self, event: dict[str, Any]) -> WorkflowRecord: ...
     def events_for_run(self, run_id: str) -> list[WorkflowRecord]: ...
 
 
@@ -49,6 +49,7 @@ def finalize_event(event: dict[str, Any]) -> WorkflowRecord:
         )
     payload.setdefault("event_id", f"AIGC-GEMINI-EVENT-{uuid.uuid4()}")
     payload.setdefault("created_at", utc_now())
+    payload.setdefault("model_api_call_status", "not_attempted")
     payload.setdefault("model_api_call_performed", False)
     payload["external_business_action_performed"] = False
     payload["external_action_performed"] = False
@@ -74,22 +75,22 @@ class JsonlEvidenceStore:
                 handle.flush()
         return record
 
-    def append_human_decision(self, event: dict[str, Any]) -> WorkflowRecord:
+    def append_operator_decision(self, event: dict[str, Any]) -> WorkflowRecord:
         record = finalize_event(event)
-        if record.event_type != "human_decision":
+        if record.event_type != "operator_decision":
             raise EvidenceStoreError(
-                "append_human_decision accepts only human-decision events"
+                "append_operator_decision accepts only operator-decision events"
             )
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with self._lock:
             records = self._read_records_unlocked()
             if any(
                 item.run_id == record.run_id
-                and item.event_type == "human_decision"
+                and item.event_type == "operator_decision"
                 for item in records
             ):
                 raise EvidenceConflictError(
-                    "A human decision has already been recorded"
+                    "An operator decision has already been recorded"
                 )
             with self.path.open("a", encoding="utf-8") as handle:
                 handle.write(record.model_dump_json() + "\n")
@@ -157,13 +158,13 @@ class GcsEvidenceStore:
         self._upload_record(record, object_name)
         return record
 
-    def append_human_decision(self, event: dict[str, Any]) -> WorkflowRecord:
+    def append_operator_decision(self, event: dict[str, Any]) -> WorkflowRecord:
         record = finalize_event(event)
-        if record.event_type != "human_decision":
+        if record.event_type != "operator_decision":
             raise EvidenceStoreError(
-                "append_human_decision accepts only human-decision events"
+                "append_operator_decision accepts only operator-decision events"
             )
-        object_name = f"{self.prefix}/{record.run_id}/human-decision.json"
+        object_name = f"{self.prefix}/{record.run_id}/operator-decision.json"
         self._upload_record(record, object_name, single_use=True)
         return record
 
@@ -187,7 +188,7 @@ class GcsEvidenceStore:
                 "PreconditionFailed",
             }:
                 raise EvidenceConflictError(
-                    "A human decision has already been recorded"
+                    "An operator decision has already been recorded"
                 ) from exc
             raise EvidenceStoreError(
                 f"Cloud Storage evidence write failed: {type(exc).__name__}"

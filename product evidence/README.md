@@ -24,11 +24,20 @@ or unredacted model inputs/outputs.
    latency, correlation ID, and `model_api_call_performed: true`.
 4. Redacted opportunity input hash and validated assessment hash.
 5. Deterministic policy outcome.
-6. Human approve, deny, or revise evidence.
+6. Operator approve, deny, or revise attestation, including the keyed,
+   domain-separated subject identifier, authentication method, assessment hash,
+   and release revision. The raw operator label and subject-key pepper are not
+   evidence fields.
 7. `external_business_action_performed: false`. A Gemini API call is a provider
    interaction and must be recorded separately; it is not an external business
    action.
 8. Consent and privacy review for any customer-derived material.
+
+An operator attestation is evidence that a holder of the authenticated
+operator session made the decision. It is not evidence of verified human
+identity unless a separately reviewed identity provider supplies that proof.
+Input evidence pointers are grounded only to operator-supplied fields, not to
+an independently verified external source.
 
 Copy reviewed, redacted evidence here only after it has been verified against
 the durable runtime source. Never describe the offline smoke artifact as live

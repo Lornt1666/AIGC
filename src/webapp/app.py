@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 import base64
+import binascii
+import hashlib
 import hmac
 import json
 import os
 import subprocess
 import sys
 import threading
+import time
 import uuid
 from dataclasses import asdict
 from pathlib import Path
@@ -15,7 +18,7 @@ from urllib.parse import urlsplit
 
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -33,6 +36,7 @@ from src.core.operator_cockpit import (  # noqa: E402
     summarize_authorizations,
 )
 from src.gemini_workflow.api import create_router, safe_status  # noqa: E402
+from src.gemini_workflow.models import OperatorIdentity  # noqa: E402
 
 app = FastAPI(
     title="AIGC Governed Worker Command Center",
@@ -43,11 +47,29 @@ app = FastAPI(
 RUNS: Dict[str, Dict[str, Any]] = {}
 RUN_LOCK = threading.Lock()
 COMMAND_CENTER_TOKEN_ENV = "AIGC_COMMAND_CENTER_TOKEN"
+OPERATOR_SUBJECT_KEY_ENV = "AIGC_OPERATOR_SUBJECT_KEY"
+SESSION_COOKIE_NAME = "aigc_operator_session"
+SESSION_TTL_SECONDS = 3_600
 
 
 class DecisionRequest(BaseModel):
     phrase: str = ""
     revision_instructions: str = ""
+
+
+class SessionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    operator_label: str = Field(min_length=2, max_length=100)
+    token: str = Field(min_length=12, max_length=4_096)
+
+    @field_validator("operator_label")
+    @classmethod
+    def normalize_operator_label(cls, value: str) -> str:
+        normalized = value.strip()
+        if len(normalized) < 2:
+            raise ValueError("operator_label must contain at least 2 characters")
+        return normalized
 
 
 BUSINESS_CYCLE = [
@@ -69,7 +91,7 @@ BUSINESS_CYCLE = [
 ]
 
 
-def require_operator_auth(request: Request) -> bool:
+def require_operator_auth(request: Request) -> OperatorIdentity:
     _require_same_origin_for_mutation(request)
     expected = os.environ.get(COMMAND_CENTER_TOKEN_ENV, "").strip()
     if not expected:
@@ -77,14 +99,22 @@ def require_operator_auth(request: Request) -> bool:
             status_code=503,
             detail=f"{COMMAND_CENTER_TOKEN_ENV} is required before command center access is enabled.",
         )
-    provided = extract_operator_token(request)
-    if not provided or not hmac.compare_digest(provided, expected):
+    subject_key = _operator_subject_key(expected)
+    if subject_key is None:
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                f"{OPERATOR_SUBJECT_KEY_ENV} is required before production "
+                "operator access is enabled."
+            ),
+        )
+    identity = _operator_identity_from_request(request, expected, subject_key)
+    if identity is None:
         raise HTTPException(
             status_code=401,
             detail="Operator authentication required.",
-            headers={"WWW-Authenticate": 'Basic realm="AIGC Command Center"'},
         )
-    return True
+    return identity
 
 
 def _require_same_origin_for_mutation(request: Request) -> None:
@@ -102,36 +132,236 @@ def _require_same_origin_for_mutation(request: Request) -> None:
         )
 
 
-def extract_operator_token(request: Request) -> str:
+def _operator_identity_from_request(
+    request: Request,
+    expected_token: str,
+    subject_key: str,
+) -> OperatorIdentity | None:
+    session_identity = _identity_from_session_cookie(
+        request.cookies.get(SESSION_COOKIE_NAME, ""),
+        expected_token,
+    )
+    if session_identity is not None:
+        return session_identity
+
     header_token = request.headers.get("x-aigc-command-token", "").strip()
-    if header_token:
-        return header_token
+    if header_token and hmac.compare_digest(header_token, expected_token):
+        label = (
+            request.headers.get("x-aigc-operator-label", "").strip()
+            or "unlabeled-api-operator"
+        )
+        return OperatorIdentity(
+            subject_sha256=_subject_hash(label, subject_key),
+            auth_method="shared_token_header",
+            identity_assurance="shared_credential_holder",
+        )
+
+    if os.environ.get("AIGC_ENV", "development").strip().lower() == "production":
+        return None
+
     auth = request.headers.get("authorization", "").strip()
     lower = auth.lower()
     if lower.startswith("bearer "):
-        return auth[7:].strip()
-    if lower.startswith("basic "):
+        provided = auth[7:].strip()
+    elif lower.startswith("basic "):
         try:
             decoded = base64.b64decode(auth[6:].strip()).decode("utf-8")
         except (ValueError, UnicodeDecodeError):
-            return ""
+            return None
         if ":" in decoded:
-            _username, password = decoded.split(":", 1)
-            return password
-        return decoded
-    return ""
+            username, provided = decoded.split(":", 1)
+        else:
+            username, provided = "local-operator", decoded
+        if provided and hmac.compare_digest(provided, expected_token):
+            return OperatorIdentity(
+                subject_sha256=_subject_hash(
+                    username or "local-operator",
+                    subject_key,
+                ),
+                auth_method="local_authorization_fallback",
+                identity_assurance="shared_credential_holder",
+            )
+        return None
+    else:
+        return None
+    if provided and hmac.compare_digest(provided, expected_token):
+        label = (
+            request.headers.get("x-aigc-operator-label", "").strip()
+            or "local-bearer-operator"
+        )
+        return OperatorIdentity(
+            subject_sha256=_subject_hash(label, subject_key),
+            auth_method="local_authorization_fallback",
+            identity_assurance="shared_credential_holder",
+        )
+    return None
+
+
+def _operator_subject_key(command_token: str) -> str | None:
+    configured = os.environ.get(OPERATOR_SUBJECT_KEY_ENV, "").strip()
+    if configured:
+        return configured
+    if os.environ.get("AIGC_ENV", "development").strip().lower() == "production":
+        return None
+    return hmac.new(
+        command_token.encode("utf-8"),
+        b"aigc/local-only/operator-subject-key/v1",
+        hashlib.sha256,
+    ).hexdigest()
+
+
+def _subject_hash(label: str, subject_key: str) -> str:
+    normalized = label.strip().lower().encode("utf-8")
+    return hmac.new(
+        subject_key.encode("utf-8"),
+        b"aigc/operator-subject/v1\0" + normalized,
+        hashlib.sha256,
+    ).hexdigest()
+
+
+def _session_cookie(identity: OperatorIdentity, secret: str) -> str:
+    expires_at = int(time.time()) + SESSION_TTL_SECONDS
+    payload = json.dumps(
+        {
+            "exp": expires_at,
+            "sub": identity.subject_sha256,
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    encoded = base64.urlsafe_b64encode(payload).decode("ascii").rstrip("=")
+    signature = hmac.new(
+        secret.encode("utf-8"),
+        encoded.encode("ascii"),
+        hashlib.sha256,
+    ).hexdigest()
+    return f"{encoded}.{signature}"
+
+
+def _identity_from_session_cookie(
+    value: str,
+    secret: str,
+) -> OperatorIdentity | None:
+    try:
+        encoded, supplied_signature = value.split(".", 1)
+        expected_signature = hmac.new(
+            secret.encode("utf-8"),
+            encoded.encode("ascii"),
+            hashlib.sha256,
+        ).hexdigest()
+        if not hmac.compare_digest(supplied_signature, expected_signature):
+            return None
+        padding = "=" * (-len(encoded) % 4)
+        payload = json.loads(
+            base64.urlsafe_b64decode(encoded + padding).decode("utf-8")
+        )
+        if int(payload["exp"]) < int(time.time()):
+            return None
+        subject = str(payload["sub"])
+        return OperatorIdentity(
+            subject_sha256=subject,
+            auth_method="shared_token_session",
+            identity_assurance="operator_attestation",
+        )
+    except (
+        binascii.Error,
+        KeyError,
+        TypeError,
+        ValueError,
+        json.JSONDecodeError,
+    ):
+        return None
 
 
 app.include_router(create_router(require_operator_auth))
 
 
+@app.get("/api/session")
+def session_status(request: Request) -> Dict[str, Any]:
+    expected = os.environ.get(COMMAND_CENTER_TOKEN_ENV, "").strip()
+    subject_key = _operator_subject_key(expected) if expected else None
+    identity = (
+        _operator_identity_from_request(request, expected, subject_key)
+        if expected and subject_key
+        else None
+    )
+    return {
+        "configured": bool(expected and subject_key),
+        "authenticated": identity is not None,
+        "identity_assurance": (
+            identity.identity_assurance if identity is not None else None
+        ),
+    }
+
+
+@app.post("/api/session")
+def create_session(request: Request, session: SessionRequest) -> JSONResponse:
+    _require_same_origin_for_mutation(request)
+    expected = os.environ.get(COMMAND_CENTER_TOKEN_ENV, "").strip()
+    if not expected:
+        raise HTTPException(
+            status_code=503,
+            detail=f"{COMMAND_CENTER_TOKEN_ENV} is required before login.",
+        )
+    subject_key = _operator_subject_key(expected)
+    if subject_key is None:
+        raise HTTPException(
+            status_code=503,
+            detail=f"{OPERATOR_SUBJECT_KEY_ENV} is required before login.",
+        )
+    if not hmac.compare_digest(session.token, expected):
+        raise HTTPException(status_code=401, detail="Operator login failed.")
+    identity = OperatorIdentity(
+        subject_sha256=_subject_hash(session.operator_label, subject_key),
+        auth_method="shared_token_session",
+        identity_assurance="operator_attestation",
+    )
+    response = JSONResponse(
+        {
+            "authenticated": True,
+            "identity_assurance": identity.identity_assurance,
+        }
+    )
+    response.set_cookie(
+        key=SESSION_COOKIE_NAME,
+        value=_session_cookie(identity, expected),
+        max_age=SESSION_TTL_SECONDS,
+        httponly=True,
+        secure=(
+            os.environ.get("AIGC_ENV", "development").strip().lower()
+            == "production"
+        ),
+        samesite="strict",
+        path="/",
+    )
+    return response
+
+
+@app.post("/api/session/logout")
+def end_session(request: Request) -> JSONResponse:
+    _require_same_origin_for_mutation(request)
+    response = JSONResponse({"authenticated": False})
+    response.delete_cookie(
+        SESSION_COOKIE_NAME,
+        path="/",
+        samesite="strict",
+    )
+    return response
+
+
 @app.get("/health")
 def health() -> Dict[str, Any]:
+    expected = os.environ.get(COMMAND_CENTER_TOKEN_ENV, "").strip()
     return {
         "ok": True,
         "mode": "governed_command_center",
         "auth_required": True,
-        "auth_configured": bool(os.environ.get(COMMAND_CENTER_TOKEN_ENV, "").strip()),
+        "auth_configured": bool(
+            expected and _operator_subject_key(expected)
+        ),
+        "operator_subject_key_configured": bool(
+            os.environ.get(OPERATOR_SUBJECT_KEY_ENV, "").strip()
+        ),
         "gemini_workflow": safe_status(),
     }
 
@@ -224,7 +454,7 @@ def emergency_stop() -> Dict[str, Any]:
     return {"ok": result.returncode == 0, "stdout": result.stdout, "stderr": result.stderr}
 
 
-@app.get("/", response_class=HTMLResponse, dependencies=[Depends(require_operator_auth)])
+@app.get("/", response_class=HTMLResponse)
 def ui() -> str:
     return render_ui()
 
@@ -297,7 +527,18 @@ def render_ui() -> str:
 <body>
   <h1>AIGC Governed Worker Command Center</h1>
   <p>One cloud-launchable command surface for governed business cycles, review packets, and audit-first operations.</p>
-  <p>This command center requires operator authentication. Configure <code>AIGC_COMMAND_CENTER_TOKEN</code> outside Git before use.</p>
+  <p>Cloud Run IAM authenticates access to the private service. A separate short-lived operator session protects application controls without reusing the Cloud Run <code>Authorization</code> header.</p>
+  <div class="card" id="session-card">
+    <h2>Operator Session</h2>
+    <label>Operator label</label>
+    <input id="operator-label" maxlength="100" autocomplete="username" placeholder="Accountable operator label" />
+    <label>Command-center token</label>
+    <input id="operator-token" type="password" maxlength="4096" autocomplete="current-password" placeholder="Loaded from your approved password manager" />
+    <button class="primary" onclick="loginOperator()">START OPERATOR SESSION</button>
+    <p id="session-status">Checking session…</p>
+  </div>
+  <div id="app-shell" style="display:none">
+  <button onclick="logoutOperator()">End Operator Session</button>
   <div class="card">
     <h2>Large Action Button</h2>
     <button class="primary" onclick="runCycle()">RUN FULL GOVERNED BUSINESS CYCLE</button>
@@ -326,11 +567,11 @@ def render_ui() -> str:
     <p id="gemini-status"></p>
     <pre id="gemini-output"></pre>
     <div id="gemini-decision-panel" style="display:none">
-      <label>Human decision reason</label>
-      <textarea id="gemini-decision-reason" placeholder="Document the accountable human reason."></textarea>
+      <label>Operator attestation reason</label>
+      <textarea id="gemini-decision-reason" placeholder="Document the accountable operator reason."></textarea>
       <label>Revision instructions (required only for revise)</label>
       <textarea id="gemini-revision" placeholder="State the exact required revision."></textarea>
-      <button onclick="decideGemini('approve')">Approve Internal Use</button>
+      <button id="gemini-approve" onclick="decideGemini('approve')">Approve Internal Use</button>
       <button onclick="decideGemini('deny')">Deny</button>
       <button onclick="decideGemini('revise')">Request Revision</button>
     </div>
@@ -340,8 +581,50 @@ def render_ui() -> str:
     <button class="danger" onclick="stopNow()">Enable Emergency Stop</button>
     <pre id="stop-output"></pre>
   </div>
+  </div>
 <script>
 let currentGeminiRunId = '';
+async function initializeSession() {{
+  const response = await fetch('/api/session');
+  const data = await response.json();
+  const authenticated = Boolean(data.authenticated);
+  document.getElementById('session-card').style.display =
+    authenticated ? 'none' : 'block';
+  document.getElementById('app-shell').style.display =
+    authenticated ? 'block' : 'none';
+  document.getElementById('session-status').textContent =
+    !data.configured
+      ? 'Operator login is disabled until AIGC_COMMAND_CENTER_TOKEN is configured.'
+      : authenticated
+        ? 'Operator session active.'
+        : 'Enter the approved operator label and command-center token.';
+  if (authenticated) {{
+    await Promise.all([loadReviews(), loadGeminiStatus()]);
+  }}
+}}
+async function loginOperator() {{
+  const response = await fetch('/api/session', {{
+    method: 'POST',
+    headers: {{'Content-Type':'application/json'}},
+    body: JSON.stringify({{
+      operator_label: document.getElementById('operator-label').value,
+      token: document.getElementById('operator-token').value
+    }})
+  }});
+  const data = await response.json();
+  document.getElementById('operator-token').value = '';
+  if (!response.ok) {{
+    document.getElementById('session-status').textContent =
+      data.detail || 'Operator login failed.';
+    return;
+  }}
+  await initializeSession();
+}}
+async function logoutOperator() {{
+  await fetch('/api/session/logout', {{method:'POST'}});
+  currentGeminiRunId = '';
+  await initializeSession();
+}}
 async function runCycle() {{
   const r = await fetch('/api/run', {{method: 'POST'}});
   const data = await r.json();
@@ -463,8 +746,15 @@ async function runGeminiAssessment() {{
     return;
   }}
   currentGeminiRunId = data.run_id;
+  const decisionEligible = [
+    'pending_human_review',
+    'clarification_required',
+    'blocked'
+  ].includes(data.status);
   document.getElementById('gemini-decision-panel').style.display =
-    data.status === 'pending_human_review' ? 'block' : 'none';
+    decisionEligible ? 'block' : 'none';
+  document.getElementById('gemini-approve').disabled =
+    data.status !== 'pending_human_review';
 }}
 async function decideGemini(decision) {{
   if (!currentGeminiRunId) return;
@@ -489,8 +779,7 @@ async function stopNow() {{
   const r = await fetch('/api/emergency-stop', {{method:'POST'}});
   document.getElementById('stop-output').textContent = JSON.stringify(await r.json(), null, 2);
 }}
-loadReviews();
-loadGeminiStatus();
+initializeSession();
 </script>
 </body>
 </html>

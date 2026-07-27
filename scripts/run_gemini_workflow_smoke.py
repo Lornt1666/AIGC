@@ -15,6 +15,7 @@ from src.gemini_workflow.evidence import JsonlEvidenceStore  # noqa: E402
 from src.gemini_workflow.models import (  # noqa: E402
     GeminiAssessment,
     HumanDecisionRequest,
+    OperatorIdentity,
     OpportunityIntake,
 )
 from src.gemini_workflow.provider import StubGeminiProvider  # noqa: E402
@@ -85,6 +86,11 @@ def main() -> int:
                 decision="approve",
                 reason="The synthetic internal draft passed offline review.",
             ),
+            actor=OperatorIdentity(
+                subject_sha256="0" * 64,
+                auth_method="offline_test",
+                identity_assurance="offline_test",
+            ),
         )
         events = [
             item.model_dump(mode="json")
@@ -105,13 +111,16 @@ def main() -> int:
         "live_gemini_call_performed": False,
         "model_api_call_performed": False,
         "external_business_action_performed": False,
-        "human_decision_recorded": decision.status == "human_approve",
+        "operator_attestation_recorded": (
+            decision.status == "operator_approve"
+        ),
         "event_count": len(events),
         "contracts_verified": [
             "structured_assessment",
             "input_evidence_pointers",
             "deterministic_policy",
-            "human_decision",
+            "pre_call_audit_event",
+            "operator_attestation",
             "record_integrity_hash",
         ],
     }

@@ -9,21 +9,32 @@ requires an authorized deployment and retained runtime receipts.
 
 ## Workflow
 
-1. An authenticated operator submits a permitted opportunity through the
-   command center.
-2. The application redacts common contact and secret-like strings before
-   building the prompt.
-3. The deployed application calls Gemini through Vertex AI using its Cloud Run
+1. Cloud Run IAM authenticates access to the private service. The application
+   then issues a signed, HTTP-only operator session after a separate
+   command-token check, so the app does not reuse Cloud Run's `Authorization`
+   header.
+2. An authenticated operator submits a permitted opportunity. URL credentials
+   and recognized credential patterns—including incomplete private-key
+   blocks—fail closed; common contact data is redacted, and only the
+   credential-free source origin is sent or stored. Pattern detection is a
+   defense-in-depth control, not a guarantee that arbitrary secrets can be
+   identified.
+3. The application writes a `workflow_started` audit event before attempting a
+   provider call. If this write fails, Gemini is not called.
+4. The deployed application calls Gemini through Vertex AI using its Cloud Run
    service identity and Application Default Credentials. No API key is stored.
-4. Gemini returns a Pydantic-constrained assessment with pointers to the exact
+5. Gemini returns a Pydantic-constrained assessment with pointers to the exact
    supplied fields used as evidence.
-5. Deterministic policy validates those pointers and evaluates AI permission,
+6. Deterministic policy validates those pointers and evaluates AI permission,
    disclosure, injection signals, risk, score, and the mandatory human-review
    flag.
-6. The application records a write-once-at-creation execution event with an
-   integrity hash.
-7. The operator records exactly one approve, deny, or revise decision.
-8. Approval authorizes internal use only. It never performs an external
+7. The application records a create-only success or failure event with an
+   integrity hash and explicit call status: not attempted, confirmed, or
+   attempted with outcome unknown.
+8. The authenticated operator records exactly one approve, deny, or revise
+   attestation. Approval is available only after the deterministic policy
+   permits an internal draft; deny/revise remain available for policy findings.
+9. Approval authorizes internal use only. It never performs an external
    business action.
 
 ## Required environment
@@ -31,6 +42,8 @@ requires an authorized deployment and retained runtime receipts.
 | Variable | Requirement |
 |---|---|
 | `AIGC_COMMAND_CENTER_TOKEN` | Secret Manager reference used by the existing operator boundary |
+| `AIGC_OPERATOR_SUBJECT_KEY` | Separate Secret Manager pepper used for domain-separated HMAC operator identifiers; required in production |
+| `AIGC_RELEASE_REVISION` | Exact 40-character Git SHA embedded in runtime evidence |
 | `AIGC_GEMINI_ENABLED` | Must be exactly enabled only after deployment approval |
 | `GOOGLE_CLOUD_PROJECT` | Exact Google Cloud project ID |
 | `GOOGLE_CLOUD_LOCATION` | Approved Vertex AI location compatible with the selected model |
@@ -42,6 +55,7 @@ requires an authorized deployment and retained runtime receipts.
 | `AIGC_GEMINI_MAX_OUTPUT_TOKENS` | Bounded output budget; defaults to `1200` |
 | `AIGC_GEMINI_MAX_ATTEMPTS` | Total attempts, including the first; maximum `3` |
 | `AIGC_ENV` | `production` on Cloud Run |
+| `K_REVISION` | Cloud Run-provided runtime revision; required in production |
 
 Production refuses the JSONL evidence backend because Cloud Run's writable
 filesystem is ephemeral.
@@ -53,8 +67,12 @@ prediction permission and bucket-scoped permissions needed to create, list, and
 read evidence objects. Do not create or commit a service-account key file.
 
 The deployment script deliberately requires the project, service account,
-regions, model, evidence bucket, Artifact Registry repository, and pinned
-secret version as operator inputs. The registry repository, evidence bucket,
+regions, model, evidence bucket, Artifact Registry repository, exact Git
+revision, and pinned secret versions as operator inputs. It tags the build with
+that revision, resolves the registry digest, and deploys the digest rather than
+a mutable tag. Before building, it verifies that the exact revision is checked
+out, that the tracked and untracked working tree is clean, and that every native
+Git/Google Cloud command succeeds. The registry repository, evidence bucket,
 service account, IAM bindings, and secret version must already exist and must
 be reviewed before use. Running the script is an external action and requires
 explicit authorization.
@@ -65,12 +83,18 @@ starting limits, not proof of load capacity.
 
 ## API
 
+- `GET /api/session`
+- `POST /api/session`
+- `POST /api/session/logout`
 - `GET /api/gemini/status`
 - `POST /api/gemini/workflows`
 - `GET /api/gemini/workflows/{run_id}`
 - `POST /api/gemini/workflows/{run_id}/decision`
 
-All routes inherit the existing command-center authentication dependency.
+Gemini routes require either the signed operator-session cookie or the
+application-specific `X-AIGC-Command-Token` header. In production,
+`Authorization` is reserved for Cloud Run IAM. Basic/Bearer application-token
+fallback exists only in non-production local development.
 
 Example intake:
 
@@ -94,7 +118,8 @@ python scripts/run_gemini_workflow_smoke.py
 
 The smoke script uses an explicit offline stub and writes a summary stating
 separately that no model API call, deployment, or external business action
-occurred.
+occurred. It records three events: workflow start, structured result, and
+operator attestation.
 
 ## Production acceptance evidence
 
@@ -106,11 +131,22 @@ Do not update Devpost capability claims until all of the following are captured:
   `model_api_call_performed: true` and `live_model_call: true`;
 - model usage and latency metadata;
 - deterministic policy result;
-- human decision event;
+- operator attestation bound to the assessment hash and release revision;
 - durable Cloud Storage evidence object identifiers;
 - redacted screenshot or dashboard view;
 - exact Git revision and passing CI;
 - customer consent where a real customer input is used.
+
+The shared-token session proves possession of the operator credential and
+records a domain-separated HMAC subject identifier using a dedicated production
+pepper. The raw label and pepper are not written to workflow evidence. This
+does not independently prove that the actor was human. Do not describe the event
+as verified human identity without a separately evidenced identity provider and
+trusted principal.
+
+Model evidence pointers prove only that the cited input field existed. The
+input itself is operator-supplied and not externally verified; structured
+output does not prove the truth of the source material.
 
 The generation-time `if_generation_match=0` precondition prevents accidental
 overwrite of an existing event object. A production claim of retention,

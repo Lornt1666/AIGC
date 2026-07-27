@@ -17,6 +17,17 @@ from .settings import GeminiWorkflowSettings
 class GeminiProviderError(RuntimeError):
     """Raised when the Gemini provider cannot return a validated assessment."""
 
+    def __init__(
+        self,
+        message: str,
+        *,
+        model_api_call_status: str = "not_attempted",
+        model_api_call_performed: bool | None = False,
+    ) -> None:
+        super().__init__(message)
+        self.model_api_call_status = model_api_call_status
+        self.model_api_call_performed = model_api_call_performed
+
 
 class AssessmentProvider(Protocol):
     def assess(
@@ -155,14 +166,18 @@ class VertexGeminiProvider:
             )
         except Exception as exc:
             raise GeminiProviderError(
-                f"Vertex AI Gemini request failed: {type(exc).__name__}"
+                f"Vertex AI Gemini request failed: {type(exc).__name__}",
+                model_api_call_status="attempted_outcome_unknown",
+                model_api_call_performed=None,
             ) from exc
         latency_ms = max(0, int((self._clock() - started) * 1000))
 
         candidates = getattr(response, "candidates", None) or []
         if not candidates:
             raise GeminiProviderError(
-                "Gemini returned no candidate; the workflow failed closed"
+                "Gemini returned no candidate; the workflow failed closed",
+                model_api_call_status="confirmed",
+                model_api_call_performed=True,
             )
         raw_finish_reason = getattr(candidates[0], "finish_reason", None)
         finish_reason = (
@@ -172,7 +187,9 @@ class VertexGeminiProvider:
         if finish_reason != "STOP":
             raise GeminiProviderError(
                 "Gemini returned a non-success finish reason; "
-                "the workflow failed closed"
+                "the workflow failed closed",
+                model_api_call_status="confirmed",
+                model_api_call_performed=True,
             )
 
         try:
@@ -185,7 +202,9 @@ class VertexGeminiProvider:
                 assessment = GeminiAssessment.model_validate_json(response.text)
         except Exception as exc:
             raise GeminiProviderError(
-                "Gemini returned output that failed the assessment contract"
+                "Gemini returned output that failed the assessment contract",
+                model_api_call_status="confirmed",
+                model_api_call_performed=True,
             ) from exc
 
         usage = getattr(response, "usage_metadata", None)

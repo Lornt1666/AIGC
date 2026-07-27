@@ -17,6 +17,13 @@ class OpportunityIntake(StrictModel):
     ai_assistance_permitted: bool
     ai_disclosure_required: bool = True
 
+    @field_validator("source_url")
+    @classmethod
+    def reject_url_credentials(cls, value: HttpUrl) -> HttpUrl:
+        if value.username or value.password:
+            raise ValueError("source_url must not contain user credentials")
+        return value
+
     @field_validator("constraints")
     @classmethod
     def validate_constraints(cls, values: list[str]) -> list[str]:
@@ -90,6 +97,16 @@ class HumanDecisionRequest(StrictModel):
     reason: str = Field(min_length=10, max_length=2_000)
     revision_instructions: str = Field(default="", max_length=4_000)
 
+    @field_validator("reason")
+    @classmethod
+    def normalize_reason(cls, value: str) -> str:
+        normalized = value.strip()
+        if len(normalized) < 10:
+            raise ValueError(
+                "reason must contain at least 10 non-whitespace characters"
+            )
+        return normalized
+
     @field_validator("revision_instructions")
     @classmethod
     def strip_revision_instructions(cls, value: str) -> str:
@@ -100,15 +117,40 @@ class HumanDecisionRequest(StrictModel):
             raise ValueError("revision_instructions is required for a revise decision")
 
 
+class OperatorIdentity(StrictModel):
+    subject_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    auth_method: Literal[
+        "shared_token_session",
+        "shared_token_header",
+        "local_authorization_fallback",
+        "offline_test",
+    ]
+    identity_assurance: Literal[
+        "operator_attestation",
+        "shared_credential_holder",
+        "offline_test",
+    ]
+
+
 class WorkflowRecord(StrictModel):
     event_id: str
-    event_type: Literal["gemini_execution", "human_decision"]
+    event_type: Literal[
+        "workflow_started",
+        "gemini_execution",
+        "gemini_failure",
+        "operator_decision",
+    ]
     run_id: str
     correlation_id: str
     created_at: str
     status: str
     payload: dict[str, Any]
-    model_api_call_performed: bool = False
+    model_api_call_status: Literal[
+        "not_attempted",
+        "attempted_outcome_unknown",
+        "confirmed",
+    ] = "not_attempted"
+    model_api_call_performed: bool | None = False
     external_business_action_performed: bool = False
     external_action_performed: bool = False
     record_sha256: str

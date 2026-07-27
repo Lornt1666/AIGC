@@ -7,11 +7,13 @@ This project implements the internal-only AIGC MVP kernel.
 ## Governed Gemini opportunity workflow
 
 The authenticated command center includes an optional Vertex AI Gemini
-opportunity-assessment path. It redacts common sensitive strings, requests a
-strict structured assessment with input evidence pointers, applies
-deterministic policy, records write-once evidence, and requires exactly one
-human approve, deny, or revise decision. Approval is internal-use-only and
-never authorizes an external business action.
+opportunity-assessment path. It rejects recognized credential patterns, redacts
+common contact data, requests a strict structured assessment with input evidence
+pointers, applies deterministic policy, records a pre-call audit event plus a
+create-only outcome, and permits exactly one authenticated operator approve,
+deny, or revise attestation. Production operator identifiers use a separate
+keyed, domain-separated digest. Approval is internal-use-only and never
+authorizes an external business action.
 
 The integration is disabled until an operator supplies exact Google Cloud,
 model, service-identity, and durable-evidence configuration. Offline CI uses a

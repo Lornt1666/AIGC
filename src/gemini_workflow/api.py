@@ -6,7 +6,7 @@ from typing import Any, Callable
 from fastapi import APIRouter, Depends, HTTPException
 
 from .evidence import EvidenceStoreError, GcsEvidenceStore, JsonlEvidenceStore
-from .models import HumanDecisionRequest, OpportunityIntake
+from .models import HumanDecisionRequest, OperatorIdentity, OpportunityIntake
 from .provider import GeminiProviderError, VertexGeminiProvider
 from .service import GeminiWorkflowService, GeminiWorkflowStateError
 from .settings import (
@@ -43,6 +43,8 @@ def build_live_service() -> GeminiWorkflowService:
     return GeminiWorkflowService(
         provider=VertexGeminiProvider(settings),
         evidence_store=store,
+        source_revision=settings.source_revision,
+        runtime_revision=settings.runtime_revision,
     )
 
 
@@ -74,15 +76,19 @@ def create_router(auth_dependency: Callable[..., Any]) -> APIRouter:
     router = APIRouter(
         prefix="/api/gemini",
         tags=["governed-gemini"],
-        dependencies=[Depends(auth_dependency)],
     )
 
     @router.get("/status")
-    def status() -> dict[str, Any]:
+    def status(
+        _actor: OperatorIdentity = Depends(auth_dependency),
+    ) -> dict[str, Any]:
         return safe_status()
 
     @router.post("/workflows")
-    def create_workflow(intake: OpportunityIntake) -> dict[str, Any]:
+    def create_workflow(
+        intake: OpportunityIntake,
+        _actor: OperatorIdentity = Depends(auth_dependency),
+    ) -> dict[str, Any]:
         try:
             record = get_service().create_workflow(intake)
             return record.model_dump(mode="json")
@@ -99,7 +105,10 @@ def create_router(auth_dependency: Callable[..., Any]) -> APIRouter:
             ) from exc
 
     @router.get("/workflows/{run_id}")
-    def get_workflow(run_id: str) -> dict[str, Any]:
+    def get_workflow(
+        run_id: str,
+        _actor: OperatorIdentity = Depends(auth_dependency),
+    ) -> dict[str, Any]:
         try:
             records = get_service().get_workflow(run_id)
             return {
@@ -115,9 +124,14 @@ def create_router(auth_dependency: Callable[..., Any]) -> APIRouter:
     def decide(
         run_id: str,
         request: HumanDecisionRequest,
+        actor: OperatorIdentity = Depends(auth_dependency),
     ) -> dict[str, Any]:
         try:
-            record = get_service().decide(run_id, request)
+            record = get_service().decide(
+                run_id,
+                request,
+                actor=actor,
+            )
             return record.model_dump(mode="json")
         except (GeminiWorkflowStateError, ValueError) as exc:
             raise HTTPException(status_code=409, detail=str(exc)) from exc

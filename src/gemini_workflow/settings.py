@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import os
 from pathlib import Path
+import re
 
 
 class GeminiWorkflowConfigurationError(RuntimeError):
@@ -37,6 +38,8 @@ class GeminiWorkflowSettings:
     timeout_seconds: int
     max_output_tokens: int
     max_attempts: int
+    source_revision: str
+    runtime_revision: str
 
     @classmethod
     def from_env(cls) -> "GeminiWorkflowSettings":
@@ -65,6 +68,10 @@ class GeminiWorkflowSettings:
                 "AIGC_GEMINI_MAX_OUTPUT_TOKENS", 1200
             ),
             max_attempts=_int_env("AIGC_GEMINI_MAX_ATTEMPTS", 3),
+            source_revision=os.environ.get(
+                "AIGC_RELEASE_REVISION", ""
+            ).strip().lower(),
+            runtime_revision=os.environ.get("K_REVISION", "").strip(),
         )
         settings.validate()
         return settings
@@ -101,6 +108,18 @@ class GeminiWorkflowSettings:
         if self.environment == "production" and self.evidence_backend != "gcs":
             raise GeminiWorkflowConfigurationError(
                 "Production requires the durable gcs evidence backend"
+            )
+        if self.environment == "production" and not re.fullmatch(
+            r"[a-f0-9]{40}",
+            self.source_revision,
+        ):
+            raise GeminiWorkflowConfigurationError(
+                "Production requires AIGC_RELEASE_REVISION as an exact "
+                "40-character Git SHA"
+            )
+        if self.environment == "production" and not self.runtime_revision:
+            raise GeminiWorkflowConfigurationError(
+                "Production requires the Cloud Run K_REVISION runtime value"
             )
         if not 5 <= self.timeout_seconds <= 120:
             raise GeminiWorkflowConfigurationError(

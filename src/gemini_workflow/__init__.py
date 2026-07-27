@@ -3,6 +3,7 @@
 from .models import (
     GeminiAssessment,
     HumanDecisionRequest,
+    OperatorIdentity,
     OpportunityIntake,
     PolicyEvaluation,
 )
@@ -12,6 +13,7 @@ __all__ = [
     "GeminiAssessment",
     "GeminiWorkflowService",
     "HumanDecisionRequest",
+    "OperatorIdentity",
     "OpportunityIntake",
     "PolicyEvaluation",
 ]
