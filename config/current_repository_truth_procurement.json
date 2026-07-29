@@ -1,0 +1,520 @@
+{
+  "contract_id": "AIGC-CURRENT-REPOSITORY-TRUTH-PROCUREMENT-001",
+  "contract_version": "1.0.0",
+  "observed_at": "2026-07-17T03:55:00Z",
+  "repository": {
+    "full_name": "Lornt1666/AIGC",
+    "branch": "agent/canonical-deployment-sequence-v1",
+    "pull_request": 129,
+    "head_sha": "7ae06ef2b205586ca3fd8818da4d7be381846042"
+  },
+  "canonical_sequence": {
+    "path": "config/canonical_deployment_and_autonomy_sequence.json",
+    "contract_id": "AIGC-CANONICAL-DEPLOYMENT-AUTONOMY-SEQUENCE-001",
+    "binding_mode": "rebind_after_main_movement"
+  },
+  "transition_targets": [
+    {
+      "truth_id": "T1_HOSTED_VALIDATION_SUCCESSFUL",
+      "order": 1,
+      "label": "Hosted validation executes real steps and succeeds",
+      "current_value": false,
+      "desired_value": true,
+      "classification": "account_external_blocker",
+      "status": "blocked",
+      "accountable_actor": "GITHUB_ACCOUNT_ADMIN_AND_ACCOUNTABLE_OPERATOR",
+      "dependencies": [],
+      "required_actions": [
+        "Inspect the exact non-sensitive banner on the failed PR #123 validate job",
+        "Correct the actual GitHub Actions minutes, spending, billing, policy or runner-allocation restriction",
+        "Generate a valid GAR receipt from genuine observations",
+        "Rerun unchanged PR #123 exact head"
+      ],
+      "required_evidence": [
+        "Actual non-sensitive GitHub banner and restriction category",
+        "Valid GAR remediation receipt",
+        "Successful exact-head workflow run with checkout and non-empty steps",
+        "Provider-discovery, Terraform, test and readiness artifact families",
+        "Valid GHR recovery verification"
+      ],
+      "stop_conditions": [
+        "PR #123 head changes",
+        "Hosted job again has zero steps",
+        "Any required artifact family is missing",
+        "GAR or GHR validation fails",
+        "Sensitive billing or secret material appears"
+      ],
+      "external_mutation_required": true,
+      "operator_review_required": true,
+      "references": {"issues": [124, 127], "pull_requests": [123, 126]}
+    },
+    {
+      "truth_id": "T2_ISSUE_124_RESOLVED",
+      "order": 2,
+      "label": "GitHub Actions zero-step incident is resolved",
+      "current_value": false,
+      "desired_value": true,
+      "classification": "evidence_transition",
+      "status": "blocked",
+      "accountable_actor": "ACCOUNTABLE_OPERATOR",
+      "dependencies": ["T1_HOSTED_VALIDATION_SUCCESSFUL"],
+      "required_actions": [
+        "Review GAR, successful run, executed steps, logs, artifacts and GHR evidence",
+        "Post the non-sensitive recovery package to issue #124",
+        "Close issue #124 only after completion criteria are satisfied"
+      ],
+      "required_evidence": [
+        "Issue #124 contains valid GAR and GHR references",
+        "Exact successful run ID is recorded",
+        "Operator evidence review is attributable",
+        "Issue closure comment states no hosted-CI substitution"
+      ],
+      "stop_conditions": [
+        "Evidence is incomplete or stale",
+        "Run is not bound to exact PR #123 head",
+        "Issue closure would rely on local-only evidence"
+      ],
+      "external_mutation_required": true,
+      "operator_review_required": true,
+      "references": {"issues": [124]}
+    },
+    {
+      "truth_id": "T3_PR_123_ADMITTED",
+      "order": 3,
+      "label": "PR #123 is reviewed, admitted and main is verified",
+      "current_value": false,
+      "desired_value": true,
+      "classification": "repository_admission",
+      "status": "blocked",
+      "accountable_actor": "TECHNICAL_REVIEWER_AND_ACCOUNTABLE_OPERATOR",
+      "dependencies": ["T2_ISSUE_124_RESOLVED"],
+      "required_actions": [
+        "Complete exact-head technical review of PR #123",
+        "Record a separate accountable-operator disposition",
+        "Merge with expected-head protection if approved",
+        "Record the resulting exact main revision",
+        "Run and verify hosted mainline CI"
+      ],
+      "required_evidence": [
+        "Exact-head technical review",
+        "Separate operator disposition",
+        "Expected-head-protected merge result",
+        "Exact-main post-merge verification",
+        "Successful mainline CI artifacts"
+      ],
+      "stop_conditions": [
+        "PR head moves after review",
+        "Merge is attempted before separate disposition",
+        "Post-merge mainline CI does not execute real steps"
+      ],
+      "external_mutation_required": true,
+      "operator_review_required": true,
+      "references": {"pull_requests": [123]}
+    },
+    {
+      "truth_id": "T4_PR_129_REBOUND_VALIDATED_AND_ADMITTED",
+      "order": 4,
+      "label": "PR #129 is rebound to verified main, validated and admitted",
+      "current_value": false,
+      "desired_value": true,
+      "classification": "repository_admission",
+      "status": "planned",
+      "accountable_actor": "TECHNICAL_REVIEWER_AND_ACCOUNTABLE_OPERATOR",
+      "dependencies": ["T3_PR_123_ADMITTED"],
+      "required_actions": [
+        "Reconstruct or rebind the canonical sequence to the resulting exact main",
+        "Refresh all PR and issue revision bindings",
+        "Run canonical sequence and truth-procurement validators",
+        "Run complete hosted CI",
+        "Complete exact-head review and separate disposition"
+      ],
+      "required_evidence": [
+        "Updated exact-main and PR bindings",
+        "Successful canonical sequence validator receipt",
+        "Successful truth procurement receipt",
+        "Hosted test and readiness artifacts",
+        "Exact-head review and operator disposition"
+      ],
+      "stop_conditions": [
+        "Any binding remains stale",
+        "Hosted CI has zero steps",
+        "Safety invariants are weakened",
+        "PR #129 is merged before PR #123 admission"
+      ],
+      "external_mutation_required": true,
+      "operator_review_required": true,
+      "references": {"pull_requests": [129]}
+    },
+    {
+      "truth_id": "T5_PR_121_RECONSTRUCTED_AND_ADMITTED",
+      "order": 5,
+      "label": "Staging plan and apply authorization train is reconstructed and admitted",
+      "current_value": false,
+      "desired_value": true,
+      "classification": "repository_admission",
+      "status": "planned",
+      "accountable_actor": "STAGING_ARCHITECT_AND_ACCOUNTABLE_OPERATOR",
+      "dependencies": ["T3_PR_123_ADMITTED"],
+      "required_actions": [
+        "Reconstruct PR #121 scope on verified main rather than blindly retargeting",
+        "Preserve SIP exact-revision and project binding",
+        "Preserve SIA exact-plan digest binding and single-use expiration",
+        "Run complete repository and Terraform CI",
+        "Complete exact-head review and separate disposition"
+      ],
+      "required_evidence": [
+        "Reconstructed staging authorization contracts",
+        "Terraform formatting, initialization, validation and inert-plan evidence",
+        "Repository test evidence",
+        "Exact-head technical review",
+        "Separate merge disposition"
+      ],
+      "stop_conditions": [
+        "Production release authority is reused for initial staging",
+        "Plan and apply authority are combined",
+        "A stale Terraform fingerprint or revision is accepted"
+      ],
+      "external_mutation_required": true,
+      "operator_review_required": true,
+      "references": {"pull_requests": [121], "issues": [116]}
+    },
+    {
+      "truth_id": "T6_CLOUD_RUN_RUNTIME_IMPLEMENTED",
+      "order": 6,
+      "label": "Bounded Cloud Run staging runtime is implemented internally",
+      "current_value": false,
+      "desired_value": true,
+      "classification": "internal_implementation",
+      "status": "planned",
+      "accountable_actor": "RUNTIME_IMPLEMENTATION_TEAM",
+      "dependencies": ["T5_PR_121_RECONSTRUCTED_AND_ADMITTED"],
+      "required_actions": [
+        "Add a non-root container definition and deterministic build surface",
+        "Expose /health readiness and liveness behavior",
+        "Add resource-gated Cloud Run v2 and Artifact Registry Terraform modules",
+        "Define runtime service account, Secret Manager references and private Cloud SQL connectivity",
+        "Produce SBOM, provenance, signature, vulnerability and deployment-manifest evidence"
+      ],
+      "required_evidence": [
+        "Container runs as non-root",
+        "Health tests pass",
+        "Cloud Run resource graph remains disabled by default",
+        "Immutable image digest is recorded",
+        "SBOM, provenance, signature and scan artifacts exist",
+        "No production authority is granted"
+      ],
+      "stop_conditions": [
+        "Cloud Run resources are enabled by default",
+        "Raw secrets are committed",
+        "Container runs as root",
+        "Production project or domain is required for staging validation"
+      ],
+      "external_mutation_required": false,
+      "operator_review_required": true,
+      "references": {"baseline": "config/production_deployment_baseline.json"}
+    },
+    {
+      "truth_id": "T7_STAGING_CLOUD_RESOURCES_CREATED",
+      "order": 7,
+      "label": "Isolated Cloud SQL and Cloud Run staging resources are applied",
+      "current_value": false,
+      "desired_value": true,
+      "classification": "authorized_cloud_transition",
+      "status": "planned",
+      "accountable_actor": "CLOUD_STAGING_OPERATOR",
+      "dependencies": ["T6_CLOUD_RUN_RUNTIME_IMPLEMENTED"],
+      "required_actions": [
+        "Select a dedicated staging project and approved billing account",
+        "Set a CAD 50 staging budget and Toronto primary region",
+        "Configure remote Terraform state and least-privilege WIF/IAM",
+        "Accept read-only provider-discovery evidence",
+        "Generate and review a provider-backed saved plan",
+        "Issue single-use SIA authorization and apply the exact reviewed plan"
+      ],
+      "required_evidence": [
+        "Dedicated staging project reference",
+        "Budget and alert evidence without sensitive billing identifiers",
+        "Remote-state and recovery evidence",
+        "WIF token-exchange and audit evidence",
+        "Accepted SDE discovery receipt",
+        "SIP plan receipt, saved-plan digest, SIA apply receipt and execution receipt",
+        "Cloud SQL and Cloud Run resource references"
+      ],
+      "stop_conditions": [
+        "Production project or customer data is selected",
+        "Plan digest or revision changes",
+        "Apply authorization is expired or reused",
+        "Public database exposure or broad IAM appears",
+        "Unexpected resources appear in the plan"
+      ],
+      "external_mutation_required": true,
+      "operator_review_required": true,
+      "references": {"issues": [116]}
+    },
+    {
+      "truth_id": "T8_CANARY_A_PASSED",
+      "order": 8,
+      "label": "Canary A platform proof passes",
+      "current_value": false,
+      "desired_value": true,
+      "classification": "operational_canary",
+      "status": "planned",
+      "accountable_actor": "STAGING_RELEASE_OPERATOR",
+      "dependencies": ["T7_STAGING_CLOUD_RESOURCES_CREATED"],
+      "required_actions": [
+        "Authenticate an allowlisted operator",
+        "Verify /health and PostgreSQL connectivity",
+        "Run migrations and create a basic internal work order",
+        "Verify governance artifacts, persistence and audit evidence",
+        "Observe logs, metrics, alerts and budget notifications",
+        "Perform rollback and isolated database restore tests"
+      ],
+      "required_evidence": [
+        "Authentication and session evidence",
+        "Health and database connectivity evidence",
+        "Migration and transaction evidence",
+        "Persisted work-order and audit records",
+        "Monitoring and alert-delivery evidence",
+        "Rollback, backup restore, RPO and RTO measurements"
+      ],
+      "stop_conditions": [
+        "Authentication or tenant isolation fails",
+        "Migration or transaction tests fail",
+        "Alerts are not delivered",
+        "Rollback or restore cannot be demonstrated"
+      ],
+      "external_mutation_required": true,
+      "operator_review_required": true,
+      "references": {"canary": "A"}
+    },
+    {
+      "truth_id": "T9_PR_122_RECONSTRUCTED_WITH_ISSUE_128",
+      "order": 9,
+      "label": "PR #122 is reconstructed with employer-duty synthesis scope",
+      "current_value": false,
+      "desired_value": true,
+      "classification": "internal_implementation",
+      "status": "planned",
+      "accountable_actor": "PRODUCT_IMPLEMENTATION_TEAM",
+      "dependencies": ["T8_CANARY_A_PASSED"],
+      "required_actions": [
+        "Reconstruct the Jobs and Interviews cockpit on proven main",
+        "Preserve read-only opportunity discovery and truthful qualification controls",
+        "Implement EmployerDutyWorkOrderSynthesizer from issue #128",
+        "Extend the work-order contract with source traceability, duties, dependencies, KPIs, gaps and revision history",
+        "Run complete tests and hosted CI"
+      ],
+      "required_evidence": [
+        "Source-bound work-order synthesis artifacts",
+        "Determinism and idempotency tests",
+        "Contradiction and capability-truth tests",
+        "No external submission or messaging tests",
+        "Hosted CI, exact-head review and separate disposition"
+      ],
+      "stop_conditions": [
+        "Authoritative work order is created before WORK_ACCEPTED or verified assignment evidence",
+        "AI inference is represented as employer fact",
+        "Skills or credentials are fabricated",
+        "External commitment authority is introduced"
+      ],
+      "external_mutation_required": false,
+      "operator_review_required": true,
+      "references": {"pull_requests": [122], "issues": [128]}
+    },
+    {
+      "truth_id": "T10_CANARY_B_PASSED",
+      "order": 10,
+      "label": "Canary B employer-duty autonomy proof passes",
+      "current_value": false,
+      "desired_value": true,
+      "classification": "operational_canary",
+      "status": "planned",
+      "accountable_actor": "PRODUCT_CANARY_REVIEWER",
+      "dependencies": ["T9_PR_122_RECONSTRUCTED_WITH_ISSUE_128"],
+      "required_actions": [
+        "Use a verified job source and qualified accepted Quest",
+        "Generate duty normalization, traceability, best-practice mapping and capability-gap analysis",
+        "Generate autonomous work breakdown, KPI plan and governed internal execution artifacts",
+        "Introduce one verified employer amendment",
+        "Verify revision diff, impact analysis and consequential-change escalation"
+      ],
+      "required_evidence": [
+        "Employer source snapshot and duty register",
+        "Requirements traceability matrix",
+        "Best-practice and capability-gap artifacts",
+        "Work breakdown and KPI plan",
+        "Work-order synthesis receipt",
+        "Instruction reconciliation and impact artifacts",
+        "External-action isolation evidence"
+      ],
+      "stop_conditions": [
+        "Traceability is incomplete",
+        "Replay creates duplicates",
+        "Contradictions are silently resolved",
+        "Scope, price, deadline or contract changes bypass review"
+      ],
+      "external_mutation_required": true,
+      "operator_review_required": true,
+      "references": {"issues": [128], "canary": "B"}
+    },
+    {
+      "truth_id": "T11_READ_ONLY_CONNECTOR_PROVEN",
+      "order": 11,
+      "label": "One approved read-only connector is operationally proven",
+      "current_value": false,
+      "desired_value": true,
+      "classification": "approved_connector_transition",
+      "status": "planned",
+      "accountable_actor": "CONNECTOR_SECURITY_REVIEWER_AND_OPERATOR",
+      "dependencies": ["T10_CANARY_B_PASSED"],
+      "required_actions": [
+        "Select Gmail read-only search or Google Drive read-only retrieval",
+        "Review terms, consent, minimum OAuth scope and revocation path",
+        "Resolve credentials only through Secret Manager",
+        "Test read-only access, rate limits, attribution, emergency stop and token revocation"
+      ],
+      "required_evidence": [
+        "Approved connector and consent record",
+        "Least-privilege OAuth scope evidence",
+        "Secret Manager access audit",
+        "Read-only operation receipt",
+        "Rate-limit, emergency-stop and revocation tests",
+        "Proof that send, mutation, scheduling and external commitments are unavailable"
+      ],
+      "stop_conditions": [
+        "Write scopes are requested",
+        "Raw token or secret values are logged",
+        "Revocation or emergency stop fails",
+        "Connector can send, modify or schedule"
+      ],
+      "external_mutation_required": true,
+      "operator_review_required": true,
+      "references": {"preferred_candidates": ["gmail_read_only", "google_drive_read_only"]}
+    }
+  ],
+  "safety_invariants": [
+    {
+      "truth_id": "I1_DIRECT_MAIN_WRITE_ALLOWED",
+      "label": "Direct write to main is allowed",
+      "current_value": false,
+      "required_value": false,
+      "rationale": "All changes require a bounded branch, hosted evidence, technical review and separate operator disposition.",
+      "enforcement_tests": ["No contents API write targets main", "Every change is associated with a draft PR"]
+    },
+    {
+      "truth_id": "I2_SELF_APPROVAL_ALLOWED",
+      "label": "AIGC may approve its own work",
+      "current_value": false,
+      "required_value": false,
+      "rationale": "Technical evidence generation and accountable judgment remain separate functions.",
+      "enforcement_tests": ["self_approval_allowed remains false", "Approval requires attributable human role"]
+    },
+    {
+      "truth_id": "I3_AUTOMATIC_MERGE_ALLOWED",
+      "label": "Automatic merge is allowed",
+      "current_value": false,
+      "required_value": false,
+      "rationale": "Merge is consequential repository mutation and requires a separate expected-head decision.",
+      "enforcement_tests": ["automatic_merge_allowed remains false", "No auto-merge workflow is enabled"]
+    },
+    {
+      "truth_id": "I4_AUTOMATIC_EXTERNAL_COMMITMENT_ALLOWED",
+      "label": "AIGC may automatically commit the operator to external obligations",
+      "current_value": false,
+      "required_value": false,
+      "rationale": "Employment, contract, scope, price, deadline, submission, communication and delivery commitments require separate authority.",
+      "enforcement_tests": ["automatic_external_commitment_allowed remains false", "External-action gateways fail closed"]
+    },
+    {
+      "truth_id": "I5_HOSTED_CI_REPLACEMENT_ALLOWED",
+      "label": "Local evidence may replace hosted CI",
+      "current_value": false,
+      "required_value": false,
+      "rationale": "Local bundles are supplemental and cannot prove runner execution or authorize merge.",
+      "enforcement_tests": ["hosted_ci_replacement remains false", "Admission requires hosted steps and artifacts"]
+    },
+    {
+      "truth_id": "I6_RAW_SECRETS_IN_REPOSITORY_ALLOWED",
+      "label": "Raw secrets may be committed or logged",
+      "current_value": false,
+      "required_value": false,
+      "rationale": "Only secret references are allowed; values remain in approved secret managers.",
+      "enforcement_tests": ["Secret-like content scan passes", "Secret references report raw_secret_present=false"]
+    },
+    {
+      "truth_id": "I7_COORDINATION_PR_EXTERNAL_ACTION_PERFORMED",
+      "label": "PR #129 itself performs cloud or counterparty action",
+      "current_value": false,
+      "required_value": false,
+      "rationale": "This branch procures contracts, plans and validators only; later execution receipts record separately authorized actions.",
+      "enforcement_tests": ["external_action_performed remains false in coordination artifacts", "No provider, messaging or submission call exists"]
+    },
+    {
+      "truth_id": "I8_AUTOMATIC_JOB_APPLICATION_SUBMISSION_ALLOWED",
+      "label": "AIGC may automatically submit job applications in the current release",
+      "current_value": false,
+      "required_value": false,
+      "rationale": "Current Jobs and Interviews scope prepares truthful review packets; platform-specific submission remains separately reviewed and authorized.",
+      "enforcement_tests": ["auto_apply and form_submission remain blocked", "Application approval means manual operator submission only"]
+    }
+  ],
+  "decision_lineage": [
+    {
+      "decision_id": "D1_EVIDENCE_OVER_ASSERTION",
+      "decision": "Authority statements authorize attempts but do not instantiate missing evidence.",
+      "effect": "GAR, GHR, hosted steps, artifacts and reviews must be genuine before truth values change.",
+      "references": ["issues/124", "issues/127", "pull/123"]
+    },
+    {
+      "decision_id": "D2_STAGING_BEFORE_PRODUCTION",
+      "decision": "The proper live target is an isolated staging pilot, not full production.",
+      "effect": "Cloud resources remain project-isolated, budget-bounded and free of customer data.",
+      "references": ["issues/116", "config/production_deployment_baseline.json"]
+    },
+    {
+      "decision_id": "D3_CI_AND_MAINLINE_CONVERGENCE_FIRST",
+      "decision": "Hosted CI recovery and PR #123 admission precede downstream implementation.",
+      "effect": "PR #121, PR #122, PR #129 and later trains require reconstruction or rebinding after main moves.",
+      "references": ["pull/123", "pull/129"]
+    },
+    {
+      "decision_id": "D4_PLATFORM_CANARY_BEFORE_PRODUCT_CANARY",
+      "decision": "Cloud Run and Canary A platform proof precede employer-duty autonomy.",
+      "effect": "Issue #128 is Canary B and cannot block initial platform proof.",
+      "references": ["issues/128", "pull/122"]
+    },
+    {
+      "decision_id": "D5_ACCEPTED_WORK_TRIGGER",
+      "decision": "Authoritative employer-duty work orders begin only after WORK_ACCEPTED or equivalent verified assignment evidence.",
+      "effect": "Opportunity discovery may create previews but not authoritative obligations.",
+      "references": ["issues/128"]
+    },
+    {
+      "decision_id": "D6_INTERNAL_AUTONOMY_EXTERNAL_AUTHORITY_SEPARATION",
+      "decision": "Internal planning, work-order creation, analytics and reconciliation may be autonomous while external commitments remain gated.",
+      "effect": "AIGC gains operational autonomy without self-approval, silent contract changes or uncontrolled outward action.",
+      "references": ["config/canonical_deployment_and_autonomy_sequence.json"]
+    },
+    {
+      "decision_id": "D7_FALSE_VALUE_CLASSIFICATION",
+      "decision": "A false value is not automatically a defect.",
+      "effect": "Completion targets are procured toward true; safety invariants are tested and intentionally preserved as false.",
+      "references": ["config/current_repository_truth_procurement.json"]
+    }
+  ],
+  "procurement_policy": {
+    "false_is_not_automatically_a_defect": true,
+    "completion_requires_evidence": true,
+    "authority_does_not_substitute_for_evidence": true,
+    "first_incomplete_transition_is_next": true,
+    "no_direct_main_write": true,
+    "no_new_product_train": true
+  },
+  "current_summary": {
+    "transition_target_count": 11,
+    "completed_transition_count": 0,
+    "safety_invariant_count": 8,
+    "next_transition_id": "T1_HOSTED_VALIDATION_SUCCESSFUL",
+    "external_action_performed": false
+  }
+}

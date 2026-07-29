@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/github_actions_zero_step_diagnosis.schema.json",
+  "title": "AIGC GitHub Actions Zero-Step Diagnosis",
+  "type": "object",
+  "required": [
+    "contract_id",
+    "contract_version",
+    "observed_at",
+    "repository",
+    "evidence",
+    "conclusion",
+    "required_operator_checks",
+    "external_action_performed"
+  ],
+  "properties": {
+    "contract_id": {"type": "string"},
+    "contract_version": {"type": "string"},
+    "observed_at": {"type": "string"},
+    "repository": {
+      "type": "object",
+      "required": ["full_name", "visibility", "owner_type"],
+      "properties": {
+        "full_name": {"type": "string"},
+        "visibility": {"enum": ["private", "public", "internal"]},
+        "owner_type": {"enum": ["user", "organization"]}
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": [
+        "last_successful_run",
+        "first_observed_zero_step_run",
+        "shell_only_probe",
+        "github_owned_action_probe",
+        "verified_third_party_action_probe",
+        "github_status"
+      ],
+      "properties": {
+        "last_successful_run": {"$ref": "#/$defs/runEvidence"},
+        "first_observed_zero_step_run": {"$ref": "#/$defs/runEvidence"},
+        "shell_only_probe": {"$ref": "#/$defs/runEvidence"},
+        "github_owned_action_probe": {"$ref": "#/$defs/runEvidence"},
+        "verified_third_party_action_probe": {"$ref": "#/$defs/runEvidence"},
+        "github_status": {
+          "type": "object",
+          "required": ["actions_component", "recent_incidents_resolved"],
+          "properties": {
+            "actions_component": {"type": "string"},
+            "recent_incidents_resolved": {"type": "boolean"},
+            "source": {"type": "string"}
+          }
+        }
+      }
+    },
+    "conclusion": {
+      "type": "object",
+      "required": [
+        "classification",
+        "confidence",
+        "runner_allocated",
+        "repository_commands_executed",
+        "primary_candidate_causes",
+        "ruled_out_primary_causes",
+        "exact_annotation_required_for_final_attribution"
+      ],
+      "properties": {
+        "classification": {"type": "string"},
+        "confidence": {"enum": ["low", "medium", "high"]},
+        "runner_allocated": {"type": "boolean"},
+        "repository_commands_executed": {"type": "boolean"},
+        "primary_candidate_causes": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "ruled_out_primary_causes": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "exact_annotation_required_for_final_attribution": {"type": "boolean"}
+      }
+    },
+    "required_operator_checks": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "official_sources": {"type": "array", "items": {"type": "string"}},
+    "external_action_performed": {"enum": [false]}
+  },
+  "$defs": {
+    "runEvidence": {
+      "type": "object",
+      "required": [
+        "workflow",
+        "run_id",
+        "conclusion",
+        "job_id",
+        "job_name",
+        "step_count",
+        "logs_available",
+        "artifacts_present"
+      ],
+      "properties": {
+        "pull_request": {"type": ["integer", "null"]},
+        "head_sha": {"type": "string"},
+        "workflow": {"type": "string"},
+        "run_id": {"type": "integer"},
+        "conclusion": {"type": "string"},
+        "job_id": {"type": "integer"},
+        "job_name": {"type": "string"},
+        "step_count": {"type": "integer"},
+        "logs_available": {"type": "boolean"},
+        "artifacts_present": {"type": "boolean"},
+        "uses_actions": {"type": "boolean"},
+        "uses_third_party_actions": {"type": "boolean"}
+      }
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "$schema": "../schemas/chatgpt_operational_readiness.schema.json",
+  "contract_id": "AIGC-CHATGPT-OPERATIONAL-READINESS-001",
+  "schema_version": "1.0.0",
+  "target": "PRIVATE_CHATGPT_OPERATIONAL_WITH_GOVERNED_EXTERNAL_ACTION",
+  "score_max": 100,
+  "score_policy": {
+    "DEFINED": 0.25,
+    "IMPLEMENTED_LOCAL": 0.5,
+    "VERIFIED_LOCAL": 0.65,
+    "HOSTED_CI_VERIFIED": 0.75,
+    "STAGING_VERIFIED": 0.9,
+    "PRODUCTION_ACCEPTED": 1.0
+  },
+  "categories": [
+    {"category_id":"C1_APPS_SDK_MCP_CONTRACT","name":"Apps SDK and MCP contract","weight":10,"status":"VERIFIED_LOCAL","required_for_100":true},
+    {"category_id":"C2_CHATGPT_WIDGET_AND_APPROVAL_UI","name":"ChatGPT widget and Approval Inbox","weight":10,"status":"IMPLEMENTED_LOCAL","required_for_100":true},
+    {"category_id":"C3_CONTROL_PLANE_AND_PERSISTENCE","name":"Persistent control plane","weight":10,"status":"VERIFIED_LOCAL","required_for_100":true},
+    {"category_id":"C4_AGENT_ORCHESTRATION","name":"Governed agent orchestration","weight":10,"status":"VERIFIED_LOCAL","required_for_100":true},
+    {"category_id":"C5_EXTERNAL_ACTION_AND_APPROVAL","name":"Exact-approved external action","weight":10,"status":"IMPLEMENTED_LOCAL","required_for_100":true},
+    {"category_id":"C6_IDENTITY_TENANT_AND_SECRETS","name":"Identity, tenant isolation, and secrets","weight":10,"status":"IMPLEMENTED_LOCAL","required_for_100":true},
+    {"category_id":"C7_HOSTED_CI_AND_SUPPLY_CHAIN","name":"Hosted CI and supply chain","weight":10,"status":"DEFINED","required_for_100":true},
+    {"category_id":"C8_HOSTING_OBSERVABILITY_AND_RECOVERY","name":"Hosting, observability, and recovery","weight":10,"status":"DEFINED","required_for_100":true},
+    {"category_id":"C9_EMPLOYMENT_AND_WORK_EXECUTION","name":"Employment and accepted-work execution","weight":10,"status":"IMPLEMENTED_LOCAL","required_for_100":true},
+    {"category_id":"C10_CHATGPT_ACCEPTANCE_AND_OPERATIONS","name":"ChatGPT acceptance and operations","weight":10,"status":"IMPLEMENTED_LOCAL","required_for_100":true}
+  ],
+  "evidence_truths": {
+    "external_action_receipt_present": false,
+    "staging_operational_evidence_present": false,
+    "production_evidence_present": false,
+    "hosted_ci_evidence_present": false,
+    "chatgpt_developer_mode_connected": false,
+    "chatgpt_end_to_end_acceptance_passed": false
+  },
+  "safety_invariants": {
+    "hosted_ci_replacement_allowed": false,
+    "self_approval_allowed": false,
+    "automatic_merge_allowed": false,
+    "automatic_external_commitment_allowed": false,
+    "raw_secret_values_allowed": false,
+    "unreviewed_terraform_apply_allowed": false,
+    "mass_auto_apply_allowed": false
+  },
+  "current_authority": {
+    "operator_review_required": true,
+    "external_action_default": false,
+    "production_authority": false,
+    "terraform_apply_authorized": false
+  }
+}
