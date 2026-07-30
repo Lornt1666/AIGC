@@ -26,6 +26,7 @@ from src.core.operator_cockpit import (  # noqa: E402
     summarize_authorizations,
 )
 from src.core.work_order import run_work_order  # noqa: E402
+from src.dashboard.financial_evidence_panel import render_financial_evidence_tab  # noqa: E402
 from src.dashboard.paycheque_workflow_panel import render_paycheque_workflow_tab  # noqa: E402
 
 
@@ -47,10 +48,18 @@ def main() -> int:
         "No external action is performed by this cockpit. Accept only records scoped approval for Phase 6 eligibility."
     )
 
-    tab_run, tab_work_order, tab_paycheque, tab_review, tab_audit = st.tabs([
+    (
+        tab_run,
+        tab_work_order,
+        tab_paycheque,
+        tab_financial,
+        tab_review,
+        tab_audit,
+    ) = st.tabs([
         "Run",
         "New Work Order",
         "Paycheque Pipeline",
+        "Financial Evidence",
         "Review & Accept",
         "Audit / Transparency",
     ])
@@ -63,6 +72,9 @@ def main() -> int:
 
     with tab_paycheque:
         render_paycheque_workflow_tab(st, root)
+
+    with tab_financial:
+        render_financial_evidence_tab(st, root)
 
     with tab_review:
         render_review_tab(st, root)

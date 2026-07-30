@@ -1,0 +1,673 @@
+{
+  "schema_version": "1.0.0",
+  "backlog_id": "AIGC-CAFIN-PROCUREMENT-V1",
+  "title": "Canadian Financial Work Execution Feature Procurement",
+  "as_of_date": "2026-07-30",
+  "status": "options_pending_operator_selection",
+  "default_feature_state": "disabled",
+  "claim_boundary": "Tasks prepare evidence and review workflows. They do not authorize accounting postings, tax assertions, government actions, payments, filings, or representative actions.",
+  "data_boundary": "Real financial evidence and real monetary records remain outside Git. Repository fixtures are synthetic.",
+  "decision_protocol": {
+    "selection_required": true,
+    "one_bounded_slice_per_authorization": true,
+    "dependencies_require_separate_admission": true,
+    "external_actions_require_exact_single_use_authority": true,
+    "selection_states": [
+      "proposed",
+      "selected",
+      "specified",
+      "implemented",
+      "local_verified",
+      "hosted_ci_verified",
+      "staging_observed",
+      "operator_accepted",
+      "deferred",
+      "rejected",
+      "research_only",
+      "blocked"
+    ]
+  },
+  "tasks": [
+    {
+      "task_id": "CAFIN-P0-001",
+      "priority": "P0",
+      "title": "Authenticated tenant-scoped Financial Evidence tab",
+      "status": "proposed",
+      "user_choice_gate": "Select CAFIN-P0-001 and authorize one bounded implementation slice.",
+      "dependencies": [],
+      "acceptance_tests": [
+        "Feature is disabled by default.",
+        "Authenticated principal and tenant scope are required before data access.",
+        "Cross-tenant read, export, cache, trace, and artifact access are denied.",
+        "Only allowlisted projection fields render; raw source evidence and opaque references do not render.",
+        "No external action occurs."
+      ],
+      "authority_required": [
+        "repository_change",
+        "staging_identity_configuration"
+      ],
+      "risk": "high_financial_data_disclosure",
+      "rollback": "Disable the feature flag and revoke projection-reader authorization."
+    },
+    {
+      "task_id": "CAFIN-P0-002",
+      "priority": "P0",
+      "title": "Secure external financial evidence store",
+      "status": "proposed",
+      "user_choice_gate": "Select CAFIN-P0-002 after accepting the storage, residency, retention, and cost design.",
+      "dependencies": [
+        "CAFIN-P0-001"
+      ],
+      "acceptance_tests": [
+        "Real evidence is stored outside Git using tenant-scoped encryption and authorization.",
+        "Immutable generations, checksums, retention, legal hold, deletion, export, backup, and restore are tested.",
+        "File type, size, archive, malware, parser, and content limits fail closed.",
+        "Object access and audit receipts bind principal, tenant, purpose, revision, and expiry."
+      ],
+      "authority_required": [
+        "cloud_or_storage_resource_authorization",
+        "privacy_and_records_approval",
+        "budget_authorization"
+      ],
+      "risk": "critical_evidence_loss_or_cross_tenant_access",
+      "rollback": "Revoke access, stop ingestion, quarantine objects, preserve audit history, and restore only through an approved recovery plan."
+    },
+    {
+      "task_id": "CAFIN-P0-003",
+      "priority": "P0",
+      "title": "Receipt ingestion and reconciliation core",
+      "status": "proposed",
+      "user_choice_gate": "Select CAFIN-P0-003 after the external evidence store passes isolation and recovery gates.",
+      "dependencies": [
+        "CAFIN-P0-002"
+      ],
+      "acceptance_tests": [
+        "Imports are idempotent and order independent.",
+        "Itemized receipts and payment-processor settlements reconcile without double counting.",
+        "Refunds, reversals, failed payments, obligations, and indeterminate outcomes retain distinct states.",
+        "Duplicate relationships preserve all source evidence and reviewer rationale.",
+        "All totals use integer minor units and explicit currency."
+      ],
+      "authority_required": [
+        "internal_financial_evidence_processing"
+      ],
+      "risk": "high_double_counting_or_false_settlement",
+      "rollback": "Disable the importer and rebuild projections from immutable evidence without deleting source records."
+    },
+    {
+      "task_id": "CAFIN-P0-004",
+      "priority": "P0",
+      "title": "GitHub billing read-only import",
+      "status": "proposed",
+      "user_choice_gate": "Select CAFIN-P0-004 and identify the exact personal or organization billing scope.",
+      "dependencies": [
+        "CAFIN-P0-002",
+        "CAFIN-P0-003"
+      ],
+      "acceptance_tests": [
+        "Connector uses the least-privilege read-only billing scope.",
+        "Usage, included allowance, invoice, credit, and settled payment remain distinct.",
+        "Pagination, period boundaries, currency, duplicate retry, revocation, and provider errors are tested.",
+        "A provider receipt proves the exact read; no GitHub settings are changed."
+      ],
+      "authority_required": [
+        "github_billing_read"
+      ],
+      "risk": "high_organization_billing_exposure",
+      "rollback": "Revoke connector access and rebuild the projection without GitHub records."
+    },
+    {
+      "task_id": "CAFIN-P0-005",
+      "priority": "P0",
+      "title": "AI subscription receipt import",
+      "status": "proposed",
+      "user_choice_gate": "Select exact providers and exact evidence sources; broad mailbox access is not implicit.",
+      "dependencies": [
+        "CAFIN-P0-002",
+        "CAFIN-P0-003"
+      ],
+      "acceptance_tests": [
+        "Each provider parser is separately allowlisted and versioned.",
+        "Renewal, expiration, failed-payment, invoice, and settlement evidence remain separate.",
+        "Currency, tax, period, refund, and processor overlap are preserved.",
+        "Connector access is read-only, revocable, and bounded to approved evidence."
+      ],
+      "authority_required": [
+        "provider_or_mailbox_receipt_read"
+      ],
+      "risk": "high_overbroad_mailbox_or_account_access",
+      "rollback": "Revoke source access, stop parsing, and supersede derived records without deleting evidence."
+    },
+    {
+      "task_id": "CAFIN-P0-006",
+      "priority": "P0",
+      "title": "Apple and App Store receipt import",
+      "status": "proposed",
+      "user_choice_gate": "Select CAFIN-P0-006 and approve only a receipt source; Apple credentials are prohibited.",
+      "dependencies": [
+        "CAFIN-P0-002",
+        "CAFIN-P0-003"
+      ],
+      "acceptance_tests": [
+        "Itemized receipts and payment-processor evidence reconcile without double counting.",
+        "Personal, family, business-candidate, and mixed use remain review states.",
+        "Refunds and subscription changes preserve source lineage.",
+        "No Apple login, password, MFA, card, or account mutation is performed."
+      ],
+      "authority_required": [
+        "approved_apple_receipt_source_read"
+      ],
+      "risk": "high_personal_purchase_exposure",
+      "rollback": "Revoke source access and exclude Apple-derived projections while retaining audit lineage."
+    },
+    {
+      "task_id": "CAFIN-P0-007",
+      "priority": "P0",
+      "title": "Google Play receipt import",
+      "status": "proposed",
+      "user_choice_gate": "Select CAFIN-P0-007 and approve only a receipt source; Google account mutation is prohibited.",
+      "dependencies": [
+        "CAFIN-P0-002",
+        "CAFIN-P0-003"
+      ],
+      "acceptance_tests": [
+        "Itemized receipts, renewals, refunds, taxes, and processor evidence retain distinct provenance.",
+        "Subscription cycles reconcile deterministically.",
+        "Personal and business allocation remains human reviewed.",
+        "No subscription, payment-method, or account setting is changed."
+      ],
+      "authority_required": [
+        "approved_google_play_receipt_source_read"
+      ],
+      "risk": "high_personal_purchase_exposure",
+      "rollback": "Revoke source access and exclude Google Play-derived projections while retaining audit lineage."
+    },
+    {
+      "task_id": "CAFIN-P0-008",
+      "priority": "P0",
+      "title": "Mobile carrier bill import",
+      "status": "proposed",
+      "user_choice_gate": "Select the exact carrier and approved document source; carrier login automation is prohibited.",
+      "dependencies": [
+        "CAFIN-P0-002",
+        "CAFIN-P0-003"
+      ],
+      "acceptance_tests": [
+        "Billing periods, taxes, devices, service, financing, credits, and one-time charges remain distinct.",
+        "Phone and account identifiers are redacted before projection.",
+        "Mixed personal/business use enters a human allocation queue.",
+        "Missing periods are reported and never imputed as settled cash."
+      ],
+      "authority_required": [
+        "approved_carrier_document_read"
+      ],
+      "risk": "critical_account_and_communications_metadata_exposure",
+      "rollback": "Revoke source access and quarantine carrier-derived records."
+    },
+    {
+      "task_id": "CAFIN-P0-009",
+      "priority": "P0",
+      "title": "Human business-use allocation review",
+      "status": "proposed",
+      "user_choice_gate": "Select CAFIN-P0-009 and designate an accountable reviewer.",
+      "dependencies": [
+        "CAFIN-P0-003"
+      ],
+      "acceptance_tests": [
+        "Allocation records the reviewer, evidence references, percentage or classification, timestamp, and supersession.",
+        "Personal, mixed, candidate, and unallocated states are not tax conclusions.",
+        "Allocation cannot change settlement evidence or create a tax deduction.",
+        "Material changes require a new review event."
+      ],
+      "authority_required": [
+        "identity_bound_internal_financial_review"
+      ],
+      "risk": "high_unsupported_business_purpose",
+      "rollback": "Supersede the allocation decision and return the item to unallocated without rewriting source evidence."
+    },
+    {
+      "task_id": "CAFIN-P0-010",
+      "priority": "P0",
+      "title": "Project-scoped time evidence import",
+      "status": "proposed",
+      "user_choice_gate": "Select exact projects and time sources; scenario hours are not evidence.",
+      "dependencies": [
+        "CAFIN-P0-001",
+        "CAFIN-P0-002"
+      ],
+      "acceptance_tests": [
+        "Time evidence binds project, activity, period, source, and correction history.",
+        "Overlapping time across projects is rejected or explicitly resolved.",
+        "A selected rate requires documented time and a named comparator basis.",
+        "Founder-effort values have zero effect on cash, tax, payroll, expense, liability, and revenue totals."
+      ],
+      "authority_required": [
+        "approved_time_source_read",
+        "owner_management_estimate_approval"
+      ],
+      "risk": "high_inflated_or_duplicated_labor",
+      "rollback": "Remove the selected management scenario and retain the source/correction trail."
+    },
+    {
+      "task_id": "CAFIN-P0-011",
+      "priority": "P0",
+      "title": "Accountant export preview",
+      "status": "proposed",
+      "user_choice_gate": "Select CAFIN-P0-011 for a local preview only; external delivery is a separate action.",
+      "dependencies": [
+        "CAFIN-P0-003",
+        "CAFIN-P0-009"
+      ],
+      "acceptance_tests": [
+        "Preview is redacted, tenant scoped, schema versioned, and content digested.",
+        "Settlement, obligation, economic-event candidate, founder estimate, and unresolved items remain separate.",
+        "No accounting posting or tax assertion is emitted.",
+        "No email, upload, share, or external delivery occurs."
+      ],
+      "authority_required": [
+        "internal_export_preview"
+      ],
+      "risk": "high_premature_professional_reliance",
+      "rollback": "Delete the local preview and preserve its generation receipt."
+    },
+    {
+      "task_id": "CAFIN-P1-001",
+      "priority": "P1",
+      "title": "Entity and reporting-period registry",
+      "status": "proposed",
+      "user_choice_gate": "Select CAFIN-P1-001 and supply authoritative, redacted entity evidence.",
+      "dependencies": [
+        "CAFIN-P0-001"
+      ],
+      "acceptance_tests": [
+        "Entity type, jurisdiction, effective dates, fiscal periods, and registration states are owner reviewed.",
+        "Missing facts fail closed and are not inferred from purchases or repository history.",
+        "Sensitive identifiers remain in the approved external evidence store."
+      ],
+      "authority_required": [
+        "owner_entity_fact_approval"
+      ],
+      "risk": "critical_wrong_entity_or_period",
+      "rollback": "Supersede incorrect entity facts and invalidate dependent preparation packets."
+    },
+    {
+      "task_id": "CAFIN-P1-002",
+      "priority": "P1",
+      "title": "CRA and Alberta obligation preparation",
+      "status": "proposed",
+      "user_choice_gate": "Select CAFIN-P1-002 for internal preparation only.",
+      "dependencies": [
+        "CAFIN-P0-003",
+        "CAFIN-P1-001"
+      ],
+      "acceptance_tests": [
+        "T2125, T2, AT1, GST/HST, payroll, records, representative, registry, WCB, and PIPA questions are source bound.",
+        "Unknown entity, period, supply, employee, worker, and authority facts block conclusions.",
+        "No government login, registration, filing, payment, communication, or representative action occurs."
+      ],
+      "authority_required": [
+        "internal_compliance_preparation"
+      ],
+      "risk": "critical_mistaken_legal_or_tax_reliance",
+      "rollback": "Invalidate the preparation packet and preserve the superseding source/version reason."
+    },
+    {
+      "task_id": "CAFIN-P1-003",
+      "priority": "P1",
+      "title": "Record-specific retention and legal hold",
+      "status": "proposed",
+      "user_choice_gate": "Select CAFIN-P1-003 after privacy and records review.",
+      "dependencies": [
+        "CAFIN-P0-002",
+        "CAFIN-P1-001"
+      ],
+      "acceptance_tests": [
+        "Retention is record and jurisdiction specific rather than one global duration.",
+        "Legal hold blocks deletion.",
+        "Export, deletion, restoration, and supersession produce immutable receipts.",
+        "A tested restore demonstrates recoverability."
+      ],
+      "authority_required": [
+        "privacy_and_records_approval"
+      ],
+      "risk": "critical_premature_destruction_or_overretention",
+      "rollback": "Freeze deletion, restore the last verified generation, and require records review."
+    },
+    {
+      "task_id": "CAFIN-P1-004",
+      "priority": "P1",
+      "title": "Accountant review workspace",
+      "status": "proposed",
+      "user_choice_gate": "Select CAFIN-P1-004 and approve the exact professional identity and tenant scope.",
+      "dependencies": [
+        "CAFIN-P0-009",
+        "CAFIN-P0-011",
+        "CAFIN-P1-002"
+      ],
+      "acceptance_tests": [
+        "Professional reviewer identity, scope, decisions, comments, and expiry are attributable.",
+        "Reviewer access is least privilege and revocable.",
+        "Review does not itself post, file, pay, or communicate with government.",
+        "Corrections append and supersede."
+      ],
+      "authority_required": [
+        "professional_reviewer_access"
+      ],
+      "risk": "critical_unauthorized_financial_data_disclosure",
+      "rollback": "Revoke reviewer access and quarantine shared projections without erasing review history."
+    },
+    {
+      "task_id": "CAFIN-P1-005",
+      "priority": "P1",
+      "title": "GST/HST threshold monitor",
+      "status": "proposed",
+      "user_choice_gate": "Select CAFIN-P1-005 as a review signal, not a registration decision.",
+      "dependencies": [
+        "CAFIN-P1-001",
+        "CAFIN-P1-002"
+      ],
+      "acceptance_tests": [
+        "Single-quarter and prior-four-quarter inputs are explicit and effective dated.",
+        "Supply classification, associated-person rules, charities, exceptions, and voluntary registration remain unresolved unless reviewed.",
+        "Threshold evidence emits an alert for professional review and never registers an account."
+      ],
+      "authority_required": [
+        "internal_threshold_monitoring"
+      ],
+      "risk": "critical_incorrect_registration_timing",
+      "rollback": "Disable alerts and invalidate conclusions tied to superseded inputs or rules."
+    },
+    {
+      "task_id": "CAFIN-P1-006",
+      "priority": "P1",
+      "title": "WCB-Alberta and Alberta PIPA preparation",
+      "status": "proposed",
+      "user_choice_gate": "Select CAFIN-P1-006 for questions and evidence preparation only.",
+      "dependencies": [
+        "CAFIN-P1-001",
+        "CAFIN-P1-002"
+      ],
+      "acceptance_tests": [
+        "Industry, worker, contractor, coverage, and account facts remain explicit unknowns until reviewed.",
+        "Personal-information purposes, consent, safeguards, access, retention, correction, and breach handling are inventoried.",
+        "No WCB registration, report, premium, clearance, or government communication occurs."
+      ],
+      "authority_required": [
+        "internal_alberta_compliance_preparation"
+      ],
+      "risk": "critical_worker_or_privacy_misclassification",
+      "rollback": "Invalidate the preparation packet and preserve the superseding review."
+    },
+    {
+      "task_id": "CAFIN-P2-001",
+      "priority": "P2",
+      "title": "Project and engagement cost allocation",
+      "status": "proposed",
+      "user_choice_gate": "Select CAFIN-P2-001 after human allocation review is operational.",
+      "dependencies": [
+        "CAFIN-P0-009",
+        "CAFIN-P1-001"
+      ],
+      "acceptance_tests": [
+        "Allocated amounts reconcile to source evidence.",
+        "Shared and mixed costs remain explicit.",
+        "Client, project, and engagement data cannot cross tenant boundaries.",
+        "Allocation does not create a tax assertion."
+      ],
+      "authority_required": [
+        "identity_bound_cost_allocation_review"
+      ],
+      "risk": "high_cross_client_contamination",
+      "rollback": "Supersede allocations and rebuild projections from source evidence."
+    },
+    {
+      "task_id": "CAFIN-P2-002",
+      "priority": "P2",
+      "title": "Budget, runway, and variance projection",
+      "status": "proposed",
+      "user_choice_gate": "Select CAFIN-P2-002 and approve assumptions and planning horizons.",
+      "dependencies": [
+        "CAFIN-P2-001"
+      ],
+      "acceptance_tests": [
+        "Forecasts and scenarios are visually and structurally separate from settled cash.",
+        "Assumptions, versions, confidence, and sensitivity ranges are recorded.",
+        "No forecast is presented as revenue, cash, entitlement, or financing."
+      ],
+      "authority_required": [
+        "internal_management_planning"
+      ],
+      "risk": "high_forecast_presented_as_fact",
+      "rollback": "Retire the forecast version without changing historical evidence."
+    },
+    {
+      "task_id": "CAFIN-P2-003",
+      "priority": "P2",
+      "title": "Revenue and invoice evidence register",
+      "status": "proposed",
+      "user_choice_gate": "Select CAFIN-P2-003 and define the approved client/engagement scope.",
+      "dependencies": [
+        "CAFIN-P0-002",
+        "CAFIN-P1-001"
+      ],
+      "acceptance_tests": [
+        "Proposal, contract, invoice, receivable, settlement, refund, and revenue-recognition states remain separate.",
+        "No synthetic fixture is counted as a client, invoice, revenue, or payment.",
+        "Client evidence is tenant isolated and consent/contract scoped."
+      ],
+      "authority_required": [
+        "client_financial_evidence_processing"
+      ],
+      "risk": "critical_revenue_overstatement_or_client_data_leakage",
+      "rollback": "Disable revenue projections and invalidate derived records without deleting source evidence."
+    },
+    {
+      "task_id": "CAFIN-P2-004",
+      "priority": "P2",
+      "title": "Subscription renewal and anomaly queue",
+      "status": "proposed",
+      "user_choice_gate": "Select CAFIN-P2-004 and define notification recipients; cancellation and payment stay prohibited.",
+      "dependencies": [
+        "CAFIN-P0-003",
+        "CAFIN-P0-004",
+        "CAFIN-P0-005",
+        "CAFIN-P0-006",
+        "CAFIN-P0-007",
+        "CAFIN-P0-008"
+      ],
+      "acceptance_tests": [
+        "Alerts cite evidence and distinguish obligations from settlements.",
+        "False positives and dismissals are measured.",
+        "No subscription is cancelled, renewed, upgraded, downgraded, or paid."
+      ],
+      "authority_required": [
+        "internal_notification"
+      ],
+      "risk": "medium_false_alert_or_unwanted_financial_action",
+      "rollback": "Disable notifications and preserve alert history."
+    },
+    {
+      "task_id": "CAFIN-P2-005",
+      "priority": "P2",
+      "title": "Professional export package",
+      "status": "proposed",
+      "user_choice_gate": "Select export format and reviewer; sending remains a separate exact action.",
+      "dependencies": [
+        "CAFIN-P1-003",
+        "CAFIN-P1-004",
+        "CAFIN-P2-001"
+      ],
+      "acceptance_tests": [
+        "Export schema/profile is approved by the recipient professional.",
+        "Manifest, source lineage, digest, limitations, and unresolved items are included.",
+        "Destination and content preview are exact.",
+        "Generation does not send, upload, post, file, or pay."
+      ],
+      "authority_required": [
+        "internal_export_generation"
+      ],
+      "risk": "critical_data_leakage_or_incompatible_import",
+      "rollback": "Delete the generated export and preserve its receipt."
+    },
+    {
+      "task_id": "CAFIN-P2-006",
+      "priority": "P2",
+      "title": "Financial-control observability",
+      "status": "proposed",
+      "user_choice_gate": "Select CAFIN-P2-006 and approve a redacted telemetry contract.",
+      "dependencies": [
+        "CAFIN-P0-002",
+        "CAFIN-P0-003"
+      ],
+      "acceptance_tests": [
+        "Metrics and traces exclude raw evidence, financial free text, personal data, and opaque source references.",
+        "Tenant labels cannot expose client identity.",
+        "Import, reconciliation, authorization, cost, error, and SLO signals are measurable."
+      ],
+      "authority_required": [
+        "operations_telemetry_approval"
+      ],
+      "risk": "high_telemetry_leakage",
+      "rollback": "Disable telemetry export and revoke collector access."
+    },
+    {
+      "task_id": "CAFIN-P3-001",
+      "priority": "P3",
+      "title": "Accounting-system read adapter",
+      "status": "research_only",
+      "user_choice_gate": "Select an exact provider for read-only sandbox research.",
+      "dependencies": [
+        "CAFIN-P2-005"
+      ],
+      "acceptance_tests": [
+        "Read-only sandbox access is least privilege and revocable.",
+        "Account maps and imported records are previews.",
+        "Provider reads reconcile and emit receipts.",
+        "No accounting mutation occurs."
+      ],
+      "authority_required": [
+        "provider_sandbox_read"
+      ],
+      "risk": "critical_accounting_data_exposure",
+      "rollback": "Revoke the adapter and delete derived previews."
+    },
+    {
+      "task_id": "CAFIN-P3-002",
+      "priority": "P3",
+      "title": "Accounting posting proposal",
+      "status": "research_only",
+      "user_choice_gate": "Select CAFIN-P3-002 for internal proposal research only.",
+      "dependencies": [
+        "CAFIN-P1-004",
+        "CAFIN-P3-001"
+      ],
+      "acceptance_tests": [
+        "Proposal is balanced, source linked, reversible in preview, and independently reviewed.",
+        "Posting, tax, and payroll conclusions remain marked as unexecuted.",
+        "No provider write occurs."
+      ],
+      "authority_required": [
+        "internal_posting_proposal_research"
+      ],
+      "risk": "critical_incorrect_accounting",
+      "rollback": "Invalidate the proposal without modifying an accounting system."
+    },
+    {
+      "task_id": "CAFIN-P3-003",
+      "priority": "P3",
+      "title": "Human-controlled accounting post",
+      "status": "blocked",
+      "user_choice_gate": "Requires a new external-action authorization after P3-002 acceptance.",
+      "dependencies": [
+        "CAFIN-P3-002"
+      ],
+      "acceptance_tests": [
+        "Exact immutable payload, destination, tenant, period, actor, approval, nonce, expiry, and revision are bound.",
+        "Single-use permit consumption is atomic.",
+        "Provider state is reconciled and a compensating path is tested.",
+        "An authorized accounting professional remains accountable."
+      ],
+      "authority_required": [
+        "exact_single_accounting_post",
+        "qualified_professional_approval"
+      ],
+      "risk": "critical_consequential_financial_mutation",
+      "rollback": "Use an approved compensating entry; never erase the original posting or receipt."
+    },
+    {
+      "task_id": "CAFIN-P3-004",
+      "priority": "P3",
+      "title": "Certified tax-software handoff research",
+      "status": "research_only",
+      "user_choice_gate": "Requires separate legal, terms, security, and professional research authorization.",
+      "dependencies": [
+        "CAFIN-P1-004",
+        "CAFIN-P2-005"
+      ],
+      "acceptance_tests": [
+        "Certified-software and API requirements are independently verified.",
+        "Sandbox uses synthetic data and no CRA credentials.",
+        "No return is filed, amended, transmitted, signed, or paid."
+      ],
+      "authority_required": [
+        "tax_software_research"
+      ],
+      "risk": "critical_tax_filing_and_representation_liability",
+      "rollback": "Remove the research adapter and revoke sandbox access."
+    },
+    {
+      "task_id": "CAFIN-P3-005",
+      "priority": "P3",
+      "title": "Government-submission architecture research",
+      "status": "blocked",
+      "user_choice_gate": "Requires a new explicit research authorization and written qualified review.",
+      "dependencies": [
+        "CAFIN-P3-004"
+      ],
+      "acceptance_tests": [
+        "Legal, security, privacy, identity, professional-responsibility, and provider requirements are documented.",
+        "An authorized human controls identity-bound attestations and submission.",
+        "AIGC never handles CRA credentials, MFA, recovery material, or representative authority.",
+        "No live government submission occurs."
+      ],
+      "authority_required": [
+        "government_integration_research",
+        "qualified_legal_tax_security_review"
+      ],
+      "risk": "critical_government_account_or_submission_compromise",
+      "rollback": "Terminate research and revoke all sandbox or partner access."
+    },
+    {
+      "task_id": "CAFIN-P3-006",
+      "priority": "P3",
+      "title": "Payment and remittance architecture research",
+      "status": "blocked",
+      "user_choice_gate": "Requires a new explicit research authorization; no payment authority is granted.",
+      "dependencies": [
+        "CAFIN-P2-005"
+      ],
+      "acceptance_tests": [
+        "Threat model covers fraud, destination substitution, amount mutation, duplicate payment, uncertain outcome, coercion, and account takeover.",
+        "Dual control, exact payload binding, reconciliation, limits, emergency stop, and incident response are designed and exercised with synthetic data.",
+        "No live payment, remittance, transfer, card charge, or refund occurs."
+      ],
+      "authority_required": [
+        "payment_architecture_research",
+        "qualified_financial_security_review"
+      ],
+      "risk": "critical_irreversible_financial_loss",
+      "rollback": "Stop research, destroy synthetic credentials, and preserve the research decision record."
+    }
+  ],
+  "official_sources": [
+    "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/keeping-records/where-keep-your-records-long-request-permission-destroy-them-early.html",
+    "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/sole-proprietorships-partnerships/report-business-income-expenses/completing-form-t2125/expenses-section-form-t2125.html",
+    "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/when-register-charge.html",
+    "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/payroll/remitting-source-deductions/how-when-remit-due-dates.html",
+    "https://www.canada.ca/en/revenue-agency/services/tax/representative-authorization/overview.html",
+    "https://www.alberta.ca/corporate-income-tax",
+    "https://www.alberta.ca/corporations-cooperatives-organizations-annual-returns",
+    "https://www.wcb.ab.ca/insurance-and-premiums/types-of-coverage/worker-coverage.html",
+    "https://www.alberta.ca/personal-information-protection-act"
+  ]
+}

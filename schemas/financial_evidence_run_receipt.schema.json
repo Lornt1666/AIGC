@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/financial_evidence_run_receipt.schema.json",
+  "title": "AIGC Financial Evidence Workflow Run Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "tenant_id",
+    "engagement_id",
+    "packet_id",
+    "packet_digest",
+    "work_order_id",
+    "as_of_date",
+    "artifact_digests",
+    "status",
+    "external_action_performed",
+    "receipt_digest"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "$ref": "financial_evidence_config.schema.json#/$defs/scoped_id"
+    },
+    "engagement_id": {
+      "$ref": "financial_evidence_config.schema.json#/$defs/scoped_id"
+    },
+    "packet_id": {
+      "type": "string",
+      "pattern": "^AIGC-FIN-EVIDENCE-[A-F0-9]{18}$"
+    },
+    "packet_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "work_order_id": {
+      "$ref": "financial_evidence_config.schema.json#/$defs/scoped_id"
+    },
+    "as_of_date": {
+      "$ref": "financial_evidence_config.schema.json#/$defs/date"
+    },
+    "artifact_digests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "packet",
+        "report"
+      ],
+      "properties": {
+        "packet": {
+          "$ref": "#/$defs/sha256"
+        },
+        "report": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "status": {
+      "const": "internal_evidence_projection_prepared"
+    },
+    "external_action_performed": {
+      "const": false
+    },
+    "receipt_digest": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

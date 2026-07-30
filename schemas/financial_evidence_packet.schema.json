@@ -1,0 +1,383 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/financial_evidence_packet.schema.json",
+  "title": "AIGC Financial Evidence Register Packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "tenant_id",
+    "engagement_id",
+    "work_order_id",
+    "as_of_date",
+    "currency",
+    "projection_version",
+    "evidence_scope",
+    "typed_totals",
+    "records",
+    "unpaid_work",
+    "coverage_gaps",
+    "accounting_boundaries",
+    "blocked_actions",
+    "external_action_performed",
+    "packet_id",
+    "packet_digest"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "$ref": "financial_evidence_config.schema.json#/$defs/scoped_id"
+    },
+    "engagement_id": {
+      "$ref": "financial_evidence_config.schema.json#/$defs/scoped_id"
+    },
+    "work_order_id": {
+      "$ref": "financial_evidence_config.schema.json#/$defs/scoped_id"
+    },
+    "as_of_date": {
+      "$ref": "financial_evidence_config.schema.json#/$defs/date"
+    },
+    "currency": {
+      "const": "CAD"
+    },
+    "projection_version": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+    },
+    "evidence_scope": {
+      "$ref": "financial_evidence_config.schema.json#/$defs/evidence_scope"
+    },
+    "typed_totals": {
+      "$ref": "#/$defs/typed_totals"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "$ref": "financial_evidence_config.schema.json#/$defs/financial_record"
+      },
+      "maxItems": 10000
+    },
+    "unpaid_work": {
+      "$ref": "#/$defs/unpaid_work_packet"
+    },
+    "coverage_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "financial_evidence_config.schema.json#/$defs/coverage_gap"
+      },
+      "uniqueItems": true,
+      "maxItems": 100
+    },
+    "accounting_boundaries": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      },
+      "uniqueItems": true,
+      "minItems": 6,
+      "maxItems": 20
+    },
+    "blocked_actions": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "submit_or_amend_a_tax_return",
+          "register_or_modify_a_cra_program_account",
+          "make_a_payment_or_remittance",
+          "classify_an_expense_as_tax_deductible",
+          "create_an_accounting_posting",
+          "select_a_tax_position",
+          "represent_the_operator_before_a_regulator",
+          "log_in_to_cra_or_handle_credentials",
+          "send_financial_records_to_an_external_party"
+        ]
+      },
+      "uniqueItems": true,
+      "minItems": 9,
+      "maxItems": 9
+    },
+    "external_action_performed": {
+      "const": false
+    },
+    "packet_id": {
+      "type": "string",
+      "pattern": "^AIGC-FIN-EVIDENCE-[A-F0-9]{18}$"
+    },
+    "packet_digest": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "typed_totals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_count",
+        "counted_settlement_count",
+        "settled_cash_outflow_minor_units",
+        "settled_refund_minor_units",
+        "net_settled_cash_outflow_minor_units",
+        "commercial_obligation_signal_minor_units"
+      ],
+      "properties": {
+        "record_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "counted_settlement_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "settled_cash_outflow_minor_units": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "settled_refund_minor_units": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "net_settled_cash_outflow_minor_units": {
+          "type": "integer"
+        },
+        "commercial_obligation_signal_minor_units": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "planning_scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hours",
+        "low_minor_units",
+        "reference_minor_units",
+        "high_minor_units"
+      ],
+      "properties": {
+        "hours": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "low_minor_units": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reference_minor_units": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "high_minor_units": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "unpaid_project_packet": {
+      "type": "object",
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "evidence_state"
+            ],
+            "properties": {
+              "evidence_state": {
+                "not": {
+                  "const": "documented_time_verified"
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "documented_minutes": {
+                "type": "null"
+              },
+              "selected_rate_id": {
+                "type": "null"
+              },
+              "status": {
+                "const": "blocked_pending_documented_time"
+              },
+              "selected_estimate_minor_units": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "documented_minutes"
+            ],
+            "properties": {
+              "documented_minutes": {
+                "type": "null"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "selected_rate_id": {
+                "type": "null"
+              },
+              "status": {
+                "const": "blocked_pending_documented_time"
+              },
+              "selected_estimate_minor_units": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "if": {
+              "required": [
+                "selected_rate_id"
+              ],
+              "properties": {
+                "selected_rate_id": {
+                  "type": "null"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "evidence_state": {
+                  "const": "documented_time_verified"
+                },
+                "status": {
+                  "const": "blocked_pending_reviewed_rate"
+                },
+                "selected_estimate_minor_units": {
+                  "type": "null"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "evidence_state": {
+                  "const": "documented_time_verified"
+                },
+                "selected_rate_id": {
+                  "type": "string"
+                },
+                "status": {
+                  "const": "owner_management_estimate_requires_professional_review"
+                },
+                "selected_estimate_minor_units": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "required": [
+        "project_id",
+        "project_label",
+        "evidence_state",
+        "documented_minutes",
+        "selected_rate_id",
+        "status",
+        "selected_estimate_minor_units",
+        "planning_scenarios"
+      ],
+      "properties": {
+        "project_id": {
+          "type": "string",
+          "pattern": "^PROJECT-[A-Z0-9][A-Z0-9-]{2,63}$"
+        },
+        "project_label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "evidence_state": {
+          "enum": [
+            "documented_time_verified",
+            "repository_verified",
+            "owner_stated",
+            "unknown"
+          ]
+        },
+        "documented_minutes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 52596000
+        },
+        "selected_rate_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^RATE-[A-Z0-9][A-Z0-9-]{2,63}$"
+        },
+        "status": {
+          "enum": [
+            "blocked_pending_documented_time",
+            "blocked_pending_reviewed_rate",
+            "owner_management_estimate_requires_professional_review"
+          ]
+        },
+        "selected_estimate_minor_units": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "planning_scenarios": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/planning_scenario"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        }
+      }
+    },
+    "unpaid_work_packet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "valuation_status",
+        "rate_scenarios",
+        "projects"
+      ],
+      "properties": {
+        "valuation_status": {
+          "const": "planning_only_not_cash_accounting_or_tax"
+        },
+        "rate_scenarios": {
+          "type": "array",
+          "items": {
+            "$ref": "financial_evidence_config.schema.json#/$defs/rate_scenario"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "projects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/unpaid_project_packet"
+          },
+          "minItems": 1,
+          "maxItems": 100
+        }
+      }
+    }
+  }
+}

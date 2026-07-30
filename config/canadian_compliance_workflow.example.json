@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "tenant_id": "TENANT-SYNTHETIC-CA-001",
+  "engagement_id": "ENGAGEMENT-SYNTHETIC-FINANCE-001",
+  "work_order_id": "WORK-ORDER-SYNTHETIC-COMPLIANCE-001",
+  "as_of_date": "2026-07-30",
+  "financial_evidence_packet_id": null,
+  "business_profile": {
+    "country": "CA",
+    "province": "AB",
+    "entity_type": "unknown",
+    "fiscal_period_end": null,
+    "accounting_method": "unknown",
+    "has_taxable_supplies": "unknown",
+    "current_quarter_taxable_supplies_cad": null,
+    "previous_four_quarters_taxable_supplies_cad": null,
+    "gst_hst_registration_status": "unknown",
+    "has_employees": "unknown",
+    "payroll_account_status": "unknown",
+    "workers_in_alberta": null,
+    "collects_personal_information": "unknown",
+    "cra_representative_status": "unknown"
+  }
+}

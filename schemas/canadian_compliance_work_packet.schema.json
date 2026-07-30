@@ -1,0 +1,270 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/canadian_compliance_work_packet.schema.json",
+  "title": "AIGC Canadian Compliance Preparation Work Packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "tenant_id",
+    "engagement_id",
+    "work_order_id",
+    "as_of_date",
+    "jurisdiction",
+    "status",
+    "evidence_level",
+    "business_profile",
+    "financial_evidence_packet_id",
+    "obligations",
+    "unknowns",
+    "blockers",
+    "allowed_internal_actions",
+    "blocked_external_actions",
+    "human_review_obligations",
+    "sources",
+    "external_action_performed",
+    "packet_id",
+    "packet_digest"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "$ref": "canadian_compliance_workflow_config.schema.json#/$defs/scoped_id"
+    },
+    "engagement_id": {
+      "$ref": "canadian_compliance_workflow_config.schema.json#/$defs/scoped_id"
+    },
+    "work_order_id": {
+      "$ref": "canadian_compliance_workflow_config.schema.json#/$defs/scoped_id"
+    },
+    "as_of_date": {
+      "$ref": "canadian_compliance_workflow_config.schema.json#/$defs/date"
+    },
+    "jurisdiction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "country",
+        "province"
+      ],
+      "properties": {
+        "country": {
+          "const": "CA"
+        },
+        "province": {
+          "const": "AB"
+        }
+      }
+    },
+    "status": {
+      "enum": [
+        "authority_unresolved",
+        "evidence_required",
+        "operator_review_required"
+      ]
+    },
+    "evidence_level": {
+      "const": "preparation_only"
+    },
+    "business_profile": {
+      "$ref": "canadian_compliance_workflow_config.schema.json#/$defs/business_profile"
+    },
+    "financial_evidence_packet_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^AIGC-FIN-EVIDENCE-[A-F0-9]{18}$"
+    },
+    "obligations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/obligation"
+      },
+      "minItems": 1,
+      "maxItems": 100
+    },
+    "unknowns": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/snake_code"
+      },
+      "uniqueItems": true,
+      "maxItems": 100
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/snake_code"
+      },
+      "uniqueItems": true,
+      "maxItems": 100
+    },
+    "allowed_internal_actions": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "classify_source_documents_without_setting_tax_treatment",
+          "prepare_an_obligation_and_evidence_checklist",
+          "calculate_review_candidates_from_operator_supplied_numbers",
+          "prepare_a_human_review_packet",
+          "generate_a_redacted_records_index",
+          "identify_missing_entity_period_remitter_and_authority_facts"
+        ]
+      },
+      "uniqueItems": true,
+      "minItems": 6,
+      "maxItems": 6
+    },
+    "blocked_external_actions": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "log_in_to_or_control_a_cra_account",
+          "handle_cra_credentials_mfa_or_recovery_material",
+          "authorize_or_change_a_cra_representative",
+          "register_or_modify_gst_hst_payroll_or_other_program_accounts",
+          "file_or_amend_t1_t2_t2125_gst_hst_payroll_or_information_returns",
+          "submit_alberta_at1_or_corporate_annual_returns",
+          "register_or_report_to_wcb_alberta",
+          "make_tax_payroll_wcb_or_registry_payments",
+          "select_tax_positions_or_final_expense_classifications",
+          "communicate_with_a_regulator_as_the_operator",
+          "sign_attest_or_certify_on_behalf_of_a_human"
+        ]
+      },
+      "uniqueItems": true,
+      "minItems": 11,
+      "maxItems": 11
+    },
+    "human_review_obligations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      },
+      "uniqueItems": true,
+      "minItems": 4,
+      "maxItems": 20
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/source"
+      },
+      "uniqueItems": true,
+      "minItems": 1,
+      "maxItems": 100
+    },
+    "external_action_performed": {
+      "const": false
+    },
+    "packet_id": {
+      "type": "string",
+      "pattern": "^AIGC-CA-COMPLIANCE-[A-F0-9]{18}$"
+    },
+    "packet_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "$defs": {
+    "snake_code": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]{1,127}$"
+    },
+    "obligation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "obligation_id",
+        "title",
+        "status",
+        "allowed_internal_actions",
+        "source_ids",
+        "external_action_performed"
+      ],
+      "properties": {
+        "obligation_id": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}-[A-Z0-9-]+-[0-9]{3}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "status": {
+          "$ref": "#/$defs/snake_code"
+        },
+        "allowed_internal_actions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9-]{2,127}$"
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "external_action_performed": {
+          "const": false
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_id",
+        "publisher",
+        "title",
+        "url",
+        "retrieved_at",
+        "claim_boundary"
+      ],
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9-]{2,127}$"
+        },
+        "publisher": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "retrieved_at": {
+          "$ref": "canadian_compliance_workflow_config.schema.json#/$defs/date"
+        },
+        "claim_boundary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      }
+    }
+  }
+}

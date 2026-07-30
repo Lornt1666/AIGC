@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Iterable, List
@@ -39,6 +40,81 @@ def validate_artifact(schema_name: str, data: Any, schema_dir: Path | None = Non
     if errors:
         raise ContractValidationError(
             f"{schema_name} validation failed: " + "; ".join(errors[:10])
+        )
+    return data
+
+
+def validate_artifact_strict(
+    schema_name: str,
+    data: Any,
+    schema_dir: Path | None = None,
+) -> Any:
+    """Validate a Draft 2020-12 artifact with local-only reference resolution.
+
+    The legacy validator remains available for existing repository callers. New
+    security-sensitive contracts should opt into this complete validator.
+    """
+
+    try:
+        from jsonschema import FormatChecker
+        from jsonschema.validators import validator_for
+        from referencing import Registry, Resource
+    except ImportError as exc:
+        raise ContractValidationError(
+            "Strict JSON Schema validation dependencies are unavailable."
+        ) from exc
+
+    root = (schema_dir or SCHEMA_DIR).resolve()
+    primary_name = schema_name.removesuffix(".schema.json")
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,127}", primary_name):
+        raise ContractValidationError(
+            "Strict schema name must be a safe local basename."
+        )
+    primary_path = (root / f"{primary_name}.schema.json").resolve()
+    if primary_path.parent != root:
+        raise ContractValidationError(
+            "Strict schema path must remain inside the schema directory."
+        )
+    schemas = _load_local_schema_graph(primary_name, root)
+    primary = schemas[primary_name]
+
+    registry = Registry()
+    for name, schema in schemas.items():
+        resource_uri = schema.get("$id") or (
+            root / f"{name}.schema.json"
+        ).as_uri()
+        registry = registry.with_resource(
+            resource_uri,
+            Resource.from_contents(schema),
+        )
+
+    validator_class = validator_for(primary)
+    try:
+        validator_class.check_schema(primary)
+        validator = validator_class(
+            primary,
+            registry=registry,
+            format_checker=FormatChecker(),
+        )
+        errors = sorted(
+            validator.iter_errors(data),
+            key=lambda error: repr(list(error.absolute_path)),
+        )
+    except Exception as exc:
+        if isinstance(exc, ContractValidationError):
+            raise
+        raise ContractValidationError(
+            f"{primary_name} strict validator could not be constructed."
+        ) from exc
+
+    if errors:
+        summaries = [
+            f"{_validation_path(error.absolute_path)} failed "
+            f"{error.validator or 'schema'}"
+            for error in errors[:10]
+        ]
+        raise ContractValidationError(
+            f"{primary_name} strict validation failed: " + "; ".join(summaries)
         )
     return data
 
@@ -109,6 +185,59 @@ def _load_payload(path: Path) -> Any:
             return json.load(handle)
     except json.JSONDecodeError as exc:
         raise ContractValidationError(f"{path} is not valid JSON: {exc}") from exc
+
+
+def _load_local_schema_graph(
+    primary_name: str,
+    root: Path,
+) -> Dict[str, Dict[str, Any]]:
+    pending = [primary_name]
+    loaded: Dict[str, Dict[str, Any]] = {}
+    while pending:
+        name = pending.pop()
+        if name in loaded:
+            continue
+        schema = load_schema(name, schema_dir=root)
+        loaded[name] = schema
+        for reference in _iter_schema_references(schema):
+            target = reference.split("#", 1)[0]
+            if not target:
+                continue
+            if "://" in target:
+                raise ContractValidationError(
+                    f"{name} contains a non-local schema reference."
+                )
+            candidate = (root / target).resolve()
+            if candidate.parent != root or not candidate.name.endswith(
+                ".schema.json"
+            ):
+                raise ContractValidationError(
+                    f"{name} contains an unsafe schema reference."
+                )
+            pending.append(candidate.name.removesuffix(".schema.json"))
+    return loaded
+
+
+def _iter_schema_references(value: Any) -> Iterable[str]:
+    if isinstance(value, dict):
+        reference = value.get("$ref")
+        if isinstance(reference, str):
+            yield reference
+        for child in value.values():
+            yield from _iter_schema_references(child)
+    elif isinstance(value, list):
+        for child in value:
+            yield from _iter_schema_references(child)
+
+
+def _validation_path(parts: Iterable[Any]) -> str:
+    path = "$"
+    for part in parts:
+        if isinstance(part, int):
+            path += f"[{part}]"
+        else:
+            path += f".{part}"
+    return path
 
 
 def _validate_value(value: Any, schema: Dict[str, Any], path: str) -> Iterable[str]:

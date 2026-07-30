@@ -1,0 +1,125 @@
+{
+  "schema_version": "1.0.0",
+  "tenant_id": "TENANT-SYNTHETIC-CA-001",
+  "engagement_id": "ENGAGEMENT-SYNTHETIC-FINANCE-001",
+  "work_order_id": "WORK-ORDER-SYNTHETIC-FINANCE-001",
+  "as_of_date": "2026-07-30",
+  "currency": "CAD",
+  "projection_version": "synthetic-example-v1",
+  "evidence_scope": {
+    "period_start": "2026-01-01",
+    "period_end": "2026-07-30",
+    "scope_status": "partial",
+    "source_classes": [
+      "ai_provider_receipt",
+      "app_store_receipt",
+      "google_play_receipt",
+      "subscription_notice"
+    ]
+  },
+  "records": [
+    {
+      "record_id": "FIN-SYNTHETIC-AI-001",
+      "source_ref_id": "SRC-SYNTHETICAI000001",
+      "source_provider": "openai",
+      "record_type": "settlement_evidence",
+      "evidence_state": "itemized_receipt_verified",
+      "settlement_state": "settled",
+      "allocation_state": "candidate",
+      "direction": "outflow",
+      "effective_date": "2026-01-15",
+      "amount_minor_units": 2834,
+      "counted_in_settled_cash": true
+    },
+    {
+      "record_id": "FIN-SYNTHETIC-APP-001",
+      "source_ref_id": "SRC-SYNTHETICAPP00001",
+      "source_provider": "apple_app_store",
+      "record_type": "settlement_evidence",
+      "evidence_state": "itemized_receipt_verified",
+      "settlement_state": "settled",
+      "allocation_state": "personal",
+      "direction": "outflow",
+      "effective_date": "2026-02-15",
+      "amount_minor_units": 999,
+      "counted_in_settled_cash": true
+    },
+    {
+      "record_id": "FIN-SYNTHETIC-REFUND-001",
+      "source_ref_id": "SRC-SYNTHETICREFUND01",
+      "source_provider": "google_play",
+      "record_type": "settlement_evidence",
+      "evidence_state": "itemized_receipt_verified",
+      "settlement_state": "settled",
+      "allocation_state": "candidate",
+      "direction": "refund",
+      "effective_date": "2026-03-15",
+      "amount_minor_units": 500,
+      "counted_in_settled_cash": true
+    },
+    {
+      "record_id": "FIN-SYNTHETIC-SIGNAL-001",
+      "source_ref_id": "SRC-SYNTHETICSIGNAL01",
+      "source_provider": "other_subscription",
+      "record_type": "commercial_obligation_signal",
+      "evidence_state": "subscription_signal_unverified",
+      "settlement_state": "unverified",
+      "allocation_state": "unallocated",
+      "direction": "outflow",
+      "effective_date": "2026-04-15",
+      "amount_minor_units": 16900,
+      "counted_in_settled_cash": false
+    }
+  ],
+  "unpaid_work": {
+    "rate_scenarios": [
+      {
+        "rate_id": "RATE-JOB-BANK-AB-LOW",
+        "rate_label": "Synthetic scenario using Job Bank Alberta low comparator",
+        "hourly_rate_minor_units": 3606,
+        "basis_code": "job_bank_alberta_low"
+      },
+      {
+        "rate_id": "RATE-ALIS-PROGRAMMER-AVG",
+        "rate_label": "Synthetic scenario using ALIS programmer average comparator",
+        "hourly_rate_minor_units": 4455,
+        "basis_code": "alis_programmer_average"
+      },
+      {
+        "rate_id": "RATE-ALIS-SOFTWARE-ENGINEER-AVG",
+        "rate_label": "Synthetic scenario using ALIS software engineer average comparator",
+        "hourly_rate_minor_units": 5311,
+        "basis_code": "alis_software_engineer_average"
+      }
+    ],
+    "scenario_hours": [
+      100,
+      250,
+      500,
+      1000
+    ],
+    "projects": [
+      {
+        "project_id": "PROJECT-SYNTHETIC-AUTOMATION",
+        "project_label": "Synthetic automation platform",
+        "evidence_state": "unknown",
+        "documented_minutes": null,
+        "selected_rate_id": null
+      },
+      {
+        "project_id": "PROJECT-SYNTHETIC-MARKET-ANALYTICS",
+        "project_label": "Synthetic market analytics prototype",
+        "evidence_state": "unknown",
+        "documented_minutes": null,
+        "selected_rate_id": null
+      }
+    ]
+  },
+  "coverage_gaps": [
+    "SYNTHETIC_FIXTURE_NOT_REAL_FINANCIAL_DATA",
+    "GITHUB_BILLING_NOT_CONNECTED",
+    "MOBILE_CARRIER_RECEIPTS_NOT_CONNECTED",
+    "BUSINESS_USE_NOT_REVIEWED",
+    "PROJECT_TIME_NOT_DOCUMENTED"
+  ]
+}

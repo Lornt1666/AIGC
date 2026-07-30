@@ -1,0 +1,450 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/financial_evidence_config.schema.json",
+  "title": "AIGC Financial Evidence Register Configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "tenant_id",
+    "engagement_id",
+    "work_order_id",
+    "as_of_date",
+    "currency",
+    "projection_version",
+    "evidence_scope",
+    "records",
+    "unpaid_work",
+    "coverage_gaps"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "$ref": "#/$defs/scoped_id"
+    },
+    "engagement_id": {
+      "$ref": "#/$defs/scoped_id"
+    },
+    "work_order_id": {
+      "$ref": "#/$defs/scoped_id"
+    },
+    "as_of_date": {
+      "$ref": "#/$defs/date"
+    },
+    "currency": {
+      "const": "CAD"
+    },
+    "projection_version": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+    },
+    "evidence_scope": {
+      "$ref": "#/$defs/evidence_scope"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/financial_record"
+      },
+      "maxItems": 10000
+    },
+    "unpaid_work": {
+      "$ref": "#/$defs/unpaid_work_config"
+    },
+    "coverage_gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/coverage_gap"
+      },
+      "uniqueItems": true,
+      "maxItems": 100
+    }
+  },
+  "$defs": {
+    "scoped_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "evidence_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "period_start",
+        "period_end",
+        "scope_status",
+        "source_classes"
+      ],
+      "properties": {
+        "period_start": {
+          "$ref": "#/$defs/date"
+        },
+        "period_end": {
+          "$ref": "#/$defs/date"
+        },
+        "scope_status": {
+          "enum": [
+            "partial",
+            "complete"
+          ]
+        },
+        "source_classes": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "app_store_receipt",
+              "google_play_receipt",
+              "github_billing_receipt",
+              "ai_provider_receipt",
+              "payment_processor_receipt",
+              "telecom_receipt",
+              "subscription_notice",
+              "owner_statement"
+            ]
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 8
+        }
+      }
+    },
+    "financial_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "counted_in_settled_cash"
+            ],
+            "properties": {
+              "counted_in_settled_cash": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "record_type": {
+                "const": "settlement_evidence"
+              },
+              "evidence_state": {
+                "enum": [
+                  "itemized_receipt_verified",
+                  "payment_processor_verified"
+                ]
+              },
+              "settlement_state": {
+                "const": "settled"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "record_type",
+              "evidence_state",
+              "settlement_state"
+            ],
+            "properties": {
+              "record_type": {
+                "const": "settlement_evidence"
+              },
+              "evidence_state": {
+                "enum": [
+                  "itemized_receipt_verified",
+                  "payment_processor_verified"
+                ]
+              },
+              "settlement_state": {
+                "const": "settled"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "counted_in_settled_cash": {
+                "const": true
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "record_type"
+            ],
+            "properties": {
+              "record_type": {
+                "const": "commercial_obligation_signal"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "counted_in_settled_cash": {
+                "const": false
+              }
+            }
+          }
+        }
+      ],
+      "required": [
+        "record_id",
+        "source_ref_id",
+        "source_provider",
+        "record_type",
+        "evidence_state",
+        "settlement_state",
+        "allocation_state",
+        "direction",
+        "effective_date",
+        "amount_minor_units",
+        "counted_in_settled_cash"
+      ],
+      "properties": {
+        "record_id": {
+          "type": "string",
+          "pattern": "^FIN-[A-Z0-9][A-Z0-9-]{2,63}$"
+        },
+        "source_ref_id": {
+          "type": "string",
+          "pattern": "^SRC-[A-Z0-9]{16,64}$"
+        },
+        "source_provider": {
+          "enum": [
+            "apple_app_store",
+            "google_play",
+            "github",
+            "openai",
+            "other_subscription",
+            "payment_processor",
+            "telecom",
+            "other"
+          ]
+        },
+        "record_type": {
+          "enum": [
+            "settlement_evidence",
+            "commercial_obligation_signal"
+          ]
+        },
+        "evidence_state": {
+          "enum": [
+            "itemized_receipt_verified",
+            "payment_processor_verified",
+            "subscription_signal_unverified",
+            "owner_stated"
+          ]
+        },
+        "settlement_state": {
+          "enum": [
+            "settled",
+            "unverified",
+            "reversed",
+            "indeterminate"
+          ]
+        },
+        "allocation_state": {
+          "enum": [
+            "unallocated",
+            "candidate",
+            "mixed",
+            "personal"
+          ]
+        },
+        "direction": {
+          "enum": [
+            "outflow",
+            "refund"
+          ]
+        },
+        "effective_date": {
+          "$ref": "#/$defs/date"
+        },
+        "amount_minor_units": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "counted_in_settled_cash": {
+          "type": "boolean"
+        }
+      }
+    },
+    "rate_scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rate_id",
+        "rate_label",
+        "hourly_rate_minor_units",
+        "basis_code"
+      ],
+      "properties": {
+        "rate_id": {
+          "type": "string",
+          "pattern": "^RATE-[A-Z0-9][A-Z0-9-]{2,63}$"
+        },
+        "rate_label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "hourly_rate_minor_units": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000000
+        },
+        "basis_code": {
+          "enum": [
+            "job_bank_alberta_low",
+            "alis_programmer_average",
+            "alis_software_engineer_average"
+          ]
+        }
+      }
+    },
+    "unpaid_project_config": {
+      "type": "object",
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "evidence_state"
+            ],
+            "properties": {
+              "evidence_state": {
+                "not": {
+                  "const": "documented_time_verified"
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "documented_minutes": {
+                "type": "null"
+              },
+              "selected_rate_id": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "documented_minutes"
+            ],
+            "properties": {
+              "documented_minutes": {
+                "type": "null"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "selected_rate_id": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ],
+      "required": [
+        "project_id",
+        "project_label",
+        "evidence_state",
+        "documented_minutes",
+        "selected_rate_id"
+      ],
+      "properties": {
+        "project_id": {
+          "type": "string",
+          "pattern": "^PROJECT-[A-Z0-9][A-Z0-9-]{2,63}$"
+        },
+        "project_label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "evidence_state": {
+          "enum": [
+            "documented_time_verified",
+            "repository_verified",
+            "owner_stated",
+            "unknown"
+          ]
+        },
+        "documented_minutes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 52596000
+        },
+        "selected_rate_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^RATE-[A-Z0-9][A-Z0-9-]{2,63}$"
+        }
+      }
+    },
+    "unpaid_work_config": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rate_scenarios",
+        "scenario_hours",
+        "projects"
+      ],
+      "properties": {
+        "rate_scenarios": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/rate_scenario"
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "scenario_hours": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 87600
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "projects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/unpaid_project_config"
+          },
+          "minItems": 1,
+          "maxItems": 100
+        }
+      }
+    },
+    "coverage_gap": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]{2,127}$"
+    }
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/canadian_compliance_run_receipt.schema.json",
+  "title": "AIGC Canadian Compliance Preparation Run Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "tenant_id",
+    "engagement_id",
+    "packet_id",
+    "packet_digest",
+    "status",
+    "work_order_id",
+    "as_of_date",
+    "artifact_digests",
+    "external_action_performed",
+    "receipt_digest"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "$ref": "canadian_compliance_workflow_config.schema.json#/$defs/scoped_id"
+    },
+    "engagement_id": {
+      "$ref": "canadian_compliance_workflow_config.schema.json#/$defs/scoped_id"
+    },
+    "packet_id": {
+      "type": "string",
+      "pattern": "^AIGC-CA-COMPLIANCE-[A-F0-9]{18}$"
+    },
+    "packet_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "status": {
+      "enum": [
+        "authority_unresolved",
+        "evidence_required",
+        "operator_review_required"
+      ]
+    },
+    "work_order_id": {
+      "$ref": "canadian_compliance_workflow_config.schema.json#/$defs/scoped_id"
+    },
+    "as_of_date": {
+      "$ref": "canadian_compliance_workflow_config.schema.json#/$defs/date"
+    },
+    "artifact_digests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "packet",
+        "report"
+      ],
+      "properties": {
+        "packet": {
+          "$ref": "#/$defs/sha256"
+        },
+        "report": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "external_action_performed": {
+      "const": false
+    },
+    "receipt_digest": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

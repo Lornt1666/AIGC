@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/canadian_compliance_workflow_config.schema.json",
+  "title": "AIGC Canadian Compliance Preparation Configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "tenant_id",
+    "engagement_id",
+    "work_order_id",
+    "as_of_date",
+    "financial_evidence_packet_id",
+    "business_profile"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "tenant_id": {
+      "$ref": "#/$defs/scoped_id"
+    },
+    "engagement_id": {
+      "$ref": "#/$defs/scoped_id"
+    },
+    "work_order_id": {
+      "$ref": "#/$defs/scoped_id"
+    },
+    "as_of_date": {
+      "$ref": "#/$defs/date"
+    },
+    "financial_evidence_packet_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^AIGC-FIN-EVIDENCE-[A-F0-9]{18}$"
+    },
+    "business_profile": {
+      "$ref": "#/$defs/business_profile"
+    }
+  },
+  "$defs": {
+    "scoped_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "decimal_cad_or_null": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^(0|[1-9][0-9]{0,12})(\\.[0-9]{1,2})?$"
+    },
+    "business_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "country",
+        "province",
+        "entity_type",
+        "fiscal_period_end",
+        "accounting_method",
+        "has_taxable_supplies",
+        "current_quarter_taxable_supplies_cad",
+        "previous_four_quarters_taxable_supplies_cad",
+        "gst_hst_registration_status",
+        "has_employees",
+        "payroll_account_status",
+        "workers_in_alberta",
+        "collects_personal_information",
+        "cra_representative_status"
+      ],
+      "properties": {
+        "country": {
+          "const": "CA"
+        },
+        "province": {
+          "const": "AB"
+        },
+        "entity_type": {
+          "enum": [
+            "unknown",
+            "sole_proprietorship",
+            "partnership",
+            "corporation",
+            "nonprofit"
+          ]
+        },
+        "fiscal_period_end": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "accounting_method": {
+          "enum": [
+            "unknown",
+            "cash",
+            "accrual"
+          ]
+        },
+        "has_taxable_supplies": {
+          "$ref": "#/$defs/tristate"
+        },
+        "current_quarter_taxable_supplies_cad": {
+          "$ref": "#/$defs/decimal_cad_or_null"
+        },
+        "previous_four_quarters_taxable_supplies_cad": {
+          "$ref": "#/$defs/decimal_cad_or_null"
+        },
+        "gst_hst_registration_status": {
+          "enum": [
+            "unknown",
+            "not_registered",
+            "registered"
+          ]
+        },
+        "has_employees": {
+          "$ref": "#/$defs/tristate"
+        },
+        "payroll_account_status": {
+          "enum": [
+            "unknown",
+            "none",
+            "active",
+            "closed"
+          ]
+        },
+        "workers_in_alberta": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 10000000
+        },
+        "collects_personal_information": {
+          "$ref": "#/$defs/tristate"
+        },
+        "cra_representative_status": {
+          "enum": [
+            "unknown",
+            "none",
+            "authorized_human"
+          ]
+        }
+      }
+    },
+    "tristate": {
+      "enum": [
+        "unknown",
+        "yes",
+        "no"
+      ]
+    }
+  }
+}

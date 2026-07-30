@@ -1,0 +1,299 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/canadian_financial_procurement_tasks.schema.json",
+  "title": "AIGC Canadian Financial Feature Procurement Backlog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "backlog_id",
+    "title",
+    "as_of_date",
+    "status",
+    "default_feature_state",
+    "data_boundary",
+    "decision_protocol",
+    "tasks",
+    "official_sources",
+    "claim_boundary"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "backlog_id": {
+      "const": "AIGC-CAFIN-PROCUREMENT-V1"
+    },
+    "title": {
+      "const": "Canadian Financial Work Execution Feature Procurement"
+    },
+    "as_of_date": {
+      "$ref": "#/$defs/date"
+    },
+    "status": {
+      "const": "options_pending_operator_selection"
+    },
+    "default_feature_state": {
+      "const": "disabled"
+    },
+    "data_boundary": {
+      "$ref": "#/$defs/bounded_statement"
+    },
+    "decision_protocol": {
+      "$ref": "#/$defs/decision_protocol"
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/task"
+      },
+      "minItems": 1,
+      "maxItems": 500
+    },
+    "official_sources": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "pattern": "^https://",
+        "maxLength": 2048
+      },
+      "uniqueItems": true,
+      "minItems": 1,
+      "maxItems": 100
+    },
+    "claim_boundary": {
+      "$ref": "#/$defs/bounded_statement"
+    }
+  },
+  "$defs": {
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "bounded_statement": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "selection_state": {
+      "enum": [
+        "proposed",
+        "selected",
+        "specified",
+        "implemented",
+        "local_verified",
+        "hosted_ci_verified",
+        "staging_observed",
+        "operator_accepted",
+        "deferred",
+        "rejected",
+        "research_only",
+        "blocked"
+      ]
+    },
+    "decision_protocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "selection_required",
+        "one_bounded_slice_per_authorization",
+        "dependencies_require_separate_admission",
+        "external_actions_require_exact_single_use_authority",
+        "selection_states"
+      ],
+      "properties": {
+        "selection_required": {
+          "const": true
+        },
+        "one_bounded_slice_per_authorization": {
+          "const": true
+        },
+        "dependencies_require_separate_admission": {
+          "const": true
+        },
+        "external_actions_require_exact_single_use_authority": {
+          "const": true
+        },
+        "selection_states": {
+          "const": [
+            "proposed",
+            "selected",
+            "specified",
+            "implemented",
+            "local_verified",
+            "hosted_ci_verified",
+            "staging_observed",
+            "operator_accepted",
+            "deferred",
+            "rejected",
+            "research_only",
+            "blocked"
+          ]
+        }
+      }
+    },
+    "task_id": {
+      "type": "string",
+      "pattern": "^CAFIN-P[0-3]-[0-9]{3}$"
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "priority"
+            ],
+            "properties": {
+              "priority": {
+                "const": "P0"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "task_id": {
+                "pattern": "^CAFIN-P0-[0-9]{3}$"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "priority"
+            ],
+            "properties": {
+              "priority": {
+                "const": "P1"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "task_id": {
+                "pattern": "^CAFIN-P1-[0-9]{3}$"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "priority"
+            ],
+            "properties": {
+              "priority": {
+                "const": "P2"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "task_id": {
+                "pattern": "^CAFIN-P2-[0-9]{3}$"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "priority"
+            ],
+            "properties": {
+              "priority": {
+                "const": "P3"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "task_id": {
+                "pattern": "^CAFIN-P3-[0-9]{3}$"
+              }
+            }
+          }
+        }
+      ],
+      "required": [
+        "task_id",
+        "priority",
+        "title",
+        "status",
+        "user_choice_gate",
+        "dependencies",
+        "acceptance_tests",
+        "authority_required",
+        "risk",
+        "rollback"
+      ],
+      "properties": {
+        "task_id": {
+          "$ref": "#/$defs/task_id"
+        },
+        "priority": {
+          "enum": [
+            "P0",
+            "P1",
+            "P2",
+            "P3"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "status": {
+          "$ref": "#/$defs/selection_state"
+        },
+        "user_choice_gate": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/task_id"
+          },
+          "uniqueItems": true,
+          "maxItems": 50
+        },
+        "acceptance_tests": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 50
+        },
+        "authority_required": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{1,127}$"
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 50
+        },
+        "risk": {
+          "type": "string",
+          "pattern": "^(low|medium|high|critical)_[a-z0-9_]{2,127}$"
+        },
+        "rollback": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        }
+      }
+    }
+  }
+}
