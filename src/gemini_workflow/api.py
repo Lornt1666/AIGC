@@ -44,6 +44,28 @@ class EmergencyClearRequest(EmergencyStopRequest):
     exact_phrase: str = Field(min_length=1, max_length=200)
 
 
+def workflow_controls(
+    status: str,
+    *,
+    decision_recorded: bool = False,
+) -> dict[str, Any]:
+    """Project canonical workflow state into additive UI capabilities."""
+
+    allowed_decisions: list[str] = []
+    if not decision_recorded:
+        if status == "pending_human_review":
+            allowed_decisions = ["approve", "deny", "revise"]
+        elif status in {"clarification_required", "blocked"}:
+            allowed_decisions = ["deny", "revise"]
+    return {
+        "allowed_decisions": allowed_decisions,
+        "human_review_required": True,
+        "approval_scope": "internal_use_only",
+        "external_action_allowed": False,
+        "operator_record_kind": "accountable_attestation",
+    }
+
+
 def set_service_override(service: GeminiWorkflowService | None) -> None:
     global _SERVICE_OVERRIDE
     _SERVICE_OVERRIDE = service
@@ -159,14 +181,21 @@ def create_router(
                 service.runtime_receipt(record.run_id),
                 record=record,
             )
+            result["api_contract_version"] = "1.1"
+            result["status_url"] = (
+                f"/api/gemini/workflows/{record.run_id}"
+            )
+            result["controls"] = workflow_controls(record.status)
             return result
         except GeminiWorkflowInProgressError as exc:
             response.status_code = 202
             return {
+                "api_contract_version": "1.1",
                 "run_id": exc.run_id,
                 "status": "executing",
                 "status_url": f"/api/gemini/workflows/{exc.run_id}",
                 "model_api_call_repeated": False,
+                "controls": workflow_controls("executing"),
             }
         except GeminiWorkflowConfigurationError as exc:
             raise HTTPException(status_code=503, detail=str(exc)) from exc
@@ -201,15 +230,40 @@ def create_router(
         _actor: OperatorIdentity = Depends(auth_dependency),
     ) -> dict[str, Any]:
         try:
-            records = get_service().get_workflow(run_id)
+            service = get_service()
+            records = service.get_workflow(run_id)
+            decision_recorded = any(
+                item.event_type == "operator_decision" for item in records
+            )
+            current_status = records[-1].status
             return {
+                "api_contract_version": "1.1",
                 "run_id": run_id,
+                "current_status": current_status,
+                "controls": workflow_controls(
+                    current_status,
+                    decision_recorded=decision_recorded,
+                ),
+                "runtime_receipt": _runtime_receipt_payload(
+                    service.runtime_receipt(run_id),
+                    record=records[-1],
+                ),
                 "events": [
                     item.model_dump(mode="json") for item in records
                 ],
             }
         except GeminiWorkflowStateError as exc:
             raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except RuntimeControlError as exc:
+            raise HTTPException(
+                status_code=503,
+                detail="Gemini runtime controls are unavailable",
+            ) from exc
+        except EvidenceStoreError as exc:
+            raise HTTPException(
+                status_code=503,
+                detail="Workflow evidence could not be read",
+            ) from exc
 
     @router.post("/workflows/{run_id}/decision")
     def decide(
@@ -228,6 +282,12 @@ def create_router(
             result["decision_receipt"] = _runtime_receipt_payload(
                 service.runtime_receipt(run_id),
                 record=record,
+            )
+            result["api_contract_version"] = "1.1"
+            result["status_url"] = f"/api/gemini/workflows/{run_id}"
+            result["controls"] = workflow_controls(
+                record.status,
+                decision_recorded=True,
             )
             return result
         except (GeminiWorkflowStateError, ValueError) as exc:

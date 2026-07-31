@@ -49,6 +49,53 @@ requires an authorized deployment and retained runtime receipts.
     sanitized, generation-pinned receipt. Publication requires a byte-exact,
     content-bound human confirmation.
 
+## Canonical operator workspace
+
+The isolated `src.webapp.gemini_app` composition is the canonical Gemini
+operator and judge surface for this slice. Its operator workspace now exposes
+one complete browser flow over the existing governed API:
+
+```text
+transient operator credential
+→ configuration/readiness/stop inspection
+→ bounded opportunity intake
+→ one idempotent assessment request
+→ structured assessment and deterministic-policy review
+→ one approve-internal-use | deny | revise attestation
+→ runtime and decision receipt inspection
+```
+
+The browser does not store the operator or judge credential in a cookie,
+`localStorage`, or `sessionStorage`. It clears the credential input after
+copying it into page memory and clears page memory on disconnect. A longer-term
+verified-identity-provider session remains preferable to a shared credential.
+
+The UI renders untrusted assessment and receipt values through DOM
+`textContent`, never HTML insertion. CSS and surface-specific JavaScript are
+served through same-origin asset routes, so the application Content Security
+Policy does not require `unsafe-inline` for scripts or styles. The judge asset
+contains only its read-only receipt route and no Gemini provider, decision, or
+runtime-control route.
+
+Configuration and readiness remain visibly separate. A configured provider is
+not displayed as ready unless the observed `/readyz` probe passes. A 502,
+unknown network outcome, or uncertain provider result is displayed as
+non-retriable; the UI never automatically repeats the assessment POST.
+
+The API contract is additive and remains backward compatible. Assessment,
+retrieval, and decision responses include:
+
+- `api_contract_version`;
+- a canonical `status_url`;
+- a `controls` projection with server-admitted `allowed_decisions`;
+- `approval_scope: internal_use_only`;
+- `external_action_allowed: false`; and
+- the applicable runtime or decision receipt.
+
+This projection does not create a second workflow state, authority system, or
+evidence store. Backend transition checks remain authoritative even if client
+controls are modified.
+
 ## Required environment
 
 | Variable | Requirement |
@@ -167,12 +214,20 @@ Do not update Devpost capability claims until all of the following are captured:
 
 ## Critical activation blockers
 
-The remaining blockers are external receipts, not additional capability claims:
+Repository implementation of the browser flow does not remove these activation
+blockers:
 
 - a passing hosted CI receipt for the exact release SHA;
 - an explicitly authorized and inspected Canadian staging configuration;
 - an immutable-digest deployment receipt for both no-traffic candidates;
-- one permit-bound synthetic live runtime receipt;
+- server-side atomic consumption of a one-use live-model permit bound to actor,
+  tenant, request/model/prompt/schema/policy digests, revision, expiry, stop
+  epoch, and usage ceiling; the canary script's client-side validation is not
+  sufficient production enforcement;
+- a least-privilege evidence read/index design that resolves the current
+  conflict between create-only writer IAM and workflow retrieval that lists
+  Cloud Storage objects;
+- one server-permitted synthetic live runtime receipt;
 - one explicitly authorized sanitized judge receipt and redacted media
   manifest;
 - PR approval, required-check success and merge receipt; and

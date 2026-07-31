@@ -6,7 +6,7 @@ from typing import Any, Callable, Literal
 from urllib.parse import urlsplit
 
 from fastapi import Depends, FastAPI, HTTPException, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
 
 from src.gemini_workflow.api import create_router
 from src.gemini_workflow.auth import (
@@ -25,7 +25,11 @@ from src.gemini_workflow.secret_broker import (
     OmegaXSecretAccess,
     SecretBrokerError,
 )
-from src.webapp.gemini_ui import render_surface_ui
+from src.webapp.gemini_ui import (
+    render_surface_script,
+    render_surface_styles,
+    render_surface_ui,
+)
 
 
 Surface = Literal["operator", "judge"]
@@ -66,7 +70,7 @@ def create_app(
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["Content-Security-Policy"] = (
             "default-src 'none'; connect-src 'self'; img-src 'self' data:; "
-            "style-src 'unsafe-inline'; script-src 'unsafe-inline'; "
+            "style-src 'self'; script-src 'self'; "
             "base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
         )
         return response
@@ -90,6 +94,28 @@ def create_app(
     @application.get("/", response_class=HTMLResponse)
     def root() -> str:
         return render_surface_ui(selected)
+
+    @application.get(
+        "/assets/aigc.css",
+        response_class=Response,
+        include_in_schema=False,
+    )
+    def surface_styles() -> Response:
+        return Response(
+            content=render_surface_styles(),
+            media_type="text/css",
+        )
+
+    @application.get(
+        "/assets/surface.js",
+        response_class=Response,
+        include_in_schema=False,
+    )
+    def surface_script() -> Response:
+        return Response(
+            content=render_surface_script(selected),
+            media_type="text/javascript",
+        )
 
     if selected == "operator":
         application.include_router(

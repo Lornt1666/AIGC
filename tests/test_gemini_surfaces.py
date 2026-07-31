@@ -1,10 +1,14 @@
 from __future__ import annotations
 
 from pathlib import Path
+import json
 
 from fastapi.testclient import TestClient
 
-from src.gemini_workflow.api import set_service_override
+from src.gemini_workflow.api import (
+    set_service_override,
+    workflow_controls,
+)
 from src.gemini_workflow.auth import (
     authenticate_shared_credential,
     stable_shared_principal_id,
@@ -193,6 +197,146 @@ def test_emergency_stop_blocks_new_model_calls_and_admin_clear_restores(
         )
         assert cleared.status_code == 200
         assert cleared.json()["active"] is False
+    finally:
+        set_service_override(None)
+        _role_credentials.cache_clear()
+
+
+def test_workflow_controls_keep_external_actions_locked() -> None:
+    assert workflow_controls("pending_human_review") == {
+        "allowed_decisions": ["approve", "deny", "revise"],
+        "human_review_required": True,
+        "approval_scope": "internal_use_only",
+        "external_action_allowed": False,
+        "operator_record_kind": "accountable_attestation",
+    }
+    assert workflow_controls("clarification_required")[
+        "allowed_decisions"
+    ] == ["deny", "revise"]
+    assert workflow_controls("blocked")["allowed_decisions"] == [
+        "deny",
+        "revise",
+    ]
+    assert workflow_controls(
+        "operator_approve",
+        decision_recorded=True,
+    )["allowed_decisions"] == []
+
+
+def test_isolated_operator_api_completes_internal_review_flow(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    _configure_roles(monkeypatch)
+    service = GeminiWorkflowService(
+        provider=StubGeminiProvider(_assessment()),
+        evidence_store=JsonlEvidenceStore(tmp_path / "events.jsonl"),
+    )
+    set_service_override(service)
+    client = TestClient(
+        create_app(
+            "operator",
+            readiness_check=lambda: {
+                "ready": True,
+                "model_api_call_performed": False,
+            },
+        )
+    )
+    headers = {
+        "X-AIGC-Operator-Token": (
+            "operator-value-for-tests-1234567890"
+        ),
+        "X-AIGC-Operator-Label": "Operator One",
+        "Idempotency-Key": "operator-workspace-flow-0001",
+    }
+    try:
+        created = client.post(
+            "/api/gemini/workflows",
+            headers=headers,
+            json={
+                "title": "Governed workspace assessment",
+                "description": (
+                    "A detailed synthetic opportunity for the isolated "
+                    "operator workspace."
+                ),
+                "source_url": (
+                    "https://example.com/opportunity?private=discarded"
+                ),
+                "constraints": ["No external business action"],
+                "ai_assistance_permitted": True,
+                "ai_disclosure_required": True,
+            },
+        )
+        assert created.status_code == 200
+        created_payload = created.json()
+        run_id = created_payload["run_id"]
+        assert created_payload["api_contract_version"] == "1.1"
+        assert created_payload["controls"]["allowed_decisions"] == [
+            "approve",
+            "deny",
+            "revise",
+        ]
+        assert created_payload["controls"]["external_action_allowed"] is False
+        assert (
+            created_payload["runtime_receipt"]["execution_event_id"]
+            == created_payload["event_id"]
+        )
+        assert "private=discarded" not in json.dumps(created_payload)
+
+        decision = client.post(
+            f"/api/gemini/workflows/{run_id}/decision",
+            headers=headers,
+            json={
+                "decision": "approve",
+                "reason": (
+                    "The evidence is sufficient for internal use only."
+                ),
+                "revision_instructions": "",
+            },
+        )
+        assert decision.status_code == 200
+        decision_payload = decision.json()
+        assert decision_payload["status"] == "operator_approve"
+        assert decision_payload["controls"]["allowed_decisions"] == []
+        assert (
+            decision_payload["payload"]["approved_for_external_action"]
+            is False
+        )
+        assert (
+            decision_payload["decision_receipt"]["decision_event_id"]
+            == decision_payload["event_id"]
+        )
+
+        retrieved = client.get(
+            f"/api/gemini/workflows/{run_id}",
+            headers=headers,
+        )
+        assert retrieved.status_code == 200
+        retrieved_payload = retrieved.json()
+        assert retrieved_payload["current_status"] == "operator_approve"
+        assert retrieved_payload["controls"]["allowed_decisions"] == []
+        assert [
+            item["event_type"] for item in retrieved_payload["events"]
+        ] == [
+            "workflow_started",
+            "gemini_execution",
+            "operator_decision",
+        ]
+        assert all(
+            item["external_business_action_performed"] is False
+            for item in retrieved_payload["events"]
+        )
+
+        repeated = client.post(
+            f"/api/gemini/workflows/{run_id}/decision",
+            headers=headers,
+            json={
+                "decision": "deny",
+                "reason": "A second decision must fail closed.",
+                "revision_instructions": "",
+            },
+        )
+        assert repeated.status_code == 409
     finally:
         set_service_override(None)
         _role_credentials.cache_clear()
