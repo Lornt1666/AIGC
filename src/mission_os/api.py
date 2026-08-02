@@ -15,7 +15,6 @@ from src.mission_os.decisions import read_operator_decisions, record_operator_de
 from src.mission_os.projection import compose_projection
 from src.mission_os.revenue import project_revenue_pipeline
 
-
 ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -35,12 +34,12 @@ def create_mission_app(
     mission_path: Path | str = Path("config/mission.example.json"),
     database_path: Path | str | None = None,
     decision_ledger_path: Path | str | None = None,
-    operator_token: str | None = None,
+    operator_credential: str | None = None,
 ) -> FastAPI:
     root = Path(repository_root).resolve()
     api = FastAPI(
         title="Ω Mission OS Local Governed Operator API",
-        version="1.3.0-local-decision-surface",
+        version="1.3.1-local-decision-surface",
         description=(
             "Loopback-only mission projections plus human operator decision recording. "
             "Decision routes may record reject, revision-request, or exact authorization "
@@ -107,14 +106,14 @@ def create_mission_app(
     @api.post("/api/v1/operator/decisions", status_code=201)
     def create_operator_decision(
         payload: dict[str, Any],
-        x_operator_token: str | None = Header(default=None, alias="X-Operator-Token"),
+        supplied_credential: str | None = Header(default=None, alias="X-Operator-Token"),
     ) -> dict[str, Any]:
         try:
             return record_operator_decision(
                 root,
                 payload,
-                operator_token=x_operator_token,
-                expected_token=operator_token,
+                operator_credential=supplied_credential,
+                expected_credential=operator_credential,
                 ledger_path=decision_ledger_path,
             )
         except PermissionError as exc:
