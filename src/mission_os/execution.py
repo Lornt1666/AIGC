@@ -18,6 +18,12 @@ from src.mission_os.activation import build_activation_projection
 from src.mission_os.decisions import read_operator_decisions, verify_operator_credential
 
 
+ALLOWED_PRICE_CLASSIFICATIONS = {
+    "INTERNAL_OFFER_LIST_PRICE_NOT_COUNTERPARTY_BUDGET",
+    "SOURCE_EVIDENCED",
+}
+
+
 def _utc_now() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
@@ -100,12 +106,14 @@ def consume_authorization(
 
 
 def run_preflight(proposal: Mapping[str, Any], authorization: Mapping[str, Any]) -> dict[str, Any]:
+    price_classification = proposal.get("price_classification")
     checks = {
         "revision_matches": proposal.get("exact_revision") == authorization.get("exact_revision"),
         "counterparty_bound": bool(proposal.get("counterparty")),
         "channel_bound": bool(proposal.get("submission_channel")),
         "scope_present": bool(proposal.get("scope") or proposal.get("deliverables")),
-        "price_classified": proposal.get("price_classification") in {"INTERNAL_LIST_PRICE", "SOURCE_EVIDENCED"},
+        "price_present": isinstance(proposal.get("proposed_list_price_cad"), (int, float)),
+        "price_classified": price_classification in ALLOWED_PRICE_CLASSIFICATIONS,
         "external_action_not_performed": authorization.get("external_action_performed") is False,
         "canonical_state_not_mutated": authorization.get("canonical_state_mutated") is False,
     }
@@ -114,6 +122,7 @@ def run_preflight(proposal: Mapping[str, Any], authorization: Mapping[str, Any])
         "status": "PASS" if not blockers else "BLOCKED",
         "checks": checks,
         "blockers": blockers,
+        "price_classification": price_classification,
         "evaluated_at": _utc_now(),
     }
 
@@ -163,7 +172,7 @@ def compile_execution_packet(
         "message_body": proposal.get("message_body") or proposal.get("proposal_text") or "",
         "attachments": proposal.get("attachments") or [],
         "scope": proposal.get("scope") or proposal.get("deliverables") or [],
-        "price": proposal.get("price"),
+        "price": proposal.get("proposed_list_price_cad"),
         "price_classification": proposal.get("price_classification"),
         "preflight": preflight,
         "compiled_at": _utc_now(),
