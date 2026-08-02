@@ -67,6 +67,30 @@ def test_proposal_revision_covers_full_payload_and_binds_approval(tmp_path: Path
     assert approval["exact_revision"] == revision
     assert approval["counterparty"] == proposal["counterparty"]
     assert approval["submission_channel"] == proposal["submission_channel"]
+    assert approval["binding_complete"] is True
+
+
+def test_missing_submission_channel_fails_closed(tmp_path: Path) -> None:
+    _write_fixture(tmp_path)
+    result = build_activation_projection(tmp_path)
+    approval = next(item for item in result["exact_action_approval_queue"] if item["opportunity_id"] == "opp-2")
+    assert approval["status"] == "BLOCKED_BINDING_INCOMPLETE"
+    assert approval["binding_complete"] is False
+    assert "SUBMISSION_CHANNEL_BINDING_MISSING" in approval["binding_blockers"]
+    assert approval["external_action_authorized"] is False
+
+
+def test_missing_counterparty_fails_closed(tmp_path: Path) -> None:
+    _write_fixture(tmp_path)
+    dossiers = tmp_path / "data/phase3_processed/aigc_phase3_assessment_dossiers.json"
+    data = json.loads(dossiers.read_text(encoding="utf-8"))
+    data[0].pop("employer")
+    dossiers.write_text(json.dumps(data), encoding="utf-8")
+    result = build_activation_projection(tmp_path)
+    approval = next(item for item in result["exact_action_approval_queue"] if item["opportunity_id"] == "opp-1")
+    assert approval["status"] == "BLOCKED_BINDING_INCOMPLETE"
+    assert approval["binding_complete"] is False
+    assert "COUNTERPARTY_BINDING_MISSING" in approval["binding_blockers"]
 
 
 def test_evidence_chain_does_not_claim_revenue(tmp_path: Path) -> None:
