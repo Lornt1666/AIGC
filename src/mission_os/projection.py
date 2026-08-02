@@ -6,8 +6,8 @@ import json
 from pathlib import Path
 from typing import Any
 
-from src.api.composition import build_container
-from src.mission_os.adapters import project_quests_from_service
+from src.api.composition import DEFAULT_DATABASE_PATH
+from src.mission_os.adapters import project_quests_from_sqlite
 from src.mission_os.mission_director import MissionDirector
 
 
@@ -35,7 +35,7 @@ def compose_projection(
 ) -> dict[str, Any]:
     """Read canonical Quest persistence and return a validated projection only."""
     root = Path(repository_root).resolve()
-    container = build_container(database_path)
-    quests = project_quests_from_service(container.quest_service)
+    database = Path(database_path).resolve() if database_path else DEFAULT_DATABASE_PATH.resolve()
+    quests = project_quests_from_sqlite(database)
     mission = load_mission(root, mission_path)
     return MissionDirector(root).compose(mission, quest_projection=quests)
