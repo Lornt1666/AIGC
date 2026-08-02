@@ -1,9 +1,8 @@
 """Governed execution preparation for Ω Mission OS Increment 7.
 
-This module consumes verified first-stage authorization receipts, compiles
-immutable execution packets, performs deterministic dry runs, and records a
-separate one-time approval. It never invokes an external connector or performs
-the prepared action.
+Consumes a verified first-stage authorization, compiles a deterministic
+preparation packet, performs a no-network dry run, and records a separate
+one-time second-stage approval. No function executes the prepared action.
 """
 
 from __future__ import annotations
@@ -16,12 +15,6 @@ from typing import Any, Mapping
 
 from src.mission_os.activation import build_activation_projection
 from src.mission_os.decisions import read_operator_decisions, verify_operator_credential
-
-
-ALLOWED_PRICE_CLASSIFICATIONS = {
-    "INTERNAL_OFFER_LIST_PRICE_NOT_COUNTERPARTY_BUDGET",
-    "SOURCE_EVIDENCED",
-}
 
 
 def _utc_now() -> str:
@@ -46,18 +39,46 @@ def _read_jsonl(path: Path) -> list[dict[str, Any]]:
     if not path.is_file():
         return []
     records: list[dict[str, Any]] = []
-    for line in path.read_text(encoding="utf-8").splitlines():
-        value = json.loads(line)
+    for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        try:
+            value = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"execution ledger contains invalid JSON at line {line_number}") from exc
         if not isinstance(value, dict):
-            raise ValueError("execution preparation ledger contains a non-object record")
+            raise ValueError(f"execution ledger contains a non-object record at line {line_number}")
         records.append(value)
     return records
 
 
-def _append_jsonl(path: Path, value: Mapping[str, Any]) -> None:
+def _verify_chain(records: list[dict[str, Any]], digest_field: str) -> None:
+    previous: str | None = None
+    for index, record in enumerate(records):
+        claimed = record.get(digest_field)
+        if not isinstance(claimed, str) or len(claimed) != 64:
+            raise ValueError(f"execution ledger receipt {index} lacks a valid digest")
+        if record.get("previous_receipt_sha256") != previous:
+            raise ValueError(f"execution ledger chain discontinuity at receipt {index}")
+        body = {key: value for key, value in record.items() if key != digest_field}
+        if _digest(body) != claimed:
+            raise ValueError(f"execution ledger digest mismatch at receipt {index}")
+        previous = claimed
+
+
+def _load_verified(path: Path, digest_field: str) -> list[dict[str, Any]]:
+    records = _read_jsonl(path)
+    _verify_chain(records, digest_field)
+    return records
+
+
+def _append_chained(path: Path, body: Mapping[str, Any], digest_field: str) -> dict[str, Any]:
+    existing = _load_verified(path, digest_field)
+    record = dict(body)
+    record["previous_receipt_sha256"] = existing[-1][digest_field] if existing else None
+    record[digest_field] = _digest(record)
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(dict(value), sort_keys=True, ensure_ascii=False) + "\n")
+        handle.write(json.dumps(record, sort_keys=True, ensure_ascii=False) + "\n")
+    return record
 
 
 def _proposal_map(root: Path) -> dict[str, dict[str, Any]]:
@@ -91,8 +112,7 @@ def consume_authorization(
         raise ValueError("exactly one valid unexecuted authorization receipt is required")
 
     authorization = dict(matching[0])
-    proposals = _proposal_map(root)
-    proposal = proposals.get(proposal_id)
+    proposal = _proposal_map(root).get(proposal_id)
     if proposal is None:
         raise ValueError("authorized proposal is no longer present")
     if proposal.get("exact_revision") != authorization.get("exact_revision"):
@@ -101,19 +121,24 @@ def consume_authorization(
         raise ValueError("authorization binding is incomplete")
     if not authorization.get("counterparty") or not authorization.get("submission_channel"):
         raise ValueError("authorization lacks counterparty or submission channel")
-
     return {"authorization": authorization, "proposal": proposal}
 
 
 def run_preflight(proposal: Mapping[str, Any], authorization: Mapping[str, Any]) -> dict[str, Any]:
-    price_classification = proposal.get("price_classification")
+    price = proposal.get("proposed_list_price_cad")
+    classification = proposal.get("price_classification")
     checks = {
         "revision_matches": proposal.get("exact_revision") == authorization.get("exact_revision"),
+        "counterparty_matches": proposal.get("counterparty") == authorization.get("counterparty"),
+        "channel_matches": proposal.get("submission_channel") == authorization.get("submission_channel"),
         "counterparty_bound": bool(proposal.get("counterparty")),
         "channel_bound": bool(proposal.get("submission_channel")),
         "scope_present": bool(proposal.get("scope") or proposal.get("deliverables")),
-        "price_present": isinstance(proposal.get("proposed_list_price_cad"), (int, float)),
-        "price_classified": price_classification in ALLOWED_PRICE_CLASSIFICATIONS,
+        "price_present": isinstance(price, (int, float)) and not isinstance(price, bool) and price >= 0,
+        "price_classified": classification in {
+            "INTERNAL_OFFER_LIST_PRICE_NOT_COUNTERPARTY_BUDGET",
+            "SOURCE_EVIDENCED",
+        },
         "external_action_not_performed": authorization.get("external_action_performed") is False,
         "canonical_state_not_mutated": authorization.get("canonical_state_mutated") is False,
     }
@@ -122,7 +147,6 @@ def run_preflight(proposal: Mapping[str, Any], authorization: Mapping[str, Any])
         "status": "PASS" if not blockers else "BLOCKED",
         "checks": checks,
         "blockers": blockers,
-        "price_classification": price_classification,
         "evaluated_at": _utc_now(),
     }
 
@@ -160,12 +184,23 @@ def compile_execution_packet(
     if preflight["status"] != "PASS":
         raise ValueError(f"execution preflight blocked: {preflight['blockers']}")
 
-    packet_body = {
+    path = _runtime_path(root, packet_ledger_path, "execution_packets.jsonl")
+    existing = _load_verified(path, "packet_receipt_sha256")
+    authorization_digest = authorization.get("decision_receipt_sha256")
+    if any(
+        item.get("proposal_id") == proposal_id
+        and item.get("proposal_revision") == proposal.get("exact_revision")
+        and item.get("authorization_receipt_sha256") == authorization_digest
+        for item in existing
+    ):
+        raise ValueError("this exact authorization has already been compiled")
+
+    core = {
         "schema_version": "1.0.0",
         "packet_status": "PREPARED_NOT_EXECUTED",
         "proposal_id": proposal_id,
         "proposal_revision": proposal.get("exact_revision"),
-        "authorization_receipt_sha256": authorization.get("decision_receipt_sha256"),
+        "authorization_receipt_sha256": authorization_digest,
         "counterparty": proposal.get("counterparty"),
         "submission_channel": proposal.get("submission_channel"),
         "action_type": "SUBMIT_PROPOSAL",
@@ -180,16 +215,9 @@ def compile_execution_packet(
         "external_action_performed": False,
         "canonical_state_mutated": False,
     }
-    packet = dict(packet_body)
-    packet["packet_digest_sha256"] = _digest(packet_body)
-    packet["dry_run"] = _dry_run_adapter(packet_body)
-
-    path = _runtime_path(root, packet_ledger_path, "execution_packets.jsonl")
-    existing = _read_jsonl(path)
-    if any(item.get("packet_digest_sha256") == packet["packet_digest_sha256"] for item in existing):
-        raise ValueError("duplicate execution packet compilation is prohibited")
-    _append_jsonl(path, packet)
-    return packet
+    core["dry_run"] = _dry_run_adapter(core)
+    core["packet_digest_sha256"] = _digest(core)
+    return _append_chained(path, core, "packet_receipt_sha256")
 
 
 def approve_execution_packet(
@@ -212,16 +240,22 @@ def approve_execution_packet(
         raise ValueError("packet_digest_sha256, operator_id, and rationale are required")
 
     packet_path = _runtime_path(root, packet_ledger_path, "execution_packets.jsonl")
-    packets = _read_jsonl(packet_path)
+    packets = _load_verified(packet_path, "packet_receipt_sha256")
     matches = [item for item in packets if item.get("packet_digest_sha256") == packet_digest]
     if len(matches) != 1:
-        raise ValueError("exactly one immutable execution packet must match the requested digest")
+        raise ValueError("exactly one verified execution packet must match the requested digest")
     packet = matches[0]
+    packet_body = {
+        key: value for key, value in packet.items()
+        if key not in {"packet_receipt_sha256", "previous_receipt_sha256", "packet_digest_sha256"}
+    }
+    if _digest(packet_body) != packet_digest:
+        raise ValueError("execution packet content does not match its immutable packet digest")
     if packet.get("packet_status") != "PREPARED_NOT_EXECUTED" or packet.get("external_action_performed") is not False:
         raise ValueError("execution packet is not eligible for second-stage approval")
 
     approval_path = _runtime_path(root, approval_ledger_path, "execution_approvals.jsonl")
-    prior = _read_jsonl(approval_path)
+    prior = _load_verified(approval_path, "approval_receipt_sha256")
     if any(item.get("packet_digest_sha256") == packet_digest for item in prior):
         raise ValueError("one-time execution packet approval has already been consumed")
 
@@ -229,6 +263,7 @@ def approve_execution_packet(
         "schema_version": "1.0.0",
         "approval_status": "PREPARED_NOT_EXECUTED",
         "packet_digest_sha256": packet_digest,
+        "packet_receipt_sha256": packet.get("packet_receipt_sha256"),
         "proposal_id": packet.get("proposal_id"),
         "proposal_revision": packet.get("proposal_revision"),
         "counterparty": packet.get("counterparty"),
@@ -241,10 +276,7 @@ def approve_execution_packet(
         "external_action_performed": False,
         "canonical_state_mutated": False,
     }
-    approval = dict(body)
-    approval["approval_receipt_sha256"] = _digest(body)
-    _append_jsonl(approval_path, approval)
-    return approval
+    return _append_chained(approval_path, body, "approval_receipt_sha256")
 
 
 def build_execution_preparation_projection(
@@ -254,11 +286,18 @@ def build_execution_preparation_projection(
     approval_ledger_path: Path | str | None = None,
 ) -> dict[str, Any]:
     root = Path(repository_root).resolve()
-    packets = _read_jsonl(_runtime_path(root, packet_ledger_path, "execution_packets.jsonl"))
-    approvals = _read_jsonl(_runtime_path(root, approval_ledger_path, "execution_approvals.jsonl"))
+    packets = _load_verified(
+        _runtime_path(root, packet_ledger_path, "execution_packets.jsonl"),
+        "packet_receipt_sha256",
+    )
+    approvals = _load_verified(
+        _runtime_path(root, approval_ledger_path, "execution_approvals.jsonl"),
+        "approval_receipt_sha256",
+    )
     return {
         "schema_version": "1.0.0",
         "mode": "EXECUTION_PREPARATION_ONLY",
+        "integrity_status": "VERIFIED",
         "packets": packets,
         "second_stage_approvals": approvals,
         "terminal_state": "PREPARED_NOT_EXECUTED",
