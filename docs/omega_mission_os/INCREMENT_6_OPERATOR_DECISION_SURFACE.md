@@ -17,14 +17,15 @@ Authorization is a decision receipt. It is **not** execution evidence and does n
 A decision write requires all of the following:
 
 1. Loopback client.
-2. Valid `X-Operator-Token` matching `MISSION_OS_OPERATOR_TOKEN` or an injected local test/runtime token.
+2. Valid `X-Operator-Token` matching `MISSION_OS_OPERATOR_TOKEN` or an injected local test/runtime credential.
 3. Exact current `proposal_id`.
 4. Exact current 64-character proposal revision digest.
 5. Named operator ID and non-empty rationale.
 6. Complete counterparty and submission-channel binding for authorization.
 7. Explicit requested changes for `REQUEST_REVISION`.
+8. A currently verified decision-ledger hash chain.
 
-Stale proposal revisions and incomplete bindings fail closed.
+Stale proposal revisions, incomplete bindings, missing credentials, and ledger-integrity failures all fail closed.
 
 ## Local decision ledger
 
@@ -45,10 +46,13 @@ Each receipt records:
 - counterparty and submission channel;
 - binding state;
 - timestamp;
-- SHA-256 receipt digest;
+- previous receipt digest;
+- current SHA-256 receipt digest;
 - authorization state;
 - explicit `external_action_performed: false`;
 - explicit `canonical_state_mutated: false`.
+
+The read projection verifies each receipt digest and its link to the preceding receipt. A malformed, altered, reordered, or internally deleted record produces `INTEGRITY_FAILURE`, hides the unverified suffix, and blocks further appends. This is local tamper evidence, not an external notarization or immutable storage guarantee.
 
 ## API
 
