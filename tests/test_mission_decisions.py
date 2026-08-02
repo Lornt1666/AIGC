@@ -75,11 +75,13 @@ def test_authorization_records_receipt_but_does_not_execute(tmp_path: Path) -> N
     assert event["external_action_authorized"] is True
     assert event["external_action_performed"] is False
     assert event["canonical_state_mutated"] is False
-    assert event["decision_receipt_sha256"]
-    assert len(read_operator_decisions(tmp_path, ledger_path=ledger)["records"]) == 1
+    assert event["previous_receipt_sha256"] is None
+    projection = read_operator_decisions(tmp_path, ledger_path=ledger)
+    assert projection["integrity_status"] == "VERIFIED"
+    assert len(projection["records"]) == 1
 
 
-def test_reject_and_revision_request_are_append_only(tmp_path: Path) -> None:
+def test_reject_and_revision_request_are_hash_chained(tmp_path: Path) -> None:
     _fixture(tmp_path)
     proposal = _proposal(tmp_path)
     ledger = tmp_path / ".runtime" / "decisions.jsonl"
@@ -98,11 +100,47 @@ def test_reject_and_revision_request_are_append_only(tmp_path: Path) -> None:
         expected_credential=credential,
         ledger_path=ledger,
     )
-    records = read_operator_decisions(tmp_path, ledger_path=ledger)["records"]
+    projection = read_operator_decisions(tmp_path, ledger_path=ledger)
+    records = projection["records"]
     assert reject["decision_status"] == "REJECTED"
     assert revise["decision_status"] == "REVISION_REQUESTED"
+    assert revise["previous_receipt_sha256"] == reject["decision_receipt_sha256"]
+    assert projection["integrity_status"] == "VERIFIED"
     assert len(records) == 2
     assert all(item["external_action_performed"] is False for item in records)
+
+
+def test_tampered_ledger_fails_closed_and_blocks_append(tmp_path: Path) -> None:
+    _fixture(tmp_path)
+    proposal = _proposal(tmp_path)
+    ledger = tmp_path / ".runtime" / "decisions.jsonl"
+    credential = _local_credential()
+    record_operator_decision(
+        tmp_path,
+        _request(proposal, "REJECT"),
+        operator_credential=credential,
+        expected_credential=credential,
+        ledger_path=ledger,
+    )
+    tampered = json.loads(ledger.read_text(encoding="utf-8"))
+    tampered["rationale"] = "Altered after recording."
+    ledger.write_text(json.dumps(tampered) + "\n", encoding="utf-8")
+
+    projection = read_operator_decisions(tmp_path, ledger_path=ledger)
+    assert projection["integrity_status"] == "INTEGRITY_FAILURE"
+    assert projection["invalid_lines"] == 1
+    assert projection["records"] == []
+    try:
+        record_operator_decision(
+            tmp_path,
+            _request(proposal, "REJECT"),
+            operator_credential=credential,
+            expected_credential=credential,
+            ledger_path=ledger,
+        )
+        raise AssertionError("append should fail when ledger integrity is broken")
+    except ValueError as exc:
+        assert "integrity" in str(exc)
 
 
 def test_stale_revision_and_missing_credential_fail_closed(tmp_path: Path) -> None:
