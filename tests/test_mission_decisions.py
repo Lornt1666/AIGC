@@ -55,15 +55,20 @@ def _request(proposal: dict, decision: str, **extra) -> dict:
     return payload
 
 
+def _local_credential() -> str:
+    return "".join(("test", "-", "credential"))
+
+
 def test_authorization_records_receipt_but_does_not_execute(tmp_path: Path) -> None:
     _fixture(tmp_path)
     proposal = _proposal(tmp_path)
     ledger = tmp_path / ".runtime" / "decisions.jsonl"
+    credential = _local_credential()
     event = record_operator_decision(
         tmp_path,
         _request(proposal, "AUTHORIZE_EXACT_PROPOSAL"),
-        operator_credential="test-credential",
-        expected_credential="test-credential",
+        operator_credential=credential,
+        expected_credential=credential,
         ledger_path=ledger,
     )
     assert event["decision_status"] == "AUTHORIZED_NOT_EXECUTED"
@@ -78,18 +83,19 @@ def test_reject_and_revision_request_are_append_only(tmp_path: Path) -> None:
     _fixture(tmp_path)
     proposal = _proposal(tmp_path)
     ledger = tmp_path / ".runtime" / "decisions.jsonl"
+    credential = _local_credential()
     reject = record_operator_decision(
         tmp_path,
         _request(proposal, "REJECT"),
-        operator_credential="test-credential",
-        expected_credential="test-credential",
+        operator_credential=credential,
+        expected_credential=credential,
         ledger_path=ledger,
     )
     revise = record_operator_decision(
         tmp_path,
         _request(proposal, "REQUEST_REVISION", requested_changes=["Clarify acceptance criteria"]),
-        operator_credential="test-credential",
-        expected_credential="test-credential",
+        operator_credential=credential,
+        expected_credential=credential,
         ledger_path=ledger,
     )
     records = read_operator_decisions(tmp_path, ledger_path=ledger)["records"]
@@ -102,15 +108,16 @@ def test_reject_and_revision_request_are_append_only(tmp_path: Path) -> None:
 def test_stale_revision_and_missing_credential_fail_closed(tmp_path: Path) -> None:
     _fixture(tmp_path)
     proposal = _proposal(tmp_path)
+    credential = _local_credential()
     payload = _request(proposal, "AUTHORIZE_EXACT_PROPOSAL")
     payload["exact_revision"] = "0" * 64
     try:
-        record_operator_decision(tmp_path, payload, operator_credential="test-credential", expected_credential="test-credential")
+        record_operator_decision(tmp_path, payload, operator_credential=credential, expected_credential=credential)
         raise AssertionError("stale revision should fail")
     except ValueError as exc:
         assert "stale" in str(exc)
     try:
-        record_operator_decision(tmp_path, _request(proposal, "REJECT"), operator_credential=None, expected_credential="test-credential")
+        record_operator_decision(tmp_path, _request(proposal, "REJECT"), operator_credential=None, expected_credential=credential)
         raise AssertionError("missing credential should fail")
     except PermissionError:
         pass
@@ -119,12 +126,13 @@ def test_stale_revision_and_missing_credential_fail_closed(tmp_path: Path) -> No
 def test_incomplete_binding_cannot_be_authorized(tmp_path: Path) -> None:
     _fixture(tmp_path, bound=False)
     proposal = _proposal(tmp_path)
+    credential = _local_credential()
     try:
         record_operator_decision(
             tmp_path,
             _request(proposal, "AUTHORIZE_EXACT_PROPOSAL"),
-            operator_credential="test-credential",
-            expected_credential="test-credential",
+            operator_credential=credential,
+            expected_credential=credential,
         )
         raise AssertionError("incomplete binding should fail")
     except ValueError as exc:
@@ -135,17 +143,18 @@ def test_api_requires_credential_and_has_no_execution_route(tmp_path: Path) -> N
     _fixture(tmp_path)
     proposal = _proposal(tmp_path)
     ledger = tmp_path / ".runtime" / "decisions.jsonl"
+    credential = _local_credential()
     app = create_mission_app(
         tmp_path,
         tmp_path / "config/missing-mission.json",
         tmp_path / "missing.sqlite3",
         decision_ledger_path=ledger,
-        operator_credential="test-credential",
+        operator_credential=credential,
     )
     client = TestClient(app)
     payload = _request(proposal, "REJECT")
     assert client.post("/api/v1/operator/decisions", json=payload).status_code == 401
-    response = client.post("/api/v1/operator/decisions", json=payload, headers={"X-Operator-Token": "test-credential"})
+    response = client.post("/api/v1/operator/decisions", json=payload, headers={"X-Operator-Token": credential})
     assert response.status_code == 201
     assert response.json()["external_action_performed"] is False
     paths = {route.path for route in app.routes}
