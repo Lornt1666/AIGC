@@ -3,7 +3,7 @@ from pathlib import Path
 
 from fastapi.testclient import TestClient
 
-from src.mission_os.api import create_mission_app
+from src.mission_os.api import _is_loopback_client, create_mission_app
 from src.mission_os.dashboard import build_dashboard_payload, render_dashboard_html
 from src.mission_os.revenue import project_revenue_pipeline
 
@@ -50,3 +50,13 @@ def test_mission_api_registers_only_get_routes_for_dashboard(tmp_path: Path) -> 
     response = TestClient(app).get("/api/v1/revenue/pipeline")
     assert response.status_code == 200
     assert response.json()["external_action_performed"] is False
+
+
+def test_loopback_boundary_classification() -> None:
+    assert _is_loopback_client("127.0.0.1") is True
+    assert _is_loopback_client("::1") is True
+    assert _is_loopback_client("localhost") is True
+    assert _is_loopback_client("testclient") is True
+    assert _is_loopback_client("192.168.1.20") is False
+    assert _is_loopback_client("203.0.113.10") is False
+    assert _is_loopback_client(None) is False
