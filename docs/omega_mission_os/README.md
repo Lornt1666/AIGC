@@ -1,6 +1,6 @@
 # Ω Mission OS v1.0 — Canonical Volume Index
 
-Status: **Architecture baseline with read-only mission projection implementation**
+Status: **Architecture baseline with governed read-only mission and revenue preparation projections**
 
 Authority: Justice Gray Maciocha, accountable human operator.
 
@@ -19,8 +19,10 @@ Authority: Justice Gray Maciocha, accountable human operator.
 
 ## Implemented increments
 
-- [`INCREMENT_2_MISSION_CONTRACTS.md`](INCREMENT_2_MISSION_CONTRACTS.md) — mission contracts and the fail-closed Mission Director.
+- [`INCREMENT_2_MISSION_CONTRACTS.md`](INCREMENT_2_MISSION_CONTRACTS.md) — mission contracts and fail-closed Mission Director.
 - [`INCREMENT_3_READ_ONLY_PROJECTION.md`](INCREMENT_3_READ_ONLY_PROJECTION.md) — canonical Quest persistence, phase-registry projection, contract validation, CLI, and GET-only API.
+- [`INCREMENT_4_DASHBOARD_REVENUE.md`](INCREMENT_4_DASHBOARD_REVENUE.md) — local executive dashboard and repository revenue classification.
+- [`INCREMENT_5_GOVERNED_REVENUE_ACTIVATION.md`](INCREMENT_5_GOVERNED_REVENUE_ACTIVATION.md) — offer productization, opportunity ranking, internal proposals, exact-action approval queue, daily operator brief, and evidence chain.
 
 ## Canonical invariants
 
@@ -33,15 +35,24 @@ Authority: Justice Gray Maciocha, accountable human operator.
 - Production readiness is calculated from canonical evidence.
 - Mission OS may not bypass Phase 5, Phase 6, Quest lifecycle, emergency-stop, compliance, or infrastructure gates.
 
-## Implementation order
+## Current implementation boundary
 
-1. Volume specifications — **implemented in draft PR #153**.
-2. Mission and snapshot contracts — **implemented; CI validation pending**.
-3. Canonical read-only Mission Director projection — **implemented; CI validation pending**.
-4. Executive dashboard projection without mutation authority.
-5. Revenue mission adapters.
-6. Governed connector actions through existing authorization controls only.
-7. Synthetic and read-only real-data validation.
-8. Operational evidence before production claims.
+Implemented:
+
+1. Canonical eight-volume architecture.
+2. Mission and snapshot contracts.
+3. Read-only Quest and phase projections.
+4. Loopback-only executive dashboard.
+5. Evidence-bound revenue classification.
+6. Internal-only revenue mission preparation.
+
+Not activated:
+
+- External outreach or proposal submission.
+- Contract acceptance.
+- Invoice issuance or payment collection.
+- Connector write actions.
+- Autonomous approval or Quest transitions.
+- Production deployment or readiness claims.
 
 This directory does not activate external execution, credentials, payments, messaging, deployments, or production readiness.
