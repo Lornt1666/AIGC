@@ -89,6 +89,17 @@ def test_compile_packet_ends_prepared_not_executed(tmp_path: Path) -> None:
     assert packet["canonical_state_mutated"] is False
 
 
+def test_first_stage_authorization_can_compile_only_one_packet(tmp_path: Path) -> None:
+    decisions, proposal_id = _write_fixture(tmp_path)
+    packets = tmp_path / ".runtime/packets.jsonl"
+    compile_execution_packet(tmp_path, proposal_id, decision_ledger_path=decisions, packet_ledger_path=packets)
+    try:
+        compile_execution_packet(tmp_path, proposal_id, decision_ledger_path=decisions, packet_ledger_path=packets)
+        raise AssertionError("authorization replay should fail")
+    except ValueError as exc:
+        assert "already" in str(exc)
+
+
 def test_second_stage_approval_is_one_time_and_nonexecuting(tmp_path: Path) -> None:
     decisions, proposal_id = _write_fixture(tmp_path)
     packets = tmp_path / ".runtime/packets.jsonl"
@@ -125,6 +136,52 @@ def test_second_stage_approval_is_one_time_and_nonexecuting(tmp_path: Path) -> N
         assert "already" in str(exc)
 
 
+def test_packet_tampering_fails_closed(tmp_path: Path) -> None:
+    decisions, proposal_id = _write_fixture(tmp_path)
+    packets = tmp_path / ".runtime/packets.jsonl"
+    compile_execution_packet(tmp_path, proposal_id, decision_ledger_path=decisions, packet_ledger_path=packets)
+    record = json.loads(packets.read_text(encoding="utf-8"))
+    record["dry_run"]["destination"] = "https://tampered.invalid"
+    packets.write_text(json.dumps(record) + "\n", encoding="utf-8")
+    try:
+        build_execution_preparation_projection(tmp_path, packet_ledger_path=packets)
+        raise AssertionError("tampered packet ledger should fail")
+    except ValueError as exc:
+        assert "digest mismatch" in str(exc)
+
+
+def test_approval_tampering_fails_closed(tmp_path: Path) -> None:
+    decisions, proposal_id = _write_fixture(tmp_path)
+    packets = tmp_path / ".runtime/packets.jsonl"
+    approvals = tmp_path / ".runtime/approvals.jsonl"
+    packet = compile_execution_packet(tmp_path, proposal_id, decision_ledger_path=decisions, packet_ledger_path=packets)
+    credential = _credential()
+    approve_execution_packet(
+        tmp_path,
+        {
+            "packet_digest_sha256": packet["packet_digest_sha256"],
+            "operator_id": "ACCOUNTABLE_OPERATOR",
+            "rationale": "Reviewed exact destination and dry-run output.",
+        },
+        operator_credential=credential,
+        expected_credential=credential,
+        packet_ledger_path=packets,
+        approval_ledger_path=approvals,
+    )
+    record = json.loads(approvals.read_text(encoding="utf-8"))
+    record["rationale"] = "tampered"
+    approvals.write_text(json.dumps(record) + "\n", encoding="utf-8")
+    try:
+        build_execution_preparation_projection(
+            tmp_path,
+            packet_ledger_path=packets,
+            approval_ledger_path=approvals,
+        )
+        raise AssertionError("tampered approval ledger should fail")
+    except ValueError as exc:
+        assert "digest mismatch" in str(exc)
+
+
 def test_preflight_fails_closed() -> None:
     result = run_preflight({}, {})
     assert result["status"] == "BLOCKED"
@@ -134,6 +191,7 @@ def test_preflight_fails_closed() -> None:
 def test_projection_never_claims_execution(tmp_path: Path) -> None:
     projection = build_execution_preparation_projection(tmp_path)
     assert projection["terminal_state"] == "PREPARED_NOT_EXECUTED"
+    assert projection["integrity_status"] == "VERIFIED"
     assert projection["external_action_authorized"] is False
     assert projection["external_action_performed"] is False
     assert projection["canonical_state_mutated"] is False
