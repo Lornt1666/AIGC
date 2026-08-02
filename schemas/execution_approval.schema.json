@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://regenexcalibur.local/schemas/execution_approval.schema.json",
+  "title": "Ω Mission OS Second-Stage Execution Approval",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "packet_digest_sha256",
+    "operator_id",
+    "rationale"
+  ],
+  "properties": {
+    "packet_digest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "operator_id": {"type": "string", "minLength": 1},
+    "rationale": {"type": "string", "minLength": 1}
+  }
+}
