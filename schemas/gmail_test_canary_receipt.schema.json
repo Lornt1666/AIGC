@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://regenexcalibur.local/schemas/gmail_test_canary_receipt.schema.json",
+  "title": "Ω Mission OS Gmail Test Canary Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "result", "provider", "action_type", "test_account_fingerprint", "target_account_fingerprint", "provider_verified", "sent", "external_action_performed", "verified_at", "expires_at", "receipt_sha256"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "result": {"const": "DRAFT_CREATED_NOT_SENT"},
+    "provider": {"const": "GMAIL"},
+    "action_type": {"const": "CREATE_DRAFT"},
+    "test_account_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "target_account_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "provider_verified": {"const": true},
+    "sent": {"const": false},
+    "external_action_performed": {"const": true},
+    "verified_at": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}
