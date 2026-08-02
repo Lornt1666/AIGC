@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import asdict
+import json
 from pathlib import Path
-from typing import Any, Iterable, Mapping
+import sqlite3
+from typing import Any
 
 from src.core.phase_registry import build_phase_registry
 
@@ -30,27 +32,47 @@ def project_phase_registry(repository_root: Path | str) -> list[dict[str, Any]]:
     return projections
 
 
-def project_quest_records(records: Iterable[Any]) -> list[dict[str, Any]]:
-    """Convert canonical persisted Quest records into immutable dictionaries."""
+def project_quests_from_sqlite(database_path: Path | str) -> list[dict[str, Any]]:
+    """Read canonical Quest rows through SQLite immutable read-only mode.
+
+    No migrations are applied, no database is created, and no writes are permitted.
+    A missing database produces an empty projection.
+    """
+    path = Path(database_path).resolve()
+    if not path.is_file():
+        return []
+    uri = f"file:{path.as_posix()}?mode=ro&immutable=1"
+    connection = sqlite3.connect(uri, uri=True)
+    connection.row_factory = sqlite3.Row
+    try:
+        rows = connection.execute(
+            """
+            SELECT record_id, revision, payload_json, created_at, updated_at,
+                   revoked_at, retention_state
+            FROM records
+            WHERE collection = 'quests' AND revoked_at IS NULL
+            ORDER BY updated_at DESC, record_id
+            """
+        ).fetchall()
+    except sqlite3.Error as exc:
+        raise ValueError(f"canonical Quest persistence is unreadable: {exc}") from exc
+    finally:
+        connection.close()
+
     projected: list[dict[str, Any]] = []
-    for record in records:
-        payload = getattr(record, "payload", None)
-        if not isinstance(payload, Mapping):
+    for row in rows:
+        payload = json.loads(row["payload_json"])
+        if not isinstance(payload, dict):
             continue
-        item = dict(payload)
-        item.update(
+        payload.update(
             {
-                "revision": getattr(record, "revision", None),
-                "created_at": getattr(record, "created_at", None),
-                "updated_at": getattr(record, "updated_at", None),
+                "revision": int(row["revision"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+                "retention_state": row["retention_state"],
                 "projection_only": True,
                 "external_action_performed": False,
             }
         )
-        projected.append(item)
+        projected.append(payload)
     return projected
-
-
-def project_quests_from_service(quest_service: Any) -> list[dict[str, Any]]:
-    """Read all Quests through the canonical service's list operation only."""
-    return project_quest_records(quest_service.list_quests(state=None))
