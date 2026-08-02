@@ -177,7 +177,7 @@ def test_incomplete_binding_cannot_be_authorized(tmp_path: Path) -> None:
         assert "binding is incomplete" in str(exc)
 
 
-def test_api_requires_credential_and_has_no_execution_route(tmp_path: Path) -> None:
+def test_api_requires_credential_for_reads_and_writes_and_has_no_execution_route(tmp_path: Path) -> None:
     _fixture(tmp_path)
     proposal = _proposal(tmp_path)
     ledger = tmp_path / ".runtime" / "decisions.jsonl"
@@ -191,10 +191,14 @@ def test_api_requires_credential_and_has_no_execution_route(tmp_path: Path) -> N
     )
     client = TestClient(app)
     payload = _request(proposal, "REJECT")
+    assert client.get("/api/v1/operator/decisions").status_code == 401
     assert client.post("/api/v1/operator/decisions", json=payload).status_code == 401
     response = client.post("/api/v1/operator/decisions", json=payload, headers={"X-Operator-Token": credential})
     assert response.status_code == 201
     assert response.json()["external_action_performed"] is False
+    read_response = client.get("/api/v1/operator/decisions", headers={"X-Operator-Token": credential})
+    assert read_response.status_code == 200
+    assert read_response.json()["integrity_status"] == "VERIFIED"
     paths = {route.path for route in app.routes}
     assert "/api/v1/operator/execute" not in paths
     assert "/api/v1/revenue/submit" not in paths
