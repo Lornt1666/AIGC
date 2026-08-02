@@ -1,4 +1,4 @@
-"""Loopback-only API surface for Ω Mission OS projections and operator decisions."""
+"""Loopback-only API surface for Ω Mission OS projections and governed local records."""
 
 from __future__ import annotations
 
@@ -12,6 +12,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from src.mission_os.activation import build_activation_projection
 from src.mission_os.dashboard import build_dashboard_payload, render_dashboard_html
 from src.mission_os.decisions import read_operator_decisions, record_operator_decision, verify_operator_credential
+from src.mission_os.execution import approve_execution_packet, build_execution_preparation_projection, compile_execution_packet
 from src.mission_os.projection import compose_projection
 from src.mission_os.revenue import project_revenue_pipeline
 
@@ -35,15 +36,17 @@ def create_mission_app(
     database_path: Path | str | None = None,
     decision_ledger_path: Path | str | None = None,
     operator_credential: str | None = None,
+    execution_packet_ledger_path: Path | str | None = None,
+    execution_approval_ledger_path: Path | str | None = None,
 ) -> FastAPI:
     root = Path(repository_root).resolve()
     api = FastAPI(
         title="Ω Mission OS Local Governed Operator API",
-        version="1.3.2-local-decision-surface",
+        version="1.4.0-execution-preparation-only",
         description=(
-            "Loopback-only mission projections plus credential-gated human operator decision records. "
-            "Decision routes may record reject, revision-request, or exact authorization receipts, "
-            "but no route performs an external action or mutates canonical state."
+            "Loopback-only mission projections, credential-gated operator decisions, and "
+            "execution preparation ending at PREPARED_NOT_EXECUTED. No route performs an "
+            "external action or mutates canonical state."
         ),
     )
 
@@ -74,8 +77,8 @@ def create_mission_app(
             "mode": "LOCAL_GOVERNED_OPERATOR",
             "network_boundary": "LOOPBACK_ONLY",
             "projection_methods": ["GET"],
-            "decision_methods": ["GET", "POST"],
-            "decision_read_authentication": "REQUIRED",
+            "recording_methods": ["GET", "POST"],
+            "terminal_state": "PREPARED_NOT_EXECUTED",
             "external_execution_routes": 0,
             "canonical_state_mutated": False,
             "external_action_performed": False,
@@ -108,29 +111,52 @@ def create_mission_app(
             raise HTTPException(status_code=422, detail={"code": "MISSION_ACTIVATION_PROJECTION_FAILED", "message": str(exc), "canonical_state_mutated": False, "external_action_performed": False}) from exc
 
     @api.get("/api/v1/operator/decisions")
-    def operator_decisions(
-        supplied_credential: str | None = Header(default=None, alias="X-Operator-Token"),
-    ) -> dict[str, Any]:
+    def operator_decisions(supplied_credential: str | None = Header(default=None, alias="X-Operator-Token")) -> dict[str, Any]:
         require_operator_credential(supplied_credential)
         return read_operator_decisions(root, ledger_path=decision_ledger_path)
 
     @api.post("/api/v1/operator/decisions", status_code=201)
-    def create_operator_decision(
-        payload: dict[str, Any],
-        supplied_credential: str | None = Header(default=None, alias="X-Operator-Token"),
-    ) -> dict[str, Any]:
+    def create_operator_decision(payload: dict[str, Any], supplied_credential: str | None = Header(default=None, alias="X-Operator-Token")) -> dict[str, Any]:
         try:
-            return record_operator_decision(
-                root,
-                payload,
-                operator_credential=supplied_credential,
-                expected_credential=operator_credential,
-                ledger_path=decision_ledger_path,
-            )
+            return record_operator_decision(root, payload, operator_credential=supplied_credential, expected_credential=operator_credential, ledger_path=decision_ledger_path)
         except PermissionError as exc:
             raise HTTPException(status_code=401, detail={"code": "OPERATOR_AUTHENTICATION_REQUIRED", "message": str(exc), "external_action_performed": False, "canonical_state_mutated": False}) from exc
         except (OSError, ValueError, KeyError) as exc:
             raise HTTPException(status_code=422, detail={"code": "OPERATOR_DECISION_REJECTED", "message": str(exc), "external_action_performed": False, "canonical_state_mutated": False}) from exc
+
+    @api.get("/api/v1/execution/preparation")
+    def execution_preparation(supplied_credential: str | None = Header(default=None, alias="X-Operator-Token")) -> dict[str, Any]:
+        require_operator_credential(supplied_credential)
+        return build_execution_preparation_projection(root, packet_ledger_path=execution_packet_ledger_path, approval_ledger_path=execution_approval_ledger_path)
+
+    @api.post("/api/v1/execution/packets", status_code=201)
+    def create_execution_packet(payload: dict[str, Any], supplied_credential: str | None = Header(default=None, alias="X-Operator-Token")) -> dict[str, Any]:
+        require_operator_credential(supplied_credential)
+        try:
+            return compile_execution_packet(
+                root,
+                str(payload.get("proposal_id") or ""),
+                decision_ledger_path=decision_ledger_path,
+                packet_ledger_path=execution_packet_ledger_path,
+            )
+        except (OSError, ValueError, KeyError) as exc:
+            raise HTTPException(status_code=422, detail={"code": "EXECUTION_PACKET_REJECTED", "message": str(exc), "external_action_performed": False, "canonical_state_mutated": False}) from exc
+
+    @api.post("/api/v1/execution/approvals", status_code=201)
+    def create_execution_approval(payload: dict[str, Any], supplied_credential: str | None = Header(default=None, alias="X-Operator-Token")) -> dict[str, Any]:
+        try:
+            return approve_execution_packet(
+                root,
+                payload,
+                operator_credential=supplied_credential,
+                expected_credential=operator_credential,
+                packet_ledger_path=execution_packet_ledger_path,
+                approval_ledger_path=execution_approval_ledger_path,
+            )
+        except PermissionError as exc:
+            raise HTTPException(status_code=401, detail={"code": "OPERATOR_AUTHENTICATION_REQUIRED", "message": str(exc), "external_action_performed": False, "canonical_state_mutated": False}) from exc
+        except (OSError, ValueError, KeyError) as exc:
+            raise HTTPException(status_code=422, detail={"code": "EXECUTION_APPROVAL_REJECTED", "message": str(exc), "external_action_performed": False, "canonical_state_mutated": False}) from exc
 
     @api.get("/api/v1/dashboard")
     def dashboard_payload() -> dict[str, Any]:
