@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0.0",
+  "currency": "CAD",
+  "offers": [
+    {
+      "offer_id": "offer_ai_workflow_blueprint",
+      "name": "Governed AI Workflow Blueprint",
+      "status": "INTERNAL_DRAFT_ONLY",
+      "problem": "A small organization has repetitive knowledge work but lacks a safe, documented automation plan.",
+      "deliverables": [
+        "90-minute discovery and workflow inventory",
+        "Current-state process map",
+        "Prioritized automation blueprint",
+        "Human-approval and risk-control design",
+        "Implementation backlog with acceptance criteria",
+        "One revision cycle"
+      ],
+      "exclusions": [
+        "Production deployment",
+        "Credential handling",
+        "Unapproved external communication",
+        "Legal, accounting, or regulatory certification",
+        "Guaranteed financial results"
+      ],
+      "acceptance_criteria": [
+        "All mapped steps identify owner, input, output, and approval boundary",
+        "Every recommendation distinguishes verified facts from assumptions",
+        "Implementation backlog is prioritized by value, effort, and risk",
+        "No production or external action is performed"
+      ],
+      "tiers": [
+        {
+          "tier_id": "blueprint_standard",
+          "price": 500,
+          "delivery_business_days": 3,
+          "operator_minutes_estimate": 120
+        },
+        {
+          "tier_id": "blueprint_plus",
+          "price": 1000,
+          "delivery_business_days": 5,
+          "operator_minutes_estimate": 240
+        }
+      ],
+      "fit_taxonomy": [
+        "business_process",
+        "documentation",
+        "software_coding",
+        "writing_content",
+        "automation",
+        "ai_integration"
+      ],
+      "external_action_authorized": false
+    }
+  ],
+  "external_action_authorized": false
+}
