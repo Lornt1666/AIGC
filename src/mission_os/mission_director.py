@@ -1,13 +1,12 @@
 """Read-only Ω Mission OS Mission Director.
 
-The director composes allowlisted repository artifacts into a deterministic snapshot.
-It never writes canonical state, invokes connectors, approves actions, or performs
-external execution. Missing and malformed sources are reported rather than hidden.
+The director validates a governed mission, composes allowlisted repository artifacts,
+canonical Quest projections, and phase-registry status, validates the resulting
+snapshot, and performs no canonical mutation or external action.
 """
 
 from __future__ import annotations
 
-import argparse
 import hashlib
 import json
 import subprocess
@@ -15,6 +14,9 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
+
+from src.core.contract_validator import validate_artifact
+from src.mission_os.adapters import project_phase_registry
 
 
 @dataclass(frozen=True)
@@ -39,7 +41,7 @@ DEFAULT_SOURCES: tuple[SourceSpec, ...] = (
 
 
 class MissionDirector:
-    """Compose a read-only mission snapshot from allowlisted local artifacts."""
+    """Compose a validated read-only mission snapshot."""
 
     def __init__(self, repository_root: Path | str, sources: Sequence[SourceSpec] = DEFAULT_SOURCES) -> None:
         self.repository_root = Path(repository_root).resolve()
@@ -62,64 +64,28 @@ class MissionDirector:
             return len(value)
         if isinstance(value, dict):
             for key in ("records", "items", "opportunities", "proposals", "reviews", "packets"):
-                candidate = value.get(key)
-                if isinstance(candidate, list):
-                    return len(candidate)
+                if isinstance(value.get(key), list):
+                    return len(value[key])
             return 1
         return 0
 
     def _read_source(self, spec: SourceSpec) -> tuple[dict[str, Any], Any | None]:
         path = (self.repository_root / spec.relative_path).resolve()
         if not path.exists():
-            return ({
-                "source_id": spec.source_id,
-                "path": spec.relative_path,
-                "status": "MISSING",
-                "digest": None,
-                "records": 0,
-                "message": "optional source not present" if spec.optional else "required source not present",
-            }, None)
+            return ({"source_id": spec.source_id, "path": spec.relative_path, "status": "MISSING", "digest": None, "records": 0, "message": "optional source not present" if spec.optional else "required source not present"}, None)
         if not path.is_file():
-            return ({
-                "source_id": spec.source_id,
-                "path": spec.relative_path,
-                "status": "UNSUPPORTED",
-                "digest": None,
-                "records": 0,
-                "message": "source is not a regular file",
-            }, None)
+            return ({"source_id": spec.source_id, "path": spec.relative_path, "status": "UNSUPPORTED", "digest": None, "records": 0, "message": "source is not a regular file"}, None)
         raw = path.read_bytes()
         digest = self._sha256(raw)
         try:
             value = json.loads(raw.decode("utf-8"))
         except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-            return ({
-                "source_id": spec.source_id,
-                "path": spec.relative_path,
-                "status": "INVALID",
-                "digest": digest,
-                "records": 0,
-                "message": f"invalid JSON: {exc}",
-            }, None)
-        return ({
-            "source_id": spec.source_id,
-            "path": spec.relative_path,
-            "status": "AVAILABLE",
-            "digest": digest,
-            "records": self._record_count(value),
-            "message": None,
-        }, value)
+            return ({"source_id": spec.source_id, "path": spec.relative_path, "status": "INVALID", "digest": digest, "records": 0, "message": f"invalid JSON: {exc}"}, None)
+        return ({"source_id": spec.source_id, "path": spec.relative_path, "status": "AVAILABLE", "digest": digest, "records": self._record_count(value), "message": None}, value)
 
     def _git_revision(self) -> str | None:
         try:
-            result = subprocess.run(
-                ["git", "rev-parse", "HEAD"],
-                cwd=self.repository_root,
-                check=True,
-                capture_output=True,
-                text=True,
-                timeout=5,
-            )
+            result = subprocess.run(["git", "rev-parse", "HEAD"], cwd=self.repository_root, check=True, capture_output=True, text=True, timeout=5)
         except (OSError, subprocess.SubprocessError):
             return None
         revision = result.stdout.strip().lower()
@@ -137,8 +103,7 @@ class MissionDirector:
 
     @staticmethod
     def _revenue_totals(values: Iterable[Any]) -> tuple[float, float, str]:
-        verified = 0.0
-        estimated = 0.0
+        verified = estimated = 0.0
         currency = "CAD"
         verified_keys = {"collected", "collected_revenue", "cash_collected", "verified_revenue"}
         estimated_keys = {"estimated_revenue", "pipeline_value", "projected_revenue", "proposed_value"}
@@ -161,16 +126,22 @@ class MissionDirector:
             return f"Review accountable approval {approvals[0]}; approval does not itself execute the action."
         if blockers:
             return f"Resolve blocker: {blockers[0]}"
-        tasks = mission.get("tasks", [])
-        ready = [task for task in tasks if isinstance(task, dict) and task.get("state") in {"READY", "PENDING"}]
+        ready = [task for task in mission.get("tasks", []) if isinstance(task, dict) and task.get("state") in {"READY", "PENDING"}]
         if ready:
             ready.sort(key=lambda task: float(task.get("priority", 0)), reverse=True)
             return f"Prepare task {ready[0].get('task_id')}: {ready[0].get('title')}"
         return None
 
-    def compose(self, mission: Mapping[str, Any], generated_at: datetime | None = None) -> dict[str, Any]:
-        if mission.get("external_action_authorized") is not False:
+    def compose(
+        self,
+        mission: Mapping[str, Any],
+        generated_at: datetime | None = None,
+        quest_projection: Sequence[Mapping[str, Any]] | None = None,
+    ) -> dict[str, Any]:
+        mission_payload = validate_artifact("mission", dict(mission))
+        if mission_payload.get("external_action_authorized") is not False:
             raise ValueError("mission must explicitly set external_action_authorized=false")
+
         generated = generated_at or datetime.now(timezone.utc)
         statuses: list[dict[str, Any]] = []
         values: list[Any] = []
@@ -180,47 +151,39 @@ class MissionDirector:
             if value is not None:
                 values.append(value)
 
-        tasks = [task for task in mission.get("tasks", []) if isinstance(task, dict)]
+        phases = project_phase_registry(self.repository_root)
+        quests = [dict(item) for item in (quest_projection or [])]
+        values.extend(quests)
+        tasks = [task for task in mission_payload.get("tasks", []) if isinstance(task, dict)]
         completed = sum(task.get("state") == "COMPLETED" for task in tasks)
         blocked_tasks = [str(task.get("task_id")) for task in tasks if task.get("state") == "BLOCKED"]
-        dependency_blockers = [
-            str(dep.get("dependency_id"))
-            for dep in mission.get("dependencies", [])
-            if isinstance(dep, dict) and dep.get("blocking") is True and dep.get("state") != "SATISFIED"
-        ]
+        dependency_blockers = [str(dep.get("dependency_id")) for dep in mission_payload.get("dependencies", []) if isinstance(dep, dict) and dep.get("blocking") is True and dep.get("state") != "SATISFIED"]
         blockers = blocked_tasks + dependency_blockers
-        approvals = [
-            str(approval.get("approval_id"))
-            for approval in mission.get("approvals", [])
-            if isinstance(approval, dict) and approval.get("status") == "PENDING"
-        ]
+        approvals = [str(approval.get("approval_id")) for approval in mission_payload.get("approvals", []) if isinstance(approval, dict) and approval.get("status") == "PENDING"]
         progress = round((completed / len(tasks)) * 100, 2) if tasks else 0.0
         verified_revenue, estimated_revenue, currency = self._revenue_totals(values)
         source_revision = self._git_revision()
         provenance = [f"{item['source_id']}:{item['digest']}" for item in statuses if item["status"] == "AVAILABLE"]
-        warnings = [
-            f"{item['source_id']}: {item['status']} - {item['message']}"
-            for item in statuses
-            if item["status"] != "AVAILABLE"
-        ]
-        canonical = json.dumps(
-            {"mission_id": mission.get("mission_id"), "generated_at": generated.isoformat(), "source_revision": source_revision, "provenance": provenance},
-            sort_keys=True,
-            separators=(",", ":"),
-        ).encode("utf-8")
-        return {
+        warnings = [f"{item['source_id']}: {item['status']} - {item['message']}" for item in statuses if item["status"] != "AVAILABLE"]
+        canonical = json.dumps({"mission_id": mission_payload.get("mission_id"), "generated_at": generated.isoformat(), "source_revision": source_revision, "provenance": provenance}, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        snapshot = {
             "schema_version": "1.0.0",
             "snapshot_id": f"mission_snapshot_{self._sha256(canonical)[:16]}",
             "generated_at": generated.isoformat(),
             "mode": "READ_ONLY",
             "repository_root": str(self.repository_root),
             "source_revision": source_revision,
-            "mission": dict(mission),
+            "mission": mission_payload,
             "source_status": statuses,
+            "phase_registry": phases,
+            "quests": quests,
             "summary": {
                 "sources_available": sum(item["status"] == "AVAILABLE" for item in statuses),
                 "sources_missing": sum(item["status"] == "MISSING" for item in statuses),
                 "sources_invalid": sum(item["status"] in {"INVALID", "UNSUPPORTED"} for item in statuses),
+                "phases_registered": len(phases),
+                "phase_outputs_available": sum(bool(item["output_available"]) for item in phases),
+                "quests_total": len(quests),
                 "tasks_total": len(tasks),
                 "tasks_completed": completed,
                 "tasks_blocked": len(blocked_tasks),
@@ -231,36 +194,12 @@ class MissionDirector:
             },
             "blockers": blockers,
             "approvals_waiting": approvals,
-            "highest_impact_next_action": self._next_action(mission, blockers, approvals),
+            "highest_impact_next_action": self._next_action(mission_payload, blockers, approvals),
             "provenance": provenance,
             "warnings": warnings,
+            "validation": {"mission": "VALID", "snapshot": "VALID"},
             "external_action_performed": False,
             "canonical_state_mutated": False,
         }
-
-
-def main() -> int:
-    parser = argparse.ArgumentParser(description="Compose an Ω Mission OS read-only snapshot.")
-    parser.add_argument("mission", type=Path, help="Path to a governed mission JSON file")
-    parser.add_argument("--repo-root", type=Path, default=Path.cwd())
-    parser.add_argument("--output", type=Path, default=None, help="Optional non-canonical output path")
-    args = parser.parse_args()
-
-    mission = json.loads(args.mission.read_text(encoding="utf-8"))
-    snapshot = MissionDirector(args.repo_root).compose(mission)
-    rendered = json.dumps(snapshot, indent=2, sort_keys=True) + "\n"
-    if args.output is None:
-        print(rendered, end="")
-    else:
-        output = args.output.resolve()
-        root = args.repo_root.resolve()
-        canonical_roots = [root / "data", root / "memory", root / "governance", root / "config"]
-        if any(canonical == output or canonical in output.parents for canonical in canonical_roots):
-            raise SystemExit("refusing to write snapshot into canonical state directories")
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(rendered, encoding="utf-8")
-    return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
+        validate_artifact("mission_snapshot", snapshot)
+        return snapshot
