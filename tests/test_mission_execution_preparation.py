@@ -1,6 +1,9 @@
 import json
 from pathlib import Path
 
+from fastapi.testclient import TestClient
+
+from src.mission_os.api import create_mission_app
 from src.mission_os.execution import (
     approve_execution_packet,
     build_execution_preparation_projection,
@@ -134,3 +137,43 @@ def test_projection_never_claims_execution(tmp_path: Path) -> None:
     assert projection["external_action_authorized"] is False
     assert projection["external_action_performed"] is False
     assert projection["canonical_state_mutated"] is False
+
+
+def test_api_is_credential_gated_and_has_no_external_execution_route(tmp_path: Path) -> None:
+    decisions, proposal_id = _write_fixture(tmp_path)
+    packets = tmp_path / ".runtime/packets.jsonl"
+    approvals = tmp_path / ".runtime/approvals.jsonl"
+    credential = _credential()
+    app = create_mission_app(
+        tmp_path,
+        tmp_path / "config/missing-mission.json",
+        tmp_path / "missing.sqlite3",
+        decision_ledger_path=decisions,
+        operator_credential=credential,
+        execution_packet_ledger_path=packets,
+        execution_approval_ledger_path=approvals,
+    )
+    client = TestClient(app)
+    assert client.get("/api/v1/execution/preparation").status_code == 401
+    packet_response = client.post(
+        "/api/v1/execution/packets",
+        json={"proposal_id": proposal_id},
+        headers={"X-Operator-Token": credential},
+    )
+    assert packet_response.status_code == 201
+    packet = packet_response.json()
+    approval_response = client.post(
+        "/api/v1/execution/approvals",
+        json={
+            "packet_digest_sha256": packet["packet_digest_sha256"],
+            "operator_id": "ACCOUNTABLE_OPERATOR",
+            "rationale": "Reviewed dry-run and exact destination.",
+        },
+        headers={"X-Operator-Token": credential},
+    )
+    assert approval_response.status_code == 201
+    assert approval_response.json()["approval_status"] == "PREPARED_NOT_EXECUTED"
+    paths = {route.path for route in app.routes}
+    assert "/api/v1/execution/execute" not in paths
+    assert "/api/v1/execution/send" not in paths
+    assert "/api/v1/connectors/execute" not in paths
