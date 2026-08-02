@@ -3,10 +3,12 @@ from __future__ import annotations
 
 from base64 import urlsafe_b64decode, urlsafe_b64encode
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from email import policy
 from email.message import EmailMessage
 from email.parser import BytesParser
 from hashlib import sha256
+import hmac
 import json
 import os
 from pathlib import Path
@@ -28,15 +30,31 @@ def _digest_text(value: str) -> str:
     return sha256(value.encode("utf-8")).hexdigest()
 
 
+def _digest_record(value: Mapping[str, Any]) -> str:
+    payload = json.dumps(dict(value), sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return sha256(payload.encode("utf-8")).hexdigest()
+
+
 def _load_json(path: Path | str) -> dict[str, Any]:
     value = json.loads(Path(path).read_text(encoding="utf-8"))
     if not isinstance(value, dict):
-        raise ValueError("Gmail runtime configuration must be an object")
+        raise ValueError("Gmail runtime record must be an object")
     return value
 
 
+def _parse_utc(value: object, field: str) -> datetime:
+    if not isinstance(value, str) or not value:
+        raise PermissionError(f"{field} is required")
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise PermissionError(f"{field} must be a valid ISO-8601 date-time") from exc
+    if parsed.tzinfo is None:
+        raise PermissionError(f"{field} must include a timezone")
+    return parsed.astimezone(timezone.utc)
+
+
 def _remove_single_terminal_line_ending(value: str) -> str:
-    """Remove the MIME serializer's one terminal line ending without trimming body content."""
     if value.endswith("\r\n"):
         return value[:-2]
     if value.endswith(("\n", "\r")):
@@ -85,20 +103,15 @@ class EnvironmentCredentialResolver:
 
 
 class UrllibGmailTransport:
-    """Minimal Gmail REST transport; only callers define permitted endpoints."""
+    """Minimal Gmail REST transport; permitted endpoints are fixed by the provider."""
 
     def request(self, *, method: str, url: str, access_credential: str, body: Mapping[str, Any] | None = None) -> Mapping[str, Any]:
         payload = None if body is None else json.dumps(dict(body), separators=(",", ":")).encode("utf-8")
-        request = Request(
-            url,
-            data=payload,
-            method=method,
-            headers={
-                "Authorization": f"Bearer {access_credential}",
-                "Accept": "application/json",
-                "Content-Type": "application/json",
-            },
-        )
+        request = Request(url, data=payload, method=method, headers={
+            "Authorization": f"Bearer {access_credential}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        })
         try:
             with urlopen(request, timeout=20) as response:  # noqa: S310 - fixed Google endpoint only
                 value = json.loads(response.read().decode("utf-8"))
@@ -107,6 +120,35 @@ class UrllibGmailTransport:
         if not isinstance(value, dict):
             raise RuntimeError("Gmail provider returned a non-object response")
         return value
+
+
+def _verify_canary(config: GmailRuntimeConfig) -> dict[str, Any]:
+    path = Path(config.canary_receipt_path)
+    if not path.is_file():
+        raise PermissionError("non-test activation requires a controlled test-account canary receipt")
+    receipt = _load_json(path)
+    supplied = receipt.get("receipt_sha256")
+    body = {key: value for key, value in receipt.items() if key != "receipt_sha256"}
+    if not isinstance(supplied, str) or not hmac.compare_digest(supplied, _digest_record(body)):
+        raise PermissionError("test-account canary receipt integrity verification failed")
+    required = {
+        "schema_version": "1.0.0",
+        "result": "DRAFT_CREATED_NOT_SENT",
+        "provider": "GMAIL",
+        "action_type": "CREATE_DRAFT",
+        "provider_verified": True,
+        "sent": False,
+        "external_action_performed": True,
+        "target_account_fingerprint": config.account_fingerprint,
+    }
+    if any(receipt.get(key) != expected for key, expected in required.items()):
+        raise PermissionError("test-account canary receipt is unsuccessful or not bound to this activation")
+    test_fingerprint = receipt.get("test_account_fingerprint")
+    if not isinstance(test_fingerprint, str) or len(test_fingerprint) != 64:
+        raise PermissionError("test-account canary fingerprint is invalid")
+    if _parse_utc(receipt.get("expires_at"), "canary expires_at") <= datetime.now(timezone.utc):
+        raise PermissionError("test-account canary receipt has expired")
+    return receipt
 
 
 def load_runtime_config(path: Path | str) -> GmailRuntimeConfig:
@@ -122,11 +164,12 @@ def load_runtime_config(path: Path | str) -> GmailRuntimeConfig:
         raise ValueError("account fingerprint does not match configured Gmail account")
     environment = str(value.get("environment") or "").upper()
     test_mode = value.get("test_account_mode") is True
-    enabled = value.get("enabled") is True
-    if enabled and environment != "TEST" and not Path(str(value.get("canary_receipt_path") or "")).is_file():
-        raise PermissionError("non-test activation requires a controlled test-account canary receipt")
-    return GmailRuntimeConfig(
-        enabled=enabled,
+    if environment not in {"TEST", "PRODUCTION"}:
+        raise ValueError("environment must be TEST or PRODUCTION")
+    if (environment == "TEST") != test_mode:
+        raise ValueError("environment and test_account_mode are inconsistent")
+    config = GmailRuntimeConfig(
+        enabled=value.get("enabled") is True,
         environment=environment,
         test_account_mode=test_mode,
         account_email=email,
@@ -136,6 +179,9 @@ def load_runtime_config(path: Path | str) -> GmailRuntimeConfig:
         activation_record_path=str(value.get("activation_record_path") or ""),
         canary_receipt_path=str(value.get("canary_receipt_path") or ""),
     )
+    if config.enabled and config.environment == "PRODUCTION":
+        _verify_canary(config)
+    return config
 
 
 def _verified_activation(config: GmailRuntimeConfig) -> dict[str, Any]:
@@ -146,16 +192,22 @@ def _verified_activation(config: GmailRuntimeConfig) -> dict[str, Any]:
         raise PermissionError("governed Gmail activation record is unavailable")
     record = _load_json(path)
     required = {
+        "schema_version": "1.0.0",
         "status": "ACTIVATED_DRAFT_ONLY",
         "account_fingerprint": config.account_fingerprint,
         "scope": GMAIL_COMPOSE_SCOPE,
+        "environment": config.environment,
         "send_capability_present": False,
         "emergency_stop_required": True,
     }
     if any(record.get(key) != expected for key, expected in required.items()):
         raise PermissionError("Gmail activation record is invalid")
-    if config.environment != "TEST" and record.get("test_canary_verified") is not True:
-        raise PermissionError("non-test connector activation requires a verified test canary")
+    if _parse_utc(record.get("expires_at"), "activation expires_at") <= datetime.now(timezone.utc):
+        raise PermissionError("Gmail activation record has expired")
+    if config.environment == "PRODUCTION":
+        if record.get("test_canary_verified") is not True:
+            raise PermissionError("production activation requires verified test canary status")
+        _verify_canary(config)
     return record
 
 
@@ -177,11 +229,7 @@ class GovernedGmailDraftProvider:
         return self._resolver.resolve_access_credential()
 
     def health(self) -> dict[str, Any]:
-        profile = self._transport.request(
-            method="GET",
-            url="https://gmail.googleapis.com/gmail/v1/users/me/profile",
-            access_credential=self._credential(),
-        )
+        profile = self._transport.request(method="GET", url="https://gmail.googleapis.com/gmail/v1/users/me/profile", access_credential=self._credential())
         observed_email = str(profile.get("emailAddress") or "").strip().lower()
         if _digest_text(observed_email) != self.account_fingerprint:
             raise PermissionError("authenticated Gmail account does not match the governed fingerprint")
@@ -204,12 +252,7 @@ class GovernedGmailDraftProvider:
         message["X-AIGC-Idempotency-Key"] = idempotency_key
         message.set_content(body)
         raw = urlsafe_b64encode(message.as_bytes(policy=policy.SMTP)).decode("ascii").rstrip("=")
-        value = self._transport.request(
-            method="POST",
-            url="https://gmail.googleapis.com/gmail/v1/users/me/drafts",
-            access_credential=self._credential(),
-            body={"message": {"raw": raw}},
-        )
+        value = self._transport.request(method="POST", url="https://gmail.googleapis.com/gmail/v1/users/me/drafts", access_credential=self._credential(), body={"message": {"raw": raw}})
         draft_id = str(value.get("id") or "")
         if not draft_id:
             raise RuntimeError("Gmail did not return a draft identifier")
@@ -218,11 +261,7 @@ class GovernedGmailDraftProvider:
     def get_draft(self, draft_id: str) -> Mapping[str, Any]:
         if not draft_id:
             raise ValueError("draft identifier is required")
-        value = self._transport.request(
-            method="GET",
-            url=f"https://gmail.googleapis.com/gmail/v1/users/me/drafts/{quote(draft_id, safe='')}?format=raw",
-            access_credential=self._credential(),
-        )
+        value = self._transport.request(method="GET", url=f"https://gmail.googleapis.com/gmail/v1/users/me/drafts/{quote(draft_id, safe='')}?format=raw", access_credential=self._credential())
         raw = str((value.get("message") or {}).get("raw") or "")
         padded = raw + "=" * (-len(raw) % 4)
         try:
@@ -231,16 +270,17 @@ class GovernedGmailDraftProvider:
             raise RuntimeError("Gmail draft content could not be decoded") from exc
         body = message.get_body(preferencelist=("plain",))
         text = body.get_content() if body is not None else message.get_content()
-        return {
-            "to": str(message.get("To") or ""),
-            "subject": str(message.get("Subject") or ""),
-            "body": _remove_single_terminal_line_ending(str(text)),
-            "sent": False,
-        }
+        return {"to": str(message.get("To") or ""), "subject": str(message.get("Subject") or ""), "body": _remove_single_terminal_line_ending(str(text)), "sent": False}
 
     def revoke(self) -> dict[str, Any]:
         self._resolver.revoke()
-        return {"status": "LOCAL_CREDENTIAL_REMOVED", "account_fingerprint": self.account_fingerprint, "send_performed": False}
+        return {
+            "status": "LOCAL_RUNTIME_CREDENTIAL_REMOVED",
+            "provider_oauth_revoked": False,
+            "provider_revocation_required_separately": True,
+            "account_fingerprint": self.account_fingerprint,
+            "send_performed": False,
+        }
 
 
 def connector_status(config_path: Path | str) -> dict[str, Any]:
