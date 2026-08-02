@@ -20,7 +20,7 @@
   },
   "allOf": [
     {
-      "if": {"properties": {"environment": {"const": "PRODUCTION"}}},
+      "if": {"properties": {"environment": {"const": "PRODUCTION"}}, "required": ["environment"]},
       "then": {"properties": {"test_canary_verified": {"const": true}}}
     }
   ]
