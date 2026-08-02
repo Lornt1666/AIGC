@@ -9,6 +9,7 @@ from typing import Any
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 
+from src.mission_os.activation import build_activation_projection
 from src.mission_os.dashboard import build_dashboard_payload, render_dashboard_html
 from src.mission_os.projection import compose_projection
 from src.mission_os.revenue import project_revenue_pipeline
@@ -36,8 +37,8 @@ def create_mission_app(
     root = Path(repository_root).resolve()
     api = FastAPI(
         title="Ω Mission OS Read-Only Projection API",
-        version="1.1.1-read-only-local",
-        description="Loopback-only GET mission, Quest, phase, dashboard, and revenue projection surface. No canonical mutation or external action routes are registered.",
+        version="1.2.0-read-only-local",
+        description="Loopback-only GET mission, Quest, dashboard, revenue, and internal activation projections. No canonical mutation or external-action routes are registered.",
     )
 
     @api.middleware("http")
@@ -46,32 +47,16 @@ def create_mission_app(
         if not _is_loopback_client(host):
             return JSONResponse(
                 status_code=403,
-                content={
-                    "detail": {
-                        "code": "MISSION_OS_LOOPBACK_ONLY",
-                        "message": "Mission OS projections are restricted to loopback clients.",
-                        "canonical_state_mutated": False,
-                        "external_action_performed": False,
-                    }
-                },
+                content={"detail": {"code": "MISSION_OS_LOOPBACK_ONLY", "message": "Mission OS projections are restricted to loopback clients.", "canonical_state_mutated": False, "external_action_performed": False}},
             )
         return await call_next(request)
 
     def compose_all() -> tuple[dict[str, Any], dict[str, Any]]:
-        snapshot = compose_projection(root, mission_path, database_path)
-        revenue = project_revenue_pipeline(root)
-        return snapshot, revenue
+        return compose_projection(root, mission_path, database_path), project_revenue_pipeline(root)
 
     @api.get("/health")
     def health() -> dict[str, Any]:
-        return {
-            "status": "healthy",
-            "mode": "READ_ONLY",
-            "network_boundary": "LOOPBACK_ONLY",
-            "methods": ["GET"],
-            "canonical_state_mutated": False,
-            "external_action_performed": False,
-        }
+        return {"status": "healthy", "mode": "READ_ONLY", "network_boundary": "LOOPBACK_ONLY", "methods": ["GET"], "canonical_state_mutated": False, "external_action_performed": False}
 
     @api.get("/dashboard", response_class=HTMLResponse)
     def dashboard() -> str:
@@ -91,6 +76,13 @@ def create_mission_app(
     @api.get("/api/v1/revenue/pipeline")
     def revenue_pipeline() -> dict[str, Any]:
         return project_revenue_pipeline(root)
+
+    @api.get("/api/v1/revenue/activation")
+    def revenue_activation() -> dict[str, Any]:
+        try:
+            return build_activation_projection(root)
+        except (OSError, ValueError, KeyError) as exc:
+            raise HTTPException(status_code=422, detail={"code": "MISSION_ACTIVATION_PROJECTION_FAILED", "message": str(exc), "canonical_state_mutated": False, "external_action_performed": False}) from exc
 
     @api.get("/api/v1/dashboard")
     def dashboard_payload() -> dict[str, Any]:
