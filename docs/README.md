@@ -3,6 +3,7 @@
 ## Architecture
 
 - [`../ARCHITECTURE.md`](../ARCHITECTURE.md) — canonical five-plane architecture, authority boundaries, plane ownership, and architectural invariants.
+- [`omega_mission_os/README.md`](omega_mission_os/README.md) — Ω Mission OS v1.0 canonical eight-volume executive control-plane architecture and implementation order.
 - [`REVIEW_EVIDENCE_PACKET_V1.md`](REVIEW_EVIDENCE_PACKET_V1.md) — review evidence and accountable human judgment.
 - [`PRODUCTION_DEPLOYMENT_BASELINE_V1.md`](PRODUCTION_DEPLOYMENT_BASELINE_V1.md) — fail-closed deployment baseline.
 

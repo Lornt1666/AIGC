@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/mission.schema.json",
+  "title": "Omega Mission OS Governed Mission",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "mission_id", "title", "objective", "accountable_owner", "state", "start_at", "deadline_at", "resource_envelope", "allowed_actions", "forbidden_actions", "objectives", "tasks", "dependencies", "approvals", "kpis", "evidence_requirements", "stop_conditions", "created_at", "updated_at", "external_action_authorized"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "mission_id": {"type": "string", "pattern": "^mission_[A-Za-z0-9_-]{6,100}$"},
+    "title": {"type": "string", "minLength": 1, "maxLength": 300},
+    "objective": {"type": "string", "minLength": 1, "maxLength": 4000},
+    "accountable_owner": {"const": "ACCOUNTABLE_OPERATOR"},
+    "state": {"enum": ["DRAFT", "ASSESSED", "PLANNED", "ACTIVE", "APPROVAL_REQUIRED", "EXECUTING", "VERIFYING", "COMPLETED", "BLOCKED", "CANCELLED"]},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "start_at": {"type": "string", "format": "date-time"},
+    "deadline_at": {"type": ["string", "null"], "format": "date-time"},
+    "resource_envelope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["currency", "spend_ceiling", "operator_minutes_per_day", "model_call_ceiling", "external_action_ceiling"],
+      "properties": {
+        "currency": {"type": "string", "pattern": "^[A-Z]{3}$"},
+        "spend_ceiling": {"type": "number", "minimum": 0},
+        "operator_minutes_per_day": {"type": "integer", "minimum": 0, "maximum": 1440},
+        "model_call_ceiling": {"type": "integer", "minimum": 0},
+        "external_action_ceiling": {"type": "integer", "minimum": 0}
+      }
+    },
+    "allowed_actions": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "forbidden_actions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "objectives": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/objective"}},
+    "tasks": {"type": "array", "items": {"$ref": "#/$defs/task"}},
+    "dependencies": {"type": "array", "items": {"$ref": "#/$defs/dependency"}},
+    "approvals": {"type": "array", "items": {"$ref": "#/$defs/approval"}},
+    "kpis": {"type": "array", "items": {"$ref": "#/$defs/kpi"}},
+    "evidence_requirements": {"type": "array", "items": {"$ref": "#/$defs/evidenceReference"}},
+    "stop_conditions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "created_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"},
+    "external_action_authorized": {"const": false}
+  },
+  "$defs": {
+    "objective": {
+      "type": "object", "additionalProperties": false,
+      "required": ["objective_id", "description", "measurement", "target", "status"],
+      "properties": {
+        "objective_id": {"type": "string", "pattern": "^obj_[A-Za-z0-9_-]{4,80}$"},
+        "description": {"type": "string", "minLength": 1},
+        "measurement": {"type": "string", "minLength": 1},
+        "target": {},
+        "status": {"enum": ["NOT_STARTED", "IN_PROGRESS", "MET", "MISSED", "BLOCKED"]}
+      }
+    },
+    "task": {
+      "type": "object", "additionalProperties": false,
+      "required": ["task_id", "title", "state", "priority", "dependency_ids", "approval_required", "external_action", "evidence_ids"],
+      "properties": {
+        "task_id": {"type": "string", "pattern": "^task_[A-Za-z0-9_-]{4,100}$"},
+        "title": {"type": "string", "minLength": 1},
+        "state": {"enum": ["PENDING", "READY", "ACTIVE", "APPROVAL_REQUIRED", "BLOCKED", "VERIFYING", "COMPLETED", "CANCELLED"]},
+        "priority": {"type": "number", "minimum": 0},
+        "dependency_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "approval_required": {"type": "boolean"},
+        "external_action": {"type": "boolean"},
+        "evidence_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "dependency": {
+      "type": "object", "additionalProperties": false,
+      "required": ["dependency_id", "kind", "reference", "state", "blocking"],
+      "properties": {
+        "dependency_id": {"type": "string", "pattern": "^dep_[A-Za-z0-9_-]{4,100}$"},
+        "kind": {"enum": ["MISSION", "TASK", "PHASE", "QUEST", "APPROVAL", "EVIDENCE", "INFRASTRUCTURE", "EXTERNAL"]},
+        "reference": {"type": "string", "minLength": 1},
+        "state": {"enum": ["UNKNOWN", "UNSATISFIED", "SATISFIED", "BLOCKED", "EXPIRED"]},
+        "blocking": {"type": "boolean"}
+      }
+    },
+    "approval": {
+      "type": "object", "additionalProperties": false,
+      "required": ["approval_id", "action", "status", "exact_revision", "expires_at", "evidence_ids"],
+      "properties": {
+        "approval_id": {"type": "string", "pattern": "^approval_[A-Za-z0-9_-]{4,120}$"},
+        "action": {"type": "string", "minLength": 1},
+        "status": {"enum": ["NOT_REQUESTED", "PENDING", "APPROVED", "DENIED", "EXPIRED", "CONSUMED"]},
+        "exact_revision": {"type": ["string", "null"], "pattern": "^[a-f0-9]{40}$"},
+        "expires_at": {"type": ["string", "null"], "format": "date-time"},
+        "evidence_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "kpi": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kpi_id", "name", "unit", "value", "classification", "observed_at", "evidence_ids"],
+      "properties": {
+        "kpi_id": {"type": "string", "pattern": "^kpi_[A-Za-z0-9_-]{4,100}$"},
+        "name": {"type": "string", "minLength": 1},
+        "unit": {"type": "string", "minLength": 1},
+        "value": {},
+        "classification": {"enum": ["VERIFIED", "ESTIMATED", "ASSUMED", "PROPOSED", "UNKNOWN", "BLOCKED"]},
+        "observed_at": {"type": "string", "format": "date-time"},
+        "evidence_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "evidenceReference": {
+      "type": "object", "additionalProperties": false,
+      "required": ["evidence_id", "kind", "location", "digest", "classification"],
+      "properties": {
+        "evidence_id": {"type": "string", "pattern": "^evidence_[A-Za-z0-9_-]{4,120}$"},
+        "kind": {"enum": ["REPOSITORY", "PHASE_ARTIFACT", "QUEST_RECORD", "CI", "RECEIPT", "EXTERNAL"]},
+        "location": {"type": "string", "minLength": 1},
+        "digest": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "classification": {"enum": ["STRUCTURAL", "OPERATIONAL", "AUTHORIZATION", "EXECUTION", "FINANCIAL", "QUALITY"]}
+      }
+    }
+  }
+}
