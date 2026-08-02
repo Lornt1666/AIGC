@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/mission_snapshot.schema.json",
+  "title": "Omega Mission OS Read-Only Mission Snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "snapshot_id", "generated_at", "mode", "repository_root", "source_revision", "mission", "source_status", "summary", "blockers", "approvals_waiting", "highest_impact_next_action", "provenance", "warnings", "external_action_performed", "canonical_state_mutated"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "snapshot_id": {"type": "string", "pattern": "^mission_snapshot_[a-f0-9]{16}$"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "mode": {"const": "READ_ONLY"},
+    "repository_root": {"type": "string", "minLength": 1},
+    "source_revision": {"type": ["string", "null"], "pattern": "^[a-f0-9]{40}$"},
+    "mission": {"$ref": "mission.schema.json"},
+    "source_status": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["source_id", "path", "status", "digest", "records", "message"],
+        "properties": {
+          "source_id": {"type": "string", "minLength": 1},
+          "path": {"type": "string", "minLength": 1},
+          "status": {"enum": ["AVAILABLE", "MISSING", "INVALID", "UNSUPPORTED"]},
+          "digest": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+          "records": {"type": "integer", "minimum": 0},
+          "message": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "summary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["sources_available", "sources_missing", "sources_invalid", "tasks_total", "tasks_completed", "tasks_blocked", "mission_progress_percent", "verified_revenue", "estimated_revenue", "currency"],
+      "properties": {
+        "sources_available": {"type": "integer", "minimum": 0},
+        "sources_missing": {"type": "integer", "minimum": 0},
+        "sources_invalid": {"type": "integer", "minimum": 0},
+        "tasks_total": {"type": "integer", "minimum": 0},
+        "tasks_completed": {"type": "integer", "minimum": 0},
+        "tasks_blocked": {"type": "integer", "minimum": 0},
+        "mission_progress_percent": {"type": "number", "minimum": 0, "maximum": 100},
+        "verified_revenue": {"type": "number", "minimum": 0},
+        "estimated_revenue": {"type": "number", "minimum": 0},
+        "currency": {"type": "string", "pattern": "^[A-Z]{3}$"}
+      }
+    },
+    "blockers": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "approvals_waiting": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "highest_impact_next_action": {"type": ["string", "null"]},
+    "provenance": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "warnings": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "external_action_performed": {"const": false},
+    "canonical_state_mutated": {"const": false}
+  }
+}
