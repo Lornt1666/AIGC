@@ -11,7 +11,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 
 from src.mission_os.activation import build_activation_projection
 from src.mission_os.dashboard import build_dashboard_payload, render_dashboard_html
-from src.mission_os.decisions import read_operator_decisions, record_operator_decision
+from src.mission_os.decisions import read_operator_decisions, record_operator_decision, verify_operator_credential
 from src.mission_os.projection import compose_projection
 from src.mission_os.revenue import project_revenue_pipeline
 
@@ -39,11 +39,11 @@ def create_mission_app(
     root = Path(repository_root).resolve()
     api = FastAPI(
         title="Ω Mission OS Local Governed Operator API",
-        version="1.3.1-local-decision-surface",
+        version="1.3.2-local-decision-surface",
         description=(
-            "Loopback-only mission projections plus human operator decision recording. "
-            "Decision routes may record reject, revision-request, or exact authorization "
-            "receipts, but no route performs an external action or mutates canonical state."
+            "Loopback-only mission projections plus credential-gated human operator decision records. "
+            "Decision routes may record reject, revision-request, or exact authorization receipts, "
+            "but no route performs an external action or mutates canonical state."
         ),
     )
 
@@ -60,6 +60,13 @@ def create_mission_app(
     def compose_all() -> tuple[dict[str, Any], dict[str, Any]]:
         return compose_projection(root, mission_path, database_path), project_revenue_pipeline(root)
 
+    def require_operator_credential(supplied: str | None) -> None:
+        if not verify_operator_credential(supplied, operator_credential):
+            raise HTTPException(
+                status_code=401,
+                detail={"code": "OPERATOR_AUTHENTICATION_REQUIRED", "message": "valid local operator credential required", "external_action_performed": False, "canonical_state_mutated": False},
+            )
+
     @api.get("/health")
     def health() -> dict[str, Any]:
         return {
@@ -68,6 +75,7 @@ def create_mission_app(
             "network_boundary": "LOOPBACK_ONLY",
             "projection_methods": ["GET"],
             "decision_methods": ["GET", "POST"],
+            "decision_read_authentication": "REQUIRED",
             "external_execution_routes": 0,
             "canonical_state_mutated": False,
             "external_action_performed": False,
@@ -100,7 +108,10 @@ def create_mission_app(
             raise HTTPException(status_code=422, detail={"code": "MISSION_ACTIVATION_PROJECTION_FAILED", "message": str(exc), "canonical_state_mutated": False, "external_action_performed": False}) from exc
 
     @api.get("/api/v1/operator/decisions")
-    def operator_decisions() -> dict[str, Any]:
+    def operator_decisions(
+        supplied_credential: str | None = Header(default=None, alias="X-Operator-Token"),
+    ) -> dict[str, Any]:
+        require_operator_credential(supplied_credential)
         return read_operator_decisions(root, ledger_path=decision_ledger_path)
 
     @api.post("/api/v1/operator/decisions", status_code=201)
