@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://regenexcalibur.local/schemas/gmail_draft_execution_receipt.schema.json",
+  "title": "Ω Mission OS Gmail Draft Execution Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "result", "provider", "account_fingerprint", "action_type", "destination_sha256", "packet_digest_sha256", "third_stage_receipt_sha256", "emergency_stop_revision", "idempotency_key", "provider_object_id_sha256", "response_timestamp", "provider_verified", "send_performed", "external_action_performed", "external_action_type", "canonical_state_mutated", "previous_receipt_sha256", "execution_receipt_sha256"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "result": {"enum": ["EXECUTION_ATTEMPT_RESERVED", "DRAFT_CREATED_NOT_SENT", "DRAFT_CREATION_OUTCOME_UNKNOWN"]},
+    "provider": {"const": "GMAIL"},
+    "action_type": {"const": "CREATE_DRAFT"},
+    "account_fingerprint": {"type": "string", "minLength": 8},
+    "destination_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "packet_digest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "third_stage_receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "emergency_stop_revision": {"type": "string", "minLength": 8},
+    "idempotency_key": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "provider_object_id_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "request_timestamp": {"type": "string", "format": "date-time"},
+    "response_timestamp": {"type": "string", "format": "date-time"},
+    "provider_verified": {"type": "boolean"},
+    "send_performed": {"const": false},
+    "external_action_performed": {"type": "boolean"},
+    "external_action_type": {"const": "REVERSIBLE_DRAFT_CREATION"},
+    "uncertainty_reason": {"type": "string", "minLength": 1},
+    "canonical_state_mutated": {"const": false},
+    "previous_receipt_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "execution_receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "allOf": [
+    {"if": {"properties": {"result": {"const": "DRAFT_CREATED_NOT_SENT"}}}, "then": {"properties": {"provider_verified": {"const": true}, "external_action_performed": {"const": true}}}},
+    {"if": {"properties": {"result": {"const": "EXECUTION_ATTEMPT_RESERVED"}}}, "then": {"required": ["request_timestamp"], "properties": {"provider_verified": {"const": false}, "external_action_performed": {"const": false}}}},
+    {"if": {"properties": {"result": {"const": "DRAFT_CREATION_OUTCOME_UNKNOWN"}}}, "then": {"required": ["uncertainty_reason"], "properties": {"provider_verified": {"const": false}}}}
+  ]
+}

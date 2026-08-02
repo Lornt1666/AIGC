@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://regenexcalibur.local/schemas/gmail_draft_third_stage_approval.schema.json",
+  "title": "Ω Mission OS Gmail Draft Third-Stage Approval",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "approval_status", "connector", "action_type", "account_fingerprint", "packet_digest_sha256", "packet_receipt_sha256", "second_stage_receipt_sha256", "destination", "payload_digest_sha256", "operator_id", "rationale", "expires_at", "nonce", "approved_at", "one_time", "send_authorized", "external_action_performed", "canonical_state_mutated", "previous_receipt_sha256", "third_stage_receipt_sha256"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "approval_status": {"const": "GMAIL_DRAFT_CREATION_AUTHORIZED_ONCE"},
+    "connector": {"const": "GMAIL"},
+    "action_type": {"const": "CREATE_DRAFT"},
+    "account_fingerprint": {"type": "string", "minLength": 8},
+    "packet_digest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "packet_receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "second_stage_receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "destination": {"type": "string", "minLength": 1},
+    "payload_digest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "operator_id": {"type": "string", "minLength": 1},
+    "rationale": {"type": "string", "minLength": 1},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "nonce": {"type": "string", "minLength": 16},
+    "approved_at": {"type": "string", "format": "date-time"},
+    "one_time": {"const": true},
+    "send_authorized": {"const": false},
+    "external_action_performed": {"const": false},
+    "canonical_state_mutated": {"const": false},
+    "previous_receipt_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "third_stage_receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}
