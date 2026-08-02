@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
+import ipaddress
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import HTMLResponse, JSONResponse
 
 from src.mission_os.dashboard import build_dashboard_payload, render_dashboard_html
 from src.mission_os.projection import compose_projection
@@ -14,6 +15,17 @@ from src.mission_os.revenue import project_revenue_pipeline
 
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def _is_loopback_client(host: str | None) -> bool:
+    if host in {"testclient", "localhost"}:
+        return True
+    if not host:
+        return False
+    try:
+        return ipaddress.ip_address(host).is_loopback
+    except ValueError:
+        return False
 
 
 def create_mission_app(
@@ -24,9 +36,26 @@ def create_mission_app(
     root = Path(repository_root).resolve()
     api = FastAPI(
         title="Ω Mission OS Read-Only Projection API",
-        version="1.1.0-read-only",
-        description="GET-only mission, Quest, phase, dashboard, and revenue projection surface. No canonical mutation or external action routes are registered.",
+        version="1.1.1-read-only-local",
+        description="Loopback-only GET mission, Quest, phase, dashboard, and revenue projection surface. No canonical mutation or external action routes are registered.",
     )
+
+    @api.middleware("http")
+    async def enforce_loopback(request: Request, call_next):
+        host = request.client.host if request.client else None
+        if not _is_loopback_client(host):
+            return JSONResponse(
+                status_code=403,
+                content={
+                    "detail": {
+                        "code": "MISSION_OS_LOOPBACK_ONLY",
+                        "message": "Mission OS projections are restricted to loopback clients.",
+                        "canonical_state_mutated": False,
+                        "external_action_performed": False,
+                    }
+                },
+            )
+        return await call_next(request)
 
     def compose_all() -> tuple[dict[str, Any], dict[str, Any]]:
         snapshot = compose_projection(root, mission_path, database_path)
@@ -38,6 +67,7 @@ def create_mission_app(
         return {
             "status": "healthy",
             "mode": "READ_ONLY",
+            "network_boundary": "LOOPBACK_ONLY",
             "methods": ["GET"],
             "canonical_state_mutated": False,
             "external_action_performed": False,
