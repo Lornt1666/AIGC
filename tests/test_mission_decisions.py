@@ -62,8 +62,8 @@ def test_authorization_records_receipt_but_does_not_execute(tmp_path: Path) -> N
     event = record_operator_decision(
         tmp_path,
         _request(proposal, "AUTHORIZE_EXACT_PROPOSAL"),
-        operator_token="secret",
-        expected_token="secret",
+        operator_credential="test-credential",
+        expected_credential="test-credential",
         ledger_path=ledger,
     )
     assert event["decision_status"] == "AUTHORIZED_NOT_EXECUTED"
@@ -81,15 +81,15 @@ def test_reject_and_revision_request_are_append_only(tmp_path: Path) -> None:
     reject = record_operator_decision(
         tmp_path,
         _request(proposal, "REJECT"),
-        operator_token="secret",
-        expected_token="secret",
+        operator_credential="test-credential",
+        expected_credential="test-credential",
         ledger_path=ledger,
     )
     revise = record_operator_decision(
         tmp_path,
         _request(proposal, "REQUEST_REVISION", requested_changes=["Clarify acceptance criteria"]),
-        operator_token="secret",
-        expected_token="secret",
+        operator_credential="test-credential",
+        expected_credential="test-credential",
         ledger_path=ledger,
     )
     records = read_operator_decisions(tmp_path, ledger_path=ledger)["records"]
@@ -99,19 +99,19 @@ def test_reject_and_revision_request_are_append_only(tmp_path: Path) -> None:
     assert all(item["external_action_performed"] is False for item in records)
 
 
-def test_stale_revision_and_missing_token_fail_closed(tmp_path: Path) -> None:
+def test_stale_revision_and_missing_credential_fail_closed(tmp_path: Path) -> None:
     _fixture(tmp_path)
     proposal = _proposal(tmp_path)
     payload = _request(proposal, "AUTHORIZE_EXACT_PROPOSAL")
     payload["exact_revision"] = "0" * 64
     try:
-        record_operator_decision(tmp_path, payload, operator_token="secret", expected_token="secret")
+        record_operator_decision(tmp_path, payload, operator_credential="test-credential", expected_credential="test-credential")
         raise AssertionError("stale revision should fail")
     except ValueError as exc:
         assert "stale" in str(exc)
     try:
-        record_operator_decision(tmp_path, _request(proposal, "REJECT"), operator_token=None, expected_token="secret")
-        raise AssertionError("missing token should fail")
+        record_operator_decision(tmp_path, _request(proposal, "REJECT"), operator_credential=None, expected_credential="test-credential")
+        raise AssertionError("missing credential should fail")
     except PermissionError:
         pass
 
@@ -123,15 +123,15 @@ def test_incomplete_binding_cannot_be_authorized(tmp_path: Path) -> None:
         record_operator_decision(
             tmp_path,
             _request(proposal, "AUTHORIZE_EXACT_PROPOSAL"),
-            operator_token="secret",
-            expected_token="secret",
+            operator_credential="test-credential",
+            expected_credential="test-credential",
         )
         raise AssertionError("incomplete binding should fail")
     except ValueError as exc:
         assert "binding is incomplete" in str(exc)
 
 
-def test_api_requires_token_and_has_no_execution_route(tmp_path: Path) -> None:
+def test_api_requires_credential_and_has_no_execution_route(tmp_path: Path) -> None:
     _fixture(tmp_path)
     proposal = _proposal(tmp_path)
     ledger = tmp_path / ".runtime" / "decisions.jsonl"
@@ -140,12 +140,12 @@ def test_api_requires_token_and_has_no_execution_route(tmp_path: Path) -> None:
         tmp_path / "config/missing-mission.json",
         tmp_path / "missing.sqlite3",
         decision_ledger_path=ledger,
-        operator_token="secret",
+        operator_credential="test-credential",
     )
     client = TestClient(app)
     payload = _request(proposal, "REJECT")
     assert client.post("/api/v1/operator/decisions", json=payload).status_code == 401
-    response = client.post("/api/v1/operator/decisions", json=payload, headers={"X-Operator-Token": "secret"})
+    response = client.post("/api/v1/operator/decisions", json=payload, headers={"X-Operator-Token": "test-credential"})
     assert response.status_code == 201
     assert response.json()["external_action_performed"] is False
     paths = {route.path for route in app.routes}
