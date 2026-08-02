@@ -70,18 +70,12 @@ def _score(item: Mapping[str, Any], offer: Mapping[str, Any]) -> dict[str, Any]:
     effort_minutes = max(30.0, effort_raw if effort_raw is not None else 120.0)
     risk_flags = item.get("risk_flags") if isinstance(item.get("risk_flags"), list) else []
     risk_score = min(100.0, 10.0 * len(risk_flags))
-
     budget = _number(item.get("budget_cad"))
     payment_probability = _number(item.get("payment_probability"))
-    payment_probability = (
-        max(0.0, min(100.0, payment_probability))
-        if payment_probability is not None
-        else None
-    )
+    payment_probability = max(0.0, min(100.0, payment_probability)) if payment_probability is not None else None
     expected_value_per_hour = None
     if budget is not None and budget >= 0 and payment_probability is not None:
         expected_value_per_hour = (budget * payment_probability / 100.0) / (effort_minutes / 60.0)
-
     weighted = (
         fit_score * 0.35
         + assessment * 0.30
@@ -102,9 +96,7 @@ def _score(item: Mapping[str, Any], offer: Mapping[str, Any]) -> dict[str, Any]:
         "opportunity_budget_cad": round(budget, 2) if budget is not None else None,
         "budget_classification": "SOURCE_VALUE" if budget is not None else "UNKNOWN",
         "rank_score": round(weighted, 2),
-        "expected_value_per_operator_hour_cad": (
-            round(expected_value_per_hour, 2) if expected_value_per_hour is not None else None
-        ),
+        "expected_value_per_operator_hour_cad": round(expected_value_per_hour, 2) if expected_value_per_hour is not None else None,
         "classification": "DECISION_SUPPORT_ONLY",
     }
 
@@ -114,16 +106,32 @@ def _digest(value: Mapping[str, Any]) -> str:
     return sha256(canonical.encode("utf-8")).hexdigest()
 
 
+def _binding_state(counterparty: Any, submission_channel: Any) -> tuple[bool, list[str]]:
+    blockers: list[str] = []
+    counterparty_text = str(counterparty or "").strip()
+    channel_text = str(submission_channel or "").strip()
+    if not counterparty_text or counterparty_text.lower() in {"unknown", "none", "null"}:
+        blockers.append("COUNTERPARTY_BINDING_MISSING")
+    if not channel_text:
+        blockers.append("SUBMISSION_CHANNEL_BINDING_MISSING")
+    return not blockers, blockers
+
+
 def _approval_packet(proposal: Mapping[str, Any]) -> dict[str, Any]:
+    binding_complete, binding_blockers = _binding_state(
+        proposal.get("counterparty"), proposal.get("submission_channel")
+    )
     return {
         "approval_id": f"approval_{proposal['proposal_id']}",
         "action_type": "EXTERNAL_PROPOSAL_SUBMISSION",
         "opportunity_id": proposal["opportunity_id"],
         "proposal_id": proposal["proposal_id"],
-        "counterparty": proposal["counterparty"],
-        "submission_channel": proposal["submission_channel"],
+        "counterparty": proposal.get("counterparty"),
+        "submission_channel": proposal.get("submission_channel"),
         "exact_revision": proposal["exact_revision"],
-        "status": "NOT_REQUESTED",
+        "binding_complete": binding_complete,
+        "binding_blockers": binding_blockers,
+        "status": "NOT_REQUESTED" if binding_complete else "BLOCKED_BINDING_INCOMPLETE",
         "scope": "Submit only this exact proposal revision to this exact counterparty through this exact channel.",
         "expires_at": None,
         "external_action_authorized": False,
@@ -168,6 +176,7 @@ def build_activation_projection(repository_root: Path | str, *, top_n: int = 10)
     default_tier = tiers[0] if tiers and isinstance(tiers[0], Mapping) else {}
     for index, row in enumerate(ranked, start=1):
         proposal_id = f"proposal_internal_{index:02d}_{row['opportunity_id']}"
+        binding_complete, binding_blockers = _binding_state(row["counterparty"], row.get("source_url"))
         proposal_body = {
             "proposal_id": proposal_id,
             "status": "INTERNAL_DRAFT_ONLY",
@@ -177,6 +186,8 @@ def build_activation_projection(repository_root: Path | str, *, top_n: int = 10)
             "tier_id": default_tier.get("tier_id"),
             "counterparty": row["counterparty"],
             "submission_channel": row.get("source_url"),
+            "binding_complete": binding_complete,
+            "binding_blockers": binding_blockers,
             "title": f"{offer.get('name')} for {row['title']}",
             "scope": offer.get("deliverables", []),
             "exclusions": offer.get("exclusions", []),
@@ -190,7 +201,8 @@ def build_activation_projection(repository_root: Path | str, *, top_n: int = 10)
         proposal = dict(proposal_body)
         proposal["exact_revision"] = _digest(proposal_body)
         proposals.append(proposal)
-        approvals.append(_approval_packet(proposal))
+        approval = _approval_packet(proposal)
+        approvals.append(approval)
         evidence_chains.append({
             "chain_id": f"revenue_chain_{row['opportunity_id']}",
             "opportunity_id": row["opportunity_id"],
@@ -198,7 +210,7 @@ def build_activation_projection(repository_root: Path | str, *, top_n: int = 10)
                 {"stage": "OPPORTUNITY", "reference": row["opportunity_id"], "state": "AVAILABLE"},
                 {"stage": "ASSESSMENT", "reference": row.get("assessment_reference"), "state": "AVAILABLE" if row.get("assessment_reference") else "UNKNOWN"},
                 {"stage": "PROPOSAL", "reference": proposal_id, "state": "INTERNAL_DRAFT"},
-                {"stage": "AUTHORIZATION", "reference": f"approval_{proposal_id}", "state": "NOT_REQUESTED"},
+                {"stage": "AUTHORIZATION", "reference": approval["approval_id"], "state": approval["status"]},
                 {"stage": "EXECUTION_RECEIPT", "reference": None, "state": "BLOCKED"},
                 {"stage": "CONTRACT_EVIDENCE", "reference": None, "state": "BLOCKED"},
                 {"stage": "INVOICE", "reference": None, "state": "BLOCKED"},
