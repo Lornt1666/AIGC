@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://regenexcalibur.local/schemas/mission_activation_projection.schema.json",
+  "title": "Ω Mission OS Governed Revenue Activation Projection",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "mode",
+    "offer",
+    "ranked_opportunities",
+    "internal_proposal_packets",
+    "exact_action_approval_queue",
+    "daily_operator_brief",
+    "revenue_evidence_chains",
+    "disabled_capabilities",
+    "external_action_authorized",
+    "external_action_performed",
+    "canonical_state_mutated"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "mode": {"const": "READ_ONLY_INTERNAL_PREPARATION"},
+    "ranked_opportunities": {"type": "array", "maxItems": 25},
+    "internal_proposal_packets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["proposal_id", "status", "exact_revision", "external_action_authorized", "external_action_performed"],
+        "properties": {
+          "status": {"const": "INTERNAL_DRAFT_ONLY"},
+          "external_action_authorized": {"const": false},
+          "external_action_performed": {"const": false}
+        }
+      }
+    },
+    "exact_action_approval_queue": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["approval_id", "action_type", "exact_revision", "status", "external_action_authorized", "external_action_performed"],
+        "properties": {
+          "status": {"enum": ["NOT_REQUESTED", "PENDING"]},
+          "external_action_authorized": {"const": false},
+          "external_action_performed": {"const": false}
+        }
+      }
+    },
+    "daily_operator_brief": {
+      "type": "object",
+      "required": ["operator_minutes_ceiling", "scheduled_minutes", "external_actions_included"],
+      "properties": {
+        "operator_minutes_ceiling": {"type": "integer", "maximum": 120},
+        "scheduled_minutes": {"type": "integer", "maximum": 120},
+        "external_actions_included": {"const": false}
+      }
+    },
+    "external_action_authorized": {"const": false},
+    "external_action_performed": {"const": false},
+    "canonical_state_mutated": {"const": false}
+  }
+}
