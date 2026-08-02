@@ -26,9 +26,11 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["proposal_id", "status", "exact_revision", "external_action_authorized", "external_action_performed"],
+        "required": ["proposal_id", "status", "exact_revision", "binding_complete", "binding_blockers", "external_action_authorized", "external_action_performed"],
         "properties": {
           "status": {"const": "INTERNAL_DRAFT_ONLY"},
+          "binding_complete": {"type": "boolean"},
+          "binding_blockers": {"type": "array", "items": {"type": "string"}},
           "external_action_authorized": {"const": false},
           "external_action_performed": {"const": false}
         }
@@ -38,12 +40,25 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["approval_id", "action_type", "exact_revision", "status", "external_action_authorized", "external_action_performed"],
+        "required": ["approval_id", "action_type", "exact_revision", "status", "binding_complete", "binding_blockers", "external_action_authorized", "external_action_performed"],
         "properties": {
-          "status": {"enum": ["NOT_REQUESTED", "PENDING"]},
+          "status": {"enum": ["NOT_REQUESTED", "PENDING", "BLOCKED_BINDING_INCOMPLETE"]},
+          "binding_complete": {"type": "boolean"},
+          "binding_blockers": {"type": "array", "items": {"type": "string"}},
           "external_action_authorized": {"const": false},
           "external_action_performed": {"const": false}
-        }
+        },
+        "allOf": [
+          {
+            "if": {"properties": {"status": {"const": "BLOCKED_BINDING_INCOMPLETE"}}},
+            "then": {
+              "properties": {
+                "binding_complete": {"const": false},
+                "binding_blockers": {"minItems": 1}
+              }
+            }
+          }
+        ]
       }
     },
     "daily_operator_brief": {
