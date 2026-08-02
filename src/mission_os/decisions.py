@@ -38,7 +38,7 @@ def _decision_path(root: Path, configured: Path | str | None = None) -> Path:
     return path
 
 
-def verify_operator_token(provided: str | None, expected: str | None = None) -> bool:
+def verify_operator_credential(provided: str | None, expected: str | None = None) -> bool:
     expected_value = expected if expected is not None else os.getenv("MISSION_OS_OPERATOR_TOKEN")
     if not expected_value or not provided:
         return False
@@ -66,13 +66,13 @@ def record_operator_decision(
     repository_root: Path | str,
     request: Mapping[str, Any],
     *,
-    operator_token: str | None,
-    expected_token: str | None = None,
+    operator_credential: str | None,
+    expected_credential: str | None = None,
     ledger_path: Path | str | None = None,
 ) -> dict[str, Any]:
     root = Path(repository_root).resolve()
-    if not verify_operator_token(operator_token, expected_token):
-        raise PermissionError("valid local operator token required")
+    if not verify_operator_credential(operator_credential, expected_credential):
+        raise PermissionError("valid local operator credential required")
 
     decision = str(request.get("decision") or "").upper()
     if decision not in ALLOWED_DECISIONS:
