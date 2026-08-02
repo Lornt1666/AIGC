@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://regenexcalibur.local/schemas/execution_packet.schema.json",
+  "title": "Ω Mission OS Prepared Execution Packet",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "packet_status",
+    "proposal_id",
+    "proposal_revision",
+    "authorization_receipt_sha256",
+    "counterparty",
+    "submission_channel",
+    "action_type",
+    "preflight",
+    "packet_digest_sha256",
+    "dry_run",
+    "external_action_authorized",
+    "external_action_performed",
+    "canonical_state_mutated"
+  ],
+  "properties": {
+    "packet_status": {"const": "PREPARED_NOT_EXECUTED"},
+    "proposal_revision": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "authorization_receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "packet_digest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "counterparty": {"type": "string", "minLength": 1},
+    "submission_channel": {"type": "string", "minLength": 1},
+    "external_action_authorized": {"const": false},
+    "external_action_performed": {"const": false},
+    "canonical_state_mutated": {"const": false},
+    "dry_run": {
+      "type": "object",
+      "required": ["status", "external_call_performed"],
+      "properties": {
+        "status": {"const": "SIMULATED_NO_EXTERNAL_CALL"},
+        "external_call_performed": {"const": false}
+      }
+    }
+  }
+}
