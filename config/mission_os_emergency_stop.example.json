@@ -1,0 +1,6 @@
+{
+  "schema_version": "1.0.0",
+  "enabled": true,
+  "revision": "INITIAL-LOCKED-0001",
+  "reason": "Increment 8 gateway is locked by default until a human reviews connector configuration and explicitly changes this runtime-local control."
+}
