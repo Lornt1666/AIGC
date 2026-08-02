@@ -62,6 +62,39 @@ def _find_proposal(root: Path, proposal_id: str) -> tuple[dict[str, Any], dict[s
     return dict(proposals[proposal_id]), dict(approvals.get(proposal_id, {}))
 
 
+def _read_verified_ledger(path: Path) -> tuple[list[dict[str, Any]], int, str]:
+    records: list[dict[str, Any]] = []
+    invalid_lines = 0
+    expected_previous: str | None = None
+    if not path.is_file():
+        return records, invalid_lines, "VERIFIED"
+
+    for line in path.read_text(encoding="utf-8").splitlines():
+        try:
+            value = json.loads(line)
+        except json.JSONDecodeError:
+            invalid_lines += 1
+            break
+        if not isinstance(value, dict):
+            invalid_lines += 1
+            break
+
+        receipt = value.get("decision_receipt_sha256")
+        body = {key: item for key, item in value.items() if key != "decision_receipt_sha256"}
+        if not isinstance(receipt, str) or _canonical_digest(body) != receipt:
+            invalid_lines += 1
+            break
+        if body.get("previous_receipt_sha256") != expected_previous:
+            invalid_lines += 1
+            break
+
+        records.append(value)
+        expected_previous = receipt
+
+    status = "VERIFIED" if invalid_lines == 0 else "INTEGRITY_FAILURE"
+    return records, invalid_lines, status
+
+
 def record_operator_decision(
     repository_root: Path | str,
     request: Mapping[str, Any],
@@ -101,13 +134,19 @@ def record_operator_decision(
     elif requested_changes not in (None, []):
         raise ValueError("requested_changes are only valid for revision requests")
 
+    path = _decision_path(root, ledger_path)
+    existing_records, invalid_lines, integrity_status = _read_verified_ledger(path)
+    if invalid_lines or integrity_status != "VERIFIED":
+        raise ValueError("decision ledger integrity verification failed; append prohibited")
+    previous_receipt = existing_records[-1]["decision_receipt_sha256"] if existing_records else None
+
     recorded_status = {
         "REJECT": "REJECTED",
         "REQUEST_REVISION": "REVISION_REQUESTED",
         "AUTHORIZE_EXACT_PROPOSAL": "AUTHORIZED_NOT_EXECUTED",
     }[decision]
     event_body = {
-        "schema_version": "1.0.0",
+        "schema_version": "1.1.0",
         "decision": decision,
         "decision_status": recorded_status,
         "proposal_id": proposal_id,
@@ -119,6 +158,7 @@ def record_operator_decision(
         "submission_channel": proposal.get("submission_channel"),
         "binding_complete": binding_complete,
         "decided_at": _utc_now(),
+        "previous_receipt_sha256": previous_receipt,
         "external_action_authorized": decision == "AUTHORIZE_EXACT_PROPOSAL",
         "external_action_performed": False,
         "canonical_state_mutated": False,
@@ -126,7 +166,6 @@ def record_operator_decision(
     event = dict(event_body)
     event["decision_receipt_sha256"] = _canonical_digest(event_body)
 
-    path = _decision_path(root, ledger_path)
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(event, sort_keys=True, ensure_ascii=False) + "\n")
@@ -140,23 +179,13 @@ def read_operator_decisions(
 ) -> dict[str, Any]:
     root = Path(repository_root).resolve()
     path = _decision_path(root, ledger_path)
-    records: list[dict[str, Any]] = []
-    invalid_lines = 0
-    if path.is_file():
-        for line in path.read_text(encoding="utf-8").splitlines():
-            try:
-                value = json.loads(line)
-                if isinstance(value, dict):
-                    records.append(value)
-                else:
-                    invalid_lines += 1
-            except json.JSONDecodeError:
-                invalid_lines += 1
+    records, invalid_lines, integrity_status = _read_verified_ledger(path)
     return {
-        "schema_version": "1.0.0",
+        "schema_version": "1.1.0",
         "mode": "LOCAL_OPERATOR_DECISION_LEDGER",
         "records": records,
         "invalid_lines": invalid_lines,
+        "integrity_status": integrity_status,
         "external_action_performed": False,
         "canonical_state_mutated": False,
     }
