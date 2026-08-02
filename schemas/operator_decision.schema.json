@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://regenexcalibur.local/schemas/operator_decision.schema.json",
+  "title": "Ω Mission OS Operator Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "decision",
+    "proposal_id",
+    "exact_revision",
+    "operator_id",
+    "rationale"
+  ],
+  "properties": {
+    "decision": {
+      "enum": ["REJECT", "REQUEST_REVISION", "AUTHORIZE_EXACT_PROPOSAL"]
+    },
+    "proposal_id": {"type": "string", "minLength": 1},
+    "exact_revision": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "operator_id": {"type": "string", "minLength": 1},
+    "rationale": {"type": "string", "minLength": 1},
+    "requested_changes": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "minItems": 1
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"decision": {"const": "REQUEST_REVISION"}},
+        "required": ["decision"]
+      },
+      "then": {"required": ["requested_changes"]},
+      "else": {"not": {"required": ["requested_changes"]}}
+    }
+  ]
+}

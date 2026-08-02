@@ -1,6 +1,6 @@
 # Ω Mission OS v1.0 — Canonical Volume Index
 
-Status: **Architecture baseline with governed read-only mission and revenue preparation projections**
+Status: **Architecture baseline with governed mission, revenue preparation, and local operator decision surfaces**
 
 Authority: Justice Gray Maciocha, accountable human operator.
 
@@ -23,6 +23,7 @@ Authority: Justice Gray Maciocha, accountable human operator.
 - [`INCREMENT_3_READ_ONLY_PROJECTION.md`](INCREMENT_3_READ_ONLY_PROJECTION.md) — canonical Quest persistence, phase-registry projection, contract validation, CLI, and GET-only API.
 - [`INCREMENT_4_DASHBOARD_REVENUE.md`](INCREMENT_4_DASHBOARD_REVENUE.md) — local executive dashboard and repository revenue classification.
 - [`INCREMENT_5_GOVERNED_REVENUE_ACTIVATION.md`](INCREMENT_5_GOVERNED_REVENUE_ACTIVATION.md) — offer productization, opportunity ranking, internal proposals, exact-action approval queue, daily operator brief, and evidence chain.
+- [`INCREMENT_6_OPERATOR_DECISION_SURFACE.md`](INCREMENT_6_OPERATOR_DECISION_SURFACE.md) — token-gated human rejection, revision request, and exact authorization receipts without external execution.
 
 ## Canonical invariants
 
@@ -45,6 +46,7 @@ Implemented:
 4. Loopback-only executive dashboard.
 5. Evidence-bound revenue classification.
 6. Internal-only revenue mission preparation.
+7. Local append-only operator decision receipts for reject, revise, or exact authorization.
 
 Not activated:
 
