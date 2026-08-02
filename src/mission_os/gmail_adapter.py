@@ -35,6 +35,15 @@ def _load_json(path: Path | str) -> dict[str, Any]:
     return value
 
 
+def _remove_single_terminal_line_ending(value: str) -> str:
+    """Remove the MIME serializer's one terminal line ending without trimming body content."""
+    if value.endswith("\r\n"):
+        return value[:-2]
+    if value.endswith(("\n", "\r")):
+        return value[:-1]
+    return value
+
+
 class CredentialResolver(Protocol):
     def resolve_access_credential(self) -> str: ...
     def revoke(self) -> None: ...
@@ -225,7 +234,7 @@ class GovernedGmailDraftProvider:
         return {
             "to": str(message.get("To") or ""),
             "subject": str(message.get("Subject") or ""),
-            "body": str(text).rstrip("\n"),
+            "body": _remove_single_terminal_line_ending(str(text)),
             "sent": False,
         }
 
