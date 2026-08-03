@@ -4,10 +4,10 @@
   "title": "Ω Mission OS Gmail Canary Audit Event",
   "type": "object",
   "additionalProperties": true,
-  "required": ["schema_version", "event", "recorded_at", "operator_id", "test_account_fingerprint", "target_account_fingerprint", "previous_receipt_sha256", "audit_receipt_sha256"],
+  "required": ["schema_version", "event", "recorded_at", "operator_id", "test_account_fingerprint", "target_account_fingerprint", "previous_receipt_sha256", "audit_receipt_sha256", "send_authorized", "send_performed", "production_activation_authorized"],
   "properties": {
     "schema_version": {"const": "1.0.0"},
-    "event": {"enum": ["CANARY_STARTED", "CANARY_COMPLETED"]},
+    "event": {"enum": ["CANARY_STARTED", "CANARY_RELOCKED", "CANARY_FAILED", "CANARY_COMPLETED"]},
     "recorded_at": {"type": "string", "format": "date-time"},
     "operator_id": {"type": "string", "minLength": 1},
     "test_account_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
