@@ -226,12 +226,10 @@ def run_test_canary(
     target = Path(canary_receipt_path)
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(receipt, sort_keys=True, indent=2) + "\n", encoding="utf-8")
-    completed = _append_audit(audit_path, {
+    _append_audit(audit_path, {
         **_audit_base(operator_id, test_fp, target_account_fingerprint),
         "event": "CANARY_COMPLETED", "canary_execution_sha256": execution_sha,
         "canary_receipt_sha256": receipt["receipt_sha256"],
         "provider_revocation_evidence_sha256": receipt["provider_revocation_evidence_sha256"],
     })
-    receipt["completed_audit_receipt_sha256"] = completed["audit_receipt_sha256"]
-    target.write_text(json.dumps(receipt, sort_keys=True, indent=2) + "\n", encoding="utf-8")
     return receipt
