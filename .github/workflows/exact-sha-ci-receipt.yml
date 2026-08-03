@@ -13,13 +13,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  validate-request:
+  validate-exact-target:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    outputs:
-      target_sha: ${{ steps.request.outputs.target_sha }}
-      request_sha256: ${{ steps.request.outputs.request_sha256 }}
-      request_file: ${{ steps.locate.outputs.request_file }}
+    timeout-minutes: 45
     steps:
       - name: Checkout request branch without credentials
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
@@ -33,40 +29,33 @@ jobs:
         run: |
           mapfile -t files < <(find request/ci/exact_sha_requests -maxdepth 1 -type f -name '*.json' -print)
           test "${#files[@]}" -eq 1
-          echo "request_file=${files[0]}" >> "$GITHUB_OUTPUT"
+          cp "${files[0]}" /tmp/exact-sha-request.json
 
-      - name: Checkout trusted mainline validator
+      - name: Checkout trusted mainline broker code
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           ref: main
           path: trusted
+          fetch-depth: 0
           persist-credentials: false
 
-      - name: Validate closed request contract
+      - name: Validate closed request and target reachability
         id: request
-        shell: bash
-        run: |
-          result=$(python trusted/scripts/validate_exact_sha_ci_request.py --request "${{ steps.locate.outputs.request_file }}")
-          echo "target_sha=$(python -c 'import json,sys; print(json.load(sys.stdin)["target_sha"])' <<< "$result")" >> "$GITHUB_OUTPUT"
-          echo "request_sha256=$(python -c 'import json,sys; print(json.load(sys.stdin)["request_sha256"])' <<< "$result")" >> "$GITHUB_OUTPUT"
-
-      - name: Verify target exists and is reachable from main
         shell: bash
         working-directory: trusted
         run: |
-          git fetch --no-tags origin main "${{ steps.request.outputs.target_sha }}"
-          git cat-file -e "${{ steps.request.outputs.target_sha }}^{commit}"
-          git merge-base --is-ancestor "${{ steps.request.outputs.target_sha }}" origin/main
+          result=$(python scripts/validate_exact_sha_ci_request.py --request /tmp/exact-sha-request.json)
+          target=$(python -c 'import json,sys; print(json.load(sys.stdin)["target_sha"])' <<< "$result")
+          git fetch --no-tags origin main "$target"
+          git cat-file -e "$target^{commit}"
+          git merge-base --is-ancestor "$target" origin/main
+          echo "target_sha=$target" >> "$GITHUB_OUTPUT"
 
-  validate-target:
-    needs: validate-request
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
-    steps:
       - name: Checkout exact requested target
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
-          ref: ${{ needs.validate-request.outputs.target_sha }}
+          ref: ${{ steps.request.outputs.target_sha }}
+          path: target
           fetch-depth: 0
           persist-credentials: false
 
@@ -84,25 +73,30 @@ jobs:
       - name: Confirm exact checkout and tree
         id: checkout
         shell: bash
+        working-directory: target
         run: |
           observed=$(git rev-parse HEAD)
-          test "$observed" = "${{ needs.validate-request.outputs.target_sha }}"
+          test "$observed" = "${{ steps.request.outputs.target_sha }}"
           echo "observed_sha=$observed" >> "$GITHUB_OUTPUT"
           echo "tree_sha=$(git rev-parse 'HEAD^{tree}')" >> "$GITHUB_OUTPUT"
 
       - name: Install dependencies
+        working-directory: target
         run: python -m pip install -r requirements.txt
 
       - name: Validate contracts
+        working-directory: target
         run: python src/aigc.py validate
 
       - name: Scan committed content
+        working-directory: target
         run: >
           python src/security/redaction_scanner.py
           --paths src scripts config docs governance README.md AGENTS.md AIGC_MASTER_PROMPT.md OMEGA_X_CONSTITUTION.md schemas tests reports Dockerfile render.yaml fly.toml Procfile
 
       - name: Validate inert Terraform
         shell: bash
+        working-directory: target
         env:
           GOOGLE_OAUTH_ACCESS_TOKEN: "aigc-offline-inert-plan-no-provider-action"
         run: |
@@ -116,50 +110,40 @@ jobs:
           import json
           from pathlib import Path
           plan=json.loads(Path('reports/artifacts/exact_sha_ci/terraform/plan.json').read_text())
-          if plan.get('resource_changes'):
-              raise SystemExit('inert plan contains resource changes')
+          if plan.get('resource_changes'): raise SystemExit('inert plan contains resource changes')
           PY
 
       - name: Run tests
         shell: bash
+        working-directory: target
         run: |
           mkdir -p reports/artifacts/exact_sha_ci/tests
           set -o pipefail
           python -m pytest 2>&1 | tee reports/artifacts/exact_sha_ci/tests/pytest.log
 
       - name: Evaluate readiness
+        working-directory: target
         run: python src/aigc.py readiness
 
-      - name: Checkout trusted receipt builder
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
-        with:
-          ref: main
-          path: trusted-receipt
-          persist-credentials: false
-
-      - name: Recreate validated request input
+      - name: Build immutable receipt and manifest
         shell: bash
         run: |
-          mkdir -p reports/artifacts/exact_sha_ci/request
-          git show "${GITHUB_SHA}:ci/exact_sha_requests/$(basename '${{ needs.validate-request.outputs.request_file }}')" > reports/artifacts/exact_sha_ci/request/request.json
-
-      - name: Build immutable receipt and artifact manifest
-        shell: bash
-        run: |
-          python trusted-receipt/scripts/build_exact_sha_ci_receipt.py \
-            --request reports/artifacts/exact_sha_ci/request/request.json \
-            --requested-sha "${{ needs.validate-request.outputs.target_sha }}" \
+          mkdir -p target/reports/artifacts/exact_sha_ci/request
+          cp /tmp/exact-sha-request.json target/reports/artifacts/exact_sha_ci/request/request.json
+          python trusted/scripts/build_exact_sha_ci_receipt.py \
+            --request /tmp/exact-sha-request.json \
+            --requested-sha "${{ steps.request.outputs.target_sha }}" \
             --observed-sha "${{ steps.checkout.outputs.observed_sha }}" \
             --tree-sha "${{ steps.checkout.outputs.tree_sha }}" \
             --workflow-revision "${GITHUB_SHA}" \
             --run-number "${GITHUB_RUN_NUMBER}" \
             --run-id "${GITHUB_RUN_ID}" \
-            --artifacts reports/artifacts/exact_sha_ci \
-            --output reports/artifacts/exact_sha_ci/receipt/exact_sha_ci_receipt.json
+            --artifacts target/reports/artifacts/exact_sha_ci \
+            --output target/reports/artifacts/exact_sha_ci/receipt/exact_sha_ci_receipt.json
 
       - name: Upload exact-SHA receipt evidence
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: exact-sha-ci-receipt-${{ needs.validate-request.outputs.target_sha }}
-          path: reports/artifacts/exact_sha_ci
+          name: exact-sha-ci-receipt-${{ steps.request.outputs.target_sha }}
+          path: target/reports/artifacts/exact_sha_ci
           if-no-files-found: error
