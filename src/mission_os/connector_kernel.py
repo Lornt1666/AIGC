@@ -71,7 +71,6 @@ class ConnectorAdapter(Protocol):
 
 
 class ApprovalVerifier(Protocol):
-    """Independent authenticated authority boundary."""
     deployment_ready: bool
     def verify(self, approval: "ApprovalRecord", packet: "ExecutionPacket") -> bool: ...
 
@@ -166,7 +165,7 @@ class ApprovalRecord:
 
 
 class HMACApprovalVerifier:
-    """Authenticated verifier; unavailable unless trusted runtime configuration exists."""
+    """Authenticated verifier unavailable without trusted runtime configuration."""
 
     def __init__(self, *, secret: str, trusted_authority_ids: frozenset[str]) -> None:
         if len(secret) < 32 or not trusted_authority_ids:
@@ -178,13 +177,16 @@ class HMACApprovalVerifier:
     @classmethod
     def from_environment(cls, *, secret_variable: str,
                          trusted_authority_ids: frozenset[str]) -> "HMACApprovalVerifier":
-        secret = os.environ.get(secret_variable, "")
-        return cls(secret=secret, trusted_authority_ids=trusted_authority_ids)
+        return cls(
+            secret=os.environ.get(secret_variable, ""),
+            trusted_authority_ids=trusted_authority_ids,
+        )
 
     def sign(self, approval_sha256: str, authority_id: str) -> str:
         if authority_id not in self._trusted:
             raise PermissionError("approval authority is not trusted")
-        return hmac.new(self._secret, f"{authority_id}:{approval_sha256}".encode("utf-8"), sha256).hexdigest()
+        message = f"{authority_id}:{approval_sha256}".encode("utf-8")
+        return hmac.new(self._secret, message, sha256).hexdigest()
 
     def verify(self, approval: ApprovalRecord, packet: ExecutionPacket) -> bool:
         if approval.authority_id not in self._trusted:
@@ -356,6 +358,21 @@ class ConnectorKernel:
                 hourly[key] = hourly.get(key, 0) + 1
         return approvals, idempotency, hourly
 
+    def _append_relocked_evidence(self, *, packet: ExecutionPacket,
+                                  unlock_revision: str, relock_revision: str) -> None:
+        self.ledger.append({
+            "schema_version": "1.0.0", "event": "CONNECTOR_EMERGENCY_STOP_RELOCKED",
+            "recorded_at": datetime.now(timezone.utc).isoformat(),
+            "connector_id": packet.connector_id, "capability": packet.capability,
+            "packet_sha256": packet.packet_sha256,
+            "approval_id": packet.approval_id,
+            "unlock_revision": unlock_revision,
+            "relock_revision": relock_revision,
+            "enabled": True,
+            "production_activation_authorized": False,
+            "external_send_authorized": False,
+        })
+
     def execute(self, packet: ExecutionPacket, approval: ApprovalRecord) -> Mapping[str, Any]:
         packet.verify()
         approval.verify_integrity()
@@ -367,97 +384,93 @@ class ConnectorKernel:
             raise PermissionError("approval authority verification failed")
         unlock = self._verify_unlock(packet)
 
-        adapter = self._adapters.get(packet.connector_id)
-        policy = self._policies.get(packet.connector_id)
-        if adapter is None or policy is None:
-            raise PermissionError("connector is not registered")
-        if packet.capability not in adapter.capabilities or packet.capability not in policy.allowed_capabilities:
-            raise PermissionError("capability is not authorized")
-
-        hour = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H")
-        with self.ledger.transaction():
-            records = self.ledger._verify_unlocked()
-            approvals, idempotency, hourly = self._durable_state(records)
-            if packet.approval_id in approvals:
-                raise PermissionError("approval replay detected")
-            if packet.idempotency_key in idempotency:
-                raise PermissionError("idempotency replay detected")
-            bucket = (packet.connector_id, hour)
-            if hourly.get(bucket, 0) >= policy.rate_limit_per_hour:
-                raise PermissionError("connector rate limit exceeded")
-            started = self.ledger._append_unlocked({
-                "schema_version": "1.0.0", "event": "CONNECTOR_EXECUTION_RESERVED",
-                "recorded_at": datetime.now(timezone.utc).isoformat(),
-                "connector_id": packet.connector_id, "capability": packet.capability,
-                "packet_sha256": packet.packet_sha256,
-                "approval_id": packet.approval_id,
-                "approval_sha256": approval.approval_sha256,
-                "idempotency_key": packet.idempotency_key,
-                "rate_limit_hour": hour,
-                "production_activation_authorized": False,
-                "external_send_authorized": False,
-            }, records)
-            consumed = self.ledger._append_unlocked({
-                "schema_version": "1.0.0", "event": "CONNECTOR_UNLOCK_CONSUMED",
-                "recorded_at": datetime.now(timezone.utc).isoformat(),
-                "connector_id": packet.connector_id, "capability": packet.capability,
-                "packet_sha256": packet.packet_sha256,
-                "approval_id": packet.approval_id,
-                "unlock_revision": unlock["revision"],
-                "started_record_sha256": started["record_sha256"],
-                "production_activation_authorized": False,
-                "external_send_authorized": False,
-            }, [*records, started])
-
-        result_value: Mapping[str, Any] | None = None
         terminal_error: BaseException | None = None
+        result_value: Mapping[str, Any] | None = None
         try:
-            result = adapter.execute(packet.capability, packet.payload, packet.idempotency_key)
-            redacted = self.redact(result)
-            completed = self.ledger.append({
-                "schema_version": "1.0.0", "event": "CONNECTOR_EXECUTION_COMPLETED",
-                "recorded_at": datetime.now(timezone.utc).isoformat(),
-                "connector_id": packet.connector_id, "capability": packet.capability,
-                "packet_sha256": packet.packet_sha256,
-                "approval_id": packet.approval_id,
-                "idempotency_key": packet.idempotency_key,
-                "started_record_sha256": started["record_sha256"],
-                "unlock_consumed_record_sha256": consumed["record_sha256"],
-                "result_sha256": digest(redacted),
-                "production_activation_authorized": False,
-                "external_send_authorized": False,
-            })
-            result_value = {"result": redacted, "evidence_record_sha256": completed["record_sha256"]}
+            adapter = self._adapters.get(packet.connector_id)
+            policy = self._policies.get(packet.connector_id)
+            if adapter is None or policy is None:
+                raise PermissionError("connector is not registered")
+            if packet.capability not in adapter.capabilities or packet.capability not in policy.allowed_capabilities:
+                raise PermissionError("capability is not authorized")
+
+            hour = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H")
+            with self.ledger.transaction():
+                records = self.ledger._verify_unlocked()
+                approvals, idempotency, hourly = self._durable_state(records)
+                if packet.approval_id in approvals:
+                    raise PermissionError("approval replay detected")
+                if packet.idempotency_key in idempotency:
+                    raise PermissionError("idempotency replay detected")
+                if hourly.get((packet.connector_id, hour), 0) >= policy.rate_limit_per_hour:
+                    raise PermissionError("connector rate limit exceeded")
+                started = self.ledger._append_unlocked({
+                    "schema_version": "1.0.0", "event": "CONNECTOR_EXECUTION_RESERVED",
+                    "recorded_at": datetime.now(timezone.utc).isoformat(),
+                    "connector_id": packet.connector_id, "capability": packet.capability,
+                    "packet_sha256": packet.packet_sha256,
+                    "approval_id": packet.approval_id,
+                    "approval_sha256": approval.approval_sha256,
+                    "idempotency_key": packet.idempotency_key,
+                    "rate_limit_hour": hour,
+                    "production_activation_authorized": False,
+                    "external_send_authorized": False,
+                }, records)
+                consumed = self.ledger._append_unlocked({
+                    "schema_version": "1.0.0", "event": "CONNECTOR_UNLOCK_CONSUMED",
+                    "recorded_at": datetime.now(timezone.utc).isoformat(),
+                    "connector_id": packet.connector_id, "capability": packet.capability,
+                    "packet_sha256": packet.packet_sha256,
+                    "approval_id": packet.approval_id,
+                    "unlock_revision": unlock["revision"],
+                    "started_record_sha256": started["record_sha256"],
+                    "production_activation_authorized": False,
+                    "external_send_authorized": False,
+                }, [*records, started])
+
+            try:
+                result = adapter.execute(packet.capability, packet.payload, packet.idempotency_key)
+                redacted = self.redact(result)
+                completed = self.ledger.append({
+                    "schema_version": "1.0.0", "event": "CONNECTOR_EXECUTION_COMPLETED",
+                    "recorded_at": datetime.now(timezone.utc).isoformat(),
+                    "connector_id": packet.connector_id, "capability": packet.capability,
+                    "packet_sha256": packet.packet_sha256,
+                    "approval_id": packet.approval_id,
+                    "idempotency_key": packet.idempotency_key,
+                    "started_record_sha256": started["record_sha256"],
+                    "unlock_consumed_record_sha256": consumed["record_sha256"],
+                    "result_sha256": digest(redacted),
+                    "production_activation_authorized": False,
+                    "external_send_authorized": False,
+                })
+                result_value = {"result": redacted, "evidence_record_sha256": completed["record_sha256"]}
+            except BaseException as exc:
+                self.ledger.append({
+                    "schema_version": "1.0.0", "event": "CONNECTOR_EXECUTION_UNCERTAIN",
+                    "recorded_at": datetime.now(timezone.utc).isoformat(),
+                    "connector_id": packet.connector_id, "capability": packet.capability,
+                    "packet_sha256": packet.packet_sha256,
+                    "approval_id": packet.approval_id,
+                    "idempotency_key": packet.idempotency_key,
+                    "started_record_sha256": started["record_sha256"],
+                    "unlock_consumed_record_sha256": consumed["record_sha256"],
+                    "error_sha256": sha256(str(exc).encode("utf-8")).hexdigest(),
+                    "retry_authorized": False,
+                    "production_activation_authorized": False,
+                    "external_send_authorized": False,
+                })
+                raise
         except BaseException as exc:
             terminal_error = exc
-            self.ledger.append({
-                "schema_version": "1.0.0", "event": "CONNECTOR_EXECUTION_UNCERTAIN",
-                "recorded_at": datetime.now(timezone.utc).isoformat(),
-                "connector_id": packet.connector_id, "capability": packet.capability,
-                "packet_sha256": packet.packet_sha256,
-                "approval_id": packet.approval_id,
-                "idempotency_key": packet.idempotency_key,
-                "started_record_sha256": started["record_sha256"],
-                "unlock_consumed_record_sha256": consumed["record_sha256"],
-                "error_sha256": sha256(str(exc).encode("utf-8")).hexdigest(),
-                "retry_authorized": False,
-                "production_activation_authorized": False,
-                "external_send_authorized": False,
-            })
         finally:
             relock = self._relock(packet=packet, prior_revision=str(unlock["revision"]))
-            self.ledger.append({
-                "schema_version": "1.0.0", "event": "CONNECTOR_EMERGENCY_STOP_RELOCKED",
-                "recorded_at": datetime.now(timezone.utc).isoformat(),
-                "connector_id": packet.connector_id, "capability": packet.capability,
-                "packet_sha256": packet.packet_sha256,
-                "approval_id": packet.approval_id,
-                "unlock_revision": unlock["revision"],
-                "relock_revision": relock["revision"],
-                "enabled": True,
-                "production_activation_authorized": False,
-                "external_send_authorized": False,
-            })
+            self._append_relocked_evidence(
+                packet=packet,
+                unlock_revision=str(unlock["revision"]),
+                relock_revision=str(relock["revision"]),
+            )
+
         if terminal_error is not None:
             raise terminal_error
         assert result_value is not None
