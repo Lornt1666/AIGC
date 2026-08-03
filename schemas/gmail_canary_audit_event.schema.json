@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://regenexcalibur.local/schemas/gmail_canary_audit_event.schema.json",
+  "title": "Ω Mission OS Gmail Canary Audit Event",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["schema_version", "event", "recorded_at", "operator_id", "test_account_fingerprint", "target_account_fingerprint", "previous_receipt_sha256", "audit_receipt_sha256"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "event": {"enum": ["CANARY_STARTED", "CANARY_COMPLETED"]},
+    "recorded_at": {"type": "string", "format": "date-time"},
+    "operator_id": {"type": "string", "minLength": 1},
+    "test_account_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "target_account_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "previous_receipt_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "audit_receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "send_authorized": {"const": false},
+    "send_performed": {"const": false},
+    "production_activation_authorized": {"const": false}
+  }
+}
