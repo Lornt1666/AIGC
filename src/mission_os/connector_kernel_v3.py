@@ -12,15 +12,20 @@ import time
 from typing import Callable, Iterator
 
 from .connector_kernel_v2 import *  # noqa: F401,F403
-from .connector_kernel_v2 import AppendOnlyEvidenceLedger as _BaseEvidenceLedger
+from .connector_kernel_v2 import (
+    AppendOnlyEvidenceLedger as _BaseEvidenceLedger,
+    _atomic_json_write,
+    _parse_utc,
+)
 
 
 class AppendOnlyEvidenceLedger(_BaseEvidenceLedger):
-    """Ledger with atomically published lock ownership.
+    """Ledger with fail-closed lock publication and proven-dead recovery.
 
-    A candidate directory is built privately, including a durable owner record,
-    and then atomically renamed into the canonical lock path. The canonical lock
-    is therefore never visible without complete owner metadata.
+    The canonical directory is acquired atomically with ``mkdir``. Owner
+    metadata is then durably published. During that bounded publication window,
+    contenders observe an incomplete lock and must wait; missing or unreadable
+    owner metadata is never evidence that the lock is stale.
     """
 
     def __init__(
@@ -58,6 +63,7 @@ class AppendOnlyEvidenceLedger(_BaseEvidenceLedger):
             pid = int(owner.get("pid", -1))
             token = owner.get("token")
         except (OSError, ValueError, TypeError, json.JSONDecodeError, PermissionError):
+            # Missing, malformed, or unreadable ownership is not proof of death.
             return False
         if owner_age <= self.stale_lock_seconds:
             return False
@@ -77,43 +83,35 @@ class AppendOnlyEvidenceLedger(_BaseEvidenceLedger):
         except (OSError, json.JSONDecodeError):
             return False
 
-    def _publish_lock_atomically(self, token: str) -> bool:
-        candidate = self.lock_path.with_name(
-            f".{self.lock_path.name}.candidate.{token}"
-        )
-        owner_path = candidate / "owner.json"
+    def _publish_lock(self, token: str) -> bool:
         try:
-            candidate.mkdir(parents=True)
+            self.lock_path.mkdir(parents=True)
+        except FileExistsError:
+            return False
+        try:
             if self._publication_hook is not None:
                 self._publication_hook()
-            owner = {
-                "token": token,
-                "pid": os.getpid(),
-                "hostname": socket.gethostname(),
-                "created_at": datetime.now(timezone.utc).isoformat(),
-            }
-            with owner_path.open("x", encoding="utf-8") as handle:
-                handle.write(json.dumps(owner, sort_keys=True))
-                handle.flush()
-                os.fsync(handle.fileno())
-            try:
-                candidate.rename(self.lock_path)
-                return True
-            except OSError:
-                return False
-        finally:
-            try:
-                owner_path.unlink(missing_ok=True)
-                candidate.rmdir()
-            except OSError:
-                pass
+            _atomic_json_write(
+                self.owner_path,
+                {
+                    "token": token,
+                    "pid": os.getpid(),
+                    "hostname": socket.gethostname(),
+                    "created_at": datetime.now(timezone.utc).isoformat(),
+                },
+            )
+            return True
+        except BaseException:
+            # Leave the canonical lock in place if publication is interrupted.
+            # It cannot be recovered without a readable, proven-dead owner.
+            raise
 
     @contextmanager
     def transaction(self) -> Iterator[None]:
         deadline = time.monotonic() + self.lock_timeout_seconds
         token = secrets.token_hex(16)
         while True:
-            if self._publish_lock_atomically(token):
+            if self._publish_lock(token):
                 break
             self._recover_stale_lock()
             if time.monotonic() >= deadline:
