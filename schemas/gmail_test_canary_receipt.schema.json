@@ -4,7 +4,7 @@
   "title": "Ω Mission OS Gmail Test Canary Receipt",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "result", "provider", "action_type", "test_account_fingerprint", "target_account_fingerprint", "provider_verified", "sent", "external_action_performed", "verified_at", "expires_at", "receipt_sha256"],
+  "required": ["schema_version", "result", "provider", "action_type", "test_account_fingerprint", "target_account_fingerprint", "provider_verified", "sent", "external_action_performed", "verified_at", "expires_at", "provider_object_id_sha256", "idempotency_key", "canary_execution_sha256", "started_audit_receipt_sha256", "local_runtime_credential_removed", "provider_oauth_grant_revoked", "provider_revocation_evidence_sha256", "revoked_grant_verified_unusable", "emergency_stop_relocked", "production_activation_authorized", "terminal_state", "receipt_sha256"],
   "properties": {
     "schema_version": {"const": "1.0.0"},
     "result": {"const": "DRAFT_CREATED_NOT_SENT"},
@@ -17,6 +17,17 @@
     "external_action_performed": {"const": true},
     "verified_at": {"type": "string", "format": "date-time"},
     "expires_at": {"type": "string", "format": "date-time"},
+    "provider_object_id_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "idempotency_key": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "canary_execution_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "started_audit_receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "local_runtime_credential_removed": {"const": true},
+    "provider_oauth_grant_revoked": {"const": true},
+    "provider_revocation_evidence_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "revoked_grant_verified_unusable": {"const": true},
+    "emergency_stop_relocked": {"const": true},
+    "production_activation_authorized": {"const": false},
+    "terminal_state": {"const": "CANARY_VERIFIED_NOT_PRODUCTION_ENABLED"},
     "receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
   }
 }
