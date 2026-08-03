@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0.0",
+  "enabled": false,
+  "environment": "TEST",
+  "test_account_mode": true,
+  "account_email": "replace-with-dedicated-test-account@example.test",
+  "account_fingerprint": "REPLACE_WITH_SHA256_OF_NORMALIZED_ACCOUNT_EMAIL",
+  "oauth_scopes": [
+    "https://www.googleapis.com/auth/gmail.compose"
+  ],
+  "credential_environment_variable": "AIGC_GMAIL_ACCESS_CREDENTIAL",
+  "activation_record_path": ".aigc/mission_os/gmail_activation.json",
+  "canary_receipt_path": ".aigc/mission_os/gmail_test_canary.json"
+}
