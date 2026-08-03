@@ -33,15 +33,13 @@ jobs:
           persist-credentials: false
 
       - name: Verify immutable broker provenance
-        shell: bash
         working-directory: trusted
         run: |
           test "$(git rev-parse HEAD)" = "${GITHUB_WORKFLOW_SHA}"
           test "${GITHUB_WORKFLOW_REF%%@*}" = "Lornt1666/AIGC/.github/workflows/exact-sha-ci-receipt.yml"
 
-      - name: Validate dispatch inputs and extract request only
+      - name: Validate inputs and extract request only
         id: request
-        shell: bash
         working-directory: trusted
         env:
           REQUEST_COMMIT_SHA: ${{ inputs.request_commit_sha }}
@@ -51,16 +49,11 @@ jobs:
           [[ "$REQUEST_ID" =~ ^CI-RECEIPT-[A-Z0-9-]{8,80}$ ]]
           git fetch --no-tags origin "$REQUEST_COMMIT_SHA"
           git cat-file -e "$REQUEST_COMMIT_SHA^{commit}"
-          request_path="ci/exact_sha_requests/${REQUEST_ID}.json"
-          git show "$REQUEST_COMMIT_SHA:$request_path" > /tmp/exact-sha-request.json
-          result=$(python scripts/validate_exact_sha_ci_request.py \
-            --request /tmp/exact-sha-request.json \
-            --expected-broker-revision "$GITHUB_WORKFLOW_SHA")
-          target=$(python -c 'import json,sys; print(json.load(sys.stdin)["target_sha"])' <<< "$result")
-          echo "target_sha=$target" >> "$GITHUB_OUTPUT"
+          git show "$REQUEST_COMMIT_SHA:ci/exact_sha_requests/${REQUEST_ID}.json" > /tmp/exact-sha-request.json
+          result=$(python scripts/validate_exact_sha_ci_request.py --request /tmp/exact-sha-request.json --expected-broker-revision "$GITHUB_WORKFLOW_SHA")
+          echo "target_sha=$(python -c 'import json,sys; print(json.load(sys.stdin)["target_sha"])' <<< "$result")" >> "$GITHUB_OUTPUT"
 
       - name: Verify target exists and is reachable from main
-        shell: bash
         working-directory: trusted
         run: |
           git fetch --no-tags origin main "${{ steps.request.outputs.target_sha }}"
@@ -92,7 +85,6 @@ jobs:
 
       - name: Confirm exact checkout and tested tree
         id: checkout
-        shell: bash
         working-directory: target
         run: |
           observed=$(git rev-parse HEAD)
@@ -100,35 +92,39 @@ jobs:
           echo "observed_sha=$observed" >> "$GITHUB_OUTPUT"
           echo "tree_sha=$(git rev-parse 'HEAD^{tree}')" >> "$GITHUB_OUTPUT"
 
-      - name: Execute versioned canonical validation contract
-        shell: bash
+      - name: Execute shared canonical validation runner
         run: |
+          mkdir -p "$RUNNER_TEMP/exact-sha-stage-results"
           python trusted/scripts/run_exact_sha_ci_contract.py \
             --contract trusted/config/exact_sha_ci_validation_contract.json \
             --project-root target \
-            --results-dir target/reports/artifacts/exact_sha_ci/stage_results \
-            --repository-revision "${{ steps.request.outputs.target_sha }}"
+            --results-dir "$RUNNER_TEMP/exact-sha-stage-results" \
+            --repository-revision "${{ steps.request.outputs.target_sha }}" \
+            --tested-tree-sha "${{ steps.checkout.outputs.tree_sha }}" \
+            --broker-revision "$GITHUB_WORKFLOW_SHA" \
+            --run-number "$GITHUB_RUN_NUMBER" \
+            --run-id "$GITHUB_RUN_ID"
 
-      - name: Build phase-one receipt and completion manifest
-        shell: bash
+      - name: Build trusted receipt bundle
         run: |
-          mkdir -p target/reports/artifacts/exact_sha_ci/request
-          cp /tmp/exact-sha-request.json target/reports/artifacts/exact_sha_ci/request/request.json
           python trusted/scripts/build_exact_sha_ci_receipt.py \
             --request /tmp/exact-sha-request.json \
             --requested-sha "${{ steps.request.outputs.target_sha }}" \
             --observed-sha "${{ steps.checkout.outputs.observed_sha }}" \
             --tree-sha "${{ steps.checkout.outputs.tree_sha }}" \
-            --broker-revision "${GITHUB_WORKFLOW_SHA}" \
+            --broker-revision "$GITHUB_WORKFLOW_SHA" \
             --contract trusted/config/exact_sha_ci_validation_contract.json \
-            --run-number "${GITHUB_RUN_NUMBER}" \
-            --run-id "${GITHUB_RUN_ID}" \
-            --artifacts target/reports/artifacts/exact_sha_ci \
-            --output-dir target/reports/artifacts/exact_sha_ci/receipt
+            --run-number "$GITHUB_RUN_NUMBER" \
+            --run-id "$GITHUB_RUN_ID" \
+            --stage-results "$RUNNER_TEMP/exact-sha-stage-results" \
+            --output-root "$RUNNER_TEMP/exact-sha-upload"
+
+      - name: Verify exact final upload inventory
+        run: python trusted/scripts/build_exact_sha_ci_receipt.py --output-root "$RUNNER_TEMP/exact-sha-upload" --verify-inventory
 
       - name: Upload exact-SHA receipt evidence
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: exact-sha-ci-receipt-${{ steps.request.outputs.target_sha }}
-          path: target/reports/artifacts/exact_sha_ci
+          path: ${{ runner.temp }}/exact-sha-upload
           if-no-files-found: error
