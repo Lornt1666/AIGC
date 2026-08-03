@@ -6,7 +6,8 @@
   "additionalProperties": false,
   "required": [
     "schema_version", "approval_id", "packet_sha256", "connector_id",
-    "capability", "expires_at", "authority_id", "approval_sha256"
+    "capability", "expires_at", "authority_id", "authority_signature",
+    "approval_sha256"
   ],
   "properties": {
     "schema_version": {"const": "1.0.0"},
@@ -16,6 +17,7 @@
     "capability": {"type": "string", "minLength": 1},
     "expires_at": {"type": "string", "format": "date-time"},
     "authority_id": {"type": "string", "minLength": 8},
+    "authority_signature": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
     "approval_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
   }
 }
