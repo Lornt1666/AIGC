@@ -6,26 +6,37 @@
   "additionalProperties": false,
   "required": [
     "schema_version", "request_sha256", "requested_target_sha", "observed_checkout_sha",
-    "tested_tree_sha", "workflow_revision", "run_number", "run_id", "job_conclusion",
-    "step_conclusions", "test_result", "artifact_manifest_sha256",
-    "external_action_performed", "production_activation_authorized", "receipt_sha256"
+    "tested_tree_sha", "broker_revision", "validation_contract_sha256", "run_number", "run_id",
+    "broker_validation_conclusion", "workflow_conclusion_at_receipt", "step_conclusions",
+    "artifact_manifest_sha256", "external_action_performed",
+    "production_activation_authorized", "receipt_sha256"
   ],
   "properties": {
-    "schema_version": {"const": "1.0.0"},
+    "schema_version": {"const": "1.1.0"},
     "request_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
     "requested_target_sha": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
     "observed_checkout_sha": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
     "tested_tree_sha": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
-    "workflow_revision": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "broker_revision": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "validation_contract_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
     "run_number": {"type": "integer", "minimum": 1},
     "run_id": {"type": "integer", "minimum": 1},
-    "job_conclusion": {"const": "success"},
+    "broker_validation_conclusion": {"const": "success"},
+    "workflow_conclusion_at_receipt": {"const": "pending"},
     "step_conclusions": {
       "type": "object",
-      "additionalProperties": {"const": "success"},
-      "required": ["contracts", "redaction", "terraform_inert", "tests", "readiness"]
+      "additionalProperties": false,
+      "required": ["contracts", "redaction", "procurement_smoke", "provider_discovery", "terraform_inert", "tests", "readiness"],
+      "properties": {
+        "contracts": {"const": "success"},
+        "redaction": {"const": "success"},
+        "procurement_smoke": {"const": "success"},
+        "provider_discovery": {"const": "success"},
+        "terraform_inert": {"const": "success"},
+        "tests": {"const": "success"},
+        "readiness": {"const": "success"}
+      }
     },
-    "test_result": {"const": "passed"},
     "artifact_manifest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
     "external_action_performed": {"const": false},
     "production_activation_authorized": {"const": false},
