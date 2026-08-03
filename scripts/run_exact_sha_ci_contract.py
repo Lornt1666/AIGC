@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import tempfile
 
 EXPECTED_STAGES = ["contracts", "redaction", "procurement_smoke", "provider_discovery", "terraform_inert", "tests", "readiness"]
 
@@ -14,14 +15,27 @@ def canonical(value: object) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
 
 
-def write_result(path: Path, value: dict) -> None:
+def atomic_write(path: Path, value: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(canonical(value) + b"\n")
+    fd, temporary = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
+    try:
+        with os.fdopen(fd, "wb") as handle:
+            handle.write(canonical(value) + b"\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
 
 
-def run_command(command: list[str], cwd: Path, env: dict[str, str]) -> tuple[int, str]:
+def run_command(command: list[str], cwd: Path, env: dict[str, str]) -> dict:
     completed = subprocess.run(command, cwd=cwd, env=env, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    return completed.returncode, completed.stdout
+    return {
+        "argv_sha256": sha256(canonical(command)).hexdigest(),
+        "exit_code": completed.returncode,
+        "output_sha256": sha256(completed.stdout.encode()).hexdigest(),
+    }
 
 
 def terraform_commands() -> list[list[str]]:
@@ -40,6 +54,10 @@ def main() -> None:
     parser.add_argument("--project-root", type=Path, required=True)
     parser.add_argument("--results-dir", type=Path, required=True)
     parser.add_argument("--repository-revision", required=True)
+    parser.add_argument("--tested-tree-sha", required=True)
+    parser.add_argument("--broker-revision", required=True)
+    parser.add_argument("--run-number", type=int, required=True)
+    parser.add_argument("--run-id", type=int, required=True)
     args = parser.parse_args()
     contract = json.loads(args.contract.read_text(encoding="utf-8"))
     if contract.get("schema_version") != "1.0.0" or contract.get("contract_id") != "AIGC-CI-EXACT-SHA-V1":
@@ -55,41 +73,34 @@ def main() -> None:
     contract_sha = sha256(canonical(contract)).hexdigest()
     for stage in stages:
         stage_id = stage["id"]
-        outputs: list[str] = []
-        commands: list[list[str]]
-        if stage.get("runner") == "terraform_inert":
-            commands = terraform_commands()
-        elif stage.get("runner") == "pytest":
-            commands = [["python", "-m", "pytest"]]
-        else:
-            commands = stage.get("commands") or []
+        commands = terraform_commands() if stage.get("runner") == "terraform_inert" else ([["python", "-m", "pytest"]] if stage.get("runner") == "pytest" else stage.get("commands") or [])
+        outcomes = []
         status = "success"
-        exit_code = 0
         for raw in commands:
             command = [part.replace("${REPOSITORY_REVISION}", args.repository_revision) for part in raw]
-            code, output = run_command(command, args.project_root, env)
-            outputs.append(output)
-            if stage_id == "terraform_inert" and command[:3] == ["terraform", "-chdir=infra/terraform/gcp", "show"] and code == 0:
-                plan = json.loads(output)
-                if plan.get("resource_changes"):
-                    code, output = 1, output + "\nresource changes detected"
-            if code != 0:
-                status, exit_code = "failure", code
+            outcome = run_command(command, args.project_root, env)
+            outcomes.append(outcome)
+            if outcome["exit_code"] != 0:
+                status = "failure"
                 break
-        combined = "\n".join(outputs)
         record = {
             "schema_version": "1.0.0",
             "contract_id": contract["contract_id"],
             "contract_sha256": contract_sha,
             "stage_id": stage_id,
+            "target_sha": args.repository_revision,
+            "tested_tree_sha": args.tested_tree_sha,
+            "broker_revision": args.broker_revision,
+            "run_number": args.run_number,
+            "run_id": args.run_id,
+            "ordered_command_digest": sha256(canonical([item["argv_sha256"] for item in outcomes])).hexdigest(),
+            "command_outcomes": outcomes,
             "status": status,
-            "exit_code": exit_code,
-            "output_sha256": sha256(combined.encode()).hexdigest(),
             "external_action_performed": False,
             "production_activation_authorized": False,
         }
         record["record_sha256"] = sha256(canonical(record)).hexdigest()
-        write_result(args.results_dir / f"{stage_id}.json", record)
+        atomic_write(args.results_dir / f"{stage_id}.json", record)
         if status != "success":
             raise SystemExit(f"validation stage failed: {stage_id}")
 
