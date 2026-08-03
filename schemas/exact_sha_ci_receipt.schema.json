@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://regenexcalibur.local/schemas/exact_sha_ci_receipt.schema.json",
+  "title": "AIGC Exact-SHA CI Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "request_sha256", "requested_target_sha", "observed_checkout_sha",
+    "tested_tree_sha", "workflow_revision", "run_number", "run_id", "job_conclusion",
+    "step_conclusions", "test_result", "artifact_manifest_sha256",
+    "external_action_performed", "production_activation_authorized", "receipt_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "request_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "requested_target_sha": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "observed_checkout_sha": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "tested_tree_sha": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "workflow_revision": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "run_number": {"type": "integer", "minimum": 1},
+    "run_id": {"type": "integer", "minimum": 1},
+    "job_conclusion": {"const": "success"},
+    "step_conclusions": {
+      "type": "object",
+      "additionalProperties": {"const": "success"},
+      "required": ["contracts", "redaction", "terraform_inert", "tests", "readiness"]
+    },
+    "test_result": {"const": "passed"},
+    "artifact_manifest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "external_action_performed": {"const": false},
+    "production_activation_authorized": {"const": false},
+    "receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}
