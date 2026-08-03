@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0.0",
+  "enabled": false,
+  "environment": "TEST",
+  "production_activation_authorized": false,
+  "test_account_email": "replace-with-dedicated-test-account@example.test",
+  "test_account_fingerprint": "REPLACE_WITH_SHA256_OF_NORMALIZED_TEST_ACCOUNT_EMAIL",
+  "target_account_fingerprint": "REPLACE_WITH_SHA256_OF_INTENDED_TARGET_ACCOUNT_EMAIL",
+  "emergency_stop_path": ".aigc/mission_os/gmail_emergency_stop.json",
+  "audit_ledger_path": ".aigc/mission_os/gmail_canary_audit.jsonl",
+  "canary_receipt_path": ".aigc/mission_os/gmail_test_canary.json",
+  "send_capability_present": false
+}
