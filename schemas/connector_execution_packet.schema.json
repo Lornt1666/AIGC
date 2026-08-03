@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://regenexcalibur.local/schemas/connector_execution_packet.schema.json",
+  "title": "Ω Mission OS Connector Execution Packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "connector_id", "capability", "payload", "idempotency_key", "approval_id", "approval_expires_at", "policy_revision", "production_activation_authorized", "external_send_authorized", "packet_sha256"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "connector_id": {"type": "string", "minLength": 1},
+    "capability": {"type": "string", "minLength": 1},
+    "payload": {"type": "object"},
+    "idempotency_key": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "approval_id": {"type": "string", "minLength": 8},
+    "approval_expires_at": {"type": "string", "format": "date-time"},
+    "policy_revision": {"type": "string", "minLength": 8},
+    "production_activation_authorized": {"const": false},
+    "external_send_authorized": {"const": false},
+    "packet_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://regenexcalibur.local/schemas/connector_approval_record.schema.json",
+  "title": "Ω Mission OS Connector Approval Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "approval_id", "packet_sha256", "connector_id",
+    "capability", "expires_at", "authority_id", "authority_signature",
+    "approval_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "approval_id": {"type": "string", "minLength": 8},
+    "packet_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "connector_id": {"type": "string", "minLength": 1},
+    "capability": {"type": "string", "minLength": 1},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "authority_id": {"type": "string", "minLength": 8},
+    "authority_signature": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "approval_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}
