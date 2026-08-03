@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from hashlib import sha256
 import json
@@ -10,7 +11,7 @@ import pytest
 from src.mission_os.connector_adapters import GovernedGmailKernelAdapter, GovernedGitHubKernelAdapter
 from src.mission_os.connector_kernel import (
     AppendOnlyEvidenceLedger, ApprovalRecord, ConnectorKernel,
-    ExecutionPacket, KernelPolicy,
+    ExecutionPacket, HMACApprovalVerifier, KernelPolicy,
 )
 
 
@@ -23,6 +24,8 @@ def idem(value: str) -> str:
 
 
 class ApprovalAuthority:
+    deployment_ready = True
+
     def __init__(self) -> None:
         self.allowed: set[str] = set()
 
@@ -91,7 +94,7 @@ def unlock(stop: Path, value: ExecutionPacket) -> None:
     }), encoding="utf-8")
 
 
-def make_kernel(tmp_path: Path, authority: ApprovalAuthority, *, locked: bool = True) -> ConnectorKernel:
+def make_kernel(tmp_path: Path, authority, *, locked: bool = True) -> ConnectorKernel:
     stop = tmp_path / "stop.json"
     if not stop.exists():
         stop.write_text(json.dumps({"enabled": locked, "revision": "LOCKED-0001"}), encoding="utf-8")
@@ -107,6 +110,13 @@ def execute(kernel: ConnectorKernel, value: ExecutionPacket, authority: Approval
     return kernel.execute(value, approval(value, authority))
 
 
+def assert_relocked(kernel: ConnectorKernel) -> None:
+    state = json.loads(kernel.emergency_stop_path.read_text(encoding="utf-8"))
+    assert state["enabled"] is True
+    assert state["revision"].startswith("RELOCK-")
+    assert kernel.ledger.verify()[-1]["event"] == "CONNECTOR_EMERGENCY_STOP_RELOCKED"
+
+
 def test_gmail_executes_only_verified_unsent_draft_and_hashes_provider_id(tmp_path):
     authority = ApprovalAuthority()
     kernel = make_kernel(tmp_path, authority)
@@ -120,7 +130,7 @@ def test_gmail_executes_only_verified_unsent_draft_and_hashes_provider_id(tmp_pa
     assert value["result"]["sent"] is False
     assert "provider_object_id" not in value["result"]
     assert value["result"]["provider_object_id_sha256"] == sha256(b"draft-1").hexdigest()
-    assert kernel.ledger.verify()[-1]["event"] == "CONNECTOR_EXECUTION_COMPLETED"
+    assert_relocked(kernel)
 
 
 def test_nested_credentials_and_email_are_recursively_redacted(tmp_path):
@@ -148,42 +158,61 @@ def test_locked_stop_blocks_and_unlock_must_bind_exact_packet(tmp_path):
         kernel.execute(value, record)
 
 
-def test_independent_approval_is_required(tmp_path):
-    authority = ApprovalAuthority()
-    kernel = make_kernel(tmp_path, authority)
-    adapter = GovernedGitHubKernelAdapter(GitHubProvider())
-    kernel.register(adapter, KernelPolicy("github", adapter.capabilities, 2))
+def test_non_deployable_approval_verifier_is_rejected(tmp_path):
+    class UnsafeVerifier:
+        deployment_ready = False
+        def verify(self, approval, packet):
+            return True
+
+    stop = tmp_path / "stop.json"
+    stop.write_text(json.dumps({"enabled": True}), encoding="utf-8")
+    with pytest.raises(PermissionError, match="not deployment ready"):
+        ConnectorKernel(
+            emergency_stop_path=stop,
+            ledger=AppendOnlyEvidenceLedger(tmp_path / "ledger.jsonl"),
+            approval_verifier=UnsafeVerifier(),
+        )
+
+
+def test_hmac_approval_verifier_authenticates_trusted_authority():
+    verifier = HMACApprovalVerifier(secret="s" * 40, trusted_authority_ids=frozenset({"human-authority-1"}))
     value = packet("github", "READ_REPOSITORY_STATE", {"mutation": False})
-    record = ApprovalRecord.compile(
+    unsigned = ApprovalRecord.compile(
         approval_id=value.approval_id, packet_sha256=value.packet_sha256,
         connector_id=value.connector_id, capability=value.capability,
-        expires_at=value.approval_expires_at, authority_id="untrusted",
+        expires_at=value.approval_expires_at, authority_id="human-authority-1",
     )
-    unlock(kernel.emergency_stop_path, value)
-    with pytest.raises(PermissionError, match="authority"):
-        kernel.execute(value, record)
+    signature = verifier.sign(unsigned.approval_sha256, unsigned.authority_id)
+    signed = ApprovalRecord.compile(
+        approval_id=value.approval_id, packet_sha256=value.packet_sha256,
+        connector_id=value.connector_id, capability=value.capability,
+        expires_at=value.approval_expires_at, authority_id="human-authority-1",
+        authority_signature=signature,
+    )
+    assert verifier.verify(signed, value) is True
+    forged = ApprovalRecord.compile(
+        approval_id=value.approval_id, packet_sha256=value.packet_sha256,
+        connector_id=value.connector_id, capability=value.capability,
+        expires_at=value.approval_expires_at, authority_id="human-authority-1",
+        authority_signature="0" * 64,
+    )
+    assert verifier.verify(forged, value) is False
 
 
-def test_replay_and_rate_limit_survive_process_restart(tmp_path):
+def test_replay_rejection_relocks_terminally(tmp_path):
     authority = ApprovalAuthority()
     adapter = GovernedGitHubKernelAdapter(GitHubProvider())
-    first_kernel = make_kernel(tmp_path, authority)
-    first_kernel.register(adapter, KernelPolicy("github", adapter.capabilities, 1))
-    first = packet("github", "READ_REPOSITORY_STATE", {"mutation": False}, "1")
-    execute(first_kernel, first, authority)
-
-    restarted = make_kernel(tmp_path, authority)
-    restarted.register(adapter, KernelPolicy("github", adapter.capabilities, 1))
-    unlock(restarted.emergency_stop_path, first)
+    kernel = make_kernel(tmp_path, authority)
+    kernel.register(adapter, KernelPolicy("github", adapter.capabilities, 2))
+    value = packet("github", "READ_REPOSITORY_STATE", {"mutation": False})
+    execute(kernel, value, authority)
+    unlock(kernel.emergency_stop_path, value)
     with pytest.raises(PermissionError, match="approval replay"):
-        restarted.execute(first, approval(first, authority))
-    second = packet("github", "READ_REPOSITORY_STATE", {"mutation": False}, "2")
-    unlock(restarted.emergency_stop_path, second)
-    with pytest.raises(PermissionError, match="rate limit"):
-        restarted.execute(second, approval(second, authority))
+        kernel.execute(value, approval(value, authority))
+    assert_relocked(kernel)
 
 
-def test_uncertain_outcome_reservation_survives_restart(tmp_path):
+def test_provider_failure_relocks_and_reservation_survives_restart(tmp_path):
     class FailingProvider(GitHubProvider):
         def read_state(self, query):
             raise RuntimeError("provider uncertain")
@@ -195,11 +224,39 @@ def test_uncertain_outcome_reservation_survives_restart(tmp_path):
     value = packet("github", "READ_REPOSITORY_STATE", {"mutation": False})
     with pytest.raises(RuntimeError):
         execute(kernel, value, authority)
+    assert_relocked(kernel)
     restarted = make_kernel(tmp_path, authority)
     restarted.register(adapter, KernelPolicy("github", adapter.capabilities, 2))
     unlock(restarted.emergency_stop_path, value)
     with pytest.raises(PermissionError, match="approval replay"):
         restarted.execute(value, approval(value, authority))
+    assert_relocked(restarted)
+
+
+def test_atomic_check_and_reserve_allows_only_one_concurrent_execution(tmp_path):
+    authority = ApprovalAuthority()
+    adapter = GovernedGitHubKernelAdapter(GitHubProvider())
+    value = packet("github", "READ_REPOSITORY_STATE", {"mutation": False})
+    record = approval(value, authority)
+    first = make_kernel(tmp_path, authority)
+    second = make_kernel(tmp_path, authority)
+    for kernel in (first, second):
+        kernel.register(adapter, KernelPolicy("github", adapter.capabilities, 5))
+    unlock(first.emergency_stop_path, value)
+
+    def run(kernel):
+        try:
+            kernel.execute(value, record)
+            return "success"
+        except PermissionError:
+            return "blocked"
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        outcomes = list(pool.map(run, (first, second)))
+    assert outcomes.count("success") == 1
+    assert outcomes.count("blocked") == 1
+    reservations = [r for r in first.ledger.verify() if r.get("event") == "CONNECTOR_EXECUTION_RESERVED"]
+    assert len(reservations) == 1
 
 
 def test_packet_tampering_fails_closed():
@@ -209,7 +266,7 @@ def test_packet_tampering_fails_closed():
         value.verify()
 
 
-def test_github_adapter_rejects_mutation_and_reserves_attempt(tmp_path):
+def test_github_adapter_rejects_mutation_and_relocks(tmp_path):
     authority = ApprovalAuthority()
     kernel = make_kernel(tmp_path, authority)
     adapter = GovernedGitHubKernelAdapter(GitHubProvider())
@@ -217,7 +274,7 @@ def test_github_adapter_rejects_mutation_and_reserves_attempt(tmp_path):
     value = packet("github", "READ_REPOSITORY_STATE", {"mutation": True})
     with pytest.raises(PermissionError, match="mutation"):
         execute(kernel, value, authority)
-    assert kernel.ledger.verify()[-1]["event"] == "CONNECTOR_EXECUTION_UNCERTAIN"
+    assert_relocked(kernel)
 
 
 def test_ledger_tampering_is_detected(tmp_path):
