@@ -3,13 +3,14 @@ from __future__ import annotations
 
 from contextlib import contextmanager
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from hashlib import sha256
 import hmac
 import json
 import os
 from pathlib import Path
 import secrets
+import socket
 import time
 from typing import Any, Iterator, Mapping, Protocol, Sequence
 
@@ -37,7 +38,10 @@ def _parse_utc(value: object, field: str) -> datetime:
 def _atomic_json_write(path: Path, value: Mapping[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_name(f".{path.name}.{secrets.token_hex(8)}.tmp")
-    temporary.write_text(json.dumps(dict(value), sort_keys=True), encoding="utf-8")
+    with temporary.open("w", encoding="utf-8") as handle:
+        handle.write(json.dumps(dict(value), sort_keys=True))
+        handle.flush()
+        os.fsync(handle.fileno())
     os.replace(temporary, path)
 
 
@@ -108,16 +112,14 @@ class ExecutionPacket:
             "schema_version": "1.0.0", "connector_id": connector_id,
             "capability": capability, "payload": dict(payload),
             "idempotency_key": idempotency_key, "approval_id": approval_id,
-            "approval_expires_at": approval_expires_at,
-            "policy_revision": policy_revision,
-            "production_activation_authorized": False,
-            "external_send_authorized": False,
+            "approval_expires_at": approval_expires_at, "policy_revision": policy_revision,
+            "production_activation_authorized": False, "external_send_authorized": False,
         }
         _parse_utc(approval_expires_at, "approval_expires_at")
         return cls(**body, packet_sha256=digest(body))
 
     def verify(self) -> None:
-        body = {k: v for k, v in self.__dict__.items() if k != "packet_sha256"}
+        body = {key: value for key, value in self.__dict__.items() if key != "packet_sha256"}
         if not hmac.compare_digest(self.packet_sha256, digest(body)):
             raise PermissionError("execution packet integrity verification failed")
         if _parse_utc(self.approval_expires_at, "approval_expires_at") <= datetime.now(timezone.utc):
@@ -145,8 +147,7 @@ class ApprovalRecord:
         body = {
             "schema_version": "1.0.0", "approval_id": approval_id,
             "packet_sha256": packet_sha256, "connector_id": connector_id,
-            "capability": capability, "expires_at": expires_at,
-            "authority_id": authority_id,
+            "capability": capability, "expires_at": expires_at, "authority_id": authority_id,
         }
         _parse_utc(expires_at, "approval expires_at")
         return cls(**body, authority_signature=authority_signature, approval_sha256=digest(body))
@@ -165,8 +166,6 @@ class ApprovalRecord:
 
 
 class HMACApprovalVerifier:
-    """Authenticated verifier unavailable without trusted runtime configuration."""
-
     def __init__(self, *, secret: str, trusted_authority_ids: frozenset[str]) -> None:
         if len(secret) < 32 or not trusted_authority_ids:
             raise PermissionError("trusted approval authority configuration is unavailable")
@@ -177,41 +176,79 @@ class HMACApprovalVerifier:
     @classmethod
     def from_environment(cls, *, secret_variable: str,
                          trusted_authority_ids: frozenset[str]) -> "HMACApprovalVerifier":
-        return cls(
-            secret=os.environ.get(secret_variable, ""),
-            trusted_authority_ids=trusted_authority_ids,
-        )
+        return cls(secret=os.environ.get(secret_variable, ""), trusted_authority_ids=trusted_authority_ids)
 
     def sign(self, approval_sha256: str, authority_id: str) -> str:
         if authority_id not in self._trusted:
             raise PermissionError("approval authority is not trusted")
-        message = f"{authority_id}:{approval_sha256}".encode("utf-8")
-        return hmac.new(self._secret, message, sha256).hexdigest()
+        return hmac.new(self._secret, f"{authority_id}:{approval_sha256}".encode(), sha256).hexdigest()
 
     def verify(self, approval: ApprovalRecord, packet: ExecutionPacket) -> bool:
         if approval.authority_id not in self._trusted:
             return False
-        expected = self.sign(approval.approval_sha256, approval.authority_id)
-        return (
-            hmac.compare_digest(approval.authority_signature, expected)
-            and approval.packet_sha256 == packet.packet_sha256
-        )
+        return hmac.compare_digest(
+            approval.authority_signature,
+            self.sign(approval.approval_sha256, approval.authority_id),
+        ) and approval.packet_sha256 == packet.packet_sha256
 
 
 class AppendOnlyEvidenceLedger:
-    def __init__(self, path: Path | str, *, lock_timeout_seconds: float = 10.0) -> None:
+    """Hash-chained JSONL ledger with crash-recoverable owner locks."""
+
+    def __init__(self, path: Path | str, *, lock_timeout_seconds: float = 10.0,
+                 stale_lock_seconds: float = 30.0) -> None:
         self.path = Path(path)
         self.lock_path = self.path.with_suffix(self.path.suffix + ".lock")
+        self.owner_path = self.lock_path / "owner.json"
         self.lock_timeout_seconds = lock_timeout_seconds
+        self.stale_lock_seconds = stale_lock_seconds
+
+    @staticmethod
+    def _pid_alive(pid: int) -> bool:
+        if pid <= 0:
+            return False
+        try:
+            os.kill(pid, 0)
+        except ProcessLookupError:
+            return False
+        except (PermissionError, OSError):
+            return True
+        return True
+
+    def _recover_stale_lock(self) -> bool:
+        try:
+            owner = json.loads(self.owner_path.read_text(encoding="utf-8"))
+            created = _parse_utc(owner.get("created_at"), "lock created_at")
+            age = (datetime.now(timezone.utc) - created).total_seconds()
+            same_host = owner.get("hostname") == socket.gethostname()
+            pid = int(owner.get("pid", -1))
+        except (OSError, ValueError, TypeError, json.JSONDecodeError, PermissionError):
+            age, same_host, pid = self.stale_lock_seconds + 1, False, -1
+        if age <= self.stale_lock_seconds:
+            return False
+        if same_host and self._pid_alive(pid):
+            return False
+        try:
+            self.owner_path.unlink(missing_ok=True)
+            self.lock_path.rmdir()
+            return True
+        except OSError:
+            return False
 
     @contextmanager
     def transaction(self) -> Iterator[None]:
         deadline = time.monotonic() + self.lock_timeout_seconds
+        token = secrets.token_hex(16)
         while True:
             try:
                 self.lock_path.mkdir(parents=True)
+                _atomic_json_write(self.owner_path, {
+                    "token": token, "pid": os.getpid(), "hostname": socket.gethostname(),
+                    "created_at": datetime.now(timezone.utc).isoformat(),
+                })
                 break
             except FileExistsError:
+                self._recover_stale_lock()
                 if time.monotonic() >= deadline:
                     raise TimeoutError("connector evidence transaction lock timed out")
                 time.sleep(0.01)
@@ -219,8 +256,11 @@ class AppendOnlyEvidenceLedger:
             yield
         finally:
             try:
-                self.lock_path.rmdir()
-            except FileNotFoundError:
+                owner = json.loads(self.owner_path.read_text(encoding="utf-8"))
+                if owner.get("token") == token:
+                    self.owner_path.unlink(missing_ok=True)
+                    self.lock_path.rmdir()
+            except (OSError, json.JSONDecodeError):
                 pass
 
     def _verify_unlocked(self) -> list[dict[str, Any]]:
@@ -233,7 +273,7 @@ class AppendOnlyEvidenceLedger:
             if not isinstance(record, dict):
                 raise ValueError("connector evidence record must be an object")
             supplied = record.get("record_sha256")
-            body = {k: v for k, v in record.items() if k != "record_sha256"}
+            body = {key: value for key, value in record.items() if key != "record_sha256"}
             if body.get("previous_record_sha256") != previous or not isinstance(supplied, str) or not hmac.compare_digest(supplied, digest(body)):
                 raise ValueError("connector evidence ledger integrity failed")
             records.append(record)
@@ -244,7 +284,8 @@ class AppendOnlyEvidenceLedger:
         with self.transaction():
             return self._verify_unlocked()
 
-    def _append_unlocked(self, event: Mapping[str, Any], records: Sequence[Mapping[str, Any]] | None = None) -> dict[str, Any]:
+    def _append_unlocked(self, event: Mapping[str, Any],
+                         records: Sequence[Mapping[str, Any]] | None = None) -> dict[str, Any]:
         prior = list(records) if records is not None else self._verify_unlocked()
         record = dict(event)
         record["previous_record_sha256"] = prior[-1]["record_sha256"] if prior else None
@@ -258,19 +299,25 @@ class AppendOnlyEvidenceLedger:
 
     def append(self, event: Mapping[str, Any]) -> dict[str, Any]:
         with self.transaction():
-            records = self._verify_unlocked()
-            return self._append_unlocked(event, records)
+            return self._append_unlocked(event, self._verify_unlocked())
+
+
+class CriticalRelockError(RuntimeError):
+    pass
 
 
 class ConnectorKernel:
-    def __init__(self, *, emergency_stop_path: Path | str,
-                 ledger: AppendOnlyEvidenceLedger,
-                 approval_verifier: ApprovalVerifier) -> None:
+    def __init__(self, *, emergency_stop_path: Path | str, ledger: AppendOnlyEvidenceLedger,
+                 approval_verifier: ApprovalVerifier, lease_seconds: int = 30,
+                 relock_attempts: int = 3) -> None:
         if getattr(approval_verifier, "deployment_ready", False) is not True:
             raise PermissionError("authenticated approval verifier is not deployment ready")
         self.emergency_stop_path = Path(emergency_stop_path)
+        self.critical_path = self.emergency_stop_path.with_suffix(self.emergency_stop_path.suffix + ".critical.jsonl")
         self.ledger = ledger
         self.approval_verifier = approval_verifier
+        self.lease_seconds = max(1, min(lease_seconds, 60))
+        self.relock_attempts = max(1, min(relock_attempts, 5))
         self._adapters: dict[str, ConnectorAdapter] = {}
         self._policies: dict[str, KernelPolicy] = {}
 
@@ -286,24 +333,25 @@ class ConnectorKernel:
         self._adapters[adapter.connector_id] = adapter
         self._policies[adapter.connector_id] = policy
 
-    def _verify_unlock(self, packet: ExecutionPacket) -> dict[str, Any]:
+    def _read_stop(self) -> dict[str, Any]:
         try:
             value = json.loads(self.emergency_stop_path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
             raise PermissionError("connector emergency stop is unavailable") from exc
         if not isinstance(value, dict):
             raise PermissionError("connector emergency stop is malformed")
+        return value
+
+    def _verify_unlock(self, packet: ExecutionPacket) -> dict[str, Any]:
+        value = self._read_stop()
         if value.get("enabled") is True:
             raise PermissionError("connector emergency stop is locked")
         required = {
-            "packet_sha256": packet.packet_sha256,
-            "approval_id": packet.approval_id,
-            "connector_id": packet.connector_id,
-            "capability": packet.capability,
-            "production_activation_authorized": False,
-            "external_send_authorized": False,
+            "packet_sha256": packet.packet_sha256, "approval_id": packet.approval_id,
+            "connector_id": packet.connector_id, "capability": packet.capability,
+            "production_activation_authorized": False, "external_send_authorized": False,
         }
-        if any(value.get(k) != expected for k, expected in required.items()):
+        if any(value.get(key) != expected for key, expected in required.items()):
             raise PermissionError("connector unlock is not bound to the exact packet")
         if _parse_utc(value.get("expires_at"), "unlock expires_at") <= datetime.now(timezone.utc):
             raise PermissionError("connector unlock expired")
@@ -311,19 +359,76 @@ class ConnectorKernel:
             raise PermissionError("connector unlock revision is invalid")
         return value
 
-    def _relock(self, *, packet: ExecutionPacket, prior_revision: str) -> dict[str, Any]:
-        record = {
-            "enabled": True,
-            "revision": f"RELOCK-{secrets.token_hex(8)}",
-            "prior_unlock_revision": prior_revision,
-            "consumed_packet_sha256": packet.packet_sha256,
-            "consumed_approval_id": packet.approval_id,
-            "relocked_at": datetime.now(timezone.utc).isoformat(),
-            "production_activation_authorized": False,
-            "external_send_authorized": False,
+    def _consume_to_lease(self, packet: ExecutionPacket, unlock: Mapping[str, Any]) -> dict[str, Any]:
+        lease = {
+            "lease_id": secrets.token_hex(16), "packet_sha256": packet.packet_sha256,
+            "approval_id": packet.approval_id, "connector_id": packet.connector_id,
+            "capability": packet.capability,
+            "expires_at": (datetime.now(timezone.utc) + timedelta(seconds=self.lease_seconds)).isoformat(),
         }
-        _atomic_json_write(self.emergency_stop_path, record)
-        return record
+        locked = {
+            "enabled": True, "revision": f"LEASE-{secrets.token_hex(8)}",
+            "prior_unlock_revision": unlock["revision"], "active_execution_lease": lease,
+            "production_activation_authorized": False, "external_send_authorized": False,
+        }
+        _atomic_json_write(self.emergency_stop_path, locked)
+        return lease
+
+    def _verify_execution_lease(self, packet: ExecutionPacket, lease: Mapping[str, Any]) -> None:
+        value = self._read_stop()
+        observed = value.get("active_execution_lease")
+        if value.get("enabled") is not True or not isinstance(observed, dict):
+            raise PermissionError("execution lease is unavailable")
+        required = {
+            "lease_id": lease.get("lease_id"), "packet_sha256": packet.packet_sha256,
+            "approval_id": packet.approval_id, "connector_id": packet.connector_id,
+            "capability": packet.capability,
+        }
+        if any(observed.get(key) != expected for key, expected in required.items()):
+            raise PermissionError("execution lease binding mismatch")
+        if _parse_utc(observed.get("expires_at"), "execution lease expires_at") <= datetime.now(timezone.utc):
+            raise PermissionError("execution lease expired")
+
+    def _write_critical(self, event: Mapping[str, Any]) -> None:
+        self.critical_path.parent.mkdir(parents=True, exist_ok=True)
+        record = dict(event)
+        record["record_sha256"] = digest(record)
+        with self.critical_path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(record, sort_keys=True) + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+
+    def _relock_fail_safe(self, packet: ExecutionPacket, lease: Mapping[str, Any],
+                          original_error: BaseException | None) -> dict[str, Any]:
+        last_error: BaseException | None = None
+        for attempt in range(1, self.relock_attempts + 1):
+            record = {
+                "enabled": True, "revision": f"RELOCK-{secrets.token_hex(8)}",
+                "consumed_lease_id": lease.get("lease_id"),
+                "consumed_packet_sha256": packet.packet_sha256,
+                "consumed_approval_id": packet.approval_id,
+                "relocked_at": datetime.now(timezone.utc).isoformat(),
+                "production_activation_authorized": False, "external_send_authorized": False,
+            }
+            try:
+                _atomic_json_write(self.emergency_stop_path, record)
+                confirmed = self._read_stop()
+                if confirmed.get("enabled") is True and confirmed.get("consumed_lease_id") == lease.get("lease_id"):
+                    return record
+                raise OSError("relock confirmation mismatch")
+            except BaseException as exc:
+                last_error = exc
+                time.sleep(0.01 * attempt)
+        self._write_critical({
+            "schema_version": "1.0.0", "event": "CONNECTOR_RELOCK_CRITICAL_FAILURE",
+            "recorded_at": datetime.now(timezone.utc).isoformat(),
+            "packet_sha256": packet.packet_sha256, "approval_id": packet.approval_id,
+            "lease_id": lease.get("lease_id"),
+            "relock_error_sha256": sha256(str(last_error).encode()).hexdigest(),
+            "original_error_sha256": sha256(str(original_error).encode()).hexdigest() if original_error else None,
+            "production_activation_authorized": False, "external_send_authorized": False,
+        })
+        raise CriticalRelockError("emergency stop relock could not be confirmed") from last_error
 
     @staticmethod
     def redact(value: Mapping[str, Any]) -> dict[str, Any]:
@@ -338,40 +443,20 @@ class ConnectorKernel:
             raise KeyError("connector is not registered")
         return self.redact(adapter.health())
 
-    def _durable_state(self, records: Sequence[Mapping[str, Any]]) -> tuple[set[str], set[str], dict[tuple[str, str], int]]:
+    @staticmethod
+    def _durable_state(records: Sequence[Mapping[str, Any]]) -> tuple[set[str], set[str], dict[tuple[str, str], int]]:
         approvals: set[str] = set()
         idempotency: set[str] = set()
         hourly: dict[tuple[str, str], int] = {}
         for record in records:
             if record.get("event") != "CONNECTOR_EXECUTION_RESERVED":
                 continue
-            approval = record.get("approval_id")
-            idem = record.get("idempotency_key")
-            connector = record.get("connector_id")
-            hour = record.get("rate_limit_hour")
-            if isinstance(approval, str):
-                approvals.add(approval)
-            if isinstance(idem, str):
-                idempotency.add(idem)
+            if isinstance(record.get("approval_id"), str): approvals.add(record["approval_id"])
+            if isinstance(record.get("idempotency_key"), str): idempotency.add(record["idempotency_key"])
+            connector, hour = record.get("connector_id"), record.get("rate_limit_hour")
             if isinstance(connector, str) and isinstance(hour, str):
-                key = (connector, hour)
-                hourly[key] = hourly.get(key, 0) + 1
+                hourly[(connector, hour)] = hourly.get((connector, hour), 0) + 1
         return approvals, idempotency, hourly
-
-    def _append_relocked_evidence(self, *, packet: ExecutionPacket,
-                                  unlock_revision: str, relock_revision: str) -> None:
-        self.ledger.append({
-            "schema_version": "1.0.0", "event": "CONNECTOR_EMERGENCY_STOP_RELOCKED",
-            "recorded_at": datetime.now(timezone.utc).isoformat(),
-            "connector_id": packet.connector_id, "capability": packet.capability,
-            "packet_sha256": packet.packet_sha256,
-            "approval_id": packet.approval_id,
-            "unlock_revision": unlock_revision,
-            "relock_revision": relock_revision,
-            "enabled": True,
-            "production_activation_authorized": False,
-            "external_send_authorized": False,
-        })
 
     def execute(self, packet: ExecutionPacket, approval: ApprovalRecord) -> Mapping[str, Any]:
         packet.verify()
@@ -382,8 +467,9 @@ class ConnectorKernel:
             raise PermissionError("approval action binding mismatch")
         if not self.approval_verifier.verify(approval, packet):
             raise PermissionError("approval authority verification failed")
-        unlock = self._verify_unlock(packet)
 
+        unlock = self._verify_unlock(packet)
+        lease: Mapping[str, Any] | None = None
         terminal_error: BaseException | None = None
         result_value: Mapping[str, Any] | None = None
         try:
@@ -393,7 +479,6 @@ class ConnectorKernel:
                 raise PermissionError("connector is not registered")
             if packet.capability not in adapter.capabilities or packet.capability not in policy.allowed_capabilities:
                 raise PermissionError("capability is not authorized")
-
             hour = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H")
             with self.ledger.transaction():
                 records = self.ledger._verify_unlocked()
@@ -408,26 +493,24 @@ class ConnectorKernel:
                     "schema_version": "1.0.0", "event": "CONNECTOR_EXECUTION_RESERVED",
                     "recorded_at": datetime.now(timezone.utc).isoformat(),
                     "connector_id": packet.connector_id, "capability": packet.capability,
-                    "packet_sha256": packet.packet_sha256,
-                    "approval_id": packet.approval_id,
+                    "packet_sha256": packet.packet_sha256, "approval_id": packet.approval_id,
                     "approval_sha256": approval.approval_sha256,
-                    "idempotency_key": packet.idempotency_key,
-                    "rate_limit_hour": hour,
-                    "production_activation_authorized": False,
-                    "external_send_authorized": False,
+                    "idempotency_key": packet.idempotency_key, "rate_limit_hour": hour,
+                    "production_activation_authorized": False, "external_send_authorized": False,
                 }, records)
+                lease = self._consume_to_lease(packet, unlock)
                 consumed = self.ledger._append_unlocked({
-                    "schema_version": "1.0.0", "event": "CONNECTOR_UNLOCK_CONSUMED",
+                    "schema_version": "1.0.0", "event": "CONNECTOR_UNLOCK_CONSUMED_TO_LEASE",
                     "recorded_at": datetime.now(timezone.utc).isoformat(),
                     "connector_id": packet.connector_id, "capability": packet.capability,
-                    "packet_sha256": packet.packet_sha256,
-                    "approval_id": packet.approval_id,
-                    "unlock_revision": unlock["revision"],
+                    "packet_sha256": packet.packet_sha256, "approval_id": packet.approval_id,
+                    "unlock_revision": unlock["revision"], "lease_id": lease["lease_id"],
+                    "lease_expires_at": lease["expires_at"],
                     "started_record_sha256": started["record_sha256"],
-                    "production_activation_authorized": False,
-                    "external_send_authorized": False,
+                    "production_activation_authorized": False, "external_send_authorized": False,
                 }, [*records, started])
 
+            self._verify_execution_lease(packet, lease)
             try:
                 result = adapter.execute(packet.capability, packet.payload, packet.idempotency_key)
                 redacted = self.redact(result)
@@ -435,14 +518,12 @@ class ConnectorKernel:
                     "schema_version": "1.0.0", "event": "CONNECTOR_EXECUTION_COMPLETED",
                     "recorded_at": datetime.now(timezone.utc).isoformat(),
                     "connector_id": packet.connector_id, "capability": packet.capability,
-                    "packet_sha256": packet.packet_sha256,
-                    "approval_id": packet.approval_id,
-                    "idempotency_key": packet.idempotency_key,
+                    "packet_sha256": packet.packet_sha256, "approval_id": packet.approval_id,
+                    "idempotency_key": packet.idempotency_key, "lease_id": lease["lease_id"],
                     "started_record_sha256": started["record_sha256"],
                     "unlock_consumed_record_sha256": consumed["record_sha256"],
                     "result_sha256": digest(redacted),
-                    "production_activation_authorized": False,
-                    "external_send_authorized": False,
+                    "production_activation_authorized": False, "external_send_authorized": False,
                 })
                 result_value = {"result": redacted, "evidence_record_sha256": completed["record_sha256"]}
             except BaseException as exc:
@@ -450,26 +531,28 @@ class ConnectorKernel:
                     "schema_version": "1.0.0", "event": "CONNECTOR_EXECUTION_UNCERTAIN",
                     "recorded_at": datetime.now(timezone.utc).isoformat(),
                     "connector_id": packet.connector_id, "capability": packet.capability,
-                    "packet_sha256": packet.packet_sha256,
-                    "approval_id": packet.approval_id,
-                    "idempotency_key": packet.idempotency_key,
+                    "packet_sha256": packet.packet_sha256, "approval_id": packet.approval_id,
+                    "idempotency_key": packet.idempotency_key, "lease_id": lease["lease_id"],
                     "started_record_sha256": started["record_sha256"],
                     "unlock_consumed_record_sha256": consumed["record_sha256"],
-                    "error_sha256": sha256(str(exc).encode("utf-8")).hexdigest(),
-                    "retry_authorized": False,
-                    "production_activation_authorized": False,
-                    "external_send_authorized": False,
+                    "error_sha256": sha256(str(exc).encode()).hexdigest(), "retry_authorized": False,
+                    "production_activation_authorized": False, "external_send_authorized": False,
                 })
                 raise
         except BaseException as exc:
             terminal_error = exc
         finally:
-            relock = self._relock(packet=packet, prior_revision=str(unlock["revision"]))
-            self._append_relocked_evidence(
-                packet=packet,
-                unlock_revision=str(unlock["revision"]),
-                relock_revision=str(relock["revision"]),
-            )
+            if lease is not None:
+                relock = self._relock_fail_safe(packet, lease, terminal_error)
+                self.ledger.append({
+                    "schema_version": "1.0.0", "event": "CONNECTOR_EMERGENCY_STOP_RELOCKED",
+                    "recorded_at": datetime.now(timezone.utc).isoformat(),
+                    "connector_id": packet.connector_id, "capability": packet.capability,
+                    "packet_sha256": packet.packet_sha256, "approval_id": packet.approval_id,
+                    "lease_id": lease["lease_id"], "relock_revision": relock["revision"],
+                    "enabled": True, "production_activation_authorized": False,
+                    "external_send_authorized": False,
+                })
 
         if terminal_error is not None:
             raise terminal_error
