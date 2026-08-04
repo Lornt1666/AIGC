@@ -189,11 +189,24 @@ jobs:
 
       - name: Verify target exists and is reachable from main
         if: steps.authority.outputs.authorized == 'true' && steps.reservation.outputs.reserved == 'true'
-        working-directory: trusted
         run: |
-          git fetch --no-tags origin main "$TARGET_SHA"
-          git cat-file -e "$TARGET_SHA^{commit}"
-          git merge-base --is-ancestor "$TARGET_SHA" origin/main
+          gh api "repos/${GITHUB_REPOSITORY}/git/commits/${TARGET_SHA}" > "$RUNNER_TEMP/target-commit.json"
+          gh api "repos/${GITHUB_REPOSITORY}/compare/${TARGET_SHA}...main" > "$RUNNER_TEMP/target-main-compare.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root = Path(os.environ["RUNNER_TEMP"])
+          target_sha = os.environ["TARGET_SHA"]
+          target = json.loads(root.joinpath("target-commit.json").read_text())
+          comparison = json.loads(root.joinpath("target-main-compare.json").read_text())
+          if target.get("sha") != target_sha:
+              raise SystemExit("target commit identity mismatch")
+          merge_base = (comparison.get("merge_base_commit") or {}).get("sha")
+          if merge_base != target_sha:
+              raise SystemExit("target commit is not reachable from main")
+          if comparison.get("status") not in {"ahead", "identical"}:
+              raise SystemExit(f"unexpected target-to-main comparison status: {comparison.get('status')}")
+          PY
 
       - name: Checkout exact requested target
         if: steps.authority.outputs.authorized == 'true' && steps.reservation.outputs.reserved == 'true'
