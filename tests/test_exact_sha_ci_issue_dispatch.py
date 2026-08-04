@@ -34,18 +34,13 @@ def request() -> dict:
 
 def body(value: dict | None = None) -> str:
     value = value or request()
-    return "\n".join(
-        [
-            "### Request JSON",
-            "```json",
-            json.dumps(value, sort_keys=True),
-            "```",
-            "### Authority confirmation",
-            "- [x] I confirm production activation is not authorized.",
-            "- [x] I confirm no external provider action is authorized.",
-            "- [x] I confirm this issue contains no credentials or secrets.",
-        ]
-    )
+    return "\n".join([
+        "### Request JSON", "```json", json.dumps(value, sort_keys=True), "```",
+        "### Authority confirmation",
+        "- [x] I confirm production activation is not authorized.",
+        "- [x] I confirm no external provider action is authorized.",
+        "- [x] I confirm this issue contains no credentials or secrets.",
+    ])
 
 
 def issue(value: dict | None = None) -> dict:
@@ -63,10 +58,7 @@ def issue(value: dict | None = None) -> dict:
 
 
 def event(action: str = "opened") -> dict:
-    return {
-        "action": action,
-        "sender": {"login": "Lornt1666", "id": 236225491},
-    }
+    return {"action": action, "sender": {"login": "Lornt1666", "id": 236225491}}
 
 
 def test_valid_issue_binds_identity_timestamps_body_request_and_target():
@@ -97,17 +89,11 @@ def test_event_actor_must_match_issue_author():
         validate_issue(value, issue(), [], BROKER)
 
 
-@pytest.mark.parametrize(
-    "field,value",
-    [
-        ("target_sha", "main"),
-        ("broker_revision", "main"),
-        ("production_activation_authorized", True),
-        ("external_action_authorized", True),
-        ("repository", "other/repo"),
-        ("target_branch", "feature"),
-    ],
-)
+@pytest.mark.parametrize("field,value", [
+    ("target_sha", "main"), ("broker_revision", "main"),
+    ("production_activation_authorized", True), ("external_action_authorized", True),
+    ("repository", "other/repo"), ("target_branch", "feature"),
+])
 def test_request_rejects_target_authority_and_repository_drift(field, value):
     data = request()
     data[field] = value
@@ -139,8 +125,10 @@ def test_completed_issue_replay_is_rejected():
 def test_issue_edit_or_label_change_after_validation_fails_closed():
     initial = issue()
     envelope = validate_issue(event(), initial, [], BROKER)
+    comment_only_change = dict(initial)
+    comment_only_change["updated_at"] = "2026-08-04T00:01:00Z"
+    verify_unchanged(comment_only_change, envelope)
     edited = dict(initial)
-    edited["updated_at"] = "2026-08-04T00:01:00Z"
     edited["body"] = initial["body"] + "\nchanged"
     with pytest.raises(ValueError, match="changed"):
         verify_unchanged(edited, envelope)
@@ -152,10 +140,9 @@ def test_issue_edit_or_label_change_after_validation_fails_closed():
 
 def test_workflow_is_default_branch_controlled_minimal_and_pinned():
     workflow = Path(".github/workflows/exact-sha-ci-issue-dispatch.yml").read_text(encoding="utf-8")
-    assert "issues:" in workflow
-    assert "types:" in workflow and "opened" in workflow and "labeled" in workflow
-    assert "contents: read" in workflow
-    assert "issues: write" in workflow
+    assert "issues:" in workflow and "opened" in workflow and "labeled" in workflow
+    assert "permissions: {}" in workflow
+    assert "contents: read" in workflow and "issues: write" in workflow
     assert "contents: write" not in workflow
     assert "actions: write" not in workflow
     assert "id-token: write" not in workflow
@@ -168,15 +155,28 @@ def test_workflow_is_default_branch_controlled_minimal_and_pinned():
     assert "--verify-inventory" in workflow
     assert "gh issue close" in workflow
     assert "if: failure()" in workflow
-    for marker in (
-        "actions/checkout@",
-        "actions/setup-python@",
-        "actions/upload-artifact@",
-        "hashicorp/setup-terraform@",
-    ):
+    for marker in ("actions/checkout@", "actions/setup-python@", "actions/upload-artifact@", "hashicorp/setup-terraform@"):
         for line in (line.strip() for line in workflow.splitlines() if marker in line):
             revision = line.split("@", 1)[1]
             assert len(revision) == 40 and all(character in "0123456789abcdef" for character in revision)
+
+
+def test_workflow_serializes_reserves_authorizes_and_post_verifies():
+    workflow = Path(".github/workflows/exact-sha-ci-issue-dispatch.yml").read_text(encoding="utf-8")
+    assert "validate-request:" in workflow and "execute-request:" in workflow
+    assert "group: exact-sha-ci-request-${{ needs.validate-request.outputs.request_id }}" in workflow
+    assert "--paginate --slurp" in workflow and "jq 'add'" in workflow
+    assert "AIGC-EXACT-SHA-CI-RESERVED" in workflow
+    assert "/collaborators/${AUTHOR}/permission" in workflow
+    assert '"push" if raw_permission == "write"' in workflow
+    assert 'permission not in {"push", "maintain", "admin"}' in workflow
+    assert 'binding["repository_permission"]' in workflow
+    assert "steps.upload.outputs.artifact-id" in workflow
+    assert "steps.upload.outputs.artifact-url" in workflow
+    assert "steps.upload.outputs.artifact-digest" in workflow
+    assert "Post-verify terminal issue and completion marker" in workflow
+    assert "terminal request label is absent" in workflow
+    assert "exact terminal completion marker was not verified" in workflow
 
 
 def test_issue_form_and_label_contract_are_closed_and_non_authorizing():
