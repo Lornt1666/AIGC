@@ -25,10 +25,12 @@ def atomic_write(path: Path, value: object) -> None:
     try:
         with os.fdopen(fd, "wb") as handle:
             handle.write(canonical(value) + b"\n")
-            handle.flush(); os.fsync(handle.fileno())
+            handle.flush()
+            os.fsync(handle.fileno())
         os.replace(temporary, path)
     finally:
-        if os.path.exists(temporary): os.unlink(temporary)
+        if os.path.exists(temporary):
+            os.unlink(temporary)
 
 
 def load_records(directory: Path, bindings: dict, contract_sha: str) -> dict[str, str]:
@@ -37,25 +39,53 @@ def load_records(directory: Path, bindings: dict, contract_sha: str) -> dict[str
         path = directory / f"{stage}.json"
         value = json.loads(path.read_text(encoding="utf-8"))
         observed = value.pop("record_sha256")
-        if sha256(canonical(value)).hexdigest() != observed: raise SystemExit(f"stage record digest mismatch: {stage}")
+        if sha256(canonical(value)).hexdigest() != observed:
+            raise SystemExit(f"stage record digest mismatch: {stage}")
         for key, expected in bindings.items():
-            if value.get(key) != expected: raise SystemExit(f"stage record {key} mismatch: {stage}")
-        if value.get("contract_sha256") != contract_sha or value.get("stage_id") != stage: raise SystemExit(f"stage binding mismatch: {stage}")
-        if value.get("status") != "success" or any(item.get("exit_code") != 0 for item in value.get("command_outcomes", [])): raise SystemExit(f"stage failed: {stage}")
-        if value.get("external_action_performed") is not False or value.get("production_activation_authorized") is not False: raise SystemExit(f"authority violation: {stage}")
+            if value.get(key) != expected:
+                raise SystemExit(f"stage record {key} mismatch: {stage}")
+        if value.get("contract_sha256") != contract_sha or value.get("stage_id") != stage:
+            raise SystemExit(f"stage binding mismatch: {stage}")
+        if value.get("status") != "success" or any(item.get("exit_code") != 0 for item in value.get("command_outcomes", [])):
+            raise SystemExit(f"stage failed: {stage}")
+        if value.get("external_action_performed") is not False or value.get("production_activation_authorized") is not False:
+            raise SystemExit(f"authority violation: {stage}")
         conclusions[stage] = "success"
     return conclusions
 
 
 def create_inventory(root: Path) -> dict[str, str]:
-    return {str(path.relative_to(root)): digest_file(path) for path in sorted(root.rglob("*")) if path.is_file() and path.name != "upload_inventory.json"}
+    return {
+        str(path.relative_to(root)): digest_file(path)
+        for path in sorted(root.rglob("*"))
+        if path.is_file() and path.name != "upload_inventory.json"
+    }
 
 
 def verify_inventory(root: Path) -> None:
     inventory_path = root / "upload_inventory.json"
     expected = json.loads(inventory_path.read_text(encoding="utf-8"))
     observed = create_inventory(root)
-    if observed != expected: raise SystemExit("final upload inventory mismatch")
+    if observed != expected:
+        raise SystemExit("final upload inventory mismatch")
+
+
+def validate_execution_envelope(path: Path, request: dict) -> tuple[dict, str]:
+    envelope = json.loads(path.read_text(encoding="utf-8"))
+    if envelope.get("request") != request:
+        raise SystemExit("execution envelope request mismatch")
+    binding = envelope.get("binding")
+    if not isinstance(binding, dict):
+        raise SystemExit("execution envelope binding is absent")
+    observed = binding.get("execution_binding_sha256")
+    unsigned = dict(binding)
+    unsigned.pop("execution_binding_sha256", None)
+    expected = sha256(canonical(unsigned)).hexdigest()
+    if observed != expected:
+        raise SystemExit("execution envelope binding digest mismatch")
+    if binding.get("request_sha256") != sha256(canonical(request)).hexdigest():
+        raise SystemExit("execution envelope request digest mismatch")
+    return envelope, observed
 
 
 def main() -> None:
@@ -69,36 +99,77 @@ def main() -> None:
     parser.add_argument("--run-number", type=int)
     parser.add_argument("--run-id", type=int)
     parser.add_argument("--stage-results", type=Path)
+    parser.add_argument("--execution-envelope", type=Path)
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument("--verify-inventory", action="store_true")
     args = parser.parse_args()
     if args.verify_inventory:
-        verify_inventory(args.output_root); return
-    if args.requested_sha != args.observed_sha: raise SystemExit("checkout SHA mismatch")
+        verify_inventory(args.output_root)
+        return
+    if args.requested_sha != args.observed_sha:
+        raise SystemExit("checkout SHA mismatch")
     request = json.loads(args.request.read_text(encoding="utf-8"))
-    if request.get("broker_revision") != args.broker_revision: raise SystemExit("broker revision mismatch")
-    contract = json.loads(args.contract.read_text(encoding="utf-8")); contract_sha = sha256(canonical(contract)).hexdigest()
-    bindings = {"target_sha": args.requested_sha, "tested_tree_sha": args.tree_sha, "broker_revision": args.broker_revision, "run_number": args.run_number, "run_id": args.run_id}
-    conclusions = load_records(args.stage_results, bindings, contract_sha)
-    if args.output_root.exists(): shutil.rmtree(args.output_root)
-    (args.output_root / "stage_results").mkdir(parents=True)
-    for path in sorted(args.stage_results.glob("*.json")): shutil.copy2(path, args.output_root / "stage_results" / path.name)
-    (args.output_root / "request").mkdir(); shutil.copy2(args.request, args.output_root / "request" / "request.json")
-    base_manifest = create_inventory(args.output_root); atomic_write(args.output_root / "artifact_manifest.json", base_manifest)
-    receipt = {
-        "schema_version": "1.1.0", "request_sha256": sha256(canonical(request)).hexdigest(),
-        "requested_target_sha": args.requested_sha, "observed_checkout_sha": args.observed_sha,
-        "tested_tree_sha": args.tree_sha, "broker_revision": args.broker_revision,
-        "validation_contract_sha256": contract_sha, "run_number": args.run_number, "run_id": args.run_id,
-        "broker_validation_conclusion": "success", "workflow_conclusion_at_receipt": "pending",
-        "step_conclusions": conclusions, "artifact_manifest_sha256": sha256(canonical(base_manifest)).hexdigest(),
-        "external_action_performed": False, "production_activation_authorized": False,
+    if request.get("broker_revision") != args.broker_revision:
+        raise SystemExit("broker revision mismatch")
+    contract = json.loads(args.contract.read_text(encoding="utf-8"))
+    contract_sha = sha256(canonical(contract)).hexdigest()
+    bindings = {
+        "target_sha": args.requested_sha,
+        "tested_tree_sha": args.tree_sha,
+        "broker_revision": args.broker_revision,
+        "run_number": args.run_number,
+        "run_id": args.run_id,
     }
-    receipt["receipt_sha256"] = sha256(canonical(receipt)).hexdigest(); atomic_write(args.output_root / "exact_sha_ci_receipt.json", receipt)
-    completion = {"schema_version": "1.0.0", "receipt_sha256": receipt["receipt_sha256"], "receipt_file_sha256": digest_file(args.output_root / "exact_sha_ci_receipt.json"), "artifact_manifest_file_sha256": digest_file(args.output_root / "artifact_manifest.json"), "external_action_performed": False, "production_activation_authorized": False}
-    completion["completion_sha256"] = sha256(canonical(completion)).hexdigest(); atomic_write(args.output_root / "completion_manifest.json", completion)
+    conclusions = load_records(args.stage_results, bindings, contract_sha)
+    envelope = None
+    execution_binding_sha = None
+    if args.execution_envelope:
+        envelope, execution_binding_sha = validate_execution_envelope(args.execution_envelope, request)
+    if args.output_root.exists():
+        shutil.rmtree(args.output_root)
+    (args.output_root / "stage_results").mkdir(parents=True)
+    for path in sorted(args.stage_results.glob("*.json")):
+        shutil.copy2(path, args.output_root / "stage_results" / path.name)
+    (args.output_root / "request").mkdir()
+    shutil.copy2(args.request, args.output_root / "request" / "request.json")
+    if envelope is not None:
+        atomic_write(args.output_root / "execution" / "issue_request_envelope.json", envelope)
+    base_manifest = create_inventory(args.output_root)
+    atomic_write(args.output_root / "artifact_manifest.json", base_manifest)
+    receipt = {
+        "schema_version": "1.1.0",
+        "request_sha256": sha256(canonical(request)).hexdigest(),
+        "requested_target_sha": args.requested_sha,
+        "observed_checkout_sha": args.observed_sha,
+        "tested_tree_sha": args.tree_sha,
+        "broker_revision": args.broker_revision,
+        "validation_contract_sha256": contract_sha,
+        "run_number": args.run_number,
+        "run_id": args.run_id,
+        "broker_validation_conclusion": "success",
+        "workflow_conclusion_at_receipt": "pending",
+        "step_conclusions": conclusions,
+        "artifact_manifest_sha256": sha256(canonical(base_manifest)).hexdigest(),
+        "external_action_performed": False,
+        "production_activation_authorized": False,
+    }
+    if execution_binding_sha is not None:
+        receipt["issue_execution_binding_sha256"] = execution_binding_sha
+    receipt["receipt_sha256"] = sha256(canonical(receipt)).hexdigest()
+    atomic_write(args.output_root / "exact_sha_ci_receipt.json", receipt)
+    completion = {
+        "schema_version": "1.0.0",
+        "receipt_sha256": receipt["receipt_sha256"],
+        "receipt_file_sha256": digest_file(args.output_root / "exact_sha_ci_receipt.json"),
+        "artifact_manifest_file_sha256": digest_file(args.output_root / "artifact_manifest.json"),
+        "external_action_performed": False,
+        "production_activation_authorized": False,
+    }
+    completion["completion_sha256"] = sha256(canonical(completion)).hexdigest()
+    atomic_write(args.output_root / "completion_manifest.json", completion)
     atomic_write(args.output_root / "upload_inventory.json", create_inventory(args.output_root))
     verify_inventory(args.output_root)
 
 
-if __name__ == "__main__": main()
+if __name__ == "__main__":
+    main()
