@@ -41,7 +41,7 @@ jobs:
         working-directory: trusted
         run: |
           gh api "repos/${GITHUB_REPOSITORY}/issues/${{ github.event.issue.number }}" > "$RUNNER_TEMP/issue-initial.json"
-          gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${{ github.event.issue.number }}/comments" > "$RUNNER_TEMP/issue-comments.json"
+          gh api "repos/${GITHUB_REPOSITORY}/issues/${{ github.event.issue.number }}/comments?per_page=100" > "$RUNNER_TEMP/issue-comments.json"
           python scripts/validate_exact_sha_ci_issue_request.py validate \
             --event "$GITHUB_EVENT_PATH" \
             --issue "$RUNNER_TEMP/issue-initial.json" \
@@ -52,30 +52,34 @@ jobs:
           python - <<'PY' >> "$GITHUB_OUTPUT"
           import json, os
           from pathlib import Path
-          value = json.loads(Path(os.environ["RUNNER_TEMP"]).joinpath("issue-request-envelope.json").read_text())
+          root = Path(os.environ["RUNNER_TEMP"])
+          value = json.loads(root.joinpath("issue-request-envelope.json").read_text())
           print(f"target_sha={value['request']['target_sha']}")
           print(f"request_id={value['request']['request_id']}")
           print(f"execution_binding_sha256={value['binding']['execution_binding_sha256']}")
-          Path(os.environ["RUNNER_TEMP"]).joinpath("exact-sha-request.json").write_text(json.dumps(value["request"], sort_keys=True, separators=(",", ":")) + "\n")
+          root.joinpath("exact-sha-request.json").write_text(
+              json.dumps(value["request"], sort_keys=True, separators=(",", ":")) + "\n"
+          )
           PY
 
       - name: Reject global request-ID replay
         env:
           REQUEST_ID: ${{ steps.request.outputs.request_id }}
+          CURRENT_ISSUE: ${{ github.event.issue.number }}
         run: |
-          result=$(gh api search/issues -f q="repo:${GITHUB_REPOSITORY} is:issue in:body \"${REQUEST_ID}\"")
-          python - <<'PY' <<< "$result"
-          import json, os, sys
+          gh api search/issues \
+            -f q="repo:${GITHUB_REPOSITORY} is:issue in:body \"${REQUEST_ID}\"" \
+            > "$RUNNER_TEMP/request-id-search.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
           current = int(os.environ["CURRENT_ISSUE"])
-          value = json.load(sys.stdin)
-          others = [item["number"] for item in value.get("items", []) if int(item["number"]) != current]
+          root = Path(os.environ["RUNNER_TEMP"])
+          value = json.loads(root.joinpath("request-id-search.json").read_text())
+          others = [int(item["number"]) for item in value.get("items", []) if int(item["number"]) != current]
           if others:
               raise SystemExit(f"request_id already appears in issue(s): {others}")
           PY
-        env:
-          REQUEST_ID: ${{ steps.request.outputs.request_id }}
-          CURRENT_ISSUE: ${{ github.event.issue.number }}
-          GH_TOKEN: ${{ github.token }}
 
       - name: Verify target exists and is reachable from main
         working-directory: trusted
