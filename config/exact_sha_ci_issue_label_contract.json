@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0.0",
+  "label": "exact-sha-ci-request",
+  "trigger_events": ["opened", "labeled"],
+  "allowed_author_associations": ["OWNER", "MEMBER", "COLLABORATOR"],
+  "required_permissions": {
+    "contents": "read",
+    "issues": "write"
+  },
+  "prohibited_permissions": [
+    "actions:write",
+    "contents:write",
+    "id-token:write",
+    "pull-requests:write"
+  ],
+  "success_terminal_action": "COMMENT_AND_CLOSE_ISSUE",
+  "failure_terminal_action": "COMMENT_AND_LEAVE_OPEN",
+  "production_activation_authorized": false,
+  "external_action_authorized": false
+}
