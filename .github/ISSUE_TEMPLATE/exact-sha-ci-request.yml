@@ -1,0 +1,41 @@
+name: Exact-SHA CI Receipt Request
+description: Request governed validation of an exact commit through the default-branch broker.
+title: "[Exact-SHA CI] "
+labels:
+  - exact-sha-ci-request
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This form creates a non-secret validation request only. It cannot authorize production, provider actions, deployment, Gmail operations, repository contents mutation, or arbitrary command execution.
+  - type: textarea
+    id: request_json
+    attributes:
+      label: Request JSON
+      description: Paste one closed request object matching schemas/exact_sha_ci_issue_request.schema.json.
+      placeholder: |
+        {
+          "schema_version": "1.0.0",
+          "request_id": "CI-RECEIPT-EXAMPLE-0001",
+          "repository": "Lornt1666/AIGC",
+          "target_branch": "main",
+          "target_sha": "0000000000000000000000000000000000000000",
+          "broker_revision": "0000000000000000000000000000000000000000",
+          "requested_checks": ["contracts", "redaction", "procurement_smoke", "provider_discovery", "terraform_inert", "tests", "readiness"],
+          "production_activation_authorized": false,
+          "external_action_authorized": false
+        }
+      render: json
+    validations:
+      required: true
+  - type: checkboxes
+    id: authority
+    attributes:
+      label: Authority confirmation
+      options:
+        - label: I confirm production activation is not authorized.
+          required: true
+        - label: I confirm no external provider action is authorized.
+          required: true
+        - label: I confirm this issue contains no credentials or secrets.
+          required: true
