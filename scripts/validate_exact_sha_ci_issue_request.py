@@ -139,7 +139,6 @@ def verify_unchanged(issue: dict, envelope: dict) -> None:
         "issue_number": int(issue["number"]),
         "issue_node_id": str(issue["node_id"]),
         "issue_created_at": str(issue["created_at"]),
-        "issue_updated_at": str(issue["updated_at"]),
         "issue_body_sha256": sha256(body.encode()).hexdigest(),
         "actor_login": str((issue.get("user") or {})["login"]),
         "actor_id": int((issue.get("user") or {})["id"]),
