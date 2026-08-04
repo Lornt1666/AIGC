@@ -6,19 +6,20 @@ on:
       - opened
       - labeled
 
-permissions:
-  contents: read
-  issues: write
-
-concurrency:
-  group: exact-sha-ci-issue-${{ github.event.issue.number }}
-  cancel-in-progress: false
+permissions: {}
 
 jobs:
-  validate-exact-target:
+  validate-request:
     if: contains(github.event.issue.labels.*.name, 'exact-sha-ci-request')
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: read
+    outputs:
+      request_id: ${{ steps.request.outputs.request_id }}
+      target_sha: ${{ steps.request.outputs.target_sha }}
+      envelope_b64: ${{ steps.request.outputs.envelope_b64 }}
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
@@ -41,57 +42,139 @@ jobs:
         working-directory: trusted
         run: |
           gh api "repos/${GITHUB_REPOSITORY}/issues/${{ github.event.issue.number }}" > "$RUNNER_TEMP/issue-initial.json"
-          gh api "repos/${GITHUB_REPOSITORY}/issues/${{ github.event.issue.number }}/comments?per_page=100" > "$RUNNER_TEMP/issue-comments.json"
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${{ github.event.issue.number }}/comments?per_page=100" > "$RUNNER_TEMP/issue-comments.json"
           python scripts/validate_exact_sha_ci_issue_request.py validate \
             --event "$GITHUB_EVENT_PATH" \
             --issue "$RUNNER_TEMP/issue-initial.json" \
             --comments "$RUNNER_TEMP/issue-comments.json" \
             --expected-broker-revision "$GITHUB_WORKFLOW_SHA" \
-            --output "$RUNNER_TEMP/issue-request-envelope.json" \
-            > "$RUNNER_TEMP/issue-request-result.json"
+            --output "$RUNNER_TEMP/issue-request-envelope.json"
           python - <<'PY' >> "$GITHUB_OUTPUT"
-          import json, os
+          import base64, json, os
           from pathlib import Path
-          root = Path(os.environ["RUNNER_TEMP"])
-          value = json.loads(root.joinpath("issue-request-envelope.json").read_text())
-          print(f"target_sha={value['request']['target_sha']}")
+          path = Path(os.environ["RUNNER_TEMP"]) / "issue-request-envelope.json"
+          value = json.loads(path.read_text())
           print(f"request_id={value['request']['request_id']}")
-          print(f"execution_binding_sha256={value['binding']['execution_binding_sha256']}")
-          root.joinpath("exact-sha-request.json").write_text(
-              json.dumps(value["request"], sort_keys=True, separators=(",", ":")) + "\n"
-          )
+          print(f"target_sha={value['request']['target_sha']}")
+          print("envelope_b64=" + base64.b64encode(path.read_bytes()).decode())
           PY
 
-      - name: Reject global request-ID replay
+  execute-request:
+    needs: validate-request
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      issues: write
+    concurrency:
+      group: exact-sha-ci-request-${{ needs.validate-request.outputs.request_id }}
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REQUEST_ID: ${{ needs.validate-request.outputs.request_id }}
+      TARGET_SHA: ${{ needs.validate-request.outputs.target_sha }}
+      ISSUE_NUMBER: ${{ github.event.issue.number }}
+    steps:
+      - name: Checkout immutable broker revision
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: trusted
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Restore validated request envelope
         env:
-          REQUEST_ID: ${{ steps.request.outputs.request_id }}
-          CURRENT_ISSUE: ${{ github.event.issue.number }}
+          ENVELOPE_B64: ${{ needs.validate-request.outputs.envelope_b64 }}
         run: |
-          gh api search/issues \
-            -f q="repo:${GITHUB_REPOSITORY} is:issue in:body \"${REQUEST_ID}\"" \
-            > "$RUNNER_TEMP/request-id-search.json"
+          python - <<'PY'
+          import base64, os
+          from pathlib import Path
+          root = Path(os.environ["RUNNER_TEMP"])
+          root.joinpath("issue-request-envelope.json").write_bytes(base64.b64decode(os.environ["ENVELOPE_B64"]))
+          PY
+
+      - name: Authoritatively reserve request ID under lock
+        run: |
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/issues?state=all&per_page=100" > "$RUNNER_TEMP/all-issues.json"
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          issues = json.loads((Path(os.environ["RUNNER_TEMP"]) / "all-issues.json").read_text())
+          request_id = os.environ["REQUEST_ID"]
+          current = int(os.environ["ISSUE_NUMBER"])
+          conflicts = []
+          for issue in issues:
+              number = int(issue["number"])
+              if number == current:
+                  continue
+              body = str(issue.get("body") or "")
+              if request_id in body:
+                  conflicts.append(number)
+                  continue
+              raw = subprocess.check_output([
+                  "gh", "api", "--paginate",
+                  f"repos/{os.environ['GITHUB_REPOSITORY']}/issues/{number}/comments?per_page=100",
+              ], text=True)
+              if request_id in raw:
+                  conflicts.append(number)
+          if conflicts:
+              raise SystemExit(f"request_id already reserved or consumed by issue(s): {sorted(set(conflicts))}")
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" \
+            --body "AIGC-EXACT-SHA-CI-RESERVED request_id=${REQUEST_ID} run_id=${GITHUB_RUN_ID}"
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${ISSUE_NUMBER}/comments?per_page=100" > "$RUNNER_TEMP/reservation-comments.json"
           python - <<'PY'
           import json, os
           from pathlib import Path
-          current = int(os.environ["CURRENT_ISSUE"])
+          comments = json.loads((Path(os.environ["RUNNER_TEMP"]) / "reservation-comments.json").read_text())
+          marker = f"AIGC-EXACT-SHA-CI-RESERVED request_id={os.environ['REQUEST_ID']} run_id={os.environ['GITHUB_RUN_ID']}"
+          matches = [item for item in comments if str(item.get("body") or "").strip() == marker]
+          if len(matches) != 1:
+              raise SystemExit("request reservation was not published exactly once")
+          PY
+
+      - name: Verify requester repository permission and enrich binding
+        id: authority
+        run: |
+          AUTHOR=$(python - <<'PY'
+          import json, os
+          from pathlib import Path
+          value = json.loads((Path(os.environ["RUNNER_TEMP"]) / "issue-request-envelope.json").read_text())
+          print(value["binding"]["actor_login"])
+          PY
+          )
+          gh api "repos/${GITHUB_REPOSITORY}/collaborators/${AUTHOR}/permission" > "$RUNNER_TEMP/permission.json"
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import hashlib, json, os
+          from pathlib import Path
           root = Path(os.environ["RUNNER_TEMP"])
-          value = json.loads(root.joinpath("request-id-search.json").read_text())
-          others = [int(item["number"]) for item in value.get("items", []) if int(item["number"]) != current]
-          if others:
-              raise SystemExit(f"request_id already appears in issue(s): {others}")
+          envelope = json.loads(root.joinpath("issue-request-envelope.json").read_text())
+          permission = json.loads(root.joinpath("permission.json").read_text()).get("permission")
+          if permission not in {"push", "maintain", "admin"}:
+              raise SystemExit(f"requester permission is insufficient: {permission}")
+          binding = envelope["binding"]
+          binding.pop("execution_binding_sha256", None)
+          binding["repository_permission"] = permission
+          canonical = json.dumps(binding, sort_keys=True, separators=(",", ":")).encode()
+          binding["execution_binding_sha256"] = hashlib.sha256(canonical).hexdigest()
+          root.joinpath("issue-request-envelope.json").write_text(json.dumps(envelope, sort_keys=True, separators=(",", ":")) + "\n")
+          root.joinpath("exact-sha-request.json").write_text(json.dumps(envelope["request"], sort_keys=True, separators=(",", ":")) + "\n")
+          print(f"permission={permission}")
+          print(f"binding_sha={binding['execution_binding_sha256']}")
           PY
 
       - name: Verify target exists and is reachable from main
         working-directory: trusted
         run: |
-          git fetch --no-tags origin main "${{ steps.request.outputs.target_sha }}"
-          git cat-file -e "${{ steps.request.outputs.target_sha }}^{commit}"
-          git merge-base --is-ancestor "${{ steps.request.outputs.target_sha }}" origin/main
+          git fetch --no-tags origin main "$TARGET_SHA"
+          git cat-file -e "$TARGET_SHA^{commit}"
+          git merge-base --is-ancestor "$TARGET_SHA" origin/main
 
       - name: Checkout exact requested target
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
-          ref: ${{ steps.request.outputs.target_sha }}
+          ref: ${{ env.TARGET_SHA }}
           path: target
           fetch-depth: 0
           persist-credentials: false
@@ -116,7 +199,7 @@ jobs:
         working-directory: target
         run: |
           observed=$(git rev-parse HEAD)
-          test "$observed" = "${{ steps.request.outputs.target_sha }}"
+          test "$observed" = "$TARGET_SHA"
           echo "observed_sha=$observed" >> "$GITHUB_OUTPUT"
           echo "tree_sha=$(git rev-parse 'HEAD^{tree}')" >> "$GITHUB_OUTPUT"
 
@@ -127,7 +210,7 @@ jobs:
             --contract trusted/config/exact_sha_ci_validation_contract.json \
             --project-root target \
             --results-dir "$RUNNER_TEMP/exact-sha-stage-results" \
-            --repository-revision "${{ steps.request.outputs.target_sha }}" \
+            --repository-revision "$TARGET_SHA" \
             --tested-tree-sha "${{ steps.checkout.outputs.tree_sha }}" \
             --broker-revision "$GITHUB_WORKFLOW_SHA" \
             --run-number "$GITHUB_RUN_NUMBER" \
@@ -136,16 +219,16 @@ jobs:
       - name: Revalidate issue before evidence finalization
         working-directory: trusted
         run: |
-          gh api "repos/${GITHUB_REPOSITORY}/issues/${{ github.event.issue.number }}" > "$RUNNER_TEMP/issue-current.json"
+          gh api "repos/${GITHUB_REPOSITORY}/issues/${ISSUE_NUMBER}" > "$RUNNER_TEMP/issue-current.json"
           python scripts/validate_exact_sha_ci_issue_request.py recheck \
             --issue "$RUNNER_TEMP/issue-current.json" \
             --envelope "$RUNNER_TEMP/issue-request-envelope.json"
 
-      - name: Build trusted receipt bundle
+      - name: Build and verify trusted receipt bundle
         run: |
           python trusted/scripts/build_exact_sha_ci_receipt.py \
             --request "$RUNNER_TEMP/exact-sha-request.json" \
-            --requested-sha "${{ steps.request.outputs.target_sha }}" \
+            --requested-sha "$TARGET_SHA" \
             --observed-sha "${{ steps.checkout.outputs.observed_sha }}" \
             --tree-sha "${{ steps.checkout.outputs.tree_sha }}" \
             --broker-revision "$GITHUB_WORKFLOW_SHA" \
@@ -155,58 +238,84 @@ jobs:
             --stage-results "$RUNNER_TEMP/exact-sha-stage-results" \
             --execution-envelope "$RUNNER_TEMP/issue-request-envelope.json" \
             --output-root "$RUNNER_TEMP/exact-sha-upload"
-
-      - name: Verify exact final upload inventory
-        run: python trusted/scripts/build_exact_sha_ci_receipt.py --output-root "$RUNNER_TEMP/exact-sha-upload" --verify-inventory
+          python trusted/scripts/build_exact_sha_ci_receipt.py \
+            --output-root "$RUNNER_TEMP/exact-sha-upload" --verify-inventory
 
       - name: Upload exact-SHA receipt evidence
+        id: upload
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: exact-sha-ci-receipt-${{ steps.request.outputs.target_sha }}
+          name: exact-sha-ci-receipt-${{ env.TARGET_SHA }}
           path: ${{ runner.temp }}/exact-sha-upload
           if-no-files-found: error
 
       - name: Revalidate issue before terminal mutation
         working-directory: trusted
         run: |
-          gh api "repos/${GITHUB_REPOSITORY}/issues/${{ github.event.issue.number }}" > "$RUNNER_TEMP/issue-terminal.json"
+          gh api "repos/${GITHUB_REPOSITORY}/issues/${ISSUE_NUMBER}" > "$RUNNER_TEMP/issue-terminal.json"
           python scripts/validate_exact_sha_ci_issue_request.py recheck \
             --issue "$RUNNER_TEMP/issue-terminal.json" \
             --envelope "$RUNNER_TEMP/issue-request-envelope.json"
 
-      - name: Comment verified success and close request issue
+      - name: Comment verified completion and close issue
         env:
-          REQUEST_ID: ${{ steps.request.outputs.request_id }}
-          TARGET_SHA: ${{ steps.request.outputs.target_sha }}
-          BINDING_SHA: ${{ steps.request.outputs.execution_binding_sha256 }}
+          BINDING_SHA: ${{ steps.authority.outputs.binding_sha }}
+          REPOSITORY_PERMISSION: ${{ steps.authority.outputs.permission }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
         run: |
           body=$(cat <<EOF
-          AIGC-EXACT-SHA-CI-COMPLETED request_id=${REQUEST_ID}
+          AIGC-EXACT-SHA-CI-COMPLETED request_id=${REQUEST_ID} run_id=${GITHUB_RUN_ID}
 
           - target_sha: \`${TARGET_SHA}\`
           - execution_binding_sha256: \`${BINDING_SHA}\`
-          - run_id: \`${GITHUB_RUN_ID}\`
+          - repository_permission: \`${REPOSITORY_PERMISSION}\`
+          - artifact_id: \`${ARTIFACT_ID}\`
+          - artifact_url: \`${ARTIFACT_URL}\`
+          - artifact_digest: \`${ARTIFACT_DIGEST}\`
           - run_number: \`${GITHUB_RUN_NUMBER}\`
-          - result: broker validation succeeded; artifact inventory verified
           - production_activation_authorized: false
           - external_action_performed: false
           EOF
           )
-          gh issue comment "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY" --body "$body"
-          gh issue close "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY" --reason completed
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "$body"
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
+
+      - name: Post-verify terminal issue and completion marker
+        env:
+          BINDING_SHA: ${{ steps.authority.outputs.binding_sha }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        run: |
+          gh api "repos/${GITHUB_REPOSITORY}/issues/${ISSUE_NUMBER}" > "$RUNNER_TEMP/issue-closed.json"
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${ISSUE_NUMBER}/comments?per_page=100" > "$RUNNER_TEMP/terminal-comments.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root = Path(os.environ["RUNNER_TEMP"])
+          issue = json.loads(root.joinpath("issue-closed.json").read_text())
+          envelope = json.loads(root.joinpath("issue-request-envelope.json").read_text())
+          comments = json.loads(root.joinpath("terminal-comments.json").read_text())
+          binding = envelope["binding"]
+          if issue.get("state") != "closed":
+              raise SystemExit("terminal issue is not closed")
+          if int(issue["number"]) != binding["issue_number"] or str(issue["node_id"]) != binding["issue_node_id"]:
+              raise SystemExit("terminal issue identity mismatch")
+          if str(issue.get("body") or "") != str(json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text())["issue"].get("body") or ""):
+              raise SystemExit("terminal issue body changed")
+          required = [
+              f"AIGC-EXACT-SHA-CI-COMPLETED request_id={os.environ['REQUEST_ID']} run_id={os.environ['GITHUB_RUN_ID']}",
+              os.environ["BINDING_SHA"], os.environ["ARTIFACT_ID"],
+              os.environ["ARTIFACT_URL"], os.environ["ARTIFACT_DIGEST"],
+          ]
+          matches = [str(item.get("body") or "") for item in comments if all(value in str(item.get("body") or "") for value in required)]
+          if len(matches) != 1:
+              raise SystemExit("exact terminal completion marker was not verified")
+          PY
 
       - name: Comment bounded failure
         if: failure()
         run: |
-          body=$(cat <<EOF
-          AIGC-EXACT-SHA-CI-FAILED
-
-          - run_id: \`${GITHUB_RUN_ID}\`
-          - run_number: \`${GITHUB_RUN_NUMBER}\`
-          - classification: governed validation failed closed
-          - issue_closed: false
-          - production_activation_authorized: false
-          - external_action_performed: false
-          EOF
-          )
-          gh issue comment "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY" --body "$body" || true
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "AIGC-EXACT-SHA-CI-FAILED run_id=${GITHUB_RUN_ID}; request remains open; production=false; external_action=false" || true
