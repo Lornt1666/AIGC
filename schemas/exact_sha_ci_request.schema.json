@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://regenexcalibur.local/schemas/exact_sha_ci_request.schema.json",
+  "title": "AIGC Exact-SHA CI Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "request_id", "repository", "target_branch", "target_sha", "broker_revision", "requested_checks", "production_activation_authorized", "external_action_authorized"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "request_id": {"type": "string", "pattern": "^CI-RECEIPT-[A-Z0-9-]{8,80}$"},
+    "repository": {"const": "Lornt1666/AIGC"},
+    "target_branch": {"const": "main"},
+    "target_sha": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "broker_revision": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "requested_checks": {"type": "array", "minItems": 7, "maxItems": 7, "uniqueItems": true, "items": {"enum": ["contracts", "redaction", "procurement_smoke", "provider_discovery", "terraform_inert", "tests", "readiness"]}},
+    "production_activation_authorized": {"const": false},
+    "external_action_authorized": {"const": false}
+  }
+}
