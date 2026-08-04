@@ -1,0 +1,27 @@
+{
+  "capability_does_not_create_authority": true,
+  "default_status": "UNVERIFIED",
+  "schema_version": "1.0.0",
+  "surfaces": {
+    "chatgpt_github_connector": {
+      "capabilities": [
+        "repository_read",
+        "bounded_repository_write"
+      ],
+      "status": "OBSERVED"
+    },
+    "github_actions": {
+      "capabilities": [
+        "hosted_ci"
+      ],
+      "status": "OBSERVED"
+    },
+    "replit_execution_bridge": {
+      "capabilities": [
+        "bounded_validation"
+      ],
+      "status": "OBSERVED"
+    }
+  },
+  "unknown_surface_decision": "DENY"
+}

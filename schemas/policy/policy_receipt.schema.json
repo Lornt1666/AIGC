@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/policy/policy_receipt.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["receipt_id", "decision", "repository", "exact_repository_revision", "policy_bundle_digest", "credential_material_included", "external_action_performed", "receipt_sha256"],
+  "properties": {
+    "receipt_id": {"type": "string"},
+    "decision": {"type": "object"},
+    "repository": {"type": "string"},
+    "exact_repository_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "policy_bundle_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "credential_material_included": {"const": false},
+    "external_action_performed": {"const": false},
+    "receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

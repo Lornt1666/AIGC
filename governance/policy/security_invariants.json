@@ -1,0 +1,25 @@
+{
+  "aigc_deployment_lock": true,
+  "arbitrary_shell_prevention": true,
+  "automatic_merge_prevention": true,
+  "dangerous_authorities": {
+    "arbitrary_shell": false,
+    "automatic_merge": false,
+    "deployment_of_AIGC": false,
+    "direct_main_write": false,
+    "financial_commitment": false,
+    "gmail_send": false,
+    "production_activation": false,
+    "provider_mutation_outside_bridge_setup": false,
+    "raw_secret_output": false,
+    "self_approval": false
+  },
+  "direct_main_write_prevention": true,
+  "financial_commitment_prevention": true,
+  "gmail_send_prevention": true,
+  "production_activation_lock": true,
+  "provider_mutation_scope_enforcement": true,
+  "raw_secret_output_prevention": true,
+  "schema_version": "1.0.0",
+  "self_approval_prevention": true
+}

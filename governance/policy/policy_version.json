@@ -1,0 +1,9 @@
+{
+  "authority_class": "policy",
+  "base_repository_revision": "53c9b64615b17df8ee9ad0ee8385f6ec9112b3a6",
+  "base_tree_sha": "b7f5735cc1cd2ad89b066cb2732b5a1a9f51b609",
+  "constitutional_authority": false,
+  "policy_id": "AIGC-OMEGA-POLICY-BUNDLE-001",
+  "status": "proposed",
+  "version": "1.0.0"
+}

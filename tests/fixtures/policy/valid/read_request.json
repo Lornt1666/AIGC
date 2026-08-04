@@ -1,0 +1,20 @@
+{
+  "action_class": "repository_read",
+  "actor_reference": {"actor_id": "operator-1"},
+  "approval_reference": null,
+  "emergency_stop_epoch": 1,
+  "evidence_references": ["evidence://identity/1"],
+  "exact_repository_revision": "53c9b64615b17df8ee9ad0ee8385f6ec9112b3a6",
+  "execution_surface": "chatgpt_github_connector",
+  "expires_at": "2026-08-04T14:00:00Z",
+  "idempotency_key": "idem-read-001",
+  "issued_at": "2026-08-04T13:00:00Z",
+  "policy_bundle_digest": "afbb8308cabfb47a0586a9a0e683d929eee62159b52c5a31463ab72a5cf22f49",
+  "policy_version": "1.0.0",
+  "privacy_classification": "INTERNAL",
+  "repository": "Lornt1666/AIGC",
+  "request_id": "REQ-READ-001",
+  "requested_authority": "repository_read",
+  "requested_capability": "repository_read",
+  "target_resource": "Lornt1666/AIGC"
+}

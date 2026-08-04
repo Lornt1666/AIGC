@@ -1,0 +1,58 @@
+{
+  "actions": {
+    "aigc_deployment": {
+      "authority": "none",
+      "decision": "DENY"
+    },
+    "arbitrary_shell": {
+      "authority": "none",
+      "decision": "DENY"
+    },
+    "automatic_merge": {
+      "authority": "none",
+      "decision": "DENY"
+    },
+    "branch_create": {
+      "authority": "branch_creation",
+      "decision": "ALLOW_WITH_APPROVAL"
+    },
+    "direct_main_write": {
+      "authority": "none",
+      "decision": "DENY"
+    },
+    "draft_pr_create": {
+      "authority": "draft_pull_request",
+      "decision": "ALLOW_WITH_APPROVAL"
+    },
+    "financial_commitment": {
+      "authority": "none",
+      "decision": "DENY"
+    },
+    "gmail_send": {
+      "authority": "none",
+      "decision": "DENY"
+    },
+    "merge": {
+      "authority": "none",
+      "decision": "DENY"
+    },
+    "production_activation": {
+      "authority": "none",
+      "decision": "DENY"
+    },
+    "provider_mutation_outside_bridge_setup": {
+      "authority": "none",
+      "decision": "DENY"
+    },
+    "raw_secret_output": {
+      "authority": "none",
+      "decision": "DENY"
+    },
+    "repository_read": {
+      "authority": "repository_read",
+      "decision": "ALLOW"
+    }
+  },
+  "repository": "Lornt1666/AIGC",
+  "schema_version": "1.0.0"
+}

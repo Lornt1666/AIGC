@@ -1,0 +1,12 @@
+{
+  "approval_must_be": {
+    "attributable": true,
+    "independent_when_required": true,
+    "scoped": true,
+    "unexpired": true
+  },
+  "approval_replay_allowed": false,
+  "default_requires_approval": true,
+  "schema_version": "1.0.0",
+  "self_approval_allowed": false
+}
