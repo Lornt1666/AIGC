@@ -38,6 +38,7 @@
       }
     },
     "artifact_manifest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "issue_execution_binding_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
     "external_action_performed": {"const": false},
     "production_activation_authorized": {"const": false},
     "receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
