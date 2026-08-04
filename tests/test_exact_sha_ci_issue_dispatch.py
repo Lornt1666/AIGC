@@ -241,11 +241,14 @@ def test_workflow_is_default_branch_controlled_minimal_and_pinned():
             assert len(revision) == 40 and all(character in "0123456789abcdef" for character in revision)
 
 
-def test_workflow_serializes_rechecks_reserves_and_post_verifies():
+def test_workflow_serializes_rechecks_authorizes_reserves_and_post_verifies():
     workflow = Path(".github/workflows/exact-sha-ci-issue-dispatch.yml").read_text(encoding="utf-8")
     assert "validate-request:" in workflow and "execute-request:" in workflow
     assert "group: exact-sha-ci-request-${{ needs.validate-request.outputs.request_id }}" in workflow
-    assert "Revalidate and reserve exactly once under request lock" in workflow
+    precheck = workflow.index("Revalidate replay state under request lock")
+    authority = workflow.index("Verify requester repository permission and enrich binding")
+    reservation_step = workflow.index("Publish and verify unique authorized reservation")
+    assert precheck < authority < reservation_step
     assert "current-comments-before.json" in workflow
     assert "current-comments-after.json" in workflow
     assert "--expect-current" in workflow
@@ -255,6 +258,9 @@ def test_workflow_serializes_rechecks_reserves_and_post_verifies():
     assert '"push" if raw_permission == "write"' in workflow
     assert 'permission not in {"push", "maintain", "admin"}' in workflow
     assert 'binding["repository_permission"]' in workflow
+    assert 'print("authorized=true")' in workflow
+    assert "if: steps.authority.outputs.authorized == 'true'" in workflow
+    assert 'echo "reserved=true" >> "$GITHUB_OUTPUT"' in workflow
     assert "steps.upload.outputs.artifact-id" in workflow
     assert "steps.upload.outputs.artifact-url" in workflow
     assert "steps.upload.outputs.artifact-digest" in workflow
