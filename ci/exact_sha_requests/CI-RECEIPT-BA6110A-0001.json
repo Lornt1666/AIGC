@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0.0",
+  "request_id": "CI-RECEIPT-BA6110A-0001",
+  "repository": "Lornt1666/AIGC",
+  "target_branch": "main",
+  "target_sha": "ba6110a04ed11c942c6ec55deb4e84b29dee4a15",
+  "broker_revision": "30d70795e39916c766648c4059d0221beb1d91bb",
+  "requested_checks": [
+    "contracts",
+    "procurement_smoke",
+    "provider_discovery",
+    "readiness",
+    "redaction",
+    "terraform_inert",
+    "tests"
+  ],
+  "production_activation_authorized": false,
+  "external_action_authorized": false
+}
