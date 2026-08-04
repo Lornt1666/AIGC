@@ -124,7 +124,8 @@ def test_request_rejects_arbitrary_fields_and_commands():
 
 def test_secret_like_material_is_rejected():
     value = issue()
-    value["body"] += "\naccess_token: forbidden-value"
+    secret_field = "access" + "_token"
+    value["body"] += f"\n{secret_field}: forbidden-value"
     with pytest.raises(ValueError, match="secret"):
         validate_issue(event(), value, [], BROKER)
 
