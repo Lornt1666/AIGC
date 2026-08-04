@@ -28,6 +28,7 @@ ALLOWED_KEYS = {
 }
 ALLOWED_ASSOCIATIONS = {"OWNER", "MEMBER", "COLLABORATOR"}
 LABEL = "exact-sha-ci-request"
+RESERVATION_MARKER = "AIGC-EXACT-SHA-CI-RESERVED"
 COMPLETION_MARKER = "AIGC-EXACT-SHA-CI-COMPLETED"
 SECRET_PATTERNS = (
     re.compile(r"gh[pousr]_[A-Za-z0-9_]{20,}"),
@@ -150,6 +151,34 @@ def verify_unchanged(issue: dict, envelope: dict) -> None:
         raise ValueError("issue state or label changed after validation")
 
 
+def marker_text(comment: dict) -> str:
+    return str(comment.get("body") or "").strip()
+
+
+def verify_reservation_state(
+    issue: dict,
+    comments: list[dict],
+    envelope: dict,
+    run_id: str,
+    *,
+    expect_current: bool,
+) -> None:
+    verify_unchanged(issue, envelope)
+    request_id = envelope["request"]["request_id"]
+    reservation_prefix = f"{RESERVATION_MARKER} request_id={request_id} run_id="
+    completion_prefix = f"{COMPLETION_MARKER} request_id={request_id}"
+    reservations = [marker_text(item) for item in comments if marker_text(item).startswith(reservation_prefix)]
+    completions = [marker_text(item) for item in comments if marker_text(item).startswith(completion_prefix)]
+    if completions:
+        raise ValueError("request already has a completion marker")
+    current_marker = f"{reservation_prefix}{run_id}"
+    if expect_current:
+        if reservations != [current_marker]:
+            raise ValueError("exactly one current-run reservation is required")
+    elif reservations:
+        raise ValueError("request already has a reservation marker")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -162,6 +191,12 @@ def main() -> None:
     recheck = subparsers.add_parser("recheck")
     recheck.add_argument("--issue", type=Path, required=True)
     recheck.add_argument("--envelope", type=Path, required=True)
+    reservation = subparsers.add_parser("reservation")
+    reservation.add_argument("--issue", type=Path, required=True)
+    reservation.add_argument("--comments", type=Path, required=True)
+    reservation.add_argument("--envelope", type=Path, required=True)
+    reservation.add_argument("--run-id", required=True)
+    reservation.add_argument("--expect-current", action="store_true")
     args = parser.parse_args()
     if args.command == "validate":
         envelope = validate_issue(
@@ -172,10 +207,18 @@ def main() -> None:
         )
         args.output.write_bytes(canonical(envelope) + b"\n")
         print(json.dumps(envelope, sort_keys=True))
-    else:
+    elif args.command == "recheck":
         verify_unchanged(
             json.loads(args.issue.read_text(encoding="utf-8")),
             json.loads(args.envelope.read_text(encoding="utf-8")),
+        )
+    else:
+        verify_reservation_state(
+            json.loads(args.issue.read_text(encoding="utf-8")),
+            json.loads(args.comments.read_text(encoding="utf-8")),
+            json.loads(args.envelope.read_text(encoding="utf-8")),
+            args.run_id,
+            expect_current=args.expect_current,
         )
 
 
