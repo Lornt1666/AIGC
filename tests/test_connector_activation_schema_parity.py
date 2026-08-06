@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import replace
+from enum import Enum
 import json
 from pathlib import Path
-from types import SimpleNamespace
 
 import pytest
 from jsonschema import ValidationError, validate
@@ -35,6 +35,10 @@ INVALID_STATES = (
     LifecycleState.CONFIGURED,
     LifecycleState.DEPENDENCIES_VERIFIED,
 )
+
+
+class UnknownLifecycleState(str, Enum):
+    UNKNOWN = "UNKNOWN"
 
 
 def manifest() -> CapabilityManifest:
@@ -145,8 +149,7 @@ def test_schema_and_runtime_reject_non_activation_lifecycle_states(
 
 def test_schema_and_runtime_reject_unknown_lifecycle_state() -> None:
     value = manifest()
-    unknown = SimpleNamespace(value="UNKNOWN")
-    candidate = redigest(base_record(value), unknown)
+    candidate = redigest(base_record(value), UnknownLifecycleState.UNKNOWN)
     with pytest.raises(ValidationError):
         validate(instance=payload(candidate), schema=schema())
     with pytest.raises(PermissionError, match="lifecycle"):
