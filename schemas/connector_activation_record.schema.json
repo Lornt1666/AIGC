@@ -16,7 +16,7 @@
     "approval_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
     "policy_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
     "dependency_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
-    "lifecycle_state": {"enum": ["READY_FOR_ACTIVATION", "ACTIVATED_TEST", "ACTIVATED_STAGING", "SUSPENDED", "RETIRED"]},
+    "lifecycle_state": {"enum": ["READY_FOR_ACTIVATION", "ACTIVATED_TEST", "ACTIVATED_STAGING"]},
     "actor_id": {"type": "string", "minLength": 1, "maxLength": 128},
     "created_at": {"type": "string", "format": "date-time"},
     "production_activation_authorized": {"const": false},
