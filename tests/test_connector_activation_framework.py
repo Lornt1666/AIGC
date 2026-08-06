@@ -12,7 +12,7 @@ from src.mission_os.connector_activation import (
     Environment,
     LifecycleState,
 )
-from src.mission_os.connector_kernel import AppendOnlyEvidenceLedger
+from src.mission_os.connector_kernel import AppendOnlyEvidenceLedger, digest
 
 
 SHA = "a" * 64
@@ -71,6 +71,30 @@ def record(value: CapabilityManifest, environment=Environment.TEST, *, receipts=
         dependencies=receipts or dependencies(),
         actor_id="authority-1",
     )
+
+
+def forge_record(value: ActivationRecord, **changes) -> ActivationRecord:
+    fields = {**value.__dict__, **changes}
+    body = {
+        "schema_version": fields["schema_version"],
+        "activation_id": fields["activation_id"],
+        "connector_id": fields["connector_id"],
+        "connector_version": fields["connector_version"],
+        "environment": fields["environment"].value,
+        "requested_capabilities": sorted(fields["requested_capabilities"]),
+        "manifest_sha256": fields["manifest_sha256"],
+        "approval_digest": fields["approval_digest"],
+        "policy_digest": fields["policy_digest"],
+        "dependency_digest": fields["dependency_digest"],
+        "lifecycle_state": fields["lifecycle_state"].value,
+        "actor_id": fields["actor_id"],
+        "created_at": fields["created_at"],
+        "production_activation_authorized": fields["production_activation_authorized"],
+        "external_send_authorized": fields["external_send_authorized"],
+        "github_mutation_authorized": fields["github_mutation_authorized"],
+    }
+    fields["activation_sha256"] = digest(body)
+    return ActivationRecord(**fields)
 
 
 def test_test_activation_is_evidenced_and_integrity_bound(tmp_path: Path) -> None:
@@ -226,6 +250,49 @@ def test_successful_activation_is_bound_to_dependency_transition_evidence(tmp_pa
     )
     assert dependency_event["dependency_digest"] == activated.dependency_digest
     assert events[-1]["dependency_digest"] == activated.dependency_digest
+
+
+def test_forged_record_version_mismatch_is_rejected() -> None:
+    value = manifest()
+    forged = forge_record(record(value), connector_version="9.9.9")
+    with pytest.raises(PermissionError, match="version"):
+        forged.verify(value)
+
+
+def test_forged_record_unsupported_environment_is_rejected() -> None:
+    value = manifest(environments=(Environment.TEST,))
+    forged = forge_record(record(value), environment=Environment.STAGING)
+    with pytest.raises(PermissionError, match="environment"):
+        forged.verify(value)
+
+
+def test_forged_record_undeclared_capability_is_rejected() -> None:
+    value = manifest()
+    forged = forge_record(record(value), requested_capabilities=frozenset({"issue.write"}))
+    with pytest.raises(PermissionError, match="capability"):
+        forged.verify(value)
+
+
+def test_forged_record_empty_capability_set_is_rejected() -> None:
+    value = manifest()
+    forged = forge_record(record(value), requested_capabilities=frozenset())
+    with pytest.raises(PermissionError, match="capability"):
+        forged.verify(value)
+
+
+@pytest.mark.parametrize("field", ["approval_digest", "policy_digest"])
+def test_forged_record_malformed_authority_digest_is_rejected(field: str) -> None:
+    value = manifest()
+    forged = forge_record(record(value), **{field: "not-a-sha256"})
+    with pytest.raises(PermissionError, match="approval and policy"):
+        forged.verify(value)
+
+
+def test_forged_record_invalid_lifecycle_state_is_rejected() -> None:
+    value = manifest()
+    forged = forge_record(record(value), lifecycle_state=LifecycleState.SUSPENDED)
+    with pytest.raises(PermissionError, match="lifecycle"):
+        forged.verify(value)
 
 
 def test_registry_is_immutable() -> None:
