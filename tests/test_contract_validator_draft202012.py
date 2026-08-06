@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import json
 
 import pytest
 
@@ -84,3 +85,14 @@ def test_validation_does_not_mutate_artifact() -> None:
     original = deepcopy(payload)
     validate_artifact("connector_activation_record", payload)
     assert payload == original
+
+
+def test_unsupported_schema_dialect_fails_closed(tmp_path) -> None:
+    schema = {
+        "$schema": "https://example.invalid/unsupported-json-schema-dialect",
+        "type": "object",
+    }
+    (tmp_path / "unsupported.schema.json").write_text(json.dumps(schema), encoding="utf-8")
+    with pytest.raises(ContractValidationError) as exc_info:
+        validate_artifact("unsupported", {}, schema_dir=tmp_path)
+    assert "unsupported $schema dialect" in str(exc_info.value)
