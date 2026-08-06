@@ -42,6 +42,12 @@ _ALLOWED_TRANSITIONS: dict[LifecycleState, frozenset[LifecycleState]] = {
     LifecycleState.RETIRED: frozenset(),
 }
 
+_ACTIVATION_RECORD_STATES = frozenset({
+    LifecycleState.READY_FOR_ACTIVATION,
+    LifecycleState.ACTIVATED_TEST,
+    LifecycleState.ACTIVATED_STAGING,
+})
+
 
 def _is_sha256(value: str) -> bool:
     return len(value) == 64 and all(character in "0123456789abcdef" for character in value)
@@ -315,10 +321,18 @@ class ActivationRecord:
             raise PermissionError("activation record integrity failed")
         if self.manifest_sha256 != manifest.manifest_sha256 or self.connector_id != manifest.connector_id:
             raise PermissionError("activation record is not bound to the registered manifest")
+        if self.connector_version != manifest.connector_version:
+            raise PermissionError("activation connector version does not match the registered manifest")
+        if self.environment is Environment.PRODUCTION or self.environment not in manifest.supported_environments:
+            raise PermissionError("activation environment is not authorized by the registered manifest")
+        if not self.requested_capabilities or not self.requested_capabilities.issubset(manifest.readable_capabilities):
+            raise PermissionError("activation capability is outside the registered read-only manifest")
+        if any(not _is_sha256(value) for value in (self.approval_digest, self.policy_digest)):
+            raise PermissionError("activation approval and policy digests are invalid")
         if not _is_sha256(self.dependency_digest):
             raise PermissionError("activation dependency digest is invalid")
-        if self.environment is Environment.PRODUCTION:
-            raise PermissionError("production activation is prohibited")
+        if self.lifecycle_state not in _ACTIVATION_RECORD_STATES:
+            raise PermissionError("activation lifecycle state is invalid")
         if self.production_activation_authorized or self.external_send_authorized or self.github_mutation_authorized:
             raise PermissionError("activation record expands authority")
 
