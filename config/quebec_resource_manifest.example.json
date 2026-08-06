@@ -1,0 +1,100 @@
+{
+  "schema_version": "aigc.quebec-resource-manifest.v1",
+  "provider": "google_cloud",
+  "project_id": "placeholder_project_id",
+  "project_number": "placeholder_project_number",
+  "region": "northamerica-northeast1",
+  "resources": [
+    {
+      "kind": "artifact_registry",
+      "name": "placeholder_artifact_repository",
+      "location": "northamerica-northeast1"
+    },
+    {
+      "kind": "cloud_sql_postgresql",
+      "name": "placeholder_sql_instance",
+      "location": "northamerica-northeast1",
+      "availability_type": "REGIONAL"
+    },
+    {
+      "kind": "storage_bucket",
+      "name": "placeholder_evidence_bucket",
+      "location": "NORTHAMERICA-NORTHEAST1",
+      "public_access_prevention": "enforced"
+    },
+    {
+      "kind": "storage_bucket",
+      "name": "placeholder_judge_bucket",
+      "location": "NORTHAMERICA-NORTHEAST1",
+      "public_access_prevention": "enforced"
+    },
+    {
+      "kind": "storage_bucket",
+      "name": "placeholder_receipt_bucket",
+      "location": "NORTHAMERICA-NORTHEAST1",
+      "public_access_prevention": "enforced"
+    },
+    {
+      "kind": "regional_secret_manager",
+      "name": "placeholder_secret_set",
+      "location": "northamerica-northeast1"
+    },
+    {
+      "kind": "kms_key_ring",
+      "name": "placeholder_kms_key_ring",
+      "location": "northamerica-northeast1"
+    },
+    {
+      "kind": "logging_bucket",
+      "name": "placeholder_log_bucket",
+      "location": "northamerica-northeast1"
+    }
+  ],
+  "control_plane_resources": [
+    {
+      "kind": "google_cloud_project",
+      "name": "placeholder_project_id",
+      "location": "global",
+      "classification": "CONTROL_PLANE_METADATA",
+      "customer_content": false,
+      "residency_status": "VERIFIED_WITH_LIMITATION"
+    },
+    {
+      "kind": "iam_and_service_accounts",
+      "name": "placeholder_identity_control_plane",
+      "location": "global",
+      "classification": "CONTROL_PLANE_METADATA",
+      "customer_content": false,
+      "residency_status": "VERIFIED_WITH_LIMITATION"
+    },
+    {
+      "kind": "billing_and_budget",
+      "name": "placeholder_billing_control_plane",
+      "location": "global",
+      "classification": "CONTROL_PLANE_METADATA",
+      "customer_content": false,
+      "residency_status": "VERIFIED_WITH_LIMITATION"
+    },
+    {
+      "kind": "vpc_network",
+      "name": "placeholder_vpc_network",
+      "location": "global",
+      "classification": "CONTROL_PLANE_METADATA",
+      "customer_content": false,
+      "residency_status": "VERIFIED_WITH_LIMITATION"
+    },
+    {
+      "kind": "private_service_access",
+      "name": "placeholder_private_service_peering",
+      "location": "global",
+      "classification": "CONTROL_PLANE_METADATA",
+      "customer_content": false,
+      "residency_status": "VERIFIED_WITH_LIMITATION"
+    }
+  ],
+  "cross_region_replication": false,
+  "public_resources": false,
+  "production_resources": false,
+  "service_account_keys": false,
+  "strict_quebec_data_residency_verified": false
+}
