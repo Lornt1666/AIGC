@@ -1,0 +1,35 @@
+{
+  "analytics_run_id": "ANRUN-20260804-0001",
+  "canonical_state_mutated": false,
+  "deterministic_output_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+  "exact_repository_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "external_action_performed": false,
+  "finished_at": "2026-08-04T03:00:00Z",
+  "metric_catalog_version": "1.0.0",
+  "monotonic_duration": {
+    "unit": "milliseconds",
+    "value": 1000
+  },
+  "overall_evidence_state": "PASS",
+  "production_activation_authorized": false,
+  "record_counts": {
+    "accepted": 2,
+    "read": 2,
+    "rejected": 0
+  },
+  "schema_version": "1.0.0",
+  "sensitive_payload_included": false,
+  "source_inventory": [
+    {
+      "freshness_state": "FRESH",
+      "records_accepted": 2,
+      "records_read": 2,
+      "records_rejected": 0,
+      "source_identifier": "phase-state-snapshot-20260804",
+      "source_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "source_status": "AVAILABLE",
+      "source_system": "PHASE_STATE_STORE"
+    }
+  ],
+  "started_at": "2026-08-04T03:00:01Z"
+}

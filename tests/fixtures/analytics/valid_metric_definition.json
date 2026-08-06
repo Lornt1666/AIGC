@@ -1,0 +1,87 @@
+{
+  "accountable_owner_role": "EVIDENCE_GOVERNANCE_OPERATOR",
+  "activation_state": "DEFINED_NOT_MATERIALIZED",
+  "allowed_dimensions": [
+    "source_system",
+    "domain",
+    "work_type",
+    "source_state",
+    "target_state"
+  ],
+  "autonomous_behavior_change_allowed": false,
+  "binding": {
+    "exact_repository_revision_required": true,
+    "metric_catalog_version_required": true,
+    "source_sha256_required": true
+  },
+  "denominator": {
+    "description": "Count of distinct eligible entities entering or present in the declared source state for the same cohort and window.",
+    "eligibility": "Entity belongs to the exact declared source-state cohort and reporting window.",
+    "expression": "count(distinct entity_id where eligible=true and source_state cohort is fixed)",
+    "name": "eligible_entities_entering_source_state"
+  },
+  "deterministic_computation": {
+    "canonicalization": "RFC8785_COMPATIBLE_SORTED_JSON_SUBSET",
+    "decimal_precision": 28,
+    "rounding": "ROUND_HALF_EVEN",
+    "sort_keys": true
+  },
+  "eligibility_criteria": [
+    "The source and target states are declared before computation.",
+    "The eligible denominator and cohort window are version-bound."
+  ],
+  "evidence_requirements": [
+    "Exact source and target state definitions.",
+    "Source lineage digests and exact repository revision.",
+    "Eligible cohort membership evidence."
+  ],
+  "exclusions": [
+    "Expired authorizations are excluded from active pending cohorts.",
+    "Duplicate source records at the declared grain are rejected rather than deduplicated silently."
+  ],
+  "formula": "(numerator / denominator) * 100; denominator=0 => INSUFFICIENT_EVIDENCE",
+  "freshness_expectation": {
+    "maximum_age_seconds": 86400,
+    "on_stale": "STALE",
+    "on_unavailable": "INSUFFICIENT_EVIDENCE"
+  },
+  "grain": "One declared lifecycle transition pair per reporting window and controlled dimension set.",
+  "guardrails": [
+    "External-action and approval-boundary violations must remain exactly zero.",
+    "A denominator change requires a metric-version change.",
+    "No metric result may authorize a lifecycle transition."
+  ],
+  "insufficiency_conditions": [
+    "A mandatory source is unavailable or stale.",
+    "The eligible denominator is zero or undefined.",
+    "Transition lineage or exact repository revision is missing."
+  ],
+  "metric_id": "AIGC-METRIC-GPR",
+  "minimum_sample_size": 1,
+  "numerator": {
+    "description": "Count of eligible entities that reached the declared target state inside the reporting window.",
+    "eligibility": "Entity has an authoritative source, valid lineage, and is eligible for the declared transition.",
+    "expression": "count(distinct entity_id where eligible=true and transition_to=target_state)",
+    "name": "eligible_entities_reaching_target_state"
+  },
+  "outcome_claim_allowed": false,
+  "privacy_classification": "INTERNAL_METADATA_ONLY",
+  "purpose": "Measure where eligible governed work advances, waits, expires, fails, or requires operator intervention without treating raw stage counts as conversion.",
+  "reporting_window": {
+    "duration_seconds": 2592000,
+    "kind": "FIXED_PERIOD",
+    "timezone": "UTC"
+  },
+  "required_source_types": [
+    "ENTITY_TRANSITIONS",
+    "SOURCE_LINEAGE"
+  ],
+  "source_precedence": [
+    "CANONICAL_QUEST_STORE",
+    "PHASE_STATE_STORE",
+    "REVISION_BOUND_ARTIFACTS"
+  ],
+  "title": "Governed Progression Rate",
+  "unit": "PERCENT",
+  "version": "1.0.0"
+}

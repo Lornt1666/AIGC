@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Data-minimized evidence lineage binding a source locator to an exact content digest.",
+  "properties": {
+    "evidence_reference": {
+      "maxLength": 512,
+      "minLength": 1,
+      "type": "string"
+    },
+    "freshness_expectation_seconds": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "freshness_state": {
+      "enum": [
+        "FRESH",
+        "STALE",
+        "UNAVAILABLE",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "lineage_id": {
+      "pattern": "^LINEAGE-[A-Z0-9-]{8,64}$",
+      "type": "string"
+    },
+    "observed_at": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "privacy_classification": {
+      "enum": [
+        "PUBLIC",
+        "INTERNAL_METADATA_ONLY",
+        "CONFIDENTIAL_HASHED"
+      ]
+    },
+    "sensitive_payload_included": {
+      "const": false
+    },
+    "source_identifier": {
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "source_revision_or_generation": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "source_status": {
+      "enum": [
+        "AVAILABLE",
+        "UNAVAILABLE",
+        "ERROR"
+      ]
+    },
+    "source_system": {
+      "pattern": "^[A-Z][A-Z0-9_]{2,63}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "lineage_id",
+    "source_system",
+    "source_identifier",
+    "source_revision_or_generation",
+    "source_sha256",
+    "evidence_reference",
+    "observed_at",
+    "freshness_expectation_seconds",
+    "source_status",
+    "freshness_state",
+    "privacy_classification",
+    "sensitive_payload_included"
+  ],
+  "title": "AIGC Analytics Lineage Reference",
+  "type": "object"
+}

@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Read-only normalized transition record with explicit eligibility, expiry, contradiction, and lineage state.",
+  "properties": {
+    "authoritative_source": {
+      "additionalProperties": false,
+      "properties": {
+        "source_identifier": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "source_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "source_system": {
+          "pattern": "^[A-Z][A-Z0-9_]{2,63}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_system",
+        "source_identifier",
+        "source_sha256"
+      ],
+      "type": "object"
+    },
+    "canonical_state_mutated": {
+      "const": false
+    },
+    "contradictory": {
+      "type": "boolean"
+    },
+    "eligible": {
+      "type": "boolean"
+    },
+    "entity_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "entity_type": {
+      "enum": [
+        "OPPORTUNITY",
+        "ASSESSMENT",
+        "AUTHORIZATION",
+        "QUEST",
+        "PRODUCT",
+        "WORK_ORDER",
+        "EVIDENCE"
+      ]
+    },
+    "evidence_state": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "INSUFFICIENT_EVIDENCE",
+        "STALE",
+        "UNAVAILABLE",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "exact_repository_revision": {
+      "pattern": "^[0-9a-f]{40}$",
+      "type": "string"
+    },
+    "expires_at": {
+      "oneOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "expiry_state": {
+      "enum": [
+        "ACTIVE",
+        "EXPIRED",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "external_action_performed": {
+      "const": false
+    },
+    "new_state": {
+      "maxLength": 64,
+      "minLength": 1,
+      "type": "string"
+    },
+    "prior_state": {
+      "maxLength": 64,
+      "minLength": 1,
+      "type": "string"
+    },
+    "transition_id": {
+      "pattern": "^TRANSITION-[A-Z0-9-]{8,64}$",
+      "type": "string"
+    },
+    "transition_timestamp": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "validity_state": {
+      "enum": [
+        "VALID",
+        "INVALID",
+        "CONTRADICTORY"
+      ]
+    }
+  },
+  "required": [
+    "transition_id",
+    "entity_type",
+    "entity_id",
+    "prior_state",
+    "new_state",
+    "transition_timestamp",
+    "authoritative_source",
+    "exact_repository_revision",
+    "eligible",
+    "expiry_state",
+    "expires_at",
+    "contradictory",
+    "validity_state",
+    "evidence_state",
+    "external_action_performed",
+    "canonical_state_mutated"
+  ],
+  "title": "AIGC Analytics Entity Transition",
+  "type": "object"
+}

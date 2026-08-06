@@ -1,0 +1,176 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Revision-bound, deterministic, non-authorizing envelope for one future analytics materialization.",
+  "properties": {
+    "analytics_run_id": {
+      "pattern": "^ANRUN-[A-Z0-9-]{8,64}$",
+      "type": "string"
+    },
+    "canonical_state_mutated": {
+      "const": false
+    },
+    "deterministic_output_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "exact_repository_revision": {
+      "pattern": "^[0-9a-f]{40}$",
+      "type": "string"
+    },
+    "external_action_performed": {
+      "const": false
+    },
+    "finished_at": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "metric_catalog_version": {
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "monotonic_duration": {
+      "additionalProperties": false,
+      "properties": {
+        "unit": {
+          "const": "milliseconds"
+        },
+        "value": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "value",
+        "unit"
+      ],
+      "type": "object"
+    },
+    "overall_evidence_state": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "INSUFFICIENT_EVIDENCE",
+        "STALE",
+        "UNAVAILABLE",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "production_activation_authorized": {
+      "const": false
+    },
+    "record_counts": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "read": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "rejected": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "read",
+        "accepted",
+        "rejected"
+      ],
+      "type": "object"
+    },
+    "schema_version": {
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "sensitive_payload_included": {
+      "const": false
+    },
+    "source_inventory": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "freshness_state": {
+            "enum": [
+              "FRESH",
+              "STALE",
+              "UNAVAILABLE",
+              "NOT_APPLICABLE"
+            ]
+          },
+          "records_accepted": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "records_read": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "records_rejected": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "source_identifier": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "source_sha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "source_status": {
+            "enum": [
+              "AVAILABLE",
+              "UNAVAILABLE",
+              "ERROR"
+            ]
+          },
+          "source_system": {
+            "pattern": "^[A-Z][A-Z0-9_]{2,63}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_system",
+          "source_identifier",
+          "source_sha256",
+          "source_status",
+          "freshness_state",
+          "records_read",
+          "records_accepted",
+          "records_rejected"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "started_at": {
+      "format": "date-time",
+      "type": "string"
+    }
+  },
+  "required": [
+    "analytics_run_id",
+    "schema_version",
+    "exact_repository_revision",
+    "metric_catalog_version",
+    "started_at",
+    "finished_at",
+    "monotonic_duration",
+    "source_inventory",
+    "record_counts",
+    "deterministic_output_sha256",
+    "overall_evidence_state",
+    "sensitive_payload_included",
+    "external_action_performed",
+    "canonical_state_mutated",
+    "production_activation_authorized"
+  ],
+  "title": "AIGC Analytics Run Envelope",
+  "type": "object"
+}
