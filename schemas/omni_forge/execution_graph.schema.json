@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://regenexcalibur.invalid/schemas/omni_forge/execution_graph.schema.json",
+  "title": "OMNI-FORGE Execution Graph",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["graph_id", "schema_version", "nodes", "edges", "variables", "permissions", "graph_digest"],
+  "properties": {
+    "graph_id": {"type": "string", "minLength": 8, "maxLength": 128},
+    "schema_version": {"const": "1.0.0"},
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["node_id", "node_type", "output_schema_digest"],
+        "properties": {
+          "node_id": {"type": "string", "minLength": 1},
+          "node_type": {"type": "string", "minLength": 1},
+          "external_effect": {"type": "boolean", "default": false},
+          "authorization_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "idempotency_key_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "maximum_iterations": {"type": "integer", "minimum": 1, "maximum": 100},
+          "output_schema_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source", "target"],
+        "properties": {
+          "source": {"type": "string"},
+          "target": {"type": "string"}
+        }
+      }
+    },
+    "variables": {"type": "object"},
+    "permissions": {"type": "object"},
+    "graph_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}
