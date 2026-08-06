@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from mission_os.connector_activation import (
+from src.mission_os.connector_activation import (
     ActivationRecord,
     CapabilityManifest,
     ConnectorActivationFramework,
@@ -11,7 +11,7 @@ from mission_os.connector_activation import (
     Environment,
     LifecycleState,
 )
-from mission_os.connector_kernel import AppendOnlyEvidenceLedger
+from src.mission_os.connector_kernel import AppendOnlyEvidenceLedger
 
 
 SHA = "a" * 64
