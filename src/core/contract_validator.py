@@ -42,8 +42,8 @@ def load_schema(name: str, schema_dir: Path | None = None) -> Dict[str, Any]:
         raise ContractValidationError(f"Schema {schema_path} is not valid JSON: {exc}") from exc
     if not isinstance(schema, dict):
         raise ContractValidationError(f"Schema {name} is not a JSON object.")
+    validator_cls = _validator_class_for(schema, name)
     try:
-        validator_cls = validator_for(schema)
         validator_cls.check_schema(schema)
     except SchemaError as exc:
         raise ContractValidationError(f"Schema {name} is invalid: {exc.message}") from exc
@@ -59,7 +59,7 @@ def validate_artifact(schema_name: str, data: Any, schema_dir: Path | None = Non
     constraints. Validation failures are deterministic, bounded, and fail closed.
     """
     schema = load_schema(schema_name, schema_dir=schema_dir)
-    validator_cls = validator_for(schema)
+    validator_cls = _validator_class_for(schema, schema_name)
     validator = validator_cls(schema, format_checker=FormatChecker())
     errors = sorted(validator.iter_errors(data), key=_validation_error_sort_key)
     if errors:
@@ -134,6 +134,18 @@ def _load_payload(path: Path) -> Any:
             return json.load(handle)
     except json.JSONDecodeError as exc:
         raise ContractValidationError(f"{path} is not valid JSON: {exc}") from exc
+
+
+def _validator_class_for(schema: Dict[str, Any], schema_name: str):
+    declared_dialect = schema.get("$schema")
+    if not isinstance(declared_dialect, str) or not declared_dialect.strip():
+        raise ContractValidationError(f"Schema {schema_name} must declare a supported $schema dialect.")
+    validator_cls = validator_for(schema, default=None)
+    if validator_cls is None:
+        raise ContractValidationError(
+            f"Schema {schema_name} declares an unsupported $schema dialect: {declared_dialect}"
+        )
+    return validator_cls
 
 
 def _validation_error_sort_key(error: ValidationError) -> tuple[str, str]:
