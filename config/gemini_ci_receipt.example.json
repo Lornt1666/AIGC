@@ -1,0 +1,12 @@
+{
+  "schema_version": "aigc.github-actions-ci-receipt.v1",
+  "repository": "Lornt1666/AIGC",
+  "workflow_name": "AIGC CI",
+  "run_id": "",
+  "run_url": "",
+  "head_sha": "",
+  "conclusion": "",
+  "steps_executed": 0,
+  "required_artifacts": [],
+  "captured_at": null
+}

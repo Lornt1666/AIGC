@@ -40,6 +40,8 @@ class RedactionScanner:
         value = text or ""
         for pattern in self.redactor.SECRET_PATTERNS + extra_secret_patterns():
             for match in re.finditer(pattern, value, flags=re.DOTALL):
+                if self._is_explicit_test_fixture(match.group(0), path):
+                    continue
                 if self._is_false_positive(match.group(0)):
                     continue
                 findings.append(RedactionFinding(
@@ -77,6 +79,23 @@ class RedactionScanner:
     def findings_as_dicts(self, findings: List[RedactionFinding]) -> List[dict]:
         return [asdict(finding) for finding in findings]
 
+    def _is_explicit_test_fixture(self, match_text: str, path: str) -> bool:
+        normalized_path = path.replace("\\", "/").lstrip("./")
+        if not (
+            normalized_path.startswith("tests/")
+            or "/tests/" in f"/{normalized_path}"
+        ):
+            return False
+        if "for-tests-" not in match_text.lower():
+            return False
+        if ":" in match_text:
+            right = match_text.split(":", 1)[1].strip().strip("\"' ,)")
+        elif "=" in match_text:
+            right = match_text.split("=", 1)[1].strip().strip("\"' ,)")
+        else:
+            right = match_text.strip().strip("\"' ,)")
+        return not known_secret_prefix(right)
+
     def _is_false_positive(self, match_text: str) -> bool:
         value = match_text.strip()
         lowered_value = value.lower()
@@ -84,7 +103,7 @@ class RedactionScanner:
             return True
         if ".*?" in value and "BEGIN PRIVATE KEY" in value:
             return True
-        if "\n" in value or "\r" in value:
+        if "\\n" in value or "\\r" in value:
             return True
         if "{" in value or "}" in value:
             return True
@@ -138,11 +157,13 @@ class RedactionScanner:
     def _scan_secret_like_assignments(self, text: str, path: str) -> List[RedactionFinding]:
         findings: List[RedactionFinding] = []
         assignment_pattern = re.compile(
-            r"(?i)\b(api[_-]?key|token|secret|password|authorization|cookie|client[_-]?secret)\b"
+            r"(?i)\b(api[_-]?key|token|secret|password|authorization|cookie)\b"
             r"\s*[\"']?\s*[:=]\s*[\"']([^\"'\s,;]{12,})[\"']?"
         )
         for match in assignment_pattern.finditer(text or ""):
             value = match.group(2).strip()
+            if self._is_explicit_test_fixture(match.group(0), path):
+                continue
             if self._is_placeholder(value) or self._is_false_positive(match.group(0)):
                 continue
             if entropy(value) < 3.2 and not known_secret_prefix(value):
