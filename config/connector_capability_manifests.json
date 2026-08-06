@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0.0",
+  "production_activation_authorized": false,
+  "external_send_authorized": false,
+  "github_mutation_authorized": false,
+  "connectors": [
+    {
+      "connector_id": "gmail",
+      "connector_version": "1.0.0",
+      "readable_capabilities": ["draft.inspect", "message.read"],
+      "writable_capabilities": [],
+      "supported_environments": ["TEST", "STAGING"],
+      "requires_approval": true,
+      "emergency_stop_required": true
+    },
+    {
+      "connector_id": "github",
+      "connector_version": "1.0.0",
+      "readable_capabilities": ["commit.read", "issue.read", "pull_request.read", "workflow.read"],
+      "writable_capabilities": [],
+      "supported_environments": ["TEST", "STAGING"],
+      "requires_approval": true,
+      "emergency_stop_required": true
+    }
+  ]
+}
