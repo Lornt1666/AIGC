@@ -1,0 +1,33 @@
+{
+  "schema_version":"aigc.app-store-completion-ledger.v1",
+  "authority":{"app_store_submission":false,"app_store_release":false,"production_signing":false,"cloud_resource_creation":false,"deployment":false,"live_model_call":false,"merge":false,"automatic_merge":false,"financial_action":false},
+  "allowed_states":["NOT_STARTED","IMPLEMENTED","LOCALLY_VALIDATED","HOSTED_VALIDATED","APPLE_VALIDATED","BLOCKED"],
+  "items":{
+    "apple_developer_membership":"NOT_STARTED",
+    "app_identifier":"NOT_STARTED",
+    "bundle_identifier":"NOT_STARTED",
+    "xcode_project":"NOT_STARTED",
+    "swift_compilation":"NOT_STARTED",
+    "privacy_manifest":"NOT_STARTED",
+    "required_reason_apis":"NOT_STARTED",
+    "privacy_labels":"NOT_STARTED",
+    "privacy_policy":"NOT_STARTED",
+    "account_deletion":"NOT_STARTED",
+    "app_attest":"NOT_STARTED",
+    "entitlements":"NOT_STARTED",
+    "signing":"NOT_STARTED",
+    "archive":"NOT_STARTED",
+    "testflight_build":"NOT_STARTED",
+    "crash_free_smoke":"NOT_STARTED",
+    "screenshots":"NOT_STARTED",
+    "icon":"NOT_STARTED",
+    "metadata":"IMPLEMENTED",
+    "age_rating":"NOT_STARTED",
+    "export_compliance":"NOT_STARTED",
+    "review_notes":"NOT_STARTED",
+    "support_url":"NOT_STARTED",
+    "privacy_url":"NOT_STARTED",
+    "app_store_connect_record":"NOT_STARTED",
+    "submission_authorization":"BLOCKED"
+  }
+}
