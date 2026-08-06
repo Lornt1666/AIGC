@@ -1,0 +1,12 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://regenexcalibur.invalid/schemas/app_store/app_store_metadata.schema.json",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["schema_version","production_submission","app_name","subtitle","bundle_id","primary_category","secondary_category","description","keywords","promotional_text","support_url","marketing_url","privacy_policy_url","copyright","age_rating","content_rights","review_contact","review_notes","demo_account_required","demo_account_status","export_compliance","encryption_usage","territories","price","release_mode"],
+  "properties":{
+    "schema_version":{"const":"aigc.app-store-metadata.v1"},
+    "production_submission":{"const":false},
+    "app_name":{"type":"string"},"subtitle":{"type":"string"},"bundle_id":{"type":"string"},"primary_category":{"type":"string"},"secondary_category":{"type":"string"},"description":{"type":"string"},"keywords":{"type":"string"},"promotional_text":{"type":"string"},"support_url":{"type":"string"},"marketing_url":{"type":"string"},"privacy_policy_url":{"type":"string"},"copyright":{"type":"string"},"age_rating":{"type":"string"},"content_rights":{"type":"string"},"review_contact":{"type":"string"},"review_notes":{"type":"string"},"demo_account_required":{"type":"string"},"demo_account_status":{"type":"string"},"export_compliance":{"type":"string"},"encryption_usage":{"type":"string"},"territories":{"type":"string"},"price":{"type":"string"},"release_mode":{"type":"string"}
+  }
+}
