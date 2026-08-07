@@ -9,8 +9,9 @@ if str(PROJECT_ROOT) not in sys.path:
 
 import json
 
-from scripts.validate_colosseum_persistence import build_fixture
-from src.colosseum.persistence import orchestration_bundle_record
+from scripts.validate_governed_orchestration_bundle import (
+    build_governed_fixture,
+)
 
 
 PROHIBITED_TRUE_FIELDS = {
@@ -45,15 +46,11 @@ def walk(value: object, path: str = "$") -> list[str]:
 
 
 def main() -> int:
-    effective, definition, dag, plan = build_fixture()
-    bundle = orchestration_bundle_record(
-        effective_policy=effective,
-        definitions_of_done=(definition,),
-        task_dag=dag,
-        swarm_plan=plan,
-    )
+    bundle = build_governed_fixture().to_record()
     violations = walk(bundle)
-    workflow = Path(".github/workflows/aigc-ci.yml").read_text(encoding="utf-8")
+    workflow = Path(".github/workflows/aigc-ci.yml").read_text(
+        encoding="utf-8"
+    )
     if "aigc-colosseum-orchestration-exact-head-" not in workflow:
         violations.append("workflow artifact name is not orchestration-scoped")
     if violations:
