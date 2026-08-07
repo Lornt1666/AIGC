@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.regenexcalibur.invalid/schemas/verification/verification_plan.schema.json",
+  "title": "AIGC VerificationPlan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["work_order_id", "assignments"],
+  "properties": {
+    "work_order_id": {"type": "string", "minLength": 1},
+    "assignments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["task_id", "builder_role_id", "verifier_role_id", "verification_checks", "evidence_required", "human_review_required", "licensed_review_required", "independence_required"],
+        "properties": {
+          "task_id": {"type": "string", "minLength": 1},
+          "builder_role_id": {"type": "string", "minLength": 1},
+          "verifier_role_id": {"type": "string", "minLength": 1},
+          "verification_checks": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "evidence_required": {"type": "boolean"},
+          "human_review_required": {"type": "boolean"},
+          "licensed_review_required": {"type": "boolean"},
+          "independence_required": {"type": "boolean"}
+        }
+      }
+    }
+  }
+}
