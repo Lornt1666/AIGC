@@ -66,7 +66,10 @@
     },
     {
       "id": "tests",
-      "runner": "pytest"
+      "commands": [
+        ["python", "-m", "pytest", "tests/colosseum"],
+        ["python", "-m", "pytest"]
+      ]
     },
     {
       "id": "false_authority",
