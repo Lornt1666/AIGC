@@ -6,6 +6,8 @@ Status: orchestration-kernel V1 admission contract; planning only.
 
 A green scheduler result is not execution authority. Before any future executor may consume a `SwarmPlan`, the plan must be enclosed in a `GovernedOrchestrationBundle` that binds the exact policy, Definitions of Done, Task DAG, plan, capability evidence, human qualification evidence, professional credential evidence, role-specific qualification requirements, evaluation time and false-authority state.
 
+That bundle must then be enclosed in an `OrchestrationAdmissionEnvelope` containing the exact authorized `WorkOrder`. The envelope independently proves the engagement binding and that every task Definition of Done covers every WorkOrder requirement and acceptance criterion.
+
 ## Semantic evidence binding
 
 Evidence identifiers alone are insufficient. The bundle rejects:
@@ -21,9 +23,11 @@ Evidence identifiers alone are insufficient. The bundle rejects:
 - dangling evidence references;
 - altered canonical records or authority escalation.
 
+The final admission envelope additionally rejects an unauthorized WorkOrder, a different engagement, a different work-order identity, or incomplete Definition-of-Done coverage.
+
 ## Persistence and evidence
 
-The canonical bundle record is deterministic, SHA-256 bound and round-trip reconstructable. Component contracts remain separately validated against their strict schemas, while the governed bundle schema validates the composition, capability evidence, qualification evidence, role requirements and false-authority envelope.
+The governed bundle and final admission envelope are deterministic, SHA-256 bound and round-trip reconstructable. Component contracts remain separately validated against their strict schemas, while the composition schemas validate capability evidence, qualification evidence, role requirements, the complete WorkOrder and the false-authority envelopes.
 
 ## Resource ceilings
 
@@ -34,15 +38,15 @@ The exact-head CI contract validates:
 1. dependency consistency;
 2. Python compilation;
 3. repository contracts;
-4. orchestration schemas, including the governed bundle;
-5. orchestration round trips, including the governed bundle;
+4. orchestration schemas, including the governed bundle and WorkOrder admission envelope;
+5. orchestration round trips, including both evidence envelopes;
 6. repository redaction;
 7. release-surface secret scanning;
 8. offline procurement smoke;
 9. mock provider discovery;
 10. inert Terraform;
 11. focused Colosseum tests and the complete repository suite;
-12. false-authority invariants;
+12. false-authority invariants against the final envelope;
 13. readiness.
 
 ## Authority
