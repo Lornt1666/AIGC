@@ -29,13 +29,16 @@ def atomic_write(path: Path, value: dict) -> None:
             os.unlink(temporary)
 
 
-def run_command(command: list[str], cwd: Path, env: dict[str, str]) -> dict:
+def run_command(command: list[str], cwd: Path, env: dict[str, str]) -> tuple[dict, str]:
     completed = subprocess.run(command, cwd=cwd, env=env, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    return {
-        "argv_sha256": sha256(canonical(command)).hexdigest(),
-        "exit_code": completed.returncode,
-        "output_sha256": sha256(completed.stdout.encode()).hexdigest(),
-    }
+    return (
+        {
+            "argv_sha256": sha256(canonical(command)).hexdigest(),
+            "exit_code": completed.returncode,
+            "output_sha256": sha256(completed.stdout.encode()).hexdigest(),
+        },
+        completed.stdout,
+    )
 
 
 def terraform_commands() -> list[list[str]]:
@@ -78,10 +81,14 @@ def main() -> None:
         status = "success"
         for raw in commands:
             command = [part.replace("${REPOSITORY_REVISION}", args.repository_revision) for part in raw]
-            outcome = run_command(command, args.project_root, env)
+            outcome, command_output = run_command(command, args.project_root, env)
             outcomes.append(outcome)
             if outcome["exit_code"] != 0:
                 status = "failure"
+                if stage_id == "redaction" and command_output:
+                    # The redaction scanner emits only path, line, severity and
+                    # matched-pattern metadata; never the matched raw value.
+                    print(command_output, end="" if command_output.endswith("\n") else "\n")
                 break
         record = {
             "schema_version": "1.0.0",
