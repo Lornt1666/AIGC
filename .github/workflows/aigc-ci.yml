@@ -70,6 +70,15 @@ jobs:
             --run-number "$GITHUB_RUN_NUMBER" \
             --run-id "$GITHUB_RUN_ID"
 
+      - name: Generate Nexus repository intelligence
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/aigc-ci-stage-results"
+          python scripts/nexus_repository_intelligence.py \
+            --root . \
+            --output "$RUNNER_TEMP/aigc-ci-stage-results/nexus_repository_intelligence.json"
+
       - name: Emit exact-head admission receipt
         if: always()
         shell: bash
