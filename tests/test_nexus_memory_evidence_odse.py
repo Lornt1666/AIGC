@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import pytest
 
@@ -8,6 +8,7 @@ from src.core.epistemic.canonicalization import canonical_sha256
 from src.core.nexus.context_projection import ContextProjectionPolicy, build_context_envelope
 from src.core.nexus.odse import strategy_to_artifact_state, synthesize_strategy
 from src.domain.epistemic.models import ArtifactState
+from src.domain.epistemic.verification import UtilityScore, VerifierReport
 from src.domain.nexus.contracts import ExecutionReceipt, WorkOrder
 from src.domain.nexus.evidence import EvidenceReference
 from src.domain.nexus.memory import MemoryAdmissionDecision, MemoryCandidate, MemoryRecord
@@ -45,12 +46,37 @@ def _candidate() -> MemoryCandidate:
     )
 
 
-def _accepted_record(candidate: MemoryCandidate) -> tuple[MemoryAdmissionDecision, MemoryRecord]:
+def _verifier_report(candidate: MemoryCandidate) -> VerifierReport:
+    return VerifierReport(
+        baseline_state_hash="d" * 64,
+        target_state_hash=candidate.source_artifact_hash,
+        report_id="VRF-" + "A" * 24,
+        total_claims_audited=1,
+        unverified_claims=0,
+        falsified_claims=0,
+        utility_score=UtilityScore(
+            total_score=1.0,
+            semantic_fidelity_f=1.0,
+            evidence_coverage_e=1.0,
+            structural_completeness_c=1.0,
+            redundancy_r=0.0,
+            unsupported_claims_x=0.0,
+        ),
+        utility_threshold=0.0,
+        hard_failure=False,
+        is_passing=True,
+    )
+
+
+def _accepted_record(
+    candidate: MemoryCandidate,
+) -> tuple[MemoryAdmissionDecision, MemoryRecord, VerifierReport]:
     candidate_hash = canonical_sha256(candidate)
+    verifier_report = _verifier_report(candidate)
     decision = MemoryAdmissionDecision(
         decision_id="MEMD-NEXUS001",
         candidate_hash=candidate_hash,
-        verifier_report_hash="c" * 64,
+        verifier_report_hash=canonical_sha256(verifier_report),
         decision="ACCEPT",
         reason="Candidate passed deterministic admission fixtures.",
         authority_source="POLICY",
@@ -72,21 +98,82 @@ def _accepted_record(candidate: MemoryCandidate) -> tuple[MemoryAdmissionDecisio
         retention_policy="project_lifetime",
     )
     digest = canonical_sha256(provisional.model_dump(mode="json", exclude={"canonical_hash"}))
-    return decision, provisional.model_copy(update={"canonical_hash": digest})
+    return decision, provisional.model_copy(update={"canonical_hash": digest}), verifier_report
 
 
 def test_memory_candidate_requires_accepted_admission_before_persistence(tmp_path) -> None:
     repo = SqliteNexusMemoryRepository(tmp_path / "memory.sqlite")
     candidate = _candidate()
-    decision, record = _accepted_record(candidate)
+    decision, record, verifier_report = _accepted_record(candidate)
     rejected = decision.model_copy(update={"decision": "REJECT", "resulting_memory_id": None})
 
     with pytest.raises(ValueError, match="only accepted"):
-        repo.admit(candidate=candidate, decision=rejected, record=record)
+        repo.admit(
+            candidate=candidate,
+            decision=rejected,
+            verifier_report=verifier_report,
+            record=record,
+        )
 
-    repo.admit(candidate=candidate, decision=decision, record=record)
+    repo.admit(
+        candidate=candidate,
+        decision=decision,
+        verifier_report=verifier_report,
+        record=record,
+    )
     stored = repo.get(record.memory_id)
     assert stored == record
+
+
+def test_memory_admission_rejects_fabricated_verifier_hash(tmp_path) -> None:
+    repo = SqliteNexusMemoryRepository(tmp_path / "memory.sqlite")
+    candidate = _candidate()
+    decision, record, verifier_report = _accepted_record(candidate)
+    fabricated = decision.model_copy(update={"verifier_report_hash": "f" * 64})
+
+    with pytest.raises(ValueError, match="supplied VerifierReport"):
+        repo.admit(
+            candidate=candidate,
+            decision=fabricated,
+            verifier_report=verifier_report,
+            record=record,
+        )
+
+
+def test_memory_admission_rejects_mismatched_verifier_target(tmp_path) -> None:
+    repo = SqliteNexusMemoryRepository(tmp_path / "memory.sqlite")
+    candidate = _candidate()
+    decision, record, verifier_report = _accepted_record(candidate)
+    mismatched = verifier_report.model_copy(update={"target_state_hash": "e" * 64})
+    rebound_decision = decision.model_copy(
+        update={"verifier_report_hash": canonical_sha256(mismatched)}
+    )
+
+    with pytest.raises(ValueError, match="candidate source artifact"):
+        repo.admit(
+            candidate=candidate,
+            decision=rebound_decision,
+            verifier_report=mismatched,
+            record=record,
+        )
+
+
+def test_memory_admission_rejects_nonpassing_verifier_report(tmp_path) -> None:
+    repo = SqliteNexusMemoryRepository(tmp_path / "memory.sqlite")
+    candidate = _candidate()
+    decision, record, verifier_report = _accepted_record(candidate)
+    failing = verifier_report.model_copy(update={"is_passing": False})
+    rebound_decision = decision.model_copy(
+        update={"verifier_report_hash": canonical_sha256(failing)}
+    )
+
+    with pytest.raises(ValueError, match="admission policy"):
+        repo.admit(
+            candidate=candidate,
+            decision=rebound_decision,
+            verifier_report=failing,
+            record=record,
+        )
 
 
 def test_evidence_is_persistent_and_cannot_grant_authority(tmp_path) -> None:
@@ -99,7 +186,7 @@ def test_evidence_is_persistent_and_cannot_grant_authority(tmp_path) -> None:
 
 def test_context_projection_excludes_superseded_and_sensitive_memory() -> None:
     candidate = _candidate()
-    _, active = _accepted_record(candidate)
+    _, active, _ = _accepted_record(candidate)
     superseded = active.model_copy(update={"memory_id": "MEM-OLD0001", "superseded_by": active.memory_id})
     restricted = active.model_copy(update={"memory_id": "MEM-SECRET01", "sensitivity": "RESTRICTED"})
     state = ArtifactState(stage="candidate", revision=1)
@@ -113,32 +200,64 @@ def test_context_projection_excludes_superseded_and_sensitive_memory() -> None:
         state=state,
         memories=(superseded, restricted, active),
         evidence=(_evidence(),),
+        authoritative_now=NOW,
     )
     assert envelope.memory_refs == (active.memory_id,)
     assert envelope.evidence_refs == ("EVD-NEXUS001",)
 
 
+def test_context_projection_excludes_future_expired_revoked_and_superseded_memory() -> None:
+    candidate = _candidate()
+    _, active, _ = _accepted_record(candidate)
+    future = active.model_copy(
+        update={"memory_id": "MEM-FUTURE01", "valid_from": NOW + timedelta(seconds=1)}
+    )
+    expired = active.model_copy(
+        update={"memory_id": "MEM-EXPIRED1", "valid_until": NOW}
+    )
+    revoked = active.model_copy(
+        update={"memory_id": "MEM-REVOKED1", "revoked_at": NOW - timedelta(seconds=1)}
+    )
+    superseded = active.model_copy(
+        update={"memory_id": "MEM-SUPER001", "superseded_by": active.memory_id}
+    )
+    envelope = build_context_envelope(
+        work_order=WorkOrder(
+            work_order_id="WO-MEMORY04",
+            objective="Nexus dashboard governance",
+            domain_tags=("dashboard",),
+        ),
+        state=ArtifactState(stage="candidate", revision=1),
+        memories=(future, expired, revoked, superseded, active),
+        evidence=(_evidence(),),
+        authoritative_now=NOW,
+    )
+    assert envelope.memory_refs == (active.memory_id,)
+
+
 def test_context_projection_fails_closed_when_evidence_does_not_resolve() -> None:
     candidate = _candidate()
-    _, active = _accepted_record(candidate)
+    _, active, _ = _accepted_record(candidate)
     with pytest.raises(ValueError, match="does not resolve"):
         build_context_envelope(
             work_order=WorkOrder(work_order_id="WO-MEMORY02", objective="Nexus evidence", domain_tags=("software",)),
             state=ArtifactState(stage="candidate", revision=1),
             memories=(active,),
             evidence=(),
+            authoritative_now=NOW,
         )
 
 
 def test_context_projection_is_bounded_and_deterministic() -> None:
     candidate = _candidate()
-    _, active = _accepted_record(candidate)
+    _, active, _ = _accepted_record(candidate)
     second = active.model_copy(update={"memory_id": "MEM-NEXUS002", "content": "Other unrelated project memory", "evidence_bindings": ()})
     kwargs = dict(
         work_order=WorkOrder(work_order_id="WO-MEMORY03", objective="Nexus dashboard governance", domain_tags=("dashboard",)),
         state=ArtifactState(stage="candidate", revision=1),
         memories=(second, active),
         evidence=(_evidence(),),
+        authoritative_now=NOW,
         policy=ContextProjectionPolicy(maximum_memories=1, maximum_evidence_refs=2),
     )
     first = build_context_envelope(**kwargs)
