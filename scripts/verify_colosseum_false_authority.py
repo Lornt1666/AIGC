@@ -10,7 +10,7 @@ if str(PROJECT_ROOT) not in sys.path:
 import json
 
 from scripts.validate_governed_orchestration_bundle import (
-    build_governed_fixture,
+    build_admission_fixture,
 )
 
 
@@ -46,8 +46,8 @@ def walk(value: object, path: str = "$") -> list[str]:
 
 
 def main() -> int:
-    bundle = build_governed_fixture().to_record()
-    violations = walk(bundle)
+    envelope = build_admission_fixture().to_record()
+    violations = walk(envelope)
     workflow = Path(".github/workflows/aigc-ci.yml").read_text(
         encoding="utf-8"
     )
