@@ -173,45 +173,58 @@ class PlatformBaseline:
 class EffectivePolicy:
     employer_policy: EmployerPolicy
     allowed_jurisdictions: tuple[str, ...]
+    prohibited_jurisdictions: tuple[str, ...]
     allowed_tools: tuple[str, ...]
+    prohibited_tools: tuple[str, ...]
     allowed_providers: tuple[str, ...]
+    prohibited_providers: tuple[str, ...]
     minimum_confidentiality_class: ConfidentialityClass
     minimum_security_level: int
     minimum_privacy_level: int
     independent_verification_required: bool
     evidence_required: bool
 
+    @property
+    def policy_id(self) -> str:
+        return self.employer_policy.policy_id
+
 
 class EmployerPolicyCompiler:
-    """Intersects employer policy with the mandatory AIGC platform baseline.
-
-    The compiler can only preserve or tighten mandatory baseline controls; it
-    never grants authority and never performs external actions.
-    """
+    """Compile the strict intersection of platform and employer constraints."""
 
     def compile(self, *, platform: PlatformBaseline, employer: EmployerPolicy) -> EffectivePolicy:
+        prohibited_jurisdictions = tuple(
+            sorted(set(platform.jurisdiction.prohibited_jurisdictions) | set(employer.jurisdiction.prohibited_jurisdictions))
+        )
         allowed_jurisdictions = tuple(
-            sorted(
-                set(platform.jurisdiction.allowed_jurisdictions)
-                & set(employer.jurisdiction.allowed_jurisdictions)
+            jurisdiction
+            for jurisdiction in sorted(
+                set(platform.jurisdiction.allowed_jurisdictions) & set(employer.jurisdiction.allowed_jurisdictions)
             )
+            if jurisdiction not in prohibited_jurisdictions
         )
         if not allowed_jurisdictions:
             raise ValueError("no jurisdiction satisfies both platform and employer policy")
 
-        allowed_tools = self._intersect_optional_allowlists(
-            platform.tools.allowed_tools, employer.tools.allowed_tools
+        prohibited_tools = tuple(sorted(set(platform.tools.prohibited_tools) | set(employer.tools.prohibited_tools)))
+        allowed_tools = tuple(
+            tool
+            for tool in self._intersect_optional_allowlists(platform.tools.allowed_tools, employer.tools.allowed_tools)
+            if tool not in prohibited_tools
         )
-        prohibited_tools = set(platform.tools.prohibited_tools) | set(employer.tools.prohibited_tools)
-        allowed_tools = tuple(tool for tool in allowed_tools if tool not in prohibited_tools)
         if platform.tools.allowed_tools and employer.tools.allowed_tools and not allowed_tools:
             raise ValueError("no tool satisfies both platform and employer policy")
 
-        allowed_providers = self._intersect_optional_allowlists(
-            platform.models.allowed_providers, employer.models.allowed_providers
+        prohibited_providers = tuple(
+            sorted(set(platform.models.prohibited_providers) | set(employer.models.prohibited_providers))
         )
-        prohibited_providers = set(platform.models.prohibited_providers) | set(employer.models.prohibited_providers)
-        allowed_providers = tuple(provider for provider in allowed_providers if provider not in prohibited_providers)
+        allowed_providers = tuple(
+            provider
+            for provider in self._intersect_optional_allowlists(
+                platform.models.allowed_providers, employer.models.allowed_providers
+            )
+            if provider not in prohibited_providers
+        )
         if platform.models.allowed_providers and employer.models.allowed_providers and not allowed_providers:
             raise ValueError("no provider satisfies both platform and employer policy")
 
@@ -223,17 +236,14 @@ class EmployerPolicyCompiler:
         return EffectivePolicy(
             employer_policy=employer,
             allowed_jurisdictions=allowed_jurisdictions,
+            prohibited_jurisdictions=prohibited_jurisdictions,
             allowed_tools=allowed_tools,
+            prohibited_tools=prohibited_tools,
             allowed_providers=allowed_providers,
+            prohibited_providers=prohibited_providers,
             minimum_confidentiality_class=confidentiality,
-            minimum_security_level=max(
-                platform.security.minimum_security_level,
-                employer.security.minimum_security_level,
-            ),
-            minimum_privacy_level=max(
-                platform.security.minimum_privacy_level,
-                employer.security.minimum_privacy_level,
-            ),
+            minimum_security_level=max(platform.security.minimum_security_level, employer.security.minimum_security_level),
+            minimum_privacy_level=max(platform.security.minimum_privacy_level, employer.security.minimum_privacy_level),
             independent_verification_required=(
                 platform.verification.independent_verification_required
                 or employer.verification.independent_verification_required
