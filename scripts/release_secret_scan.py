@@ -18,6 +18,7 @@ RELEASE_PATHS = (
     "scripts/release_secret_scan.py",
     "scripts/run_exact_sha_ci_contract.py",
     "scripts/validate_colosseum_persistence.py",
+    "scripts/validate_governed_orchestration_bundle.py",
     "scripts/verify_colosseum_false_authority.py",
     "src/colosseum",
     "schemas/colosseum",
