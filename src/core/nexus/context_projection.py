@@ -40,10 +40,10 @@ def build_context_envelope(
         if item.active and item.sensitivity in policy.allowed_sensitivities
     ]
 
-    def score(item: MemoryRecord) -> tuple[int, str, str]:
+    def score(item: MemoryRecord) -> tuple[int, float, str]:
         normalized = item.content.lower()
         matches = sum(1 for term in terms if term in normalized)
-        return (-matches, item.valid_from.isoformat(), item.memory_id)
+        return (-matches, -item.valid_from.timestamp(), item.memory_id)
 
     ranked = sorted(active, key=score)
     selected = tuple(ranked[: policy.maximum_memories])
@@ -55,15 +55,16 @@ def build_context_envelope(
 
     unique_refs = []
     seen = set()
-    for ref in requested_refs:
-        if ref in seen:
-            continue
-        if ref not in evidence_by_id:
-            raise ValueError(f"memory evidence reference does not resolve: {ref}")
-        seen.add(ref)
-        unique_refs.append(ref)
-        if len(unique_refs) >= policy.maximum_evidence_refs:
-            break
+    if policy.maximum_evidence_refs > 0:
+        for ref in requested_refs:
+            if ref in seen:
+                continue
+            if ref not in evidence_by_id:
+                raise ValueError(f"memory evidence reference does not resolve: {ref}")
+            seen.add(ref)
+            unique_refs.append(ref)
+            if len(unique_refs) >= policy.maximum_evidence_refs:
+                break
 
     payload = {
         "work_order_id": work_order.work_order_id,
