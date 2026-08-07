@@ -81,7 +81,11 @@ class ComputeRequirement:
             value = getattr(self, optional_name)
             if value:
                 _require_text(optional_name, value)
-        for name in ("minimum_quality", "minimum_reliability", "minimum_availability"):
+        for name in (
+            "minimum_quality",
+            "minimum_reliability",
+            "minimum_availability",
+        ):
             value = getattr(self, name)
             if not 0 <= value <= 1:
                 raise ValueError(f"{name} must be between 0 and 1")
@@ -91,7 +95,10 @@ class ComputeRequirement:
                 raise ValueError(f"{name} must be between 0 and 3")
         _require_nonnegative("maximum_latency_ms", self.maximum_latency_ms)
         _require_nonnegative("maximum_cost_cad", self.maximum_cost_cad)
-        _require_nonnegative("maximum_compute_seconds", self.maximum_compute_seconds)
+        _require_nonnegative(
+            "maximum_compute_seconds",
+            self.maximum_compute_seconds,
+        )
         if not self.allowed_jurisdictions:
             raise ValueError("allowed_jurisdictions must not be empty")
         for allowed, prohibited, label in (
@@ -100,7 +107,9 @@ class ComputeRequirement:
             (self.allowed_tools, self.prohibited_tools, "tool"),
         ):
             if set(allowed) & set(prohibited):
-                raise ValueError(f"{label} cannot be both allowed and prohibited")
+                raise ValueError(
+                    f"{label} cannot be both allowed and prohibited"
+                )
 
 
 @dataclass(frozen=True)
@@ -147,19 +156,38 @@ class ComputeCandidate:
             if not 0 <= value <= 3:
                 raise ValueError(f"{name} must be between 0 and 3")
         _require_nonnegative("estimated_cost_cad", self.estimated_cost_cad)
-        _require_nonnegative("estimated_latency_ms", self.estimated_latency_ms)
-        _require_nonnegative("estimated_compute_seconds", self.estimated_compute_seconds)
-        for name in ("predicted_quality", "predicted_reliability", "availability"):
+        _require_nonnegative(
+            "estimated_latency_ms",
+            self.estimated_latency_ms,
+        )
+        _require_nonnegative(
+            "estimated_compute_seconds",
+            self.estimated_compute_seconds,
+        )
+        for name in (
+            "predicted_quality",
+            "predicted_reliability",
+            "availability",
+        ):
             value = getattr(self, name)
             if not 0 <= value <= 1:
                 raise ValueError(f"{name} must be between 0 and 1")
-        if self.admission == ComputeAdmission.NOT_ADMISSIBLE and not self.rejection_reasons:
-            raise ValueError("NOT_ADMISSIBLE candidate requires rejection reasons")
+        if (
+            self.admission == ComputeAdmission.NOT_ADMISSIBLE
+            and not self.rejection_reasons
+        ):
+            raise ValueError(
+                "NOT_ADMISSIBLE candidate requires rejection reasons"
+            )
         if self.admission == ComputeAdmission.ADMISSIBLE:
             if self.rejection_reasons:
-                raise ValueError("ADMISSIBLE candidate cannot carry rejection reasons")
+                raise ValueError(
+                    "ADMISSIBLE candidate cannot carry rejection reasons"
+                )
             if not self.benchmark_evidence_refs:
-                raise ValueError("ADMISSIBLE candidate requires benchmark evidence")
+                raise ValueError(
+                    "ADMISSIBLE candidate requires benchmark evidence"
+                )
 
     def satisfies(self, requirement: ComputeRequirement) -> bool:
         if self.admission != ComputeAdmission.ADMISSIBLE:
@@ -168,15 +196,24 @@ class ComputeCandidate:
             return False
         if self.jurisdiction not in requirement.allowed_jurisdictions:
             return False
-        if requirement.allowed_providers and self.provider not in requirement.allowed_providers:
+        if (
+            requirement.allowed_providers
+            and self.provider not in requirement.allowed_providers
+        ):
             return False
         if self.provider in requirement.prohibited_providers:
             return False
-        if requirement.allowed_models and self.model_or_runtime not in requirement.allowed_models:
+        if (
+            requirement.allowed_models
+            and self.model_or_runtime not in requirement.allowed_models
+        ):
             return False
         if self.model_or_runtime in requirement.prohibited_models:
             return False
-        if requirement.allowed_tools and not set(self.tool_ids).issubset(requirement.allowed_tools):
+        if (
+            requirement.allowed_tools
+            and not set(self.tool_ids).issubset(requirement.allowed_tools)
+        ):
             return False
         if set(self.tool_ids) & set(requirement.prohibited_tools):
             return False
@@ -186,7 +223,10 @@ class ComputeCandidate:
             return False
         if self.cross_border and not requirement.cross_border_allowed:
             return False
-        if self.uses_external_training and not requirement.external_training_use_allowed:
+        if (
+            self.uses_external_training
+            and not requirement.external_training_use_allowed
+        ):
             return False
         if self.predicted_quality < requirement.minimum_quality:
             return False
@@ -202,19 +242,21 @@ class ComputeCandidate:
             return False
         if self.estimated_cost_cad > requirement.maximum_cost_cad:
             return False
-        if (
-            requirement.maximum_compute_seconds
-            and self.estimated_compute_seconds > requirement.maximum_compute_seconds
-        ):
+        if self.estimated_compute_seconds > requirement.maximum_compute_seconds:
             return False
         if (
             _CONFIDENTIALITY_RANK[self.confidentiality_capability]
             < _CONFIDENTIALITY_RANK[requirement.confidentiality_class]
         ):
             return False
-        if requirement.license_must_allow_commercial_use and not self.commercial_use_allowed:
+        if (
+            requirement.license_must_allow_commercial_use
+            and not self.commercial_use_allowed
+        ):
             return False
-        if not set(requirement.required_capabilities).issubset(self.capabilities):
+        if not set(requirement.required_capabilities).issubset(
+            self.capabilities
+        ):
             return False
         return True
 
@@ -233,7 +275,12 @@ class ExecutionPortfolio:
     admitted: bool
 
     def __post_init__(self) -> None:
-        for name in ("portfolio_id", "work_order_id", "employer_policy_id", "verification_route_id"):
+        for name in (
+            "portfolio_id",
+            "work_order_id",
+            "employer_policy_id",
+            "verification_route_id",
+        ):
             _require_text(name, getattr(self, name))
         if not self.requirement_ids:
             raise ValueError("portfolio requires compute requirements")
@@ -241,7 +288,10 @@ class ExecutionPortfolio:
             raise ValueError("portfolio requires candidates")
         if not self.stage_order:
             raise ValueError("portfolio requires stage order")
-        _require_nonnegative("predicted_total_cost_cad", self.predicted_total_cost_cad)
+        _require_nonnegative(
+            "predicted_total_cost_cad",
+            self.predicted_total_cost_cad,
+        )
 
 
 @dataclass(frozen=True)
@@ -274,8 +324,15 @@ class PortfolioPrediction:
             if not 0 <= value <= 1:
                 raise ValueError(f"{name} must be between 0 and 1")
         _require_nonnegative("predicted_cost_cad", self.predicted_cost_cad)
-        _require_nonnegative("predicted_latency_ms", self.predicted_latency_ms)
-        for name in ("predicted_token_usage", "predicted_cpu_seconds", "predicted_gpu_seconds"):
+        _require_nonnegative(
+            "predicted_latency_ms",
+            self.predicted_latency_ms,
+        )
+        for name in (
+            "predicted_token_usage",
+            "predicted_cpu_seconds",
+            "predicted_gpu_seconds",
+        ):
             value = getattr(self, name)
             if value is not None:
                 _require_nonnegative(name, value)
@@ -350,8 +407,14 @@ class PortfolioOutcome:
         _require_text("portfolio_id", self.portfolio_id)
         _require_nonnegative("revision_count", self.revision_count)
         if self.actual_total_cost_cad is not None:
-            _require_nonnegative("actual_total_cost_cad", self.actual_total_cost_cad)
-        if self.observed_quality is not None and not 0 <= self.observed_quality <= 1:
+            _require_nonnegative(
+                "actual_total_cost_cad",
+                self.actual_total_cost_cad,
+            )
+        if (
+            self.observed_quality is not None
+            and not 0 <= self.observed_quality <= 1
+        ):
             raise ValueError("observed_quality must be between 0 and 1")
         if not self.evidence_refs:
             raise ValueError("portfolio outcome requires evidence")
