@@ -24,13 +24,15 @@
     {
       "id": "orchestration_schema_validation",
       "commands": [
-        ["python", "scripts/validate_colosseum_persistence.py", "--mode", "schema", "--project-root", "."]
+        ["python", "scripts/validate_colosseum_persistence.py", "--mode", "schema", "--project-root", "."],
+        ["python", "scripts/validate_governed_orchestration_bundle.py", "--mode", "schema", "--project-root", "."]
       ]
     },
     {
       "id": "orchestration_round_trip_validation",
       "commands": [
-        ["python", "scripts/validate_colosseum_persistence.py", "--mode", "roundtrip", "--project-root", "."]
+        ["python", "scripts/validate_colosseum_persistence.py", "--mode", "roundtrip", "--project-root", "."],
+        ["python", "scripts/validate_governed_orchestration_bundle.py", "--mode", "roundtrip", "--project-root", "."]
       ]
     },
     {
