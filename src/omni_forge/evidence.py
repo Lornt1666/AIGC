@@ -9,7 +9,9 @@ from typing import Any, Mapping
 
 
 def canonical_digest(value: Mapping[str, Any]) -> str:
-    encoded = json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
+    encoded = json.dumps(
+        value, sort_keys=True, separators=(",", ":")
+    ).encode()
     return hashlib.sha256(encoded).hexdigest()
 
 
@@ -40,11 +42,15 @@ class EvidenceReceipt:
         created_at: str | None = None,
     ) -> "EvidenceReceipt":
         authority = {
+            "cloud_resource_creation": False,
+            "deployment": False,
             "production_activation": False,
             "public_access": False,
             "live_model_call": False,
             "financial_action": False,
             "automatic_merge": False,
+            "merge": False,
+            "app_store_submission": False,
         }
         timestamp = created_at or datetime.now(timezone.utc).isoformat()
         body = {
@@ -68,10 +74,21 @@ class EvidenceReceipt:
             self.previous_receipt_digest,
             self.receipt_digest,
         )
-        if any(len(value) != 64 or any(ch not in "0123456789abcdef" for ch in value) for value in values):
-            raise ValueError("evidence digests must be lowercase SHA-256 values")
-        if len(self.repository_sha) != 40 or len(self.repository_tree_sha) != 40:
-            raise ValueError("evidence must bind exact commit and tree SHAs")
+        if any(
+            len(value) != 64
+            or any(ch not in "0123456789abcdef" for ch in value)
+            for value in values
+        ):
+            raise ValueError(
+                "evidence digests must be lowercase SHA-256 values"
+            )
+        if (
+            len(self.repository_sha) != 40
+            or len(self.repository_tree_sha) != 40
+        ):
+            raise ValueError(
+                "evidence must bind exact commit and tree SHAs"
+            )
         if any(self.authority.values()):
             raise PermissionError("evidence receipt cannot grant authority")
         body = {
@@ -85,7 +102,9 @@ class EvidenceReceipt:
             "created_at": self.created_at,
             "authority": dict(self.authority),
         }
-        if not hmac.compare_digest(self.receipt_digest, canonical_digest(body)):
+        if not hmac.compare_digest(
+            self.receipt_digest, canonical_digest(body)
+        ):
             raise PermissionError("evidence receipt integrity failed")
 
     def tampered(self, **changes: Any) -> "EvidenceReceipt":

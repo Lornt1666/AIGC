@@ -4,7 +4,18 @@
   "title": "OMNI-FORGE Evidence Receipt",
   "type": "object",
   "additionalProperties": false,
-  "required": ["receipt_id", "event_type", "repository_sha", "repository_tree_sha", "schema_version", "payload_digest", "previous_receipt_digest", "created_at", "authority", "receipt_digest"],
+  "required": [
+    "receipt_id",
+    "event_type",
+    "repository_sha",
+    "repository_tree_sha",
+    "schema_version",
+    "payload_digest",
+    "previous_receipt_digest",
+    "created_at",
+    "authority",
+    "receipt_digest"
+  ],
   "properties": {
     "receipt_id": {"type": "string", "minLength": 8},
     "event_type": {"type": "string", "minLength": 1},
@@ -17,13 +28,27 @@
     "authority": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["production_activation", "public_access", "live_model_call", "financial_action", "automatic_merge"],
+      "required": [
+        "cloud_resource_creation",
+        "deployment",
+        "production_activation",
+        "public_access",
+        "live_model_call",
+        "financial_action",
+        "automatic_merge",
+        "merge",
+        "app_store_submission"
+      ],
       "properties": {
+        "cloud_resource_creation": {"const": false},
+        "deployment": {"const": false},
         "production_activation": {"const": false},
         "public_access": {"const": false},
         "live_model_call": {"const": false},
         "financial_action": {"const": false},
-        "automatic_merge": {"const": false}
+        "automatic_merge": {"const": false},
+        "merge": {"const": false},
+        "app_store_submission": {"const": false}
       }
     },
     "receipt_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"}

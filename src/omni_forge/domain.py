@@ -78,30 +78,45 @@ class AgentInvocation:
         return invocation
 
     def verify(self) -> None:
-        if not self.invocation_id or not self.agent_role or not self.parent_trace_id:
-            raise ValueError("invocation identity, role and parent trace are required")
+        if (
+            not self.invocation_id
+            or not self.agent_role
+            or not self.parent_trace_id
+        ):
+            raise ValueError(
+                "invocation identity, role and parent trace are required"
+            )
         if not _SHA256.fullmatch(self.schema_digest):
-            raise ValueError("schema_digest must be a lowercase SHA-256 digest")
+            raise ValueError(
+                "schema_digest must be a lowercase SHA-256 digest"
+            )
         if self.maximum_tokens <= 0:
             raise ValueError("maximum_tokens must be positive")
         if not 0 <= self.maximum_cost_cad <= 200:
-            raise ValueError("maximum_cost_cad must be between CAD 0 and CAD 200")
+            raise ValueError(
+                "maximum_cost_cad must be between CAD 0 and CAD 200"
+            )
         if self.deadline_epoch_seconds <= 0:
             raise ValueError("deadline must be positive")
         if self.environment is Environment.PRODUCTION:
-            raise PermissionError("production agent invocation is not authorized")
+            raise PermissionError(
+                "production agent invocation is not authorized"
+            )
         if self.data_classification in {
             DataClassification.PERSONAL,
             DataClassification.RESTRICTED,
         }:
-            raise PermissionError("sensitive data is prohibited in the initial kernel")
+            raise PermissionError(
+                "sensitive data is prohibited in the initial kernel"
+            )
         prohibited_tools = {
-            "gmail.send",
-            "github.merge",
-            "github.auto_merge",
-            "cloud.deploy",
+            "app_store.submit",
             "cloud.create_resource",
+            "cloud.deploy",
             "financial.purchase",
+            "github.auto_merge",
+            "github.merge",
+            "gmail.send",
             "model.live_call",
         }
         requested = prohibited_tools.intersection(self.allowed_tools)

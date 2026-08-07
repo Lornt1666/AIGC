@@ -8,8 +8,12 @@ on:
       - '.github/workflows/omni-forge-exact-head-ci.yml'
       - 'docs/architecture/**'
       - 'schemas/omni_forge/**'
+      - 'schemas/colosseum/**'
+      - 'schemas/compute_exchange/**'
       - 'src/omni_forge/**'
+      - 'src/colosseum/**'
       - 'tests/omni_forge/**'
+      - 'tests/colosseum/**'
 
 permissions:
   contents: read
@@ -39,14 +43,14 @@ jobs:
           REQUESTED_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
-          observed_sha="$(git rev-parse HEAD)"
+          observed_checkout_sha="$(git rev-parse HEAD)"
           tested_tree_sha="$(git rev-parse 'HEAD^{tree}')"
-          if [[ "$observed_sha" != "$REQUESTED_HEAD_SHA" ]]; then
-            echo "Exact-head mismatch: requested=$REQUESTED_HEAD_SHA observed=$observed_sha" >&2
+          if [[ "$observed_checkout_sha" != "$REQUESTED_HEAD_SHA" ]]; then
+            echo "Exact-head mismatch: requested=$REQUESTED_HEAD_SHA observed=$observed_checkout_sha" >&2
             exit 1
           fi
           echo "requested_head_sha=$REQUESTED_HEAD_SHA" >> "$GITHUB_OUTPUT"
-          echo "observed_head_sha=$observed_sha" >> "$GITHUB_OUTPUT"
+          echo "observed_checkout_sha=$observed_checkout_sha" >> "$GITHUB_OUTPUT"
           echo "tested_tree_sha=$tested_tree_sha" >> "$GITHUB_OUTPUT"
 
       - name: Set up Python
@@ -114,26 +118,89 @@ jobs:
       - name: Execute canonical validation runner on exact head
         shell: bash
         env:
-          REQUESTED_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          REQUESTED_HEAD_SHA: ${{ steps.revision.outputs.requested_head_sha }}
+          OBSERVED_CHECKOUT_SHA: ${{ steps.revision.outputs.observed_checkout_sha }}
           TESTED_TREE_SHA: ${{ steps.revision.outputs.tested_tree_sha }}
         run: |
           set -euo pipefail
+          if [[ "$REQUESTED_HEAD_SHA" != "$OBSERVED_CHECKOUT_SHA" ]]; then
+            echo "Exact-head mismatch before canonical validation." >&2
+            exit 1
+          fi
           mkdir -p "$RUNNER_TEMP/omni-forge-exact-head-results"
           python scripts/run_exact_sha_ci_contract.py \
             --contract config/exact_sha_ci_validation_contract.json \
             --project-root . \
             --results-dir "$RUNNER_TEMP/omni-forge-exact-head-results" \
-            --repository-revision "$REQUESTED_HEAD_SHA" \
+            --repository-revision "$OBSERVED_CHECKOUT_SHA" \
             --tested-tree-sha "$TESTED_TREE_SHA" \
-            --broker-revision "$REQUESTED_HEAD_SHA" \
+            --broker-revision "$OBSERVED_CHECKOUT_SHA" \
             --run-number "$GITHUB_RUN_NUMBER" \
             --run-id "$GITHUB_RUN_ID"
 
-      - name: Write exact-head binding receipt
+      - name: Write exact-head and false-authority receipt
         shell: bash
         env:
-          REQUESTED_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-          OBSERVED_HEAD_SHA: ${{ steps.revision.outputs.observed_head_sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REQUESTED_HEAD_SHA: ${{ steps.revision.outputs.requested_head_sha }}
+          OBSERVED_CHECKOUT_SHA: ${{ steps.revision.outputs.observed_checkout_sha }}
+          TESTED_TREE_SHA: ${{ steps.revision.outputs.tested_tree_sha }}
+          ARTIFACT_NAME: omni-forge-exact-head-${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          requested = os.environ['REQUESTED_HEAD_SHA']
+          observed = os.environ['OBSERVED_CHECKOUT_SHA']
+          if requested != observed:
+              raise SystemExit(
+                  f'exact-head mismatch in receipt: requested={requested} observed={observed}'
+              )
+
+          out = Path(os.environ['RUNNER_TEMP']) / 'omni-forge-exact-head-results'
+          out.mkdir(parents=True, exist_ok=True)
+          receipt = {
+              'schema_version': 'aigc.omni-forge-exact-head-ci.v2',
+              'repository': os.environ['GITHUB_REPOSITORY'],
+              'pull_request': int(os.environ['PR_NUMBER']),
+              'event': os.environ['GITHUB_EVENT_NAME'],
+              'requested_head_sha': requested,
+              'observed_checkout_sha': observed,
+              'observed_head_sha': observed,
+              'tested_tree_sha': os.environ['TESTED_TREE_SHA'],
+              'run_number': int(os.environ['GITHUB_RUN_NUMBER']),
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'artifact_name': os.environ['ARTIFACT_NAME'],
+              'external_authority_granted': False,
+              'cloud_resource_creation_authority_granted': False,
+              'deployment_authority_granted': False,
+              'production_activation_authority_granted': False,
+              'public_access_authority_granted': False,
+              'live_model_call_authority_granted': False,
+              'financial_authority_granted': False,
+              'automatic_merge_authority_granted': False,
+              'merge_authority_granted': False,
+              'app_store_submission_authority_granted': False,
+          }
+          canonical = json.dumps(
+              receipt, sort_keys=True, separators=(',', ':')
+          ).encode()
+          receipt['receipt_sha256'] = hashlib.sha256(canonical).hexdigest()
+          (out / 'omni_forge_exact_head_receipt.json').write_text(
+              json.dumps(receipt, indent=2, sort_keys=True) + '\n',
+              encoding='utf-8',
+          )
+          PY
+
+      - name: Write artifact manifest
+        shell: bash
+        env:
+          REQUESTED_HEAD_SHA: ${{ steps.revision.outputs.requested_head_sha }}
+          OBSERVED_CHECKOUT_SHA: ${{ steps.revision.outputs.observed_checkout_sha }}
           TESTED_TREE_SHA: ${{ steps.revision.outputs.tested_tree_sha }}
         run: |
           set -euo pipefail
@@ -144,26 +211,32 @@ jobs:
           from pathlib import Path
 
           out = Path(os.environ['RUNNER_TEMP']) / 'omni-forge-exact-head-results'
-          out.mkdir(parents=True, exist_ok=True)
-          receipt = {
-              'schema_version': 'aigc.omni-forge-exact-head-ci.v1',
-              'repository': os.environ['GITHUB_REPOSITORY'],
-              'pull_request': int(os.environ['GITHUB_REF'].split('/')[2]),
-              'event': os.environ['GITHUB_EVENT_NAME'],
+          files = []
+          for path in sorted(out.rglob('*')):
+              if not path.is_file() or path.name == 'artifact_manifest.json':
+                  continue
+              data = path.read_bytes()
+              files.append({
+                  'path': path.relative_to(out).as_posix(),
+                  'size_bytes': len(data),
+                  'sha256': hashlib.sha256(data).hexdigest(),
+              })
+          if not files:
+              raise SystemExit('exact-head result set is empty')
+          manifest = {
+              'schema_version': 'aigc.omni-forge-artifact-manifest.v1',
               'requested_head_sha': os.environ['REQUESTED_HEAD_SHA'],
-              'observed_head_sha': os.environ['OBSERVED_HEAD_SHA'],
+              'observed_checkout_sha': os.environ['OBSERVED_CHECKOUT_SHA'],
               'tested_tree_sha': os.environ['TESTED_TREE_SHA'],
-              'run_number': int(os.environ['GITHUB_RUN_NUMBER']),
-              'run_id': int(os.environ['GITHUB_RUN_ID']),
-              'external_authority_granted': False,
-              'merge_authority_granted': False,
-              'deployment_authority_granted': False,
-              'live_model_call_authority_granted': False,
+              'files': files,
           }
-          canonical = json.dumps(receipt, sort_keys=True, separators=(',', ':')).encode()
-          receipt['receipt_sha256'] = hashlib.sha256(canonical).hexdigest()
-          (out / 'omni_forge_exact_head_receipt.json').write_text(
-              json.dumps(receipt, indent=2, sort_keys=True) + '\n', encoding='utf-8'
+          canonical = json.dumps(
+              manifest, sort_keys=True, separators=(',', ':')
+          ).encode()
+          manifest['manifest_sha256'] = hashlib.sha256(canonical).hexdigest()
+          (out / 'artifact_manifest.json').write_text(
+              json.dumps(manifest, indent=2, sort_keys=True) + '\n',
+              encoding='utf-8',
           )
           PY
 
