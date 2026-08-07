@@ -5,6 +5,7 @@ from hashlib import sha256
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import tempfile
 
@@ -39,6 +40,16 @@ def run_command(command: list[str], cwd: Path, env: dict[str, str]) -> tuple[dic
         },
         completed.stdout,
     )
+
+
+def emit_safe_pytest_failure_summary(output: str) -> None:
+    for line in output.splitlines():
+        stripped = line.strip()
+        if stripped.startswith(("FAILED ", "ERROR ")):
+            print(stripped.split(" - ", 1)[0])
+            continue
+        if re.fullmatch(r"=+ .*?(failed|error|errors).*? =+", stripped, flags=re.IGNORECASE):
+            print(stripped)
 
 
 def terraform_commands() -> list[list[str]]:
@@ -89,6 +100,10 @@ def main() -> None:
                     # The redaction scanner emits only path, line, severity and
                     # matched-pattern metadata; never the matched raw value.
                     print(command_output, end="" if command_output.endswith("\n") else "\n")
+                elif stage_id == "tests" and command_output:
+                    # Emit only pytest node IDs and aggregate failure counts.
+                    # Assertion payloads and environment values remain hidden.
+                    emit_safe_pytest_failure_summary(command_output)
                 break
         record = {
             "schema_version": "1.0.0",
