@@ -5,6 +5,7 @@ external authority and performs no live job, employer, cloud, model, financial,
 or App Store actions.
 """
 
+from .benchmarks import ComputeBenchmark
 from .domain import (
     AgentCell,
     CapabilityEvidence,
@@ -35,6 +36,7 @@ from .compute_exchange import (
 )
 
 __all__ = [
+    "ComputeBenchmark",
     "AgentCell",
     "CapabilityEvidence",
     "CapabilityVerdict",
