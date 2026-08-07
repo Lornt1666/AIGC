@@ -11,7 +11,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
 
-from scripts.nexus_repository_intelligence import analyze as base_analyze
+try:
+    from scripts.nexus_repository_intelligence import analyze as base_analyze
+except ModuleNotFoundError:  # direct script execution from scripts/
+    from nexus_repository_intelligence import analyze as base_analyze
 
 
 RESPONSIBILITY_PATTERNS = {
