@@ -150,6 +150,9 @@ class ComputeExchangeContractTests(unittest.TestCase):
             workload_class="research",
             minimum_quality=0.9,
             minimum_reliability=0.9,
+            minimum_availability=0.95,
+            minimum_security_level=2,
+            minimum_privacy_level=2,
             maximum_latency_ms=10_000,
             maximum_cost_cad=10.0,
             confidentiality_class=ConfidentialityClass.CONFIDENTIAL,
@@ -166,6 +169,8 @@ class ComputeExchangeContractTests(unittest.TestCase):
             region="northamerica-northeast1",
             jurisdiction="CA-QC",
             confidentiality_capability=ConfidentialityClass.CONFIDENTIAL,
+            security_level=3,
+            privacy_level=3,
             encryption="TLS+AEAD",
             estimated_cost_cad=3.0,
             estimated_latency_ms=2000,
@@ -195,8 +200,21 @@ class ComputeExchangeContractTests(unittest.TestCase):
             ).satisfies(self.requirement())
         )
 
+    def test_cost_cannot_override_security_gate(self) -> None:
+        self.assertFalse(self.candidate(estimated_cost_cad=0.01, security_level=1).satisfies(self.requirement()))
+
+    def test_cost_cannot_override_privacy_gate(self) -> None:
+        self.assertFalse(self.candidate(estimated_cost_cad=0.01, privacy_level=1).satisfies(self.requirement()))
+
+    def test_cost_cannot_override_availability_gate(self) -> None:
+        self.assertFalse(self.candidate(estimated_cost_cad=0.01, availability=0.5).satisfies(self.requirement()))
+
     def test_cost_cannot_override_commercial_license(self) -> None:
         self.assertFalse(self.candidate(commercial_use_allowed=False).satisfies(self.requirement()))
+
+    def test_admissible_candidate_requires_benchmark_evidence(self) -> None:
+        with self.assertRaises(ValueError):
+            self.candidate(benchmark_evidence_refs=())
 
     def test_admissible_candidate_can_satisfy_requirement(self) -> None:
         self.assertTrue(self.candidate().satisfies(self.requirement()))
