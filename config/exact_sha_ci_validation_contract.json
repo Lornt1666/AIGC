@@ -1,29 +1,84 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "contract_id": "AIGC-CI-EXACT-SHA-V1",
   "production_activation_authorized": false,
   "external_action_authorized": false,
   "stages": [
-    {"id": "contracts", "commands": [
-      ["python", "src/aigc.py", "validate"],
-      ["python", "src/aigc.py", "validate", "--schema", "provider_discovery_command_catalog", "--path", "config/provider_discovery_command_catalog.json"],
-      ["python", "src/aigc.py", "validate", "--schema", "provider_discovery_mock_fixture", "--path", "config/provider_discovery_mock_fixture.json"],
-      ["python", "src/validate_aec_001.py"]
-    ]},
-    {"id": "redaction", "commands": [
-      ["python", "src/security/redaction_scanner.py", "--paths", "src", "scripts", "config", "docs", "governance", "README.md", "AGENTS.md", "AIGC_MASTER_PROMPT.md", "OMEGA_X_CONSTITUTION.md", "schemas", "tests", "reports", "Dockerfile", "render.yaml", "fly.toml", "Procfile"]
-    ]},
-    {"id": "procurement_smoke", "commands": [
-      ["python", "src/save_credential_broker_procurement.py", "--project-root", ".", "--config", "config/aigc_save_credential_broker.json"],
-      ["python", "src/n8n_workflow_dispatch_bridge_procurement.py", "--project-root", ".", "--config", "config/aigc_n8n_workflow_dispatch_bridge.json"],
-      ["python", "src/aigc.py", "validate", "--schema", "save_credential_broker_packet", "--path", "data/save_credential_broker/aigc_save_credential_broker_packet.json"],
-      ["python", "src/aigc.py", "validate", "--schema", "n8n_workflow_dispatch_bridge_packet", "--path", "data/n8n_bridge/aigc_n8n_workflow_dispatch_bridge_packet.json"]
-    ]},
-    {"id": "provider_discovery", "commands": [
-      ["python", "scripts/run_provider_discovery_mock.py", "--repository-revision", "${REPOSITORY_REVISION}", "--created-at", "2026-07-15T00:00:00Z", "--output-dir", "reports/artifacts/provider_discovery_simulation"]
-    ]},
-    {"id": "terraform_inert", "runner": "terraform_inert"},
-    {"id": "tests", "runner": "pytest"},
-    {"id": "readiness", "commands": [["python", "src/aigc.py", "readiness"]]}
+    {
+      "id": "pip_check",
+      "runner": "pip_check"
+    },
+    {
+      "id": "python_compilation",
+      "runner": "compileall"
+    },
+    {
+      "id": "contracts",
+      "commands": [
+        ["python", "src/aigc.py", "validate"],
+        ["python", "src/aigc.py", "validate", "--schema", "provider_discovery_command_catalog", "--path", "config/provider_discovery_command_catalog.json"],
+        ["python", "src/aigc.py", "validate", "--schema", "provider_discovery_mock_fixture", "--path", "config/provider_discovery_mock_fixture.json"],
+        ["python", "src/validate_aec_001.py"]
+      ]
+    },
+    {
+      "id": "orchestration_schema_validation",
+      "commands": [
+        ["python", "scripts/validate_colosseum_persistence.py", "--mode", "schema", "--project-root", "."]
+      ]
+    },
+    {
+      "id": "orchestration_round_trip_validation",
+      "commands": [
+        ["python", "scripts/validate_colosseum_persistence.py", "--mode", "roundtrip", "--project-root", "."]
+      ]
+    },
+    {
+      "id": "redaction",
+      "commands": [
+        ["python", "src/security/redaction_scanner.py", "--paths", "src", "scripts", "config", "docs", "governance", "README.md", "AGENTS.md", "AIGC_MASTER_PROMPT.md", "OMEGA_X_CONSTITUTION.md", "schemas", "tests", "reports", "Dockerfile", "render.yaml", "fly.toml", "Procfile"]
+      ]
+    },
+    {
+      "id": "release_secret_scan",
+      "commands": [
+        ["python", "scripts/release_secret_scan.py"]
+      ]
+    },
+    {
+      "id": "procurement_smoke",
+      "commands": [
+        ["python", "src/save_credential_broker_procurement.py", "--project-root", ".", "--config", "config/aigc_save_credential_broker.json"],
+        ["python", "src/n8n_workflow_dispatch_bridge_procurement.py", "--project-root", ".", "--config", "config/aigc_n8n_workflow_dispatch_bridge.json"],
+        ["python", "src/aigc.py", "validate", "--schema", "save_credential_broker_packet", "--path", "data/save_credential_broker/aigc_save_credential_broker_packet.json"],
+        ["python", "src/aigc.py", "validate", "--schema", "n8n_workflow_dispatch_bridge_packet", "--path", "data/n8n_bridge/aigc_n8n_workflow_dispatch_bridge_packet.json"]
+      ]
+    },
+    {
+      "id": "provider_discovery",
+      "commands": [
+        ["python", "scripts/run_provider_discovery_mock.py", "--repository-revision", "${REPOSITORY_REVISION}", "--created-at", "2026-07-15T00:00:00Z", "--output-dir", "reports/artifacts/provider_discovery_simulation"]
+      ]
+    },
+    {
+      "id": "terraform_inert",
+      "runner": "terraform_inert"
+    },
+    {
+      "id": "tests",
+      "runner": "pytest"
+    },
+    {
+      "id": "false_authority",
+      "commands": [
+        ["python", "scripts/verify_colosseum_false_authority.py"]
+      ]
+    },
+    {
+      "id": "readiness",
+      "commands": [
+        ["python", "src/aigc.py", "readiness"]
+      ]
+    }
   ]
 }
