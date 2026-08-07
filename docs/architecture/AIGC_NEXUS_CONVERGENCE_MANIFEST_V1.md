@@ -1,6 +1,6 @@
 # AIGC Nexus Convergence Manifest V1
 
-Status: `DISCOVERY_BASELINE_V1_MEASURED`
+Status: `DISCOVERY_BASELINE_V1_ADVANCED_MEASURED`
 Integration train: `release/aigc-nexus-v1`
 Governing migration law: Evolutionary Convergence — No Stranded Capability
 
@@ -10,81 +10,144 @@ Provide an evidence-backed decision surface for converging historical AIGC capab
 
 ## Exact measured discovery baseline
 
-Repository-intelligence evidence is bound to exact head `8eeb7eae57c41c957bbc66347307057a3ca66c60`.
+Baseline repository-intelligence evidence was bound to exact head `8eeb7eae57c41c957bbc66347307057a3ca66c60` and exact-head CI #2544.
 
-- AIGC CI `#2544`: `SUCCESS`.
-- run ID: `31181012166`.
-- retained artifact ID: `8994794049`.
-- artifact digest: `sha256:971c31e6c58530e5cc314a832922ced90e65a979033ebb39383668dacf31bf67`.
-- repository-intelligence report SHA-256: `9f1412bfe9df4591d4359480c31feb356fd960ac79a3628c97bd7e2d6b3c132c`.
+Advanced Stage-1 measurements are bound to:
 
-Measured repository facts:
+- exact head: `3f714959203594b753085af4be03259896a0e64d`;
+- AIGC CI: `#2558` / run ID `31182185660` / `SUCCESS`;
+- retained artifact ID: `8995258580`;
+- artifact digest: `sha256:c5990e1ec84042d1be64f45a335f0467daf4ef04dd94e076dcd745ca9ad103cf`;
+- detailed record: `docs/architecture/AIGC_NEXUS_STAGE1_ADVANCED_MEASUREMENTS_V1.md`.
+
+No measurement in this manifest grants deletion, archival, merge, deployment, provider-execution, procurement, or retirement authority.
+
+## Measured repository facts
 
 | Metric | Value | Convergence meaning |
 |---|---:|---|
-| total files | 1008 | repository is large enough that manual intuition is insufficient |
-| source files | 246 | capability migration must be module-aware |
-| test files | 137 | substantial test inventory exists and should be treated as migration evidence |
-| documentation files | 234 | documentation convergence is a major workstream |
-| configuration/schema files | 301 | schema/contract accumulation is a major consolidation surface |
-| infrastructure files | 18 | infrastructure surface is comparatively bounded |
-| Python modules | 383 | import/dependent migration must be graph-driven |
-| internal Python import edges | 469 | enough coupling exists to require dependency-aware convergence |
-| detected Python import cycles | 0 | current static graph has no multi-module cycles under the analyzer model |
-| JSON schemas analyzed | 155 | contract consolidation must be systematic |
-| schema-overlap candidates | 141 | high structural overlap warrants semantic/caller investigation, not automatic merging |
-| source modules with direct test import | 118/246 | direct static ownership exists for 47.97% of source modules |
-| source modules without direct test import | 128 | deeper ownership tracing is required before retirement claims |
-| exact duplicate text groups | 2 | byte duplication is limited; semantic duplication is the larger concern |
+| total files at advanced head | 1010 | repository scale requires automated convergence analysis |
+| source files | 247 | capability migration must be module-aware |
+| test files | 138 | substantial test evidence exists and should be migrated with capability |
+| documentation files | 234 | documentation convergence remains a major workstream |
+| configuration/schema files | 301 | contract/schema fusion remains a major consolidation surface |
+| infrastructure files | 18 | infrastructure surface remains comparatively bounded |
+| schemas analyzed | 155 | contract consolidation must be systematic |
+| schemas with observed static callers | 94 | caller evidence is available for most, but not all, schemas |
+| direct test ownership | 47.97% baseline | direct imports alone leave a large evidence gap |
+| transitive static test reachability | 53.44% | indirect imports close part, not all, of the ownership gap |
+| remote branches | 133 | branch-topology saturation is quantitatively confirmed |
+| direct requirements | 11 | dependency surface is bounded enough for package-by-package audit |
+| requirements with static import use | 9/11 | HTTPX and psycopg require deeper caller/runtime verification |
+| Python dependency lockfile detected | false | reproducibility drift is measured, not hypothetical |
 
-## Measured convergence findings
+## Advanced convergence findings
 
-### 1. Import/package graph
+### 1. Semantic/caller schema analysis
 
-The corrected most-specific-module resolver found `469` internal import edges and `0` multi-module import cycles.
+`94 / 155` schemas have at least one observed static caller by exact path or basename. Absence of a caller is not proof of non-use because dynamic discovery remains possible.
 
-High-coupling migration-risk nodes include:
+The strongest prior overlap candidate remains:
 
-- `src.core.contract_validator` — coupling `48`, fan-in `48`;
-- `src.domain.identity.production_sessions` — coupling `25`;
-- `src.api.app` — coupling `17`;
-- `src.domain.nexus.contracts` — coupling `17`;
-- `src.domain.quests.candidates` — coupling `15`;
-- `src.domain.epistemic.models` — coupling `14`.
+`schemas/exact_sha_ci_issue_request.schema.json`
+vs
+`schemas/exact_sha_ci_request.schema.json`
 
-Decision impact: these modules should be treated as dependency-migration anchors. Replacing or merging them requires explicit caller maps and shadow/equivalence testing. No removal is authorized from coupling alone.
+with measured feature-set Jaccard `1.0`. Both are referenced in the repository, so the proper next action is a shadow-compatible semantic/caller consolidation study, not deletion.
 
-### 2. Schema-semantic overlap
+Highest-caller schemas include `quest.schema.json` with 11 observed callers and several identity/production schemas with five or six callers. Schema migrations must therefore be caller-aware and data-compatible.
 
-The analyzer found `141` overlap candidates among `155` schemas.
+### 2. Indirect test ownership
 
-Priority investigations:
+The baseline direct-import metric mapped `118 / 246` source modules (`47.97%`). Advanced import traversal maps `132 / 247` source modules as transitively reachable from at least one test (`53.44%`). `115` source modules remain without transitive static test reachability.
 
-| Left | Right | Jaccard | Current action |
-|---|---|---:|---|
-| `exact_sha_ci_issue_request.schema.json` | `exact_sha_ci_request.schema.json` | 1.0000 | investigate canonicalization; identical measured feature sets |
-| provider discovery authorization | staging plan authorization | 0.7527 | inspect shared authority envelope vs legitimate specialization |
-| procured-control-layers catalog | public-research-procurement catalog | 0.6471 | candidate procurement-contract fusion |
-| staging apply authorization | staging plan authorization | 0.5692 | preserve distinct plan/apply authority semantics unless a shared base contract is proven safer |
-| fidelity review | subagent team plan | 0.5135 | investigate whether overlap is generic metadata rather than duplicate responsibility |
+This metric is still not runtime coverage. APIs, configuration-driven loading, subprocesses, CLIs and fixtures can exercise modules outside the static import graph.
 
-Decision impact: Stage 1 now has concrete schema-fusion candidates. Structural similarity does not authorize deletion or merging; semantic purpose, callers, tests, historical data and compatibility must still be mapped.
+Strong transitive ownership examples include:
 
-### 3. Test-to-capability ownership
+- `src.core.contract_validator`: 57 test modules;
+- `src.infrastructure.persistence.sqlite`: 26;
+- `src.application`: 23;
+- `src.infrastructure.identity`: 21;
+- `src.api.composition`: 17;
+- `src.core.phase_registry`: 17.
 
-Direct import analysis maps `118` of `246` source modules to at least one direct test module (`0.4797`). `128` do not have a direct test import.
+Decision impact: ECS TestEquivalence remains incomplete for subsystem retirement until behavior/invariant-level test migration is mapped.
 
-Strong direct ownership examples:
+### 3. Canonical-responsibility search surfaces
 
-- `src.core.contract_validator` — 25 test modules;
-- `src.api.app` — 10;
-- `src.core.phase_registry` — 9;
-- `src.infrastructure.persistence.sqlite.durable_production_identity` — 9;
-- `src.domain.identity.production_sessions` — 7;
-- `src.domain.nexus.contracts` — 6;
-- `src.domain.epistemic.models` — 5.
+The advanced analyzer intentionally labels these as `HEURISTIC_CANDIDATE_MAP_NOT_AUTHORITY`.
 
-Decision impact: direct-import ownership is a lower-bound indicator, not coverage. ECS `TestEquivalence` must remain unset for retirement candidates until indirect/API/subprocess/configuration-driven tests are mapped.
+| Responsibility | Candidate search surface | Canonical Nexus target detected |
+|---|---:|---|
+| state machine / lifecycle | 33 | `src.core.nexus.state_reducer`, `src.domain.nexus.contracts` |
+| policy / governance | 164 | `src.core.epistemic.tool_broker`, `src.domain.nexus.contracts` |
+| evidence | 145 | `src.domain.nexus.evidence`, `src.infrastructure.persistence.sqlite.nexus_evidence` |
+| agent registry / handoff | 23 | `src.core.nexus.specialist_registry` |
+| dashboard / UI | 175 | `src.dashboard.nexus_app`, `src.webapp.nexus_dashboard` |
+| provider runtime | 79 | **none yet** |
+
+The large governance/evidence/UI counts reflect broad keyword use; they are investigation surfaces, not duplication counts.
+
+The strongest actionable signal is provider runtime: historical provider/Gemini capability exists, but no canonical Nexus provider-runtime target is currently detected. Therefore PR #170 remains `ADAPT`, and provider-specific controls must be extracted into a generic Nexus runtime before historical provider trains can be retired.
+
+### 4. Branch/PR convergence pressure
+
+The full origin ref set contains `133` remote branches.
+
+Age bands by latest branch commit:
+
+- 0–7 days: 32;
+- 8–30 days: 96;
+- 31–90 days: 5;
+- >90 days: 0 in the measured ref set.
+
+High-divergence examples against current main include:
+
+- `codex/operator-cockpit-run-accept`: 35 ahead / 280 behind;
+- `codex/milestone-l-truth-first-procurement-governance`: 6 ahead / 280 behind;
+- `phase26-constellation-refactor`: 8 ahead / 273 behind;
+- `aigc-constellation-fabric`: 5 ahead / 274 behind;
+- `aigc-cognitive-phase-router`: 6 ahead / 271 behind.
+
+Current open PR metadata also spans multiple architectural generations: Nexus, EPI, Colosseum, OMNI-FORGE, Evidence Plane, Policy, Gemini, cloud, cockpit, CI and agent-registry trains remain simultaneously visible.
+
+Decision impact: branch and PR cleanup is justified as a future convergence objective, but not before capability extraction and ECS completion.
+
+### 5. Dependency use, reproducibility and security
+
+Direct requirements measured: `11`; static imports observed for `9`.
+
+No direct static import is currently observed for `httpx` or `psycopg`. This does not prove either is unused: HTTPX can be framework/test-transitive and psycopg can be adapter/extra driven.
+
+CI-resolved versions at the measured environment include Streamlit 1.61.1, FastAPI 0.141.1, Uvicorn 0.52.1, Pydantic 2.13.4, HTTPX 0.28.1, pytest 8.4.2, jsonschema 4.26.0, PyYAML 6.0.3, psycopg 3.3.4, psycopg_pool 3.3.1 and PyJWT 2.13.0.
+
+Measured reproducibility state:
+
+- requirements use broad version ranges: true;
+- supported Python lockfile detected: false;
+- classification: `MEASURED_ENVIRONMENT_DRIFT_RISK`.
+
+The external advisory review on August 7, 2026 found the measured Streamlit version is above the 1.54.0 fix for CVE-2026-33682, HTTPX 0.28.1 is above the affected `<0.23.0` range for CVE-2021-41945, and PyJWT 2.13.0 is the fixed release for multiple 2026 PyJWT advisories. This is not evidence that the entire transitive graph is vulnerability-free. Package-by-package exact-version OSV review, transitive inventory and SBOM generation remain required.
+
+### 6. Partial ECS inputs
+
+`ECS = ReplacementCoverage × TestEquivalence × DependencyMigration × EvidenceConfidence`
+
+The analyzer now records partial, explicitly non-authorizing inputs:
+
+| Subsystem | ReplacementCoverage proxy | repository TestEquivalence proxy | DependencyMigration | EvidenceConfidence | ECS |
+|---|---:|---:|---|---|---|
+| state machine | 0.5 | 0.5081 | unmeasured | unmeasured | uncomputed |
+| policy/governance | 0.5 | 0.5081 | unmeasured | unmeasured | uncomputed |
+| evidence | 0.5 | 0.5081 | unmeasured | unmeasured | uncomputed |
+| agent registry | 0.5 | 0.5081 | unmeasured | unmeasured | uncomputed |
+| dashboard | 0.5 | 0.5081 | unmeasured | unmeasured | uncomputed |
+| provider runtime | 0.0 | 0.5081 | unmeasured | unmeasured | uncomputed |
+
+The `0.5` replacement value is only a heuristic indicating a plausible canonical target exists while legacy surfaces remain broad. It is not a percentage-complete claim.
+
+No retirement ECS exists yet.
 
 ## Canonical responsibility targets
 
@@ -105,93 +168,58 @@ Decision impact: direct-import ownership is a lower-bound indicator, not coverag
 | Specialist registry | `src/core/nexus/specialist_registry.py` | medium; legacy registry capability fusion pending |
 | Orchestration | `src/core/nexus/orchestrator.py` | medium; planning/DAG capability pending |
 | Dashboard | `src/dashboard/nexus_app.py` + projection | medium; legacy cockpit migration pending |
-| Provider runtime | not yet canonicalized | low; Gemini controls to be adapted later |
-| Observability / repository intelligence | `scripts/nexus_repository_intelligence.py` + CI-retained evidence | medium-high for structural discovery; churn/runtime analytics pending |
+| Provider runtime | not yet canonicalized | low; measured gap |
+| Repository intelligence | base + advanced analyzers with CI-retained evidence | high for static discovery; runtime/churn depth still expandable |
 
 ## P0 — immediate convergence work
 
 ### P0.1 Repository intelligence and analytics
 
-Status: `PARTIALLY_IMPLEMENTED_AND_CI_VALIDATED`.
+Status: `ADVANCED_STATIC_MEASUREMENT_IMPLEMENTED_AND_CI_VALIDATED` at exact head `3f714959...`.
 
-Implemented measurements:
+Implemented measurements now include structural topology, import graph/cycles, coupling, schema overlap and callers, direct/transitive test ownership, branch age/divergence, direct dependency static use, reproducibility state, canonical-responsibility search surfaces and partial ECS inputs.
 
-- source/test/schema/documentation counts;
-- import/package graph;
-- import-cycle detection;
-- coupling hotspots;
-- schema-semantic overlap candidates;
-- direct test-to-source ownership;
-- exact text duplicates;
-- deterministic report hashing and exact-head retention.
+Remaining measurement work:
 
-Remaining measurements:
-
-- Git churn/staleness;
-- indirect test ownership and runtime coverage;
-- semantic duplicate state-machine/authority detection;
-- direct dependency import/use mapping;
-- historical PR capability-to-current-module mapping;
-- architectural-fitness violations;
-- measured ECS inputs.
+- behavior-level schema compatibility/shadow validation;
+- runtime/API/subprocess/configuration test ownership;
+- feature-by-feature historical capability maps;
+- component-specific dependent-migration percentages;
+- replacement-specific evidence-confidence scores;
+- complete transitive dependency/SBOM advisory audit;
+- PR-specific capability extraction and final lifecycle decisions.
 
 ### P0.2 Planning/scheduling fusion
 
-Extract from Colosseum (#177):
-
-- Definition-of-Done traceability;
-- deterministic TaskDAG;
-- readiness/blocking/critical-path logic;
-- builder/verifier independence;
-- bounded token/compute/deadline reservations.
-
-Adapt beneath Nexus WorkOrder and GovernanceDecision. Do not import a competing state machine or authority hierarchy.
+Extract from Colosseum (#177): Definition-of-Done traceability, deterministic TaskDAG, readiness/blocking/critical-path logic, builder/verifier independence, and bounded resource reservations. Adapt beneath Nexus; do not import competing authority.
 
 ### P0.3 Evidence fusion
 
-Map Evidence Plane (#169) capabilities into Nexus:
-
-- lineage references;
-- metric definitions/observations;
-- freshness/expiry;
-- data-quality findings;
-- insufficiency semantics.
-
-Keep `Evidence != Authority` as a fitness invariant.
+Map Evidence Plane (#169) lineage, metrics, freshness, data-quality and insufficiency semantics into Nexus. Keep `Evidence != Authority`.
 
 ### P0.4 Policy fusion
 
-Compare Policy Enforcement (#166) with Nexus ToolBroker/Governance contracts. Preserve:
-
-- self-approval prevention;
-- direct-main prevention;
-- automatic-merge prevention;
-- deployment/production locks;
-- Gmail/financial/arbitrary-shell/raw-secret prohibitions;
-- emergency-stop integration.
-
-One policy evaluator should remain subordinate to one GovernanceDecision authority.
+Compare Policy Enforcement (#166) against Nexus ToolBroker/Governance and preserve fail-closed prohibitions and emergency constraints behind one canonical promotion authority.
 
 ### P0.5 UI convergence
 
-Inventory historical Streamlit cockpit and PR #122 features. Migrate unique operator value into Nexus:
+Migrate unique cockpit/operator value into Nexus and avoid permanent duplicate dashboards without a proven role boundary.
 
-- initialization status;
-- audit/transparency;
-- emergency stop;
-- review/accept workflows;
-- repository intelligence;
-- evidence and memory exploration.
+### P0.6 Exact-SHA schema shadow migration study
 
-Avoid two permanent operator dashboards unless role separation proves necessary.
-
-### P0.6 Schema consolidation investigation
-
-New measured priority. Begin caller/test/compatibility analysis for the strongest schema overlap candidates, starting with the two exact-SHA CI request schemas whose measured feature sets are identical. No schema is removed during discovery.
+Begin semantic equivalence and caller migration analysis for the two measured-identical exact-SHA request schemas. No schema removal during discovery.
 
 ### P0.7 Test ownership completion
 
-New measured priority. Trace the `128` modules without direct test imports through API routes, composition roots, CLI entry points, registries, configuration-driven invocation, fixtures and subprocess tests. Do not equate absence of direct import with absence of test coverage.
+Trace the remaining 115 modules without transitive static test reachability through runtime/API/configuration/subprocess paths before any “untested” classification.
+
+### P0.8 Branch/PR capability extraction
+
+Prioritize the most divergent branches and open PR generations. Extract unique behavior/tests/evidence before proposing lifecycle cleanup.
+
+### P0.9 Dependency reproducibility and SBOM
+
+Evaluate a constraints/lock strategy, generate a transitive dependency inventory/SBOM, query exact versions against authoritative advisories, and test reproducible resolution. Do not remove HTTPX or psycopg based only on static imports.
 
 ## P1 — Nexus V1 product completion
 
@@ -201,73 +229,35 @@ Adapt OMNI-FORGE graph/budget/repair invariants behind Nexus contracts.
 
 ### P1.2 Provider runtime abstraction
 
-Extract generic controls from Gemini work (#170):
-
-- provider isolation;
-- durable emergency stop;
-- idempotency;
-- request/rate/token budgets;
-- secret-reference brokerage;
-- readiness checks;
-- immutable evidence receipts;
-- one-call controlled canary semantics.
-
-Gemini becomes an adapter. No provider-specific global governance.
+This is now a measured architectural gap. Extract generic controls from Gemini work (#170): provider isolation, durable emergency stop, idempotency, rate/request/token budgets, secret-reference brokerage, readiness checks, immutable evidence receipts and controlled canary semantics. Gemini becomes an adapter.
 
 ### P1.3 Persistent production-grade storage decision
 
-Do not procure Redis/Vector Search/Cloud SQL merely from architecture preference. Measure local SQLite workload, concurrency, durability, search, and deployment requirements first. Then choose build/reuse/buy based on observed gaps.
+Do not procure Redis/Vector Search/Cloud SQL from preference. Measure workload/concurrency/durability/search/deployment gaps first.
 
-### P1.4 Dependency reproducibility
-
-Current broad compatible ranges permit substantial environment drift. Evaluate constraints/lock strategy, Python baseline, major-version compatibility and security advisory scanning. Do not blindly bump versions.
-
-## P2 — after integrated V1 proof
-
-- A2A interop only if remote/heterogeneous agent systems become a real requirement.
-- MCP adapters only against the current protocol and only through Nexus capability policy.
-- managed agent runtime/memory only after local contracts and cost/residency requirements justify procurement.
-- GCP staging resource creation only after exact project, billing, IAM, budget, region and human authorization evidence exists.
-- native iOS/App Store work after the Nexus web/runtime product is stable enough to justify a second client surface.
-
-## Initial build/reuse/buy/remove matrix
+## Build / reuse / buy / remove matrix
 
 | Capability | Decision now | Reason |
 |---|---|---|
-| Nexus contracts/verifier/OCC/memory/ODSE | `BUILD/KEEP` | integrated and exact-head CI validated |
-| Repository Intelligence | `KEEP/EVOLVE` | exact-head measured evidence now exists; deeper layers pending |
-| Colosseum DAG scheduling | `ADAPT` | strong validated planning value; competing authority unwanted |
-| OMNI-FORGE graph validation | `ADAPT` | useful structural invariants; duplicate lifecycle unwanted |
-| Evidence Plane metrics/lineage | `ADAPT` | enriches current evidence model |
-| Policy Enforcement | `ADAPT` | strengthen existing policy boundary, not duplicate it |
-| Gemini-specific controls | `ADAPT` | convert to provider-neutral runtime then bind Gemini adapter |
-| legacy Gemini branches | `SUPERSEDE` | later release candidate contains evolved implementation |
-| legacy cockpits | `MIGRATE` | UI value should converge into Nexus |
-| GCP foundation | `DEFER/ADAPT_DESIGN` | external facts/cost/authority unresolved |
-| Redis / managed vector DB | `DO_NOT_PROCURE_YET` | current need not measured |
-| A2A | `DEFER` | interoperability option, not current requirement |
-| MCP | `DEFER_ADAPTER` | connector need must become concrete first |
-| new agent framework | `DO_NOT_PROCURE_YET` | framework fit not yet demonstrated |
-| schema-overlap candidates | `INVESTIGATE/CONSOLIDATE_IF_PROVEN` | measured structural overlap now exists; semantic compatibility pending |
-| modules without direct test imports | `TRACE_TEST_OWNERSHIP` | direct-import metric is not sufficient evidence of no testing |
+| Nexus contracts/verifier/OCC/memory/ODSE | `KEEP/EVOLVE` | integrated and exact-head validated |
+| Repository Intelligence | `KEEP/EVOLVE` | advanced exact-head measured evidence exists |
+| Colosseum DAG scheduling | `ADAPT` | validated planning value; competing authority unwanted |
+| OMNI-FORGE graph validation | `ADAPT` | useful invariants; duplicate lifecycle unwanted |
+| Evidence Plane | `ADAPT` | enrich current evidence model |
+| Policy Enforcement | `ADAPT` | strengthen one policy boundary |
+| Gemini controls | `ADAPT_TO_PROVIDER_RUNTIME` | provider runtime is a measured canonical gap |
+| legacy Gemini branches | `SUPERSEDE_AFTER_EXTRACTION` | preserve evolved regression/invariant knowledge |
+| legacy cockpits | `MIGRATE_AFTER_SURFACE_MAPPING` | operator value should converge into Nexus |
+| highly divergent branches | `CAPABILITY_EXTRACT_BEFORE_LIFECYCLE_DECISION` | divergence is measured but removal ECS is absent |
+| schema overlap candidates | `SHADOW_AND_CONSOLIDATE_IF_PROVEN` | structural/caller evidence exists; semantic equivalence pending |
+| HTTPX / psycopg | `VERIFY_USAGE` | no direct static import observed; removal is not justified |
+| Python dependency lock/constraints | `EVALUATE/IMPLEMENT` | environment drift risk is measured |
+| SBOM/advisory automation | `IMPLEMENT` | transitive security state remains incomplete |
+| Redis/vector DB/new agent framework | `DO_NOT_PROCURE_YET` | no measured need supports procurement yet |
 
-## Evolution Confidence Score data requirements
+## ECS governance
 
-No component may be marked `REMOVE` until all four inputs are measured:
-
-1. Replacement Coverage — feature/invariant mapping complete.
-2. Test Equivalence — legacy business/security/regression tests ported or explicitly retired.
-3. Dependency Migration — active callers/importers moved to canonical implementation.
-4. Evidence Confidence — exact-head CI/shadow/runtime evidence supports the replacement.
-
-Current measured progress:
-
-- Dependency Migration: import topology is now partially measurable (`469` edges, no detected cycles), but component-specific migration percentages are not yet calculated.
-- Test Equivalence: direct ownership is partially measurable (`118/246` source modules have direct test imports), but indirect equivalence remains incomplete.
-- Replacement Coverage: historical capability mapping remains incomplete.
-- Evidence Confidence: exact-head repository-intelligence evidence exists; replacement-specific evidence remains incomplete.
-
-Therefore no retirement ECS is assigned yet.
+No component may be marked `REMOVE` until all four ECS inputs are measured. The current partial proxies are discovery aids only. DependencyMigration and EvidenceConfidence remain unset across the six measured subsystem surfaces, so every ECS remains uncomputed.
 
 ## Architectural fitness functions to implement
 
@@ -281,19 +271,11 @@ Therefore no retirement ECS is assigned yet.
 - no direct AgentOutput-to-execution path;
 - no dashboard write-through without bounded permit;
 - archived modules are not imported by active code;
-- deprecated provider mechanisms are not introduced;
-- duplicate state-machine authorities are rejected by architecture tests;
-- every consequential execution path is idempotency-bound and receipt-producing.
+- duplicate state-machine authorities are rejected;
+- every consequential execution path is idempotency-bound and receipt-producing;
+- dependency resolution is reproducible and auditable;
+- schema consolidation preserves accepted-instance semantics and callers.
 
 ## Convergence exit criteria
 
-The Stage-1 discovery phase is complete only when:
-
-- repository topology is quantitatively measured rather than inferred;
-- active imports/dependents are known for retirement candidates;
-- duplicate responsibilities are mapped;
-- direct and transitive dependency audit is recorded;
-- historical tests/invariants are assigned migration destinations;
-- ECS inputs exist for every proposed retirement;
-- procurement recommendations follow observed gaps;
-- no destructive cleanup was performed during discovery.
+Stage 1 is complete only when repository topology, callers/dependents, duplicate responsibilities, direct/transitive dependency state, historical tests/invariants, subsystem ECS inputs and procurement gaps are sufficiently measured to support migration decisions—and no destructive cleanup occurs before those gates are satisfied.
