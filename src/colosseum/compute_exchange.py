@@ -28,6 +28,14 @@ class ComputeAdmission(str, Enum):
     REQUIRES_HUMAN_REVIEW = "REQUIRES_HUMAN_REVIEW"
 
 
+class ComputeStage(str, Enum):
+    BUILD = "BUILD"
+    VERIFY = "VERIFY"
+    RESEARCH = "RESEARCH"
+    TEST = "TEST"
+    EVIDENCE = "EVIDENCE"
+
+
 _CONFIDENTIALITY_RANK = {
     ConfidentialityClass.PUBLIC: 0,
     ConfidentialityClass.INTERNAL: 1,
@@ -53,10 +61,26 @@ class ComputeRequirement:
     prohibited_providers: tuple[str, ...] = ()
     required_capabilities: tuple[str, ...] = ()
     license_must_allow_commercial_use: bool = True
+    work_order_id: str = ""
+    task_id: str = ""
+    stage: ComputeStage = ComputeStage.BUILD
+    maximum_compute_seconds: int = 0
+    allowed_models: tuple[str, ...] = ()
+    prohibited_models: tuple[str, ...] = ()
+    allowed_tools: tuple[str, ...] = ()
+    prohibited_tools: tuple[str, ...] = ()
+    external_api_allowed: bool = False
+    open_source_allowed: bool = False
+    cross_border_allowed: bool = False
+    external_training_use_allowed: bool = False
 
     def __post_init__(self) -> None:
         _require_text("requirement_id", self.requirement_id)
         _require_text("workload_class", self.workload_class)
+        for optional_name in ("work_order_id", "task_id"):
+            value = getattr(self, optional_name)
+            if value:
+                _require_text(optional_name, value)
         for name in ("minimum_quality", "minimum_reliability", "minimum_availability"):
             value = getattr(self, name)
             if not 0 <= value <= 1:
@@ -67,10 +91,16 @@ class ComputeRequirement:
                 raise ValueError(f"{name} must be between 0 and 3")
         _require_nonnegative("maximum_latency_ms", self.maximum_latency_ms)
         _require_nonnegative("maximum_cost_cad", self.maximum_cost_cad)
+        _require_nonnegative("maximum_compute_seconds", self.maximum_compute_seconds)
         if not self.allowed_jurisdictions:
             raise ValueError("allowed_jurisdictions must not be empty")
-        if set(self.allowed_providers) & set(self.prohibited_providers):
-            raise ValueError("provider cannot be both allowed and prohibited")
+        for allowed, prohibited, label in (
+            (self.allowed_providers, self.prohibited_providers, "provider"),
+            (self.allowed_models, self.prohibited_models, "model"),
+            (self.allowed_tools, self.prohibited_tools, "tool"),
+        ):
+            if set(allowed) & set(prohibited):
+                raise ValueError(f"{label} cannot be both allowed and prohibited")
 
 
 @dataclass(frozen=True)
@@ -95,6 +125,12 @@ class ComputeCandidate:
     capabilities: tuple[str, ...]
     admission: ComputeAdmission
     rejection_reasons: tuple[str, ...] = ()
+    tool_ids: tuple[str, ...] = ()
+    uses_external_api: bool = False
+    uses_open_source: bool = False
+    cross_border: bool = False
+    uses_external_training: bool = False
+    estimated_compute_seconds: int = 0
 
     def __post_init__(self) -> None:
         for name in (
@@ -112,6 +148,7 @@ class ComputeCandidate:
                 raise ValueError(f"{name} must be between 0 and 3")
         _require_nonnegative("estimated_cost_cad", self.estimated_cost_cad)
         _require_nonnegative("estimated_latency_ms", self.estimated_latency_ms)
+        _require_nonnegative("estimated_compute_seconds", self.estimated_compute_seconds)
         for name in ("predicted_quality", "predicted_reliability", "availability"):
             value = getattr(self, name)
             if not 0 <= value <= 1:
@@ -135,6 +172,22 @@ class ComputeCandidate:
             return False
         if self.provider in requirement.prohibited_providers:
             return False
+        if requirement.allowed_models and self.model_or_runtime not in requirement.allowed_models:
+            return False
+        if self.model_or_runtime in requirement.prohibited_models:
+            return False
+        if requirement.allowed_tools and not set(self.tool_ids).issubset(requirement.allowed_tools):
+            return False
+        if set(self.tool_ids) & set(requirement.prohibited_tools):
+            return False
+        if self.uses_external_api and not requirement.external_api_allowed:
+            return False
+        if self.uses_open_source and not requirement.open_source_allowed:
+            return False
+        if self.cross_border and not requirement.cross_border_allowed:
+            return False
+        if self.uses_external_training and not requirement.external_training_use_allowed:
+            return False
         if self.predicted_quality < requirement.minimum_quality:
             return False
         if self.predicted_reliability < requirement.minimum_reliability:
@@ -149,7 +202,15 @@ class ComputeCandidate:
             return False
         if self.estimated_cost_cad > requirement.maximum_cost_cad:
             return False
-        if _CONFIDENTIALITY_RANK[self.confidentiality_capability] < _CONFIDENTIALITY_RANK[requirement.confidentiality_class]:
+        if (
+            requirement.maximum_compute_seconds
+            and self.estimated_compute_seconds > requirement.maximum_compute_seconds
+        ):
+            return False
+        if (
+            _CONFIDENTIALITY_RANK[self.confidentiality_capability]
+            < _CONFIDENTIALITY_RANK[requirement.confidentiality_class]
+        ):
             return False
         if requirement.license_must_allow_commercial_use and not self.commercial_use_allowed:
             return False
