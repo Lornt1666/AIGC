@@ -78,6 +78,9 @@ jobs:
           python scripts/nexus_repository_intelligence.py \
             --root . \
             --output "$RUNNER_TEMP/aigc-ci-stage-results/nexus_repository_intelligence.json"
+          python scripts/nexus_repository_intelligence_advanced.py \
+            --root . \
+            --output "$RUNNER_TEMP/aigc-ci-stage-results/nexus_repository_intelligence_advanced.json"
 
       - name: Emit exact-head admission receipt
         if: always()
