@@ -5,6 +5,7 @@ from hashlib import sha256
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import tempfile
 
@@ -24,6 +25,10 @@ EXPECTED_STAGES = [
     "false_authority",
     "readiness",
 ]
+
+_SCANNER_LINE = re.compile(
+    r"^(critical|high):\s+(.+):(\d+)\s+matched\s+(.+)$"
+)
 
 
 def canonical(value: object) -> bytes:
@@ -49,10 +54,62 @@ def atomic_write(path: Path, value: dict) -> None:
             os.unlink(temporary)
 
 
+def _scanner_diagnostics(stage_id: str, output: str) -> dict[str, object] | None:
+    """Retain only path/line/pattern metadata; never retain matched values."""
+    if stage_id == "redaction":
+        findings: list[dict[str, object]] = []
+        for raw_line in output.splitlines():
+            match = _SCANNER_LINE.match(raw_line.strip())
+            if not match:
+                continue
+            severity, path, line_number, pattern = match.groups()
+            findings.append(
+                {
+                    "severity": severity,
+                    "path": path,
+                    "line_number": int(line_number),
+                    "pattern": pattern,
+                }
+            )
+        return {
+            "finding_count": len(findings),
+            "findings": findings[:100],
+            "truncated": len(findings) > 100,
+        }
+    if stage_id == "release_secret_scan":
+        try:
+            payload = json.loads(output)
+        except json.JSONDecodeError:
+            return {
+                "finding_count": None,
+                "findings": [],
+                "parse_error": True,
+            }
+        safe_findings = [
+            {
+                "severity": item.get("severity"),
+                "path": item.get("path"),
+                "line_number": item.get("line_number"),
+                "pattern": item.get("pattern"),
+            }
+            for item in (payload.get("findings") or [])[:100]
+            if isinstance(item, dict)
+        ]
+        count = payload.get("finding_count")
+        return {
+            "finding_count": count,
+            "findings": safe_findings,
+            "truncated": isinstance(count, int) and count > len(safe_findings),
+        }
+    return None
+
+
 def run_command(
     command: list[str],
     cwd: Path,
     env: dict[str, str],
+    *,
+    stage_id: str,
 ) -> dict[str, object]:
     completed = subprocess.run(
         command,
@@ -62,11 +119,15 @@ def run_command(
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
     )
-    return {
+    outcome: dict[str, object] = {
         "argv_sha256": sha256(canonical(command)).hexdigest(),
         "exit_code": completed.returncode,
         "output_sha256": sha256(completed.stdout.encode()).hexdigest(),
     }
+    diagnostics = _scanner_diagnostics(stage_id, completed.stdout)
+    if diagnostics is not None:
+        outcome["sanitized_diagnostics"] = diagnostics
+    return outcome
 
 
 def terraform_commands() -> list[list[str]]:
@@ -179,7 +240,12 @@ def main() -> None:
                 )
                 for part in raw
             ]
-            outcome = run_command(command, args.project_root, env)
+            outcome = run_command(
+                command,
+                args.project_root,
+                env,
+                stage_id=stage_id,
+            )
             outcomes.append(outcome)
             if outcome["exit_code"] != 0:
                 status = "failure"
