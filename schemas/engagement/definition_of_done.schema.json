@@ -4,20 +4,76 @@
   "title": "AIGC DefinitionOfDone",
   "type": "object",
   "additionalProperties": false,
-  "required": ["definition_id", "work_order_id", "deliverable_type", "requirements", "acceptance_criteria", "required_tests", "required_standards", "required_evidence", "required_verification", "human_review_required", "licensed_review_required", "minimum_quality", "completion_policy_version"],
+  "required": [
+    "definition_id",
+    "work_order_id",
+    "deliverable_type",
+    "requirements",
+    "source_requirement_ids",
+    "acceptance_criteria",
+    "source_acceptance_criterion_ids",
+    "required_tests",
+    "required_standards",
+    "required_evidence",
+    "required_verification",
+    "human_review_required",
+    "licensed_review_required",
+    "reviewer_qualification",
+    "minimum_quality",
+    "completion_policy_version"
+  ],
   "properties": {
     "definition_id": {"type": "string", "minLength": 1},
     "work_order_id": {"type": "string", "minLength": 1},
     "deliverable_type": {"type": "string", "minLength": 1},
     "requirements": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
-    "acceptance_criteria": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["criterion_id", "description", "required"], "properties": {"criterion_id": {"type": "string", "minLength": 1}, "description": {"type": "string", "minLength": 1}, "required": {"type": "boolean"}}}},
-    "required_tests": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
-    "required_standards": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
-    "required_evidence": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["evidence_type", "description"], "properties": {"evidence_type": {"type": "string", "minLength": 1}, "description": {"type": "string", "minLength": 1}}}},
-    "required_verification": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "source_requirement_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "acceptance_criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["criterion_id", "description", "required"],
+        "properties": {
+          "criterion_id": {"type": "string", "minLength": 1},
+          "description": {"type": "string", "minLength": 1},
+          "required": {"type": "boolean"}
+        }
+      }
+    },
+    "source_acceptance_criterion_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "required_tests": {"type": "array", "minItems": 0, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "required_standards": {"type": "array", "minItems": 0, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "required_evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["evidence_type", "description"],
+        "properties": {
+          "evidence_type": {"type": "string", "minLength": 1},
+          "description": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "required_verification": {"type": "array", "minItems": 0, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
     "human_review_required": {"type": "boolean"},
     "licensed_review_required": {"type": "boolean"},
+    "reviewer_qualification": {"type": ["string", "null"], "minLength": 1},
     "minimum_quality": {"type": "number", "minimum": 0, "maximum": 1},
     "completion_policy_version": {"type": "string", "minLength": 1}
-  }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"licensed_review_required": {"const": true}}},
+      "then": {
+        "properties": {
+          "human_review_required": {"const": true},
+          "reviewer_qualification": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  ]
 }
