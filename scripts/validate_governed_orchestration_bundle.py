@@ -12,11 +12,27 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from scripts.validate_colosseum_persistence import build_fixture
-from src.colosseum.domain import CapabilityEvidence, CapabilityVerdict
+from src.colosseum.admission import OrchestrationAdmissionEnvelope
+from src.colosseum.domain import (
+    CapabilityEvidence,
+    CapabilityVerdict,
+    WorkOrder,
+)
 from src.colosseum.governed_bundle import GovernedOrchestrationBundle
 
 
 NOW = datetime(2026, 8, 7, tzinfo=timezone.utc)
+
+
+def build_work_order() -> WorkOrder:
+    return WorkOrder(
+        "work-validation",
+        "engagement-validation",
+        "Produce a synthetic validated artifact",
+        ("requirement-validation",),
+        ("acceptance-validation",),
+        True,
+    )
 
 
 def build_governed_fixture() -> GovernedOrchestrationBundle:
@@ -59,13 +75,19 @@ def build_governed_fixture() -> GovernedOrchestrationBundle:
     )
 
 
-def validate_schema(root: Path, record: dict[str, object]) -> None:
-    schema = json.loads(
-        (
-            root
-            / "schemas/colosseum/governed_orchestration_bundle.schema.json"
-        ).read_text(encoding="utf-8")
+def build_admission_fixture() -> OrchestrationAdmissionEnvelope:
+    return OrchestrationAdmissionEnvelope(
+        work_order=build_work_order(),
+        governed_bundle=build_governed_fixture(),
     )
+
+
+def validate_record(
+    root: Path,
+    schema_path: str,
+    record: dict[str, object],
+) -> None:
+    schema = json.loads((root / schema_path).read_text(encoding="utf-8"))
     Draft202012Validator(
         schema,
         format_checker=FormatChecker(),
@@ -83,7 +105,9 @@ def main() -> int:
     args = parser.parse_args()
 
     bundle = build_governed_fixture()
-    record = bundle.to_record()
+    bundle_record = bundle.to_record()
+    envelope = build_admission_fixture()
+    envelope_record = envelope.to_record()
     result: dict[str, object] = {
         "schema_version": "1.0.0",
         "mode": args.mode,
@@ -91,12 +115,28 @@ def main() -> int:
         "production_activation_authorized": False,
     }
     if args.mode in {"schema", "all"}:
-        validate_schema(args.project_root, record)
+        validate_record(
+            args.project_root,
+            "schemas/colosseum/governed_orchestration_bundle.schema.json",
+            bundle_record,
+        )
+        validate_record(
+            args.project_root,
+            "schemas/colosseum/orchestration_admission_envelope.schema.json",
+            envelope_record,
+        )
         result["schema_validation"] = "PASS"
     if args.mode in {"roundtrip", "all"}:
-        reconstructed = GovernedOrchestrationBundle.from_record(record)
-        if reconstructed.to_record() != record:
+        reconstructed_bundle = GovernedOrchestrationBundle.from_record(
+            bundle_record
+        )
+        if reconstructed_bundle.to_record() != bundle_record:
             raise SystemExit("governed orchestration round trip lost information")
+        reconstructed_envelope = OrchestrationAdmissionEnvelope.from_record(
+            envelope_record
+        )
+        if reconstructed_envelope.to_record() != envelope_record:
+            raise SystemExit("admission envelope round trip lost information")
         result["round_trip_validation"] = "PASS"
     print(json.dumps(result, sort_keys=True))
     return 0
