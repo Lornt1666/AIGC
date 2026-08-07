@@ -10,6 +10,9 @@ from .contracts import (
     StateTransition,
     WorkOrder,
 )
+from .evidence import EvidenceReference
+from .memory import MemoryAdmissionDecision, MemoryCandidate, MemoryRecord
+from .odse import KnowledgePillar, OperationalStrategyArtifact
 
 __all__ = [
     "ChangeSet",
@@ -22,4 +25,10 @@ __all__ = [
     "ProposedOperation",
     "StateTransition",
     "WorkOrder",
+    "EvidenceReference",
+    "MemoryAdmissionDecision",
+    "MemoryCandidate",
+    "MemoryRecord",
+    "KnowledgePillar",
+    "OperationalStrategyArtifact",
 ]
