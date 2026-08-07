@@ -30,15 +30,17 @@ class DeterministicEpistemicVerifier:
     def evaluate(self, baseline: ArtifactState, target: ArtifactState) -> VerifierReport:
         baseline_hash = canonical_sha256(baseline)
         target_hash = canonical_sha256(target)
+        active_claims = self._active_claims(target.claims)
+
         findings = list(self._audit_fidelity(baseline, target))
-        findings.extend(self._audit_claims(target.claims))
+        findings.extend(self._audit_claims(active_claims))
         findings.extend(self._audit_redundancy(target))
 
         f = self._fidelity_score(baseline, target)
-        e = self._evidence_coverage(target.claims)
+        e = self._evidence_coverage(active_claims)
         c = self._structural_completeness(target)
         r = self._redundancy_score(target)
-        x = self._unsupported_claim_score(target.claims)
+        x = self._unsupported_claim_score(active_claims)
         total = (
             self.weights.fidelity * f
             + self.weights.evidence * e
@@ -48,10 +50,10 @@ class DeterministicEpistemicVerifier:
         )
         total = max(-1.0, min(1.0, total))
 
-        falsified = sum(1 for claim in target.claims if claim.verification_state == "falsified")
-        unverified = sum(1 for claim in target.claims if claim.verification_state == "unverified")
+        falsified = sum(1 for claim in active_claims if claim.verification_state == "falsified")
+        unverified = sum(1 for claim in active_claims if claim.verification_state == "unverified")
         hard_failure = any(finding.severity in {"error", "critical"} for finding in findings)
-        passing = not hard_failure and total >= self.utility_threshold
+        passing = not hard_failure and unverified == 0 and total >= self.utility_threshold
 
         score = UtilityScore(
             total_score=total,
@@ -65,14 +67,21 @@ class DeterministicEpistemicVerifier:
             "verifier_id": "deterministic_epistemic_verifier_v2",
             "baseline_state_hash": baseline_hash,
             "target_state_hash": target_hash,
+            "active_claim_ids": [claim.id for claim in active_claims],
             "findings": [finding.model_dump(mode="json") for finding in findings],
             "utility_score": score.model_dump(mode="json"),
             "utility_threshold": self.utility_threshold,
             "hard_failure": hard_failure,
+            "unverified_claims": unverified,
             "is_passing": passing,
         }
         report_id = "VRF-" + sha256(
-            json.dumps(report_payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+            json.dumps(
+                report_payload,
+                sort_keys=True,
+                separators=(",", ":"),
+                ensure_ascii=False,
+            ).encode("utf-8")
         ).hexdigest()[:24].upper()
 
         return VerifierReport(
@@ -90,10 +99,19 @@ class DeterministicEpistemicVerifier:
         )
 
     @staticmethod
+    def _active_claims(claims: tuple[Claim, ...]) -> tuple[Claim, ...]:
+        superseded_ids = {claim.supersedes for claim in claims if claim.supersedes is not None}
+        return tuple(claim for claim in claims if claim.id not in superseded_ids)
+
+    @staticmethod
     def _objects_by_id(items: tuple) -> dict[str, object]:
         return {item.id: item for item in items}
 
-    def _audit_fidelity(self, baseline: ArtifactState, target: ArtifactState) -> tuple[VerifierFinding, ...]:
+    def _audit_fidelity(
+        self,
+        baseline: ArtifactState,
+        target: ArtifactState,
+    ) -> tuple[VerifierFinding, ...]:
         findings: list[VerifierFinding] = []
         for kind, before_items, after_items in (
             ("ENTITY", baseline.entities, target.entities),
@@ -140,12 +158,21 @@ class DeterministicEpistemicVerifier:
                         evidence_refs=claim.falsification_evidence_refs,
                     )
                 )
+            if claim.verification_state == "unverified":
+                findings.append(
+                    VerifierFinding(
+                        code="UNVERIFIED_ACTIVE_CLAIM",
+                        severity="warning",
+                        message=f"Active claim {claim.id} remains unverified.",
+                        claim_ids=(claim.id,),
+                    )
+                )
             if claim.basis in {"observation", "simulation"} and not claim.evidence_refs:
                 findings.append(
                     VerifierFinding(
                         code="EMPIRICAL_CLAIM_WITHOUT_EVIDENCE",
-                        severity="error",
-                        message=f"Empirical claim {claim.id} has no evidence reference.",
+                        severity="warning",
+                        message=f"Active empirical claim {claim.id} has no evidence reference.",
                         claim_ids=(claim.id,),
                     )
                 )
@@ -211,7 +238,11 @@ class DeterministicEpistemicVerifier:
             return 1.0
         supported = 0
         for claim in evidence_requiring:
-            refs = claim.falsification_evidence_refs if claim.verification_state == "falsified" else claim.evidence_refs
+            refs = (
+                claim.falsification_evidence_refs
+                if claim.verification_state == "falsified"
+                else claim.evidence_refs
+            )
             if refs:
                 supported += 1
         return supported / len(evidence_requiring)
@@ -220,8 +251,6 @@ class DeterministicEpistemicVerifier:
     def _structural_completeness(artifact: ArtifactState) -> float:
         # ArtifactState construction already enforces identifiers, relation targets,
         # derivation lineage, duplicate IDs, and acyclic claim derivation.
-        # A successfully constructed state therefore satisfies the deterministic
-        # structural contract represented by this verifier version.
         return 1.0
 
     @staticmethod
