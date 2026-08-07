@@ -42,6 +42,9 @@ class ComputeRequirement:
     workload_class: str
     minimum_quality: float
     minimum_reliability: float
+    minimum_availability: float
+    minimum_security_level: int
+    minimum_privacy_level: int
     maximum_latency_ms: int
     maximum_cost_cad: float
     confidentiality_class: ConfidentialityClass
@@ -54,10 +57,14 @@ class ComputeRequirement:
     def __post_init__(self) -> None:
         _require_text("requirement_id", self.requirement_id)
         _require_text("workload_class", self.workload_class)
-        for name in ("minimum_quality", "minimum_reliability"):
+        for name in ("minimum_quality", "minimum_reliability", "minimum_availability"):
             value = getattr(self, name)
             if not 0 <= value <= 1:
                 raise ValueError(f"{name} must be between 0 and 1")
+        for name in ("minimum_security_level", "minimum_privacy_level"):
+            value = getattr(self, name)
+            if not 0 <= value <= 3:
+                raise ValueError(f"{name} must be between 0 and 3")
         _require_nonnegative("maximum_latency_ms", self.maximum_latency_ms)
         _require_nonnegative("maximum_cost_cad", self.maximum_cost_cad)
         if not self.allowed_jurisdictions:
@@ -75,6 +82,8 @@ class ComputeCandidate:
     region: str
     jurisdiction: str
     confidentiality_capability: ConfidentialityClass
+    security_level: int
+    privacy_level: int
     encryption: str
     estimated_cost_cad: float
     estimated_latency_ms: int
@@ -97,6 +106,10 @@ class ComputeCandidate:
             "encryption",
         ):
             _require_text(name, getattr(self, name))
+        for name in ("security_level", "privacy_level"):
+            value = getattr(self, name)
+            if not 0 <= value <= 3:
+                raise ValueError(f"{name} must be between 0 and 3")
         _require_nonnegative("estimated_cost_cad", self.estimated_cost_cad)
         _require_nonnegative("estimated_latency_ms", self.estimated_latency_ms)
         for name in ("predicted_quality", "predicted_reliability", "availability"):
@@ -105,11 +118,16 @@ class ComputeCandidate:
                 raise ValueError(f"{name} must be between 0 and 1")
         if self.admission == ComputeAdmission.NOT_ADMISSIBLE and not self.rejection_reasons:
             raise ValueError("NOT_ADMISSIBLE candidate requires rejection reasons")
-        if self.admission == ComputeAdmission.ADMISSIBLE and self.rejection_reasons:
-            raise ValueError("ADMISSIBLE candidate cannot carry rejection reasons")
+        if self.admission == ComputeAdmission.ADMISSIBLE:
+            if self.rejection_reasons:
+                raise ValueError("ADMISSIBLE candidate cannot carry rejection reasons")
+            if not self.benchmark_evidence_refs:
+                raise ValueError("ADMISSIBLE candidate requires benchmark evidence")
 
     def satisfies(self, requirement: ComputeRequirement) -> bool:
         if self.admission != ComputeAdmission.ADMISSIBLE:
+            return False
+        if not self.benchmark_evidence_refs:
             return False
         if self.jurisdiction not in requirement.allowed_jurisdictions:
             return False
@@ -120,6 +138,12 @@ class ComputeCandidate:
         if self.predicted_quality < requirement.minimum_quality:
             return False
         if self.predicted_reliability < requirement.minimum_reliability:
+            return False
+        if self.availability < requirement.minimum_availability:
+            return False
+        if self.security_level < requirement.minimum_security_level:
+            return False
+        if self.privacy_level < requirement.minimum_privacy_level:
             return False
         if self.estimated_latency_ms > requirement.maximum_latency_ms:
             return False
