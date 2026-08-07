@@ -15,6 +15,7 @@ from src.security.redaction_scanner import RedactionScanner
 RELEASE_PATHS = (
     ".github/workflows/aigc-ci.yml",
     "config/exact_sha_ci_validation_contract.json",
+    "scripts/release_secret_scan.py",
     "scripts/run_exact_sha_ci_contract.py",
     "scripts/validate_colosseum_persistence.py",
     "scripts/verify_colosseum_false_authority.py",
