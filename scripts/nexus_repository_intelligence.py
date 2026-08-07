@@ -90,7 +90,7 @@ def _resolve_internal_target(target: str, module_names: set[str]) -> str | None:
         for candidate in module_names
         if candidate == target or candidate.startswith(target + ".") or target.startswith(candidate + ".")
     ]
-    return min(candidates, key=len) if candidates else None
+    return max(candidates, key=len) if candidates else None
 
 
 def _strongly_connected_components(graph: dict[str, set[str]]) -> list[list[str]]:
@@ -215,7 +215,7 @@ def _flatten_schema(node: object, prefix: str = "") -> set[str]:
 def _schema_overlap(root: Path, files: list[Path]) -> dict:
     schemas = []
     for path in files:
-        if path.suffix.lower() != ".json" or "schema" not in path.name.lower() and "schemas" not in path.parts:
+        if path.suffix.lower() != ".json" or ("schema" not in path.name.lower() and "schemas" not in path.parts):
             continue
         try:
             payload = json.loads(path.read_text(encoding="utf-8"))
@@ -333,7 +333,7 @@ def analyze(root: Path) -> dict:
     tests = category_counts["tests"]
     source = category_counts["source"]
     report = {
-        "schema_version": "1.1.0",
+        "schema_version": "1.1.1",
         "root": str(root),
         "summary": {
             "total_files": len(files),
