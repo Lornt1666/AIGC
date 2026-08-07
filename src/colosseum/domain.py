@@ -3,7 +3,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Iterable
 
 
 def _require_text(name: str, value: str) -> str:
@@ -24,6 +23,15 @@ class ConfidentialityClass(str, Enum):
     INTERNAL = "INTERNAL"
     CONFIDENTIAL = "CONFIDENTIAL"
     RESTRICTED = "RESTRICTED"
+
+
+class PresenceRequirement(str, Enum):
+    NONE = "NONE"
+    OCCASIONAL = "OCCASIONAL"
+    PERIODIC = "PERIODIC"
+    ROUTINE = "ROUTINE"
+    DAILY = "DAILY"
+    UNKNOWN = "UNKNOWN"
 
 
 class CapabilityVerdict(str, Enum):
@@ -95,15 +103,28 @@ class Opportunity:
     employer_id: str
     title: str
     digitally_executable: bool
-    physical_presence_required: bool
+    presence_requirement: PresenceRequirement
     legitimacy_status: str
     capability_requirements: tuple[str, ...]
+    meeting_expectation: str = "UNKNOWN"
 
     def __post_init__(self) -> None:
-        for name in ("opportunity_id", "source_id", "employer_id", "title", "legitimacy_status"):
+        for name in (
+            "opportunity_id",
+            "source_id",
+            "employer_id",
+            "title",
+            "legitimacy_status",
+            "meeting_expectation",
+        ):
             _require_text(name, getattr(self, name))
-        if self.physical_presence_required and self.digitally_executable:
-            raise ValueError("opportunity cannot be both fully digitally executable and require physical presence")
+        # Remote digital work may still require occasional in-person meetings.
+        # Presence suitability is a qualification-policy decision, not a claim
+        # that digitally executable work can never include physical meetings.
+        if self.presence_requirement == PresenceRequirement.DAILY and self.digitally_executable:
+            raise ValueError(
+                "daily physical presence conflicts with digitally executable opportunity classification"
+            )
 
 
 @dataclass(frozen=True)
@@ -175,7 +196,14 @@ class Swarm:
     emergency_stop_epoch: int
 
     def __post_init__(self) -> None:
-        for name in ("swarm_id", "engagement_id", "work_order_id", "objective", "jurisdiction_policy_id", "verification_policy_id"):
+        for name in (
+            "swarm_id",
+            "engagement_id",
+            "work_order_id",
+            "objective",
+            "jurisdiction_policy_id",
+            "verification_policy_id",
+        ):
             _require_text(name, getattr(self, name))
         if not self.agent_cells:
             raise ValueError("swarm requires at least one agent cell")
@@ -251,8 +279,15 @@ class WorkLedgerEntry:
         if self.ended_at < self.started_at:
             raise ValueError("ended_at cannot precede started_at")
         for name in (
-            "human_active_seconds", "agent_active_seconds", "compute_seconds", "research_seconds",
-            "review_seconds", "meeting_seconds", "revision_seconds", "blocked_seconds", "employer_wait_seconds",
+            "human_active_seconds",
+            "agent_active_seconds",
+            "compute_seconds",
+            "research_seconds",
+            "review_seconds",
+            "meeting_seconds",
+            "revision_seconds",
+            "blocked_seconds",
+            "employer_wait_seconds",
         ):
             _require_nonnegative(name, getattr(self, name))
 
@@ -270,8 +305,15 @@ class WorkLedger:
     @property
     def totals(self) -> dict[str, int]:
         keys = (
-            "human_active_seconds", "agent_active_seconds", "compute_seconds", "research_seconds",
-            "review_seconds", "meeting_seconds", "revision_seconds", "blocked_seconds", "employer_wait_seconds",
+            "human_active_seconds",
+            "agent_active_seconds",
+            "compute_seconds",
+            "research_seconds",
+            "review_seconds",
+            "meeting_seconds",
+            "revision_seconds",
+            "blocked_seconds",
+            "employer_wait_seconds",
         )
         return {key: sum(getattr(entry, key) for entry in self.entries) for key in keys}
 
