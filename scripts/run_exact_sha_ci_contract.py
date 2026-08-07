@@ -31,14 +31,11 @@ def atomic_write(path: Path, value: dict) -> None:
 
 def run_command(command: list[str], cwd: Path, env: dict[str, str]) -> dict:
     completed = subprocess.run(command, cwd=cwd, env=env, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    outcome = {
+    return {
         "argv_sha256": sha256(canonical(command)).hexdigest(),
         "exit_code": completed.returncode,
         "output_sha256": sha256(completed.stdout.encode()).hexdigest(),
     }
-    if completed.returncode != 0:
-        outcome["diagnostic_output_tail"] = completed.stdout[-12000:]
-    return outcome
 
 
 def terraform_commands() -> list[list[str]]:
