@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 
 from src.core.epistemic.canonicalization import canonical_sha256
 from src.domain.epistemic.models import ArtifactState
@@ -28,6 +29,7 @@ def build_context_envelope(
     state: ArtifactState,
     memories: tuple[MemoryRecord, ...],
     evidence: tuple[EvidenceReference, ...],
+    authoritative_now: datetime,
     policy: ContextProjectionPolicy = ContextProjectionPolicy(),
 ) -> ContextEnvelope:
     if policy.maximum_memories < 0 or policy.maximum_evidence_refs < 0:
@@ -37,7 +39,8 @@ def build_context_envelope(
     active = [
         item
         for item in memories
-        if item.active and item.sensitivity in policy.allowed_sensitivities
+        if item.is_eligible_at(authoritative_now=authoritative_now)
+        and item.sensitivity in policy.allowed_sensitivities
     ]
 
     def score(item: MemoryRecord) -> tuple[int, float, str]:
