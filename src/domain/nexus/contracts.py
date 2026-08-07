@@ -97,6 +97,19 @@ class ExecutionPermit(NexusContract):
     expires_at: datetime
     maximum_invocations: int = Field(ge=1, le=100)
 
+    @model_validator(mode="after")
+    def require_timezone_aware_expiry(self) -> "ExecutionPermit":
+        if self.expires_at.tzinfo is None or self.expires_at.utcoffset() is None:
+            raise ValueError("ExecutionPermit expires_at must be timezone-aware")
+        return self
+
+    def verify_temporal_validity(self, *, authoritative_now: datetime) -> "ExecutionPermit":
+        if authoritative_now.tzinfo is None or authoritative_now.utcoffset() is None:
+            raise ValueError("authoritative_now must be timezone-aware")
+        if self.expires_at <= authoritative_now:
+            raise ValueError("ExecutionPermit is expired at authoritative_now")
+        return self
+
 
 class NexusToolInvocationRequest(NexusContract):
     request_id: str = Field(pattern=r"^TREQ-[A-Z0-9_-]{6,64}$")
