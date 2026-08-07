@@ -113,7 +113,8 @@ jobs:
             scripts/publish_gemini_judge_receipt.py \
             scripts/run_controlled_gemini_canary.py \
             scripts/run_gemini_workflow_smoke.py \
-            scripts/validate_gemini_staging_authorization.py
+            scripts/validate_gemini_staging_authorization.py \
+            scripts/run_focused_gemini_ci.py
           printf 'python_compile=passed\n' > "$RUNNER_TEMP/aigc-ci-stage-results/gemini-compile.log"
 
       - name: Execute shared canonical validation runner
@@ -149,6 +150,7 @@ jobs:
             scripts/run_controlled_gemini_canary.py \
             scripts/run_gemini_workflow_smoke.py \
             scripts/validate_gemini_staging_authorization.py \
+            scripts/run_focused_gemini_ci.py \
             config/gemini_canary_intake.example.json \
             config/gemini_ci_receipt.example.json \
             config/gemini_deployment_permit.example.json \
@@ -167,22 +169,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python -m pytest -q -W error \
-            tests/test_controlled_gemini_canary.py \
-            tests/test_gcs_evidence_receipts.py \
-            tests/test_gemini_controls.py \
-            tests/test_gemini_image_allowlist.py \
-            tests/test_gemini_readiness.py \
-            tests/test_gemini_receipt_binding.py \
-            tests/test_gemini_staging_authorization.py \
-            tests/test_gemini_staging_deploy.py \
-            tests/test_gemini_surfaces.py \
-            tests/test_gemini_ui.py \
-            tests/test_gemini_workflow.py \
-            tests/test_judge_receipts.py \
-            tests/test_judge_store.py \
-            tests/test_publish_gemini_judge_receipt.py \
-            tests/test_secret_broker.py \
+          python scripts/run_focused_gemini_ci.py \
             | tee "$RUNNER_TEMP/aigc-ci-stage-results/focused-gemini-pytest.log"
 
       - name: Run governed Gemini workflow offline smoke
