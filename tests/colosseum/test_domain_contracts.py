@@ -18,9 +18,9 @@ from src.colosseum.domain import (
     CapabilityEvidence,
     CapabilityVerdict,
     ConfidentialityClass,
-    Deliverable,
     EmployerVault,
     Opportunity,
+    PresenceRequirement,
     Swarm,
     Verification,
     VerificationStatus,
@@ -44,17 +44,32 @@ class DomainContractTests(unittest.TestCase):
                 cross_employer_retrieval=True,
             )
 
-    def test_remote_opportunity_cannot_require_physical_presence(self) -> None:
+    def test_remote_opportunity_allows_occasional_in_person_meetings(self) -> None:
+        opportunity = Opportunity(
+            opportunity_id="opp-1",
+            source_id="source-1",
+            employer_id="employer-1",
+            title="Remote role with quarterly meetings",
+            digitally_executable=True,
+            presence_requirement=PresenceRequirement.OCCASIONAL,
+            legitimacy_status="LEGITIMATE_HIGH_CONFIDENCE",
+            capability_requirements=("research",),
+            meeting_expectation="Quarterly in-person meeting if required",
+        )
+        self.assertEqual(opportunity.presence_requirement, PresenceRequirement.OCCASIONAL)
+
+    def test_digitally_executable_opportunity_rejects_daily_presence(self) -> None:
         with self.assertRaises(ValueError):
             Opportunity(
-                opportunity_id="opp-1",
+                opportunity_id="opp-2",
                 source_id="source-1",
                 employer_id="employer-1",
-                title="Remote role",
+                title="Daily onsite role",
                 digitally_executable=True,
-                physical_presence_required=True,
+                presence_requirement=PresenceRequirement.DAILY,
                 legitimacy_status="LEGITIMATE_HIGH_CONFIDENCE",
                 capability_requirements=(),
+                meeting_expectation="Daily onsite attendance",
             )
 
     def test_swarm_agent_limits_must_fit_swarm_budget(self) -> None:
@@ -150,7 +165,7 @@ class ComputeExchangeContractTests(unittest.TestCase):
             region="northamerica-northeast1",
             jurisdiction="CA-QC",
             confidentiality_capability=ConfidentialityClass.CONFIDENTIAL,
-            encryption="TLS+AER",
+            encryption="TLS+AEAD",
             estimated_cost_cad=3.0,
             estimated_latency_ms=2000,
             predicted_quality=0.95,
@@ -166,18 +181,19 @@ class ComputeExchangeContractTests(unittest.TestCase):
         return ComputeCandidate(**values)
 
     def test_cost_cannot_override_jurisdiction_gate(self) -> None:
-        cheap_wrong_region = self.candidate(
-            estimated_cost_cad=0.01,
-            jurisdiction="US",
-        )
+        cheap_wrong_region = self.candidate(estimated_cost_cad=0.01, jurisdiction="US")
         self.assertFalse(cheap_wrong_region.satisfies(self.requirement()))
 
     def test_cost_cannot_override_quality_floor(self) -> None:
-        cheap_low_quality = self.candidate(
-            estimated_cost_cad=0.01,
-            predicted_quality=0.4,
-        )
+        cheap_low_quality = self.candidate(estimated_cost_cad=0.01, predicted_quality=0.4)
         self.assertFalse(cheap_low_quality.satisfies(self.requirement()))
+
+    def test_cost_cannot_override_confidentiality_gate(self) -> None:
+        cheap_public_only = self.candidate(
+            estimated_cost_cad=0.01,
+            confidentiality_capability=ConfidentialityClass.PUBLIC,
+        )
+        self.assertFalse(cheap_public_only.satisfies(self.requirement()))
 
     def test_cost_cannot_override_commercial_license(self) -> None:
         candidate = self.candidate(commercial_use_allowed=False)
