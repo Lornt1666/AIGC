@@ -25,6 +25,10 @@ Evidence identifiers alone are insufficient. The bundle rejects:
 
 The canonical bundle record is deterministic, SHA-256 bound and round-trip reconstructable. Component contracts remain separately validated against their strict schemas, while the governed bundle schema validates the composition, capability evidence, qualification evidence, role requirements and false-authority envelope.
 
+## Resource ceilings
+
+Compute, cost, token, latency, privacy, security, confidentiality, jurisdiction, provider, model, tool and licensing controls remain hard admission constraints. A zero compute-time ceiling means zero permitted compute; it is never interpreted as an unlimited allowance.
+
 The exact-head CI contract validates:
 
 1. dependency consistency;
