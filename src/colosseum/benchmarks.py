@@ -2,8 +2,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
+import re
 
 from .domain import _require_nonnegative, _require_text
+
+
+_SHA256_RE = re.compile(r"^[A-Fa-f0-9]{64}$")
 
 
 @dataclass(frozen=True)
@@ -37,6 +41,8 @@ class ComputeBenchmark:
             "fixture_digest",
         ):
             _require_text(name, getattr(self, name))
+        if not _SHA256_RE.fullmatch(self.fixture_digest):
+            raise ValueError("fixture_digest must be a 64-character hexadecimal SHA-256 digest")
         if not 0 <= self.measured_quality <= 1:
             raise ValueError("measured_quality must be between 0 and 1")
         _require_nonnegative("latency_ms_p50", self.latency_ms_p50)
