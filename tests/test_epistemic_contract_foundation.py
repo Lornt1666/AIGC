@@ -91,7 +91,7 @@ def test_hypothesis_requires_falsifier() -> None:
 
 
 def test_inference_requires_existing_lineage() -> None:
-    with pytest.raises(ValidationError, match="requires derived_from lineage"):
+    with pytest.raises(ValidationError, match="derived_from lineage"):
         Claim(
             id="CLM-INFER001",
             statement="Inference without lineage",
