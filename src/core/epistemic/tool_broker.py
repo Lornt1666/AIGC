@@ -66,7 +66,10 @@ class EpistemicToolBroker:
 
     @staticmethod
     def request_digest(request: ToolInvocationRequest) -> str:
-        payload = request.model_dump(mode="json", exclude={"approval_reference"})
+        payload = request.model_dump(
+            mode="json",
+            exclude={"approval_reference", "idempotency_key"},
+        )
         return canonical_sha256(payload)
 
     @staticmethod
@@ -85,6 +88,9 @@ class EpistemicToolBroker:
 
         if self._emergency_stop:
             reasons.append("EMERGENCY_STOP_ACTIVE")
+
+        if request.idempotency_key != digest:
+            reasons.append("INVALID_IDEMPOTENCY_KEY")
 
         policy = self._policies.get(request.agent_id)
         if policy is None:
