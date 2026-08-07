@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.regenexcalibur.invalid/schemas/engagement/definition_of_done.schema.json",
+  "title": "AIGC DefinitionOfDone",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["definition_id", "work_order_id", "deliverable_type", "requirements", "acceptance_criteria", "required_tests", "required_standards", "required_evidence", "required_verification", "human_review_required", "licensed_review_required", "minimum_quality", "completion_policy_version"],
+  "properties": {
+    "definition_id": {"type": "string", "minLength": 1},
+    "work_order_id": {"type": "string", "minLength": 1},
+    "deliverable_type": {"type": "string", "minLength": 1},
+    "requirements": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "acceptance_criteria": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["criterion_id", "description", "required"], "properties": {"criterion_id": {"type": "string", "minLength": 1}, "description": {"type": "string", "minLength": 1}, "required": {"type": "boolean"}}}},
+    "required_tests": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "required_standards": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "required_evidence": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["evidence_type", "description"], "properties": {"evidence_type": {"type": "string", "minLength": 1}, "description": {"type": "string", "minLength": 1}}}},
+    "required_verification": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "human_review_required": {"type": "boolean"},
+    "licensed_review_required": {"type": "boolean"},
+    "minimum_quality": {"type": "number", "minimum": 0, "maximum": 1},
+    "completion_policy_version": {"type": "string", "minLength": 1}
+  }
+}
