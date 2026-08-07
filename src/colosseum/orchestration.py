@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 import hashlib
@@ -8,14 +8,7 @@ import json
 from typing import Iterable
 
 from .compute_exchange import ComputeRequirement
-from .domain import (
-    CapabilityEvidence,
-    CapabilityVerdict,
-    ConfidentialityClass,
-    WorkOrder,
-    _require_nonnegative,
-    _require_text,
-)
+from .domain import CapabilityEvidence, CapabilityVerdict, WorkOrder, _require_nonnegative, _require_text
 from .policy import EffectivePolicy
 
 
@@ -187,16 +180,7 @@ class TaskDAG:
         predecessor_map: dict[str, set[str]] = {task.task_id: set() for task in self.tasks}
         for dependency in self.dependencies:
             predecessor_map[dependency.successor_task_id].add(dependency.predecessor_task_id)
-        return tuple(
-            sorted(
-                (
-                    task
-                    for task in self.tasks
-                    if task.task_id not in completed and predecessor_map[task.task_id].issubset(completed)
-                ),
-                key=lambda task: (-task.priority, task.task_id),
-            )
-        )
+        return tuple(sorted((task for task in self.tasks if task.task_id not in completed and predecessor_map[task.task_id].issubset(completed)), key=lambda task: (-task.priority, task.task_id)))
 
     def blocked_task_ids(self, completed_task_ids: Iterable[str]) -> tuple[str, ...]:
         ready_ids = {task.task_id for task in self.ready_tasks(completed_task_ids)}
@@ -210,8 +194,7 @@ class TaskDAG:
             predecessors[dependency.successor_task_id].append(dependency.predecessor_task_id)
         longest: dict[str, int] = {}
         for task_id in self.topological_order():
-            prior = max((longest[p] for p in predecessors[task_id]), default=0)
-            longest[task_id] = prior + tasks[task_id].estimated_effort_minutes
+            longest[task_id] = max((longest[p] for p in predecessors[task_id]), default=0) + tasks[task_id].estimated_effort_minutes
         return max(longest.values())
 
 
@@ -322,7 +305,7 @@ class SwarmPlan:
             raise ValueError("orchestration-kernel V1 produces plans only")
         _require_nonnegative("maximum_cost_cad", self.maximum_cost_cad)
         _require_nonnegative("maximum_tokens", self.maximum_tokens)
-        if sum(a.maximum_cost_cad for a in self.assignments) > self.maximum_cost_cad:
+        if sum(a.maximum_cost_cad for a in self.assignments) > self.maximum_cost_cad + 1e-9:
             raise ValueError("agent assignment budgets exceed plan budget")
         if sum(a.maximum_tokens for a in self.assignments) > self.maximum_tokens:
             raise ValueError("agent assignment token maxima exceed plan token budget")
@@ -331,42 +314,31 @@ class SwarmPlan:
 class SwarmScheduler:
     VERSION = "1.0.0"
 
-    def plan(
-        self,
-        *,
-        work_order: WorkOrder,
-        dag: TaskDAG,
-        effective_policy: EffectivePolicy,
-        definitions_of_done: tuple[DefinitionOfDone, ...],
-        capability_evidence: tuple[CapabilityEvidence, ...],
-        roles: tuple[AgentRoleDefinition, ...],
-    ) -> SwarmPlan:
+    def plan(self, *, work_order: WorkOrder, dag: TaskDAG, effective_policy: EffectivePolicy, definitions_of_done: tuple[DefinitionOfDone, ...], capability_evidence: tuple[CapabilityEvidence, ...], roles: tuple[AgentRoleDefinition, ...]) -> SwarmPlan:
         if work_order.work_order_id != dag.work_order_id:
             raise ValueError("work order and TaskDAG do not match")
         if not work_order.authorized:
             raise ValueError("work order must be authorized before planning")
-
         definitions = {definition.definition_id: definition for definition in definitions_of_done}
         evidence_by_skill: dict[str, list[CapabilityEvidence]] = {}
         for evidence in capability_evidence:
             evidence_by_skill.setdefault(evidence.skill, []).append(evidence)
-        role_map = {role.role_id: role for role in roles}
-        if len(role_map) != len(roles):
+        if len({role.role_id for role in roles}) != len(roles):
             raise ValueError("role IDs must be unique")
 
         assignments: list[AgentAssignment] = []
         verifications: list[VerificationAssignment] = []
         requirements: list[ComputeRequirement] = []
         decisions: list[SchedulingDecision] = []
-
         task_order = dag.topological_order()
         task_map = {task.task_id: task for task in dag.tasks}
+        task_count = len(task_order)
+
         for task_id in task_order:
             task = task_map[task_id]
             definition = definitions.get(task.definition_of_done_id)
             if definition is None or definition.work_order_id != work_order.work_order_id:
                 raise ValueError(f"task {task.task_id} has no valid DefinitionOfDone")
-
             eligible: list[tuple[AgentRoleDefinition, tuple[CapabilityMatch, ...], bool]] = []
             rejected: list[str] = []
             for role in sorted(roles, key=lambda candidate: candidate.role_id):
@@ -376,124 +348,55 @@ class SwarmScheduler:
                     eligible.append((role, matches, review_required))
                 except ValueError:
                     rejected.append(role.role_id)
-
             if not eligible:
                 raise ValueError(f"no eligible agent role for task {task.task_id}")
 
             role, matches, review_required = eligible[0]
             allowed_tools = self._effective_allowed_values(role.allowed_tools, effective_policy.allowed_tools)
-            allowed_data_scopes = tuple(
-                sorted(set(role.allowed_data_scopes) & set(effective_policy.employer_policy.data.allowed_data_scopes))
-            )
+            allowed_data_scopes = tuple(sorted(set(role.allowed_data_scopes) & set(effective_policy.employer_policy.data.allowed_data_scopes)))
             if not allowed_data_scopes:
                 raise ValueError(f"role {role.role_id} has no employer-authorized data scope")
+            cost_cap = min(role.maximum_cost_cad, effective_policy.employer_policy.maximum_cost_cad / task_count)
+            token_cap = min(role.maximum_tokens, effective_policy.employer_policy.maximum_token_budget // task_count)
+            assignments.append(AgentAssignment(task.task_id, role.role_id, matches, allowed_tools, allowed_data_scopes, cost_cap, token_cap, task.human_review_required or review_required))
 
-            cost_cap = min(role.maximum_cost_cad, effective_policy.employer_policy.maximum_cost_cad)
-            token_cap = min(role.maximum_tokens, effective_policy.employer_policy.maximum_token_budget)
-            assignments.append(
-                AgentAssignment(
-                    task_id=task.task_id,
-                    role_id=role.role_id,
-                    capability_matches=matches,
-                    allowed_tools=allowed_tools,
-                    allowed_data_scopes=allowed_data_scopes,
-                    maximum_cost_cad=cost_cap,
-                    maximum_tokens=token_cap,
-                    human_review_required=(task.human_review_required or review_required),
-                )
-            )
+            verifier = self._select_verifier(builder_role_id=role.role_id, roles=roles, effective_policy=effective_policy, require_licensed=definition.human_review.licensed_reviewer_required)
+            checks = tuple(sorted(set(definition.required_tests) | set(definition.required_standards) | set(definition.required_verification))) or ("acceptance-criteria",)
+            verifications.append(VerificationAssignment(task.task_id, role.role_id, verifier.role_id, checks, effective_policy.evidence_required, definition.human_review.required or review_required, definition.human_review.licensed_reviewer_required, effective_policy.independent_verification_required))
 
-            verifier = self._select_verifier(
-                builder_role_id=role.role_id,
-                roles=roles,
-                effective_policy=effective_policy,
-                require_licensed=definition.human_review.licensed_reviewer_required,
-            )
-            verifications.append(
-                VerificationAssignment(
-                    task_id=task.task_id,
-                    builder_role_id=role.role_id,
-                    verifier_role_id=verifier.role_id,
-                    verification_checks=tuple(
-                        sorted(
-                            set(definition.required_tests)
-                            | set(definition.required_standards)
-                            | set(definition.required_verification)
-                        )
-                    ) or ("acceptance-criteria",),
-                    evidence_required=effective_policy.evidence_required,
-                    human_review_required=(definition.human_review.required or review_required),
-                    licensed_review_required=definition.human_review.licensed_reviewer_required,
-                    independence_required=effective_policy.independent_verification_required,
-                )
-            )
+            requirements.append(ComputeRequirement(
+                requirement_id=f"compute-{task.task_id}", workload_class=task.task_type,
+                minimum_quality=definition.minimum_quality, minimum_reliability=0.90, minimum_availability=0.95,
+                minimum_security_level=effective_policy.minimum_security_level, minimum_privacy_level=effective_policy.minimum_privacy_level,
+                maximum_latency_ms=int(effective_policy.employer_policy.maximum_task_duration.total_seconds() * 1000),
+                maximum_cost_cad=cost_cap, confidentiality_class=effective_policy.minimum_confidentiality_class,
+                allowed_jurisdictions=effective_policy.allowed_jurisdictions, allowed_providers=effective_policy.allowed_providers,
+                prohibited_providers=effective_policy.prohibited_providers, required_capabilities=task.required_capabilities,
+            ))
+            decisions.append(SchedulingDecision(
+                f"decision-{task.task_id}", task.task_id, self._decision_digest(work_order, task, role, effective_policy.policy_id), self.VERSION,
+                tuple(candidate.role_id for candidate, _, _ in eligible), role.role_id, tuple(sorted(rejected)),
+                ("DETERMINISTIC_FIRST_ELIGIBLE", "CAPABILITY_EVIDENCE_BOUND", "POLICY_BOUND"), (effective_policy.policy_id,),
+                tuple(sorted(match.evidence_id for match in matches)),
+            ))
 
-            requirements.append(
-                ComputeRequirement(
-                    requirement_id=f"compute-{task.task_id}",
-                    workload_class=task.task_type,
-                    minimum_quality=definition.minimum_quality,
-                    minimum_reliability=0.90,
-                    minimum_availability=0.95,
-                    minimum_security_level=effective_policy.minimum_security_level,
-                    minimum_privacy_level=effective_policy.minimum_privacy_level,
-                    maximum_latency_ms=int(effective_policy.employer_policy.maximum_task_duration.total_seconds() * 1000),
-                    maximum_cost_cad=cost_cap,
-                    confidentiality_class=effective_policy.minimum_confidentiality_class,
-                    allowed_jurisdictions=effective_policy.allowed_jurisdictions,
-                    allowed_providers=effective_policy.allowed_providers,
-                    required_capabilities=task.required_capabilities,
-                )
-            )
-
-            digest = self._decision_digest(work_order, task, role, effective_policy.policy_id)
-            decisions.append(
-                SchedulingDecision(
-                    decision_id=f"decision-{task.task_id}",
-                    task_id=task.task_id,
-                    inputs_digest=digest,
-                    scheduler_version=self.VERSION,
-                    candidate_roles=tuple(candidate.role_id for candidate, _, _ in eligible),
-                    selected_role=role.role_id,
-                    rejected_roles=tuple(sorted(rejected)),
-                    reason_codes=("DETERMINISTIC_FIRST_ELIGIBLE", "CAPABILITY_EVIDENCE_BOUND", "POLICY_BOUND"),
-                    policy_refs=(effective_policy.employer_policy.policy_id,),
-                    capability_evidence_refs=tuple(sorted(match.evidence_id for match in matches)),
-                )
-            )
-
-        verification_plan = VerificationPlan(work_order_id=work_order.work_order_id, assignments=tuple(verifications))
         return SwarmPlan(
-            plan_id=f"swarm-plan-{work_order.work_order_id}",
-            work_order_id=work_order.work_order_id,
-            employer_policy_id=effective_policy.employer_policy.policy_id,
-            task_order=task_order,
-            assignments=tuple(assignments),
-            verification_plan=verification_plan,
-            compute_requirements=tuple(requirements),
-            scheduling_decisions=tuple(decisions),
-            maximum_cost_cad=effective_policy.employer_policy.maximum_cost_cad,
-            maximum_tokens=effective_policy.employer_policy.maximum_token_budget,
+            f"swarm-plan-{work_order.work_order_id}", work_order.work_order_id, effective_policy.policy_id, task_order, tuple(assignments),
+            VerificationPlan(work_order.work_order_id, tuple(verifications)), tuple(requirements), tuple(decisions),
+            effective_policy.employer_policy.maximum_cost_cad, effective_policy.employer_policy.maximum_token_budget,
         )
 
     @staticmethod
-    def _match_role(
-        task: Task,
-        role: AgentRoleDefinition,
-        evidence_by_skill: dict[str, list[CapabilityEvidence]],
-    ) -> tuple[tuple[CapabilityMatch, ...], bool]:
+    def _match_role(task: Task, role: AgentRoleDefinition, evidence_by_skill: dict[str, list[CapabilityEvidence]]) -> tuple[tuple[CapabilityMatch, ...], bool]:
         if not set(task.required_capabilities).issubset(role.capabilities):
             raise ValueError("role lacks required capabilities")
         matches: list[CapabilityMatch] = []
         review_required = False
         for capability in task.required_capabilities:
-            evidence_options = sorted(
-                evidence_by_skill.get(capability, []),
-                key=lambda item: item.capability_evidence_id,
-            )
-            if not evidence_options:
+            options = sorted(evidence_by_skill.get(capability, []), key=lambda item: item.capability_evidence_id)
+            if not options:
                 raise ValueError("missing capability evidence")
-            evidence = evidence_options[0]
+            evidence = options[0]
             if evidence.verdict in {CapabilityVerdict.NOT_QUALIFIED, CapabilityVerdict.RESEARCH_REQUIRED}:
                 raise ValueError("capability is not currently assignable")
             if evidence.verdict == CapabilityVerdict.LEGALLY_RESTRICTED and not role.licensed_specialist:
@@ -502,37 +405,24 @@ class SwarmScheduler:
                 raise ValueError("capability requires specialist participation")
             if evidence.verdict == CapabilityVerdict.CAPABLE_WITH_REVIEW or evidence.human_review_required:
                 review_required = True
-            matches.append(
-                CapabilityMatch(
-                    capability=capability,
-                    evidence_id=evidence.capability_evidence_id,
-                    verdict=evidence.verdict,
-                )
-            )
+            matches.append(CapabilityMatch(capability, evidence.capability_evidence_id, evidence.verdict))
         return tuple(matches), review_required
 
     @staticmethod
     def _validate_role_policy(role: AgentRoleDefinition, effective_policy: EffectivePolicy) -> None:
+        if set(role.allowed_tools) & set(effective_policy.prohibited_tools):
+            raise ValueError("role uses prohibited tool")
         if effective_policy.allowed_tools and not set(role.allowed_tools).issubset(effective_policy.allowed_tools):
-            raise ValueError("role uses tool outside effective policy")
+            raise ValueError("role uses tool outside effective allowlist")
         if not set(role.allowed_data_scopes).issubset(effective_policy.employer_policy.data.allowed_data_scopes):
             raise ValueError("role requests data outside employer vault policy")
 
     @staticmethod
     def _effective_allowed_values(role_values: tuple[str, ...], policy_values: tuple[str, ...]) -> tuple[str, ...]:
-        if policy_values:
-            return tuple(sorted(set(role_values) & set(policy_values)))
-        return tuple(sorted(set(role_values)))
+        return tuple(sorted(set(role_values) & set(policy_values))) if policy_values else tuple(sorted(set(role_values)))
 
     @staticmethod
-    def _select_verifier(
-        *,
-        builder_role_id: str,
-        roles: tuple[AgentRoleDefinition, ...],
-        effective_policy: EffectivePolicy,
-        require_licensed: bool,
-    ) -> AgentRoleDefinition:
-        candidates = []
+    def _select_verifier(*, builder_role_id: str, roles: tuple[AgentRoleDefinition, ...], effective_policy: EffectivePolicy, require_licensed: bool) -> AgentRoleDefinition:
         for role in sorted(roles, key=lambda candidate: candidate.role_id):
             if effective_policy.independent_verification_required and role.role_id == builder_role_id:
                 continue
@@ -544,18 +434,10 @@ class SwarmScheduler:
                 SwarmScheduler._validate_role_policy(role, effective_policy)
             except ValueError:
                 continue
-            candidates.append(role)
-        if not candidates:
-            raise ValueError("no independent verifier satisfies policy")
-        return candidates[0]
+            return role
+        raise ValueError("no independent verifier satisfies policy")
 
     @staticmethod
     def _decision_digest(work_order: WorkOrder, task: Task, role: AgentRoleDefinition, policy_id: str) -> str:
-        payload = {
-            "work_order_id": work_order.work_order_id,
-            "task_id": task.task_id,
-            "role_id": role.role_id,
-            "policy_id": policy_id,
-            "required_capabilities": list(task.required_capabilities),
-        }
+        payload = {"work_order_id": work_order.work_order_id, "task_id": task.task_id, "role_id": role.role_id, "policy_id": policy_id, "required_capabilities": list(task.required_capabilities)}
         return hashlib.sha256(json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
