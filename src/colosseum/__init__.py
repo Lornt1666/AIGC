@@ -5,6 +5,7 @@ job, employer, cloud, model, financial, merge, deployment, or App Store
 authority. Orchestration-kernel V1 produces plans only.
 """
 
+from .admission import OrchestrationAdmissionEnvelope
 from .benchmarks import ComputeBenchmark
 from .compute_exchange import (
     ComputeAdmission,
@@ -113,6 +114,7 @@ __all__ = [
     "JurisdictionPolicy",
     "ModelPolicy",
     "Opportunity",
+    "OrchestrationAdmissionEnvelope",
     "PlatformBaseline",
     "PortfolioOutcome",
     "PortfolioPrediction",
