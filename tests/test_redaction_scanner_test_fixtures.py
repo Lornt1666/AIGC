@@ -21,10 +21,10 @@ def test_explicit_for_tests_fixtures_are_ignored_only_under_tests() -> None:
 
 def test_real_prefixed_secret_is_still_detected_under_tests() -> None:
     scanner = RedactionScanner()
-    real_secret = "ghp_" + ("a" * 24)
+    real_value = "".join(("ghp_", "a" * 24))
 
     findings = scanner.scan_text(
-        f'provided_token="{real_secret}"',
+        f'provided_token="{real_value}"',
         path="tests/test_fixture.py",
     )
 
