@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import pytest
 
@@ -8,13 +8,32 @@ from src.core.nexus.state_reducer import ConcurrencyConflict, reduce_observed_st
 from src.domain.epistemic.models import ArtifactState
 from src.domain.nexus.contracts import (
     ChangeSet,
+    ExecutionPermit,
     ExecutionReceipt,
     WorkOrder,
 )
 
 
+NOW = datetime(2026, 8, 7, 12, 0, tzinfo=timezone.utc)
+
+
 def _state() -> ArtifactState:
     return ArtifactState(stage="candidate", revision=1)
+
+
+def _permit(expires_at: datetime) -> ExecutionPermit:
+    return ExecutionPermit(
+        permit_id="PERMIT-NEXUS001",
+        governance_decision_id="GOV-NEXUS001",
+        principal="operator:test",
+        capability="repository.read",
+        resource_scope=("Lornt1666/AIGC",),
+        exact_revision="f" * 40,
+        change_set_hash="a" * 64,
+        request_digest="b" * 64,
+        expires_at=expires_at,
+        maximum_invocations=1,
+    )
 
 
 def test_changeset_binds_exact_parent_state_hash() -> None:
@@ -36,6 +55,28 @@ def test_reconciliation_requires_trigger_receipt() -> None:
             work_order_id="WO-NEXUS001",
             parent_state_hash="a" * 64,
             producer_agent_id="AGT-ARCHITECT",
+        )
+
+
+def test_execution_permit_rejects_expired_authority() -> None:
+    with pytest.raises(ValueError, match="expired"):
+        _permit(NOW - timedelta(seconds=1)).verify_temporal_validity(authoritative_now=NOW)
+
+
+def test_execution_permit_rejects_boundary_time_authority() -> None:
+    with pytest.raises(ValueError, match="expired"):
+        _permit(NOW).verify_temporal_validity(authoritative_now=NOW)
+
+
+def test_execution_permit_accepts_only_future_expiry_for_later_gates() -> None:
+    permit = _permit(NOW + timedelta(seconds=1))
+    assert permit.verify_temporal_validity(authoritative_now=NOW) is permit
+
+
+def test_execution_permit_requires_timezone_aware_authority_time() -> None:
+    with pytest.raises(ValueError, match="timezone-aware"):
+        _permit(NOW + timedelta(minutes=1)).verify_temporal_validity(
+            authoritative_now=datetime(2026, 8, 7, 12, 0)
         )
 
 
