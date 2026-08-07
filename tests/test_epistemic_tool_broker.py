@@ -109,7 +109,7 @@ def test_invalid_idempotency_key_is_denied_before_ledger_claim() -> None:
 
 def test_raw_secret_material_is_rejected() -> None:
     broker = EpistemicToolBroker((_policy(),), ledger=MemoryLedger())
-    receipt = broker.evaluate(_request(parameters={"api_key": "must-never-enter-contract"}))
+    receipt = broker.evaluate(_request(parameters={"api_key": "test_only_placeholder"}))
     assert receipt.decision == "DENIED"
     assert "RAW_SECRET_MATERIAL_FORBIDDEN" in receipt.reason_codes
 
