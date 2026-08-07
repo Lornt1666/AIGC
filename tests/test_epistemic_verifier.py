@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from src.domain.epistemic.models import ArtifactState, Claim, Entity, Relation
+from src.domain.epistemic.models import ArtifactState, Claim, Entity
 from src.domain.epistemic.verification import UtilityWeights
 from src.core.epistemic.verifier import DeterministicEpistemicVerifier
 
@@ -98,19 +98,52 @@ def test_same_claim_id_with_modified_content_is_critical() -> None:
     assert any(finding.code == "CLAIM_MUTATED_IN_PLACE" for finding in report.findings)
 
 
-def test_unsupported_empirical_claim_is_error_and_penalized() -> None:
+def test_unverified_empirical_claim_is_nonpassing_and_penalized() -> None:
     baseline = ArtifactState(stage="critic", revision=1)
     unsupported = _observation(evidence=())
     target = ArtifactState(stage="synthesizer", revision=2, claims=(unsupported,))
     report = _verifier().evaluate(baseline, target)
 
     assert report.is_passing is False
+    assert report.unverified_claims == 1
     assert report.utility_score.evidence_coverage_e == 0.0
     assert report.utility_score.unsupported_claims_x == 1.0
+    assert any(finding.code == "UNVERIFIED_ACTIVE_CLAIM" for finding in report.findings)
     assert any(finding.code == "EMPIRICAL_CLAIM_WITHOUT_EVIDENCE" for finding in report.findings)
 
 
-def test_falsified_claim_is_hard_failure() -> None:
+def test_superseded_unverified_claim_becomes_historical_not_active() -> None:
+    old = Claim(
+        id="CLM-OLD0001",
+        statement="Preliminary observation",
+        basis="observation",
+        verification_state="unverified",
+        confidence=0.5,
+    )
+    replacement = Claim(
+        id="CLM-NEW0001",
+        statement="Evidence-backed replacement observation",
+        basis="observation",
+        verification_state="verified",
+        confidence=0.95,
+        evidence_refs=("evidence:replacement:001",),
+        supersedes="CLM-OLD0001",
+    )
+    baseline = ArtifactState(stage="critic", revision=1, claims=(old,))
+    target = ArtifactState(stage="synthesizer", revision=2, claims=(old, replacement))
+    report = _verifier().evaluate(baseline, target)
+
+    assert report.unverified_claims == 0
+    assert report.utility_score.evidence_coverage_e == 1.0
+    assert report.utility_score.unsupported_claims_x == 0.0
+    assert not any(
+        finding.code == "UNVERIFIED_ACTIVE_CLAIM" and "CLM-OLD0001" in finding.claim_ids
+        for finding in report.findings
+    )
+    assert report.is_passing is True
+
+
+def test_falsified_active_claim_is_hard_failure() -> None:
     baseline = ArtifactState(stage="critic", revision=1)
     claim = Claim(
         id="CLM-FALSE001",
@@ -161,7 +194,5 @@ def test_utility_threshold_is_enforced_without_fake_semantic_metric() -> None:
     target = ArtifactState(stage="synthesizer", revision=2)
     report = _verifier(threshold=0.9).evaluate(baseline, target)
 
-    # Empty states have deterministic structural scores, but the weighted utility is
-    # still below this explicit threshold; no embedding/LLM placeholder can force pass.
     assert report.utility_score.total_score < 0.9
     assert report.is_passing is False
