@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 import unittest
 
+from src.colosseum.benchmarks import ComputeBenchmark
 from src.colosseum.compute_exchange import (
     ComputeAdmission,
     ComputeCandidate,
@@ -181,32 +182,48 @@ class ComputeExchangeContractTests(unittest.TestCase):
         return ComputeCandidate(**values)
 
     def test_cost_cannot_override_jurisdiction_gate(self) -> None:
-        cheap_wrong_region = self.candidate(estimated_cost_cad=0.01, jurisdiction="US")
-        self.assertFalse(cheap_wrong_region.satisfies(self.requirement()))
+        self.assertFalse(self.candidate(estimated_cost_cad=0.01, jurisdiction="US").satisfies(self.requirement()))
 
     def test_cost_cannot_override_quality_floor(self) -> None:
-        cheap_low_quality = self.candidate(estimated_cost_cad=0.01, predicted_quality=0.4)
-        self.assertFalse(cheap_low_quality.satisfies(self.requirement()))
+        self.assertFalse(self.candidate(estimated_cost_cad=0.01, predicted_quality=0.4).satisfies(self.requirement()))
 
     def test_cost_cannot_override_confidentiality_gate(self) -> None:
-        cheap_public_only = self.candidate(
-            estimated_cost_cad=0.01,
-            confidentiality_capability=ConfidentialityClass.PUBLIC,
+        self.assertFalse(
+            self.candidate(
+                estimated_cost_cad=0.01,
+                confidentiality_capability=ConfidentialityClass.PUBLIC,
+            ).satisfies(self.requirement())
         )
-        self.assertFalse(cheap_public_only.satisfies(self.requirement()))
 
     def test_cost_cannot_override_commercial_license(self) -> None:
-        candidate = self.candidate(commercial_use_allowed=False)
-        self.assertFalse(candidate.satisfies(self.requirement()))
+        self.assertFalse(self.candidate(commercial_use_allowed=False).satisfies(self.requirement()))
 
     def test_admissible_candidate_can_satisfy_requirement(self) -> None:
         self.assertTrue(self.candidate().satisfies(self.requirement()))
 
     def test_not_admissible_requires_reasons(self) -> None:
         with self.assertRaises(ValueError):
-            self.candidate(
-                admission=ComputeAdmission.NOT_ADMISSIBLE,
-                rejection_reasons=(),
+            self.candidate(admission=ComputeAdmission.NOT_ADMISSIBLE, rejection_reasons=())
+
+    def test_benchmark_requires_evidence(self) -> None:
+        with self.assertRaises(ValueError):
+            ComputeBenchmark(
+                benchmark_id="bench-1",
+                workload_class="research",
+                provider="provider-a",
+                resource_identity="model-a",
+                resource_version="2026-08",
+                environment_id="env-1",
+                jurisdiction="CA-QC",
+                fixture_digest="a" * 64,
+                measured_quality=0.95,
+                verification_passed=True,
+                latency_ms_p50=1000,
+                latency_ms_p95=2000,
+                observed_cost_cad=1.0,
+                sample_count=10,
+                measured_at=NOW,
+                evidence_refs=(),
             )
 
     def test_observed_measurement_requires_evidence(self) -> None:
