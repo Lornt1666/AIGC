@@ -28,6 +28,14 @@ class ComputeAdmission(str, Enum):
     REQUIRES_HUMAN_REVIEW = "REQUIRES_HUMAN_REVIEW"
 
 
+_CONFIDENTIALITY_RANK = {
+    ConfidentialityClass.PUBLIC: 0,
+    ConfidentialityClass.INTERNAL: 1,
+    ConfidentialityClass.CONFIDENTIAL: 2,
+    ConfidentialityClass.RESTRICTED: 3,
+}
+
+
 @dataclass(frozen=True)
 class ComputeRequirement:
     requirement_id: str
@@ -80,7 +88,14 @@ class ComputeCandidate:
     rejection_reasons: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
-        for name in ("candidate_id", "provider", "model_or_runtime", "region", "jurisdiction", "encryption"):
+        for name in (
+            "candidate_id",
+            "provider",
+            "model_or_runtime",
+            "region",
+            "jurisdiction",
+            "encryption",
+        ):
             _require_text(name, getattr(self, name))
         _require_nonnegative("estimated_cost_cad", self.estimated_cost_cad)
         _require_nonnegative("estimated_latency_ms", self.estimated_latency_ms)
@@ -109,6 +124,8 @@ class ComputeCandidate:
         if self.estimated_latency_ms > requirement.maximum_latency_ms:
             return False
         if self.estimated_cost_cad > requirement.maximum_cost_cad:
+            return False
+        if _CONFIDENTIALITY_RANK[self.confidentiality_capability] < _CONFIDENTIALITY_RANK[requirement.confidentiality_class]:
             return False
         if requirement.license_must_allow_commercial_use and not self.commercial_use_allowed:
             return False
@@ -162,8 +179,11 @@ class PortfolioPrediction:
         _require_text("prediction_id", self.prediction_id)
         _require_text("portfolio_id", self.portfolio_id)
         for name in (
-            "predicted_quality", "predicted_acceptance_probability", "predicted_completion_probability",
-            "predicted_verification_pass_probability", "predicted_deadline_confidence",
+            "predicted_quality",
+            "predicted_acceptance_probability",
+            "predicted_completion_probability",
+            "predicted_verification_pass_probability",
+            "predicted_deadline_confidence",
         ):
             value = getattr(self, name)
             if not 0 <= value <= 1:
@@ -197,7 +217,13 @@ class ComputePerformanceObservation:
             _require_text(name, getattr(self, name))
         if self.observed_at.tzinfo is None:
             raise ValueError("observed_at must be timezone-aware")
-        for name in ("actual_cost_cad", "actual_latency_ms", "actual_token_usage", "actual_cpu_seconds", "actual_gpu_seconds"):
+        for name in (
+            "actual_cost_cad",
+            "actual_latency_ms",
+            "actual_token_usage",
+            "actual_cpu_seconds",
+            "actual_gpu_seconds",
+        ):
             value = getattr(self, name)
             if value is not None:
                 _require_nonnegative(name, value)
@@ -205,7 +231,15 @@ class ComputePerformanceObservation:
             raise ValueError("actual_quality must be between 0 and 1")
         if any(
             value is not None
-            for value in (self.actual_cost_cad, self.actual_latency_ms, self.actual_quality, self.actual_token_usage, self.actual_cpu_seconds, self.actual_gpu_seconds, self.verification_passed)
+            for value in (
+                self.actual_cost_cad,
+                self.actual_latency_ms,
+                self.actual_quality,
+                self.actual_token_usage,
+                self.actual_cpu_seconds,
+                self.actual_gpu_seconds,
+                self.verification_passed,
+            )
         ) and not self.evidence_refs:
             raise ValueError("observed measurements require evidence")
 
