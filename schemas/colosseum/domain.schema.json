@@ -6,6 +6,7 @@
   "$defs": {
     "nonEmptyString": {"type": "string", "minLength": 1},
     "confidentialityClass": {"enum": ["PUBLIC", "INTERNAL", "CONFIDENTIAL", "RESTRICTED"]},
+    "presenceRequirement": {"enum": ["NONE", "OCCASIONAL", "PERIODIC", "ROUTINE", "DAILY", "UNKNOWN"]},
     "capabilityVerdict": {"enum": ["VERIFIED_CAPABLE", "CAPABLE_WITH_REVIEW", "CAPABLE_WITH_SPECIALIST", "RESEARCH_REQUIRED", "NOT_QUALIFIED", "LEGALLY_RESTRICTED"]},
     "deliverableState": {"enum": ["GENERATED", "VALIDATING", "FAILED_VALIDATION", "REQUIRES_REVISION", "READY_FOR_HUMAN_REVIEW", "READY_FOR_DELIVERY", "DELIVERED", "EMPLOYER_ACCEPTED", "EMPLOYER_REJECTED"]},
     "verificationStatus": {"enum": ["NOT_RUN", "PASS", "PASS_WITH_LIMITATION", "FAIL", "HUMAN_REVIEW_REQUIRED"]},
@@ -30,18 +31,19 @@
     "opportunity": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["opportunity_id", "source_id", "employer_id", "title", "digitally_executable", "physical_presence_required", "legitimacy_status", "capability_requirements"],
+      "required": ["opportunity_id", "source_id", "employer_id", "title", "digitally_executable", "presence_requirement", "legitimacy_status", "capability_requirements", "meeting_expectation"],
       "properties": {
         "opportunity_id": {"$ref": "#/$defs/nonEmptyString"},
         "source_id": {"$ref": "#/$defs/nonEmptyString"},
         "employer_id": {"$ref": "#/$defs/nonEmptyString"},
         "title": {"$ref": "#/$defs/nonEmptyString"},
         "digitally_executable": {"type": "boolean"},
-        "physical_presence_required": {"type": "boolean"},
+        "presence_requirement": {"$ref": "#/$defs/presenceRequirement"},
         "legitimacy_status": {"$ref": "#/$defs/nonEmptyString"},
-        "capability_requirements": {"type": "array", "items": {"$ref": "#/$defs/nonEmptyString"}}
+        "capability_requirements": {"type": "array", "items": {"$ref": "#/$defs/nonEmptyString"}},
+        "meeting_expectation": {"$ref": "#/$defs/nonEmptyString"}
       },
-      "allOf": [{"not": {"properties": {"digitally_executable": {"const": true}, "physical_presence_required": {"const": true}}, "required": ["digitally_executable", "physical_presence_required"]}}]
+      "allOf": [{"not": {"properties": {"digitally_executable": {"const": true}, "presence_requirement": {"const": "DAILY"}}, "required": ["digitally_executable", "presence_requirement"]}}]
     },
     "engagement": {
       "type": "object",
