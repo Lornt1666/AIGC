@@ -1,0 +1,107 @@
+name: Meta-Epistemic Prompt Specification
+version: 2.0.0
+schema_id: urn:aigc:schema:meta-epistemic-config:2.0.0
+
+teleological_vector:
+  information_utility_objective:
+    type: weighted_semantic_utility
+    maximize:
+      - semantic_fidelity
+      - evidence_coverage
+      - structural_completeness
+    minimize:
+      - redundancy
+      - unsupported_claims
+      - contradictions
+    semantic_fidelity:
+      metric_id: weighted_semantic_drift_v1
+      threshold: 0.995
+      components:
+        entity_preservation_weight: 0.25
+        relation_preservation_weight: 0.25
+        contradiction_avoidance_weight: 0.30
+        evidence_preservation_weight: 0.20
+      hard_gate: false
+
+epistemic_governance:
+  claim_envelope:
+    basis_options:
+      - axiom
+      - observation
+      - inference
+      - simulation
+      - hypothesis
+    verification_states:
+      - verified
+      - corroborated
+      - unverified
+      - falsified
+      - not_applicable
+    required_invariants:
+      - preserve_entity_ids
+      - preserve_claim_ids
+      - preserve_evidence_refs
+
+polyphonic_agents:
+  - id: AGT-ARCHITECT
+    role: Architect
+    input_schema_ref: schemas/epistemic/architect-input-v2.schema.json
+    output_schema_ref: schemas/epistemic/architect-output-v2.schema.json
+    required_invariants:
+      - preserve_entity_ids
+    denied_side_effects:
+      - repository_write
+      - external_message
+      - deployment
+
+  - id: AGT-CRITIC
+    role: Critic
+    input_schema_ref: schemas/epistemic/architect-output-v2.schema.json
+    output_schema_ref: schemas/epistemic/critic-output-v2.schema.json
+    required_invariants:
+      - preserve_entity_ids
+      - preserve_claim_ids
+    denied_side_effects:
+      - repository_write
+      - external_message
+      - deployment
+
+  - id: AGT-SYNTHESIZER
+    role: Synthesizer
+    input_schema_ref: schemas/epistemic/critic-output-v2.schema.json
+    output_schema_ref: schemas/epistemic/synthesizer-output-v2.schema.json
+    required_invariants:
+      - preserve_entity_ids
+      - preserve_claim_ids
+    denied_side_effects:
+      - repository_write
+      - external_message
+      - deployment
+
+  - id: AGT-VERIFIER
+    role: Verifier
+    input_schema_ref: schemas/epistemic/synthesizer-output-v2.schema.json
+    output_schema_ref: schemas/epistemic/verifier-report-v2.schema.json
+    required_invariants:
+      - preserve_entity_ids
+      - preserve_claim_ids
+      - preserve_evidence_refs
+    denied_side_effects:
+      - repository_write
+      - external_message
+      - deployment
+      - output_modification
+
+orchestration:
+  maximum_rounds: 3
+  unresolved_dissent_policy: preserve_and_surface
+  transitions:
+    architect_to_critic: required
+    critic_to_synthesizer: required
+    synthesizer_to_verifier: required
+  terminal_states:
+    - accepted
+    - rejected
+    - blocked
+    - requires_human_review
+  no_consensus_behavior: requires_human_review
