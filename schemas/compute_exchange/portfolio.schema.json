@@ -19,12 +19,15 @@
     "computeRequirement": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["requirement_id", "workload_class", "minimum_quality", "minimum_reliability", "maximum_latency_ms", "maximum_cost_cad", "confidentiality_class", "allowed_jurisdictions", "license_must_allow_commercial_use"],
+      "required": ["requirement_id", "workload_class", "minimum_quality", "minimum_reliability", "minimum_availability", "minimum_security_level", "minimum_privacy_level", "maximum_latency_ms", "maximum_cost_cad", "confidentiality_class", "allowed_jurisdictions", "license_must_allow_commercial_use"],
       "properties": {
         "requirement_id": {"$ref": "#/$defs/nonEmptyString"},
         "workload_class": {"$ref": "#/$defs/nonEmptyString"},
         "minimum_quality": {"type": "number", "minimum": 0, "maximum": 1},
         "minimum_reliability": {"type": "number", "minimum": 0, "maximum": 1},
+        "minimum_availability": {"type": "number", "minimum": 0, "maximum": 1},
+        "minimum_security_level": {"type": "integer", "minimum": 0, "maximum": 3},
+        "minimum_privacy_level": {"type": "integer", "minimum": 0, "maximum": 3},
         "maximum_latency_ms": {"type": "integer", "minimum": 0},
         "maximum_cost_cad": {"type": "number", "minimum": 0},
         "confidentiality_class": {"$ref": "#/$defs/confidentialityClass"},
@@ -38,7 +41,7 @@
     "computeCandidate": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["candidate_id", "provider", "resource_type", "model_or_runtime", "region", "jurisdiction", "confidentiality_capability", "encryption", "estimated_cost_cad", "estimated_latency_ms", "predicted_quality", "predicted_reliability", "availability", "commercial_use_allowed", "benchmark_evidence_refs", "capabilities", "admission", "rejection_reasons"],
+      "required": ["candidate_id", "provider", "resource_type", "model_or_runtime", "region", "jurisdiction", "confidentiality_capability", "security_level", "privacy_level", "encryption", "estimated_cost_cad", "estimated_latency_ms", "predicted_quality", "predicted_reliability", "availability", "commercial_use_allowed", "benchmark_evidence_refs", "capabilities", "admission", "rejection_reasons"],
       "properties": {
         "candidate_id": {"$ref": "#/$defs/nonEmptyString"},
         "provider": {"$ref": "#/$defs/nonEmptyString"},
@@ -47,6 +50,8 @@
         "region": {"$ref": "#/$defs/nonEmptyString"},
         "jurisdiction": {"$ref": "#/$defs/nonEmptyString"},
         "confidentiality_capability": {"$ref": "#/$defs/confidentialityClass"},
+        "security_level": {"type": "integer", "minimum": 0, "maximum": 3},
+        "privacy_level": {"type": "integer", "minimum": 0, "maximum": 3},
         "encryption": {"$ref": "#/$defs/nonEmptyString"},
         "estimated_cost_cad": {"type": "number", "minimum": 0},
         "estimated_latency_ms": {"type": "integer", "minimum": 0},
@@ -61,7 +66,7 @@
       },
       "allOf": [
         {"if": {"properties": {"admission": {"const": "NOT_ADMISSIBLE"}}, "required": ["admission"]}, "then": {"properties": {"rejection_reasons": {"minItems": 1}}}},
-        {"if": {"properties": {"admission": {"const": "ADMISSIBLE"}}, "required": ["admission"]}, "then": {"properties": {"rejection_reasons": {"maxItems": 0}}}}
+        {"if": {"properties": {"admission": {"const": "ADMISSIBLE"}}, "required": ["admission"]}, "then": {"properties": {"rejection_reasons": {"maxItems": 0}, "benchmark_evidence_refs": {"minItems": 1}}}}
       ]
     },
     "executionPortfolio": {
