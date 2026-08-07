@@ -4,7 +4,7 @@
   "title": "AIGC EmployerPolicy",
   "type": "object",
   "additionalProperties": false,
-  "required": ["policy_id", "employer_id", "vault_id", "engagement_id", "allowed_jurisdictions", "prohibited_jurisdictions", "allowed_providers", "prohibited_providers", "allowed_models", "prohibited_models", "allowed_tools", "prohibited_tools", "confidentiality_class", "allowed_data_scopes", "maximum_cost_cad", "maximum_token_budget", "maximum_compute_seconds", "minimum_security_level", "minimum_privacy_level", "independent_verification_required", "evidence_required"],
+  "required": ["policy_id", "employer_id", "vault_id", "engagement_id", "allowed_jurisdictions", "prohibited_jurisdictions", "allowed_providers", "prohibited_providers", "allowed_models", "prohibited_models", "allowed_tools", "prohibited_tools", "confidentiality_class", "allowed_data_scopes", "maximum_cost_cad", "maximum_token_budget", "maximum_compute_seconds", "maximum_task_duration_seconds", "minimum_security_level", "minimum_privacy_level", "independent_verification_required", "evidence_required"],
   "properties": {
     "policy_id": {"type": "string", "minLength": 1},
     "employer_id": {"type": "string", "minLength": 1},
@@ -23,6 +23,7 @@
     "maximum_cost_cad": {"type": "number", "minimum": 0},
     "maximum_token_budget": {"type": "integer", "minimum": 0},
     "maximum_compute_seconds": {"type": "integer", "minimum": 0},
+    "maximum_task_duration_seconds": {"type": "integer", "minimum": 1},
     "minimum_security_level": {"type": "integer", "minimum": 0, "maximum": 3},
     "minimum_privacy_level": {"type": "integer", "minimum": 0, "maximum": 3},
     "independent_verification_required": {"type": "boolean"},
