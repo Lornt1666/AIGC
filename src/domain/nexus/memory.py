@@ -66,6 +66,13 @@ class MemoryRecord(NexusContract):
 
     @model_validator(mode="after")
     def temporal_integrity(self) -> "MemoryRecord":
+        for field_name, value in (
+            ("valid_from", self.valid_from),
+            ("valid_until", self.valid_until),
+            ("revoked_at", self.revoked_at),
+        ):
+            if value is not None and (value.tzinfo is None or value.utcoffset() is None):
+                raise ValueError(f"{field_name} must be timezone-aware")
         if self.valid_until is not None and self.valid_until < self.valid_from:
             raise ValueError("valid_until cannot precede valid_from")
         return self
@@ -73,3 +80,14 @@ class MemoryRecord(NexusContract):
     @property
     def active(self) -> bool:
         return self.superseded_by is None and self.revoked_at is None
+
+    def is_eligible_at(self, *, authoritative_now: datetime) -> bool:
+        if authoritative_now.tzinfo is None or authoritative_now.utcoffset() is None:
+            raise ValueError("authoritative_now must be timezone-aware")
+        if not self.active:
+            return False
+        if self.valid_from > authoritative_now:
+            return False
+        if self.valid_until is not None and self.valid_until <= authoritative_now:
+            return False
+        return True
