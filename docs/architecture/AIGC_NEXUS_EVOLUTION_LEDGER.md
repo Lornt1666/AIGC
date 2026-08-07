@@ -69,11 +69,11 @@ These are migration-risk indicators, not defects by themselves. High fan-in mean
 
 Highest-priority investigation candidates include:
 
-1. `schemas/exact_sha_ci_issue_request.schema.json` vs `schemas/exact_sha_ci_request.schema.json`: Jaccard `1.0`, `31/31` shared features. This is a strong consolidation candidate, but no removal is authorized until callers, semantics and compatibility are inspected.
-2. provider-discovery authorization vs staging-plan authorization: Jaccard `0.7527`, `70` shared features.
-3. procured-control-layers catalog vs public-research-procurement catalog: Jaccard `0.6471`, `22` shared features.
-4. staging-apply vs staging-plan authorization: Jaccard `0.5692`, `74` shared features.
-5. fidelity-review vs subagent-team-plan: Jaccard `0.5135`, `38` shared features.
+1. `schemas/exact_sha_ci_issue_request.schema.json` vs `schemas/exact_sha_ci_request.schema.json` — Jaccard `1.0`, `31/31` shared features. This is a strong consolidation candidate, but no removal is authorized until callers, semantics and compatibility are inspected.
+2. provider-discovery authorization vs staging-plan authorization — Jaccard `0.7527`, `70` shared features.
+3. procured-control-layers catalog vs public-research-procurement catalog — Jaccard `0.6471`, `22` shared features.
+4. staging-apply vs staging-plan authorization — Jaccard `0.5692`, `74` shared features.
+5. fidelity-review vs subagent-team-plan — Jaccard `0.5135`, `38` shared features.
 
 Overlap is an investigation signal only. Shared governance fields can produce legitimate structural similarity without semantic redundancy.
 
