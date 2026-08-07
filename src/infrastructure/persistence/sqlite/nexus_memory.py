@@ -4,6 +4,7 @@ import sqlite3
 from pathlib import Path
 
 from src.core.epistemic.canonicalization import canonical_sha256
+from src.domain.epistemic.verification import VerifierReport
 from src.domain.nexus.memory import MemoryAdmissionDecision, MemoryCandidate, MemoryRecord
 
 
@@ -47,13 +48,21 @@ class SqliteNexusMemoryRepository:
         *,
         candidate: MemoryCandidate,
         decision: MemoryAdmissionDecision,
+        verifier_report: VerifierReport,
         record: MemoryRecord,
     ) -> None:
         candidate_hash = canonical_sha256(candidate)
+        verifier_report_hash = canonical_sha256(verifier_report)
         if decision.decision != "ACCEPT":
             raise ValueError("only accepted MemoryAdmissionDecision may create MemoryRecord")
         if decision.candidate_hash != candidate_hash:
             raise ValueError("memory admission decision is not bound to candidate hash")
+        if decision.verifier_report_hash != verifier_report_hash:
+            raise ValueError("memory admission decision is not bound to the supplied VerifierReport")
+        if verifier_report.target_state_hash != candidate.source_artifact_hash:
+            raise ValueError("VerifierReport target is not bound to candidate source artifact")
+        if verifier_report.hard_failure or not verifier_report.is_passing:
+            raise ValueError("VerifierReport does not satisfy memory admission policy")
         if decision.resulting_memory_id != record.memory_id:
             raise ValueError("memory admission result ID does not match MemoryRecord")
         if record.source_candidate_hash != candidate_hash:
