@@ -54,8 +54,8 @@ def atomic_write(path: Path, value: dict) -> None:
             os.unlink(temporary)
 
 
-def _scanner_diagnostics(stage_id: str, output: str) -> dict[str, object] | None:
-    """Retain only path/line/pattern metadata; never retain matched values."""
+def _safe_diagnostics(stage_id: str, output: str) -> dict[str, object] | None:
+    """Retain only non-sensitive identifiers; never retain matched/asserted values."""
     if stage_id == "redaction":
         findings: list[dict[str, object]] = []
         for raw_line in output.splitlines():
@@ -101,6 +101,21 @@ def _scanner_diagnostics(stage_id: str, output: str) -> dict[str, object] | None
             "findings": safe_findings,
             "truncated": isinstance(count, int) and count > len(safe_findings),
         }
+    if stage_id == "tests":
+        node_ids: list[str] = []
+        for raw_line in output.splitlines():
+            line = raw_line.strip()
+            if not line.startswith(("FAILED ", "ERROR ")):
+                continue
+            remainder = line.split(" ", 1)[1]
+            node_id = remainder.split(" - ", 1)[0].strip()
+            if node_id and node_id not in node_ids:
+                node_ids.append(node_id)
+        return {
+            "failed_or_error_test_count": len(node_ids),
+            "failed_or_error_tests": node_ids[:100],
+            "truncated": len(node_ids) > 100,
+        }
     return None
 
 
@@ -124,7 +139,7 @@ def run_command(
         "exit_code": completed.returncode,
         "output_sha256": sha256(completed.stdout.encode()).hexdigest(),
     }
-    diagnostics = _scanner_diagnostics(stage_id, completed.stdout)
+    diagnostics = _safe_diagnostics(stage_id, completed.stdout)
     if diagnostics is not None:
         outcome["sanitized_diagnostics"] = diagnostics
     return outcome
