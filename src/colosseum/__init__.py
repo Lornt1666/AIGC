@@ -35,6 +35,10 @@ from .domain import (
     WorkLedgerEntry,
     WorkOrder,
 )
+from .governed_bundle import (
+    GovernedOrchestrationBundle,
+    RoleQualificationRequirement,
+)
 from .orchestration import (
     AgentAssignment,
     AgentRoleDefinition,
@@ -102,6 +106,7 @@ __all__ = [
     "Engagement",
     "EvidenceRequirement",
     "ExecutionPortfolio",
+    "GovernedOrchestrationBundle",
     "HumanQualificationEvidence",
     "HumanReviewPolicy",
     "HumanReviewRequirement",
@@ -116,6 +121,7 @@ __all__ = [
     "QualificationStatus",
     "ResourceType",
     "RetentionPolicy",
+    "RoleQualificationRequirement",
     "SchedulingDecision",
     "SecurityPolicy",
     "Swarm",
