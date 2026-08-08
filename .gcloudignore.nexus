@@ -20,7 +20,6 @@ data
 artifacts
 tests
 infra
-migrations
 docs
 schemas
 config
