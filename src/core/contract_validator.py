@@ -3,7 +3,11 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, List
+from typing import Any, Dict, List
+
+from jsonschema import FormatChecker
+from jsonschema.exceptions import SchemaError, ValidationError
+from jsonschema.validators import validator_for
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -11,7 +15,7 @@ SCHEMA_DIR = PROJECT_ROOT / "schemas"
 
 
 class ContractValidationError(ValueError):
-    """Raised when an AIGC artifact does not match its contract."""
+    """Raised when an AIGC artifact or schema does not satisfy its contract."""
 
 
 @dataclass(frozen=True)
@@ -23,23 +27,44 @@ class ValidationResult:
 
 
 def load_schema(name: str, schema_dir: Path | None = None) -> Dict[str, Any]:
+    """Load and structurally validate a JSON Schema document.
+
+    The declared ``$schema`` dialect is honored when supported by ``jsonschema``.
+    Invalid or unsupported schema documents fail closed before artifact validation.
+    """
     schema_path = _schema_path(name, schema_dir)
     if not schema_path.exists():
         raise FileNotFoundError(f"Schema not found: {schema_path}")
-    with schema_path.open("r", encoding="utf-8") as handle:
-        schema = json.load(handle)
+    try:
+        with schema_path.open("r", encoding="utf-8") as handle:
+            schema = json.load(handle)
+    except json.JSONDecodeError as exc:
+        raise ContractValidationError(f"Schema {schema_path} is not valid JSON: {exc}") from exc
     if not isinstance(schema, dict):
         raise ContractValidationError(f"Schema {name} is not a JSON object.")
+    validator_cls = _validator_class_for(schema, name)
+    try:
+        validator_cls.check_schema(schema)
+    except SchemaError as exc:
+        raise ContractValidationError(f"Schema {name} is invalid: {exc.message}") from exc
     return schema
 
 
 def validate_artifact(schema_name: str, data: Any, schema_dir: Path | None = None) -> Any:
+    """Validate one artifact with a standards-compliant JSON Schema validator.
+
+    This replaces the former hand-written subset validator so governance schemas
+    can rely on Draft 2020-12 controls including ``const``, ``pattern``,
+    ``format``, ``additionalProperties``, ``uniqueItems``, and length/range
+    constraints. Validation failures are deterministic, bounded, and fail closed.
+    """
     schema = load_schema(schema_name, schema_dir=schema_dir)
-    errors = list(_validate_value(data, schema, "$"))
+    validator_cls = _validator_class_for(schema, schema_name)
+    validator = validator_cls(schema, format_checker=FormatChecker())
+    errors = sorted(validator.iter_errors(data), key=_validation_error_sort_key)
     if errors:
-        raise ContractValidationError(
-            f"{schema_name} validation failed: " + "; ".join(errors[:10])
-        )
+        rendered = "; ".join(_render_validation_error(error) for error in errors[:10])
+        raise ContractValidationError(f"{schema_name} validation failed: {rendered}")
     return data
 
 
@@ -111,69 +136,27 @@ def _load_payload(path: Path) -> Any:
         raise ContractValidationError(f"{path} is not valid JSON: {exc}") from exc
 
 
-def _validate_value(value: Any, schema: Dict[str, Any], path: str) -> Iterable[str]:
-    expected_type = schema.get("type")
-    if expected_type and not _matches_type(value, expected_type):
-        yield f"{path} expected {expected_type}, got {_json_type(value)}"
-        return
-
-    enum_values = schema.get("enum")
-    if enum_values is not None and value not in enum_values:
-        yield f"{path} expected one of {enum_values}, got {value!r}"
-
-    if isinstance(value, dict):
-        required = schema.get("required", [])
-        for key in required:
-            if key not in value:
-                yield f"{path}.{key} is required"
-        properties = schema.get("properties", {})
-        for key, child_schema in properties.items():
-            if key in value:
-                yield from _validate_value(value[key], child_schema, f"{path}.{key}")
-
-    if isinstance(value, list):
-        min_items = schema.get("minItems")
-        if isinstance(min_items, int) and len(value) < min_items:
-            yield f"{path} expected at least {min_items} items"
-        item_schema = schema.get("items")
-        if isinstance(item_schema, dict):
-            for index, item in enumerate(value):
-                yield from _validate_value(item, item_schema, f"{path}[{index}]")
+def _validator_class_for(schema: Dict[str, Any], schema_name: str):
+    declared_dialect = schema.get("$schema")
+    if not isinstance(declared_dialect, str) or not declared_dialect.strip():
+        raise ContractValidationError(f"Schema {schema_name} must declare a supported $schema dialect.")
+    validator_cls = validator_for(schema, default=None)
+    if validator_cls is None:
+        raise ContractValidationError(
+            f"Schema {schema_name} declares an unsupported $schema dialect: {declared_dialect}"
+        )
+    return validator_cls
 
 
-def _matches_type(value: Any, expected_type: str | List[str]) -> bool:
-    if isinstance(expected_type, list):
-        return any(_matches_type(value, item) for item in expected_type)
-    if expected_type == "object":
-        return isinstance(value, dict)
-    if expected_type == "array":
-        return isinstance(value, list)
-    if expected_type == "string":
-        return isinstance(value, str)
-    if expected_type == "integer":
-        return isinstance(value, int) and not isinstance(value, bool)
-    if expected_type == "number":
-        return (isinstance(value, int) or isinstance(value, float)) and not isinstance(value, bool)
-    if expected_type == "boolean":
-        return isinstance(value, bool)
-    if expected_type == "null":
-        return value is None
-    return True
+def _validation_error_sort_key(error: ValidationError) -> tuple[str, str]:
+    return ("/".join(str(part) for part in error.absolute_path), error.message)
 
 
-def _json_type(value: Any) -> str:
-    if isinstance(value, dict):
-        return "object"
-    if isinstance(value, list):
-        return "array"
-    if isinstance(value, str):
-        return "string"
-    if isinstance(value, bool):
-        return "boolean"
-    if isinstance(value, int):
-        return "integer"
-    if isinstance(value, float):
-        return "number"
-    if value is None:
-        return "null"
-    return type(value).__name__
+def _render_validation_error(error: ValidationError) -> str:
+    path = "$"
+    if error.absolute_path:
+        path += "".join(
+            f"[{part}]" if isinstance(part, int) else f".{part}"
+            for part in error.absolute_path
+        )
+    return f"{path}: {error.message}"
