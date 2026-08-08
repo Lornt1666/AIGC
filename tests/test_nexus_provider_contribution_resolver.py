@@ -60,7 +60,11 @@ def make_runtime(adapter: OfflineDeterministicProviderAdapter | None = None):
     runtime = NexusProviderRuntime(
         registry=ProviderRegistry((adapter,)),
         control_store=InMemoryRuntimeControlStore(clock=lambda: NOW),
-        limits=ProviderRuntimeLimits(maximum_usage_per_invocation=1024),
+        limits=ProviderRuntimeLimits(
+            principal_invocations_per_minute=10,
+            global_invocations_per_minute=20,
+            maximum_usage_per_invocation=1024,
+        ),
     )
     return runtime, adapter
 
