@@ -1,0 +1,65 @@
+{
+  "schema_version": "aigc.canadian-execution-contract.v1",
+  "contract_id": "REPLACE_WITH_UNIQUE_CONTRACT_ID",
+  "repository": "Lornt1666/AIGC",
+  "task_type": "repository_only",
+  "environment": "PLAN",
+  "requested_branch": "",
+  "requested_sha": "",
+  "requested_tree_sha": "",
+  "codex": {
+    "local_laptop_required": false,
+    "cloud_region_verified_canada": false,
+    "input_classification": "SANITIZED_NON_PERSONAL",
+    "raw_secrets_permitted": false
+  },
+  "canadian_execution_plane": {
+    "required": false,
+    "country": "CA",
+    "primary_region": "northamerica-northeast1",
+    "fallback_region": null,
+    "fallback_explicitly_approved": false,
+    "silent_failover_allowed": false,
+    "service_location_availability_reviewed": false,
+    "region_lock_reviewed": false,
+    "resource_inventory_complete": false,
+    "logging_region_reviewed": false,
+    "backup_region_reviewed": false,
+    "evidence_region_reviewed": false,
+    "secret_manager_exact_versions_reviewed": false
+  },
+  "privacy": {
+    "canadian_runtime_contains_personal_information": false,
+    "canadian_runtime_contains_sensitive_information": false,
+    "privacy_impact_assessment_required": false,
+    "privacy_impact_assessment_completed": false,
+    "cross_border_assessment_required": true,
+    "cross_border_assessment_completed": false,
+    "purpose_limitation_recorded": false,
+    "data_minimization_reviewed": false,
+    "retention_schedule_recorded": false,
+    "human_oversight_required": true
+  },
+  "spending": {
+    "currency": "CAD",
+    "authorized_ceiling": null,
+    "budget_and_quota_reviewed": false
+  },
+  "authorization": {
+    "human_approval_required": true,
+    "human_approval_recorded": false,
+    "staging_execution_authorized": false,
+    "deployment_authorized": false,
+    "production_activation_authorized": false,
+    "live_model_call_authorized": false,
+    "external_business_action_authorized": false,
+    "gmail_send_authorized": false,
+    "github_runtime_mutation_authorized": false,
+    "merge_authorized": false,
+    "judge_publication_authorized": false,
+    "financial_action_authorized": false,
+    "authorized_by": "",
+    "authorized_at": null,
+    "expires_at": null
+  }
+}
