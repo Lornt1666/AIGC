@@ -86,6 +86,14 @@ resource "google_project_iam_member" "deployer_cloud_build" {
   member  = "serviceAccount:${google_service_account.identity["deployer"].email}"
 }
 
+resource "google_project_iam_member" "deployer_log_reader" {
+  count = local.create_resources ? 1 : 0
+
+  project = var.project_id
+  role    = "roles/logging.viewer"
+  member  = "serviceAccount:${google_service_account.identity["deployer"].email}"
+}
+
 resource "google_service_account_iam_member" "deployer_uses_cloud_build" {
   count = local.create_resources ? 1 : 0
 
@@ -99,6 +107,14 @@ resource "google_project_iam_member" "cloud_build_logging" {
 
   project = var.project_id
   role    = "roles/logging.logWriter"
+  member  = "serviceAccount:${google_service_account.identity["cloud_build"].email}"
+}
+
+resource "google_project_iam_member" "cloud_build_source_reader" {
+  count = local.create_resources ? 1 : 0
+
+  project = var.project_id
+  role    = "roles/storage.objectViewer"
   member  = "serviceAccount:${google_service_account.identity["cloud_build"].email}"
 }
 
