@@ -209,7 +209,7 @@ class GitHubRepositoryReadPort:
             )
         except Exception as exc:
             safe_message = self._redactor.redact_text(str(exc))
-            raise RepositoryTransportError(f"repository read transport failed: {safe_message}") from exc
+            raise RepositoryTransportError(f"repository read transport failed: {safe_message}") from None
 
         if result.get("status") != "READ_ONLY_STATE_OBSERVED":
             raise RepositoryTransportError("repository adapter returned an unexpected status")
