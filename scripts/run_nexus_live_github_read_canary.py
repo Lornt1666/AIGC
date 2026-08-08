@@ -30,10 +30,15 @@ TARGET_REPOSITORY = "Lornt1666/AIGC"
 TARGET_OPERATION = "READ_FILE"
 TARGET_PATH = "docs/architecture/AIGC_NEXUS_GOVERNED_PRIVATE_GITHUB_READ_V1.md"
 TARGET_REVISION = "1b0977827791c99de75133ffa6ac29ed97f495c0"
-BASELINE_CI_RUN = 2652
-BASELINE_CI_RUN_ID = 31236985127
-BASELINE_ARTIFACT_ID = 9015753389
-BASELINE_ARTIFACT_DIGEST = "sha256:520ceec38b8ab88c912c7dee0cc48db8d387f882a447c79decedbe5912e14f8a"
+RESOURCE_BASELINE_CI_RUN = 2652
+RESOURCE_BASELINE_CI_RUN_ID = 31236985127
+RESOURCE_BASELINE_ARTIFACT_ID = 9015753389
+RESOURCE_BASELINE_ARTIFACT_DIGEST = "sha256:520ceec38b8ab88c912c7dee0cc48db8d387f882a447c79decedbe5912e14f8a"
+IMPLEMENTATION_VERIFIED_HEAD = "24f18a4a30182c318713f8658ff6c9675e4a5719"
+IMPLEMENTATION_CI_RUN = 2662
+IMPLEMENTATION_CI_RUN_ID = 31238348084
+IMPLEMENTATION_ARTIFACT_ID = 9016201297
+IMPLEMENTATION_ARTIFACT_DIGEST = "sha256:07063825317c5269b2004a33e4ce920653b7aa01a2dd9d7634a61f64cd43da1f"
 PRINCIPAL = "principal:nexus-repository-reader"
 AGENT_ID = "AGT-REPOSITORY-READER"
 
@@ -62,6 +67,8 @@ def _authority(now: datetime, request: RepositoryReadRequest, policy: Repository
             "maximum_repository_reads": 1,
             "repository_writes": 0,
             "financial_spend_cad": "0.00",
+            "implementation_verified_head": IMPLEMENTATION_VERIFIED_HEAD,
+            "implementation_ci_run": IMPLEMENTATION_CI_RUN,
         }
     )
     parent_state_hash = canonical_sha256(
@@ -69,11 +76,16 @@ def _authority(now: datetime, request: RepositoryReadRequest, policy: Repository
     )
     verifier_report_hash = canonical_sha256(
         {
-            "exact_head": TARGET_REVISION,
-            "ci_run": BASELINE_CI_RUN,
-            "ci_run_id": BASELINE_CI_RUN_ID,
-            "artifact_id": BASELINE_ARTIFACT_ID,
-            "artifact_digest": BASELINE_ARTIFACT_DIGEST,
+            "resource_exact_head": TARGET_REVISION,
+            "resource_ci_run": RESOURCE_BASELINE_CI_RUN,
+            "resource_ci_run_id": RESOURCE_BASELINE_CI_RUN_ID,
+            "resource_artifact_id": RESOURCE_BASELINE_ARTIFACT_ID,
+            "resource_artifact_digest": RESOURCE_BASELINE_ARTIFACT_DIGEST,
+            "implementation_verified_head": IMPLEMENTATION_VERIFIED_HEAD,
+            "implementation_ci_run": IMPLEMENTATION_CI_RUN,
+            "implementation_ci_run_id": IMPLEMENTATION_CI_RUN_ID,
+            "implementation_artifact_id": IMPLEMENTATION_ARTIFACT_ID,
+            "implementation_artifact_digest": IMPLEMENTATION_ARTIFACT_DIGEST,
             "conclusion": "success",
         }
     )
@@ -98,6 +110,7 @@ def _authority(now: datetime, request: RepositoryReadRequest, policy: Repository
             "zero repository writes",
             "zero financial spend",
             "no automatic retry",
+            "pull_request first-run-attempt only",
         ),
         expires_at=now + timedelta(minutes=10),
     )
@@ -123,6 +136,10 @@ def _authority(now: datetime, request: RepositoryReadRequest, policy: Repository
 
 def execute_canary(*, output: Path) -> dict[str, object]:
     now = datetime.now(timezone.utc)
+    if os.environ.get("GITHUB_EVENT_NAME", "") != "pull_request":
+        raise RuntimeError("canary may execute only in a pull_request workflow")
+    if os.environ.get("GITHUB_RUN_ATTEMPT", "1") != "1":
+        raise RuntimeError("canary may execute only on the first workflow run attempt")
     if os.environ.get("GITHUB_REPOSITORY", "") != TARGET_REPOSITORY:
         raise RuntimeError("canary repository binding mismatch")
 
@@ -202,10 +219,15 @@ def execute_canary(*, output: Path) -> dict[str, object]:
         "operation": TARGET_OPERATION,
         "path": TARGET_PATH,
         "exact_revision": TARGET_REVISION,
-        "baseline_ci_run": BASELINE_CI_RUN,
-        "baseline_ci_run_id": BASELINE_CI_RUN_ID,
-        "baseline_artifact_id": BASELINE_ARTIFACT_ID,
-        "baseline_artifact_digest": BASELINE_ARTIFACT_DIGEST,
+        "resource_baseline_ci_run": RESOURCE_BASELINE_CI_RUN,
+        "resource_baseline_ci_run_id": RESOURCE_BASELINE_CI_RUN_ID,
+        "resource_baseline_artifact_id": RESOURCE_BASELINE_ARTIFACT_ID,
+        "resource_baseline_artifact_digest": RESOURCE_BASELINE_ARTIFACT_DIGEST,
+        "implementation_verified_head": IMPLEMENTATION_VERIFIED_HEAD,
+        "implementation_ci_run": IMPLEMENTATION_CI_RUN,
+        "implementation_ci_run_id": IMPLEMENTATION_CI_RUN_ID,
+        "implementation_artifact_id": IMPLEMENTATION_ARTIFACT_ID,
+        "implementation_artifact_digest": IMPLEMENTATION_ARTIFACT_DIGEST,
         "request_digest": execution.request_digest,
         "tool_decision": execution.tool_decision.decision,
         "permit_id": permit.permit_id,
