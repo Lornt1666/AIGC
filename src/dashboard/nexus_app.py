@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import os
+import re
 import sys
 from pathlib import Path
 
@@ -17,6 +19,7 @@ from src.domain.nexus.contracts import WorkOrder  # noqa: E402
 from src.webapp.nexus_dashboard import build_nexus_dashboard_snapshot  # noqa: E402
 
 
+_EXACT_REVISION = re.compile(r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
 DEFAULT_WEIGHTS = UtilityWeights(
     fidelity=0.30,
     evidence=0.25,
@@ -27,6 +30,8 @@ DEFAULT_WEIGHTS = UtilityWeights(
 
 
 def build_demo_run(work_order: WorkOrder, exact_revision: str):
+    if not _EXACT_REVISION.fullmatch(exact_revision):
+        raise ValueError("Nexus demo requires an exact 40- or 64-character hexadecimal revision")
     verifier = DeterministicEpistemicVerifier(weights=DEFAULT_WEIGHTS, utility_threshold=0.0)
     orchestrator = DryRunGovernanceOrchestrator(verifier, exact_revision=exact_revision)
     initial = ArtifactState(stage="ingest", revision=1)
@@ -48,18 +53,28 @@ def main() -> int:
 
     st.set_page_config(page_title="AIGC Nexus V1", layout="wide")
     st.title("AIGC Nexus V1")
-    st.caption("Integrated brain, governance visibility, artifact state, and evidence — external execution remains locked.")
+    st.caption(
+        "Integrated brain, governance visibility, artifact state, and evidence — live/runtime capabilities remain governed and default-deny."
+    )
 
     st.sidebar.header("System Boundary")
     st.sidebar.success("Frozen contract: AIGC_INTEGRATION_CONTRACT_V1")
-    st.sidebar.warning("ToolBroker: LOCKED")
-    st.sidebar.warning("External execution: DISABLED")
+    st.sidebar.warning("ToolBroker: GOVERNED / DEFAULT DENY")
+    st.sidebar.warning("External execution: GOVERNED / DEFAULT DENY")
     st.sidebar.warning("Production activation: DISABLED")
+
+    release_revision = os.environ.get("AIGC_RELEASE_REVISION", "").strip().lower()
+    if not _EXACT_REVISION.fullmatch(release_revision):
+        release_revision = ""
 
     with st.sidebar.form("nexus_work_order"):
         objective = st.text_area("Work Order", value="Integrate and validate AIGC Nexus V1")
         tags = st.text_input("Domain tags", value="software,security,dashboard")
-        exact_revision = st.text_input("Exact revision", value="release/aigc-nexus-v1")
+        exact_revision = st.text_input(
+            "Exact revision",
+            value=release_revision,
+            placeholder="40- or 64-character hexadecimal commit SHA",
+        )
         submitted = st.form_submit_button("Run deterministic dry-run")
 
     work_order = WorkOrder(
@@ -69,7 +84,14 @@ def main() -> int:
     )
     specialists = select_specialists(work_order)
 
-    result = build_demo_run(work_order, exact_revision) if submitted else None
+    result = None
+    if submitted:
+        normalized_revision = exact_revision.strip().lower()
+        if not _EXACT_REVISION.fullmatch(normalized_revision):
+            st.sidebar.error("Enter an exact 40- or 64-character hexadecimal revision; branch names are not evidence revisions.")
+        else:
+            result = build_demo_run(work_order, normalized_revision)
+
     findings = ()
     governance_state = "LOCKED"
     if result is not None:
@@ -99,6 +121,8 @@ def main() -> int:
     with tab_graph:
         st.subheader("Cognitive topology")
         st.code(" -> ".join(snapshot["run_graph"]), language="text")
+        st.subheader("Available governed runtime surfaces")
+        st.json(snapshot["available_runtime_surfaces"])
         st.subheader("Selected specialists")
         if specialists:
             st.dataframe([{
@@ -132,23 +156,25 @@ def main() -> int:
         st.subheader("Governance console")
         st.metric("Current state", snapshot["governance_state"])
         st.write("Available operator intents: " + ", ".join(snapshot["approval_actions"]))
-        st.warning("These controls are presentation-only in this increment. They do not grant ExecutionPermits.")
+        st.warning("These controls are presentation-only. They do not mint GovernanceDecisions or ExecutionPermits.")
         if result is not None:
             st.json([decision.model_dump(mode="json") for decision in result.decisions])
 
     with tab_memory:
         st.subheader("Memory / strategic context")
-        st.info("Persistent memory adapters are the next integration workstream. Memory cannot grant authority.")
+        st.info("Persistent memory adapters are available but are not auto-connected to this deterministic demo. Memory cannot grant authority.")
         st.json({
             "work_order": work_order.work_order_id,
             "objective": work_order.objective,
             "domain_tags": work_order.domain_tags,
-            "persistent_memory_connected": False,
+            "persistent_memory_adapter": snapshot["system"]["memory_adapter"],
+            "auto_connected": False,
+            "grants_authority": False,
         })
 
     with tab_evidence:
         st.subheader("Evidence / receipts")
-        st.info("Current Nexus run is deterministic and provider-free.")
+        st.info("This demo run is deterministic and provider-free. Live provider evidence is admitted only through governed runtime receipts.")
         if result is not None:
             payload = {
                 "run_id": result.run_id,

@@ -22,18 +22,27 @@ def assert_parent_state(state: ArtifactState, parent_state_hash: str) -> None:
 
 
 def reduce_observed_state(state: ArtifactState, receipt: ExecutionReceipt) -> ArtifactState:
-    """Derive the next epistemic state only from an empirical execution receipt.
+    """Advance canonical artifact state only from a confirmed successful receipt.
 
-    V1 intentionally does not infer external resource semantics from tool parameters.
-    The reducer records receipt provenance and advances revision while preserving the
-    immutable epistemic graph. Resource-specific reducers are added behind separately
-    reviewed adapters.
+    Failed/not-started/cancelled/timed-out attempts do not prove a new artifact state and
+    therefore leave canonical state unchanged. Partial or indeterminate execution cannot
+    be represented faithfully by the current ArtifactState schema, so it must stop at a
+    reconciliation boundary until a reconciliation ChangeSet produces a new confirmed
+    receipt. Resource-specific reducers may later project proven receipt semantics behind
+    separately reviewed adapters.
     """
     assert_parent_state(state, receipt.parent_state_hash)
 
     if receipt.execution_status in {"partially_applied", "indeterminate"}:
-        if not receipt.reconciliation_required:
-            raise ReconciliationRequired("receipt requires reconciliation")
+        raise ReconciliationRequired(
+            "partial/indeterminate receipt requires a reconciliation ChangeSet before canonical state may advance"
+        )
+
+    if receipt.execution_status in {"not_started", "failed", "cancelled", "timed_out"}:
+        return state
+
+    if receipt.execution_status != "succeeded":
+        raise ValueError(f"unsupported execution status: {receipt.execution_status}")
 
     return state.model_copy(
         update={

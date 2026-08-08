@@ -18,10 +18,10 @@ def build_nexus_dashboard_snapshot(
     memory_candidates: tuple[dict[str, Any], ...] = (),
     evidence_records: tuple[dict[str, Any], ...] = (),
 ) -> dict[str, Any]:
-    """Provider-free dashboard projection for Nexus V1.
+    """Read-only dashboard projection for admitted Nexus V1 capabilities.
 
-    This module intentionally returns presentation data only. It performs no network,
-    provider, credential, repository, deployment, or model action.
+    The projection exposes implementation availability without claiming runtime wiring,
+    authority, provider execution, credential access, deployment, or production state.
     """
     specialists = select_specialists(work_order) if work_order is not None else ()
     synapsis = None
@@ -44,11 +44,15 @@ def build_nexus_dashboard_snapshot(
         "product": "AIGC NEXUS V1",
         "system": {
             "governance": "ACTIVE",
-            "toolbroker": "LOCKED",
-            "verifier": "ACTIVE",
-            "external_execution": "DISABLED",
+            "toolbroker": "GOVERNED_DEFAULT_DENY",
+            "verifier": "ACTIVE_READ_ONLY",
+            "external_execution": "GOVERNED_AVAILABLE_DEFAULT_DENY",
             "production_activation": "DISABLED",
-            "memory_adapter": "AVAILABLE_NOT_AUTO_CONNECTED",
+            "repository_gateway": "READ_ONLY_AVAILABLE_NOT_AUTO_CONNECTED",
+            "provider_runtime": "LIVE_FOUNDATION_AVAILABLE_NOT_AUTO_CONNECTED",
+            "durable_runtime_controls": "POSTGRES_AVAILABLE_NOT_AUTO_CONNECTED",
+            "memory_adapter": "SQLITE_AVAILABLE_NOT_AUTO_CONNECTED",
+            "evidence_adapter": "SQLITE_AVAILABLE_NOT_AUTO_CONNECTED",
             "odse": "ACTIVE_PROVIDER_FREE",
         },
         "work_order": work_order.model_dump(mode="json") if work_order else None,
@@ -64,6 +68,15 @@ def build_nexus_dashboard_snapshot(
             "VERIFIER",
             "GOVERNANCE",
             "MEMORY_ADMISSION",
+        ],
+        "available_runtime_surfaces": [
+            "REPOSITORY_GATEWAY_READ_ONLY",
+            "PROVIDER_CONTRIBUTION_RESOLVER",
+            "NEXUS_PROVIDER_RUNTIME_DEFAULT_DENY",
+            "GOVERNED_LIVE_PROVIDER_RUNTIME",
+            "POSTGRES_RUNTIME_CONTROLS",
+            "SQLITE_MEMORY",
+            "SQLITE_EVIDENCE",
         ],
         "synapsis": synapsis,
         "memory": {

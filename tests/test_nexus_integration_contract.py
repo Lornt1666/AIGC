@@ -4,7 +4,11 @@ import pytest
 
 from src.core.epistemic.canonicalization import canonical_sha256
 from src.core.nexus.specialist_registry import select_specialists
-from src.core.nexus.state_reducer import ConcurrencyConflict, reduce_observed_state
+from src.core.nexus.state_reducer import (
+    ConcurrencyConflict,
+    ReconciliationRequired,
+    reduce_observed_state,
+)
 from src.domain.epistemic.models import ArtifactState
 from src.domain.nexus.contracts import (
     ChangeSet,
@@ -104,7 +108,7 @@ def test_partial_execution_requires_reconciliation() -> None:
         )
 
 
-def test_receipt_driven_reducer_advances_revision() -> None:
+def test_receipt_driven_reducer_advances_revision_only_on_success() -> None:
     state = _state()
     receipt = ExecutionReceipt(
         receipt_id="EXEC-NEXUS003",
@@ -116,6 +120,34 @@ def test_receipt_driven_reducer_advances_revision() -> None:
     next_state = reduce_observed_state(state, receipt)
     assert next_state.revision == 2
     assert next_state.parent_state_hash == canonical_sha256(state)
+
+
+@pytest.mark.parametrize("status", ["not_started", "failed", "cancelled", "timed_out"])
+def test_non_success_terminal_receipts_do_not_advance_canonical_state(status: str) -> None:
+    state = _state()
+    receipt = ExecutionReceipt(
+        receipt_id=f"EXEC-NONADV-{status.replace('_', '').upper()}01",
+        change_set_id="CHG-NEXUS001",
+        parent_state_hash=canonical_sha256(state),
+        execution_status=status,
+        external_action_performed=False,
+    )
+    assert reduce_observed_state(state, receipt) == state
+
+
+@pytest.mark.parametrize("status", ["partially_applied", "indeterminate"])
+def test_uncertain_receipts_never_advance_before_reconciliation(status: str) -> None:
+    state = _state()
+    receipt = ExecutionReceipt(
+        receipt_id=f"EXEC-RECON-{status.replace('_', '').upper()}01",
+        change_set_id="CHG-NEXUS001",
+        parent_state_hash=canonical_sha256(state),
+        execution_status=status,
+        external_action_performed=True,
+        reconciliation_required=True,
+    )
+    with pytest.raises(ReconciliationRequired, match="reconciliation ChangeSet"):
+        reduce_observed_state(state, receipt)
 
 
 def test_dynamic_specialists_are_internal_only() -> None:
