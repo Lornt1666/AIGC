@@ -1,0 +1,157 @@
+{
+  "authority_class": "policy",
+  "bundle_id": "AIGC-OMEGA-POLICY-BUNDLE-001",
+  "bundle_sha256": "afbb8308cabfb47a0586a9a0e683d929eee62159b52c5a31463ab72a5cf22f49",
+  "constitutional_authority": false,
+  "default_decision": "DENY",
+  "rules": [
+    {
+      "action_classes": [
+        "direct_main_write"
+      ],
+      "active": true,
+      "effect": "DENY",
+      "priority": 1000,
+      "reason_code": "DIRECT_MAIN_WRITE_PROHIBITED",
+      "rule_id": "PEL-DENY-DIRECT-MAIN-WRITE",
+      "version": "1.0.0"
+    },
+    {
+      "action_classes": [
+        "merge",
+        "automatic_merge"
+      ],
+      "active": true,
+      "effect": "DENY",
+      "priority": 1000,
+      "reason_code": "MERGE_PROHIBITED",
+      "rule_id": "PEL-DENY-MERGE",
+      "version": "1.0.0"
+    },
+    {
+      "action_classes": [
+        "self_approval"
+      ],
+      "active": true,
+      "effect": "DENY",
+      "priority": 1000,
+      "reason_code": "SELF_APPROVAL_PROHIBITED",
+      "rule_id": "PEL-DENY-SELF-APPROVAL",
+      "version": "1.0.0"
+    },
+    {
+      "action_classes": [
+        "arbitrary_shell"
+      ],
+      "active": true,
+      "effect": "DENY",
+      "priority": 1000,
+      "reason_code": "ARBITRARY_SHELL_PROHIBITED",
+      "rule_id": "PEL-DENY-ARBITRARY-SHELL",
+      "version": "1.0.0"
+    },
+    {
+      "action_classes": [
+        "gmail_send"
+      ],
+      "active": true,
+      "effect": "DENY",
+      "priority": 1000,
+      "reason_code": "GMAIL_SEND_PROHIBITED",
+      "rule_id": "PEL-DENY-GMAIL-SEND",
+      "version": "1.0.0"
+    },
+    {
+      "action_classes": [
+        "financial_commitment"
+      ],
+      "active": true,
+      "effect": "DENY",
+      "priority": 1000,
+      "reason_code": "FINANCIAL_COMMITMENT_PROHIBITED",
+      "rule_id": "PEL-DENY-FINANCIAL",
+      "version": "1.0.0"
+    },
+    {
+      "action_classes": [
+        "raw_secret_output"
+      ],
+      "active": true,
+      "effect": "DENY",
+      "priority": 1000,
+      "reason_code": "RAW_SECRET_OUTPUT_PROHIBITED",
+      "rule_id": "PEL-DENY-RAW-SECRET",
+      "version": "1.0.0"
+    },
+    {
+      "action_classes": [
+        "terraform_apply",
+        "opentofu_apply"
+      ],
+      "active": true,
+      "effect": "DENY",
+      "priority": 1000,
+      "reason_code": "INFRASTRUCTURE_APPLY_PROHIBITED",
+      "rule_id": "PEL-DENY-INFRA-APPLY",
+      "version": "1.0.0"
+    },
+    {
+      "action_classes": [
+        "provider_mutation_outside_bridge_setup"
+      ],
+      "active": true,
+      "effect": "DENY",
+      "priority": 1000,
+      "reason_code": "PROVIDER_MUTATION_SCOPE_VIOLATION",
+      "rule_id": "PEL-DENY-PROVIDER-MUTATION",
+      "version": "1.0.0"
+    },
+    {
+      "action_classes": [
+        "aigc_deployment"
+      ],
+      "active": true,
+      "effect": "DENY",
+      "priority": 1000,
+      "reason_code": "AIGC_DEPLOYMENT_LOCKED",
+      "rule_id": "PEL-DENY-AIGC-DEPLOY",
+      "version": "1.0.0"
+    },
+    {
+      "action_classes": [
+        "production_activation"
+      ],
+      "active": true,
+      "effect": "DENY",
+      "priority": 1000,
+      "reason_code": "PRODUCTION_ACTIVATION_LOCKED",
+      "rule_id": "PEL-DENY-PRODUCTION",
+      "version": "1.0.0"
+    },
+    {
+      "action_classes": [
+        "branch_create",
+        "draft_pr_create"
+      ],
+      "active": true,
+      "effect": "ALLOW_WITH_APPROVAL",
+      "priority": 500,
+      "reason_code": "HUMAN_APPROVAL_REQUIRED",
+      "rule_id": "PEL-APPROVAL-GOVERNED-WRITE",
+      "version": "1.0.0"
+    },
+    {
+      "action_classes": [
+        "repository_read",
+        "policy_evaluate"
+      ],
+      "active": true,
+      "effect": "ALLOW",
+      "priority": 100,
+      "reason_code": "BOUNDED_READ_ALLOWED",
+      "rule_id": "PEL-ALLOW-READ",
+      "version": "1.0.0"
+    }
+  ],
+  "version": "1.0.0"
+}

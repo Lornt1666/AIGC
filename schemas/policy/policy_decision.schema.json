@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/policy/policy_decision.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["decision_id", "request_id", "policy_version", "policy_bundle_digest", "exact_repository_revision", "evaluated_rule_ids", "decision", "authority_evidence", "approval_evidence", "emergency_stop_state", "reasons", "blocking_rules", "issued_at", "expires_at", "deterministic_digest"],
+  "properties": {
+    "decision_id": {"type": "string"},
+    "request_id": {"type": "string"},
+    "policy_version": {"type": "string"},
+    "policy_bundle_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "exact_repository_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "evaluated_rule_ids": {"type": "array", "items": {"type": "string"}},
+    "decision": {"enum": ["ALLOW", "ALLOW_WITH_APPROVAL", "DENY", "INSUFFICIENT_EVIDENCE", "EMERGENCY_STOP_LOCKED"]},
+    "authority_evidence": {"type": "array", "items": {"type": "string"}},
+    "approval_evidence": {"type": "array", "items": {"type": "string"}},
+    "emergency_stop_state": {"enum": ["LOCKED", "UNLOCKED", "UNKNOWN"]},
+    "reasons": {"type": "array", "items": {"type": "string"}},
+    "blocking_rules": {"type": "array", "items": {"type": "string"}},
+    "issued_at": {"type": "string"},
+    "expires_at": {"type": "string"},
+    "deterministic_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}
