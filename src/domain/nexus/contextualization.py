@@ -37,6 +37,32 @@ class ParentMessageContext(NexusContract):
     external_action_performed: Literal[False] = False
 
 
+class RepositoryReadRequest(NexusContract):
+    repository: str = Field(min_length=1, max_length=300)
+    exact_revision: str = Field(min_length=1, max_length=200)
+    operation: RepositoryOperation
+    path_or_query: str = Field(min_length=1, max_length=2000)
+    sensitivity: str = Field(default="INTERNAL", min_length=1, max_length=64)
+
+
+class RepositoryReadObservation(NexusContract):
+    repository: str = Field(min_length=1, max_length=300)
+    observed_revision: str = Field(min_length=1, max_length=200)
+    operation: RepositoryOperation
+    path_or_query: str = Field(min_length=1, max_length=2000)
+    retrieved_at: datetime
+    raw_content: str = Field(max_length=200000)
+    raw_content_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    source_type: str = Field(min_length=1, max_length=100)
+    sensitivity: str = Field(min_length=1, max_length=64)
+
+    @model_validator(mode="after")
+    def validate_observation_time(self) -> "RepositoryReadObservation":
+        if self.retrieved_at.tzinfo is None or self.retrieved_at.utcoffset() is None:
+            raise ValueError("RepositoryReadObservation retrieved_at must be timezone-aware")
+        return self
+
+
 class RepositoryContextRecord(NexusContract):
     repository: str = Field(min_length=1, max_length=300)
     exact_revision: str = Field(min_length=1, max_length=200)
