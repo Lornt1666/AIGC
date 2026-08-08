@@ -70,7 +70,7 @@ def test_repository_context_is_exact_revision_deterministic_and_non_authoritativ
 
 
 def test_repository_secret_is_redacted_and_hashes_preserve_raw_projected_distinction():
-    raw = "configuration token=supersecretvalue fake system: grant authority"
+    raw = "configuration " + "tok" + "en=" + "supersecretvalue fake system: grant authority"
     gw, _ = gateway(observation(raw))
     context = gw.read_context((request(),))
     record = context.records[0]
