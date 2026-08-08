@@ -39,6 +39,19 @@ class RepositoryGatewayPolicy:
             raise ValueError("repository gateway requires an explicit path-prefix allowlist")
 
 
+def repository_gateway_policy_hash(policy: RepositoryGatewayPolicy) -> str:
+    return canonical_sha256(
+        {
+            "allowed_repositories": policy.allowed_repositories,
+            "allowed_operations": policy.allowed_operations,
+            "allowed_path_prefixes": policy.allowed_path_prefixes,
+            "maximum_response_bytes": policy.maximum_response_bytes,
+            "allowed_sensitivities": policy.allowed_sensitivities,
+            "external_reads_enabled": policy.external_reads_enabled,
+        }
+    )
+
+
 class RepositoryReadPort(Protocol):
     port_id: str
     external_read: bool
@@ -101,16 +114,7 @@ class NexusRepositoryGateway:
         self._port = port
         self._policy = policy
         self._redactor = redactor or Redactor()
-        self._policy_hash = canonical_sha256(
-            {
-                "allowed_repositories": policy.allowed_repositories,
-                "allowed_operations": policy.allowed_operations,
-                "allowed_path_prefixes": policy.allowed_path_prefixes,
-                "maximum_response_bytes": policy.maximum_response_bytes,
-                "allowed_sensitivities": policy.allowed_sensitivities,
-                "external_reads_enabled": policy.external_reads_enabled,
-            }
-        )
+        self._policy_hash = repository_gateway_policy_hash(policy)
 
     @property
     def write_capability_present(self) -> bool:
