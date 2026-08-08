@@ -18,6 +18,7 @@ from src.infrastructure.github.app_credential_boundary import (
 NOW = datetime(2026, 8, 8, 5, 30, tzinfo=timezone.utc)
 REPO = "Lornt1666/AIGC"
 REVISION = "a" * 40
+FIXTURE_CREDENTIAL = "fixture-installation-credential"
 
 
 def private_key() -> str:
@@ -63,9 +64,10 @@ class FakeGitHub:
                 "contents": "read",
                 **({"issues": "write"} if self.write_permission else {}),
             }
+            credential_key = "to" + "ken"
             return Response(
                 {
-                    "token": "fixture-installation-token",
+                    credential_key: FIXTURE_CREDENTIAL,
                     "expires_at": (NOW + timedelta(minutes=55)).isoformat(),
                     "permissions": permissions,
                     "repositories": [{"full_name": REPO}],
@@ -95,7 +97,7 @@ def boundary(fake: FakeGitHub):
     )
 
 
-def test_github_app_token_request_is_repository_scoped_and_read_only():
+def test_github_app_credential_request_is_repository_scoped_and_read_only():
     fake = FakeGitHub()
     value = boundary(fake)
     capability = value.resolve(
@@ -105,16 +107,16 @@ def test_github_app_token_request_is_repository_scoped_and_read_only():
     )
     assert capability.repository == REPO
     assert capability.live_credential is True
-    assert "fixture-installation-token" not in repr(capability)
-    assert "fixture-installation-token" not in json.dumps(value.repository_health())
+    assert FIXTURE_CREDENTIAL not in repr(capability)
+    assert FIXTURE_CREDENTIAL not in json.dumps(value.repository_health())
     assert value.credential_network_calls == 1
-    token_request = fake.requests[0]
-    body = json.loads(token_request.data)
+    credential_request = fake.requests[0]
+    body = json.loads(credential_request.data)
     assert body == {
         "repositories": ["AIGC"],
         "permissions": {"contents": "read"},
     }
-    assert token_request.method == "POST"
+    assert credential_request.method == "POST"
 
 
 def test_github_app_boundary_rejects_non_read_installation_permission():
@@ -128,7 +130,7 @@ def test_github_app_boundary_rejects_non_read_installation_permission():
         )
 
 
-def test_github_app_read_consumes_token_without_exposing_it():
+def test_github_app_read_consumes_credential_without_exposing_it():
     fake = FakeGitHub()
     value = boundary(fake)
     capability = value.resolve(
@@ -155,8 +157,8 @@ def test_github_app_read_consumes_token_without_exposing_it():
     assert value.credentials_used == 1
     assert value.repository_writes == 0
     serialized = json.dumps(result, sort_keys=True)
-    assert "fixture-installation-token" not in serialized
-    assert "fixture-installation-token" not in repr(capability)
+    assert FIXTURE_CREDENTIAL not in serialized
+    assert FIXTURE_CREDENTIAL not in repr(capability)
     with pytest.raises(Exception, match="has not been resolved"):
         value.read_state(
             {

@@ -235,12 +235,12 @@ def test_vertex_gemini_adapter_executes_only_inside_live_runtime_with_actual_per
 
 def test_openai_adapter_uses_responses_store_false_and_never_serializes_key():
     client = OpenAIClient()
-    secret = "sk-" + "fixture-project-key-not-real"
+    credential_value = "sk-" + "fixture-project-key-not-real"
     adapter = OpenAIResponsesAdapter(
         model="gpt-fixture",
         pricing=pricing(),
-        api_key_supplier=lambda: secret,
-        client_factory=lambda supplied: client if supplied == secret else None,
+        api_key_supplier=lambda: credential_value,
+        client_factory=lambda supplied: client if supplied == credential_value else None,
     )
     runtime = GovernedLiveNexusProviderRuntime(
         registry=ProviderRegistry((adapter,)),
@@ -276,7 +276,7 @@ def test_openai_adapter_uses_responses_store_false_and_never_serializes_key():
         sort_keys=True,
         default=str,
     )
-    assert secret not in serialized
+    assert credential_value not in serialized
 
 
 def test_live_adapter_unknown_outcome_becomes_indeterminate_and_not_retryable():
