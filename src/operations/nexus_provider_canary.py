@@ -21,6 +21,7 @@ from src.domain.nexus.contracts import ExecutionPermit, GovernanceDecision
 from src.domain.nexus.provider_runtime import ProviderInvocation, ProviderRuntimeLimits
 from src.infrastructure.credentials.regional_secret_manager import (
     REGION,
+    RegionalSecretError,
     RegionalSecretManagerResolver,
 )
 from src.infrastructure.providers.google_vertex_gemini import GoogleVertexGeminiAdapter
@@ -59,13 +60,16 @@ class ProviderCanaryPlan(BaseModel):
         if self.location != REGION:
             raise ValueError(f"provider canary location must equal {REGION}")
         validator = RegionalSecretManagerResolver(client_factory=lambda _endpoint: None)
-        validator.parse_reference(self.runtime_control_dsn_secret_ref)
-        if self.provider_id == "openai_responses":
-            if not self.openai_api_key_secret_ref:
-                raise ValueError("OpenAI canary requires an exact regional API-key secret reference")
-            validator.parse_reference(self.openai_api_key_secret_ref)
-        elif self.openai_api_key_secret_ref is not None:
-            raise ValueError("Gemini canary cannot carry an OpenAI secret reference")
+        try:
+            validator.parse_reference(self.runtime_control_dsn_secret_ref)
+            if self.provider_id == "openai_responses":
+                if not self.openai_api_key_secret_ref:
+                    raise ValueError("OpenAI canary requires an exact regional API-key secret reference")
+                validator.parse_reference(self.openai_api_key_secret_ref)
+            elif self.openai_api_key_secret_ref is not None:
+                raise ValueError("Gemini canary cannot carry an OpenAI secret reference")
+        except RegionalSecretError as exc:
+            raise ValueError(str(exc)) from None
         return self
 
     @property
@@ -221,14 +225,13 @@ def execute_canary(
 
     adapter = _adapter(plan, resolver)
     registry = ProviderRegistry((adapter,))
-    daily_usage = plan.reserved_usage_units * 2
     limits = ProviderRuntimeLimits(
         principal_invocations_per_minute=2,
         principal_invocations_per_day=2,
         global_invocations_per_minute=2,
         global_invocations_per_day=2,
-        principal_reserved_usage_per_day=daily_usage,
-        global_reserved_usage_per_day=daily_usage,
+        principal_reserved_usage_per_day=8192,
+        global_reserved_usage_per_day=8192,
         maximum_usage_per_invocation=plan.reserved_usage_units,
         maximum_cost_cad_per_invocation=plan.maximum_cost_cad,
     )
