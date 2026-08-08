@@ -37,11 +37,11 @@ def dsn():
     return DSN
 
 
-def limits():
+def limits(*, principal_per_minute: int = 3):
     return ProviderRuntimeLimits(
-        principal_invocations_per_minute=3,
+        principal_invocations_per_minute=principal_per_minute,
         principal_invocations_per_day=10,
-        global_invocations_per_minute=6,
+        global_invocations_per_minute=12,
         global_invocations_per_day=20,
         principal_reserved_usage_per_day=1000,
         global_reserved_usage_per_day=2000,
@@ -151,11 +151,15 @@ def test_postgres_emergency_stop_epoch_blocks_and_recovers(dsn):
 
 def test_postgres_permit_invocation_ceiling_is_durable(dsn):
     store = PostgresRuntimeControlStore(dsn, clock=lambda: NOW)
+    # This test isolates the permit ceiling from the deliberately shared minute-rate
+    # counters exercised above. Production rate limits remain unchanged; only the
+    # test-specific limit is widened so the first reservation reaches permit accounting.
+    permit_test_limits = limits(principal_per_minute=10)
     first = invocation(key="4")
     first = first.model_copy(update={"permit_id": "PERMIT-PG-TEST01"})
     store.reserve_invocation(
         invocation=first,
-        limits=limits(),
+        limits=permit_test_limits,
         permit_maximum_invocations=1,
     )
     second = invocation(key="5").model_copy(update={"permit_id": "PERMIT-PG-TEST01"})
@@ -163,6 +167,6 @@ def test_postgres_permit_invocation_ceiling_is_durable(dsn):
     with pytest.raises(RuntimeLimitExceeded):
         store.reserve_invocation(
             invocation=second,
-            limits=limits(),
+            limits=permit_test_limits,
             permit_maximum_invocations=1,
         )
