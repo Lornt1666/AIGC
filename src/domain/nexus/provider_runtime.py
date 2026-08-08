@@ -68,6 +68,7 @@ class ProviderInvocation(NexusContract):
     resource_ref: str = Field(min_length=1, max_length=1000)
     purpose: str = Field(min_length=1, max_length=4000)
     requested_effect_class: EffectClass
+    input_payload: str = Field(default="", max_length=50000)
     permit_id: str | None = Field(default=None, pattern=r"^PERMIT-[A-Z0-9_-]{6,64}$")
 
 
