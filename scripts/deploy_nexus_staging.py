@@ -70,6 +70,7 @@ def build_plan(payload: dict[str, Any], manifest: dict[str, Any]) -> dict[str, A
         f"{REGION}-docker.pkg.dev/{project}/"
         f"{resources['artifact_registry_repository']}/aigc-nexus"
     )
+    prefix = resources["artifact_registry_repository"].removesuffix("-runtime")
     return {
         "schema_version": "aigc.nexus-staging-plan.v1",
         "project_id": project,
@@ -80,6 +81,9 @@ def build_plan(payload: dict[str, Any], manifest: dict[str, Any]) -> dict[str, A
         "deployment_image_form": f"{image_base}@sha256:<registry-resolved>",
         "service": resources["operator_service"],
         "cloud_sql_instance": f"{project}:{REGION}:{resources['cloud_sql_instance']}",
+        "network": f"{prefix}-vpc",
+        "subnet": f"{prefix}-subnet",
+        "vpc_egress": "private-ranges-only",
         "health_path": "/health",
         "readiness_path": "/ready",
         "observability_path": "/observability",
@@ -152,6 +156,9 @@ def deploy(
     release_sha = summary["release_sha"]
     service = resources["operator_service"]
     repository = resources["artifact_registry_repository"]
+    prefix = repository.removesuffix("-runtime")
+    network = f"{prefix}-vpc"
+    subnet = f"{prefix}-subnet"
     image_base = f"{REGION}-docker.pkg.dev/{project}/{repository}/aigc-nexus"
     tagged_image = f"{image_base}:{release_sha}"
 
@@ -168,7 +175,12 @@ def deploy(
         "gcloud", "iam", "service-accounts", "describe", accounts["operator"],
         "--project", project,
     ])
+    _run([
+        "gcloud", "iam", "service-accounts", "describe", accounts["cloud_build"],
+        "--project", project,
+    ])
 
+    build_service_account = f"projects/{project}/serviceAccounts/{accounts['cloud_build']}"
     build_id = _run(
         [
             "gcloud", "builds", "submit", ".",
@@ -176,6 +188,7 @@ def deploy(
             "--region", REGION,
             "--config", "cloudbuild.nexus.yaml",
             "--ignore-file", ".gcloudignore.nexus",
+            "--service-account", build_service_account,
             "--substitutions", f"_IMAGE_URI={tagged_image}",
             "--format", "value(id)",
         ],
@@ -199,8 +212,6 @@ def deploy(
         "AIGC_RELEASE_REVISION": release_sha,
         "AIGC_IMAGE_DIGEST": digest,
         "AIGC_REGION": REGION,
-        # This is a non-secret reference, not the secret value. The runtime resolves
-        # the exact regional secret through the Montréal Secret Manager endpoint.
         "AIGC_NEXUS_RUNTIME_CONTROL_DSN_SECRET_REF": refs["runtime_control_dsn"],
         "AIGC_DEPLOYMENT_AUTHORIZATION_SHA256": _authorization_hash(payload),
         "AIGC_LIVE_PROVIDER_EXECUTION_ENABLED": "false",
@@ -226,9 +237,11 @@ def deploy(
                 "--max-instances", "2",
                 "--concurrency", "8",
                 "--timeout", "60",
+                "--network", network,
+                "--subnet", subnet,
+                "--vpc-egress", "private-ranges-only",
                 "--env-vars-file", str(env_path),
-                "--add-cloudsql-instances",
-                f"{project}:{REGION}:{resources['cloud_sql_instance']}",
+                "--add-cloudsql-instances", f"{project}:{REGION}:{resources['cloud_sql_instance']}",
                 "--deploy-health-check",
                 "--startup-probe", "httpGet.path=/ready,httpGet.port=8080,timeoutSeconds=2,periodSeconds=5,failureThreshold=24",
                 "--liveness-probe", "httpGet.path=/health,httpGet.port=8080,timeoutSeconds=2,periodSeconds=10,failureThreshold=3",
@@ -258,12 +271,16 @@ def deploy(
         "authorization_sha256": _authorization_hash(payload),
         "resource_manifest_sha256": payload["resource_manifest_sha256"],
         "build_id": build_id,
+        "build_service_account": accounts["cloud_build"],
         "image_digest": digest,
         "immutable_image_uri": immutable_image,
         "service": service,
         "revision": target["revision"],
         "candidate_url": target["candidate_url"],
         "service_url": target["service_url"],
+        "network": network,
+        "subnet": subnet,
+        "vpc_egress": "private-ranges-only",
         "health_path": "/health",
         "readiness_path": "/ready",
         "readiness_verified": ready.get("ready") is True,
