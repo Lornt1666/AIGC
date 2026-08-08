@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://regenexcalibur.invalid/schemas/app_store/data_practices.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version","production_submission","default_uncertainty_state","tracking","data_classes"],
+  "properties": {
+    "schema_version": {"const":"aigc.app-store-data-practices.v1"},
+    "production_submission": {"const": false},
+    "default_uncertainty_state": {"const":"REQUIRES_REVIEW"},
+    "tracking": {"const": false},
+    "data_classes": {
+      "type":"array",
+      "minItems":1,
+      "items": {
+        "type":"object",
+        "additionalProperties": false,
+        "required":["data_type","implemented_collection","planned_collection","purpose","linked_to_identity","tracking","stored_on_device","sent_to_aigc_cloud","sent_to_google","third_party_recipient","retention","deletion_method","consent_required","apple_privacy_label_category","evidence"],
+        "properties": {
+          "data_type":{"type":"string"},
+          "implemented_collection":{"type":["boolean","string"],"enum":[true,false,"REQUIRES_REVIEW"]},
+          "planned_collection":{"type":["boolean","string"],"enum":[true,false,"REQUIRES_REVIEW"]},
+          "purpose":{"type":"string"},
+          "linked_to_identity":{"type":["boolean","string"],"enum":[true,false,"REQUIRES_REVIEW"]},
+          "tracking":{"const":false},
+          "stored_on_device":{"type":["boolean","string"],"enum":[true,false,"REQUIRES_REVIEW"]},
+          "sent_to_aigc_cloud":{"type":["boolean","string"],"enum":[true,false,"REQUIRES_REVIEW"]},
+          "sent_to_google":{"type":["boolean","string"],"enum":[true,false,"REQUIRES_REVIEW"]},
+          "third_party_recipient":{"type":"string"},
+          "retention":{"type":"string"},
+          "deletion_method":{"type":"string"},
+          "consent_required":{"type":["boolean","string"],"enum":[true,false,"REQUIRES_REVIEW"]},
+          "apple_privacy_label_category":{"type":"string"},
+          "evidence":{"type":"string"}
+        }
+      }
+    }
+  }
+}
