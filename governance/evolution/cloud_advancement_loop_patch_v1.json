@@ -1,0 +1,60 @@
+{
+  "patch_id": "AIGC-CLOUD-ADVANCEMENT-LOOP-PATCH-001",
+  "patch_type": "bounded_internal_coordination_behavior",
+  "created_at": "2026-07-20T00:00:00Z",
+  "reason": "Define and execute a dependency-ordered cloud engineering advancement loop that never repeats completed actions and permits retries only when necessity is recorded.",
+  "evidence": [
+    "interactive_operator_directive:2026-07-20",
+    "github_issue_124_open",
+    "github_pr_123_zero_step_failure_observed",
+    "production_readiness_blocking_capabilities",
+    "cloud_advancement_loop_focused_tests"
+  ],
+  "proposed_change": {
+    "working_tree_scope": [
+      "strict cloud advancement action catalog and schema",
+      "append-only SQLite action event ledger",
+      "program-bound SHA-256 event chain",
+      "semantic duplicate and dependency-cycle prevention",
+      "single-action atomic claim and lease recovery",
+      "necessity-only retry protocol",
+      "read-only GitHub Actions recovery observer",
+      "Phase 5 external mutation boundary",
+      "scheduled Codex coordination instructions",
+      "tests and operator documentation"
+    ],
+    "runtime_authority_change": "bounded internal planning and read-only observation only",
+    "external_action_authority_change": "none",
+    "automatic_git_push_allowed": false,
+    "terraform_apply_allowed": false,
+    "provider_mutation_allowed": false
+  },
+  "expected_benefit": "Advance one evidence-backed cloud engineering action per scheduled run without duplicate work, unsafe recursion, hidden retries, or automation self-approval.",
+  "risk": "medium_internal_coordination_with_external_read_only_observation",
+  "safety_impact": "strengthens_deduplication_concurrency_evidence_and_phase5_boundaries",
+  "approval_required": true,
+  "decision": "implemented_internal_pending_diff_review",
+  "applied": false,
+  "implementation_state": "working_tree_patch_created",
+  "tests_required": [
+    "strict_catalog_validation",
+    "semantic_duplicate_rejection",
+    "dependency_cycle_rejection",
+    "single_active_claim",
+    "completed_action_non_reselection",
+    "necessity_retry_and_cooldown",
+    "append_only_database_triggers",
+    "secret_evidence_rejection",
+    "hosted_ci_exact_head_and_real_steps",
+    "phase5_external_action_denial",
+    "focused_tests",
+    "full_repository_suite",
+    "redaction_scan"
+  ],
+  "rollback_strategy": "Disable the Codex automation, retain the append-only local event database as evidence, and revert only the bounded cloud-loop files without altering prior audit history.",
+  "operator_review_required": true,
+  "canonical_state_changed": false,
+  "credential_access_performed": false,
+  "provider_resource_mutation_performed": false,
+  "external_action_performed": false
+}

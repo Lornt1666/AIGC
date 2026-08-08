@@ -1,0 +1,239 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/cloud_advancement_execution_receipt.schema.json",
+  "title": "AIGC Cloud Advancement Initial Execution Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "nonempty": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "executed_action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action_id",
+        "run_id",
+        "attempt",
+        "state",
+        "evidence_sha256",
+        "external_action_performed"
+      ],
+      "properties": {
+        "action_id": {
+          "type": "string",
+          "pattern": "^CLD-[0-9]{3}$"
+        },
+        "run_id": {
+          "type": "string",
+          "pattern": "^CLOUD-RUN-CLD-[0-9]{3}-[A-F0-9]{12}$"
+        },
+        "attempt": {
+          "const": 1
+        },
+        "state": {
+          "enum": [
+            "completed",
+            "blocked"
+          ]
+        },
+        "evidence_sha256": {
+          "$ref": "#/$defs/digest"
+        },
+        "external_action_performed": {
+          "const": false
+        }
+      }
+    }
+  },
+  "required": [
+    "receipt_id",
+    "program_id",
+    "program_version",
+    "program_digest",
+    "source_revision",
+    "source_state",
+    "executed_at",
+    "executed_actions",
+    "hosted_ci_observation",
+    "history_head_sha256",
+    "summary",
+    "governance",
+    "receipt_digest"
+  ],
+  "properties": {
+    "receipt_id": {
+      "const": "AIGC-CLOUD-ADVANCEMENT-INITIAL-EXECUTION-001"
+    },
+    "program_id": {
+      "const": "AIGC-CLOUD-ADVANCEMENT-LOOP-001"
+    },
+    "program_version": {
+      "const": "1.0.0"
+    },
+    "program_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "source_revision": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}$"
+    },
+    "source_state": {
+      "const": "dirty"
+    },
+    "executed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "executed_actions": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "prefixItems": [
+        {
+          "$ref": "#/$defs/executed_action"
+        },
+        {
+          "$ref": "#/$defs/executed_action"
+        }
+      ],
+      "items": false
+    },
+    "hosted_ci_observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "issue_number",
+        "issue_state",
+        "pr_number",
+        "required_head_sha",
+        "observed_run_id",
+        "run_conclusion",
+        "executed_step_count",
+        "failed_checks",
+        "blocker_fingerprint",
+        "retry_not_before",
+        "gate_passed"
+      ],
+      "properties": {
+        "repository": {
+          "const": "Lornt1666/AIGC"
+        },
+        "issue_number": {
+          "const": 124
+        },
+        "issue_state": {
+          "const": "OPEN"
+        },
+        "pr_number": {
+          "const": 123
+        },
+        "required_head_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "observed_run_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_conclusion": {
+          "const": "failure"
+        },
+        "executed_step_count": {
+          "const": 0
+        },
+        "failed_checks": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonempty"
+          }
+        },
+        "blocker_fingerprint": {
+          "$ref": "#/$defs/digest"
+        },
+        "retry_not_before": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "gate_passed": {
+          "const": false
+        }
+      }
+    },
+    "history_head_sha256": {
+      "$ref": "#/$defs/digest"
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "completed_unique_actions",
+        "blocked_actions",
+        "total_actions",
+        "next_permitted_automatic_action"
+      ],
+      "properties": {
+        "completed_unique_actions": {
+          "const": 1
+        },
+        "blocked_actions": {
+          "const": 1
+        },
+        "total_actions": {
+          "const": 12
+        },
+        "next_permitted_automatic_action": {
+          "const": "CLD-002 necessity re-observation after cooldown"
+        }
+      }
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operator_review_required",
+        "phase5_approval_present",
+        "git_push_performed_by_loop",
+        "terraform_apply_performed",
+        "provider_resource_mutation_performed",
+        "credential_access_performed",
+        "external_action_performed"
+      ],
+      "properties": {
+        "operator_review_required": {
+          "const": true
+        },
+        "phase5_approval_present": {
+          "const": false
+        },
+        "git_push_performed_by_loop": {
+          "const": false
+        },
+        "terraform_apply_performed": {
+          "const": false
+        },
+        "provider_resource_mutation_performed": {
+          "const": false
+        },
+        "credential_access_performed": {
+          "const": false
+        },
+        "external_action_performed": {
+          "const": false
+        }
+      }
+    },
+    "receipt_digest": {
+      "$ref": "#/$defs/digest"
+    }
+  }
+}

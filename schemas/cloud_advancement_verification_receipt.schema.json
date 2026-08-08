@@ -1,0 +1,680 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/cloud_advancement_verification_receipt.schema.json",
+  "title": "AIGC Cloud Advancement Verification Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "decimal": {
+      "type": "string",
+      "pattern": "^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?$",
+      "maxLength": 80
+    },
+    "nonempty": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "performance_stats": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "warmup_ns",
+        "samples_ns",
+        "minimum_ns",
+        "mean_ns",
+        "p50_ns",
+        "p95_ns",
+        "p99_ns",
+        "maximum_ns",
+        "budget_p95_ns",
+        "passed"
+      ],
+      "properties": {
+        "warmup_ns": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "samples_ns": {
+          "type": "array",
+          "minItems": 5,
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "minimum_ns": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "mean_ns": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "p50_ns": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "p95_ns": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "p99_ns": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maximum_ns": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "budget_p95_ns": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "passed": {
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "required": [
+    "receipt_id",
+    "schema_version",
+    "assurance_id",
+    "assurance_version",
+    "assurance_digest",
+    "program_id",
+    "program_version",
+    "program_digest",
+    "verified_at",
+    "source_revision",
+    "source_state",
+    "assurance_passed",
+    "execution_authorized",
+    "checks",
+    "database_integrity",
+    "loop_state",
+    "assurance_history",
+    "working_memory",
+    "quantitative_accuracy",
+    "performance",
+    "artifact_manifest",
+    "governance",
+    "receipt_digest"
+  ],
+  "properties": {
+    "receipt_id": {
+      "type": "string",
+      "pattern": "^AIGC-CLOUD-VERIFY-[A-F0-9]{16}$"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "assurance_id": {
+      "const": "AIGC-CLOUD-ADVANCEMENT-ASSURANCE-001"
+    },
+    "assurance_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "assurance_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "program_id": {
+      "const": "AIGC-CLOUD-ADVANCEMENT-LOOP-001"
+    },
+    "program_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "program_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "verified_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_revision": {
+      "type": "string",
+      "pattern": "^(?:[a-f0-9]{40}|unbound)$"
+    },
+    "source_state": {
+      "enum": [
+        "clean",
+        "dirty",
+        "unbound"
+      ]
+    },
+    "assurance_passed": {
+      "type": "boolean"
+    },
+    "execution_authorized": {
+      "const": false
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "program_and_assurance_config_valid",
+        "sqlite_integrity_valid",
+        "foreign_keys_valid",
+        "append_only_controls_valid",
+        "event_chain_valid",
+        "program_binding_valid",
+        "assurance_binding_valid",
+        "loop_history_valid",
+        "working_memory_valid",
+        "quantitative_accuracy_valid",
+        "performance_budgets_valid",
+        "required_artifacts_present",
+        "secrets_absent"
+      ],
+      "properties": {
+        "program_and_assurance_config_valid": {
+          "type": "boolean"
+        },
+        "sqlite_integrity_valid": {
+          "type": "boolean"
+        },
+        "foreign_keys_valid": {
+          "type": "boolean"
+        },
+        "append_only_controls_valid": {
+          "type": "boolean"
+        },
+        "event_chain_valid": {
+          "type": "boolean"
+        },
+        "program_binding_valid": {
+          "type": "boolean"
+        },
+        "assurance_binding_valid": {
+          "type": "boolean"
+        },
+        "loop_history_valid": {
+          "type": "boolean"
+        },
+        "working_memory_valid": {
+          "type": "boolean"
+        },
+        "quantitative_accuracy_valid": {
+          "type": "boolean"
+        },
+        "performance_budgets_valid": {
+          "type": "boolean"
+        },
+        "required_artifacts_present": {
+          "type": "boolean"
+        },
+        "secrets_absent": {
+          "type": "boolean"
+        }
+      }
+    },
+    "database_integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "integrity_result",
+        "foreign_keys_enabled",
+        "declared_foreign_key_count",
+        "foreign_key_violation_count",
+        "append_only_trigger_count"
+      ],
+      "properties": {
+        "integrity_result": {
+          "const": "ok"
+        },
+        "foreign_keys_enabled": {
+          "const": true
+        },
+        "declared_foreign_key_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "foreign_key_violation_count": {
+          "const": 0
+        },
+        "append_only_trigger_count": {
+          "type": "integer",
+          "minimum": 4
+        }
+      }
+    },
+    "loop_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy",
+        "observation",
+        "event_count",
+        "history_head_sha256"
+      ],
+      "properties": {
+        "policy": {
+          "const": "verify_if_present"
+        },
+        "observation": {
+          "enum": [
+            "verified",
+            "not_present"
+          ]
+        },
+        "event_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "history_head_sha256": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "assurance_history": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_count",
+        "history_head_sha256",
+        "trusted_checkpoint_count",
+        "anchor_policy",
+        "anchor_observation",
+        "anchor_receipt_digest",
+        "anchor_event_count",
+        "anchor_history_head_sha256"
+      ],
+      "properties": {
+        "event_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "history_head_sha256": {
+          "$ref": "#/$defs/digest"
+        },
+        "trusted_checkpoint_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "anchor_policy": {
+          "const": "required_if_present"
+        },
+        "anchor_observation": {
+          "enum": [
+            "verified",
+            "not_present"
+          ]
+        },
+        "anchor_receipt_digest": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/digest"
+            },
+            {
+              "const": ""
+            }
+          ]
+        },
+        "anchor_event_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "anchor_history_head_sha256": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "working_memory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "memory_event_count",
+        "distinct_identity_count",
+        "active_entry_count",
+        "expired_entry_count",
+        "active_value_bytes",
+        "minimum_active_entries",
+        "capacity",
+        "max_active_bytes_per_scope",
+        "max_active_scope_bytes_observed",
+        "database_bytes",
+        "max_database_bytes",
+        "within_capacity",
+        "scope_bytes_within_capacity",
+        "database_bytes_within_capacity",
+        "run_bindings_valid",
+        "source_drift_count",
+        "sources_current",
+        "minimum_satisfied"
+      ],
+      "properties": {
+        "memory_event_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "distinct_identity_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "active_entry_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "expired_entry_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "active_value_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "minimum_active_entries": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "capacity": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_active_bytes_per_scope": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_active_scope_bytes_observed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "database_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_database_bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "within_capacity": {
+          "type": "boolean"
+        },
+        "scope_bytes_within_capacity": {
+          "type": "boolean"
+        },
+        "database_bytes_within_capacity": {
+          "type": "boolean"
+        },
+        "run_bindings_valid": {
+          "type": "boolean"
+        },
+        "source_drift_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sources_current": {
+          "type": "boolean"
+        },
+        "minimum_satisfied": {
+          "type": "boolean"
+        }
+      }
+    },
+    "quantitative_accuracy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metric_event_count",
+        "distinct_metric_count",
+        "current_passed_count",
+        "current_failed_count",
+        "historical_failed_count",
+        "required_metric_count",
+        "missing_required_metric_ids",
+        "minimum_distinct_metrics",
+        "pass_rate",
+        "minimum_satisfied",
+        "all_current_metrics_passed"
+      ],
+      "properties": {
+        "metric_event_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "distinct_metric_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "current_passed_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "current_failed_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "historical_failed_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "required_metric_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "missing_required_metric_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._/-]{2,127}$"
+          }
+        },
+        "minimum_distinct_metrics": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "pass_rate": {
+          "$ref": "#/$defs/decimal"
+        },
+        "minimum_satisfied": {
+          "type": "boolean"
+        },
+        "all_current_metrics_passed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "performance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "clock",
+        "percentile_method",
+        "measurement_scope",
+        "sample_count",
+        "warmup_iterations",
+        "environment_bound_observation",
+        "cross_host_claim",
+        "environment",
+        "workload",
+        "operations",
+        "all_budgets_passed"
+      ],
+      "properties": {
+        "clock": {
+          "const": "perf_counter_ns"
+        },
+        "percentile_method": {
+          "const": "nearest_rank"
+        },
+        "measurement_scope": {
+          "const": "hot_cache_sqlite_and_workspace_probes_not_end_to_end"
+        },
+        "sample_count": {
+          "const": 100
+        },
+        "warmup_iterations": {
+          "const": 10
+        },
+        "environment_bound_observation": {
+          "const": true
+        },
+        "cross_host_claim": {
+          "const": false
+        },
+        "environment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "python_implementation",
+            "python_version",
+            "platform_system",
+            "platform_release",
+            "clock_resolution_seconds",
+            "clock_monotonic"
+          ],
+          "properties": {
+            "python_implementation": {
+              "$ref": "#/$defs/nonempty"
+            },
+            "python_version": {
+              "$ref": "#/$defs/nonempty"
+            },
+            "platform_system": {
+              "$ref": "#/$defs/nonempty"
+            },
+            "platform_release": {
+              "$ref": "#/$defs/nonempty"
+            },
+            "clock_resolution_seconds": {
+              "$ref": "#/$defs/decimal"
+            },
+            "clock_monotonic": {
+              "const": true
+            }
+          }
+        },
+        "workload": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "event_count",
+            "memory_event_count",
+            "metric_event_count",
+            "metric_source_count",
+            "metric_source_bytes",
+            "database_bytes"
+          ],
+          "properties": {
+            "event_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "memory_event_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "metric_event_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "metric_source_count": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "metric_source_bytes": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "database_bytes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "operations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "integrity_check",
+            "memory_recall",
+            "metric_summary"
+          ],
+          "properties": {
+            "integrity_check": {
+              "$ref": "#/$defs/performance_stats"
+            },
+            "memory_recall": {
+              "$ref": "#/$defs/performance_stats"
+            },
+            "metric_summary": {
+              "$ref": "#/$defs/performance_stats"
+            }
+          }
+        },
+        "all_budgets_passed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "artifact_manifest": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "sha256",
+          "size_bytes"
+        ],
+        "properties": {
+          "path": {
+            "$ref": "#/$defs/nonempty"
+          },
+          "sha256": {
+            "$ref": "#/$defs/digest"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operator_review_required",
+        "phase5_approval_present",
+        "credential_access_performed",
+        "provider_resource_mutation_performed",
+        "external_action_performed"
+      ],
+      "properties": {
+        "operator_review_required": {
+          "const": true
+        },
+        "phase5_approval_present": {
+          "const": false
+        },
+        "credential_access_performed": {
+          "const": false
+        },
+        "provider_resource_mutation_performed": {
+          "const": false
+        },
+        "external_action_performed": {
+          "const": false
+        }
+      }
+    },
+    "receipt_digest": {
+      "$ref": "#/$defs/digest"
+    }
+  }
+}

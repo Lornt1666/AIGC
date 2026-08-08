@@ -1,0 +1,63 @@
+{
+  "receipt_id": "AIGC-CLOUD-ADVANCEMENT-INITIAL-EXECUTION-001",
+  "program_id": "AIGC-CLOUD-ADVANCEMENT-LOOP-001",
+  "program_version": "1.0.0",
+  "program_digest": "8a2adf6bb6bd995a92f914b6d76c41946c8ae86bd7555749b13a1f5b5e5ee07c",
+  "source_revision": "84d8fbe57e65eb9b93070646934b71863ac5a4db",
+  "source_state": "dirty",
+  "executed_at": "2026-07-20T09:10:02.602964Z",
+  "executed_actions": [
+    {
+      "action_id": "CLD-001",
+      "run_id": "CLOUD-RUN-CLD-001-B4E10CC23A58",
+      "attempt": 1,
+      "state": "completed",
+      "evidence_sha256": "f900f72075f77751492d7ef3e278c357f1ae83976005b3b4f9cb14986ea6bfb4",
+      "external_action_performed": false
+    },
+    {
+      "action_id": "CLD-002",
+      "run_id": "CLOUD-RUN-CLD-002-E74E967414B3",
+      "attempt": 1,
+      "state": "blocked",
+      "evidence_sha256": "5531b84b3679947d2da1844125fcc9484ae2df55185d9be85d9b799ea1cdd5b0",
+      "external_action_performed": false
+    }
+  ],
+  "hosted_ci_observation": {
+    "repository": "Lornt1666/AIGC",
+    "issue_number": 124,
+    "issue_state": "OPEN",
+    "pr_number": 123,
+    "required_head_sha": "8f6285db20d08ab1ebfabb5dd757bb9e186cf5e0",
+    "observed_run_id": 29452025001,
+    "run_conclusion": "failure",
+    "executed_step_count": 0,
+    "failed_checks": [
+      "issue_closed",
+      "job_has_executed_steps",
+      "job_succeeded",
+      "run_succeeded"
+    ],
+    "blocker_fingerprint": "5531b84b3679947d2da1844125fcc9484ae2df55185d9be85d9b799ea1cdd5b0",
+    "retry_not_before": "2026-07-21T09:10:02.602964Z",
+    "gate_passed": false
+  },
+  "history_head_sha256": "392d30158b3393a737ea22b312b69a80b60e51b368134926dea0fdac41cb5af7",
+  "summary": {
+    "completed_unique_actions": 1,
+    "blocked_actions": 1,
+    "total_actions": 12,
+    "next_permitted_automatic_action": "CLD-002 necessity re-observation after cooldown"
+  },
+  "governance": {
+    "operator_review_required": true,
+    "phase5_approval_present": false,
+    "git_push_performed_by_loop": false,
+    "terraform_apply_performed": false,
+    "provider_resource_mutation_performed": false,
+    "credential_access_performed": false,
+    "external_action_performed": false
+  },
+  "receipt_digest": "4b0424a5ba4e9baba1b4c437317596cf3afe16da88196996aea1782dd55483e3"
+}
