@@ -1,0 +1,239 @@
+{
+  "$defs": {
+    "artifact": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "present": {
+          "const": true
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "present",
+        "sha256"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://aigc.local/schemas/pr_platform_snapshot_refresh_bundle.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "else": {
+        "properties": {
+          "artifacts": {
+            "properties": {
+              "graph_drift_receipt": {
+                "properties": {
+                  "present": {
+                    "const": true
+                  },
+                  "sha256": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "drift_conclusion": {
+            "type": "string"
+          },
+          "drift_receipt_id": {
+            "type": "string"
+          },
+          "request_receipt_conclusion": {
+            "const": "COMPLETE"
+          }
+        }
+      },
+      "if": {
+        "properties": {
+          "bundle_conclusion": {
+            "const": "SNAPSHOT_INCOMPLETE"
+          }
+        },
+        "required": [
+          "bundle_conclusion"
+        ]
+      },
+      "then": {
+        "properties": {
+          "artifacts": {
+            "properties": {
+              "graph_drift_receipt": {
+                "properties": {
+                  "present": {
+                    "const": false
+                  },
+                  "sha256": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          },
+          "drift_conclusion": {
+            "type": "null"
+          },
+          "drift_receipt_id": {
+            "type": "null"
+          },
+          "request_receipt_conclusion": {
+            "const": "INCOMPLETE"
+          }
+        }
+      }
+    }
+  ],
+  "properties": {
+    "artifacts": {
+      "additionalProperties": false,
+      "properties": {
+        "graph_drift_receipt": {
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "const": "graph_drift_receipt.json"
+            },
+            "present": {
+              "type": "boolean"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "path",
+            "present",
+            "sha256"
+          ],
+          "type": "object"
+        },
+        "platform_snapshot": {
+          "$ref": "#/$defs/artifact"
+        },
+        "snapshot_request_receipt": {
+          "$ref": "#/$defs/artifact"
+        }
+      },
+      "required": [
+        "platform_snapshot",
+        "snapshot_request_receipt",
+        "graph_drift_receipt"
+      ],
+      "type": "object"
+    },
+    "automatic_mutation_allowed": {
+      "const": false
+    },
+    "bundle_conclusion": {
+      "enum": [
+        "SNAPSHOT_INCOMPLETE",
+        "CURRENT",
+        "CURRENT_WITH_DECLARED_EXCLUSIONS",
+        "DRIFT_DETECTED"
+      ]
+    },
+    "bundle_id": {
+      "pattern": "^AIGC-PR-SNAPSHOT-REFRESH-[0-9A-F]{16}$",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "current_main_revision": {
+      "pattern": "^[0-9a-f]{40}$",
+      "type": "string"
+    },
+    "drift_conclusion": {
+      "enum": [
+        "CURRENT",
+        "CURRENT_WITH_DECLARED_EXCLUSIONS",
+        "DRIFT_DETECTED",
+        null
+      ],
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "drift_receipt_id": {
+      "pattern": "^AIGC-PR-GRAPH-DRIFT-[0-9A-F]{16}$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_action_performed": {
+      "const": false
+    },
+    "graph_id": {
+      "const": "AIGC-PR-DEPENDENCY-GRAPH-001"
+    },
+    "operator_review_required": {
+      "const": true
+    },
+    "platform_snapshot_digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "platform_snapshot_id": {
+      "const": "AIGC-PR-PLATFORM-SNAPSHOT-001"
+    },
+    "repository": {
+      "const": "Lornt1666/AIGC"
+    },
+    "request_id": {
+      "const": "AIGC-PR-PLATFORM-SNAPSHOT-REQUEST-001"
+    },
+    "request_receipt_conclusion": {
+      "enum": [
+        "COMPLETE",
+        "INCOMPLETE"
+      ]
+    },
+    "request_receipt_id": {
+      "pattern": "^AIGC-PR-SNAPSHOT-REQUEST-[0-9A-F]{16}$",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    }
+  },
+  "required": [
+    "bundle_id",
+    "schema_version",
+    "created_at",
+    "repository",
+    "current_main_revision",
+    "request_id",
+    "request_receipt_id",
+    "request_receipt_conclusion",
+    "graph_id",
+    "platform_snapshot_id",
+    "platform_snapshot_digest",
+    "drift_receipt_id",
+    "drift_conclusion",
+    "bundle_conclusion",
+    "artifacts",
+    "operator_review_required",
+    "automatic_mutation_allowed",
+    "external_action_performed"
+  ],
+  "title": "AIGC PR Platform Snapshot Refresh Bundle",
+  "type": "object"
+}

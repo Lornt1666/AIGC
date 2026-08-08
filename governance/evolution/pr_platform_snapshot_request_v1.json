@@ -1,0 +1,58 @@
+{
+  "allowed_source": "GITHUB_CONNECTOR_READ_ONLY",
+  "automatic_mutation_allowed": false,
+  "coordination_gate_contract_effective_at": "2026-07-13T16:30:44Z",
+  "exclusion_policy": {
+    "allowed_reasons": [
+      "SELF_REFERENTIAL_IMPLEMENTATION_CHANGE"
+    ],
+    "maximum_exclusions": 1,
+    "require_branch_match": true,
+    "require_notes": true
+  },
+  "external_action_performed": false,
+  "graph_id": "AIGC-PR-DEPENDENCY-GRAPH-001",
+  "include_pull_request_states": [
+    "OPEN"
+  ],
+  "maximum_snapshot_age_seconds": 7200,
+  "missing_field_behavior": "FAIL_CLOSED",
+  "operator_id": "Justice Gray Maciocha",
+  "operator_review_required": true,
+  "repository": "Lornt1666/AIGC",
+  "request_id": "AIGC-PR-PLATFORM-SNAPSHOT-REQUEST-001",
+  "required_coordination_gate_fields": [
+    "change_id",
+    "number",
+    "title",
+    "state",
+    "gate_kind",
+    "decision_status"
+  ],
+  "required_coordination_gates": [
+    "AIGC-ISSUE-76"
+  ],
+  "required_decision_gate_fields": [
+    "change_id",
+    "number",
+    "title",
+    "state"
+  ],
+  "required_decision_gates": [
+    "AIGC-ISSUE-66"
+  ],
+  "required_pull_request_fields": [
+    "change_id",
+    "number",
+    "title",
+    "state",
+    "draft",
+    "mergeable",
+    "branch",
+    "base_branch",
+    "base_revision",
+    "head_revision"
+  ],
+  "schema_version": "1.1.0",
+  "unknown_change_behavior": "RECORD_AND_BLOCK"
+}

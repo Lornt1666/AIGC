@@ -1,0 +1,101 @@
+{
+  "$id": "https://aigc.local/schemas/pr_platform_snapshot_request.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "allowed_source": {"const": "GITHUB_CONNECTOR_READ_ONLY"},
+    "automatic_mutation_allowed": {"const": false},
+    "coordination_gate_contract_effective_at": {"format": "date-time", "type": "string"},
+    "exclusion_policy": {
+      "additionalProperties": false,
+      "properties": {
+        "allowed_reasons": {
+          "items": {"enum": ["SELF_REFERENTIAL_IMPLEMENTATION_CHANGE"]},
+          "maxItems": 1,
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "maximum_exclusions": {"maximum": 1, "minimum": 0, "type": "integer"},
+        "require_branch_match": {"const": true},
+        "require_notes": {"const": true}
+      },
+      "required": ["allowed_reasons", "maximum_exclusions", "require_branch_match", "require_notes"],
+      "type": "object"
+    },
+    "external_action_performed": {"const": false},
+    "graph_id": {"const": "AIGC-PR-DEPENDENCY-GRAPH-001"},
+    "include_pull_request_states": {
+      "items": {"enum": ["OPEN"]},
+      "maxItems": 1,
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "maximum_snapshot_age_seconds": {"maximum": 86400, "minimum": 60, "type": "integer"},
+    "missing_field_behavior": {"const": "FAIL_CLOSED"},
+    "operator_id": {"minLength": 1, "type": "string"},
+    "operator_review_required": {"const": true},
+    "repository": {"const": "Lornt1666/AIGC"},
+    "request_id": {"const": "AIGC-PR-PLATFORM-SNAPSHOT-REQUEST-001"},
+    "required_coordination_gate_fields": {
+      "items": {"enum": ["change_id", "number", "title", "state", "gate_kind", "decision_status"]},
+      "maxItems": 6,
+      "minItems": 6,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "required_coordination_gates": {
+      "items": {"pattern": "^AIGC-ISSUE-[0-9]+$", "type": "string"},
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "required_decision_gate_fields": {
+      "items": {"enum": ["change_id", "number", "title", "state"]},
+      "maxItems": 4,
+      "minItems": 4,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "required_decision_gates": {
+      "items": {"pattern": "^AIGC-ISSUE-[0-9]+$", "type": "string"},
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "required_pull_request_fields": {
+      "items": {"enum": ["change_id", "number", "title", "state", "draft", "mergeable", "branch", "base_branch", "base_revision", "head_revision"]},
+      "maxItems": 10,
+      "minItems": 10,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "schema_version": {"const": "1.1.0"},
+    "unknown_change_behavior": {"const": "RECORD_AND_BLOCK"}
+  },
+  "required": [
+    "request_id",
+    "schema_version",
+    "repository",
+    "graph_id",
+    "allowed_source",
+    "include_pull_request_states",
+    "required_pull_request_fields",
+    "required_decision_gate_fields",
+    "required_decision_gates",
+    "required_coordination_gate_fields",
+    "required_coordination_gates",
+    "coordination_gate_contract_effective_at",
+    "maximum_snapshot_age_seconds",
+    "missing_field_behavior",
+    "unknown_change_behavior",
+    "exclusion_policy",
+    "operator_id",
+    "operator_review_required",
+    "automatic_mutation_allowed",
+    "external_action_performed"
+  ],
+  "title": "AIGC Pull Request Platform Snapshot Request",
+  "type": "object"
+}
