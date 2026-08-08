@@ -21,9 +21,14 @@
     "openai_output_cad_per_million": null
   },
   "authority": {
+    "authorized_by": "",
+    "authorized_at": null,
+    "expires_at": null,
     "read_only_discovery_authorized": true,
+    "state_backend_bootstrap_authorized": false,
     "terraform_plan_authorized": false,
     "resource_creation_authorized": false,
+    "terraform_apply_authorized": false,
     "secret_version_creation_authorized": false,
     "gemini_canary_authorized": false,
     "openai_canary_authorized": false,
