@@ -22,6 +22,7 @@ from src.domain.nexus.contracts import (
 from src.infrastructure.github.repository_read_port import (
     GitHubRepositoryReadPort,
     RepositoryCredentialResolver,
+    RepositoryTransportError,
 )
 from src.mission_os.connector_adapters import GovernedGitHubKernelAdapter
 
@@ -68,11 +69,10 @@ def repository_request_digest(
 
 
 class GovernedRepositoryReadExecutor:
-    """Canonical implementation-only execution boundary for private repository reads.
+    """Canonical execution boundary for exact-revision private repository reads.
 
-    It reuses GovernanceDecision, ExecutionPermit, EpistemicToolBroker, the admitted
-    NexusRepositoryGateway and the legacy read-only GitHub adapter. Live credentials
-    and live network transport are explicitly unavailable in this release gate.
+    The default remains deterministic/fail-closed. A separately authorized canary may
+    enable exactly one live external read; this does not create standing GitHub access.
     """
 
     TOOL_NAME = "nexus_repository_read"
@@ -92,6 +92,8 @@ class GovernedRepositoryReadExecutor:
         change_set_hash: str,
         parent_state_hash: str,
         authoritative_clock: Callable[[], datetime],
+        live_external_reads_enabled: bool = False,
+        maximum_live_network_requests: int = 0,
     ) -> None:
         if not principal.strip():
             raise ValueError("repository read executor principal is required")
@@ -105,6 +107,11 @@ class GovernedRepositoryReadExecutor:
             raise ValueError("repository read executor parent_state_hash must be SHA-256")
         if not gateway_policy.external_reads_enabled:
             raise ValueError("governed external repository executor requires an explicit external-read gateway policy")
+        if live_external_reads_enabled:
+            if maximum_live_network_requests != 1:
+                raise ValueError("live repository canary requires maximum_live_network_requests=1")
+        elif maximum_live_network_requests != 0:
+            raise ValueError("non-live repository executor cannot reserve network requests")
         self._tool_broker = tool_broker
         self._policy = gateway_policy
         self._github_adapter = github_adapter
@@ -117,6 +124,15 @@ class GovernedRepositoryReadExecutor:
         self._parent_state_hash = parent_state_hash
         self._clock = authoritative_clock
         self._permit_invocations: dict[str, int] = {}
+        self._live_external_reads_enabled = bool(live_external_reads_enabled)
+        self._maximum_live_network_requests = maximum_live_network_requests
+
+    def _network_calls(self) -> int:
+        provider = getattr(self._github_adapter, "provider", None)
+        try:
+            return max(0, int(getattr(provider, "network_calls", 0)))
+        except (TypeError, ValueError):
+            return 0
 
     def execute(
         self,
@@ -182,7 +198,7 @@ class GovernedRepositoryReadExecutor:
             )
 
         self._permit_invocations[permit.permit_id] = invocation_count + 1
-        if self._credential_resolver.live_credential_resolution:
+        if self._credential_resolver.live_credential_resolution and not self._live_external_reads_enabled:
             receipt = self._receipt(
                 request=request,
                 permit=permit,
@@ -190,11 +206,24 @@ class GovernedRepositoryReadExecutor:
                 failure_class="LIVE_CREDENTIAL_RESOLUTION_PROHIBITED",
             )
             raise GovernedRepositoryReadError(
-                "live repository credential resolution is prohibited in this release gate",
+                "live repository credential resolution requires an explicit canary activation",
+                receipt=receipt,
+                tool_decision=tool_decision,
+            )
+        if self._live_external_reads_enabled and not self._credential_resolver.live_credential_resolution:
+            receipt = self._receipt(
+                request=request,
+                permit=permit,
+                status="not_started",
+                failure_class="LIVE_CREDENTIAL_CAPABILITY_REQUIRED",
+            )
+            raise GovernedRepositoryReadError(
+                "live repository canary requires a live credential boundary",
                 receipt=receipt,
                 tool_decision=tool_decision,
             )
 
+        network_before = self._network_calls()
         try:
             capability = self._credential_resolver.resolve(
                 permit=permit,
@@ -205,28 +234,77 @@ class GovernedRepositoryReadExecutor:
                 adapter=self._github_adapter,
                 credential_capability=capability,
                 authoritative_now=authoritative_now,
-                live_external_reads_enabled=False,
+                live_external_reads_enabled=self._live_external_reads_enabled,
             )
             gateway = NexusRepositoryGateway(port=port, policy=self._policy)
             context = gateway.read_context((request,))
+        except RepositoryTransportError as exc:
+            external = exc.network_attempted
+            status = "indeterminate" if external and not exc.outcome_known else "failed"
+            receipt = self._receipt(
+                request=request,
+                permit=permit,
+                status=status,
+                failure_class=type(exc).__name__,
+                external_action_performed=external,
+            )
+            raise GovernedRepositoryReadError(
+                "repository read transport did not produce admissible evidence",
+                receipt=receipt,
+                tool_decision=tool_decision,
+            ) from None
         except Exception as exc:
+            network_after = self._network_calls()
+            external = network_after > network_before
             receipt = self._receipt(
                 request=request,
                 permit=permit,
                 status="failed",
                 failure_class=type(exc).__name__,
+                external_action_performed=external,
             )
             raise GovernedRepositoryReadError(
-                "deterministic repository read execution failed",
+                "repository read execution failed",
                 receipt=receipt,
                 tool_decision=tool_decision,
-            ) from exc
+            ) from None
+
+        network_after = self._network_calls()
+        external = network_after > network_before
+        if self._live_external_reads_enabled:
+            if network_after - network_before != self._maximum_live_network_requests:
+                receipt = self._receipt(
+                    request=request,
+                    permit=permit,
+                    status="failed",
+                    failure_class="LIVE_CANARY_NETWORK_COUNT_MISMATCH",
+                    external_action_performed=external,
+                )
+                raise GovernedRepositoryReadError(
+                    "live repository canary did not consume exactly one network request",
+                    receipt=receipt,
+                    tool_decision=tool_decision,
+                )
+        elif external:
+            receipt = self._receipt(
+                request=request,
+                permit=permit,
+                status="failed",
+                failure_class="UNAUTHORIZED_EXTERNAL_READ",
+                external_action_performed=True,
+            )
+            raise GovernedRepositoryReadError(
+                "deterministic repository execution unexpectedly performed a network request",
+                receipt=receipt,
+                tool_decision=tool_decision,
+            )
 
         receipt = self._receipt(
             request=request,
             permit=permit,
             status="succeeded",
             context=context,
+            external_action_performed=external,
         )
         return RepositoryReadExecution(
             context=context,
@@ -318,6 +396,7 @@ class GovernedRepositoryReadExecutor:
         status: str,
         failure_class: str | None = None,
         context: RepositoryContext | None = None,
+        external_action_performed: bool = False,
     ) -> ExecutionReceipt:
         resource_ref = f"github://{request.repository}/revision/{request.exact_revision}/path/{request.path_or_query}"
         operation = OperationReceipt(
@@ -338,6 +417,7 @@ class GovernedRepositoryReadExecutor:
             "resource_ref": resource_ref,
             "failure_class": failure_class,
             "context_id": context.context_id if context is not None else None,
+            "external_action_performed": external_action_performed,
         }
         receipt_id = "EXEC-REPO-" + canonical_sha256(identity)[:24].upper()
         return ExecutionReceipt(
@@ -347,6 +427,6 @@ class GovernedRepositoryReadExecutor:
             parent_state_hash=self._parent_state_hash,
             execution_status=status,
             operations=(operation,),
-            external_action_performed=False,
+            external_action_performed=external_action_performed,
             reconciliation_required=status == "indeterminate",
         )
