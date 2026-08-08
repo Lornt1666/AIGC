@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/staging_infrastructure_apply_execution.schema.json",
+  "title": "AIGC Staging Infrastructure Apply Execution Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id", "contract_version", "receipt_id", "apply_authorization_receipt_id",
+    "exact_revision", "project_id", "component", "saved_plan_digest", "result",
+    "terraform_exit_code", "executed_at", "operator_review_required",
+    "post_apply_evidence_required", "external_action_performed"
+  ],
+  "properties": {
+    "contract_id": {"const": "AIGC-STAGING-INFRASTRUCTURE-APPLY-EXECUTION-001"},
+    "contract_version": {"const": "1.0.0"},
+    "receipt_id": {"type": "string", "pattern": "^SAE-[A-F0-9]{24}$"},
+    "apply_authorization_receipt_id": {"type": "string", "pattern": "^SIA-[A-F0-9]{24}$"},
+    "exact_revision": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "project_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]{4,28}[a-z0-9]$"},
+    "component": {"const": "cloud_sql"},
+    "saved_plan_digest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "result": {"enum": ["VALIDATED_NOT_EXECUTED", "APPLIED", "FAILED"]},
+    "terraform_exit_code": {"type": ["integer", "null"]},
+    "executed_at": {"type": "string", "format": "date-time"},
+    "operator_review_required": {"const": true},
+    "post_apply_evidence_required": {"const": true},
+    "external_action_performed": {"type": "boolean"}
+  },
+  "allOf": [{
+    "if": {"properties": {"result": {"const": "VALIDATED_NOT_EXECUTED"}}},
+    "then": {"properties": {"terraform_exit_code": {"const": null}, "external_action_performed": {"const": false}}},
+    "else": {"properties": {"terraform_exit_code": {"type": "integer"}, "external_action_performed": {"const": true}}}
+  }]
+}

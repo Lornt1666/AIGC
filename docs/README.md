@@ -11,6 +11,7 @@
 
 - [`STAGING_BOOTSTRAP.md`](STAGING_BOOTSTRAP.md) — mock-only staging preparation runbook.
 - [`CLOUD_SQL_STAGING_FOUNDATION.md`](CLOUD_SQL_STAGING_FOUNDATION.md) — private-IP Cloud SQL Terraform module, gates, validation, and operational-evidence requirements.
+- [`STAGING_CLOUD_SQL_ACTIVATION_PROCESS.md`](STAGING_CLOUD_SQL_ACTIVATION_PROCESS.md) — staging-specific plan authorization, exact-plan apply authorization, and post-apply evidence sequence.
 - [`governance/evolution/AIGC_PROVIDER_DISCOVERY_AUTOMATION_KIT_V1.md`](governance/evolution/AIGC_PROVIDER_DISCOVERY_AUTOMATION_KIT_V1.md) — provider-discovery command and simulation boundary.
 - [`governance/evolution/AIGC_STAGING_PROCUREMENT_STATE_MACHINE_V1_1.md`](governance/evolution/AIGC_STAGING_PROCUREMENT_STATE_MACHINE_V1_1.md) — exact staging procurement state machine.
 
@@ -31,6 +32,8 @@ terraform -chdir=infra/terraform/gcp validate
 ```
 
 The committed Terraform example keeps resource and subsystem authority disabled.
+
+After accepted provider-discovery evidence exists, use the staging activation process to issue a bounded plan authorization, generate a saved plan, review it, issue a separate single-use apply authorization, and apply only that exact saved plan.
 
 ## Runtime truth
 
