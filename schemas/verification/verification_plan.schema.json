@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.regenexcalibur.invalid/schemas/verification/verification_plan.schema.json",
+  "title": "AIGC VerificationPlan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["work_order_id", "assignments"],
+  "properties": {
+    "work_order_id": {"type": "string", "minLength": 1},
+    "assignments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["task_id", "builder_role_id", "verifier_role_id", "verifier_capability_matches", "qualification_evidence_refs", "verification_checks", "evidence_required", "human_review_required", "licensed_review_required", "maximum_cost_cad", "maximum_tokens", "maximum_compute_seconds", "compute_requirement_id", "independence_required"],
+        "properties": {
+          "task_id": {"type": "string", "minLength": 1},
+          "builder_role_id": {"type": "string", "minLength": 1},
+          "verifier_role_id": {"type": "string", "minLength": 1},
+          "verifier_capability_matches": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["capability", "evidence_id", "verdict"],
+              "properties": {
+                "capability": {"type": "string", "minLength": 1},
+                "evidence_id": {"type": "string", "minLength": 1},
+                "verdict": {"enum": ["VERIFIED_CAPABLE", "CAPABLE_WITH_REVIEW", "CAPABLE_WITH_SPECIALIST", "RESEARCH_REQUIRED", "NOT_QUALIFIED", "LEGALLY_RESTRICTED"]}
+              }
+            }
+          },
+          "qualification_evidence_refs": {"type": "array", "minItems": 0, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "verification_checks": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "evidence_required": {"type": "boolean"},
+          "human_review_required": {"type": "boolean"},
+          "licensed_review_required": {"type": "boolean"},
+          "maximum_cost_cad": {"type": "number", "minimum": 0},
+          "maximum_tokens": {"type": "integer", "minimum": 0},
+          "maximum_compute_seconds": {"type": "integer", "minimum": 0},
+          "compute_requirement_id": {"type": "string", "minLength": 1},
+          "independence_required": {"type": "boolean"}
+        },
+        "allOf": [
+          {
+            "if": {"properties": {"licensed_review_required": {"const": true}}},
+            "then": {"properties": {"qualification_evidence_refs": {"minItems": 1}}}
+          }
+        ]
+      }
+    }
+  }
+}

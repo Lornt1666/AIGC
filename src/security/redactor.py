@@ -6,7 +6,7 @@ from typing import List
 
 class Redactor:
     SECRET_PATTERNS = [
-        r"sk-[A-Za-z0-9_\-]{10,}",
+        r"(?<![A-Za-z0-9_])sk-[A-Za-z0-9_\-]{10,}",
         r"AKIA[0-9A-Z]{16}",
         r"ghp_[A-Za-z0-9_]{20,}",
         r"glpat-[A-Za-z0-9_\-]{20,}",
@@ -34,4 +34,8 @@ class Redactor:
 
     def scan_for_secret_like_content(self, text: str) -> List[str]:
         value = text or ""
-        return [pattern for pattern in self.SECRET_PATTERNS if re.search(pattern, value, flags=re.DOTALL)]
+        return [
+            pattern
+            for pattern in self.SECRET_PATTERNS
+            if re.search(pattern, value, flags=re.DOTALL)
+        ]
