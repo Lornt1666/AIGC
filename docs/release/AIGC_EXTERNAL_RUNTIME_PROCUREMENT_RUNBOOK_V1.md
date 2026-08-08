@@ -24,9 +24,15 @@ Authenticated bootstrap operator / Cloud Shell
         ↓
 read-only project ↔ billing discovery receipt
         ↓
-reviewed nonzero CAD ceiling + notification channel
+reviewed nonzero CAD ceiling + accountable expiring authority
         ↓
-Québec Terraform foundation
+regional GCS Terraform state bootstrap
+        ↓
+exact material Terraform plan + retained plan digest
+        ↓
+separate saved-plan Terraform apply
+        ↓
+Québec foundation
         ├── regional Artifact Registry
         ├── private PostgreSQL Cloud SQL
         ├── regional buckets / KMS / logs
@@ -78,9 +84,11 @@ Set:
 - at least one existing reviewed Monitoring notification-channel resource name;
 - exact Gemini/OpenAI model IDs;
 - current reviewed CAD-denominated provider token prices;
-- `provider_canary_spend_cad` to the separately reviewed tiny canary ceiling.
+- `provider_canary_spend_cad` to the separately reviewed tiny canary ceiling;
+- `authority.authorized_by` to the accountable actor;
+- `authority.authorized_at` and `authority.expires_at` to a short, explicit execution window.
 
-Do not set execution flags merely because values are filled in.
+An executable packet fails closed when the authority window is future-dated or expired. Do not set execution flags merely because values are filled in.
 
 ## 2. Read-only Google project/billing discovery
 
@@ -111,21 +119,91 @@ Complete `docs/cloud/QUEBEC_SOURCE_CONTROL_CREDENTIAL_PREFLIGHT.md` through auth
 
 All unresolved classic PAT/deploy-key/webhook/app/session findings remain blocking for cloud authority.
 
-## 4. Foundation plan and apply
+## 4. Bootstrap durable Terraform state
 
-Before generating a material resource plan, explicitly review:
+The Québec foundation declares an externally configured GCS backend. Do **not** apply it with ephemeral local state.
 
-- billing linkage;
-- nonzero CAD ceiling;
-- current Google pricing estimate;
-- Montréal resource locations;
-- IAM roles;
-- WIF trust condition;
-- no service-account keys;
-- no public Cloud Run access;
-- no production activation.
+First review the exact state bucket target and set only:
 
-Set the reviewed Terraform/foundation authority fields in the operator packet. Generate the deterministic Québec manifest and Terraform input file using the procurement controller.
+```text
+authority.state_backend_bootstrap_authorized = true
+```
+
+Then execute:
+
+```bash
+python scripts/bootstrap_quebec_terraform_state.py \
+  --procurement /secure/aigc/procurement.json \
+  --execute \
+  --output /secure/aigc/terraform-state-receipt.json
+```
+
+The state bucket is deterministic:
+
+```text
+bucket = <project>-<resource-prefix>-tfstate
+prefix = aigc/nexus-v1
+location = northamerica-northeast1
+```
+
+Required controls are uniform bucket-level access, public-access prevention, object versioning, retention and soft-delete protection. A failed mutation is indeterminate and is not automatically retried.
+
+## 5. Generate the exact material Terraform plan
+
+Review the resource intent, IAM topology, current Google pricing estimate and bounded CAD ceiling. Then set:
+
+```text
+authority.terraform_plan_authorized = true
+authority.resource_creation_authorized = true
+```
+
+`resource_creation_authorized=true` at this phase authorizes the **bounded resource intent represented in the plan**; it does not itself execute Terraform.
+
+Create and retain a saved plan:
+
+```bash
+python scripts/terraform_quebec_foundation.py \
+  --procurement /secure/aigc/procurement.json \
+  --state-receipt /secure/aigc/terraform-state-receipt.json \
+  --mode plan \
+  --plan-file /secure/aigc/quebec-foundation.tfplan \
+  --output /secure/aigc/quebec-foundation-plan-receipt.json
+```
+
+The plan receipt binds:
+
+- project / release SHA / release tree;
+- procurement digest;
+- resource-manifest digest;
+- state-backend receipt and bucket/prefix;
+- exact saved-plan SHA-256;
+- planned resource addresses and action counts.
+
+The current gate rejects destroy and replacement actions.
+
+## 6. Separately authorize and apply only the saved plan
+
+After reviewing the saved-plan receipt and plan output, separately set:
+
+```text
+authority.terraform_apply_authorized = true
+```
+
+Then execute exactly that saved plan:
+
+```bash
+python scripts/terraform_quebec_foundation.py \
+  --procurement /secure/aigc/procurement.json \
+  --state-receipt /secure/aigc/terraform-state-receipt.json \
+  --mode apply \
+  --plan-file /secure/aigc/quebec-foundation.tfplan \
+  --plan-receipt /secure/aigc/quebec-foundation-plan-receipt.json \
+  --output /secure/aigc/quebec-foundation-apply-receipt.json
+```
+
+The apply path rejects a moved checkout, changed procurement packet, changed backend receipt, changed plan digest, or destructive plan. A failed apply is `indeterminate`, `reconciliation_required=true`, `automatic_retry=false`.
+
+A successful apply performs read-only post-apply reconciliation and requires WIF, all service accounts, Artifact Registry, private Cloud SQL and regional secret metadata to exist.
 
 The WIF provider is hard-bound to:
 
@@ -139,9 +217,7 @@ issuer                 = https://token.actions.githubusercontent.com
 
 The deployer uses `roles/iam.workloadIdentityUser`; no downloadable Google service-account key is created.
 
-Plan first. Review the exact Terraform plan, cost impact, IAM delta, and resource list. Apply only under a separate still-valid operator execution decision. A failed or interrupted apply is **indeterminate until read-only reconciliation proves actual Google state**.
-
-## 5. Runtime database credential without Terraform password state
+## 7. Runtime database credential without Terraform password state
 
 After Cloud SQL and regional Secret Manager metadata exist, run:
 
@@ -163,7 +239,7 @@ This bootstrap:
 
 If one mutation succeeds without the other, the receipt is `partial` and `reconciliation_required=true`. Do not blind-retry.
 
-## 6. Other exact regional secret versions
+## 8. Other exact regional secret versions
 
 Use:
 
@@ -177,7 +253,7 @@ For OpenAI, complete the secure OpenAI Platform project-key setup first. Save/co
 
 Do not commit an OpenAI key, GitHub token, Google credential, password, Authorization header, or DSN.
 
-## 7. Immutable candidate deployment
+## 9. Immutable candidate deployment and runtime migration
 
 Once the exact regional secret inventory is complete and the existing Québec staging authorization passes:
 
@@ -198,13 +274,13 @@ The deployer:
 - uses Direct VPC egress to the private Québec VPC/subnet;
 - attaches private Cloud SQL;
 - starts on process `/health` rather than falsely treating an unmigrated DB as ready;
-- executes `src.operations.nexus_postgres_migrate` as one task, max retries zero;
-- requires a migration receipt;
+- executes the packaged `003_nexus_provider_runtime_controls.sql` migration through `src.operations.nexus_postgres_migrate` as one task, max retries zero;
+- requires a canonical migration receipt;
 - only then accepts `/ready=true`.
 
 Any failed mutating Cloud Build / Cloud Run operation is treated as indeterminate and is not automatically retried.
 
-## 8. Prepare exact provider canary requests
+## 10. Prepare exact provider canary requests
 
 Create one `aigc.nexus-provider-canary.v1` JSON plan per provider. It must contain:
 
@@ -230,7 +306,7 @@ python -m src.operations.nexus_provider_canary \
 
 Planning performs no provider call.
 
-## 9. Issue canonical live-canary authority
+## 11. Issue canonical live-canary authority
 
 For each provider separately, create/review the canonical `GovernanceDecision` and `ExecutionPermit`.
 
@@ -249,7 +325,7 @@ permit maximum_invocations = 1
 
 Gemini and OpenAI receive **different one-use permits**.
 
-## 10. Launch one-task provider canaries
+## 12. Launch one-task provider canaries
 
 Use the same immutable candidate image and operator identity:
 
@@ -263,7 +339,7 @@ python scripts/launch_nexus_provider_canary_job.py \
   --output /secure/aigc/gemini-canary-receipt.json
 ```
 
-Then repeat with the independent OpenAI artifacts.
+Then repeat with independent OpenAI artifacts.
 
 Each job is configured:
 
@@ -280,7 +356,7 @@ The Nexus runtime itself enforces durable permit usage, idempotency, emergency-s
 
 An uncertain provider outcome is not retried.
 
-## 11. Staging validation
+## 13. Staging validation
 
 After both live canaries succeed, run:
 
@@ -292,7 +368,7 @@ Collect authenticated `/health`, `/ready`, metadata-only `/observability`, unaut
 
 Do not introduce destructive fault injection unless it receives a separate exact authorization.
 
-## 12. Release disposition
+## 14. Release disposition
 
 Only after all external receipts exist:
 
