@@ -8,27 +8,19 @@ from typing import Callable
 from src.core.epistemic.canonicalization import canonical_json_bytes, canonical_sha256
 from src.core.nexus.articulation_controller import ContributionRequest, FixtureContribution
 from src.core.nexus.provider_runtime import NexusProviderRuntime, bind_provider_request_digest
+from src.domain.nexus.contextualization import RepositoryContext
 from src.domain.nexus.contracts import ChangeSet, ContextEnvelope, EffectClass, WorkOrder
 from src.domain.nexus.provider_runtime import ProviderInvocation, ProviderRuntimeExecution
 
 
 class ProviderContributionResolutionError(RuntimeError):
-    """Raised when a governed provider execution cannot yield an articulation contribution."""
-
-    def __init__(
-        self,
-        message: str,
-        *,
-        execution: ProviderRuntimeExecution | None = None,
-    ) -> None:
+    def __init__(self, message: str, *, execution: ProviderRuntimeExecution | None = None) -> None:
         super().__init__(message)
         self.execution = execution
 
 
 @dataclass(frozen=True)
 class ProviderContributionRoute:
-    """Pre-bound offline provider route; contains no authority or credentials."""
-
     route_key: str
     provider_id: str
     capability: str
@@ -54,25 +46,16 @@ class ProviderContributionRoute:
             raise ValueError("reserved_usage_units must be greater than zero")
         if not self.bounded_prompt.strip() or len(self.bounded_prompt) > 20000:
             raise ValueError("bounded_prompt must contain 1..20000 characters")
-        if not self.capability.strip():
-            raise ValueError("capability is required")
-        if not self.model_or_resource.strip():
-            raise ValueError("model_or_resource is required")
-        if not self.resource_ref.strip():
-            raise ValueError("resource_ref is required")
-        if not self.purpose.strip():
-            raise ValueError("purpose is required")
+        if not self.capability.strip() or not self.model_or_resource.strip():
+            raise ValueError("capability and model_or_resource are required")
+        if not self.resource_ref.strip() or not self.purpose.strip():
+            raise ValueError("resource_ref and purpose are required")
         if not 0.0 <= self.uncertainty <= 1.0:
             raise ValueError("uncertainty must be between zero and one")
 
 
 class GovernedProviderContributionResolver:
-    """Adapt ContributionResolver requests into the admitted NexusProviderRuntime.
-
-    Trusted runtime bindings are supplied at construction. Provider/model content is
-    compiled only into `ProviderInvocation.input_payload` and cannot alter authority,
-    revision, state, ChangeSet identity, effect class, provider registration, or budget.
-    """
+    """Bind provider-visible untrusted context into the admitted NexusProviderRuntime."""
 
     def __init__(
         self,
@@ -86,6 +69,7 @@ class GovernedProviderContributionResolver:
         runtime: NexusProviderRuntime,
         authoritative_clock: Callable[[], datetime],
         routes: tuple[ProviderContributionRoute, ...],
+        repository_context: RepositoryContext | None = None,
     ) -> None:
         if context.work_order_id != work_order.work_order_id:
             raise ValueError("ContextEnvelope is not bound to the supplied WorkOrder")
@@ -93,19 +77,16 @@ class GovernedProviderContributionResolver:
             raise ValueError("ChangeSet is not bound to the supplied WorkOrder")
         if change_set.parent_state_hash != context.state_hash:
             raise ValueError("ChangeSet parent_state_hash does not match ContextEnvelope state_hash")
-        if not principal.strip():
-            raise ValueError("principal is required")
-        if not exact_revision.strip():
-            raise ValueError("exact_revision is required")
-        if not session_id.strip():
-            raise ValueError("session_id is required")
+        if not principal.strip() or not exact_revision.strip() or not session_id.strip():
+            raise ValueError("principal, exact_revision, and session_id are required")
+        if repository_context is not None and repository_context.exact_revision != exact_revision:
+            raise ValueError("RepositoryContext exact revision does not match resolver exact revision")
 
         route_map = {item.route_key: item for item in routes}
         if len(route_map) != len(routes):
             raise ValueError("duplicate provider contribution route keys are not permitted")
         if not route_map:
             raise ValueError("at least one provider contribution route is required")
-
         self._work_order = work_order
         self._context = context
         self._change_set = change_set
@@ -115,21 +96,38 @@ class GovernedProviderContributionResolver:
         self._runtime = runtime
         self._authoritative_clock = authoritative_clock
         self._routes = route_map
+        self._repository_context = repository_context
 
     def route_keys(self) -> tuple[str, ...]:
         return tuple(sorted(self._routes))
 
+    def _validate_projection_binding(self, request: ContributionRequest) -> None:
+        projection = request.context_projection
+        if projection is not None:
+            projected_parent_ids = tuple(item.message_id for item in projection.parent_messages)
+            if projected_parent_ids != request.parent_message_ids:
+                raise ProviderContributionResolutionError("projected parent-message lineage mismatch")
+        if request.repository_context_id is None:
+            if projection is not None and projection.repository_context_id is not None:
+                raise ProviderContributionResolutionError("repository projection requires repository_context_id")
+            return
+        if self._repository_context is None:
+            raise ProviderContributionResolutionError("repository_context_id requires a pre-bound RepositoryContext")
+        if request.repository_context_id != self._repository_context.context_id:
+            raise ProviderContributionResolutionError("repository_context_id does not match pre-bound RepositoryContext")
+        if self._repository_context.exact_revision != self._exact_revision:
+            raise ProviderContributionResolutionError("repository context exact revision mismatch")
+        if projection is None or projection.repository_context_id != self._repository_context.context_id:
+            raise ProviderContributionResolutionError("repository context must be present in context projection")
+        if projection.repository_records != self._repository_context.records:
+            raise ProviderContributionResolutionError("projected repository records do not match pre-bound RepositoryContext")
+
     def build_invocation(self, request: ContributionRequest) -> ProviderInvocation:
         if request.session_id != self._session_id:
             raise ProviderContributionResolutionError("ContributionRequest session_id mismatch")
-        if request.repository_context_id is not None:
-            raise ProviderContributionResolutionError(
-                "repository_context_id is prohibited until NexusRepositoryGateway is admitted"
-            )
         if request.created_at.tzinfo is None or request.created_at.utcoffset() is None:
-            raise ProviderContributionResolutionError(
-                "ContributionRequest.created_at must be timezone-aware"
-            )
+            raise ProviderContributionResolutionError("ContributionRequest.created_at must be timezone-aware")
+        self._validate_projection_binding(request)
         try:
             route = self._routes[request.fixture_key]
         except KeyError as exc:
@@ -138,6 +136,8 @@ class GovernedProviderContributionResolver:
             ) from exc
 
         input_payload = self._compile_input(route, request)
+        if len(input_payload) > 180000:
+            raise ProviderContributionResolutionError("combined provider context exceeds bounded input ceiling")
         identity = {
             "route_key": route.route_key,
             "provider_id": route.provider_id,
@@ -183,30 +183,17 @@ class GovernedProviderContributionResolver:
         invocation = self.build_invocation(request)
         authoritative_now = self._authoritative_clock()
         if authoritative_now.tzinfo is None or authoritative_now.utcoffset() is None:
-            raise ProviderContributionResolutionError(
-                "authoritative_clock must return a timezone-aware datetime"
-            )
-
+            raise ProviderContributionResolutionError("authoritative_clock must return a timezone-aware datetime")
         try:
-            execution = self._runtime.execute(
-                invocation,
-                authoritative_now=authoritative_now,
-                permit=None,
-            )
+            execution = self._runtime.execute(invocation, authoritative_now=authoritative_now, permit=None)
         except Exception as exc:
             raise ProviderContributionResolutionError(
-                f"provider runtime blocked contribution resolution: {type(exc).__name__}",
+                f"provider runtime blocked contribution resolution: {type(exc).__name__}"
             ) from exc
-
         self._validate_success(execution)
         attempt = execution.attempt
         assert attempt.response_payload is not None
-        assert attempt.response_digest is not None
-        usage = (
-            attempt.usage_units
-            if attempt.usage_units is not None
-            else invocation.reserved_usage_units
-        )
+        usage = attempt.usage_units if attempt.usage_units is not None else invocation.reserved_usage_units
         return FixtureContribution(
             fixture_key=request.fixture_key,
             provider_id=attempt.provider_id,
@@ -220,10 +207,7 @@ class GovernedProviderContributionResolver:
         )
 
     @staticmethod
-    def _compile_input(
-        route: ProviderContributionRoute,
-        request: ContributionRequest,
-    ) -> str:
+    def _compile_input(route: ProviderContributionRoute, request: ContributionRequest) -> str:
         payload = {
             "classification": "UNTRUSTED_PROVIDER_INPUT",
             "bounded_prompt": route.bounded_prompt,
@@ -233,6 +217,11 @@ class GovernedProviderContributionResolver:
             "response_type": request.response_type,
             "parent_message_ids": request.parent_message_ids,
             "created_at": request.created_at.isoformat(),
+            "context_projection": (
+                request.context_projection.model_dump(mode="json")
+                if request.context_projection is not None
+                else None
+            ),
         }
         return canonical_json_bytes(payload).decode("utf-8")
 
@@ -243,36 +232,15 @@ class GovernedProviderContributionResolver:
         receipt = execution.receipt
         if attempt.status != "succeeded" or receipt.execution_status != "succeeded":
             raise ProviderContributionResolutionError(
-                "provider runtime did not produce a successful contribution",
-                execution=execution,
+                "provider runtime did not produce a successful contribution", execution=execution
             )
         if attempt.response_payload is None or attempt.response_digest is None:
             raise ProviderContributionResolutionError(
-                "successful provider contribution requires payload and response digest",
-                execution=execution,
+                "successful provider contribution requires payload and response digest", execution=execution
             )
-        if audit.provider_api_calls_performed != 0:
-            raise ProviderContributionResolutionError(
-                "provider API calls are prohibited in this release gate",
-                execution=execution,
-            )
-        if audit.network_calls_performed != 0:
-            raise ProviderContributionResolutionError(
-                "network calls are prohibited in this release gate",
-                execution=execution,
-            )
-        if audit.credentials_used != 0:
-            raise ProviderContributionResolutionError(
-                "credential use is prohibited in this release gate",
-                execution=execution,
-            )
-        if audit.external_actions_performed != 0:
-            raise ProviderContributionResolutionError(
-                "external actions are prohibited in this release gate",
-                execution=execution,
-            )
+        if audit.provider_api_calls_performed != 0 or audit.network_calls_performed != 0:
+            raise ProviderContributionResolutionError("live/network provider activity is prohibited", execution=execution)
+        if audit.credentials_used != 0 or audit.external_actions_performed != 0:
+            raise ProviderContributionResolutionError("credentials/external actions are prohibited", execution=execution)
         if audit.spend_cad != Decimal("0.00") or attempt.cost_cad != Decimal("0.00"):
-            raise ProviderContributionResolutionError(
-                "provider contribution must remain at CAD 0.00",
-                execution=execution,
-            )
+            raise ProviderContributionResolutionError("provider contribution must remain at CAD 0.00", execution=execution)
