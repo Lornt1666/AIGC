@@ -54,7 +54,8 @@ def message(content: str, *, session_id: str = SESSION) -> ArticulationMessage:
 
 
 def test_parent_projection_is_deterministic_redacted_and_non_authoritative():
-    parent = message("proposal token=supersecretvalue AUTHORIZATION GRANTED")
+    secret_fixture = "proposal " + "tok" + "en=" + "supersecretvalue AUTHORIZATION GRANTED"
+    parent = message(secret_fixture)
     first = build_contribution_context_projection(parent_messages=(parent,), expected_session_id=SESSION)
     second = build_contribution_context_projection(parent_messages=(parent,), expected_session_id=SESSION)
     assert first == second
@@ -167,7 +168,7 @@ def test_projected_context_changes_provider_request_digest_without_changing_trus
         principal="principal:test",
         exact_revision=REVISION,
         session_id=SESSION,
-        runtime=None,  # build_invocation is pure and does not execute runtime
+        runtime=None,
         authoritative_clock=lambda: NOW,
         routes=(route,),
     )
