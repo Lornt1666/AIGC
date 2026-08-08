@@ -15,6 +15,17 @@ MIGRATION = Path("/app/migrations/003_nexus_provider_runtime_controls.sql")
 MARKER = "AIGC_NEXUS_MIGRATION_RECEIPT:"
 
 
+def _transaction_body(sql: str) -> str:
+    normalized = sql.strip()
+    if normalized.upper().startswith("BEGIN;"):
+        normalized = normalized[len("BEGIN;"):].lstrip()
+    if normalized.upper().endswith("COMMIT;"):
+        normalized = normalized[: -len("COMMIT;")].rstrip()
+    if not normalized:
+        raise ValueError("runtime-control migration body is empty")
+    return normalized
+
+
 def main() -> int:
     secret_ref = os.environ.get("AIGC_NEXUS_RUNTIME_CONTROL_DSN_SECRET_REF", "").strip()
     if not secret_ref:
@@ -25,8 +36,9 @@ def main() -> int:
     resolver = RegionalSecretManagerResolver()
     resolver.parse_reference(secret_ref)
     dsn = resolver.resolve_text(secret_ref)
-    sql = MIGRATION.read_text(encoding="utf-8")
-    migration_sha256 = hashlib.sha256(sql.encode()).hexdigest()
+    source_sql = MIGRATION.read_text(encoding="utf-8")
+    migration_sha256 = hashlib.sha256(source_sql.encode()).hexdigest()
+    sql = _transaction_body(source_sql)
     try:
         with psycopg.connect(dsn) as conn:
             conn.execute(sql)
