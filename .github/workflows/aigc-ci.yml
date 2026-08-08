@@ -1,6 +1,9 @@
 name: AIGC CI
 
 on:
+  push:
+    branches:
+      - "**"
   pull_request:
     branches:
       - main
@@ -12,7 +15,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     env:
-      REQUESTED_REVISION: ${{ github.event.pull_request.head.sha }}
+      REQUESTED_REVISION: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
     steps:
       - name: Checkout exact requested revision
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
@@ -67,27 +70,6 @@ jobs:
             --run-number "$GITHUB_RUN_NUMBER" \
             --run-id "$GITHUB_RUN_ID"
 
-      - name: Generate Nexus repository intelligence
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p "$RUNNER_TEMP/aigc-ci-stage-results"
-          python scripts/nexus_repository_intelligence.py \
-            --root . \
-            --output "$RUNNER_TEMP/aigc-ci-stage-results/nexus_repository_intelligence.json"
-          python scripts/nexus_repository_intelligence_advanced.py \
-            --root . \
-            --output "$RUNNER_TEMP/aigc-ci-stage-results/nexus_repository_intelligence_advanced.json"
-
-      - name: Run single private GitHub read canary
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          python scripts/run_nexus_live_github_read_canary.py \
-            --output "$RUNNER_TEMP/aigc-ci-stage-results/private_github_read_canary.json"
-
       - name: Emit exact-head admission receipt
         if: always()
         shell: bash
@@ -99,8 +81,6 @@ jobs:
           from datetime import datetime, timezone
           from pathlib import Path
 
-          canary_path = Path(os.environ["RUNNER_TEMP"], "aigc-ci-stage-results", "private_github_read_canary.json")
-          canary_executed = canary_path.exists()
           receipt = {
               "repository": os.environ["GITHUB_REPOSITORY"],
               "pr_number": int(os.environ.get("PR_NUMBER", "0")),
@@ -109,12 +89,12 @@ jobs:
               "observed_head_sha": os.environ.get("OBSERVED_HEAD_SHA", ""),
               "tested_tree_sha": os.environ.get("TESTED_TREE_SHA", ""),
               "base_sha": os.environ.get("BASE_SHA", ""),
+              "workflow_revision": os.environ.get("WORKFLOW_REVISION", ""),
               "workflow_run_number": int(os.environ["GITHUB_RUN_NUMBER"]),
               "workflow_run_id": int(os.environ["GITHUB_RUN_ID"]),
               "artifact_name": os.environ.get("ARTIFACT_NAME", ""),
               "captured_timestamp": datetime.now(timezone.utc).isoformat(),
-              "external_authority_granted": canary_executed,
-              "private_github_read_canary_executed": canary_executed,
+              "external_authority_granted": False,
               "merge_authority_granted": False,
               "deployment_authority_granted": False,
               "live_model_call_authority_granted": False,
@@ -126,11 +106,12 @@ jobs:
           )
           PY
         env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_NUMBER: ${{ github.event.pull_request.number || 0 }}
           REQUESTED_HEAD_SHA: ${{ steps.identity.outputs.requested_head_sha }}
           OBSERVED_HEAD_SHA: ${{ steps.identity.outputs.observed_head_sha }}
           TESTED_TREE_SHA: ${{ steps.tested.outputs.tree_sha }}
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
+          WORKFLOW_REVISION: ${{ github.workflow_sha || github.sha }}
           ARTIFACT_NAME: aigc-colosseum-orchestration-exact-head-${{ env.REQUESTED_REVISION }}
 
       - name: Upload canonical validation evidence
