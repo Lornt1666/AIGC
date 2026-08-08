@@ -1,20 +1,19 @@
 locals {
-  github_repository             = "Lornt1666/AIGC"
-  github_repository_id          = "1287333065"
-  github_repository_owner_id    = "236225491"
-  github_allowed_refs           = toset(["refs/heads/release/aigc-nexus-v1", "refs/heads/main"])
-  github_wif_pool_id            = "${var.resource_prefix}-gha"
-  github_wif_provider_id        = "github"
+  github_repository          = "Lornt1666/AIGC"
+  github_repository_id       = "1287333065"
+  github_repository_owner_id = "236225491"
+  github_wif_pool_id         = "${var.resource_prefix}-gha"
+  github_wif_provider_id     = "github"
 
   regional_secret_ids = {
-    runtime_control_dsn        = "${var.resource_prefix}-runtime-control-dsn"
-    operator_token             = "${var.resource_prefix}-operator-token"
-    operator_binding_key       = "${var.resource_prefix}-operator-binding-key"
-    runtime_admin_token        = "${var.resource_prefix}-runtime-admin-token"
-    runtime_admin_binding_key  = "${var.resource_prefix}-runtime-admin-binding-key"
-    judge_token                = "${var.resource_prefix}-judge-token"
-    judge_binding_key          = "${var.resource_prefix}-judge-binding-key"
-    openai_api_key             = "${var.resource_prefix}-openai-api-key"
+    runtime_control_dsn       = "${var.resource_prefix}-runtime-control-dsn"
+    operator_token            = "${var.resource_prefix}-operator-token"
+    operator_binding_key      = "${var.resource_prefix}-operator-binding-key"
+    runtime_admin_token       = "${var.resource_prefix}-runtime-admin-token"
+    runtime_admin_binding_key = "${var.resource_prefix}-runtime-admin-binding-key"
+    judge_token               = "${var.resource_prefix}-judge-token"
+    judge_binding_key         = "${var.resource_prefix}-judge-binding-key"
+    openai_api_key            = "${var.resource_prefix}-openai-api-key"
   }
 
   operator_secret_purposes = toset([
@@ -76,11 +75,7 @@ resource "google_service_account_iam_member" "github_wif_deployer" {
 
   service_account_id = google_service_account.identity["deployer"].name
   role               = "roles/iam.workloadIdentityUser"
-  member = (
-    "principalSet://iam.googleapis.com/projects/${var.project_number}/locations/global/" 
-    + "workloadIdentityPools/${google_iam_workload_identity_pool.github[0].workload_identity_pool_id}/" 
-    + "attribute.repository_id/${local.github_repository_id}"
-  )
+  member             = "principalSet://iam.googleapis.com/projects/${var.project_number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.github[0].workload_identity_pool_id}/attribute.repository_id/${local.github_repository_id}"
 }
 
 resource "google_project_iam_member" "deployer_cloud_build" {
@@ -136,24 +131,4 @@ resource "google_secret_manager_regional_secret_iam_member" "judge_access" {
   secret_id = google_secret_manager_regional_secret.runtime[each.value].secret_id
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.identity["judge"].email}"
-}
-
-resource "google_monitoring_notification_channel" "budget_email" {
-  count = local.create_resources && var.budget_notification_email != null ? 1 : 0
-
-  project      = var.project_id
-  display_name = "AIGC staging budget owner"
-  type         = "email"
-  labels = {
-    email_address = var.budget_notification_email
-  }
-
-  depends_on = [google_project_service.required]
-}
-
-locals {
-  effective_budget_notification_channels = concat(
-    var.budget_notification_channels,
-    google_monitoring_notification_channel.budget_email[*].name,
-  )
 }
