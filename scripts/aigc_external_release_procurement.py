@@ -43,6 +43,8 @@ class ExternalReleaseContract:
         p = self.payload
         if p.get("schema_version") != "aigc.external-release-procurement.v1":
             raise ProcurementError("unsupported procurement contract")
+        if not isinstance(p.get("template_only", False), bool):
+            raise ProcurementError("template_only must be boolean")
         if p.get("repository") != "Lornt1666/AIGC":
             raise ProcurementError("repository binding mismatch")
         if not PROJECT_RE.fullmatch(str(p.get("project_id") or "")):
@@ -68,6 +70,15 @@ class ExternalReleaseContract:
             raise ProcurementError("production activation is prohibited by this procurement contract")
         if authority.get("merge_authorized") and not authority.get("mark_pr_ready_authorized"):
             raise ProcurementError("merge authority requires ready-for-review authority first")
+        if p.get("template_only") is True:
+            mutation_flags = [
+                key for key, value in authority.items()
+                if key != "read_only_discovery_authorized" and value is not False
+            ]
+            if mutation_flags:
+                raise ProcurementError("template-only procurement cannot contain consequential authority")
+            if p.get("monthly_budget_cad") != 0 or p.get("provider_canary_spend_cad") != 0:
+                raise ProcurementError("template-only procurement must remain zero-spend")
 
     @property
     def project_id(self) -> str:
@@ -88,6 +99,10 @@ class ExternalReleaseContract:
     @property
     def authority(self) -> dict[str, Any]:
         return dict(self.payload["authority"])
+
+    @property
+    def template_only(self) -> bool:
+        return bool(self.payload.get("template_only", False))
 
 
 def canonical_sha256(value: Any) -> str:
@@ -114,7 +129,13 @@ def _json(command: Sequence[str]) -> dict[str, Any]:
     return value
 
 
+def _require_executable(contract: ExternalReleaseContract) -> None:
+    if contract.template_only:
+        raise ProcurementError("copy the template into a reviewed non-template execution packet first")
+
+
 def _git_identity(contract: ExternalReleaseContract) -> None:
+    _require_executable(contract)
     observed_sha = _run(["git", "rev-parse", "HEAD"])
     observed_tree = _run(["git", "rev-parse", "HEAD^{tree}"])
     if observed_sha != contract.payload["release_sha"]:
@@ -252,6 +273,7 @@ def discover(contract: ExternalReleaseContract) -> dict[str, Any]:
 
 
 def terraform_inputs(contract: ExternalReleaseContract, manifest: dict[str, Any]) -> dict[str, Any]:
+    _require_executable(contract)
     if contract.payload["monthly_budget_cad"] <= 0:
         raise ProcurementError("nonzero reviewed monthly_budget_cad is required before Terraform plan")
     if not contract.payload.get("budget_notification_channels"):
