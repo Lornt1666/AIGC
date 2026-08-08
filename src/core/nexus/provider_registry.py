@@ -112,11 +112,15 @@ class OfflineDeterministicProviderAdapter:
                 outcome_known=True,
             )
         self.invocation_count += 1
+        input_digest = canonical_sha256({"input_payload": invocation.input_payload})
         payload = (
             "OFFLINE DETERMINISTIC PROVIDER RESULT — NOT A LIVE PROVIDER\n"
+            f"input_digest={input_digest}\n"
             f"request_digest={invocation.request_digest}\n"
             f"capability={invocation.capability}\n"
-            f"model={self.model_label}"
+            f"model={self.model_label}\n"
+            "UNTRUSTED_PROVIDER_INPUT_ECHO:\n"
+            f"{invocation.input_payload}"
         )
         response_digest = canonical_sha256({"response_payload": payload})
         return ProviderAttemptResult(
