@@ -4,6 +4,8 @@ resource "google_project_service" "platform_control_plane" {
   for_each = local.create_resources ? toset([
     "billingbudgets.googleapis.com",
     "cloudresourcemanager.googleapis.com",
+    "serviceusage.googleapis.com",
+    "sts.googleapis.com",
   ]) : toset([])
 
   project            = var.project_id
