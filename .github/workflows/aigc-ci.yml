@@ -84,6 +84,43 @@ jobs:
             --run-number "$GITHUB_RUN_NUMBER" \
             --run-id "$GITHUB_RUN_ID"
 
+      - name: Build Nexus staging container locally
+        shell: bash
+        run: |
+          set -euo pipefail
+          image_tag="aigc-nexus-ci:${REQUESTED_REVISION}"
+          docker build --file Dockerfile.nexus --tag "$image_tag" .
+          image_id="$(docker image inspect "$image_tag" --format '{{.Id}}')"
+          image_user="$(docker image inspect "$image_tag" --format '{{.Config.User}}')"
+          if [ "$image_user" != "aigc" ]; then
+            echo "Nexus staging image must run as non-root user aigc." >&2
+            exit 1
+          fi
+          export NEXUS_CI_IMAGE_ID="$image_id"
+          export NEXUS_CI_IMAGE_USER="$image_user"
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          receipt = {
+              "schema_version": "aigc.nexus-local-container-build.v1",
+              "repository_revision": os.environ["REQUESTED_REVISION"],
+              "image_id": os.environ["NEXUS_CI_IMAGE_ID"],
+              "container_user": os.environ["NEXUS_CI_IMAGE_USER"],
+              "dockerfile": "Dockerfile.nexus",
+              "registry_push_performed": False,
+              "cloud_build_performed": False,
+              "deployment_performed": False,
+              "captured_at": datetime.now(timezone.utc).isoformat(),
+          }
+          Path(os.environ["RUNNER_TEMP"], "aigc-ci-stage-results", "nexus_local_container_build_receipt.json").write_text(
+              json.dumps(receipt, sort_keys=True, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
       - name: Emit exact-head admission receipt
         if: always()
         shell: bash
