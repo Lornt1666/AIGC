@@ -82,23 +82,6 @@ jobs:
             --root . \
             --output "$RUNNER_TEMP/aigc-ci-stage-results/nexus_repository_intelligence_advanced.json"
 
-      - name: Run one-shot private GitHub read canary
-        id: github_read_canary
-        if: ${{ github.event_name == 'pull_request' }}
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          commit_message="$(git log -1 --pretty=%B)"
-          if [[ "$commit_message" != *"[execute-github-read-canary]"* ]]; then
-            echo "executed=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          python scripts/run_nexus_live_github_read_canary.py \
-            --output "$RUNNER_TEMP/aigc-ci-stage-results/private_github_read_canary.json"
-          echo "executed=true" >> "$GITHUB_OUTPUT"
-
       - name: Emit exact-head admission receipt
         if: always()
         shell: bash
@@ -110,7 +93,6 @@ jobs:
           from datetime import datetime, timezone
           from pathlib import Path
 
-          canary_executed = os.environ.get("PRIVATE_GITHUB_READ_CANARY_EXECUTED", "false").lower() == "true"
           receipt = {
               "repository": os.environ["GITHUB_REPOSITORY"],
               "pr_number": int(os.environ.get("PR_NUMBER", "0")),
@@ -123,8 +105,7 @@ jobs:
               "workflow_run_id": int(os.environ["GITHUB_RUN_ID"]),
               "artifact_name": os.environ.get("ARTIFACT_NAME", ""),
               "captured_timestamp": datetime.now(timezone.utc).isoformat(),
-              "external_authority_granted": canary_executed,
-              "private_github_read_canary_executed": canary_executed,
+              "external_authority_granted": False,
               "merge_authority_granted": False,
               "deployment_authority_granted": False,
               "live_model_call_authority_granted": False,
@@ -141,7 +122,6 @@ jobs:
           OBSERVED_HEAD_SHA: ${{ steps.identity.outputs.observed_head_sha }}
           TESTED_TREE_SHA: ${{ steps.tested.outputs.tree_sha }}
           BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
-          PRIVATE_GITHUB_READ_CANARY_EXECUTED: ${{ steps.github_read_canary.outputs.executed || 'false' }}
           ARTIFACT_NAME: aigc-colosseum-foundation-exact-head-${{ env.REQUESTED_REVISION }}
 
       - name: Upload canonical validation evidence
