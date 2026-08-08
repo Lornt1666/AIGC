@@ -17,6 +17,7 @@ def test_committed_external_procurement_contract_is_inert_and_zero_spend():
     payload = json.loads(EXAMPLE.read_text(encoding="utf-8"))
     contract = procurement.ExternalReleaseContract(payload=payload)
     contract.validate()
+    assert payload["template_only"] is True
     assert payload["monthly_budget_cad"] == 0
     assert payload["provider_canary_spend_cad"] == 0
     assert payload["authority"]["read_only_discovery_authorized"] is True
@@ -40,8 +41,16 @@ def test_resource_manifest_is_deterministic_and_binds_verified_project_identity(
     assert first["service_account_keys"] is False
 
 
-def test_zero_budget_blocks_terraform_inputs_even_when_plan_flag_is_tampered_true():
+def test_template_cannot_be_promoted_by_flipping_plan_flag():
     payload = json.loads(EXAMPLE.read_text(encoding="utf-8"))
+    payload["authority"]["terraform_plan_authorized"] = True
+    with pytest.raises(procurement.ProcurementError, match="template-only"):
+        procurement.ExternalReleaseContract(payload=payload).validate()
+
+
+def test_zero_budget_blocks_non_template_terraform_inputs():
+    payload = json.loads(EXAMPLE.read_text(encoding="utf-8"))
+    payload["template_only"] = False
     payload["authority"]["terraform_plan_authorized"] = True
     contract = procurement.ExternalReleaseContract(payload=payload)
     contract.validate()
