@@ -10,4 +10,5 @@ psycopg[binary]==3.3.4
 psycopg_pool==3.3.1
 PyJWT[crypto]==2.13.0
 google-genai==2.6.0
+google-cloud-secret-manager==2.30.0
 openai==2.38.0
