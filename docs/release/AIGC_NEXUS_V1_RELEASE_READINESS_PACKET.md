@@ -1,73 +1,69 @@
 # AIGC Nexus V1 Release Readiness Evidence Packet
 
-Status: `PRE-RELEASE EVIDENCE COMPLETE — GOVERNED RELEASE STILL BLOCKED ON EXTERNAL RUNTIME PROOF`
+Status: `REPOSITORY RELEASE-CANDIDATE COMPLETE — EXTERNAL RUNTIME EXECUTION STILL REQUIRED`
 
-## Evidence baseline
-
-This packet is prepared from the latest admitted implementation baseline before the packet update:
+## Latest admitted implementation baseline before this packet update
 
 - repository: `Lornt1666/AIGC`
 - PR: `#181`
 - integration branch: `release/aigc-nexus-v1`
-- admitted implementation head: `ce17c0292d09e8b3327c77bc8c03630f065bd730`
-- tested tree: `2bd3f9e6a834c286acaddce898786f6dcc582a67`
-- exact-head workflow: `AIGC CI #2682`
-- workflow run ID: `31240929913`
-- retained artifact ID: `9017001382`
-- retained artifact digest: `sha256:629b276d9ad2956d48f33a0c4277957a9badb9fa536722d2cbe61674bec3ce13`
-- local Nexus image ID: `sha256:d897251f0af50b6d2cbe93fb5fe8b5c21461706cb68b987bbb86ee95af573772`
+- admitted implementation head: `0c18b357644aeca732f67aad26294bab300d9adf`
+- tested tree: `9b06b1c6185697d618d504000c3c80129bf7383b`
+- exact-head workflow: `AIGC CI #2754`
+- workflow run ID: `31264631721`
+- retained artifact ID: `9023796536`
+- retained artifact digest: `sha256:59089fa8823d725ac1494b3f513beeb4f5372a4954ae92fd7875f8ca160403f0`
+- local Nexus image ID: `sha256:33fab3d5139392e839d7f870c944d1b8141a3e47b018d76bd4da4d4768ec4cc8`
 - local container user: `aigc`
 - converged current-main parent: `60297f4c6ac1c0feecb5ab913991cf3220247f27`
 
-The commit containing this packet requires its own fresh exact-head CI receipt. The baseline above is evidence for the implementation state that this packet summarizes; it is not authority to bypass the remaining external gates.
+The commit containing this packet requires its own fresh exact-head CI receipt. This packet is evidence, not authority.
 
 ## Constitutional release rule
 
 `Reasoning != Verification != Authority != Execution != Evidence`
 
-CI success, code completeness, a container build, credentials, provider output, infrastructure plans, and deployment receipts are all evidence. None independently grants release authority.
-
 `Capability may evolve autonomously. Authority may not.`
 
-## Completion matrix
+No CI result, provider credential, provider output, Terraform plan, cloud receipt, repository content, memory record or evidence artifact grants authority by itself.
 
-| # | Required capability | Repository state | External/runtime proof | Disposition |
+## Current completion matrix
+
+| # | Required capability | Repository implementation | Empirical/external proof | Disposition |
 |---|---|---|---|---|
-| 1 | One live private-GitHub `READ_FILE` canary | One-shot governed transport implemented and relocked after the attempt | The canary dispatched through the real GitHub Actions read-only credential/transport boundary and returned past transport-specific HTTP/URL/JSON/base64 failure handling; canonical RepositoryContext admission then failed and the inner receipt was not retained | `TRANSPORT PROVEN / CANONICAL ADMISSION FAILED / NO RETRY` |
-| 2 | GitHub App production credential boundary | Repository-scoped installation-token boundary, read-only permission validation and opaque capability implemented/tested | No real GitHub App installation/private-key provisioning receipt in the Nexus runtime | `IMPLEMENTED + CI ADMITTED / EXTERNAL PROVISIONING REQUIRED` |
-| 3 | Gemini adapter behind NexusProviderRuntime | Vertex Gemini adapter behind `GovernedLiveNexusProviderRuntime`, exact model, ADC/workload identity, no tools | No verified AIGC Google project/workload identity and no live invocation receipt | `IMPLEMENTED + CI ADMITTED / LIVE CANARY BLOCKED` |
-| 4 | OpenAI adapter behind same runtime | Responses adapter behind the same provider-neutral runtime, exact model, `store=false`, no tools | Secure project-key setup is external to repository CI and no safely injected runtime key/live receipt is present | `IMPLEMENTED + CI ADMITTED / LIVE CANARY BLOCKED` |
-| 5 | Durable runtime controls | Transactional PostgreSQL stop epoch, idempotency, rate/usage budgets, permit counters and terminal result replay | Ephemeral PostgreSQL 16 integration exercised in exact-head CI | `ADMITTED` |
-| 6 | Controlled live Gemini/OpenAI canary | Runtime/adapters/receipts are implemented | Missing verified provider identities, safe runtime secret injection and explicit nonzero canary spend authorization | `BLOCKED EXTERNALLY` |
-| 7 | Immutable-digest Québec staging deployment | Nexus runtime API, regional-secret resolver, non-root image, Cloud Build config, exact authorization gate, immutable-digest deployer, no-traffic candidate, health/readiness/observability probes implemented; local image build PASS | No verified project ID/number, WIF identity, exact provisioned resources/secrets, approved staging spend, Artifact Registry digest or Cloud Run revision receipt | `IMPLEMENTATION COMPLETE / DEPLOYMENT NOT EXECUTED` |
-| 8 | Load/failure/security/reconciliation validation | Bounded authenticated candidate validation harness implemented; canonical indeterminate reconciliation regression PASS | No deployed candidate URL; therefore no real latency/load/security runtime receipt and no authorized destructive fault injection | `HARNESS COMPLETE / DEPLOYED VALIDATION NOT EXECUTED` |
-| 9 | Full-system convergence review | Current main ancestry converged; reducer semantics hardened; dashboard stale capability projection repaired; exact revision UI enforced; direct Python dependencies pinned; Québec foundation + Nexus runtime coexist under one train | Historical retirement and fully hash-locked transitive dependency closure remain post-release hardening debt | `CI-ADMITTED CONVERGENCE` |
-| 10 | Release evidence -> ready -> merge -> post-merge verification | This packet is the release evidence ledger; exact-head CI process is available | Gates 6–8 lack real external receipts and item 1 lacks a canonical success receipt | `DO NOT MARK READY / DO NOT MERGE` |
+| 1 | Private GitHub `READ_FILE` | Governed read transport implemented and one-shot canary previously exercised | Real transport path exercised; canonical RepositoryContext success receipt not retained | `TRANSPORT PROVEN / CANONICAL ADMISSION FAILED / NO RETRY` |
+| 2 | GitHub production credential boundary | GitHub App boundary + keyless GitHub→Google WIF architecture implemented | Real GitHub App/WIF resources not yet provisioned | `IMPLEMENTED / EXTERNAL PROVISIONING REQUIRED` |
+| 3 | Gemini adapter | Vertex Gemini adapter behind governed live runtime | No live Gemini receipt | `IMPLEMENTED + CI ADMITTED / NOT EXECUTED` |
+| 4 | OpenAI adapter | Responses adapter, `store=false`, no tools, infrastructure-only credential callback | OpenAI project-key target/setup not completed in AIGC runtime | `IMPLEMENTED + CI ADMITTED / NOT EXECUTED` |
+| 5 | Durable runtime controls | Transactional PostgreSQL stop epoch, idempotency, rate/usage budgets, permit counters and terminal replay | PostgreSQL 16 integration exercised in CI | `ADMITTED` |
+| 6 | External identity / resource procurement | Expiring actor-bound procurement contract, read-only discovery, durable Terraform state bootstrap, saved-plan plan/apply gate, WIF/IAM, regional secret metadata and exact-version tooling | Google account mutations not executed | `IMPLEMENTATION COMPLETE / ACCOUNT EXECUTION REQUIRED` |
+| 7 | Controlled live provider canaries | Canonical one-use Gemini/OpenAI canary plans, HUMAN GovernanceDecision + ExecutionPermit validation, Cloud Run one-task/no-retry launcher, durable receipts | No provider API call executed | `IMPLEMENTATION COMPLETE / LIVE RECEIPTS ABSENT` |
+| 8 | Immutable Québec staging | Regional Cloud Build, dedicated build identity, immutable digest, private/no-traffic Cloud Run, Direct VPC egress, private Cloud SQL, runtime migration, health/readiness/observability | No real Cloud Build / Artifact Registry / Cloud Run receipt | `IMPLEMENTATION COMPLETE / DEPLOYMENT NOT EXECUTED` |
+| 9 | Deployed load/security/reconciliation | Bounded authenticated validation harness implemented | No deployed candidate latency/load/security receipt | `HARNESS COMPLETE / NOT EXECUTED` |
+| 10 | Release → ready → merge → post-merge | Release evidence and exact-head CI machinery implemented | External receipts remain incomplete | `DO NOT MARK READY / DO NOT MERGE` |
 
 ## Exact-head implementation evidence
 
-At `ce17c0292d09e8b3327c77bc8c03630f065bd730`, AIGC CI #2682 passed:
+At `0c18b357644aeca732f67aad26294bab300d9adf`, AIGC CI #2754 passed:
 
 - exact requested checkout and tested-tree binding;
 - dependency installation and `pip check`;
 - Python compilation;
-- canonical contracts;
-- full repository tests with zero failed/error tests;
+- complete repository tests with zero failed/error tests;
 - PostgreSQL-backed Nexus runtime-control integration;
-- GitHub App credential-boundary regressions;
-- Gemini/OpenAI provider-adapter regressions;
-- Québec cloud authorization and location regressions;
-- Nexus staging runtime, deployment-plan and deployed-validation harness regressions;
+- external-procurement/WIF/state-backend/Terraform-plan regressions;
+- Gemini/OpenAI canary planning and permit regressions;
+- private staging/deployment/migration regressions;
+- canonical contracts and provider-discovery guard;
 - redaction scan with zero findings;
 - release secret scan with zero findings;
-- provider-discovery guard;
-- Terraform inertness;
-- Colosseum schema validation and serialization round trips;
+- Terraform formatting/validation/inertness;
+- Colosseum schema and round-trip validation;
 - false-authority verification;
 - readiness validation;
-- local `Dockerfile.nexus` build with non-root user `aigc`.
+- local `Dockerfile.nexus` build as non-root user `aigc`.
 
-Retained admission authority fields remain:
+The retained exact-head admission receipt states:
 
 ```text
 external_authority_granted = false
@@ -77,7 +73,7 @@ financial_authority_granted = false
 merge_authority_granted = false
 ```
 
-Local container evidence also records:
+Local container evidence states:
 
 ```text
 registry_push_performed = false
@@ -85,142 +81,184 @@ cloud_build_performed = false
 deployment_performed = false
 ```
 
-## Private GitHub canary reconciliation
+## Verified external account metadata
 
-The single authorized private-GitHub canary must not be retried under the consumed authority.
-
-The canary reached the governed read step with GitHub Actions `Contents: read` / `Metadata: read`. The transport boundary consumes its single network authorization immediately before dispatch. HTTP errors, URL/timeout failures, invalid JSON and invalid base64 are normalized as `RepositoryTransportError`; the observed #2666 failure instead propagated through the executor's generic post-execution validation branch. The defensible finding is therefore:
+Operator-owned Google account evidence has established these non-secret identifiers:
 
 ```text
-real_private_github_transport_exercised = true
-transport_specific_failure_observed = false
-canonical_repository_context_admitted = false
-canonical_success_receipt_retained = false
-automatic_retry = false
+project_id      = oceanic-base-485407-i7
+project_number  = 170151535592
+billing_account = 0156E0-2BDD06-7561F1
+region          = northamerica-northeast1
 ```
 
-This proves the real private-repository transport path, but it does not justify claiming a fully successful canonical read canary.
+This does **not** yet prove live project↔billing linkage, WIF provisioning, service-account existence, nonzero spend authority, or resource creation. The committed procurement packet therefore remains `template_only=true`, zero-spend and mutation-inert.
 
-## Credential and provider boundaries
+## External procurement architecture now implemented
 
-### GitHub
+The repository now provides the complete fail-closed bridge from account access to runtime evidence:
 
-The production target uses a repository-scoped GitHub App installation token rather than a PAT. Private-key and token material remain inside infrastructure and only an opaque capability crosses into the Nexus read path.
+```text
+read-only project/billing discovery
+        ↓
+short-lived accountable procurement authority
+        ↓
+durable Montréal GCS Terraform state bootstrap
+        ↓
+exact material Terraform saved plan + SHA-256 receipt
+        ↓
+separately authorized apply of that exact saved plan
+        ↓
+keyless GitHub OIDC WIF + least-privilege service accounts
+        ↓
+regional Artifact Registry / private Cloud SQL / buckets / KMS / logs
+        ↓
+regional Secret Manager metadata
+        ↓
+runtime DB credential generated only in process memory
+        ↓
+exact regional DSN secret version
+        ↓
+remaining exact regional secret versions
+        ↓
+regional Cloud Build with dedicated build identity
+        ↓
+immutable Artifact Registry digest
+        ↓
+private no-traffic Cloud Run candidate with Direct VPC egress
+        ↓
+one-task/no-retry runtime-control migration
+        ↓
+/ready=true
+        ↓
+one-use Gemini and OpenAI Cloud Run Jobs
+        ↓
+canonical provider usage/latency/cost/ExecutionReceipt evidence
+        ↓
+bounded deployed validation
+```
 
-### Gemini
+Key implementation surfaces:
 
-The Gemini adapter uses Vertex mode with ADC/workload identity, exact configured model identity, TEXT-only capability, no tool surface and the provider-neutral governed runtime.
+- `config/aigc_external_release_procurement.example.json`
+- `scripts/aigc_external_release_procurement.py`
+- `scripts/bootstrap_quebec_terraform_state.py`
+- `scripts/terraform_quebec_foundation.py`
+- `infra/gcp/quebec/backend.tf`
+- `infra/gcp/quebec/external_identity_and_secrets.tf`
+- `scripts/bootstrap_nexus_runtime_database_secret.py`
+- `scripts/provision_nexus_regional_secret_version.py`
+- `src/operations/nexus_postgres_migrate.py`
+- `src/operations/nexus_provider_canary.py`
+- `scripts/launch_nexus_provider_canary_job.py`
+- `scripts/deploy_nexus_staging.py`
+- `scripts/validate_nexus_staging_runtime.py`
+- `docs/release/AIGC_EXTERNAL_RUNTIME_PROCUREMENT_RUNBOOK_V1.md`
 
-### OpenAI
+## Keyless identity and secret law
 
-The OpenAI adapter uses the Responses API with persistence disabled and no tool surface. An API key is accepted only through the infrastructure callback; it is never part of `ProviderInvocation`, `ExecutionPermit`, prompts, receipts or evidence.
+The Google WIF provider is restricted to:
 
-Both live adapters remain blocked by default `NexusProviderRuntime`. Live execution requires the explicit `GovernedLiveNexusProviderRuntime`, provider allowlist, live/network/credential policy flags, actual request-bound `ExecutionPermit`, durable control-store health, emergency-stop epoch, idempotency, usage/cost limits and canonical terminal receipts.
+```text
+repository          = Lornt1666/AIGC
+repository_id       = 1287333065
+repository_owner_id = 236225491
+allowed branch refs = release/aigc-nexus-v1 OR main
+OIDC issuer         = https://token.actions.githubusercontent.com
+```
 
-## Durable runtime controls
+No Google service-account key resource is created.
 
-`PostgresRuntimeControlStore` is provider-neutral and transactionally persists:
+Regional secret **containers** are Terraform-managed, but secret **versions** are outside Terraform so raw values cannot enter Terraform state. Exact versions are created only through bounded provisioning tools and receipts contain references/digests, not values.
 
-- emergency-stop state and monotonic epoch;
-- invocation reservations and state transitions;
-- `(principal, idempotency_key) -> request_digest` bindings;
-- principal/global minute/day request and usage reservations;
-- permit invocation counters;
-- terminal `ProviderRuntimeExecution` results.
+The Cloud SQL runtime password is generated in process memory. The socket-based DSN is written directly to Montréal regional Secret Manager and the runtime database user is created through the Cloud SQL Admin API. Partial cross-service outcomes require reconciliation and no blind retry.
 
-The exact-head suite proves cross-instance replay, idempotency conflict, emergency-stop activation/clear, durable permit ceilings and fail-closed transitions against PostgreSQL 16.
+## Terraform state and apply law
 
-## Québec staging runtime
+The Québec root now declares a GCS backend without a committed bucket name. The state bucket is bootstrapped as a separate governed phase with Montréal location, uniform bucket-level access, public-access prevention, versioning, retention and soft-delete controls.
 
-The repository now contains:
+A material Terraform plan requires reviewed resource-creation intent but performs no apply. Its receipt binds the backend, procurement packet, resource manifest and exact saved-plan SHA-256.
 
-- `src/webapp/nexus_runtime_api.py` with `/health`, `/ready` and metadata-only `/observability`;
-- `src/infrastructure/credentials/regional_secret_manager.py` for exact numeric Montréal regional-secret references;
-- `Dockerfile.nexus` non-root runtime image;
-- `.gcloudignore.nexus` minimized Cloud Build context;
-- `cloudbuild.nexus.yaml`;
-- `scripts/deploy_nexus_staging.py`;
-- `scripts/validate_nexus_staging_runtime.py`;
-- `docs/architecture/AIGC_NEXUS_QUEBEC_STAGING_RUNTIME_V1.md`.
+Terraform apply is separately authorized and can consume only that exact saved plan. Destroy/replacement actions are prohibited by the current gate. A failed apply is indeterminate and is not automatically retried.
 
-The deployment procedure requires the existing Québec `gate=staging` authorization, exact repository SHA/tree/resource digest, completed reviews, exact service accounts and regional secret versions, then builds regionally, resolves the Artifact Registry digest, deploys the digest with no unauthenticated/no production traffic, attaches private Cloud SQL, configures startup/liveness/readiness probes and verifies the authenticated candidate `/ready` endpoint.
+## Live provider canary law
 
-The runtime passes only the regional secret **reference** in configuration; the value is resolved inside the service through the Montréal regional Secret Manager endpoint using managed identity. Raw values are not placed in Cloud Run environment manifests or deployment receipts.
+Each provider receives a different one-use permit.
 
-Any failed mutating cloud command is classified as indeterminate and is not automatically retried.
+A canary requires:
 
-## Gate 8 validation scope
+```text
+GovernanceDecision.decision = approved
+GovernanceDecision.authority_source = HUMAN
+exact MAX_COST_CAD condition
+ExecutionPermit.maximum_invocations = 1
+exact principal/capability/resource/revision/request-digest binding
+exact regional runtime-control secret reference
+exact regional OpenAI key reference for OpenAI only
+durable PostgreSQL runtime-control health
+```
 
-The deployed validation harness is ready to collect real candidate evidence for:
+The canary job uses the same immutable candidate image and private Cloud SQL execution plane, with:
 
-- authenticated health/readiness;
-- unauthenticated denial;
-- unknown-route fail-closed behavior;
-- metadata-only observability;
-- bounded concurrent readiness load;
-- mean, p50, p95 and maximum latency;
-- load failure count;
-- canonical indeterminate-receipt reconciliation behavior.
+```text
+tasks = 1
+parallelism = 1
+max_retries = 0
+Direct VPC egress = private-ranges-only
+service account = operator
+```
 
-It deliberately does not include a hidden destructive fault-injection backdoor. Stopping a database, activating the durable emergency stop, or otherwise forcing a deployed failure requires a separate bounded fault-injection authorization.
+The retained canary receipt removes provider response text but retains provider request ID, response digest, latency, usage, cost, ExecutionReceipt and audit counters.
 
-## Full-system convergence findings
+## Private GitHub read canary reconciliation
 
-Resolved before this packet:
+The earlier one-shot private-GitHub canary remains consumed. It exercised the real read-only transport path but did not retain a canonical successful RepositoryContext receipt. Its disposition remains:
 
-1. Canonical `ArtifactState` advances only after a confirmed successful receipt.
-2. `not_started`, `failed`, `cancelled` and `timed_out` receipts do not advance canonical state.
-3. `partially_applied` and `indeterminate` receipts require reconciliation before state can advance.
-4. Dashboard projection no longer describes admitted memory/provider/Postgres surfaces as missing future work.
-5. Visible Nexus dry-run requires an exact hexadecimal evidence revision rather than a mutable branch name.
-6. Direct Python dependencies are exact-pinned to the versions admitted by CI.
-7. Québec foundation and the Nexus runtime/deployment surface now exist in the same release lineage.
-8. The Nexus staging container is buildable and non-root under hosted CI.
+```text
+TRANSPORT PROVEN
+CANONICAL ADMISSION FAILED
+AUTOMATIC RETRY = false
+```
 
-Remaining non-blocking repository debt:
+## Remaining external blockers
 
-- resource-specific state reducers must remain separately reviewed rather than inferring external state from requests;
-- dashboard remains inspection-only and not a production authority surface;
-- legacy historical branches/files remain evidence-bearing and are not proven deletion-safe;
-- a cryptographically hash-locked transitive Python dependency lock is not yet generated.
+The repository no longer lacks a procedure for the remaining release work. It still lacks the **empirical account/runtime receipts** themselves:
 
-## External blockers to actual release
+1. authenticated live confirmation that project `oceanic-base-485407-i7` is linked to billing account `0156E0-2BDD06-7561F1`;
+2. explicit reviewed nonzero CAD staging/canary spend ceiling and current pricing review;
+3. completed GitHub source-control credential preflight;
+4. state-backend bootstrap receipt;
+5. exact Terraform plan and separately authorized successful foundation apply receipt;
+6. real WIF/service-account/resource reconciliation receipt;
+7. exact Montréal runtime DSN and other required secret-version receipts;
+8. completed secure OpenAI project key provisioning and exact regional secret-version receipt;
+9. real regional Cloud Build ID, immutable Artifact Registry digest and no-traffic Cloud Run revision;
+10. successful runtime migration + authenticated health/readiness receipt;
+11. one successful governed Gemini canary receipt;
+12. one successful governed OpenAI canary receipt;
+13. real deployed latency/load/security validation receipt;
+14. any separately authorized fault-injection receipt required by final release review.
 
-The release train still lacks defensible evidence for all of the following:
-
-1. a verified AIGC Google Cloud staging project ID and project number;
-2. an approved billing/project binding and explicit nonzero CAD staging/canary spend authorization;
-3. configured Workload Identity / ADC deployment identity;
-4. completed source-control credential preflight and required Québec review booleans;
-5. exact provisioned Montréal resource names and exact regional Secret Manager numeric versions;
-6. safely injected OpenAI project credential for AIGC runtime;
-7. one controlled live Gemini receipt and one controlled live OpenAI receipt with usage/latency/cost evidence;
-8. actual Cloud Build ID + Artifact Registry digest + Cloud Run no-traffic candidate revision;
-9. actual `/health` and `/ready` staging receipts;
-10. actual deployed load/security validation receipt;
-11. separately authorized controlled fault-injection evidence if deployed failure testing is required for final release.
-
-No placeholder may be promoted into release evidence.
+No placeholder may be promoted into evidence.
 
 ## Release disposition
-
-Current repository implementation state is strong enough for the remaining work to be external/runtime procurement rather than missing architecture:
 
 ```text
 repository_architecture_converged = true
 current_main_ancestry_converged = true
-github_app_boundary_implemented = true
-gemini_adapter_implemented = true
-openai_adapter_implemented = true
-durable_runtime_controls_implemented = true
-quebec_staging_foundation_implemented = true
-nexus_staging_runtime_implemented = true
-immutable_digest_deployment_procedure_implemented = true
-deployed_validation_harness_implemented = true
+external_procurement_implementation = COMPLETE
+keyless_wif_implementation = COMPLETE
+durable_terraform_state_implementation = COMPLETE
+saved_plan_apply_gate = COMPLETE
+regional_secret_versioning_implementation = COMPLETE
+runtime_database_bootstrap_implementation = COMPLETE
+provider_canary_execution_implementation = COMPLETE
+immutable_staging_deployment_implementation = COMPLETE
+deployed_validation_harness = COMPLETE
 local_nexus_container_build = PASS
 
-private_github_transport = PROVEN
-private_github_canonical_read_receipt = FAILED/NOT_RETAINED
+live_google_account_discovery = NOT_EXECUTED
+wif_and_foundation_apply = NOT_EXECUTED
 live_gemini_canary = NOT_EXECUTED
 live_openai_canary = NOT_EXECUTED
 staging_cloud_deployment = NOT_EXECUTED
@@ -232,6 +270,6 @@ merge_authority = false
 
 Therefore:
 
-`RELEASE_GATE_AIGC_NEXUS_V1_FINAL = BLOCKED_ON_EXTERNAL_RUNTIME_EVIDENCE`
+`RELEASE_GATE_AIGC_NEXUS_V1_FINAL = BLOCKED_ONLY_ON_EXTERNAL_RUNTIME_EVIDENCE`
 
-PR #181 MUST remain draft and unmerged until the missing external runtime receipts are obtained or the V1 release scope is formally amended by a separately reviewed governance decision.
+PR #181 MUST remain draft and unmerged until the missing external receipts are obtained or the declared V1 release scope is formally amended by a separately reviewed governance decision.
