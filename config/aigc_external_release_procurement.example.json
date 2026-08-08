@@ -1,0 +1,36 @@
+{
+  "schema_version": "aigc.external-release-procurement.v1",
+  "repository": "Lornt1666/AIGC",
+  "project_id": "oceanic-base-485407-i7",
+  "project_number": "170151535592",
+  "billing_account_id": "0156E0-2BDD06-7561F1",
+  "region": "northamerica-northeast1",
+  "resource_prefix": "aigc-qc-stg",
+  "release_sha": "8fabc6f42d70753ac79c955cf6c0a4b389de5d01",
+  "release_tree_sha": "986d833d751409bd2ed63d886e7cc55ebba5c3a5",
+  "monthly_budget_cad": 0,
+  "budget_notification_channels": [],
+  "provider_canary_spend_cad": 0,
+  "gemini_model": "",
+  "openai_model": "",
+  "pricing": {
+    "gemini_input_cad_per_million": null,
+    "gemini_output_cad_per_million": null,
+    "openai_input_cad_per_million": null,
+    "openai_output_cad_per_million": null
+  },
+  "authority": {
+    "read_only_discovery_authorized": true,
+    "terraform_plan_authorized": false,
+    "resource_creation_authorized": false,
+    "secret_version_creation_authorized": false,
+    "gemini_canary_authorized": false,
+    "openai_canary_authorized": false,
+    "staging_deployment_authorized": false,
+    "load_validation_authorized": false,
+    "fault_injection_authorized": false,
+    "mark_pr_ready_authorized": false,
+    "merge_authorized": false,
+    "production_activation_authorized": false
+  }
+}
