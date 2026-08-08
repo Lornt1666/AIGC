@@ -19,6 +19,7 @@ from scripts.validate_quebec_cloud_authorization import (
 
 REGION = "northamerica-northeast1"
 _DIGEST = re.compile(r"^sha256:[a-f0-9]{64}$")
+_MIGRATION_MARKER = "AIGC_NEXUS_MIGRATION_RECEIPT:"
 
 
 class NexusStagingDeploymentError(RuntimeError):
@@ -84,6 +85,7 @@ def build_plan(payload: dict[str, Any], manifest: dict[str, Any]) -> dict[str, A
         "network": f"{prefix}-vpc",
         "subnet": f"{prefix}-subnet",
         "vpc_egress": "private-ranges-only",
+        "runtime_migration_required": True,
         "health_path": "/health",
         "readiness_path": "/ready",
         "observability_path": "/observability",
@@ -141,6 +143,110 @@ def _candidate_target(*, project: str, service: str) -> dict[str, str]:
     }
 
 
+def _migration_receipt(*, project: str, job_name: str) -> dict[str, Any]:
+    filter_expr = (
+        'resource.type="cloud_run_job" '
+        f'AND resource.labels.job_name="{job_name}" '
+        f'AND textPayload:"{_MIGRATION_MARKER}"'
+    )
+    entries = json.loads(
+        _run(
+            [
+                "gcloud", "logging", "read", filter_expr,
+                "--project", project,
+                "--freshness", "15m",
+                "--limit", "20",
+                "--order", "desc",
+                "--format", "json",
+            ],
+            capture=True,
+        )
+        or "[]"
+    )
+    if not isinstance(entries, list):
+        raise NexusStagingDeploymentError("Cloud Logging returned invalid migration evidence")
+    for entry in entries:
+        text = str(entry.get("textPayload") or "") if isinstance(entry, dict) else ""
+        index = text.find(_MIGRATION_MARKER)
+        if index < 0:
+            continue
+        try:
+            payload = json.loads(text[index + len(_MIGRATION_MARKER):].strip())
+        except json.JSONDecodeError:
+            continue
+        if isinstance(payload, dict) and payload.get("runtime_control_singleton_verified") is True:
+            return payload
+    raise NexusStagingDeploymentError("runtime-control migration receipt was not found")
+
+
+def _run_runtime_migration(
+    *,
+    project: str,
+    prefix: str,
+    immutable_image: str,
+    operator_service_account: str,
+    cloud_sql: str,
+    network: str,
+    subnet: str,
+    runtime_control_dsn_secret_ref: str,
+    release_sha: str,
+) -> dict[str, Any]:
+    job_name = f"{prefix}-migrate-{release_sha[:8]}"
+    with tempfile.NamedTemporaryFile("w", suffix=".yaml", encoding="utf-8", delete=False) as handle:
+        env_path = Path(handle.name)
+        handle.write(
+            "AIGC_NEXUS_RUNTIME_CONTROL_DSN_SECRET_REF: "
+            + json.dumps(runtime_control_dsn_secret_ref)
+            + "\n"
+        )
+    try:
+        _run(
+            [
+                "gcloud", "run", "jobs", "deploy", job_name,
+                "--project", project,
+                "--region", REGION,
+                "--image", immutable_image,
+                "--service-account", operator_service_account,
+                "--tasks", "1",
+                "--parallelism", "1",
+                "--max-retries", "0",
+                "--task-timeout", "180s",
+                "--network", network,
+                "--subnet", subnet,
+                "--vpc-egress", "private-ranges-only",
+                "--set-cloudsql-instances", cloud_sql,
+                "--command", "python",
+                "--args", "-m,src.operations.nexus_postgres_migrate",
+                "--env-vars-file", str(env_path),
+                "--labels", f"aigc-release-sha={release_sha},aigc-purpose=migration",
+                "--quiet",
+            ],
+            mutating=True,
+        )
+        execution_name = _run(
+            [
+                "gcloud", "run", "jobs", "execute", job_name,
+                "--project", project,
+                "--region", REGION,
+                "--wait",
+                "--format", "value(metadata.name)",
+                "--quiet",
+            ],
+            capture=True,
+            mutating=True,
+        )
+    finally:
+        env_path.unlink(missing_ok=True)
+    receipt = _migration_receipt(project=project, job_name=job_name)
+    return {
+        "job_name": job_name,
+        "execution_name": execution_name,
+        "receipt": receipt,
+        "automatic_retry": False,
+        "max_retries": 0,
+    }
+
+
 def deploy(
     payload: dict[str, Any],
     manifest: dict[str, Any],
@@ -159,26 +265,17 @@ def deploy(
     prefix = repository.removesuffix("-runtime")
     network = f"{prefix}-vpc"
     subnet = f"{prefix}-subnet"
+    cloud_sql = f"{project}:{REGION}:{resources['cloud_sql_instance']}"
     image_base = f"{REGION}-docker.pkg.dev/{project}/{repository}/aigc-nexus"
     tagged_image = f"{image_base}:{release_sha}"
 
-    # Read-only existence checks occur before the first cloud mutation.
-    _run([
-        "gcloud", "artifacts", "repositories", "describe", repository,
-        "--project", project, "--location", REGION,
-    ])
-    _run([
-        "gcloud", "sql", "instances", "describe", resources["cloud_sql_instance"],
-        "--project", project,
-    ])
-    _run([
-        "gcloud", "iam", "service-accounts", "describe", accounts["operator"],
-        "--project", project,
-    ])
-    _run([
-        "gcloud", "iam", "service-accounts", "describe", accounts["cloud_build"],
-        "--project", project,
-    ])
+    for command in (
+        ["gcloud", "artifacts", "repositories", "describe", repository, "--project", project, "--location", REGION],
+        ["gcloud", "sql", "instances", "describe", resources["cloud_sql_instance"], "--project", project],
+        ["gcloud", "iam", "service-accounts", "describe", accounts["operator"], "--project", project],
+        ["gcloud", "iam", "service-accounts", "describe", accounts["cloud_build"], "--project", project],
+    ):
+        _run(command)
 
     build_service_account = f"projects/{project}/serviceAccounts/{accounts['cloud_build']}"
     build_id = _run(
@@ -241,9 +338,9 @@ def deploy(
                 "--subnet", subnet,
                 "--vpc-egress", "private-ranges-only",
                 "--env-vars-file", str(env_path),
-                "--add-cloudsql-instances", f"{project}:{REGION}:{resources['cloud_sql_instance']}",
+                "--add-cloudsql-instances", cloud_sql,
                 "--deploy-health-check",
-                "--startup-probe", "httpGet.path=/ready,httpGet.port=8080,timeoutSeconds=2,periodSeconds=5,failureThreshold=24",
+                "--startup-probe", "httpGet.path=/health,httpGet.port=8080,timeoutSeconds=2,periodSeconds=5,failureThreshold=24",
                 "--liveness-probe", "httpGet.path=/health,httpGet.port=8080,timeoutSeconds=2,periodSeconds=10,failureThreshold=3",
                 "--readiness-probe", "httpGet.path=/ready,httpGet.port=8080,timeoutSeconds=2,periodSeconds=5,failureThreshold=3",
                 "--labels", f"aigc-release-sha={release_sha}",
@@ -252,6 +349,18 @@ def deploy(
         )
     finally:
         env_path.unlink(missing_ok=True)
+
+    migration = _run_runtime_migration(
+        project=project,
+        prefix=prefix,
+        immutable_image=immutable_image,
+        operator_service_account=accounts["operator"],
+        cloud_sql=cloud_sql,
+        network=network,
+        subnet=subnet,
+        runtime_control_dsn_secret_ref=refs["runtime_control_dsn"],
+        release_sha=release_sha,
+    )
 
     target = _candidate_target(project=project, service=service)
     if not target["service_url"].startswith("https://") or not target["candidate_url"].startswith("https://"):
@@ -281,6 +390,7 @@ def deploy(
         "network": network,
         "subnet": subnet,
         "vpc_egress": "private-ranges-only",
+        "runtime_migration": migration,
         "health_path": "/health",
         "readiness_path": "/ready",
         "readiness_verified": ready.get("ready") is True,
