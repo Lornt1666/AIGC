@@ -1,9 +1,6 @@
 name: AIGC CI
 
 on:
-  push:
-    branches:
-      - "**"
   pull_request:
     branches:
       - main
@@ -15,7 +12,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     env:
-      REQUESTED_REVISION: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+      REQUESTED_REVISION: ${{ github.event.pull_request.head.sha }}
     steps:
       - name: Checkout exact requested revision
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
@@ -82,22 +79,14 @@ jobs:
             --root . \
             --output "$RUNNER_TEMP/aigc-ci-stage-results/nexus_repository_intelligence_advanced.json"
 
-      - name: Run one-shot private GitHub read canary
-        id: github_read_canary
-        if: ${{ github.event_name == 'pull_request' }}
+      - name: Run single private GitHub read canary
         shell: bash
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          commit_message="$(git log -1 --pretty=%B)"
-          if [[ "$commit_message" != *"[execute-github-read-canary-2]"* ]]; then
-            echo "executed=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
           python scripts/run_nexus_live_github_read_canary.py \
             --output "$RUNNER_TEMP/aigc-ci-stage-results/private_github_read_canary.json"
-          echo "executed=true" >> "$GITHUB_OUTPUT"
 
       - name: Emit exact-head admission receipt
         if: always()
@@ -110,7 +99,8 @@ jobs:
           from datetime import datetime, timezone
           from pathlib import Path
 
-          canary_executed = os.environ.get("PRIVATE_GITHUB_READ_CANARY_EXECUTED", "false").lower() == "true"
+          canary_path = Path(os.environ["RUNNER_TEMP"], "aigc-ci-stage-results", "private_github_read_canary.json")
+          canary_executed = canary_path.exists()
           receipt = {
               "repository": os.environ["GITHUB_REPOSITORY"],
               "pr_number": int(os.environ.get("PR_NUMBER", "0")),
@@ -136,12 +126,11 @@ jobs:
           )
           PY
         env:
-          PR_NUMBER: ${{ github.event.pull_request.number || 0 }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
           REQUESTED_HEAD_SHA: ${{ steps.identity.outputs.requested_head_sha }}
           OBSERVED_HEAD_SHA: ${{ steps.identity.outputs.observed_head_sha }}
           TESTED_TREE_SHA: ${{ steps.tested.outputs.tree_sha }}
-          BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
-          PRIVATE_GITHUB_READ_CANARY_EXECUTED: ${{ steps.github_read_canary.outputs.executed || 'false' }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
           ARTIFACT_NAME: aigc-colosseum-foundation-exact-head-${{ env.REQUESTED_REVISION }}
 
       - name: Upload canonical validation evidence
