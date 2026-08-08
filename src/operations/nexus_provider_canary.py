@@ -38,7 +38,7 @@ class ProviderCanaryPlan(BaseModel):
 
     schema_version: Literal["aigc.nexus-provider-canary.v1"] = "aigc.nexus-provider-canary.v1"
     provider_id: Literal["google_vertex_gemini", "openai_responses"]
-    project_id: str = Field(min_length=6, max_length=30)
+    project_id: str = Field(pattern=r"^[a-z][a-z0-9-]{4,28}[a-z0-9]$")
     location: str = REGION
     model: str = Field(min_length=1, max_length=200)
     exact_revision: str = Field(pattern=r"^[a-f0-9]{40}$")
@@ -58,9 +58,13 @@ class ProviderCanaryPlan(BaseModel):
     def provider_specific_requirements(self) -> "ProviderCanaryPlan":
         if self.location != REGION:
             raise ValueError(f"provider canary location must equal {REGION}")
-        if self.provider_id == "openai_responses" and not self.openai_api_key_secret_ref:
-            raise ValueError("OpenAI canary requires an exact regional API-key secret reference")
-        if self.provider_id == "google_vertex_gemini" and self.openai_api_key_secret_ref is not None:
+        validator = RegionalSecretManagerResolver(client_factory=lambda _endpoint: None)
+        validator.parse_reference(self.runtime_control_dsn_secret_ref)
+        if self.provider_id == "openai_responses":
+            if not self.openai_api_key_secret_ref:
+                raise ValueError("OpenAI canary requires an exact regional API-key secret reference")
+            validator.parse_reference(self.openai_api_key_secret_ref)
+        elif self.openai_api_key_secret_ref is not None:
             raise ValueError("Gemini canary cannot carry an OpenAI secret reference")
         return self
 
@@ -190,7 +194,6 @@ def _adapter(plan: ProviderCanaryPlan, resolver: RegionalSecretManagerResolver):
         )
     if plan.openai_api_key_secret_ref is None:
         raise CanaryConfigurationError("OpenAI secret reference is missing")
-    resolver.parse_reference(plan.openai_api_key_secret_ref)
     return OpenAIResponsesAdapter(
         model=plan.model,
         pricing=pricing,
@@ -210,7 +213,6 @@ def execute_canary(
     _validate_authority(plan, invocation, decision, permit)
 
     resolver = RegionalSecretManagerResolver()
-    resolver.parse_reference(plan.runtime_control_dsn_secret_ref)
     dsn = resolver.resolve_text(plan.runtime_control_dsn_secret_ref)
     try:
         control_store = PostgresRuntimeControlStore(dsn)
@@ -219,13 +221,14 @@ def execute_canary(
 
     adapter = _adapter(plan, resolver)
     registry = ProviderRegistry((adapter,))
+    daily_usage = plan.reserved_usage_units * 2
     limits = ProviderRuntimeLimits(
-        principal_invocations_per_minute=1,
-        principal_invocations_per_day=1,
-        global_invocations_per_minute=1,
-        global_invocations_per_day=1,
-        principal_reserved_usage_per_day=plan.reserved_usage_units,
-        global_reserved_usage_per_day=plan.reserved_usage_units,
+        principal_invocations_per_minute=2,
+        principal_invocations_per_day=2,
+        global_invocations_per_minute=2,
+        global_invocations_per_day=2,
+        principal_reserved_usage_per_day=daily_usage,
+        global_reserved_usage_per_day=daily_usage,
         maximum_usage_per_invocation=plan.reserved_usage_units,
         maximum_cost_cad_per_invocation=plan.maximum_cost_cad,
     )
@@ -243,8 +246,7 @@ def execute_canary(
     )
     result = runtime.execute(invocation, authoritative_now=now, permit=permit)
     safe_attempt = result.attempt.model_copy(update={"response_payload": None})
-    safe_result = result.model_copy(update={"attempt": safe_attempt})
-    return safe_result
+    return result.model_copy(update={"attempt": safe_attempt})
 
 
 def main() -> int:
