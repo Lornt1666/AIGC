@@ -13,6 +13,7 @@ RUN python -m pip install --no-cache-dir --upgrade pip && \
     python -m pip install --no-cache-dir -r /app/requirements.txt
 
 COPY src /app/src
+COPY migrations/003_nexus_provider_runtime_controls.sql /app/migrations/003_nexus_provider_runtime_controls.sql
 
 RUN chown -R aigc:aigc /app
 USER aigc
