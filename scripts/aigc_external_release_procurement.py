@@ -16,6 +16,22 @@ PROJECT_RE = re.compile(r"^[a-z][a-z0-9-]{4,28}[a-z0-9]$")
 PROJECT_NUMBER_RE = re.compile(r"^[1-9][0-9]{5,20}$")
 BILLING_RE = re.compile(r"^[0-9A-F]{6}-[0-9A-F]{6}-[0-9A-F]{6}$")
 SHA_RE = re.compile(r"^[a-f0-9]{40}$")
+AUTHORITY_FLAGS = (
+    "read_only_discovery_authorized",
+    "state_backend_bootstrap_authorized",
+    "terraform_plan_authorized",
+    "resource_creation_authorized",
+    "terraform_apply_authorized",
+    "secret_version_creation_authorized",
+    "gemini_canary_authorized",
+    "openai_canary_authorized",
+    "staging_deployment_authorized",
+    "load_validation_authorized",
+    "fault_injection_authorized",
+    "mark_pr_ready_authorized",
+    "merge_authorized",
+    "production_activation_authorized",
+)
 
 
 class ProcurementError(RuntimeError):
@@ -24,6 +40,18 @@ class ProcurementError(RuntimeError):
 
 class ProcurementMutationIndeterminate(ProcurementError):
     pass
+
+
+def _utc(value: Any, name: str) -> datetime:
+    if not isinstance(value, str) or not value.strip():
+        raise ProcurementError(f"{name} is required for an executable procurement packet")
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise ProcurementError(f"{name} must be ISO-8601") from exc
+    if parsed.tzinfo is None or parsed.utcoffset() is None:
+        raise ProcurementError(f"{name} must include a timezone")
+    return parsed.astimezone(timezone.utc)
 
 
 @dataclass(frozen=True)
@@ -39,7 +67,7 @@ class ExternalReleaseContract:
         contract.validate()
         return contract
 
-    def validate(self) -> None:
+    def validate(self, *, now: datetime | None = None) -> None:
         p = self.payload
         if p.get("schema_version") != "aigc.external-release-procurement.v1":
             raise ProcurementError("unsupported procurement contract")
@@ -66,19 +94,55 @@ class ExternalReleaseContract:
         authority = p.get("authority")
         if not isinstance(authority, dict):
             raise ProcurementError("authority must be an object")
-        if authority.get("production_activation_authorized") is not False:
+        expected_authority_keys = set(AUTHORITY_FLAGS) | {
+            "authorized_by",
+            "authorized_at",
+            "expires_at",
+        }
+        if set(authority) != expected_authority_keys:
+            raise ProcurementError("authority inventory is incomplete or contains unknown fields")
+        for flag in AUTHORITY_FLAGS:
+            if not isinstance(authority.get(flag), bool):
+                raise ProcurementError(f"authority.{flag} must be boolean")
+        if authority["production_activation_authorized"] is not False:
             raise ProcurementError("production activation is prohibited by this procurement contract")
-        if authority.get("merge_authorized") and not authority.get("mark_pr_ready_authorized"):
+        if authority["merge_authorized"] and not authority["mark_pr_ready_authorized"]:
             raise ProcurementError("merge authority requires ready-for-review authority first")
+        if authority["terraform_apply_authorized"] and not authority["resource_creation_authorized"]:
+            raise ProcurementError("Terraform apply authority requires resource-creation authority")
+        if authority["resource_creation_authorized"] and not authority["terraform_plan_authorized"]:
+            raise ProcurementError("resource-creation intent requires Terraform plan authority")
+        if authority["staging_deployment_authorized"] and not authority["resource_creation_authorized"]:
+            raise ProcurementError("staging deployment authority requires foundational resource authority")
+
         if p.get("template_only") is True:
             mutation_flags = [
-                key for key, value in authority.items()
-                if key != "read_only_discovery_authorized" and value is not False
+                key
+                for key in AUTHORITY_FLAGS
+                if key != "read_only_discovery_authorized" and authority[key] is not False
             ]
             if mutation_flags:
                 raise ProcurementError("template-only procurement cannot contain consequential authority")
             if p.get("monthly_budget_cad") != 0 or p.get("provider_canary_spend_cad") != 0:
                 raise ProcurementError("template-only procurement must remain zero-spend")
+            if authority["authorized_by"] not in {"", None}:
+                raise ProcurementError("template-only procurement cannot name an authority actor")
+            if authority["authorized_at"] is not None or authority["expires_at"] is not None:
+                raise ProcurementError("template-only procurement cannot contain an authority window")
+            return
+
+        actor = authority.get("authorized_by")
+        if not isinstance(actor, str) or not actor.strip():
+            raise ProcurementError("authority.authorized_by is required")
+        reference_now = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
+        authorized_at = _utc(authority.get("authorized_at"), "authority.authorized_at")
+        expires_at = _utc(authority.get("expires_at"), "authority.expires_at")
+        if authorized_at > reference_now:
+            raise ProcurementError("external procurement authority starts in the future")
+        if expires_at <= authorized_at:
+            raise ProcurementError("external procurement authority expiry must follow authorization time")
+        if expires_at <= reference_now:
+            raise ProcurementError("external procurement authority is expired")
 
     @property
     def project_id(self) -> str:
@@ -134,7 +198,7 @@ def _require_executable(contract: ExternalReleaseContract) -> None:
         raise ProcurementError("copy the template into a reviewed non-template execution packet first")
 
 
-def _git_identity(contract: ExternalReleaseContract) -> None:
+def assert_git_identity(contract: ExternalReleaseContract) -> None:
     _require_executable(contract)
     observed_sha = _run(["git", "rev-parse", "HEAD"])
     observed_tree = _run(["git", "rev-parse", "HEAD^{tree}"])
@@ -274,6 +338,10 @@ def discover(contract: ExternalReleaseContract) -> dict[str, Any]:
 
 def terraform_inputs(contract: ExternalReleaseContract, manifest: dict[str, Any]) -> dict[str, Any]:
     _require_executable(contract)
+    if contract.authority["terraform_plan_authorized"] is not True:
+        raise ProcurementError("Terraform plan is not authorized")
+    if contract.authority["resource_creation_authorized"] is not True:
+        raise ProcurementError("material Terraform plan requires reviewed resource-creation intent")
     if contract.payload["monthly_budget_cad"] <= 0:
         raise ProcurementError("nonzero reviewed monthly_budget_cad is required before Terraform plan")
     if not contract.payload.get("budget_notification_channels"):
@@ -284,7 +352,7 @@ def terraform_inputs(contract: ExternalReleaseContract, manifest: dict[str, Any]
         "billing_account_id": contract.billing_account_id,
         "region": REGION,
         "resource_prefix": contract.prefix,
-        "resource_creation_authorized": False,
+        "resource_creation_authorized": True,
         "staging_deployment_authorized": False,
         "production_activation_authorized": False,
         "public_access_authorized": False,
@@ -313,8 +381,6 @@ def main() -> int:
     elif args.mode == "discover":
         result = discover(contract)
     else:
-        if contract.authority.get("terraform_plan_authorized") is not True:
-            raise ProcurementError("terraform plan is not authorized")
         result = terraform_inputs(contract, manifest)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, sort_keys=True, indent=2) + "\n", encoding="utf-8")
