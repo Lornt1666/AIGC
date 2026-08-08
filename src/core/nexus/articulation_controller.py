@@ -6,6 +6,7 @@ from decimal import Decimal
 from typing import Protocol
 
 from src.core.epistemic.canonicalization import canonical_json_bytes, canonical_sha256
+from src.core.nexus.contribution_context_projection import build_contribution_context_projection
 from src.domain.nexus.articulation import (
     ArticulationBudget,
     ArticulationMessage,
@@ -13,6 +14,7 @@ from src.domain.nexus.articulation import (
     DialogueLedger,
     DisagreementRecord,
 )
+from src.domain.nexus.contextualization import ContributionContextProjection, RepositoryContext
 from src.domain.nexus.contracts import ContextEnvelope, WorkOrder
 
 
@@ -39,6 +41,7 @@ class ContributionRequest:
     parent_message_ids: tuple[str, ...]
     created_at: datetime
     repository_context_id: str | None = None
+    context_projection: ContributionContextProjection | None = None
 
 
 class ContributionResolver(Protocol):
@@ -86,14 +89,22 @@ class ArticulationResult:
 
 
 class ArticulationController:
-    """Provider-blind deterministic articulation coordinator.
-
-    This controller accepts only a ContributionResolver. It has no provider SDK,
-    repository, credential, network, ToolBroker, or execution dependency.
-    """
+    """Provider-blind deterministic articulation coordinator."""
 
     def __init__(self, resolver: ContributionResolver) -> None:
         self._resolver = resolver
+
+    @staticmethod
+    def _repository_binding(
+        repository_context_id: str | None,
+        repository_context: RepositoryContext | None,
+    ) -> tuple[str | None, ContributionContextProjection | None]:
+        if repository_context is None:
+            return repository_context_id, None
+        if repository_context_id is not None and repository_context_id != repository_context.context_id:
+            raise ValueError("repository_context_id does not match supplied RepositoryContext")
+        projection = build_contribution_context_projection(repository_context=repository_context)
+        return repository_context.context_id, projection
 
     def run_parallel(
         self,
@@ -106,11 +117,14 @@ class ArticulationController:
         participant_b_fixture: str,
         created_at: datetime,
         repository_context_id: str | None = None,
+        repository_context: RepositoryContext | None = None,
     ) -> ArticulationResult:
         self._validate_inputs(work_order, context, budget, created_at)
         if budget.maximum_rounds < 1 or budget.maximum_contributions < 2:
             raise ValueError("parallel articulation requires one round and two contributions")
-
+        repository_context_id, projection = self._repository_binding(
+            repository_context_id, repository_context
+        )
         messages = (
             self._resolve_message(
                 ContributionRequest(
@@ -122,6 +136,7 @@ class ArticulationController:
                     parent_message_ids=(),
                     created_at=created_at,
                     repository_context_id=repository_context_id,
+                    context_projection=projection,
                 )
             ),
             self._resolve_message(
@@ -134,6 +149,7 @@ class ArticulationController:
                     parent_message_ids=(),
                     created_at=created_at + timedelta(seconds=1),
                     repository_context_id=repository_context_id,
+                    context_projection=projection,
                 )
             ),
         )
@@ -163,6 +179,7 @@ class ArticulationController:
         critique_b_fixture: str,
         created_at: datetime,
         repository_context_id: str | None = None,
+        repository_context: RepositoryContext | None = None,
     ) -> ArticulationResult:
         self._validate_inputs(work_order, context, budget, created_at)
         if budget.maximum_rounds < 3:
@@ -171,6 +188,9 @@ class ArticulationController:
             raise ValueError("critique ceremony requires at least five contributions")
         if budget.maximum_elapsed_seconds < 4:
             raise ValueError("critique ceremony exceeds maximum elapsed time")
+        repository_context_id, base_projection = self._repository_binding(
+            repository_context_id, repository_context
+        )
 
         proposal_a = self._resolve_message(
             ContributionRequest(
@@ -182,6 +202,7 @@ class ArticulationController:
                 parent_message_ids=(),
                 created_at=created_at,
                 repository_context_id=repository_context_id,
+                context_projection=base_projection,
             )
         )
         proposal_b = self._resolve_message(
@@ -194,7 +215,18 @@ class ArticulationController:
                 parent_message_ids=(),
                 created_at=created_at + timedelta(seconds=1),
                 repository_context_id=repository_context_id,
+                context_projection=base_projection,
             )
+        )
+        critique_a_projection = build_contribution_context_projection(
+            parent_messages=(proposal_b,),
+            repository_context=repository_context,
+            expected_session_id=session_id,
+        )
+        critique_b_projection = build_contribution_context_projection(
+            parent_messages=(proposal_a,),
+            repository_context=repository_context,
+            expected_session_id=session_id,
         )
         critique_a = self._resolve_message(
             ContributionRequest(
@@ -206,6 +238,7 @@ class ArticulationController:
                 parent_message_ids=(proposal_b.message_id,),
                 created_at=created_at + timedelta(seconds=2),
                 repository_context_id=repository_context_id,
+                context_projection=critique_a_projection,
             )
         )
         critique_b = self._resolve_message(
@@ -218,6 +251,7 @@ class ArticulationController:
                 parent_message_ids=(proposal_a.message_id,),
                 created_at=created_at + timedelta(seconds=3),
                 repository_context_id=repository_context_id,
+                context_projection=critique_b_projection,
             )
         )
         disagreements = self._proposal_disagreements(proposal_a, proposal_b)
@@ -265,7 +299,6 @@ class ArticulationController:
             cost_cad=Decimal("0"),
             content_classification="DERIVED_UNTRUSTED_SYNTHESIS",
         )
-
         messages = (proposal_a, proposal_b, critique_a, critique_b, synthesis)
         return self._result(
             work_order=work_order,
@@ -318,62 +351,30 @@ class ArticulationController:
 
     @staticmethod
     def _build_message(
-        *,
-        session_id: str,
-        round_id: int,
-        provider_id: str,
-        model_label: str,
-        role: str,
-        response_type: str,
-        parent_message_ids: tuple[str, ...],
-        content: str,
-        claim_refs: tuple[str, ...],
-        evidence_refs: tuple[str, ...],
-        repository_context_id: str | None,
-        uncertainty: float,
-        created_at: datetime,
-        accounted_tokens: int,
-        cost_cad: Decimal,
-        content_classification: str,
+        *, session_id: str, round_id: int, provider_id: str, model_label: str,
+        role: str, response_type: str, parent_message_ids: tuple[str, ...],
+        content: str, claim_refs: tuple[str, ...], evidence_refs: tuple[str, ...],
+        repository_context_id: str | None, uncertainty: float, created_at: datetime,
+        accounted_tokens: int, cost_cad: Decimal, content_classification: str,
     ) -> ArticulationMessage:
         identity_payload = {
-            "session_id": session_id,
-            "round_id": round_id,
-            "provider_id": provider_id,
-            "model_label": model_label,
-            "role": role,
-            "response_type": response_type,
-            "parent_message_ids": parent_message_ids,
-            "content": content,
-            "claim_refs": claim_refs,
-            "evidence_refs": evidence_refs,
-            "repository_context_id": repository_context_id,
-            "uncertainty": uncertainty,
-            "created_at": created_at.isoformat(),
-            "accounted_tokens": accounted_tokens,
-            "cost_cad": str(cost_cad),
-            "content_classification": content_classification,
+            "session_id": session_id, "round_id": round_id, "provider_id": provider_id,
+            "model_label": model_label, "role": role, "response_type": response_type,
+            "parent_message_ids": parent_message_ids, "content": content,
+            "claim_refs": claim_refs, "evidence_refs": evidence_refs,
+            "repository_context_id": repository_context_id, "uncertainty": uncertainty,
+            "created_at": created_at.isoformat(), "accounted_tokens": accounted_tokens,
+            "cost_cad": str(cost_cad), "content_classification": content_classification,
         }
         message_id = "ARTMSG-" + canonical_sha256(identity_payload)[:24].upper()
         message = ArticulationMessage(
-            message_id=message_id,
-            session_id=session_id,
-            round_id=round_id,
-            provider_id=provider_id,
-            model_label=model_label,
-            role=role,
-            response_type=response_type,
-            parent_message_ids=parent_message_ids,
-            content=content,
-            claim_refs=claim_refs,
-            evidence_refs=evidence_refs,
-            repository_context_id=repository_context_id,
-            uncertainty=uncertainty,
-            created_at=created_at,
-            accounted_tokens=accounted_tokens,
-            cost_cad=cost_cad,
-            content_classification=content_classification,
-            canonical_hash="0" * 64,
+            message_id=message_id, session_id=session_id, round_id=round_id,
+            provider_id=provider_id, model_label=model_label, role=role,
+            response_type=response_type, parent_message_ids=parent_message_ids,
+            content=content, claim_refs=claim_refs, evidence_refs=evidence_refs,
+            repository_context_id=repository_context_id, uncertainty=uncertainty,
+            created_at=created_at, accounted_tokens=accounted_tokens, cost_cad=cost_cad,
+            content_classification=content_classification, canonical_hash="0" * 64,
         )
         digest = canonical_sha256(message.model_dump(mode="json", exclude={"canonical_hash"}))
         return message.model_copy(update={"canonical_hash": digest})
@@ -388,39 +389,26 @@ class ArticulationController:
         if claim_a == claim_b:
             return ()
         payload = {
-            "message_a": proposal_a.message_id,
-            "message_b": proposal_b.message_id,
-            "claim_a": claim_a,
-            "claim_b": claim_b,
+            "message_a": proposal_a.message_id, "message_b": proposal_b.message_id,
+            "claim_a": claim_a, "claim_b": claim_b,
             "evidence_refs_a": proposal_a.evidence_refs,
             "evidence_refs_b": proposal_b.evidence_refs,
             "uncertainty": max(proposal_a.uncertainty, proposal_b.uncertainty),
-            "resolution_status": "OPEN",
-            "human_decision_required": True,
+            "resolution_status": "OPEN", "human_decision_required": True,
         }
         disagreement_id = "DIS-" + canonical_sha256(payload)[:24].upper()
-        return (
-            DisagreementRecord(
-                disagreement_id=disagreement_id,
-                message_a=proposal_a.message_id,
-                message_b=proposal_b.message_id,
-                claim_a=claim_a,
-                claim_b=claim_b,
-                evidence_refs_a=proposal_a.evidence_refs,
-                evidence_refs_b=proposal_b.evidence_refs,
-                uncertainty=payload["uncertainty"],
-                resolution_status="OPEN",
-                human_decision_required=True,
-            ),
-        )
+        return (DisagreementRecord(
+            disagreement_id=disagreement_id, message_a=proposal_a.message_id,
+            message_b=proposal_b.message_id, claim_a=claim_a, claim_b=claim_b,
+            evidence_refs_a=proposal_a.evidence_refs, evidence_refs_b=proposal_b.evidence_refs,
+            uncertainty=payload["uncertainty"], resolution_status="OPEN",
+            human_decision_required=True,
+        ),)
 
     @staticmethod
     def _synthesis_text(
-        *,
-        proposal_a: ArticulationMessage,
-        proposal_b: ArticulationMessage,
-        critique_a: ArticulationMessage,
-        critique_b: ArticulationMessage,
+        *, proposal_a: ArticulationMessage, proposal_b: ArticulationMessage,
+        critique_a: ArticulationMessage, critique_b: ArticulationMessage,
         disagreements: tuple[DisagreementRecord, ...],
     ) -> str:
         lines = [
@@ -443,46 +431,24 @@ class ArticulationController:
         return max(1, (len(content) + 3) // 4)
 
     def _result(
-        self,
-        *,
-        work_order: WorkOrder,
-        context: ContextEnvelope,
-        session_id: str,
-        mode: str,
-        budget: ArticulationBudget,
-        messages: tuple[ArticulationMessage, ...],
-        disagreements: tuple[DisagreementRecord, ...],
-        status: str,
-        synthesis: str | None,
+        self, *, work_order: WorkOrder, context: ContextEnvelope, session_id: str,
+        mode: str, budget: ArticulationBudget, messages: tuple[ArticulationMessage, ...],
+        disagreements: tuple[DisagreementRecord, ...], status: str, synthesis: str | None,
     ) -> ArticulationResult:
-        ledger = DialogueLedger(
-            session_id=session_id,
-            messages=messages,
-            canonical_hash="0" * 64,
-        )
+        ledger = DialogueLedger(session_id=session_id, messages=messages, canonical_hash="0" * 64)
         ledger_hash = canonical_sha256(ledger.model_dump(mode="json", exclude={"canonical_hash"}))
         ledger = ledger.model_copy(update={"canonical_hash": ledger_hash})
-
         session = ArticulationSession(
-            session_id=session_id,
-            work_order_id=work_order.work_order_id,
-            context_envelope_id=context.context_id,
-            mode=mode,
-            budget=budget,
-            messages=messages,
-            disagreements=disagreements,
-            status=status,
+            session_id=session_id, work_order_id=work_order.work_order_id,
+            context_envelope_id=context.context_id, mode=mode, budget=budget,
+            messages=messages, disagreements=disagreements, status=status,
             canonical_hash="0" * 64,
         )
         session_hash = canonical_sha256(session.model_dump(mode="json", exclude={"canonical_hash"}))
         session = session.model_copy(update={"canonical_hash": session_hash})
-
         return ArticulationResult(
-            session=session,
-            ledger=ledger,
-            synthesis=synthesis,
-            jsonl_transcript=self.to_jsonl(ledger),
-            markdown_transcript=self.to_markdown(ledger),
+            session=session, ledger=ledger, synthesis=synthesis,
+            jsonl_transcript=self.to_jsonl(ledger), markdown_transcript=self.to_markdown(ledger),
         )
 
     @staticmethod
@@ -491,24 +457,13 @@ class ArticulationController:
 
     @staticmethod
     def to_markdown(ledger: DialogueLedger) -> str:
-        lines = [
-            f"# Nexus Articulation Session {ledger.session_id}",
-            "",
-            f"Ledger SHA-256: `{ledger.canonical_hash}`",
-            "",
-        ]
+        lines = [f"# Nexus Articulation Session {ledger.session_id}", "", f"Ledger SHA-256: `{ledger.canonical_hash}`", ""]
         for message in ledger.messages:
-            lines.extend(
-                [
-                    f"## Round {message.round_id} — {message.response_type}",
-                    "",
-                    f"- Provider: `{message.provider_id}`",
-                    f"- Model label: `{message.model_label}`",
-                    f"- Trust: `{message.content_classification}`",
-                    f"- Message hash: `{message.canonical_hash}`",
-                    "",
-                    message.content,
-                    "",
-                ]
-            )
+            lines.extend([
+                f"## Round {message.round_id} — {message.response_type}", "",
+                f"- Provider: `{message.provider_id}`",
+                f"- Model label: `{message.model_label}`",
+                f"- Trust: `{message.content_classification}`",
+                f"- Message hash: `{message.canonical_hash}`", "", message.content, "",
+            ])
         return "\n".join(lines).rstrip() + "\n"
