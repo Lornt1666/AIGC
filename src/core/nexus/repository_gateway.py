@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from hashlib import sha256
+import re
 from typing import Protocol
 
 from src.core.epistemic.canonicalization import canonical_sha256
@@ -13,6 +14,9 @@ from src.domain.nexus.contextualization import (
     RepositoryReadRequest,
 )
 from src.security.redactor import Redactor
+
+
+_EXACT_REVISION = re.compile(r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
 
 
 @dataclass(frozen=True)
@@ -76,8 +80,9 @@ class DeterministicRepositoryReadPort:
 class NexusRepositoryGateway:
     """Provider-neutral read-only repository context builder.
 
-    This foundation has no authority semantics and rejects write-capable ports. External
-    ports are disabled until a separately governed READ_EXTERNAL activation gate.
+    This object never grants authority and never exposes repository mutation. External
+    ports are accepted only by an explicitly constructed policy with external reads
+    enabled; the execution/permit boundary remains outside the gateway.
     """
 
     def __init__(
@@ -110,6 +115,18 @@ class NexusRepositoryGateway:
     @property
     def write_capability_present(self) -> bool:
         return False
+
+    @property
+    def policy_hash(self) -> str:
+        return self._policy_hash
+
+    @property
+    def maximum_response_bytes(self) -> int:
+        return self._policy.maximum_response_bytes
+
+    @property
+    def external_reads_enabled(self) -> bool:
+        return self._policy.external_reads_enabled
 
     def read_context(self, requests: tuple[RepositoryReadRequest, ...]) -> RepositoryContext:
         if not requests:
@@ -145,6 +162,8 @@ class NexusRepositoryGateway:
         repository: str,
         exact_revision: str,
     ) -> None:
+        if not _EXACT_REVISION.fullmatch(request.exact_revision):
+            raise ValueError("repository request requires an exact hexadecimal revision")
         if request.repository not in self._policy.allowed_repositories:
             raise PermissionError("repository is not allowlisted")
         if request.operation not in self._policy.allowed_operations:
