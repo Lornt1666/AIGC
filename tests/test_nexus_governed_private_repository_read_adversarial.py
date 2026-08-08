@@ -291,7 +291,7 @@ def test_raw_hash_revision_and_oversize_failures_never_become_context():
     assert provider.calls == 1
 
 
-def test_credential_like_transport_error_is_redacted_before_executor_surface():
+def test_credential_like_transport_error_is_redacted_and_raw_chain_is_suppressed():
     secret_value = "fixture" + "-secret-value"
     header_name = "Authori" + "zation"
 
@@ -308,8 +308,7 @@ def test_credential_like_transport_error_is_redacted_before_executor_surface():
     with pytest.raises(GovernedRepositoryReadError) as exc_info:
         executor.execute(request(), governance_decision=decision, permit=permit)
     assert secret_value not in str(exc_info.value)
-    assert exc_info.value.__cause__ is not None
-    assert secret_value not in str(exc_info.value.__cause__)
+    assert exc_info.value.__cause__ is None
     assert provider.calls == 1
 
 
