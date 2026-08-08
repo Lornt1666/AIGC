@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://regenexcalibur.invalid/schemas/quebec_deployment_receipt.schema.json",
+  "title": "AIGC Québec Deployment Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "project_id", "region", "release_sha", "release_tree_sha", "ci_run_id", "build_id", "image_digest", "operator_revision", "judge_revision", "public_traffic", "live_model_call_performed", "resource_locations", "captured_at", "receipt_sha256"],
+  "properties": {
+    "schema_version": {"const": "aigc.quebec-deployment-receipt.v1"},
+    "project_id": {"type": "string"},
+    "region": {"const": "northamerica-northeast1"},
+    "release_sha": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "release_tree_sha": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "ci_run_id": {"type": "string"},
+    "build_id": {"type": "string"},
+    "image_digest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "operator_revision": {"type": "string"},
+    "judge_revision": {"type": "string"},
+    "public_traffic": {"const": false},
+    "live_model_call_performed": {"const": false},
+    "resource_locations": {"type": "object"},
+    "captured_at": {"type": "string", "format": "date-time"},
+    "receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}
