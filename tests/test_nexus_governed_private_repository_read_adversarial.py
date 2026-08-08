@@ -241,7 +241,7 @@ def test_unavailable_or_live_credential_resolution_fails_closed_before_adapter()
 
 
 def test_floating_revision_is_rejected_before_mock_provider_call():
-    floating = request(revision="main")
+    floating = request(revision="release/aigc-nexus-v1")
     provider = DeterministicGitHubReadProvider(())
     executor, gateway_policy = make_executor(provider)
     decision, permit = make_authority(floating, gateway_policy)
