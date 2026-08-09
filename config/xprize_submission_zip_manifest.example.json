@@ -1,0 +1,123 @@
+{
+  "schema_version": "aigc.xprize-submission-zip-manifest.v1",
+  "template_only": true,
+  "repository": "Lornt1666/AIGC",
+  "project_id": 1289277,
+  "release_sha": "0000000000000000000000000000000000000000",
+  "output_name": "aigc-xprize-submission-evidence.zip",
+  "entries": [
+    {
+      "path": "docs/devpost/AIGC_XPRIZE_PRE_EXISTING_RESOURCES_DISCLOSURE_V1.md",
+      "archive_path": "01_eligibility/pre_existing_resources.md",
+      "kind": "text",
+      "required": true,
+      "evidence_state": "EVIDENCED",
+      "redaction_reviewed": true,
+      "expected_sha256": null
+    },
+    {
+      "path": "docs/devpost/AIGC_XPRIZE_ENTRANT_IDENTITY_EVIDENCE_V1.md",
+      "archive_path": "01_eligibility/entrant_identity.md",
+      "kind": "text",
+      "required": true,
+      "evidence_state": "EVIDENCED",
+      "redaction_reviewed": true,
+      "expected_sha256": null
+    },
+    {
+      "path": "docs/devpost/AIGC_XPRIZE_CATEGORY_DECISION_V1.md",
+      "archive_path": "02_category/category_decision.md",
+      "kind": "text",
+      "required": true,
+      "evidence_state": "EVIDENCED",
+      "redaction_reviewed": true,
+      "expected_sha256": null
+    },
+    {
+      "path": "evidence/xprize/exact_head_ci_receipt.json",
+      "archive_path": "03_repository/exact_head_ci_receipt.json",
+      "kind": "text",
+      "required": true,
+      "evidence_state": "MISSING",
+      "redaction_reviewed": false,
+      "expected_sha256": null
+    },
+    {
+      "path": "evidence/xprize/gcp_deployment_receipt.json",
+      "archive_path": "04_runtime/gcp_deployment_receipt.json",
+      "kind": "text",
+      "required": true,
+      "evidence_state": "MISSING",
+      "redaction_reviewed": false,
+      "expected_sha256": null
+    },
+    {
+      "path": "evidence/xprize/gemini_runtime_receipt.json",
+      "archive_path": "04_runtime/gemini_runtime_receipt.json",
+      "kind": "text",
+      "required": true,
+      "evidence_state": "MISSING",
+      "redaction_reviewed": false,
+      "expected_sha256": null
+    },
+    {
+      "path": "evidence/xprize/project_running_evidence.pdf",
+      "archive_path": "04_runtime/project_running_evidence.pdf",
+      "kind": "binary",
+      "required": true,
+      "evidence_state": "MISSING",
+      "redaction_reviewed": false,
+      "expected_sha256": null
+    },
+    {
+      "path": "evidence/xprize/profit_and_loss.pdf",
+      "archive_path": "05_finance/profit_and_loss.pdf",
+      "kind": "binary",
+      "required": true,
+      "evidence_state": "MISSING",
+      "redaction_reviewed": false,
+      "expected_sha256": null
+    },
+    {
+      "path": "evidence/xprize/customer_evidence_redacted.pdf",
+      "archive_path": "06_customers/customer_evidence_redacted.pdf",
+      "kind": "binary",
+      "required": true,
+      "evidence_state": "MISSING",
+      "redaction_reviewed": false,
+      "expected_sha256": null
+    },
+    {
+      "path": "docs/devpost/AIGC_XPRIZE_FINAL_CLAIM_EVIDENCE_MATRIX.md",
+      "archive_path": "07_claims/claim_evidence_matrix.md",
+      "kind": "text",
+      "required": true,
+      "evidence_state": "MISSING",
+      "redaction_reviewed": false,
+      "expected_sha256": null
+    },
+    {
+      "path": "docs/devpost/AIGC_XPRIZE_FINAL_ANSWER_SET.md",
+      "archive_path": "08_submission/final_answer_set.md",
+      "kind": "text",
+      "required": true,
+      "evidence_state": "MISSING",
+      "redaction_reviewed": false,
+      "expected_sha256": null
+    },
+    {
+      "path": "docs/devpost/AIGC_XPRIZE_JUDGE_ACCESS_GUIDE.md",
+      "archive_path": "09_judges/judge_access_guide.md",
+      "kind": "text",
+      "required": true,
+      "evidence_state": "MISSING",
+      "redaction_reviewed": false,
+      "expected_sha256": null
+    }
+  ],
+  "authority": {
+    "internal_zip_build_authorized": false,
+    "devpost_upload_authorized": false,
+    "devpost_submission_authorized": false
+  }
+}
