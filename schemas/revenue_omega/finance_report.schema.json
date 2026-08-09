@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aigc:revenue-omega:finance-report:v1",
+  "title": "AIGC Revenue-Ω Finance Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "period",
+    "currency",
+    "pipeline",
+    "contracted",
+    "invoiced",
+    "collected_cash",
+    "refunds",
+    "chargebacks",
+    "gross_cash_after_reversals",
+    "cogs",
+    "marketing_customer_acquisition",
+    "other_operating_expenses",
+    "total_expenses",
+    "contribution_before_tax_and_reserves",
+    "report_hash",
+    "external_action_performed",
+    "accounting_basis_note"
+  ],
+  "properties": {
+    "period": {"type": "string", "minLength": 1},
+    "currency": {"type": "string", "minLength": 3, "maxLength": 3},
+    "pipeline": {"$ref": "#/$defs/money"},
+    "contracted": {"$ref": "#/$defs/money"},
+    "invoiced": {"$ref": "#/$defs/money"},
+    "collected_cash": {"$ref": "#/$defs/money"},
+    "refunds": {"$ref": "#/$defs/money"},
+    "chargebacks": {"$ref": "#/$defs/money"},
+    "gross_cash_after_reversals": {"$ref": "#/$defs/money"},
+    "cogs": {"$ref": "#/$defs/money"},
+    "marketing_customer_acquisition": {"$ref": "#/$defs/money"},
+    "other_operating_expenses": {"$ref": "#/$defs/moneySigned"},
+    "total_expenses": {"$ref": "#/$defs/money"},
+    "contribution_before_tax_and_reserves": {"$ref": "#/$defs/moneySigned"},
+    "report_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "external_action_performed": {"const": false},
+    "accounting_basis_note": {"type": "string", "minLength": 1}
+  },
+  "$defs": {
+    "money": {"type": "string", "pattern": "^[0-9]+\\.[0-9]{2}$"},
+    "moneySigned": {"type": "string", "pattern": "^-?[0-9]+\\.[0-9]{2}$"}
+  }
+}
