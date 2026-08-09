@@ -23,6 +23,25 @@ def test_current_contract_fails_closed_before_final_submission():
     assert 28104 in result.unresolved_field_ids
     assert 27672 in result.unresolved_field_ids
     assert "live_gemini_api_call_evidence" in result.unresolved_deliverables
+    assert "submission_zip_file" in result.unresolved_deliverables
+
+
+def test_required_submission_zip_cannot_be_omitted_from_readiness():
+    value = payload()
+    for field in value["required_fields"]:
+        field["status"] = "EVIDENCED"
+    for key in value["deliverables"]:
+        value["deliverables"][key] = "EVIDENCED"
+    value["deliverables"]["submission_zip_file"] = "MISSING"
+    value["project"]["public_copy_alignment"] = "CURRENT"
+    value["authority"] = {
+        "public_project_update": True,
+        "final_submission_update": True,
+        "devpost_submission": True,
+    }
+    result = evaluate(value)
+    assert result.ready_for_final_submission is False
+    assert "submission_zip_file" in result.unresolved_deliverables
 
 
 def test_all_fields_and_deliverables_are_required_before_final_readiness():
