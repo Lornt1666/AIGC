@@ -1,6 +1,15 @@
-"""AIGC Revenue-Ω governed commercial, jurisdiction, persistence, invoice, and sandbox contracts."""
+"""AIGC Revenue-Ω governed commercial, settlement, sandbox, and finance contracts."""
 
 from .engine import RevenueOmegaEngine
+from .finance_reporting import (
+    ExpenseEvidenceRecord,
+    FinanceReport,
+    FounderAllocationPolicy,
+    FounderAllocationReport,
+    RevenueEvidenceRecord,
+    allocate_founder_and_business_cash,
+    build_finance_report,
+)
 from .invoice_document import InvoiceDocument, InvoiceDocumentRenderer
 from .invoice_lifecycle import (
     InvoiceLifecycle,
@@ -47,6 +56,10 @@ __all__ = [
     "CommercialExecutionPermit",
     "CommissionCalculation",
     "ComputeUsageEvent",
+    "ExpenseEvidenceRecord",
+    "FinanceReport",
+    "FounderAllocationPolicy",
+    "FounderAllocationReport",
     "InvoiceCandidate",
     "InvoiceDocument",
     "InvoiceDocumentRenderer",
@@ -59,6 +72,7 @@ __all__ = [
     "MappingJurisdictionDecisionRepository",
     "PlacementEvent",
     "PostgresRevenueOmegaRepository",
+    "RevenueEvidenceRecord",
     "RevenueOmegaEngine",
     "RevenueOmegaPersistenceConflict",
     "RevenueOmegaPersistenceError",
@@ -71,6 +85,8 @@ __all__ = [
     "SandboxPermitLedger",
     "SandboxWebhook",
     "VerifiedSandboxPaymentReceipt",
+    "allocate_founder_and_business_cash",
+    "build_finance_report",
     "ledger_for_payment_settlement",
     "run_sandbox_proof",
 ]
