@@ -1,6 +1,15 @@
-"""AIGC Revenue-Ω governed commercial, jurisdiction, persistence, and invoice contracts."""
+"""AIGC Revenue-Ω governed commercial, settlement, sandbox, and finance contracts."""
 
 from .engine import RevenueOmegaEngine
+from .finance_reporting import (
+    ExpenseEvidenceRecord,
+    FinanceReport,
+    FounderAllocationPolicy,
+    FounderAllocationReport,
+    RevenueEvidenceRecord,
+    allocate_founder_and_business_cash,
+    build_finance_report,
+)
 from .invoice_document import InvoiceDocument, InvoiceDocumentRenderer
 from .invoice_lifecycle import (
     InvoiceLifecycle,
@@ -22,19 +31,35 @@ from .models import (
     PlacementEvent,
     RevenuePolicy,
 )
+from .permits import CommercialExecutionPermit, SandboxPermitLedger
 from .postgres import (
     BillingReservationResult,
     PostgresRevenueOmegaRepository,
     RevenueOmegaPersistenceConflict,
     RevenueOmegaPersistenceError,
 )
+from .sandbox import (
+    SandboxEmailAdapter,
+    SandboxEmailReceipt,
+    SandboxPaymentAdapter,
+    SandboxPaymentSession,
+    SandboxWebhook,
+    VerifiedSandboxPaymentReceipt,
+)
+from .sandbox_proof import RevenueOmegaSandboxProofReceipt, run_sandbox_proof
+from .settlement import ledger_for_payment_settlement
 
 __all__ = [
     "BillingAuthorizationDecision",
     "BillingReservationResult",
     "CommercialAgreement",
+    "CommercialExecutionPermit",
     "CommissionCalculation",
     "ComputeUsageEvent",
+    "ExpenseEvidenceRecord",
+    "FinanceReport",
+    "FounderAllocationPolicy",
+    "FounderAllocationReport",
     "InvoiceCandidate",
     "InvoiceDocument",
     "InvoiceDocumentRenderer",
@@ -47,8 +72,21 @@ __all__ = [
     "MappingJurisdictionDecisionRepository",
     "PlacementEvent",
     "PostgresRevenueOmegaRepository",
+    "RevenueEvidenceRecord",
     "RevenueOmegaEngine",
     "RevenueOmegaPersistenceConflict",
     "RevenueOmegaPersistenceError",
+    "RevenueOmegaSandboxProofReceipt",
     "RevenuePolicy",
+    "SandboxEmailAdapter",
+    "SandboxEmailReceipt",
+    "SandboxPaymentAdapter",
+    "SandboxPaymentSession",
+    "SandboxPermitLedger",
+    "SandboxWebhook",
+    "VerifiedSandboxPaymentReceipt",
+    "allocate_founder_and_business_cash",
+    "build_finance_report",
+    "ledger_for_payment_settlement",
+    "run_sandbox_proof",
 ]
