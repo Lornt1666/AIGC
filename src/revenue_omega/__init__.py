@@ -1,6 +1,13 @@
-"""AIGC Revenue-Ω governed commercial, jurisdiction, and settlement contracts."""
+"""AIGC Revenue-Ω governed commercial, jurisdiction, persistence, and invoice contracts."""
 
 from .engine import RevenueOmegaEngine
+from .invoice_document import InvoiceDocument, InvoiceDocumentRenderer
+from .invoice_lifecycle import (
+    InvoiceLifecycle,
+    InvoiceStateRecord,
+    InvoiceTransitionEvidence,
+    InvoiceTransitionReceipt,
+)
 from .jurisdiction import (
     JurisdictionDecision,
     JurisdictionDecisionRepository,
@@ -29,6 +36,12 @@ __all__ = [
     "CommissionCalculation",
     "ComputeUsageEvent",
     "InvoiceCandidate",
+    "InvoiceDocument",
+    "InvoiceDocumentRenderer",
+    "InvoiceLifecycle",
+    "InvoiceStateRecord",
+    "InvoiceTransitionEvidence",
+    "InvoiceTransitionReceipt",
     "JurisdictionDecision",
     "JurisdictionDecisionRepository",
     "MappingJurisdictionDecisionRepository",
