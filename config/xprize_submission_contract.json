@@ -2,7 +2,7 @@
   "schema_version": "aigc.xprize-submission-contract.v1",
   "challenge": "Build with Gemini XPRIZE",
   "challenge_slug": "xprize",
-  "requirements_fetched_at": "2026-08-09T09:43:31Z",
+  "requirements_fetched_at": "2026-08-09T15:00:06Z",
   "submission_deadline_utc": "2026-08-17T20:00:00Z",
   "host_time_zone": "Pacific Time (US & Canada)",
   "project": {
@@ -23,6 +23,7 @@
   "deliverables": {
     "github_repo_shared_with_judges": "UNVERIFIED",
     "video_under_three_minutes": "MISSING",
+    "submission_zip_file": "MISSING",
     "ai_operations_narrative_500_1000_words": "PARTIAL",
     "revenue_evidence": "UNVERIFIED",
     "profit_and_loss_evidence": "UNVERIFIED",
