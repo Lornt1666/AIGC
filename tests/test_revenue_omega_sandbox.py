@@ -4,15 +4,14 @@ from decimal import Decimal
 
 import pytest
 
-from src.revenue_omega.engine import RevenueOmegaEngine
-from src.revenue_omega.jurisdiction import JurisdictionDecision, MappingJurisdictionDecisionRepository
-from src.revenue_omega.models import CommercialAgreement, InvoiceCandidate, InvoiceEmailDraft, RevenuePolicy
+from src.revenue_omega.models import InvoiceCandidate, InvoiceEmailDraft
 from src.revenue_omega.permits import CommercialExecutionPermit, SandboxPermitLedger
 from src.revenue_omega.sandbox import SandboxEmailAdapter, SandboxPaymentAdapter
 from src.revenue_omega.sandbox_proof import run_sandbox_proof
 
 
 NOW = datetime(2026, 8, 9, 10, 0, tzinfo=timezone.utc)
+VERIFY_MATERIAL = b"for-tests-revenue-omega-verification-material"
 
 
 def candidate():
@@ -137,10 +136,18 @@ def test_tampered_webhook_signature_fails_closed():
         principal_id="OPERATOR",
         now=NOW,
     )
-    webhook = adapter.sign_settled_webhook(session, signing_secret=b"secret", occurred_at=NOW.isoformat())
+    webhook = adapter.sign_settled_webhook(
+        session,
+        verification_material=VERIFY_MATERIAL,
+        occurred_at=NOW.isoformat(),
+    )
     tampered = replace(webhook, amount=Decimal("1.00"))
     with pytest.raises(PermissionError):
-        adapter.verify_settled_webhook(tampered, session=session, signing_secret=b"secret")
+        adapter.verify_settled_webhook(
+            tampered,
+            session=session,
+            verification_material=VERIFY_MATERIAL,
+        )
 
 
 def test_sandbox_webhook_signature_and_lineage_verify():
@@ -153,8 +160,16 @@ def test_sandbox_webhook_signature_and_lineage_verify():
         principal_id="OPERATOR",
         now=NOW,
     )
-    webhook = adapter.sign_settled_webhook(session, signing_secret=b"secret", occurred_at=NOW.isoformat())
-    verified = adapter.verify_settled_webhook(webhook, session=session, signing_secret=b"secret")
+    webhook = adapter.sign_settled_webhook(
+        session,
+        verification_material=VERIFY_MATERIAL,
+        occurred_at=NOW.isoformat(),
+    )
+    verified = adapter.verify_settled_webhook(
+        webhook,
+        session=session,
+        verification_material=VERIFY_MATERIAL,
+    )
     assert verified.amount == invoice.total
     assert verified.invoice_id == invoice.invoice_candidate_id
     assert verified.external_action_performed is False
