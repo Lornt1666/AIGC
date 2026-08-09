@@ -6,7 +6,7 @@ Status: `LIVE REQUIREMENTS SNAPSHOT — FINAL SUBMISSION BLOCKED`
 
 Bind the current connected Devpost requirements to machine-readable AIGC evidence states so the public project page and final submission cannot outrun the repository/runtime evidence.
 
-Requirements were retrieved from the authenticated Devpost integration on 2026-08-09.
+Requirements were re-fetched from the authenticated Devpost integration on 2026-08-09 at `2026-08-09T15:00:06Z`.
 
 ## Current challenge facts
 
@@ -16,6 +16,9 @@ slug = xprize
 submissions_end = 2026-08-17T20:00:00Z
 host_timezone = Pacific Time (US & Canada)
 current_phase = submissions_open
+video_required = true
+zip_file_required = true
+website_required = false
 ```
 
 Judging criteria:
@@ -46,6 +49,7 @@ The connected host requirements demand evidence covering at least:
 
 - GitHub repository access for the specified judge/testing accounts;
 - three-minute demonstration video;
+- required submission ZIP archive;
 - 500–1000-word description of AI operations and human/AI responsibilities;
 - revenue evidence and simple P&L;
 - hackathon-period expenses including marketing/customer-acquisition spend even when zero;
@@ -57,7 +61,7 @@ The connected host requirements demand evidence covering at least:
 - users acquired and paying-user counts;
 - pre-existing resource disclosure.
 
-The exact required field IDs are versioned in `config/xprize_submission_contract.json`.
+The exact required field IDs and deliverable states are versioned in `config/xprize_submission_contract.json`.
 
 ## Fail-closed validator
 
@@ -66,6 +70,7 @@ The exact required field IDs are versioned in `config/xprize_submission_contract
 ```text
 all required custom fields = EVIDENCED or NOT_APPLICABLE
 all deliverable evidence classes = EVIDENCED or NOT_APPLICABLE
+required submission ZIP = EVIDENCED
 public project copy = CURRENT
 authority.public_project_update = true
 authority.final_submission_update = true
@@ -79,6 +84,7 @@ Evidence alone cannot create submission authority, and authority alone cannot su
 ```text
 judge repository share = UNVERIFIED
 video = MISSING
+submission ZIP = MISSING
 live Google Cloud runtime proof = UNVERIFIED
 live Gemini API call proof = MISSING
 project-running evidence upload = MISSING
@@ -101,6 +107,7 @@ Nexus runtime receipts
 → claim/evidence matrix
 → Devpost field answers
 → redacted uploads
+→ submission ZIP
 → video
 → judge-access verification
 → public project synchronization
