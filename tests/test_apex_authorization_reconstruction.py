@@ -55,7 +55,12 @@ def test_expired_approval_is_not_current_authority():
 
 def test_expired_pending_is_classified_historical_not_current():
     result = reconstruct_authorization_register(
-        [packet(expires_at="2026-08-01T00:00:00+00:00")],
+        [
+            packet(
+                created_at="2026-07-31T00:00:00+00:00",
+                expires_at="2026-08-01T00:00:00+00:00",
+            )
+        ],
         now=NOW,
     )
     assert result.records[0].state == "EXPIRED_PENDING"
