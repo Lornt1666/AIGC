@@ -116,6 +116,76 @@ AIGC marketing/CAC recognized = false
 
 A LinkedIn career subscription must not be relabeled as AIGC marketing/customer-acquisition spend merely because AIGC has employment-oriented use cases. Recognition requires evidence that this exact subscription was incurred for AIGC business/customer acquisition rather than the account holder's personal job search or another purpose.
 
+### FIN-SRC-006 — Vercel Pro + v0 Premium recurring subscriptions
+
+Authenticated Vercel/Stripe receipts and invoices establish two distinct recurring subscriptions in USD during the hackathon window.
+
+#### Pro subscription
+
+```text
+2026-06-06  receipt 2381-7630  invoice 81MS8AUN-0001  period Jun 6-Jul 5   USD 21.00 paid
+2026-07-06  receipt 2336-1598  invoice 81MS8AUN-0004  period Jul 6-Aug 5   USD 21.00 paid
+2026-08-06  receipt 2001-3624  invoice 81MS8AUN-0005  period Aug 6-Sep 5   USD 21.00 paid
+```
+
+Each invoice contains:
+
+```text
+Pro base charge = USD 20.00
+Canada GST/TPS 5% = USD 1.00
+cash total = USD 21.00
+```
+
+The July/August Pro receipts also list two `Observability Plus` line items at USD 0.00 each.
+
+Pro cash paid in the observed hackathon window:
+
+```text
+USD 63.00
+```
+
+#### v0 Premium subscription
+
+```text
+2026-06-16  receipt 2364-9356  invoice WKX6OYGT-0003  period Jun 16-Jul 15  USD 21.00 paid
+2026-07-16  receipt 2863-9099  invoice WKX6OYGT-0004  period Jul 16-Aug 15  USD 21.00 paid
+```
+
+Each v0 Premium invoice contains:
+
+```text
+v0 Premium base charge = USD 20.00
+Canada GST/TPS 5% = USD 1.00
+cash total = USD 21.00
+```
+
+v0 Premium cash paid in the observed hackathon window:
+
+```text
+USD 42.00
+```
+
+Combined Vercel/v0 cash paid:
+
+```text
+USD 105.00
+```
+
+Current attribution state:
+
+```text
+source state = VERIFIED_CASH_PURCHASES
+billing identity = justlornt95-4786 / justlornt95-4786's projects
+AIGC repository reference to Vercel = NONE FOUND
+AIGC-named Vercel project/account evidence = NONE FOUND
+AIGC attribution = POTENTIALLY_ATTRIBUTABLE / UNVERIFIED
+accounting classification = HOSTING_AND_AI_DEVELOPMENT_SUBSCRIPTION_CANDIDATE
+AIGC expense recognized = false
+AIGC COGS recognized = false
+```
+
+Vercel Pro and v0 Premium are plausible software-development/hosting inputs, but their invoices are account-level and do not identify AIGC. The AIGC repository currently contains no `vercel` reference, and authenticated Vercel email search produced no AIGC/Facade/RegenExcalibur project binding. Do not recognize any portion of the USD 105.00 until an operator/business-purpose review or project/account evidence establishes the applicable AIGC allocation.
+
 ## Required follow-up evidence
 
 Before final P&L:
@@ -126,6 +196,7 @@ Google Cloud monthly invoices or zero-dollar/cost-table statements
 Google Cloud project/service cost attribution
 GitHub Actions billed-overage statement if any
 Replit charged receipt/payment evidence + AIGC-purpose allocation
+Vercel/v0 project-purpose evidence or reviewed allocation
 other project-specific receipts/subscriptions/domains/services
 complete revenue/bank/payment-provider evidence
 marketing/customer-acquisition evidence or complete zero-spend review
@@ -143,6 +214,7 @@ FIN-SRC-002 counted in AIGC expenses = false
 GitHub included minutes counted as cash expense = false
 FIN-SRC-004 counted in AIGC expenses = false
 FIN-SRC-005 counted in AIGC expenses = false
+FIN-SRC-006 counted in AIGC expenses = false
 final total expenses = UNRESOLVED
 final COGS = UNRESOLVED
 final marketing/CAC = UNRESOLVED
