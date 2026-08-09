@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from decimal import Decimal
+import hashlib
 
 from .engine import RevenueOmegaEngine
 from .invoice_document import InvoiceDocumentRenderer
@@ -179,16 +180,16 @@ def run_sandbox_proof() -> RevenueOmegaSandboxProofReceipt:
         principal_id="AIGC_SANDBOX_OPERATOR",
         now=proof_time,
     )
-    signing_secret = b"aigc-synthetic-sandbox-signing-secret"
+    verification_material = hashlib.sha256(b"revenue-omega-sandbox-fixture").digest()
     webhook = payment_adapter.sign_settled_webhook(
         session,
-        signing_secret=signing_secret,
+        verification_material=verification_material,
         occurred_at=proof_time_text,
     )
     payment_receipt = payment_adapter.verify_settled_webhook(
         webhook,
         session=session,
-        signing_secret=signing_secret,
+        verification_material=verification_material,
     )
     state, _ = lifecycle.transition(
         state,
