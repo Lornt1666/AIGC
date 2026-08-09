@@ -1,4 +1,4 @@
-"""AIGC Revenue-Ω deterministic commercial and settlement contracts."""
+"""AIGC Revenue-Ω governed commercial, jurisdiction, and settlement contracts."""
 
 from .engine import RevenueOmegaEngine
 from .jurisdiction import (
@@ -15,9 +15,16 @@ from .models import (
     PlacementEvent,
     RevenuePolicy,
 )
+from .postgres import (
+    BillingReservationResult,
+    PostgresRevenueOmegaRepository,
+    RevenueOmegaPersistenceConflict,
+    RevenueOmegaPersistenceError,
+)
 
 __all__ = [
     "BillingAuthorizationDecision",
+    "BillingReservationResult",
     "CommercialAgreement",
     "CommissionCalculation",
     "ComputeUsageEvent",
@@ -26,6 +33,9 @@ __all__ = [
     "JurisdictionDecisionRepository",
     "MappingJurisdictionDecisionRepository",
     "PlacementEvent",
+    "PostgresRevenueOmegaRepository",
     "RevenueOmegaEngine",
+    "RevenueOmegaPersistenceConflict",
+    "RevenueOmegaPersistenceError",
     "RevenuePolicy",
 ]
