@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aigc:revenue-omega:event:v1",
+  "title": "AIGC Revenue-Ω Commercial Event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "event_type",
+    "occurred_at",
+    "aggregate_id",
+    "payload",
+    "evidence_refs",
+    "external_action_performed"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "aigc.revenue-omega-event.v1"
+    },
+    "event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "AGREEMENT_REGISTERED",
+        "PLACEMENT_VERIFIED",
+        "COMPUTE_USAGE_RECORDED",
+        "BILLING_AUTHORIZED",
+        "BILLING_DENIED",
+        "COMMISSION_CALCULATED",
+        "INVOICE_CANDIDATE_CREATED",
+        "INVOICE_APPROVED",
+        "INVOICE_ISSUED",
+        "EMAIL_DELIVERY_RECORDED",
+        "PAYMENT_REQUESTED",
+        "PAYMENT_SETTLED",
+        "PAYMENT_FAILED",
+        "REFUND_RECORDED",
+        "DISPUTE_OPENED",
+        "DISPUTE_RESOLVED",
+        "LEDGER_POSTED"
+      ]
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "aggregate_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "payload": {
+      "type": "object"
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "idempotency_key": {
+      "type": ["string", "null"]
+    },
+    "decision_hash": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "external_action_performed": {
+      "type": "boolean"
+    }
+  }
+}

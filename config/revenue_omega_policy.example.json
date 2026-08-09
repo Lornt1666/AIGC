@@ -1,0 +1,29 @@
+{
+  "schema_version": "aigc.revenue-omega-policy.v1",
+  "template_only": true,
+  "policy_id": "revenue-omega-v1",
+  "currency": "CAD",
+  "placement_payer": "EMPLOYER",
+  "worker_placement_fee_allowed": false,
+  "require_jurisdiction_approval": true,
+  "require_verified_compensation": true,
+  "require_verified_success_event": true,
+  "require_verified_attribution": true,
+  "require_active_agreement": true,
+  "require_invoice_email_verification": true,
+  "maximum_commission_rate": "0.250000",
+  "maximum_compute_markup_rate": "0.500000",
+  "external_authority": {
+    "invoice_email_send": false,
+    "payment_request": false,
+    "payment_collection": false,
+    "refund": false,
+    "payroll_deduction": false,
+    "contract_acceptance": false
+  },
+  "notes": [
+    "Template is configuration evidence only and grants no external authority.",
+    "Ordinary placement pricing is employer-funded by default.",
+    "Jurisdiction approval must be supplied by an accountable commercial/legal review before billing authorization can pass."
+  ]
+}
