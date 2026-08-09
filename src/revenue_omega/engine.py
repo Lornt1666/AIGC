@@ -5,6 +5,7 @@ from dataclasses import asdict
 from decimal import Decimal
 from typing import Iterable
 
+from .jurisdiction import JurisdictionDecision, JurisdictionDecisionRepository
 from .models import (
     BillingAuthorizationDecision,
     CommercialAgreement,
@@ -28,10 +29,19 @@ class RevenueOmegaEngine:
     This class performs no email send, payment, payroll mutation, cloud mutation,
     or other external effect. It calculates, authorizes, and prepares artifacts
     that downstream governed adapters may consume after separate authorization.
+
+    Jurisdiction approval is provenance-bound: when required by policy, the
+    engine resolves an immutable decision from the configured read-only
+    repository. A caller-supplied boolean is never sufficient.
     """
 
-    def __init__(self, policy: RevenuePolicy):
+    def __init__(
+        self,
+        policy: RevenuePolicy,
+        jurisdiction_repository: JurisdictionDecisionRepository | None = None,
+    ):
         self.policy = policy
+        self.jurisdiction_repository = jurisdiction_repository
 
     def billing_idempotency_key(self, agreement: CommercialAgreement, placement: PlacementEvent) -> str:
         seed = "|".join(
@@ -45,6 +55,37 @@ class RevenueOmegaEngine:
         )
         return hashlib.sha256(seed.encode("utf-8")).hexdigest()
 
+    def _resolve_jurisdiction(self, agreement: CommercialAgreement) -> tuple[JurisdictionDecision | None, list[str]]:
+        if not self.policy.require_jurisdiction_approval:
+            return None, []
+
+        reasons: list[str] = []
+        if not agreement.jurisdiction_decision_id:
+            return None, ["JURISDICTION_DECISION_ID_MISSING"]
+        if self.jurisdiction_repository is None:
+            return None, ["JURISDICTION_REPOSITORY_UNAVAILABLE"]
+
+        decision = self.jurisdiction_repository.get(agreement.jurisdiction_decision_id)
+        if decision is None:
+            return None, ["JURISDICTION_DECISION_NOT_PERSISTED"]
+        if not decision.verify_integrity():
+            reasons.append("JURISDICTION_DECISION_HASH_INVALID")
+        try:
+            current = decision.is_current()
+        except ValueError:
+            current = False
+        if not current:
+            reasons.append("JURISDICTION_DECISION_NOT_CURRENT")
+        if decision.jurisdiction != agreement.jurisdiction:
+            reasons.append("JURISDICTION_DECISION_SCOPE_MISMATCH")
+        if decision.service_type != agreement.service_type:
+            reasons.append("JURISDICTION_SERVICE_TYPE_MISMATCH")
+        if decision.payer_model != agreement.payer_model:
+            reasons.append("JURISDICTION_PAYER_MODEL_MISMATCH")
+        if not decision.allowed:
+            reasons.append("JURISDICTION_NOT_APPROVED")
+        return decision, reasons
+
     def authorize_billing(
         self,
         agreement: CommercialAgreement,
@@ -56,14 +97,18 @@ class RevenueOmegaEngine:
 
         if self.policy.placement_payer != "EMPLOYER":
             reasons.append("POLICY_PAYER_NOT_EMPLOYER")
+        if agreement.payer_model != self.policy.placement_payer:
+            reasons.append("AGREEMENT_PAYER_MODEL_MISMATCH")
         if agreement.employer_id != placement.employer_id:
             reasons.append("EMPLOYER_MISMATCH")
         if agreement.agreement_id != placement.agreement_id:
             reasons.append("AGREEMENT_MISMATCH")
         if self.policy.require_active_agreement and not agreement.active:
             reasons.append("AGREEMENT_INACTIVE")
-        if self.policy.require_jurisdiction_approval and not agreement.jurisdiction_approved:
-            reasons.append("JURISDICTION_NOT_APPROVED")
+
+        jurisdiction_decision, jurisdiction_reasons = self._resolve_jurisdiction(agreement)
+        reasons.extend(jurisdiction_reasons)
+
         if agreement.commission_rate > self.policy.maximum_commission_rate:
             reasons.append("COMMISSION_RATE_EXCEEDS_POLICY")
         if agreement.compute_markup_rate > self.policy.maximum_compute_markup_rate:
@@ -85,6 +130,8 @@ class RevenueOmegaEngine:
             "policy_id": self.policy.policy_id,
             "agreement_hash": agreement.agreement_hash,
             "placement_hash": placement.event_hash,
+            "jurisdiction_decision_id": jurisdiction_decision.decision_id if jurisdiction_decision else None,
+            "jurisdiction_decision_hash": jurisdiction_decision.decision_hash if jurisdiction_decision else None,
             "billing_idempotency_key": key,
             "allowed": allowed,
             "reasons": reasons,
@@ -127,7 +174,7 @@ class RevenueOmegaEngine:
             compute_recovery = money(compute_cost * (Decimal("1") + agreement.compute_markup_rate))
         elif agreement.compute_pricing_mode == "INCLUDED_IN_SUCCESS_FEE":
             compute_recovery = money(0)
-        else:  # guarded by CommercialAgreement validation
+        else:
             raise ValueError("unsupported compute pricing mode")
 
         subtotal = money(finder_fee + compute_recovery)

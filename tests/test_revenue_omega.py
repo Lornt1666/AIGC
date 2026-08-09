@@ -1,8 +1,10 @@
+from dataclasses import replace
 from decimal import Decimal
 
 import pytest
 
 from src.revenue_omega.engine import RevenueOmegaEngine
+from src.revenue_omega.jurisdiction import JurisdictionDecision, MappingJurisdictionDecisionRepository
 from src.revenue_omega.models import CommercialAgreement, ComputeUsageEvent, PlacementEvent, RevenuePolicy
 
 
@@ -16,6 +18,29 @@ def policy(**overrides):
     return RevenuePolicy(**values)
 
 
+def jurisdiction_decision(**overrides):
+    values = {
+        "decision_id": "JUR-CA-AB-EMPLOYER-PLACEMENT-V1",
+        "jurisdiction": "CA-AB",
+        "service_type": "EMPLOYMENT_PLACEMENT",
+        "payer_model": "EMPLOYER",
+        "allowed": True,
+        "conditions": ("EMPLOYMENT_AGENCY_LICENCE_VERIFIED", "EMPLOYER_AGREEMENT_ACTIVE"),
+        "reviewed_by": "QUALIFIED_REVIEWER",
+        "reviewed_at": "2026-08-01T00:00:00+00:00",
+        "expires_at": "2099-01-01T00:00:00+00:00",
+        "source_refs": ("ALBERTA_EMPLOYMENT_AGENCY_RULES",),
+    }
+    values.update(overrides)
+    return JurisdictionDecision.create(**values)
+
+
+def engine(*, decision=None, **policy_overrides):
+    decision = decision or jurisdiction_decision()
+    repository = MappingJurisdictionDecisionRepository({decision.decision_id: decision})
+    return RevenueOmegaEngine(policy(**policy_overrides), repository)
+
+
 def agreement(**overrides):
     values = {
         "agreement_id": "AGR-1",
@@ -23,6 +48,9 @@ def agreement(**overrides):
         "jurisdiction": "CA-AB",
         "billing_email": "billing@example.test",
         "commission_rate": Decimal("0.05"),
+        "service_type": "EMPLOYMENT_PLACEMENT",
+        "payer_model": "EMPLOYER",
+        "jurisdiction_decision_id": "JUR-CA-AB-EMPLOYER-PLACEMENT-V1",
         "compute_pricing_mode": "PASS_THROUGH_PLUS_MARGIN",
         "compute_markup_rate": Decimal("0.10"),
         "currency": "CAD",
@@ -67,24 +95,59 @@ def compute(**overrides):
 
 
 def test_exact_verified_employer_placement_is_billable():
-    engine = RevenueOmegaEngine(policy())
-    decision = engine.authorize_billing(agreement(), placement(), billing_email_verified=True)
+    decision = engine().authorize_billing(agreement(), placement(), billing_email_verified=True)
     assert decision.allowed is True
     assert decision.reasons == ()
 
 
-def test_unapproved_jurisdiction_fails_closed():
-    engine = RevenueOmegaEngine(policy())
-    decision = engine.authorize_billing(
-        agreement(jurisdiction_approved=False), placement(), billing_email_verified=True
+def test_caller_supplied_jurisdiction_boolean_is_not_authority():
+    decision = RevenueOmegaEngine(policy()).authorize_billing(
+        agreement(jurisdiction_approved=True), placement(), billing_email_verified=True
     )
+    assert decision.allowed is False
+    assert "JURISDICTION_REPOSITORY_UNAVAILABLE" in decision.reasons
+
+
+def test_nonpersisted_jurisdiction_decision_fails_closed():
+    runtime = RevenueOmegaEngine(policy(), MappingJurisdictionDecisionRepository({}))
+    decision = runtime.authorize_billing(agreement(), placement(), billing_email_verified=True)
+    assert decision.allowed is False
+    assert "JURISDICTION_DECISION_NOT_PERSISTED" in decision.reasons
+
+
+def test_denied_jurisdiction_decision_fails_closed():
+    denied = jurisdiction_decision(allowed=False)
+    decision = engine(decision=denied).authorize_billing(agreement(), placement(), billing_email_verified=True)
     assert decision.allowed is False
     assert "JURISDICTION_NOT_APPROVED" in decision.reasons
 
 
+def test_tampered_jurisdiction_decision_fails_closed():
+    exact = jurisdiction_decision()
+    tampered = replace(exact, decision_hash="0" * 64)
+    decision = engine(decision=tampered).authorize_billing(agreement(), placement(), billing_email_verified=True)
+    assert decision.allowed is False
+    assert "JURISDICTION_DECISION_HASH_INVALID" in decision.reasons
+
+
+def test_expired_jurisdiction_decision_fails_closed():
+    expired = jurisdiction_decision(expires_at="2026-08-02T00:00:00+00:00")
+    decision = engine(decision=expired).authorize_billing(agreement(), placement(), billing_email_verified=True)
+    assert decision.allowed is False
+    assert "JURISDICTION_DECISION_NOT_CURRENT" in decision.reasons
+
+
+def test_jurisdiction_scope_and_payer_must_match_agreement():
+    wrong = jurisdiction_decision(jurisdiction="CA-BC", payer_model="CONTRACT_DEFINED")
+    agr = agreement(jurisdiction="CA-AB", payer_model="EMPLOYER")
+    decision = engine(decision=wrong).authorize_billing(agr, placement(), billing_email_verified=True)
+    assert decision.allowed is False
+    assert "JURISDICTION_DECISION_SCOPE_MISMATCH" in decision.reasons
+    assert "JURISDICTION_PAYER_MODEL_MISMATCH" in decision.reasons
+
+
 def test_unverified_success_or_compensation_fails_closed():
-    engine = RevenueOmegaEngine(policy())
-    decision = engine.authorize_billing(
+    decision = engine().authorize_billing(
         agreement(),
         placement(compensation_verified=False, success_event_verified=False),
         billing_email_verified=True,
@@ -95,30 +158,29 @@ def test_unverified_success_or_compensation_fails_closed():
 
 
 def test_disputed_or_shared_attribution_does_not_auto_bill():
-    engine = RevenueOmegaEngine(policy())
+    runtime = engine()
     for state in ("DISPUTED", "SHARED_ATTRIBUTION", "UNKNOWN", "NOT_ATTRIBUTED"):
-        decision = engine.authorize_billing(agreement(), placement(attribution_status=state), billing_email_verified=True)
+        decision = runtime.authorize_billing(agreement(), placement(attribution_status=state), billing_email_verified=True)
         assert decision.allowed is False
         assert "PLACEMENT_NOT_EXACTLY_ATTRIBUTED" in decision.reasons
 
 
 def test_unverified_billing_email_blocks_delivery_lineage():
-    engine = RevenueOmegaEngine(policy())
-    decision = engine.authorize_billing(agreement(), placement(), billing_email_verified=False)
+    decision = engine().authorize_billing(agreement(), placement(), billing_email_verified=False)
     assert decision.allowed is False
     assert "BILLING_EMAIL_UNVERIFIED" in decision.reasons
 
 
 def test_policy_rate_ceiling_is_enforced():
-    engine = RevenueOmegaEngine(policy(maximum_commission_rate=Decimal("0.04")))
-    decision = engine.authorize_billing(agreement(), placement(), billing_email_verified=True)
+    decision = engine(maximum_commission_rate=Decimal("0.04")).authorize_billing(
+        agreement(), placement(), billing_email_verified=True
+    )
     assert decision.allowed is False
     assert "COMMISSION_RATE_EXCEEDS_POLICY" in decision.reasons
 
 
 def test_finder_fee_and_compute_recovery_are_deterministic():
-    engine = RevenueOmegaEngine(policy())
-    result = engine.calculate_commission(agreement(), placement(), [compute()])
+    result = engine().calculate_commission(agreement(), placement(), [compute()])
     assert result.finder_fee == Decimal("100.00")
     assert result.compute_cost == Decimal("2.00")
     assert result.compute_recovery == Decimal("2.20")
@@ -126,32 +188,31 @@ def test_finder_fee_and_compute_recovery_are_deterministic():
 
 
 def test_compute_usage_for_wrong_placement_is_rejected():
-    engine = RevenueOmegaEngine(policy())
     with pytest.raises(ValueError, match="another placement"):
-        engine.calculate_commission(agreement(), placement(), [compute(placement_id="OTHER")])
+        engine().calculate_commission(agreement(), placement(), [compute(placement_id="OTHER")])
 
 
 def test_invoice_requires_authorized_exact_lineage():
-    engine = RevenueOmegaEngine(policy())
-    calc = engine.calculate_commission(agreement(), placement(), [compute()])
-    denied = engine.authorize_billing(
+    runtime = engine()
+    calc = runtime.calculate_commission(agreement(), placement(), [compute()])
+    denied = runtime.authorize_billing(
         agreement(), placement(success_event_verified=False), billing_email_verified=True
     )
     with pytest.raises(PermissionError):
-        engine.build_invoice_candidate(agreement(), placement(), calc, denied)
+        runtime.build_invoice_candidate(agreement(), placement(), calc, denied)
 
 
 def test_invoice_totals_and_idempotency_are_stable():
-    engine = RevenueOmegaEngine(policy())
+    runtime = engine()
     agr = agreement()
     evt = placement()
-    decision1 = engine.authorize_billing(agr, evt, billing_email_verified=True)
-    decision2 = engine.authorize_billing(agr, evt, billing_email_verified=True)
+    decision1 = runtime.authorize_billing(agr, evt, billing_email_verified=True)
+    decision2 = runtime.authorize_billing(agr, evt, billing_email_verified=True)
     assert decision1.billing_idempotency_key == decision2.billing_idempotency_key
     assert decision1.decision_hash == decision2.decision_hash
 
-    calc = engine.calculate_commission(agr, evt, [compute()])
-    invoice = engine.build_invoice_candidate(
+    calc = runtime.calculate_commission(agr, evt, [compute()])
+    invoice = runtime.build_invoice_candidate(
         agr, evt, calc, decision1, authorized_services="10.00", tax="5.61"
     )
     assert invoice.total == Decimal("117.81")
@@ -160,26 +221,26 @@ def test_invoice_totals_and_idempotency_are_stable():
 
 
 def test_email_rendering_is_a_draft_not_an_external_effect():
-    engine = RevenueOmegaEngine(policy())
+    runtime = engine()
     agr = agreement()
     evt = placement()
-    decision = engine.authorize_billing(agr, evt, billing_email_verified=True)
-    calc = engine.calculate_commission(agr, evt, [compute()])
-    invoice = engine.build_invoice_candidate(agr, evt, calc, decision)
-    draft = engine.render_invoice_email(invoice)
+    decision = runtime.authorize_billing(agr, evt, billing_email_verified=True)
+    calc = runtime.calculate_commission(agr, evt, [compute()])
+    invoice = runtime.build_invoice_candidate(agr, evt, calc, decision)
+    draft = runtime.render_invoice_email(invoice)
     assert draft.recipient == agr.billing_email
     assert draft.external_action_performed is False
     assert "does not send email" in draft.body
 
 
 def test_issued_invoice_ledger_is_balanced():
-    engine = RevenueOmegaEngine(policy())
+    runtime = engine()
     agr = agreement()
     evt = placement()
-    decision = engine.authorize_billing(agr, evt, billing_email_verified=True)
-    calc = engine.calculate_commission(agr, evt, [compute()])
-    invoice = engine.build_invoice_candidate(agr, evt, calc, decision)
-    tx = engine.ledger_for_issued_invoice(invoice)
+    decision = runtime.authorize_billing(agr, evt, billing_email_verified=True)
+    calc = runtime.calculate_commission(agr, evt, [compute()])
+    invoice = runtime.build_invoice_candidate(agr, evt, calc, decision)
+    tx = runtime.ledger_for_issued_invoice(invoice)
     debits = sum(entry.amount for entry in tx.entries if entry.direction == "DEBIT")
     credits = sum(entry.amount for entry in tx.entries if entry.direction == "CREDIT")
     assert debits == credits == invoice.total
