@@ -2,7 +2,7 @@
   "schema_version": "aigc.xprize-submission-contract.v1",
   "challenge": "Build with Gemini XPRIZE",
   "challenge_slug": "xprize",
-  "requirements_fetched_at": "2026-08-09T15:00:06Z",
+  "requirements_fetched_at": "2026-08-09T15:20:21Z",
   "submission_deadline_utc": "2026-08-17T20:00:00Z",
   "host_time_zone": "Pacific Time (US & Canada)",
   "project": {
@@ -20,6 +20,40 @@
     "AI-Native Operations",
     "Category Impact"
   ],
+  "eligibility": {
+    "new_project_after_submission_start": {
+      "status": "PARTIAL",
+      "submission_period_start": "2026-05-19T10:00:00-07:00",
+      "earliest_observed_aigc_repository_baseline": "2026-07-02T15:02:58Z",
+      "competition_specific_pr": 145,
+      "competition_specific_pr_created_at": "2026-07-27T03:56:03Z",
+      "evidence_note": "Dedicated governed Gemini workflow anchor paths were absent at PR #145 base 84d8fbe57e65eb9b93070646934b71863ac5a4db and present on the PR head. This strongly supports a post-start competition-specific build, but final entrant start-date declaration remains separately reviewable."
+    },
+    "pre_existing_work_disclosure": {
+      "status": "PARTIAL",
+      "evidence_document": "docs/devpost/AIGC_XPRIZE_PRE_EXISTING_RESOURCES_DISCLOSURE_V1.md",
+      "evidence_note": "AIGC governance/orchestration foundations are disclosed separately from the competition-specific Gemini opportunity-assessment vertical slice."
+    },
+    "entrant_type_and_representative": {
+      "status": "UNRESOLVED"
+    },
+    "age_and_geographic_eligibility": {
+      "status": "UNRESOLVED"
+    },
+    "organization_size_if_entering_as_organization": {
+      "status": "UNRESOLVED"
+    },
+    "third_party_integration_rights": {
+      "status": "PARTIAL",
+      "evidence_note": "Repository uses open-source and provider integrations; final submission requires an explicit license/terms review for the exact dependency/provider set."
+    },
+    "original_work_and_ip_rights": {
+      "status": "UNVERIFIED"
+    },
+    "no_disqualifying_sponsor_or_administrator_support": {
+      "status": "UNVERIFIED"
+    }
+  },
   "deliverables": {
     "github_repo_shared_with_judges": "UNVERIFIED",
     "video_under_three_minutes": "MISSING",
@@ -35,7 +69,7 @@
     "project_running_upload": "MISSING"
   },
   "required_fields": [
-    {"id": 27415, "key": "project_start_date", "status": "UNRESOLVED"},
+    {"id": 27415, "key": "project_start_date", "status": "PARTIAL"},
     {"id": 27424, "key": "submitter_type", "status": "UNRESOLVED"},
     {"id": 27425, "key": "country_of_residence", "status": "UNRESOLVED"},
     {"id": 27416, "key": "category", "status": "UNRESOLVED"},
