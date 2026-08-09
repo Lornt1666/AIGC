@@ -67,12 +67,15 @@ class CommercialAgreement:
     jurisdiction: str
     billing_email: str
     commission_rate: Decimal
+    service_type: str = "EMPLOYMENT_PLACEMENT"
+    payer_model: str = "EMPLOYER"
+    jurisdiction_decision_id: str = ""
     compensation_base: str = "ELIGIBLE_GROSS_COMPENSATION"
     compute_pricing_mode: str = "PASS_THROUGH_PLUS_MARGIN"
     compute_markup_rate: Decimal = Decimal("0")
     currency: str = "CAD"
     active: bool = True
-    jurisdiction_approved: bool = False
+    jurisdiction_approved: bool = False  # legacy/display-only; engine does not trust this boolean
     starts_at: str = ""
     expires_at: str = ""
     terms_version: str = "v1"
@@ -88,6 +91,8 @@ class CommercialAgreement:
             raise ValueError("commission_rate must be between 0 and 1")
         if self.compute_markup_rate < Decimal("0"):
             raise ValueError("compute_markup_rate cannot be negative")
+        if self.payer_model not in {"EMPLOYER", "MARKETPLACE_CUSTOMER", "CONTRACT_DEFINED"}:
+            raise ValueError("unsupported payer_model")
         if self.compute_pricing_mode not in {
             "ABSORBED_BY_PLATFORM",
             "PASS_THROUGH",
