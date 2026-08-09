@@ -2,7 +2,7 @@
   "schema_version": "aigc.xprize-submission-contract.v1",
   "challenge": "Build with Gemini XPRIZE",
   "challenge_slug": "xprize",
-  "requirements_fetched_at": "2026-08-09T15:20:21Z",
+  "requirements_fetched_at": "2026-08-09T15:25:10Z",
   "submission_deadline_utc": "2026-08-17T20:00:00Z",
   "host_time_zone": "Pacific Time (US & Canada)",
   "project": {
@@ -32,16 +32,28 @@
     "pre_existing_work_disclosure": {
       "status": "PARTIAL",
       "evidence_document": "docs/devpost/AIGC_XPRIZE_PRE_EXISTING_RESOURCES_DISCLOSURE_V1.md",
-      "evidence_note": "AIGC governance/orchestration foundations are disclosed separately from the competition-specific Gemini opportunity-assessment vertical slice."
+      "evidence_note": "AIGC governance/orchestration foundations are disclosed separately from the competition-specific Gemini opportunity-assessment vertical slice. RegenExcalibur business-identity timing remains unresolved pending official registration evidence."
     },
     "entrant_type_and_representative": {
-      "status": "UNRESOLVED"
+      "status": "PARTIAL",
+      "evidence_document": "docs/devpost/AIGC_XPRIZE_ENTRANT_IDENTITY_EVIDENCE_V1.md",
+      "evidence_note": "Authenticated records establish Justice Gray Maciocha as founder/operator of RegenExcalibur, but do not yet justify selecting Individual, Team or Organization or establishing conditional representative authority."
     },
-    "age_and_geographic_eligibility": {
+    "geographic_eligibility": {
+      "status": "EVIDENCED",
+      "country": "Canada",
+      "province_context": "Alberta",
+      "evidence_document": "docs/devpost/AIGC_XPRIZE_ENTRANT_IDENTITY_EVIDENCE_V1.md"
+    },
+    "age_eligibility": {
       "status": "UNRESOLVED"
     },
     "organization_size_if_entering_as_organization": {
       "status": "UNRESOLVED"
+    },
+    "corporate_id_if_entering_as_organization": {
+      "status": "UNRESOLVED",
+      "evidence_note": "Registry replacement request exists; official registration document/identifier is not recovered."
     },
     "third_party_integration_rights": {
       "status": "PARTIAL",
@@ -71,7 +83,7 @@
   "required_fields": [
     {"id": 27415, "key": "project_start_date", "status": "PARTIAL"},
     {"id": 27424, "key": "submitter_type", "status": "UNRESOLVED"},
-    {"id": 27425, "key": "country_of_residence", "status": "UNRESOLVED"},
+    {"id": 27425, "key": "country_of_residence", "status": "EVIDENCED"},
     {"id": 27416, "key": "category", "status": "UNRESOLVED"},
     {"id": 27487, "key": "category_impact_explanation", "status": "PARTIAL"},
     {"id": 28179, "key": "impact_measurement", "status": "UNRESOLVED"},
