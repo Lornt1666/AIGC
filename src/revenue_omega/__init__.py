@@ -1,4 +1,4 @@
-"""AIGC Revenue-Ω governed commercial, jurisdiction, persistence, and invoice contracts."""
+"""AIGC Revenue-Ω governed commercial, jurisdiction, persistence, invoice, and sandbox contracts."""
 
 from .engine import RevenueOmegaEngine
 from .invoice_document import InvoiceDocument, InvoiceDocumentRenderer
@@ -22,17 +22,29 @@ from .models import (
     PlacementEvent,
     RevenuePolicy,
 )
+from .permits import CommercialExecutionPermit, SandboxPermitLedger
 from .postgres import (
     BillingReservationResult,
     PostgresRevenueOmegaRepository,
     RevenueOmegaPersistenceConflict,
     RevenueOmegaPersistenceError,
 )
+from .sandbox import (
+    SandboxEmailAdapter,
+    SandboxEmailReceipt,
+    SandboxPaymentAdapter,
+    SandboxPaymentSession,
+    SandboxWebhook,
+    VerifiedSandboxPaymentReceipt,
+)
+from .sandbox_proof import RevenueOmegaSandboxProofReceipt, run_sandbox_proof
+from .settlement import ledger_for_payment_settlement
 
 __all__ = [
     "BillingAuthorizationDecision",
     "BillingReservationResult",
     "CommercialAgreement",
+    "CommercialExecutionPermit",
     "CommissionCalculation",
     "ComputeUsageEvent",
     "InvoiceCandidate",
@@ -50,5 +62,15 @@ __all__ = [
     "RevenueOmegaEngine",
     "RevenueOmegaPersistenceConflict",
     "RevenueOmegaPersistenceError",
+    "RevenueOmegaSandboxProofReceipt",
     "RevenuePolicy",
+    "SandboxEmailAdapter",
+    "SandboxEmailReceipt",
+    "SandboxPaymentAdapter",
+    "SandboxPaymentSession",
+    "SandboxPermitLedger",
+    "SandboxWebhook",
+    "VerifiedSandboxPaymentReceipt",
+    "ledger_for_payment_settlement",
+    "run_sandbox_proof",
 ]
