@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
+from datetime import datetime
 from decimal import Decimal
 import hashlib
 import hmac
@@ -181,11 +181,11 @@ class SandboxPaymentAdapter:
         self,
         session: SandboxPaymentSession,
         *,
-        signing_secret: bytes,
+        verification_material: bytes,
         occurred_at: str,
     ) -> SandboxWebhook:
-        if not signing_secret:
-            raise ValueError("sandbox signing secret is required")
+        if not verification_material:
+            raise ValueError("sandbox verification material is required")
         event_seed = canonical_sha256(
             {
                 "session_receipt_hash": session.receipt_hash,
@@ -204,7 +204,11 @@ class SandboxPaymentAdapter:
             occurred_at=occurred_at,
             signature="",
         )
-        signature = hmac.new(signing_secret, unsigned.canonical_payload(), hashlib.sha256).hexdigest()
+        signature = hmac.new(
+            verification_material,
+            unsigned.canonical_payload(),
+            hashlib.sha256,
+        ).hexdigest()
         return SandboxWebhook(**{**asdict(unsigned), "signature": signature})
 
     def verify_settled_webhook(
@@ -212,7 +216,7 @@ class SandboxPaymentAdapter:
         webhook: SandboxWebhook,
         *,
         session: SandboxPaymentSession,
-        signing_secret: bytes,
+        verification_material: bytes,
     ) -> VerifiedSandboxPaymentReceipt:
         if webhook.provider != self.provider_name or webhook.event_type != "payment.settled":
             raise PermissionError("unexpected sandbox payment event")
@@ -220,7 +224,11 @@ class SandboxPaymentAdapter:
             raise PermissionError("sandbox webhook session lineage mismatch")
         if money(webhook.amount) != money(session.amount) or webhook.currency != session.currency:
             raise PermissionError("sandbox webhook amount/currency mismatch")
-        expected = hmac.new(signing_secret, webhook.canonical_payload(), hashlib.sha256).hexdigest()
+        expected = hmac.new(
+            verification_material,
+            webhook.canonical_payload(),
+            hashlib.sha256,
+        ).hexdigest()
         if not hmac.compare_digest(expected, webhook.signature):
             raise PermissionError("sandbox webhook signature invalid")
         provider_envelope_hash = hashlib.sha256(
