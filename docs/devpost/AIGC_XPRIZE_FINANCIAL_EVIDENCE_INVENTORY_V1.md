@@ -4,7 +4,7 @@ Status: `SOURCE INVENTORY — NO PROJECT ATTRIBUTION OR ACCOUNTING RECOGNITION I
 
 ## Purpose
 
-Track real hackathon-period financial source records without converting cash movements, prepaid balances, unrelated infrastructure, or unsupported assumptions into AIGC revenue/expense claims.
+Track real hackathon-period financial source records without converting cash movements, prepaid balances, unrelated infrastructure, mixed-use subscriptions, or unsupported assumptions into AIGC revenue/expense claims.
 
 ## Evidence rules
 
@@ -12,6 +12,7 @@ Track real hackathon-period financial source records without converting cash mov
 cash payment != AIGC expense
 prepaid API funding != consumed COGS
 billing-account payment != project attribution
+subscription confirmation != project allocation
 invoice != payment
 payment != revenue attribution
 included/free quota != cash expense
@@ -79,6 +80,42 @@ future overage = NOT AUTHORIZED / NOT EVIDENCED
 
 The included quota is operational resource consumption but is not itself a cash expense. If Actions overage is later authorized and billed, recognize only from actual billing evidence.
 
+### FIN-SRC-004 — Replit Core subscription confirmation
+
+```text
+source = authenticated Apple subscription confirmation
+provider = Replit, Inc. via Apple Canada
+purchase date = 2026-08-04
+subscription = Replit Core
+stated renewal price = $25.00/month
+source state = PURCHASE_CONFIRMED / SEPARATE TAX RECEIPT_NOT_FOUND
+AIGC attribution = POTENTIALLY_ATTRIBUTABLE / UNVERIFIED
+accounting classification = SOFTWARE_SUBSCRIPTION_CANDIDATE
+AIGC expense recognized = false
+AIGC COGS recognized = false
+```
+
+Replit is a plausible development tool for AIGC, but the source currently proves only the subscription purchase/renewal price. Before recognition, require the actual charged receipt/payment evidence and an operator/business-purpose allocation to AIGC for the competition period.
+
+### FIN-SRC-005 — LinkedIn Premium Career receipt
+
+```text
+source = authenticated Apple receipt
+provider = LinkedIn via Apple Canada
+receipt date = 2026-07-15
+subtotal = CA$49.99
+GST/HST = CA$2.50
+cash total = CA$52.49
+order id = MVL9HD9TT6
+source state = VERIFIED_CASH_PURCHASE
+AIGC attribution = UNVERIFIED / LIKELY_MIXED_OR_PERSONAL
+accounting classification = DO_NOT_RECOGNIZE_WITHOUT_AIGC_PURPOSE_EVIDENCE
+AIGC expense recognized = false
+AIGC marketing/CAC recognized = false
+```
+
+A LinkedIn career subscription must not be relabeled as AIGC marketing/customer-acquisition spend merely because AIGC has employment-oriented use cases. Recognition requires evidence that this exact subscription was incurred for AIGC business/customer acquisition rather than the account holder's personal job search or another purpose.
+
 ## Required follow-up evidence
 
 Before final P&L:
@@ -88,6 +125,7 @@ OpenAI provider billing/usage history for the hackathon period
 Google Cloud monthly invoices or zero-dollar/cost-table statements
 Google Cloud project/service cost attribution
 GitHub Actions billed-overage statement if any
+Replit charged receipt/payment evidence + AIGC-purpose allocation
 other project-specific receipts/subscriptions/domains/services
 complete revenue/bank/payment-provider evidence
 marketing/customer-acquisition evidence or complete zero-spend review
@@ -103,6 +141,9 @@ Until source attribution and recognition are complete:
 FIN-SRC-001 counted in AIGC expenses = false
 FIN-SRC-002 counted in AIGC expenses = false
 GitHub included minutes counted as cash expense = false
+FIN-SRC-004 counted in AIGC expenses = false
+FIN-SRC-005 counted in AIGC expenses = false
 final total expenses = UNRESOLVED
 final COGS = UNRESOLVED
+final marketing/CAC = UNRESOLVED
 ```
