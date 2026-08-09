@@ -21,6 +21,13 @@ ALLOWED_DELIVERABLE_STATES = FINAL_DELIVERABLE_STATES | {
     "UNVERIFIED",
     "MISSING",
 }
+FINAL_ELIGIBILITY_STATES = {"EVIDENCED", "NOT_APPLICABLE"}
+ALLOWED_ELIGIBILITY_STATES = FINAL_ELIGIBILITY_STATES | {
+    "UNRESOLVED",
+    "PARTIAL",
+    "UNVERIFIED",
+    "MISSING",
+}
 
 
 @dataclass(frozen=True)
@@ -28,6 +35,7 @@ class SubmissionContractEvaluation:
     ready_for_final_submission: bool
     unresolved_field_ids: tuple[int, ...]
     unresolved_deliverables: tuple[str, ...]
+    unresolved_eligibility: tuple[str, ...]
     stale_public_project_copy: bool
     authority_granted: bool
 
@@ -40,6 +48,7 @@ def evaluate(payload: Mapping[str, Any]) -> SubmissionContractEvaluation:
         "submission_deadline_utc",
         "project",
         "judging_criteria",
+        "eligibility",
         "deliverables",
         "required_fields",
         "authority",
@@ -49,6 +58,20 @@ def evaluate(payload: Mapping[str, Any]) -> SubmissionContractEvaluation:
         raise ValueError("missing submission-contract keys: " + ", ".join(missing))
     if payload["schema_version"] != "aigc.xprize-submission-contract.v1":
         raise ValueError("unsupported submission contract schema_version")
+
+    eligibility = payload["eligibility"]
+    if not isinstance(eligibility, Mapping):
+        raise ValueError("eligibility must be an object")
+    unresolved_eligibility: list[str] = []
+    for name, value in eligibility.items():
+        if isinstance(value, Mapping):
+            state = str(value.get("status", ""))
+        else:
+            state = str(value)
+        if state not in ALLOWED_ELIGIBILITY_STATES:
+            raise ValueError(f"unsupported eligibility state for {name}: {state}")
+        if state not in FINAL_ELIGIBILITY_STATES:
+            unresolved_eligibility.append(str(name))
 
     fields = payload["required_fields"]
     if not isinstance(fields, list):
@@ -93,7 +116,8 @@ def evaluate(payload: Mapping[str, Any]) -> SubmissionContractEvaluation:
     )
 
     ready = (
-        not unresolved_field_ids
+        not unresolved_eligibility
+        and not unresolved_field_ids
         and not unresolved_deliverables
         and not stale
         and authority_granted
@@ -102,6 +126,7 @@ def evaluate(payload: Mapping[str, Any]) -> SubmissionContractEvaluation:
         ready_for_final_submission=ready,
         unresolved_field_ids=tuple(sorted(unresolved_field_ids)),
         unresolved_deliverables=tuple(sorted(unresolved_deliverables)),
+        unresolved_eligibility=tuple(sorted(unresolved_eligibility)),
         stale_public_project_copy=stale,
         authority_granted=authority_granted,
     )
@@ -117,6 +142,7 @@ def main() -> int:
         "ready_for_final_submission": result.ready_for_final_submission,
         "unresolved_field_ids": result.unresolved_field_ids,
         "unresolved_deliverables": result.unresolved_deliverables,
+        "unresolved_eligibility": result.unresolved_eligibility,
         "stale_public_project_copy": result.stale_public_project_copy,
         "authority_granted": result.authority_granted,
         "external_action_performed": False,
