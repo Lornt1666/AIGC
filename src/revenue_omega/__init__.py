@@ -10,14 +10,24 @@ from .models import (
     PlacementEvent,
     RevenuePolicy,
 )
+from .postgres import (
+    BillingReservationResult,
+    PostgresRevenueOmegaRepository,
+    RevenueOmegaPersistenceConflict,
+    RevenueOmegaPersistenceError,
+)
 
 __all__ = [
     "BillingAuthorizationDecision",
+    "BillingReservationResult",
     "CommercialAgreement",
     "CommissionCalculation",
     "ComputeUsageEvent",
     "InvoiceCandidate",
     "PlacementEvent",
+    "PostgresRevenueOmegaRepository",
     "RevenueOmegaEngine",
+    "RevenueOmegaPersistenceConflict",
+    "RevenueOmegaPersistenceError",
     "RevenuePolicy",
 ]
