@@ -57,7 +57,10 @@
     },
     "third_party_integration_rights": {
       "status": "PARTIAL",
-      "evidence_note": "Repository uses open-source and provider integrations; final submission requires an explicit license/terms review for the exact dependency/provider set."
+      "direct_dependency_licenses": "EVIDENCED",
+      "evidence_document": "docs/devpost/AIGC_XPRIZE_THIRD_PARTY_RIGHTS_INVENTORY_V1.md",
+      "license_manifest": "config/xprize_direct_dependency_licenses.json",
+      "evidence_note": "All eight direct pinned Gemini dependencies are license-mapped with zero unknown direct licenses. Transitive dependency licenses, provider terms, content/media rights, notices and final redistribution configuration remain unresolved."
     },
     "original_work_and_ip_rights": {
       "status": "UNVERIFIED"
@@ -78,7 +81,8 @@
     "customer_evidence": "UNVERIFIED",
     "google_cloud_usage_evidence": "UNVERIFIED",
     "live_gemini_api_call_evidence": "MISSING",
-    "project_running_upload": "MISSING"
+    "project_running_upload": "MISSING",
+    "claim_evidence_matrix": "PARTIAL"
   },
   "required_fields": [
     {"id": 27415, "key": "project_start_date", "status": "PARTIAL", "candidate_value": "07-26-26", "evidence_note": "PR #145 opened 2026-07-27T03:56:03Z, equivalent to 2026-07-26 21:56 in America/Edmonton. Use only if no earlier truthful dedicated-project start is evidenced."},
