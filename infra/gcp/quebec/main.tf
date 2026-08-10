@@ -14,6 +14,8 @@ locals {
     "artifactregistry.googleapis.com",
     "cloudbuild.googleapis.com",
     "compute.googleapis.com",
+    "containeranalysis.googleapis.com",
+    "containerscanning.googleapis.com",
     "iam.googleapis.com",
     "iamcredentials.googleapis.com",
     "logging.googleapis.com",
@@ -39,11 +41,14 @@ locals {
     network             = "${var.resource_prefix}-vpc"
     subnet              = "${var.resource_prefix}-subnet"
     artifact_repository = "${var.resource_prefix}-runtime"
+    operator_service    = "${var.resource_prefix}-operator"
+    judge_service       = "${var.resource_prefix}-judge"
     sql_instance        = "${var.resource_prefix}-control"
     database            = "aigc_control"
     evidence_bucket     = "${var.project_id}-${var.resource_prefix}-evidence"
     judge_bucket        = "${var.project_id}-${var.resource_prefix}-judge"
     receipt_bucket      = "${var.project_id}-${var.resource_prefix}-receipts"
+    build_source_bucket = "${var.project_id}-${var.resource_prefix}-build-source"
     log_bucket          = "${var.resource_prefix}-logs"
     kms_key_ring        = "${var.resource_prefix}-keys"
   }
@@ -61,6 +66,30 @@ locals {
       account_id   = "${var.resource_prefix}-operator"
       display_name = "AIGC Québec operator runtime"
     }
+    canary_gemini = {
+      account_id   = "${var.resource_prefix}-can-gem"
+      display_name = "AIGC Québec Gemini canary runtime"
+    }
+    canary_openai = {
+      account_id   = "${var.resource_prefix}-can-oai"
+      display_name = "AIGC Québec OpenAI canary runtime"
+    }
+    canary_provisioner = {
+      account_id   = "${var.resource_prefix}-can-prov"
+      display_name = "AIGC Québec governed canary job provisioner"
+    }
+    canary_binder = {
+      account_id   = "${var.resource_prefix}-can-bind"
+      display_name = "AIGC Québec exact-job canary IAM binder"
+    }
+    canary_executor = {
+      account_id   = "${var.resource_prefix}-can-exec"
+      display_name = "AIGC Québec governed canary job executor"
+    }
+    canary_publisher = {
+      account_id   = "${var.resource_prefix}-can-pub"
+      display_name = "AIGC Québec create-only canary receipt publisher"
+    }
     judge = {
       account_id   = "${var.resource_prefix}-judge"
       display_name = "AIGC Québec judge runtime"
@@ -69,26 +98,10 @@ locals {
       account_id   = "${var.resource_prefix}-security"
       display_name = "AIGC Québec security review"
     }
-  }
-}
-
-check "staging_authority_boundary" {
-  assert {
-    condition = (
-      var.production_activation_authorized == false &&
-      var.public_access_authorized == false &&
-      var.live_model_call_authorized == false &&
-      var.cross_region_replication_authorized == false &&
-      var.service_account_key_creation_authorized == false
-    )
-    error_message = "The Québec staging authority boundary was violated."
-  }
-}
-
-check "deployment_requires_foundation" {
-  assert {
-    condition     = !var.staging_deployment_authorized || var.resource_creation_authorized
-    error_message = "Staging deployment cannot be authorized before foundational resource creation."
+    authority_signer = {
+      account_id   = "${var.resource_prefix}-signer"
+      display_name = "AIGC Québec canary authority signer"
+    }
   }
 }
 
@@ -147,8 +160,18 @@ resource "google_artifact_registry_repository_iam_member" "deployer_reader" {
   project    = var.project_id
   location   = var.region
   repository = google_artifact_registry_repository.runtime[0].name
-  role       = "roles/artifactregistry.reader"
+  role       = google_project_iam_custom_role.sbom_image_reader[0].name
   member     = "serviceAccount:${google_service_account.identity["deployer"].email}"
+}
+
+resource "google_artifact_registry_repository_iam_member" "canary_provisioner_image_reader" {
+  count = local.create_resources ? 1 : 0
+
+  project    = var.project_id
+  location   = var.region
+  repository = google_artifact_registry_repository.runtime[0].name
+  role       = google_project_iam_custom_role.canary_image_reader[0].name
+  member     = "serviceAccount:${google_service_account.identity["canary_provisioner"].email}"
 }
 
 // --- network.tf ---
@@ -172,6 +195,16 @@ resource "google_compute_subnetwork" "serverless" {
   network                  = google_compute_network.main[0].id
   ip_cidr_range            = "10.70.0.0/24"
   private_ip_google_access = true
+}
+
+resource "google_compute_subnetwork_iam_member" "canary_provisioner_subnetwork_user" {
+  count = local.create_resources ? 1 : 0
+
+  project    = var.project_id
+  region     = var.region
+  subnetwork = google_compute_subnetwork.serverless[0].name
+  role       = google_project_iam_custom_role.canary_subnetwork_user[0].name
+  member     = "serviceAccount:${google_service_account.identity["canary_provisioner"].email}"
 }
 
 resource "google_compute_global_address" "private_services" {
@@ -258,6 +291,7 @@ resource "google_storage_bucket" "regional" {
     evidence = local.names.evidence_bucket
     judge    = local.names.judge_bucket
     receipts = local.names.receipt_bucket
+    build    = local.names.build_source_bucket
   } : {}
 
   project                     = var.project_id
@@ -351,6 +385,61 @@ resource "google_kms_crypto_key" "database" {
   }
 }
 
+resource "google_kms_crypto_key" "canary_authority" {
+  count = local.create_resources ? 1 : 0
+
+  name                          = "${var.resource_prefix}-canary-authority"
+  key_ring                      = google_kms_key_ring.main[0].id
+  purpose                       = "ASYMMETRIC_SIGN"
+  skip_initial_version_creation = true
+
+  version_template {
+    algorithm        = "RSA_SIGN_PSS_2048_SHA256"
+    protection_level = "SOFTWARE"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "google_kms_crypto_key_version" "canary_authority_v1" {
+  count = local.create_resources ? 1 : 0
+
+  crypto_key       = google_kms_crypto_key.canary_authority[0].id
+  algorithm        = "RSA_SIGN_PSS_2048_SHA256"
+  protection_level = "SOFTWARE"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "google_kms_crypto_key_iam_member" "canary_authority_signer" {
+  count = local.create_resources ? 1 : 0
+
+  crypto_key_id = google_kms_crypto_key.canary_authority[0].id
+  role          = "roles/cloudkms.signer"
+  member        = "serviceAccount:${google_service_account.identity["authority_signer"].email}"
+}
+
+resource "google_kms_crypto_key_iam_member" "canary_authority_public_key_viewer" {
+  for_each = local.create_resources ? {
+    authority_signer   = google_service_account.identity["authority_signer"].email
+    deployer           = google_service_account.identity["deployer"].email
+    canary_gemini      = google_service_account.identity["canary_gemini"].email
+    canary_openai      = google_service_account.identity["canary_openai"].email
+    canary_provisioner = google_service_account.identity["canary_provisioner"].email
+    canary_binder      = google_service_account.identity["canary_binder"].email
+    canary_executor    = google_service_account.identity["canary_executor"].email
+    canary_publisher   = google_service_account.identity["canary_publisher"].email
+  } : {}
+
+  crypto_key_id = google_kms_crypto_key.canary_authority[0].id
+  role          = "roles/cloudkms.publicKeyViewer"
+  member        = "serviceAccount:${each.value}"
+}
+
 // --- logging.tf ---
 resource "google_logging_project_bucket_config" "regional" {
   count = local.create_resources ? 1 : 0
@@ -381,12 +470,22 @@ resource "google_project_iam_member" "log_sink_writer" {
 }
 
 // --- iam.tf ---
-resource "google_project_iam_member" "operator_vertex" {
+resource "google_project_iam_custom_role" "canary_gemini_predict" {
+  count = local.create_resources ? 1 : 0
+
+  project     = var.project_id
+  role_id     = "${replace(var.resource_prefix, "-", "_")}_canary_predict"
+  title       = "AIGC Gemini canary predictor"
+  description = "Perform one governed Gemini prompt request; excludes model, endpoint, tuning, and dataset management."
+  permissions = ["aiplatform.endpoints.predict"]
+}
+
+resource "google_project_iam_member" "canary_gemini_vertex" {
   count = local.create_resources ? 1 : 0
 
   project = var.project_id
-  role    = "roles/aiplatform.user"
-  member  = "serviceAccount:${google_service_account.identity["operator"].email}"
+  role    = google_project_iam_custom_role.canary_gemini_predict[0].name
+  member  = "serviceAccount:${google_service_account.identity["canary_gemini"].email}"
 }
 
 resource "google_project_iam_member" "operator_sql_client" {
@@ -397,10 +496,23 @@ resource "google_project_iam_member" "operator_sql_client" {
   member  = "serviceAccount:${google_service_account.identity["operator"].email}"
 }
 
+resource "google_project_iam_member" "canary_sql_client" {
+  for_each = local.create_resources ? {
+    canary_gemini = google_service_account.identity["canary_gemini"].email
+    canary_openai = google_service_account.identity["canary_openai"].email
+  } : {}
+
+  project = var.project_id
+  role    = "roles/cloudsql.client"
+  member  = "serviceAccount:${each.value}"
+}
+
 resource "google_project_iam_member" "runtime_logging" {
   for_each = local.create_resources ? {
-    operator = google_service_account.identity["operator"].email
-    judge    = google_service_account.identity["judge"].email
+    operator      = google_service_account.identity["operator"].email
+    judge         = google_service_account.identity["judge"].email
+    canary_gemini = google_service_account.identity["canary_gemini"].email
+    canary_openai = google_service_account.identity["canary_openai"].email
   } : {}
 
   project = var.project_id
@@ -417,30 +529,6 @@ resource "google_project_iam_member" "runtime_metrics" {
   project = var.project_id
   role    = "roles/monitoring.metricWriter"
   member  = "serviceAccount:${each.value}"
-}
-
-resource "google_project_iam_member" "deployer_run_developer" {
-  count = local.create_resources ? 1 : 0
-
-  project = var.project_id
-  role    = "roles/run.developer"
-  member  = "serviceAccount:${google_service_account.identity["deployer"].email}"
-}
-
-resource "google_service_account_iam_member" "deployer_uses_operator" {
-  count = local.create_resources ? 1 : 0
-
-  service_account_id = google_service_account.identity["operator"].name
-  role               = "roles/iam.serviceAccountUser"
-  member             = "serviceAccount:${google_service_account.identity["deployer"].email}"
-}
-
-resource "google_service_account_iam_member" "deployer_uses_judge" {
-  count = local.create_resources ? 1 : 0
-
-  service_account_id = google_service_account.identity["judge"].name
-  role               = "roles/iam.serviceAccountUser"
-  member             = "serviceAccount:${google_service_account.identity["deployer"].email}"
 }
 
 // --- budgets.tf ---
@@ -474,40 +562,21 @@ resource "google_billing_budget" "staging" {
 
   all_updates_rule {
     monitoring_notification_channels = var.budget_notification_channels
-    disable_default_iam_recipients    = false
+    disable_default_iam_recipients   = false
   }
-}
 
-// --- secret_references.tf ---
-locals {
-  required_secret_purposes = toset([
-    "runtime_control_dsn",
-    "operator_token",
-    "operator_binding_key",
-    "runtime_admin_token",
-    "runtime_admin_binding_key",
-    "judge_token",
-    "judge_binding_key",
-  ])
-}
-
-check "exact_regional_secret_versions" {
-  assert {
-    condition = !var.staging_deployment_authorized || (
-      setequals(toset(keys(var.exact_secret_version_refs)), local.required_secret_purposes) &&
-      alltrue([
-        for reference in values(var.exact_secret_version_refs) :
-        startswith(reference, "projects/${var.project_id}/locations/${var.region}/secrets/") &&
-        !endswith(reference, "/versions/latest")
-      ])
-    )
-    error_message = "Deployment requires one exact numeric Montréal secret version for every governed purpose."
+  lifecycle {
+    precondition {
+      condition     = length(var.budget_notification_channels) > 0
+      error_message = "A material staging budget requires a reviewed notification channel."
+    }
   }
 }
 
 // --- cloud_run.tf ---
 # Cloud Run services are intentionally not created by this foundation root.
-# PR #170 contains the governed immutable-digest deployment procedure that must:
+# The exact PR/head in the authorization receipt controls the governed
+# immutable-digest deployment procedure, which must:
 # - build in northamerica-northeast1;
 # - deploy separate operator and judge candidates;
 # - keep unauthenticated access disabled;
@@ -517,17 +586,8 @@ check "exact_regional_secret_versions" {
 #
 # This separation prevents Terraform foundation authorization from silently
 # becoming application deployment authority.
-
-check "cloud_run_deployment_separation" {
-  assert {
-    condition = (
-      var.public_access_authorized == false &&
-      var.live_model_call_authorized == false &&
-      var.production_activation_authorized == false
-    )
-    error_message = "Cloud Run deployment authority exceeded the staging boundary."
-  }
-}
+# Blocking variable validations keep public access, provider calls, and
+# production activation false independently of this descriptive boundary.
 
 // --- monitoring.tf ---
 # Monitoring policies are created after exact metric names, notification channels,
@@ -535,10 +595,3 @@ check "cloud_run_deployment_separation" {
 # authentication failures, IAM changes, budget thresholds, unusual egress,
 # Cloud Run 5xx rate, emergency-stop changes, evidence-write failures, Cloud SQL
 # availability, deployment changes, and regional drift.
-
-check "notification_channels_reviewed" {
-  assert {
-    condition     = !var.resource_creation_authorized || length(var.budget_notification_channels) > 0
-    error_message = "Resource creation requires at least one reviewed Monitoring notification channel."
-  }
-}

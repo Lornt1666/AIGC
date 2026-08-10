@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 import scripts.aigc_external_release_procurement as procurement
+import scripts.bootstrap_nexus_runtime_database_secret as database_secret
 import scripts.provision_nexus_regional_secret_version as secrets
 
 
@@ -110,12 +111,16 @@ def test_material_terraform_plan_emits_creation_intent_but_never_deployment_or_l
     assert variables["production_activation_authorized"] is False
 
 
-def test_wif_is_repo_id_owner_id_and_ref_restricted_without_service_account_keys():
+def test_wif_is_repo_workflow_environment_and_event_restricted_without_keys():
     text = (ROOT / "infra" / "gcp" / "quebec" / "external_identity_and_secrets.tf").read_text(encoding="utf-8")
     assert 'github_repository_id       = "1287333065"' in text
     assert 'github_repository_owner_id = "236225491"' in text
-    assert "refs/heads/release/aigc-nexus-v1" in text
     assert "refs/heads/main" in text
+    assert "aigc-release-staging.yml@refs/heads/main" in text
+    assert "assertion.workflow_ref" in text
+    assert "assertion.event_name == 'workflow_dispatch'" in text
+    assert "assertion.environment == '${local.github_release_environment}'" in text
+    assert "assertion.repository_visibility == 'private'" in text
     assert "roles/iam.workloadIdentityUser" in text
     assert "google_service_account_key" not in text
     assert "google_secret_manager_regional_secret_version" not in text
@@ -149,6 +154,113 @@ def test_secret_plan_never_requires_reading_value_file(monkeypatch, tmp_path: Pa
     assert result["secret_value_read_by_script"] is False
     assert result["secret_value_emitted"] is False
     assert all("versions add" not in " ".join(call) for call in calls)
+
+
+def test_direct_secret_execution_is_blocked_before_cloud_or_file_access(monkeypatch, tmp_path: Path):
+    monkeypatch.setattr(
+        secrets,
+        "_run",
+        lambda *_args, **_kwargs: pytest.fail("direct execution performed cloud discovery"),
+    )
+    with pytest.raises(secrets.SecretProvisionError, match="Secret Broker"):
+        secrets.provision(
+            project="aigc-stage",
+            purpose="runtime_control_dsn",
+            secret_id="runtime",
+            value_file=tmp_path / "raw-secret-must-not-be-read",
+            execute=True,
+        )
+
+
+def test_secret_broker_receipt_binds_enabled_numeric_montreal_version():
+    exact_ref = (
+        "projects/aigc-stage/locations/northamerica-northeast1/"
+        "secrets/runtime/versions/7"
+    )
+    receipt = {
+        "schema_version": "aigc.secret-broker-regional-version-receipt.v1",
+        "broker_path": (
+            "Omega-X/Ultra-Secrets-Agent/Secret-Broker/Google-Cloud-Secret-Manager"
+        ),
+        "project_id": "aigc-stage",
+        "region": "northamerica-northeast1",
+        "purpose": "runtime_control_dsn",
+        "secret_id": "runtime",
+        "exact_version_ref": exact_ref,
+        "version_metadata": {
+            "name": exact_ref,
+            "state": "ENABLED",
+            "create_time": "2026-08-10T12:00:00Z",
+            "etag": "etag-7",
+        },
+        "broker_attestation_sha256": "a" * 64,
+        "secret_value_exposed_to_agent": False,
+    }
+    validated = secrets.validate_broker_receipt(
+        receipt,
+        project="aigc-stage",
+        purpose="runtime_control_dsn",
+        secret_id="runtime",
+    )
+    assert validated["exact_version_ref"] == exact_ref
+    assert validated["version_state"] == "ENABLED"
+    assert validated["secret_value_exposed_to_agent"] is False
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("project_id", "other-stage"),
+        ("exact_version_ref", "projects/aigc-stage/locations/global/secrets/runtime/versions/7"),
+        ("secret_value_exposed_to_agent", True),
+    ],
+)
+def test_secret_broker_receipt_rejects_scope_or_exposure_tampering(field, value):
+    exact_ref = (
+        "projects/aigc-stage/locations/northamerica-northeast1/"
+        "secrets/runtime/versions/7"
+    )
+    receipt = {
+        "schema_version": "aigc.secret-broker-regional-version-receipt.v1",
+        "broker_path": (
+            "Omega-X/Ultra-Secrets-Agent/Secret-Broker/Google-Cloud-Secret-Manager"
+        ),
+        "project_id": "aigc-stage",
+        "region": "northamerica-northeast1",
+        "purpose": "runtime_control_dsn",
+        "secret_id": "runtime",
+        "exact_version_ref": exact_ref,
+        "version_metadata": {
+            "name": exact_ref,
+            "state": "ENABLED",
+            "create_time": "2026-08-10T12:00:00Z",
+            "etag": "etag-7",
+        },
+        "broker_attestation_sha256": "a" * 64,
+        "secret_value_exposed_to_agent": False,
+    }
+    receipt[field] = value
+    with pytest.raises(secrets.SecretProvisionError, match="does not prove"):
+        secrets.validate_broker_receipt(
+            receipt,
+            project="aigc-stage",
+            purpose="runtime_control_dsn",
+            secret_id="runtime",
+        )
+
+
+def test_direct_database_bootstrap_execution_is_blocked_before_discovery(monkeypatch):
+    monkeypatch.setattr(
+        database_secret,
+        "discover",
+        lambda _contract: pytest.fail("direct execution performed cloud discovery"),
+    )
+    with pytest.raises(database_secret.DatabaseBootstrapError, match="Secret Broker"):
+        database_secret.bootstrap(
+            procurement.ExternalReleaseContract.load(EXAMPLE),
+            execute=True,
+            output=Path("unused.json"),
+        )
 
 
 def test_staging_deployment_uses_private_vpc_and_user_specified_build_identity():

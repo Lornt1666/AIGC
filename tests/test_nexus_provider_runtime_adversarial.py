@@ -48,11 +48,18 @@ def invocation_for(
         principal="principal:adversarial",
         provider_id=provider_id,
         capability=capability,
-        model_or_resource="test-model-not-live",
+        model_or_resource=(
+            "offline-deterministic-provider-not-live"
+            if provider_id == "offline_deterministic"
+            else "test-model-not-live"
+        ),
         exact_revision="e6ceffb723f8bf02cf7e0f0f7e4c0ae8dcd89d29",
         request_digest="0" * 64,
         idempotency_key=idempotency_key,
         reserved_usage_units=1,
+        maximum_input_units=0,
+        maximum_output_units=1,
+        request_timeout_seconds=30,
         maximum_cost_cad=Decimal("0.00"),
         resource_ref="provider://adversarial",
         purpose="adversarial provider runtime regression",
@@ -138,6 +145,8 @@ class BehaviorAdapter:
             model_or_resource=invocation.model_or_resource,
             latency_ms=0,
             usage_units=1,
+            input_usage_units=0,
+            output_usage_units=1,
             cost_cad=Decimal("0.00"),
             finish_status="complete",
             response_digest=canonical_sha256({"response_payload": payload}),
@@ -239,9 +248,16 @@ def test_attempt_provider_identity_mismatch_fails_after_single_adapter_boundary(
         result_provider_id="spoofed_provider",
     )
     invocation = invocation_for(adapter.provider_id, "run", "PURE")
+    store = InMemoryRuntimeControlStore(clock=lambda: NOW)
     with pytest.raises(ProviderRuntimeError, match="provider_id mismatch"):
-        runtime_for(adapter).execute(invocation, authoritative_now=NOW)
+        runtime_for(adapter, store=store).execute(invocation, authoritative_now=NOW)
     assert adapter.calls == 1
+    reservation = store.get_invocation(invocation.invocation_id)
+    assert reservation.state == "failed"
+    assert reservation.failure_reason == "POST_PROVIDER_VALIDATION_FAILED:ProviderRuntimeError"
+    retained = store.get_execution_result(invocation.invocation_id)
+    assert retained is not None
+    assert retained.attempt.response_payload is None
 
 
 def test_response_payload_requires_digest():

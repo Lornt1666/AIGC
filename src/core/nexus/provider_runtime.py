@@ -114,6 +114,13 @@ class RuntimeControlStore(Protocol):
         result: ProviderRuntimeExecution,
     ) -> InvocationReservation: ...
 
+    def record_reconciliation_result(
+        self,
+        *,
+        invocation_id: str,
+        result: ProviderRuntimeExecution,
+    ) -> InvocationReservation: ...
+
     def fail_invocation(
         self,
         *,
@@ -428,10 +435,7 @@ class InMemoryRuntimeControlStore:
                 "indeterminate": "indeterminate",
                 "not_started": "failed",
             }
-            actual_usage = max(
-                current.reserved_usage_units,
-                attempt.usage_units if attempt.usage_units is not None else 0,
-            )
+            actual_usage = attempt.usage_units
             updated = current.model_copy(
                 update={
                     "state": state_map[attempt.status],
@@ -440,6 +444,47 @@ class InMemoryRuntimeControlStore:
                     "failure_reason": (
                         None if attempt.status == "succeeded" else attempt.finish_status
                     ),
+                }
+            )
+            self._reservations[invocation_id] = updated
+            self._results[invocation_id] = result
+            return updated
+
+    def record_reconciliation_result(
+        self,
+        *,
+        invocation_id: str,
+        result: ProviderRuntimeExecution,
+    ) -> InvocationReservation:
+        """Persist a sanitized terminal result when normal finalization is uncertain."""
+
+        with self._lock:
+            self._require_available()
+            current = self.get_invocation(invocation_id)
+            existing = self._results.get(invocation_id)
+            if existing is not None:
+                return current
+            attempt = result.attempt
+            if (
+                result.invocation_id != invocation_id
+                or attempt.invocation_id != invocation_id
+                or attempt.status != "indeterminate"
+                or attempt.outcome_known
+                or attempt.response_payload is not None
+            ):
+                raise ProviderRuntimeError(
+                    "reconciliation result must be correlated, redacted, and indeterminate"
+                )
+            if current.state not in {"reserved", "executing", "failed", "indeterminate"}:
+                raise ProviderRuntimeError(
+                    f"cannot record reconciliation result in state {current.state}"
+                )
+            updated = current.model_copy(
+                update={
+                    "state": "indeterminate",
+                    "actual_usage_units": attempt.usage_units,
+                    "failure_reason": attempt.finish_status,
+                    "updated_at": self._now(),
                 }
             )
             self._reservations[invocation_id] = updated
@@ -492,6 +537,7 @@ class UnavailableRuntimeControlStore:
     assert_epoch_current = _blocked
     mark_executing = _blocked
     complete_invocation = _blocked
+    record_reconciliation_result = _blocked
     fail_invocation = _blocked
     healthcheck = _blocked
 
@@ -609,6 +655,11 @@ class NexusProviderRuntime:
         if reservation.replayed:
             prior = self._control_store.get_execution_result(reservation.invocation_id)
             if prior is None:
+                if reservation.state not in {"reserved", "executing"}:
+                    raise ProviderRuntimeError(
+                        "idempotent invocation is terminal without execution evidence; "
+                        "manual reconciliation is required"
+                    )
                 raise InvocationAlreadyInProgress(
                     "idempotent invocation is already reserved or executing"
                 )
@@ -618,32 +669,60 @@ class NexusProviderRuntime:
             invocation_id=reservation.invocation_id,
             expected_epoch=reservation.stop_epoch,
         )
-
         attempt = self._invoke_adapter(adapter, invocation)
-        self._validate_attempt(invocation, descriptor.provider_id, attempt)
+        try:
+            self._validate_attempt(invocation, descriptor.provider_id, attempt)
 
-        receipt = self._receipt(invocation, attempt)
-        audit = ProviderRuntimeAudit(
-            adapter_invocations=1,
-            provider_api_calls_performed=0,
-            network_calls_performed=0,
-            credentials_used=0,
-            external_actions_performed=1 if attempt.external_action_performed else 0,
-            spend_cad=attempt.cost_cad,
-        )
-        result = ProviderRuntimeExecution(
-            invocation_id=invocation.invocation_id,
-            consequence_assessment=assessment,
-            attempt=attempt,
-            receipt=receipt,
-            audit=audit,
-            replayed=False,
-        )
-        self._control_store.complete_invocation(
-            invocation_id=reservation.invocation_id,
-            expected_epoch=reservation.stop_epoch,
-            result=result,
-        )
+            receipt = self._receipt(invocation, attempt)
+            audit = ProviderRuntimeAudit(
+                adapter_invocations=1,
+                provider_api_calls_performed=0,
+                network_calls_performed=0,
+                credentials_used=0,
+                external_actions_performed=1 if attempt.external_action_performed else 0,
+                spend_cad=attempt.cost_cad,
+                spend_known=attempt.cost_known,
+            )
+            result = ProviderRuntimeExecution(
+                invocation_id=invocation.invocation_id,
+                consequence_assessment=assessment,
+                attempt=attempt,
+                receipt=receipt,
+                audit=audit,
+                replayed=False,
+            )
+        except Exception as exc:
+            self._terminalize_post_attempt_failure(
+                invocation=invocation,
+                expected_epoch=reservation.stop_epoch,
+                assessment=assessment,
+                trusted_provider_id=descriptor.provider_id,
+                attempt=attempt,
+                cause=exc,
+                provider_api_calls_performed=0,
+                network_calls_performed=0,
+                credentials_used=0,
+            )
+            raise
+        try:
+            self._control_store.complete_invocation(
+                invocation_id=reservation.invocation_id,
+                expected_epoch=reservation.stop_epoch,
+                result=result,
+            )
+        except Exception as exc:
+            if attempt.status != "not_started":
+                self._durably_record_finalization_reconciliation(
+                    invocation=invocation,
+                    result=result,
+                    cause=exc,
+                )
+            else:
+                self._durably_fail_finalization(
+                    invocation_id=reservation.invocation_id,
+                    cause=exc,
+                )
+            raise
         return result
 
     def _validate_permit(
@@ -725,6 +804,7 @@ class NexusProviderRuntime:
                 latency_ms=0,
                 usage_units=None,
                 cost_cad=Decimal("0.00"),
+                cost_known=exc.outcome_known,
                 finish_status=f"{type(exc).__name__}:{exc}",
                 response_digest=None,
                 response_payload=None,
@@ -741,6 +821,7 @@ class NexusProviderRuntime:
                 latency_ms=0,
                 usage_units=None,
                 cost_cad=Decimal("0.00"),
+                cost_known=False,
                 finish_status=f"UNCLASSIFIED_ADAPTER_EXCEPTION:{type(exc).__name__}",
                 response_digest=None,
                 response_payload=None,
@@ -758,8 +839,154 @@ class NexusProviderRuntime:
             raise ProviderRuntimeError("provider attempt invocation_id mismatch")
         if attempt.provider_id != trusted_provider_id:
             raise ProviderRuntimeError("provider attempt provider_id mismatch")
+        if attempt.model_or_resource != invocation.model_or_resource:
+            raise ProviderRuntimeError("provider attempt model/resource mismatch")
+        if attempt.status == "succeeded" and attempt.usage_units is None:
+            raise ProviderRuntimeError("successful provider attempt omitted usage units")
+        if (
+            attempt.usage_units is not None
+            and attempt.usage_units > invocation.reserved_usage_units
+        ):
+            raise ProviderRuntimeError("provider attempt exceeded reserved usage units")
+        if (
+            attempt.input_usage_units is not None
+            and attempt.input_usage_units > invocation.maximum_input_units
+        ):
+            raise ProviderRuntimeError("provider attempt exceeded maximum input units")
+        if (
+            attempt.output_usage_units is not None
+            and attempt.output_usage_units > invocation.maximum_output_units
+        ):
+            raise ProviderRuntimeError("provider attempt exceeded maximum output units")
         if attempt.cost_cad > invocation.maximum_cost_cad:
             raise ProviderRuntimeError("provider attempt exceeded invocation cost ceiling")
+
+    def _terminalize_post_attempt_failure(
+        self,
+        *,
+        invocation: ProviderInvocation,
+        expected_epoch: int,
+        assessment,
+        trusted_provider_id: str,
+        attempt: ProviderAttemptResult,
+        cause: Exception,
+        provider_api_calls_performed: int,
+        network_calls_performed: int,
+        credentials_used: int,
+    ) -> ProviderRuntimeExecution:
+        """Persist redacted evidence when a completed adapter boundary fails validation."""
+
+        outcome_indeterminate = attempt.external_action_performed is not False
+        safe_attempt = ProviderAttemptResult(
+            invocation_id=invocation.invocation_id,
+            provider_id=trusted_provider_id,
+            status="indeterminate" if outcome_indeterminate else "failed",
+            provider_request_id=attempt.provider_request_id,
+            model_or_resource=invocation.model_or_resource,
+            latency_ms=attempt.latency_ms,
+            usage_units=attempt.usage_units,
+            input_usage_units=attempt.input_usage_units,
+            output_usage_units=attempt.output_usage_units,
+            cost_cad=attempt.cost_cad,
+            cost_known=attempt.cost_known,
+            finish_status=f"POST_PROVIDER_VALIDATION_FAILED:{type(cause).__name__}",
+            response_digest=attempt.response_digest,
+            response_payload=None,
+            external_action_performed=attempt.external_action_performed,
+            outcome_known=not outcome_indeterminate,
+        )
+        result = ProviderRuntimeExecution(
+            invocation_id=invocation.invocation_id,
+            consequence_assessment=assessment,
+            attempt=safe_attempt,
+            receipt=self._receipt(invocation, safe_attempt),
+            audit=ProviderRuntimeAudit(
+                adapter_invocations=1,
+                provider_api_calls_performed=provider_api_calls_performed,
+                network_calls_performed=network_calls_performed,
+                credentials_used=credentials_used,
+                external_actions_performed=(
+                    1 if safe_attempt.external_action_performed is True else 0
+                ),
+                spend_cad=safe_attempt.cost_cad,
+                spend_known=safe_attempt.cost_known,
+            ),
+            replayed=False,
+        )
+        try:
+            self._control_store.complete_invocation(
+                invocation_id=invocation.invocation_id,
+                expected_epoch=expected_epoch,
+                result=result,
+            )
+        except Exception as finalization_exc:
+            if safe_attempt.status == "indeterminate":
+                self._durably_record_finalization_reconciliation(
+                    invocation=invocation,
+                    result=result,
+                    cause=finalization_exc,
+                )
+            else:
+                self._durably_fail_finalization(
+                    invocation_id=invocation.invocation_id,
+                    cause=finalization_exc,
+                )
+        return result
+
+    def _durably_fail_finalization(self, *, invocation_id: str, cause: Exception) -> None:
+        """Move a reserved/executing call to a terminal state without persisting secrets.
+
+        Provider output and exception text are intentionally excluded.  A failure to
+        record this terminal marker makes the external outcome operationally
+        indeterminate and must replace the original exception at the trust boundary.
+        """
+
+        reason = f"PROVIDER_FINALIZATION_FAILED:{type(cause).__name__}"
+        try:
+            self._control_store.fail_invocation(
+                invocation_id=invocation_id,
+                reason=reason,
+            )
+        except Exception as control_exc:
+            raise RuntimeControlUnavailable(
+                "provider outcome requires reconciliation because durable "
+                "failure finalization did not complete"
+            ) from control_exc
+
+    def _durably_record_finalization_reconciliation(
+        self,
+        *,
+        invocation: ProviderInvocation,
+        result: ProviderRuntimeExecution,
+        cause: Exception,
+    ) -> None:
+        """Retain measured, redacted evidence without claiming provider success."""
+
+        safe_attempt = result.attempt.model_copy(
+            update={
+                "status": "indeterminate",
+                "finish_status": f"PROVIDER_FINALIZATION_FAILED:{type(cause).__name__}",
+                "response_payload": None,
+                "external_action_performed": result.attempt.external_action_performed,
+                "outcome_known": False,
+            }
+        )
+        safe_result = result.model_copy(
+            update={
+                "attempt": safe_attempt,
+                "receipt": self._receipt(invocation, safe_attempt),
+            }
+        )
+        try:
+            self._control_store.record_reconciliation_result(
+                invocation_id=invocation.invocation_id,
+                result=safe_result,
+            )
+        except Exception as control_exc:
+            raise RuntimeControlUnavailable(
+                "provider outcome requires reconciliation because durable "
+                "redacted evidence finalization did not complete"
+            ) from control_exc
 
     @staticmethod
     def _receipt(

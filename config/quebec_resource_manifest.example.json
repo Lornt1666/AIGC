@@ -4,6 +4,7 @@
   "project_id": "placeholder_project_id",
   "project_number": "placeholder_project_number",
   "region": "northamerica-northeast1",
+  "resource_prefix": "placeholder-prefix",
   "resources": [
     {
       "kind": "artifact_registry",
@@ -15,6 +16,16 @@
       "name": "placeholder_sql_instance",
       "location": "northamerica-northeast1",
       "availability_type": "REGIONAL"
+    },
+    {
+      "kind": "cloud_run_service",
+      "name": "placeholder_operator_service",
+      "location": "northamerica-northeast1"
+    },
+    {
+      "kind": "cloud_run_service",
+      "name": "placeholder_judge_service",
+      "location": "northamerica-northeast1"
     },
     {
       "kind": "storage_bucket",
@@ -31,6 +42,12 @@
     {
       "kind": "storage_bucket",
       "name": "placeholder_receipt_bucket",
+      "location": "NORTHAMERICA-NORTHEAST1",
+      "public_access_prevention": "enforced"
+    },
+    {
+      "kind": "storage_bucket",
+      "name": "placeholder_build_source_bucket",
       "location": "NORTHAMERICA-NORTHEAST1",
       "public_access_prevention": "enforced"
     },
@@ -92,6 +109,44 @@
       "residency_status": "VERIFIED_WITH_LIMITATION"
     }
   ],
+  "authorization_bindings": {
+    "resources": {
+      "artifact_registry_repository": "placeholder_artifact_repository",
+      "operator_service": "placeholder_operator_service",
+      "judge_service": "placeholder_judge_service",
+      "cloud_sql_instance": "placeholder_sql_instance",
+      "database_name": "aigc_control",
+      "evidence_bucket": "placeholder_evidence_bucket",
+      "judge_bucket": "placeholder_judge_bucket",
+      "receipt_bucket": "placeholder_receipt_bucket",
+      "build_source_bucket": "placeholder_build_source_bucket",
+      "log_bucket": "placeholder_log_bucket",
+      "kms_key_ring": "placeholder_kms_key_ring"
+    },
+    "service_accounts": {
+      "deployer": "placeholder_deployer_service_account",
+      "cloud_build": "placeholder_cloud_build_service_account",
+      "operator": "placeholder_operator_service_account",
+      "canary_gemini": "placeholder_canary_gemini_service_account",
+      "canary_openai": "placeholder_canary_openai_service_account",
+      "canary_provisioner": "placeholder_canary_provisioner_service_account",
+      "canary_binder": "placeholder_canary_binder_service_account",
+      "canary_executor": "placeholder_canary_executor_service_account",
+      "canary_publisher": "placeholder_canary_publisher_service_account",
+      "judge": "placeholder_judge_service_account",
+      "security_review": "placeholder_security_review_service_account",
+      "authority_signer": "placeholder_authority_signer_service_account"
+    },
+    "exact_secret_version_refs": {
+      "runtime_control_dsn": "placeholder_runtime_control_dsn_exact_version_reference",
+      "operator_token": "placeholder_operator_token_exact_version_reference",
+      "operator_binding_key": "placeholder_operator_binding_key_exact_version_reference",
+      "runtime_admin_token": "placeholder_runtime_admin_token_exact_version_reference",
+      "runtime_admin_binding_key": "placeholder_runtime_admin_binding_key_exact_version_reference",
+      "judge_token": "placeholder_judge_token_exact_version_reference",
+      "judge_binding_key": "placeholder_judge_binding_key_exact_version_reference"
+    }
+  },
   "cross_region_replication": false,
   "public_resources": false,
   "production_resources": false,

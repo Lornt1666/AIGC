@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.1.0",
+  "schema_version": "1.2.0",
   "contract_id": "AIGC-CI-EXACT-SHA-V1",
   "production_activation_authorized": false,
   "external_action_authorized": false,
@@ -65,6 +65,35 @@
     {
       "id": "terraform_inert",
       "runner": "terraform_inert"
+    },
+    {
+      "id": "quebec_terraform_validate",
+      "runner": "quebec_terraform_validate",
+      "policy": {
+        "runner_image": "ubuntu-24.04",
+        "terraform_version": "1.10.5",
+        "terraform_root": "infra/gcp/quebec",
+        "provider_lock_policy": "infra/gcp/quebec/ci/lock/provider_lock_policy.json",
+        "test_directory": "ci/tftest",
+        "inert_test_file": "ci/tftest/inert_authority.tftest.hcl",
+        "committed_provider_lock_required": true,
+        "native_terraform_test_required": true,
+        "machine_readable_test_plan_required": true,
+        "isolated_in_memory_test_state_required": true,
+        "test_state_event_forbidden": true,
+        "zero_managed_resource_changes_required": true,
+        "all_test_assertion_runs_pass_required": true,
+        "output_only_metadata_initialization_reported_separately": true,
+        "backend_initialization_permitted": false,
+        "standalone_plan_permitted": false,
+        "external_action_permitted": false
+      }
+    },
+    {
+      "id": "nexus_supply_chain",
+      "commands": [
+        ["python", "scripts/verify_nexus_supply_chain.py"]
+      ]
     },
     {
       "id": "tests",

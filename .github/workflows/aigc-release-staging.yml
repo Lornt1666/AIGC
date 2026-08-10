@@ -1,0 +1,43 @@
+name: AIGC Staging Release Gate
+
+on:
+  workflow_dispatch:
+    inputs:
+      admitted_sha:
+        description: Exact admitted 40-character repository revision
+        required: true
+        type: string
+      authorization_artifact:
+        description: Name of the reviewed authorization artifact
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  authority-preflight:
+    name: Validate protected release authority
+    runs-on: ubuntu-24.04
+    environment: aigc-nexus-staging
+    steps:
+      - name: Checkout exact admitted revision
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          ref: ${{ inputs.admitted_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify immutable revision and preserve non-execution boundary
+        shell: bash
+        env:
+          ADMITTED_SHA: ${{ inputs.admitted_sha }}
+          AUTHORIZATION_ARTIFACT: ${{ inputs.authorization_artifact }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$ADMITTED_SHA"
+          test "${#ADMITTED_SHA}" -eq 40
+          test -n "$AUTHORIZATION_ARTIFACT"
+          echo "Protected environment review completed for repository validation only."
+          echo "No Google authentication, build, deployment, provider call, traffic, or billing mutation was performed."

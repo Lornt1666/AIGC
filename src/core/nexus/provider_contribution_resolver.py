@@ -29,6 +29,9 @@ class ProviderContributionRoute:
     purpose: str
     bounded_prompt: str
     reserved_usage_units: int
+    maximum_input_units: int
+    maximum_output_units: int
+    request_timeout_seconds: int = 30
     maximum_cost_cad: Decimal = Decimal("0.00")
     requested_effect_class: EffectClass = "PURE"
     uncertainty: float = 0.0
@@ -44,6 +47,12 @@ class ProviderContributionRoute:
             raise ValueError("this release gate requires maximum_cost_cad=0.00")
         if self.reserved_usage_units < 1:
             raise ValueError("reserved_usage_units must be greater than zero")
+        if self.maximum_input_units < 0 or self.maximum_output_units < 1:
+            raise ValueError("provider route input/output ceilings are invalid")
+        if self.maximum_input_units + self.maximum_output_units > self.reserved_usage_units:
+            raise ValueError("provider route usage partition exceeds its reservation")
+        if not 1 <= self.request_timeout_seconds <= 120:
+            raise ValueError("provider route timeout must be between 1 and 120 seconds")
         if not self.bounded_prompt.strip() or len(self.bounded_prompt) > 20000:
             raise ValueError("bounded_prompt must contain 1..20000 characters")
         if not self.capability.strip() or not self.model_or_resource.strip():
@@ -147,6 +156,9 @@ class GovernedProviderContributionResolver:
             "purpose": route.purpose,
             "requested_effect_class": route.requested_effect_class,
             "reserved_usage_units": route.reserved_usage_units,
+            "maximum_input_units": route.maximum_input_units,
+            "maximum_output_units": route.maximum_output_units,
+            "request_timeout_seconds": route.request_timeout_seconds,
             "maximum_cost_cad": str(route.maximum_cost_cad),
             "principal": self._principal,
             "exact_revision": self._exact_revision,
@@ -170,6 +182,9 @@ class GovernedProviderContributionResolver:
             request_digest="0" * 64,
             idempotency_key=canonical_sha256({"idempotency": identity}),
             reserved_usage_units=route.reserved_usage_units,
+            maximum_input_units=route.maximum_input_units,
+            maximum_output_units=route.maximum_output_units,
+            request_timeout_seconds=route.request_timeout_seconds,
             maximum_cost_cad=route.maximum_cost_cad,
             resource_ref=route.resource_ref,
             purpose=route.purpose,

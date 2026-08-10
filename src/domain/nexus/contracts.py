@@ -85,6 +85,69 @@ class GovernanceDecision(NexusContract):
     expires_at: datetime | None = None
 
 
+class AuthorityAttestation(NexusContract):
+    """Detached KMS signature binding human authority to one canary execution."""
+
+    schema_version: Literal["aigc.nexus-authority-attestation.v1"] = (
+        "aigc.nexus-authority-attestation.v1"
+    )
+    attestation_id: str = Field(pattern=r"^AUTH-[A-Z0-9_-]{6,64}$")
+    issuer: str = Field(min_length=1, max_length=500)
+    subject: str = Field(min_length=1, max_length=200)
+    kms_key_version: str = Field(
+        pattern=(
+            r"^projects/[a-z][a-z0-9-]{4,28}[a-z0-9]/locations/"
+            r"[a-z0-9-]+/keyRings/[A-Za-z0-9_-]{1,63}/cryptoKeys/"
+            r"[A-Za-z0-9_-]{1,63}/cryptoKeyVersions/[1-9][0-9]*$"
+        )
+    )
+    signing_algorithm: Literal[
+        "RSA_SIGN_PSS_2048_SHA256",
+        "RSA_SIGN_PSS_3072_SHA256",
+        "RSA_SIGN_PSS_4096_SHA256",
+    ]
+    public_key_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    procurement_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    deployment_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    plan_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    governance_decision_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    execution_permit_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    request_digest: str = Field(pattern=r"^[a-f0-9]{64}$")
+    permit_id: str = Field(pattern=r"^PERMIT-[A-Z0-9_-]{6,64}$")
+    job_name: str = Field(pattern=r"^[a-z](?:[a-z0-9-]{0,61}[a-z0-9])?$")
+    execution_nonce: str = Field(pattern=r"^[a-f0-9]{64}$")
+    issued_at: datetime
+    expires_at: datetime
+    signature_b64: str = Field(min_length=32, max_length=16384)
+
+    @model_validator(mode="after")
+    def validate_attestation_window(self) -> "AuthorityAttestation":
+        for name, value in (("issued_at", self.issued_at), ("expires_at", self.expires_at)):
+            if value.tzinfo is None or value.utcoffset() is None:
+                raise ValueError(f"AuthorityAttestation {name} must be timezone-aware")
+        if self.expires_at <= self.issued_at:
+            raise ValueError("AuthorityAttestation expiry must follow issuance")
+        if self.issuer != f"gcp-kms:{self.kms_key_version}":
+            raise ValueError("AuthorityAttestation issuer must identify its exact KMS key version")
+        return self
+
+    def signed_payload(self) -> dict[str, Any]:
+        return self.model_dump(mode="json", exclude={"signature_b64"})
+
+    def verify_temporal_validity(
+        self,
+        *,
+        authoritative_now: datetime,
+    ) -> "AuthorityAttestation":
+        if authoritative_now.tzinfo is None or authoritative_now.utcoffset() is None:
+            raise ValueError("authoritative_now must be timezone-aware")
+        if self.issued_at > authoritative_now:
+            raise ValueError("AuthorityAttestation is not yet valid")
+        if self.expires_at <= authoritative_now:
+            raise ValueError("AuthorityAttestation is expired at authoritative_now")
+        return self
+
+
 class ExecutionPermit(NexusContract):
     permit_id: str = Field(pattern=r"^PERMIT-[A-Z0-9_-]{6,64}$")
     governance_decision_id: str

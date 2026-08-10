@@ -160,6 +160,8 @@ def test_projected_context_changes_provider_request_digest_without_changing_trus
         purpose="context binding test",
         bounded_prompt="analyze",
         reserved_usage_units=8,
+        maximum_input_units=4,
+        maximum_output_units=4,
     )
     resolver = GovernedProviderContributionResolver(
         work_order=work_order,

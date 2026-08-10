@@ -131,6 +131,8 @@ class OfflineDeterministicProviderAdapter:
             model_or_resource=self.model_label,
             latency_ms=0,
             usage_units=invocation.reserved_usage_units,
+            input_usage_units=invocation.maximum_input_units,
+            output_usage_units=invocation.maximum_output_units,
             cost_cad=Decimal("0.00"),
             finish_status="offline_complete",
             response_digest=response_digest,

@@ -1,0 +1,545 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.invalid/schemas/exact_head_ci_admission.schema.json",
+  "title": "AIGC exact-head CI admission",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "workflow_run",
+    "artifact",
+    "exact_head_receipt",
+    "stage_records",
+    "container_build"
+  ],
+  "properties": {
+    "schema_version": {"const": "aigc.exact-head-ci-admission.v2"},
+    "workflow_run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "repository",
+        "workflow_path",
+        "status",
+        "conclusion",
+        "head_sha",
+        "event",
+        "head_branch",
+        "head_repository_full_name",
+        "protected_branch_verified",
+        "html_url"
+      ],
+      "properties": {
+        "id": {"type": "integer", "minimum": 1},
+        "repository": {"const": "Lornt1666/AIGC"},
+        "workflow_path": {"const": ".github/workflows/aigc-ci.yml"},
+        "status": {"const": "completed"},
+        "conclusion": {"const": "success"},
+        "head_sha": {"$ref": "#/$defs/sha40"},
+        "event": {"const": "push"},
+        "head_branch": {"const": "main"},
+        "head_repository_full_name": {"const": "Lornt1666/AIGC"},
+        "protected_branch_verified": {"const": true},
+        "html_url": {"type": "string", "pattern": "^https://github\\.com/Lornt1666/AIGC/actions/runs/[0-9]+$"}
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "digest", "expired"],
+      "properties": {
+        "id": {"type": "integer", "minimum": 1},
+        "name": {"type": "string", "pattern": "^aigc-colosseum-orchestration-exact-head-[a-f0-9]{40}$"},
+        "digest": {"$ref": "#/$defs/taggedSha256"},
+        "expired": {"const": false}
+      }
+    },
+    "exact_head_receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "repository",
+        "pr_number",
+        "workflow_event",
+        "requested_head_sha",
+        "observed_head_sha",
+        "tested_tree_sha",
+        "base_sha",
+        "workflow_revision",
+        "workflow_run_number",
+        "workflow_run_id",
+        "workflow_run_attempt",
+        "artifact_name",
+        "job_status",
+        "canonical_contract_sha256",
+        "expected_stage_ids",
+        "successful_stage_ids",
+        "all_canonical_stages_success",
+        "stage_receipts",
+        "toolchain",
+        "quebec_provider_lockfile_committed",
+        "quebec_provider_lockfile_sha256",
+        "captured_timestamp",
+        "external_action_performed",
+        "external_authority_granted",
+        "merge_authority_granted",
+        "deployment_authority_granted",
+        "live_model_call_authority_granted",
+        "financial_authority_granted",
+        "receipt_sha256"
+      ],
+      "properties": {
+        "schema_version": {"const": "aigc.exact-head-admission-receipt.v2"},
+        "repository": {"const": "Lornt1666/AIGC"},
+        "pr_number": {"const": 0},
+        "workflow_event": {"const": "push"},
+        "requested_head_sha": {"$ref": "#/$defs/sha40"},
+        "observed_head_sha": {"$ref": "#/$defs/sha40"},
+        "tested_tree_sha": {"$ref": "#/$defs/sha40"},
+        "base_sha": {"const": ""},
+        "workflow_revision": {"$ref": "#/$defs/sha40"},
+        "workflow_run_number": {"type": "integer", "minimum": 1},
+        "workflow_run_id": {"type": "integer", "minimum": 1},
+        "workflow_run_attempt": {"type": "integer", "minimum": 1},
+        "artifact_name": {"type": "string", "pattern": "^aigc-colosseum-orchestration-exact-head-[a-f0-9]{40}$"},
+        "job_status": {"const": "success"},
+        "canonical_contract_sha256": {"$ref": "#/$defs/sha256"},
+        "expected_stage_ids": {"$ref": "#/$defs/stageIds"},
+        "successful_stage_ids": {"$ref": "#/$defs/stageIds"},
+        "all_canonical_stages_success": {"const": true},
+        "stage_receipts": {"$ref": "#/$defs/stageReceipts"},
+        "toolchain": {"$ref": "#/$defs/toolchain"},
+        "quebec_provider_lockfile_committed": {"const": true},
+        "quebec_provider_lockfile_sha256": {"$ref": "#/$defs/sha256"},
+        "captured_timestamp": {"$ref": "#/$defs/rfc3339"},
+        "external_action_performed": {"const": false},
+        "external_authority_granted": {"const": false},
+        "merge_authority_granted": {"const": false},
+        "deployment_authority_granted": {"const": false},
+        "live_model_call_authority_granted": {"const": false},
+        "financial_authority_granted": {"const": false},
+        "receipt_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "stage_records": {
+      "type": "array",
+      "minItems": 15,
+      "maxItems": 15,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schema_version",
+          "contract_id",
+          "contract_sha256",
+          "stage_id",
+          "target_sha",
+          "tested_tree_sha",
+          "broker_revision",
+          "run_number",
+          "run_id",
+          "ordered_command_digest",
+          "command_outcomes",
+          "status",
+          "external_action_performed",
+          "production_activation_authorized",
+          "merge_authority_granted",
+          "deployment_authority_granted",
+          "live_model_call_authority_granted",
+          "financial_authority_granted",
+          "record_sha256"
+        ],
+        "properties": {
+          "schema_version": {"const": "1.2.0"},
+          "contract_id": {"const": "AIGC-CI-EXACT-SHA-V1"},
+          "contract_sha256": {"$ref": "#/$defs/sha256"},
+          "stage_id": {"$ref": "#/$defs/stageId"},
+          "target_sha": {"$ref": "#/$defs/sha40"},
+          "tested_tree_sha": {"$ref": "#/$defs/sha40"},
+          "broker_revision": {"$ref": "#/$defs/sha40"},
+          "run_number": {"type": "integer", "minimum": 1},
+          "run_id": {"type": "integer", "minimum": 1},
+          "ordered_command_digest": {"$ref": "#/$defs/sha256"},
+          "command_outcomes": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "argv",
+                "argv_sha256",
+                "exit_code",
+                "output_sha256",
+                "accepted_exit_codes",
+                "policy_accepted"
+              ],
+              "properties": {
+                "argv": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {"type": "string", "minLength": 1}
+                },
+                "argv_sha256": {"$ref": "#/$defs/sha256"},
+                "exit_code": {"type": "integer", "enum": [0, 2]},
+                "output_sha256": {"$ref": "#/$defs/sha256"},
+                "accepted_exit_codes": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 2,
+                  "uniqueItems": true,
+                  "items": {"type": "integer", "enum": [0, 2]}
+                },
+                "policy_accepted": {"const": true},
+                "command_role": {
+                  "enum": ["fmt", "init", "validate", "test", "plan", "show"]
+                },
+                "sanitized_diagnostics": {"$ref": "#/$defs/safeDiagnostics"}
+              }
+            }
+          },
+          "status": {"const": "success"},
+          "external_action_performed": {"const": false},
+          "production_activation_authorized": {"const": false},
+          "merge_authority_granted": {"const": false},
+          "deployment_authority_granted": {"const": false},
+          "live_model_call_authority_granted": {"const": false},
+          "financial_authority_granted": {"const": false},
+          "stage_summary": {"$ref": "#/$defs/quebecStageSummary"},
+          "record_sha256": {"$ref": "#/$defs/sha256"}
+        }
+      }
+    },
+    "container_build": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "repository_revision",
+        "tested_tree_sha",
+        "image_id",
+        "image_config_user",
+        "image_identity_labels",
+        "source_context_sha256",
+        "source_context_receipt_sha256",
+        "dependency_lock_sha256",
+        "python_base_image",
+        "dockerfile_sha256",
+        "dockerfile",
+        "runtime_smoke",
+        "release_base_image_status",
+        "registry_push_performed",
+        "cloud_build_performed",
+        "deployment_performed",
+        "external_action_performed",
+        "captured_at",
+        "receipt_sha256"
+      ],
+      "properties": {
+        "schema_version": {"const": "aigc.nexus-local-container-build.v2"},
+        "repository_revision": {"$ref": "#/$defs/sha40"},
+        "tested_tree_sha": {"$ref": "#/$defs/sha40"},
+        "image_id": {"$ref": "#/$defs/taggedSha256"},
+        "image_config_user": {"const": "aigc"},
+        "image_identity_labels": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "org.opencontainers.image.revision",
+            "ai.aigc.source-context-sha256"
+          ],
+          "properties": {
+            "org.opencontainers.image.revision": {"$ref": "#/$defs/sha40"},
+            "ai.aigc.source-context-sha256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        "source_context_sha256": {"$ref": "#/$defs/sha256"},
+        "source_context_receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "dependency_lock_sha256": {"$ref": "#/$defs/sha256"},
+        "python_base_image": {
+          "type": "string",
+          "pattern": "^python:3\\.12\\.13-slim-bookworm@sha256:[a-f0-9]{64}$"
+        },
+        "dockerfile_sha256": {"$ref": "#/$defs/sha256"},
+        "dockerfile": {"const": "Dockerfile.nexus"},
+        "runtime_smoke": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "health_contract_passed",
+            "health_response_sha256",
+            "non_root",
+            "runtime_uid",
+            "read_only_root_filesystem",
+            "network_mode",
+            "capabilities_dropped",
+            "no_new_privileges",
+            "live_provider_execution_enabled",
+            "production_activation",
+            "live_model_call_performed"
+          ],
+          "properties": {
+            "health_contract_passed": {"const": true},
+            "health_response_sha256": {"$ref": "#/$defs/sha256"},
+            "non_root": {"const": true},
+            "runtime_uid": {"type": "integer", "minimum": 1},
+            "read_only_root_filesystem": {"const": true},
+            "network_mode": {"const": "none"},
+            "capabilities_dropped": {"const": ["ALL"]},
+            "no_new_privileges": {"const": true},
+            "live_provider_execution_enabled": {"const": false},
+            "production_activation": {"const": false},
+            "live_model_call_performed": {"const": false}
+          }
+        },
+        "release_base_image_status": {"const": "immutable_default_verified"},
+        "registry_push_performed": {"const": false},
+        "cloud_build_performed": {"const": false},
+        "deployment_performed": {"const": false},
+        "external_action_performed": {"const": false},
+        "captured_at": {"$ref": "#/$defs/rfc3339"},
+        "receipt_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  },
+  "$defs": {
+    "sha40": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "taggedSha256": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "rfc3339": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]{1,6})?(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "toolchain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runner", "python", "terraform", "postgres_service_image"],
+      "properties": {
+        "runner": {"const": "ubuntu-24.04"},
+        "python": {"const": "3.12.13"},
+        "terraform": {"const": "1.10.5"},
+        "postgres_service_image": {
+          "const": "postgres:16.14-alpine3.24@sha256:57c72fd2a128e416c7fcc499958864df5301e940bca0a56f58fddf30ffc07777"
+        }
+      }
+    },
+    "stageReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["present", "status", "receipt_sha256", "record_sha256"],
+      "properties": {
+        "present": {"const": true},
+        "status": {"const": "success"},
+        "receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "record_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "stageReceipts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pip_check",
+        "python_compilation",
+        "contracts",
+        "orchestration_schema_validation",
+        "orchestration_round_trip_validation",
+        "redaction",
+        "release_secret_scan",
+        "procurement_smoke",
+        "provider_discovery",
+        "terraform_inert",
+        "quebec_terraform_validate",
+        "nexus_supply_chain",
+        "tests",
+        "false_authority",
+        "readiness"
+      ],
+      "properties": {
+        "pip_check": {"$ref": "#/$defs/stageReceipt"},
+        "python_compilation": {"$ref": "#/$defs/stageReceipt"},
+        "contracts": {"$ref": "#/$defs/stageReceipt"},
+        "orchestration_schema_validation": {"$ref": "#/$defs/stageReceipt"},
+        "orchestration_round_trip_validation": {"$ref": "#/$defs/stageReceipt"},
+        "redaction": {"$ref": "#/$defs/stageReceipt"},
+        "release_secret_scan": {"$ref": "#/$defs/stageReceipt"},
+        "procurement_smoke": {"$ref": "#/$defs/stageReceipt"},
+        "provider_discovery": {"$ref": "#/$defs/stageReceipt"},
+        "terraform_inert": {"$ref": "#/$defs/stageReceipt"},
+        "quebec_terraform_validate": {"$ref": "#/$defs/stageReceipt"},
+        "nexus_supply_chain": {"$ref": "#/$defs/stageReceipt"},
+        "tests": {"$ref": "#/$defs/stageReceipt"},
+        "false_authority": {"$ref": "#/$defs/stageReceipt"},
+        "readiness": {"$ref": "#/$defs/stageReceipt"}
+      }
+    },
+    "stageId": {
+      "enum": [
+        "pip_check",
+        "python_compilation",
+        "contracts",
+        "orchestration_schema_validation",
+        "orchestration_round_trip_validation",
+        "redaction",
+        "release_secret_scan",
+        "procurement_smoke",
+        "provider_discovery",
+        "terraform_inert",
+        "quebec_terraform_validate",
+        "nexus_supply_chain",
+        "tests",
+        "false_authority",
+        "readiness"
+      ]
+    },
+    "safeDiagnostics": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["finding_count", "findings", "truncated"],
+          "properties": {
+            "finding_count": {"const": 0},
+            "findings": {"type": "array", "maxItems": 0},
+            "truncated": {"const": false}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "failed_or_error_test_count",
+            "failed_or_error_tests",
+            "truncated"
+          ],
+          "properties": {
+            "failed_or_error_test_count": {"const": 0},
+            "failed_or_error_tests": {"type": "array", "maxItems": 0},
+            "truncated": {"const": false}
+          }
+        }
+      ]
+    },
+    "actionSummary": {
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "no-op",
+          "create",
+          "read",
+          "update",
+          "delete",
+          "create,delete",
+          "delete,create"
+        ]
+      },
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    },
+    "quebecStageSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "terraform_root",
+        "lockfile_path",
+        "lockfile_committed_at_start",
+        "lockfile_readonly_mode",
+        "machine_readable_test_plan",
+        "isolated_in_memory_test_state",
+        "backend_initialized",
+        "provider_or_cloud_mutation_performed",
+        "provider_lock",
+        "validate",
+        "inert_plan",
+        "lockfile_unchanged",
+        "status",
+        "failure_reason"
+      ],
+      "properties": {
+        "terraform_root": {"const": "infra/gcp/quebec"},
+        "lockfile_path": {"const": "infra/gcp/quebec/.terraform.lock.hcl"},
+        "lockfile_committed_at_start": {"const": true},
+        "lockfile_readonly_mode": {"const": true},
+        "machine_readable_test_plan": {"const": true},
+        "isolated_in_memory_test_state": {"const": true},
+        "backend_initialized": {"const": false},
+        "provider_or_cloud_mutation_performed": {"const": false},
+        "provider_lock": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "lock_sha256",
+            "provider_source",
+            "provider_version",
+            "h1_checksum_count",
+            "zh_checksum_count"
+          ],
+          "properties": {
+            "lock_sha256": {"$ref": "#/$defs/sha256"},
+            "provider_source": {"const": "registry.terraform.io/hashicorp/google"},
+            "provider_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+            "h1_checksum_count": {"type": "integer", "minimum": 1},
+            "zh_checksum_count": {"type": "integer", "minimum": 1}
+          }
+        },
+        "validate": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["valid", "error_count", "warning_count"],
+          "properties": {
+            "valid": {"const": true},
+            "error_count": {"const": 0},
+            "warning_count": {"type": "integer", "minimum": 0}
+          }
+        },
+        "inert_plan": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "managed_resource_change_count",
+            "resource_drift_change_count",
+            "resource_action_summary",
+            "drift_action_summary",
+            "output_action_summary",
+            "output_metadata_change_count",
+            "test_file_count",
+            "test_run_count",
+            "test_plan_count",
+            "diagnostic_warning_count",
+            "all_assertion_runs_passed",
+            "machine_readable_test_plan_verified",
+            "isolated_in_memory_test_state",
+            "zero_managed_resource_changes"
+          ],
+          "properties": {
+            "managed_resource_change_count": {"const": 0},
+            "resource_drift_change_count": {"const": 0},
+            "resource_action_summary": {"$ref": "#/$defs/actionSummary"},
+            "drift_action_summary": {"$ref": "#/$defs/actionSummary"},
+            "output_action_summary": {"$ref": "#/$defs/actionSummary"},
+            "output_metadata_change_count": {"type": "integer", "minimum": 0},
+            "test_file_count": {"const": 1},
+            "test_run_count": {"const": 1},
+            "test_plan_count": {"const": 1},
+            "diagnostic_warning_count": {"type": "integer", "minimum": 0},
+            "all_assertion_runs_passed": {"const": true},
+            "machine_readable_test_plan_verified": {"const": true},
+            "isolated_in_memory_test_state": {"const": true},
+            "zero_managed_resource_changes": {"const": true}
+          }
+        },
+        "lockfile_unchanged": {"const": true},
+        "status": {"const": "success"},
+        "failure_reason": {"type": "null"}
+      }
+    },
+    "stageIds": {
+      "type": "array",
+      "minItems": 15,
+      "maxItems": 15,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/stageId"}
+    }
+  }
+}

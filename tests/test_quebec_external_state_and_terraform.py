@@ -81,8 +81,13 @@ def discovery_ok() -> dict:
             "deployer": True,
             "cloud_build": True,
             "operator": True,
+            "canary_gemini": True,
+            "canary_openai": True,
+            "canary_provisioner": True,
+            "canary_executor": True,
             "judge": True,
             "security_review": True,
+            "authority_signer": True,
         },
         "regional_secret_metadata": {
             "runtime_control_dsn": True,

@@ -222,6 +222,7 @@ def resource_names(contract: ExternalReleaseContract) -> dict[str, Any]:
         "evidence_bucket": f"{project}-{p}-evidence",
         "judge_bucket": f"{project}-{p}-judge",
         "receipt_bucket": f"{project}-{p}-receipts",
+        "build_source_bucket": f"{project}-{p}-build-source",
         "log_bucket": f"{p}-logs",
         "kms_key_ring": f"{p}-keys",
         "wif_pool": f"{p}-gha",
@@ -232,8 +233,15 @@ def resource_names(contract: ExternalReleaseContract) -> dict[str, Any]:
                 "deployer": "deployer",
                 "cloud_build": "build",
                 "operator": "operator",
+                "canary_gemini": "can-gem",
+                "canary_openai": "can-oai",
+                "canary_provisioner": "can-prov",
+                "canary_binder": "can-bind",
+                "canary_executor": "can-exec",
+                "canary_publisher": "can-pub",
                 "judge": "judge",
                 "security_review": "security",
+                "authority_signer": "signer",
             }.items()
         },
         "regional_secret_ids": {
@@ -261,12 +269,16 @@ def build_resource_manifest(contract: ExternalReleaseContract) -> dict[str, Any]
         "project_id": project,
         "project_number": contract.project_number,
         "region": REGION,
+        "resource_prefix": contract.prefix,
         "resources": [
             {"kind": "artifact_registry", "name": names["artifact_registry_repository"], "location": REGION},
             {"kind": "cloud_sql_postgresql", "name": names["cloud_sql_instance"], "location": REGION, "availability_type": "REGIONAL"},
             {"kind": "storage_bucket", "name": names["evidence_bucket"], "location": REGION.upper(), "public_access_prevention": "enforced"},
             {"kind": "storage_bucket", "name": names["judge_bucket"], "location": REGION.upper(), "public_access_prevention": "enforced"},
             {"kind": "storage_bucket", "name": names["receipt_bucket"], "location": REGION.upper(), "public_access_prevention": "enforced"},
+            {"kind": "storage_bucket", "name": names["build_source_bucket"], "location": REGION.upper(), "public_access_prevention": "enforced"},
+            {"kind": "cloud_run_service", "name": names["operator_service"], "location": REGION},
+            {"kind": "cloud_run_service", "name": names["judge_service"], "location": REGION},
             {"kind": "regional_secret_manager", "name": f"{contract.prefix}-secret-set", "location": REGION},
             {"kind": "kms_key_ring", "name": names["kms_key_ring"], "location": REGION},
             {"kind": "logging_bucket", "name": names["log_bucket"], "location": REGION},
@@ -278,6 +290,26 @@ def build_resource_manifest(contract: ExternalReleaseContract) -> dict[str, Any]
             {"kind": "vpc_network", "name": f"{contract.prefix}-vpc", "location": "global", "classification": "CONTROL_PLANE_METADATA", "customer_content": False, "residency_status": "VERIFIED_WITH_LIMITATION"},
             {"kind": "private_service_access", "name": f"{contract.prefix}-private-services", "location": "global", "classification": "CONTROL_PLANE_METADATA", "customer_content": False, "residency_status": "VERIFIED_WITH_LIMITATION"},
         ],
+        "authorization_bindings": {
+            "resources": {
+                name: names[name]
+                for name in (
+                    "artifact_registry_repository",
+                    "operator_service",
+                    "judge_service",
+                    "cloud_sql_instance",
+                    "database_name",
+                    "evidence_bucket",
+                    "judge_bucket",
+                    "receipt_bucket",
+                    "build_source_bucket",
+                    "log_bucket",
+                    "kms_key_ring",
+                )
+            },
+            "service_accounts": names["service_accounts"],
+            "exact_secret_version_refs": {},
+        },
         "cross_region_replication": False,
         "public_resources": False,
         "production_resources": False,
@@ -346,6 +378,13 @@ def terraform_inputs(contract: ExternalReleaseContract, manifest: dict[str, Any]
         raise ProcurementError("nonzero reviewed monthly_budget_cad is required before Terraform plan")
     if not contract.payload.get("budget_notification_channels"):
         raise ProcurementError("at least one reviewed Monitoring notification channel is required")
+    inventory = {
+        "project_id": contract.project_id,
+        "project_number": contract.project_number,
+        "region": REGION,
+        "resource_prefix": contract.prefix,
+        **manifest["authorization_bindings"],
+    }
     return {
         "project_id": contract.project_id,
         "project_number": contract.project_number,
@@ -364,6 +403,7 @@ def terraform_inputs(contract: ExternalReleaseContract, manifest: dict[str, Any]
         "release_sha": contract.payload["release_sha"],
         "release_tree_sha": contract.payload["release_tree_sha"],
         "resource_manifest_sha256": canonical_sha256(manifest),
+        "authorization_inventory_sha256": canonical_sha256(inventory),
         "exact_secret_version_refs": {},
     }
 

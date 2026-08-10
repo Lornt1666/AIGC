@@ -1,0 +1,14 @@
+{
+  "schema_version": "aigc.nexus-build-context-allowlist.v1",
+  "required_files": [
+    "Dockerfile.nexus",
+    "cloudbuild.nexus.yaml",
+    "requirements.txt",
+    "requirements.lock",
+    "migrations/003_nexus_provider_runtime_controls.sql",
+    "migrations/004_nexus_persisted_authority.sql"
+  ],
+  "required_prefixes": [
+    "src/"
+  ]
+}
