@@ -1,12 +1,14 @@
 name: AIGC CI
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - "**"
   pull_request:
     branches:
       - main
+      - "release/**"
 
 permissions:
   contents: read
