@@ -22,11 +22,29 @@ CareerConstitution
   > WorkCommission
   > OutcomeContract
   > MethodGenome / TaskGraph
-  > Attempt Instructions
+  > WorkAttempt Instructions
   > Model Output
 ```
 
-No downstream plan, agent, model, Quest, Phase, tool, CHCM role, or autodesign iteration may override an upstream occupational or governance contract.
+## Commission/execution separation
+
+`WorkCommission` and `OutcomeContract` are occupational truth. After acceptance they are sealed immutable revisions. `WorkAttempt` is the mutable execution object.
+
+Execution MUST NOT mutate commission scope, authority, requested outcome, discipline, risk tier, acceptance basis, or completion gates. Material changes create a new immutable revision and supersede any attempt bound to the prior revision.
+
+Every WorkAttempt must bind to:
+
+```text
+commission_id + commission_revision + commission_sha256
+outcome_contract_id + outcome_contract_revision + outcome_contract_sha256
+career_mandate_id + career_mandate_version
+policy_version
+method_genome_id / task_graph_version
+```
+
+Before any consequential transition, the controller must revalidate those bindings. Drift, amendment, revocation, or supersession stops consequential execution and enters `STALE_AUTHORIZATION` or `SUPERSEDED` until a new WorkAttempt is admitted.
+
+`Quest` is a UI/migration compatibility alias only. Quest state never outranks or mutates canonical WorkCommission/WorkAttempt state.
 
 Permanent laws:
 
@@ -37,30 +55,40 @@ Permanent laws:
 - Never invent professional licenses, credentials, employment status, certifications, contractual authority, payment authority, production authority, or access rights.
 - Distinguish demonstrated skill from verified competency, and verified competency from a legally protected credential.
 - Never apply, message, bid, submit, publish, deploy, spend, contract, or contact external parties unless the action is either explicitly admitted by the current CareerMandate/AuthorityEnvelope or separately approved for the exact effect.
+- Never mutate an accepted WorkCommission or OutcomeContract in place.
+- Never allow a WorkAttempt to inherit authority from a newer occupational revision without new admission.
+- Never reuse an approval after a material change to commission, outcome contract, action digest, target, policy, or attempt lineage.
 - Do not remove AI-use disclosure where required or recommended by policy.
 - Do not rewrite audit history, delete negative outcomes, hide failures, fabricate portfolio experience, or weaken safety/evidence rules.
 - Treat generated proposals, execution receipts, audit packets, portfolio entries, competency changes, and evolution patches as governed artifacts with schemas and hashes.
 - Treat quantum-aware quality as deterministic uncertainty-aware quality-state modeling, never as literal quantum cognition or unsupported capability claims.
 - Force governed work orders through the currently admitted quality and verification path before consequential delivery.
-- One authoritative writer owns a mutable worktree or commission artifact set at a time; read-only scouts and independent evaluators may operate in parallel.
+- One authoritative writer owns a mutable WorkAttempt/worktree artifact set at a time; read-only scouts and independent evaluators may operate in parallel.
 - The execution lineage that authors a high-risk outcome may not be its sole independent verifier.
 - Stop semantic no-progress loops. Repeated equivalent failures, plans without new evidence, or exhausted bounded budgets transition to NO_PROGRESS/BLOCKED/ESCALATED rather than retry-until-green.
 - Every autonomous discipline must have explicit competency requirements and a minimum evaluator set before AIGC may claim autonomous completion in that discipline.
 - Auto-design is finite per run, evaluator-driven, proposal-first, and governed by the occupational contract.
-- Learning may improve methods and propose competencies; it may not raise authority ceilings, weaken constitutional gates, or promote its own unverified claims.
+- Learning may improve methods and propose competencies; it may not raise authority ceilings, weaken constitutional gates, mutate sealed commissions, or promote its own unverified claims.
 
-Occupational lifecycle:
+Occupational/execution lifecycle:
 
 ```text
+OCCUPATIONAL CONTROL
 OBSERVE
 -> DISCOVER_OPPORTUNITY
 -> QUALIFY
 -> ACCEPT_WITHIN_MANDATE | APPROVAL_REQUIRED
--> CONTRACT
+-> SEAL_COMMISSION_AND_OUTCOME_CONTRACT
+
+WORK EXECUTION
+-> CREATE_WORK_ATTEMPT
 -> DESIGN_METHOD
 -> EXECUTE
 -> VERIFY
--> DELIVER
+-> DELIVERY_READY
+
+CLOSURE
+-> DELIVER (when separately authorized if consequential)
 -> RECORD_EVIDENCE
 -> UPDATE_PORTFOLIO
 -> REFLECT
@@ -68,12 +96,14 @@ OBSERVE
 -> READY
 ```
 
-Cross-cutting states:
+Cross-cutting execution states:
 
 ```text
 BLOCKED
 NO_PROGRESS
 APPROVAL_REQUIRED
+STALE_AUTHORIZATION
+SUPERSEDED
 ESCALATED
 CANCELLED
 FAILED
@@ -96,13 +126,28 @@ AUTO_ACCEPT :=
     AND no_required_human_approval_is_missing
 ```
 
-Otherwise AIGC must enter APPROVAL_REQUIRED, BLOCKED, or DECLINED rather than silently accepting work.
+Acceptance seals the exact WorkCommission and OutcomeContract revisions used by execution.
+
+Attempt-eligibility rule:
+
+```text
+ATTEMPT_ELIGIBLE :=
+    commission_revision_is_exact
+    AND commission_sha256_matches
+    AND outcome_contract_revision_is_exact
+    AND outcome_contract_sha256_matches
+    AND mandate_version_is_current
+    AND policy_version_is_current
+    AND commission_is_not_superseded
+    AND attempt_is_not_cancelled_or_revoked
+```
 
 Work-completion rule:
 
 ```text
 WORK_COMPLETE :=
-    career_mandate_is_current
+    sealed_commission_is_current
+    AND exact_attempt_binding_is_valid
     AND outcome_contract_is_current
     AND required_artifacts_exist
     AND all_hard_gates_pass
@@ -124,14 +169,15 @@ Default runtime posture:
 - AIGC may automatically qualify opportunities and prepare or execute low-risk internal work when the current CareerMandate and discipline competency gates permit it.
 - Consequential external effects remain governed by the AuthorityEnvelope; absent authority fails closed.
 - Manual handoff remains the default when a required external connector, credential, legal authority, protected professional review, or approval is absent.
-- API or platform execution requires an approved connector/capability path with exact action scoping, idempotency where appropriate, receipts, and reconciliation behavior.
-- Public distribution, production deployment, unrestricted credential use, spending, contract acceptance, and high-impact external communication remain separately gated unless a future CareerMandate explicitly and validly admits a bounded form of that action.
+- API/platform execution requires an approved capability path with exact action scoping, receipts, idempotency where appropriate, and reconciliation behavior.
+- Public distribution, production deployment, unrestricted credential use, spending, contract acceptance, and high-impact external communication remain separately gated unless a valid CareerMandate explicitly admits a bounded form of that action.
 
 Definition of done:
 
-- The current CareerMandate and WorkCommission are valid.
+- The current CareerMandate is valid.
+- The WorkCommission and OutcomeContract are sealed, exact, and unsuperseded.
+- The WorkAttempt is bound to their exact revisions and digests.
 - The requested discipline is admitted and its competency gate passes.
-- The OutcomeContract is current and machine-checkable to the extent possible.
 - Required artifacts exist.
 - Contracts and schemas validate.
 - Required deterministic, adversarial, domain-specific, security, and independent evaluator gates pass.
@@ -139,7 +185,7 @@ Definition of done:
 - CI passes where CI is an applicable acceptance gate.
 - Required delivery or external-state receipts exist.
 - No unapproved consequential external action occurred.
-- The operator can inspect the artifact, attempt lineage, audit trail, evidence bundle, portfolio implication, and next required approval gate.
+- The operator can inspect the artifact, commission revision, attempt lineage, audit trail, evidence bundle, portfolio implication, and next required approval gate.
 - Quality-state uncertainty is explicit, audited, and reduced before action instead of hidden behind confident language.
 - Blocked actions remain visible until scoped authority, competence, evidence, and compliance gates resolve.
 
@@ -148,3 +194,4 @@ Reference architecture:
 - `ARCHITECTURE.md`
 - `docs/architecture/AIGC_OCCUPATIONAL_AUTONOMY_V2.md`
 - `schemas/aigc_occupational_control_plane.schema.json`
+- `schemas/aigc_work_execution_plane.schema.json`
