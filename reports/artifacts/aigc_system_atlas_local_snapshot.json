@@ -1,0 +1,282 @@
+{
+  "conceptual_model": {
+    "actions": 9,
+    "connectors": 4,
+    "constraints": 7,
+    "decisions": 4,
+    "entities": 32,
+    "external_blockers": 6,
+    "heuristics": 6,
+    "methodology_stack": 5,
+    "parameters": 9,
+    "relationships": 30,
+    "risks": 5,
+    "sources": 7,
+    "states": 8,
+    "transitions": 9
+  },
+  "evidence_scope": "LOCAL_CANDIDATE_NOT_EXACT_HEAD_CI",
+  "identity": {
+    "current_state": "LOCAL_RECONSTRUCTION_VALIDATED",
+    "name": "Artificial Intelligence Gladiator Coliseum (AIGC)",
+    "owner": "Justice Gray Maciocha",
+    "product_definition": "governed provider-neutral AI work operating system and certified universal website operator",
+    "target_state": "CONTROLLED_PRODUCTION"
+  },
+  "methodologies": [
+    {
+      "fit_score": 0.94,
+      "id": "METHOD_DDD_C4",
+      "name": "Domain-Driven Design plus C4",
+      "problem": "Separate employment, connector, authority, evidence, memory, and occupation concepts without semantic collapse."
+    },
+    {
+      "fit_score": 0.93,
+      "id": "METHOD_DEVSECOPS_SRE",
+      "name": "DevSecOps plus Site Reliability Engineering",
+      "problem": "Build, release, operate, observe, stop, and recover a long-lived work platform."
+    },
+    {
+      "fit_score": 0.96,
+      "id": "METHOD_STRIDE_LINDDUN",
+      "name": "STRIDE plus LINDDUN threat and privacy modeling",
+      "problem": "Protect employment identity, messages, credentials, employer data, memory, and tool boundaries."
+    },
+    {
+      "fit_score": 0.97,
+      "id": "METHOD_STAGE_GATE_EVAL",
+      "name": "Stage-Gate plus continuous occupation evaluation",
+      "problem": "Expand toward many jobs without inferring competence from general model capability."
+    },
+    {
+      "fit_score": 0.92,
+      "id": "METHOD_HCD_WCAG",
+      "name": "Human-centred design plus WCAG 2.2 AA evaluation",
+      "problem": "Deliver a one-click interface that remains understandable, accessible, and truthful about blocked states."
+    }
+  ],
+  "parameters": [
+    {
+      "id": "PARAM_UNAUTHORIZED_ACTIONS",
+      "meaning": "External mutations performed without current exact authority",
+      "name": "Unauthorized external actions",
+      "symbol": "N_unauthorized",
+      "target": "0",
+      "type": "GUARDRAIL"
+    },
+    {
+      "id": "PARAM_SECRET_EXPOSURE",
+      "meaning": "Raw credentials in prompts, code, logs, receipts, artifacts, or chat",
+      "name": "Secret exposure",
+      "symbol": "N_secret_exposure",
+      "target": "0",
+      "type": "GUARDRAIL"
+    },
+    {
+      "id": "PARAM_AMBIGUOUS_RETRIES",
+      "meaning": "Mutation retries issued before authoritative reconciliation",
+      "name": "Automatic retries after ambiguous dispatch",
+      "symbol": "N_ambiguous_retry",
+      "target": "0",
+      "type": "GUARDRAIL"
+    },
+    {
+      "id": "PARAM_CONNECTOR_CERTIFICATION",
+      "meaning": "Fraction of enabled live operations with a current exact connector passport",
+      "name": "Connector certification coverage",
+      "symbol": "C_connector",
+      "target": "1.0 before any live operation",
+      "type": "LEADING"
+    },
+    {
+      "id": "PARAM_VERIFICATION_COVERAGE",
+      "meaning": "Fraction of mandatory requirements connected to current exact-artifact evidence",
+      "name": "Mandatory requirement verification coverage",
+      "symbol": "C_verify",
+      "target": "1.0 for each release claim",
+      "type": "LEADING"
+    },
+    {
+      "id": "PARAM_TASK_SUCCESS",
+      "meaning": "Tasks meeting employer-accepted correctness, timeliness, safety, and scope criteria",
+      "name": "Verified occupation task success",
+      "symbol": "R_task_success",
+      "target": "derived per occupation before certification",
+      "type": "LAGGING"
+    },
+    {
+      "id": "PARAM_HUMAN_CORRECTION",
+      "meaning": "Fraction of delivered work requiring material correction",
+      "name": "Human correction rate",
+      "symbol": "R_correction",
+      "target": "derived from occupation and employer risk tolerance",
+      "type": "LAGGING"
+    },
+    {
+      "id": "PARAM_EXTERNAL_BLAST_RADIUS",
+      "meaning": "Maximum accounts, destinations, resources, and mutations authorized by one permit",
+      "name": "External action blast radius",
+      "symbol": "B_external",
+      "target": "one account, one exact destination, one operation, one mutation",
+      "type": "CONTROL"
+    },
+    {
+      "id": "PARAM_COST_PER_ACTION",
+      "meaning": "Known provider and infrastructure cost divided by independently verified successful tasks",
+      "name": "Cost per successful task",
+      "symbol": "C_task",
+      "target": "Pareto-minimize subject to quality, safety, privacy, reliability, and signed ceilings",
+      "type": "OBJECTIVE"
+    }
+  ],
+  "parametric_profile": {
+    "CONTROL": 1,
+    "GUARDRAIL": 3,
+    "LAGGING": 2,
+    "LEADING": 2,
+    "OBJECTIVE": 1
+  },
+  "portfolio": {
+    "connectors": 5,
+    "delivery_surfaces": 8,
+    "integrated_subsystems": 5,
+    "life_domains": 7,
+    "llm_gpu_hours": 0,
+    "llm_training_cost_cad": 0,
+    "mcp_tools": 11,
+    "occupation_packs": 13,
+    "regenexcalibur_agent_roles": 8,
+    "wealth_actions": 16
+  },
+  "readiness": {
+    "applicable_required_checks": 34,
+    "authority_granted": false,
+    "blockers": [
+      "registry remains template_only",
+      "release evidence is absent",
+      "required authority cloud_mutation_authorized is false",
+      "required authority production_activation_authorized is false",
+      "required authority public_traffic_authorized is false",
+      "required connector openai_responses is not fully certified",
+      "required connector vertex_gemini is not fully certified",
+      "required surface chatgpt_mcp is implemented with 3/5 receipt-bound checks",
+      "required surface nexus_linux_server is implemented with 0/4 receipt-bound checks",
+      "required surface nexus_web is implemented with 0/5 receipt-bound checks"
+    ],
+    "external_action_performed": false,
+    "minimum_release_ratio": 0.95,
+    "production_ready": false,
+    "unverified_required_checks": 22,
+    "verified_applicable_ratio": 0.352941,
+    "verified_required_checks": 12
+  },
+  "schema_version": "aigc.system-atlas-snapshot.v1",
+  "snapshot_sha256": "7bf9a8d6b5c9af3bfe04c39732caf7f6e5120ff2572990c94d7aa14a2f84148f",
+  "subsystems": [
+    {
+      "contract_count": 3,
+      "id": "silva",
+      "name": "System Integration and Lifecycle Validation Architecture",
+      "purpose": "Own the device, operating-system, application-lifecycle, compatibility, accessibility, and performance evidence matrix."
+    },
+    {
+      "contract_count": 4,
+      "id": "hexgate",
+      "name": "Six-Gate Trust Boundary",
+      "purpose": "Enforce identity, authorization, privacy, safety, cost, and evidence gates before any consequential connector or runtime effect."
+    },
+    {
+      "contract_count": 4,
+      "id": "vanis",
+      "name": "Verifiable Agent Network Integration Substrate",
+      "purpose": "Provide provider-neutral agent, model, tool, and connector routing with bounded inputs, outputs, budgets, retries, and identities."
+    },
+    {
+      "contract_count": 4,
+      "id": "correlation_station",
+      "name": "Evidence and Observability Plane",
+      "purpose": "Correlate work orders, artifacts, verifier reports, permits, executions, costs, telemetry, incidents, and outcomes without turning correlation into causation or authority."
+    },
+    {
+      "contract_count": 4,
+      "id": "chorus",
+      "name": "Coordinated Human-Orchestrated Runtime and User Surface",
+      "purpose": "Deliver accessible, comprehensible, multilingual human review, approval, progress, recovery, and audit experiences across supported clients."
+    }
+  ],
+  "surface_status": {
+    "blocked": 1,
+    "implemented": 5,
+    "not_implemented": 2
+  },
+  "surfaces": [
+    {
+      "blocker_count": 3,
+      "id": "nexus_linux_server",
+      "required_evidence_count": 4,
+      "required_for_v1": true,
+      "status": "implemented",
+      "verified_evidence_count": 0
+    },
+    {
+      "blocker_count": 2,
+      "id": "nexus_web",
+      "required_evidence_count": 5,
+      "required_for_v1": true,
+      "status": "implemented",
+      "verified_evidence_count": 0
+    },
+    {
+      "blocker_count": 3,
+      "id": "chatgpt_mcp",
+      "required_evidence_count": 5,
+      "required_for_v1": true,
+      "status": "implemented",
+      "verified_evidence_count": 3
+    },
+    {
+      "blocker_count": 2,
+      "id": "gemini_mcp",
+      "required_evidence_count": 4,
+      "required_for_v1": false,
+      "status": "implemented",
+      "verified_evidence_count": 0
+    },
+    {
+      "blocker_count": 2,
+      "id": "ios_client",
+      "required_evidence_count": 5,
+      "required_for_v1": false,
+      "status": "not_implemented",
+      "verified_evidence_count": 0
+    },
+    {
+      "blocker_count": 2,
+      "id": "android_client",
+      "required_evidence_count": 5,
+      "required_for_v1": false,
+      "status": "not_implemented",
+      "verified_evidence_count": 0
+    },
+    {
+      "blocker_count": 1,
+      "id": "public_blockchain_mainnet",
+      "required_evidence_count": 6,
+      "required_for_v1": false,
+      "status": "blocked",
+      "verified_evidence_count": 0
+    },
+    {
+      "blocker_count": 2,
+      "id": "revenue_omega",
+      "required_evidence_count": 6,
+      "required_for_v1": false,
+      "status": "implemented",
+      "verified_evidence_count": 0
+    }
+  ],
+  "wealth_action_profile": {
+    "approval_gated": 9,
+    "policy_path": 7
+  }
+}
