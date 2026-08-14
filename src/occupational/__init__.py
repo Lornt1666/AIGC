@@ -19,6 +19,13 @@ from .contracts import (
     WorkCommission,
     canonical_sha256,
 )
+from .ingestion_pipeline import (
+    InMemoryRegistryStore,
+    IngestionDiff,
+    IngestionReceipt,
+    OccupationalIngestionPipeline,
+    OccupationalRegistryStore,
+)
 from .knowledge_ingestion import (
     ClassificationStatus,
     ConceptKind,
@@ -67,18 +74,33 @@ from .repository_orchestrator_v2 import (
     RepositoryEngineeringAuthority,
     RepositoryEngineeringOrchestratorV2,
 )
+from .source_adapters import (
+    ADAPTERS,
+    EscoAdapter,
+    IscoAdapter,
+    NocAdapter,
+    NormalizedSourceRecord,
+    OccupationalSourceAdapter,
+    OnetAdapter,
+    RawSourcePackage,
+    SocAdapter,
+    adapter_for,
+)
 
 __all__ = [
-    "BrowserConnectionBootstrapController", "BrowserConnectionProbe", "BrowserConnectionState", "BrowserSkillReceipt",
-    "CareerTrajectory", "ClassificationStatus", "CommissionEconomics", "CompetencyLevel", "CompetencyRecord",
-    "CompletionDecision", "ConceptKind", "CredentialRecord", "CrosswalkEdge", "CrosswalkRelation", "DevelopmentPlan",
-    "DisciplineProfileV2", "EmergentOccupationCandidate", "Engagement", "EngineeringMemoryEntry", "EvaluatorProfile",
-    "EvidenceReceipt", "ExperienceNode", "GitHubActionsBudgetAuthorization", "GitHubActionsBudgetObservation",
-    "GitHubActionsBudgetPlan", "ImpactDomain", "ImpactEdge", "ImpactGraph", "InterdisciplinaryPractice", "MethodOutcome",
-    "OccupationProfileV3", "OccupationalBinding", "OccupationalConcept", "OccupationalKnowledgeRegistry",
-    "OccupationalRegistry", "OccupationalRisk", "OutcomeContract", "QuestCompatibilityAlias", "RepositoryAtlas",
-    "RepositoryEngineer", "RepositoryEngineeringAuthority", "RepositoryEngineeringOrchestratorV2", "ScopeClassification",
-    "ScopeOfPractice", "SourceAuthority", "SourceDescriptor", "StandardOfPractice", "TitleResolutionCandidate",
-    "TitleResolver", "WorkAttempt", "WorkAttemptStatus", "WorkCommission", "WriteEligibility", "action_permitted",
+    "ADAPTERS", "BrowserConnectionBootstrapController", "BrowserConnectionProbe", "BrowserConnectionState",
+    "BrowserSkillReceipt", "CareerTrajectory", "ClassificationStatus", "CommissionEconomics", "CompetencyLevel",
+    "CompetencyRecord", "CompletionDecision", "ConceptKind", "CredentialRecord", "CrosswalkEdge", "CrosswalkRelation",
+    "DevelopmentPlan", "DisciplineProfileV2", "EmergentOccupationCandidate", "Engagement", "EngineeringMemoryEntry",
+    "EscoAdapter", "EvaluatorProfile", "EvidenceReceipt", "ExperienceNode", "GitHubActionsBudgetAuthorization",
+    "GitHubActionsBudgetObservation", "GitHubActionsBudgetPlan", "ImpactDomain", "ImpactEdge", "ImpactGraph",
+    "InMemoryRegistryStore", "IngestionDiff", "IngestionReceipt", "InterdisciplinaryPractice", "IscoAdapter",
+    "MethodOutcome", "NocAdapter", "NormalizedSourceRecord", "OccupationProfileV3", "OccupationalBinding",
+    "OccupationalConcept", "OccupationalIngestionPipeline", "OccupationalKnowledgeRegistry", "OccupationalRegistry",
+    "OccupationalRegistryStore", "OccupationalRisk", "OccupationalSourceAdapter", "OnetAdapter", "OutcomeContract",
+    "QuestCompatibilityAlias", "RawSourcePackage", "RepositoryAtlas", "RepositoryEngineer",
+    "RepositoryEngineeringAuthority", "RepositoryEngineeringOrchestratorV2", "ScopeClassification", "ScopeOfPractice",
+    "SocAdapter", "SourceAuthority", "SourceDescriptor", "StandardOfPractice", "TitleResolutionCandidate", "TitleResolver",
+    "WorkAttempt", "WorkAttemptStatus", "WorkCommission", "WriteEligibility", "action_permitted", "adapter_for",
     "canonical_sha256",
 ]
