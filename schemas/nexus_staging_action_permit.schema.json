@@ -1,0 +1,211 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://regenexcalibur.invalid/schemas/nexus_staging_action_permit.schema.json",
+  "title": "AIGC Nexus Staging Just-in-Time One-Action Permit",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "permit_id",
+    "nonce",
+    "permit_kind",
+    "repository",
+    "project_id",
+    "project_number",
+    "region",
+    "release_sha",
+    "release_tree_sha",
+    "resource_manifest_sha256",
+    "ci_admission_sha256",
+    "authorization_sha256",
+    "plan_sha256",
+    "action_index",
+    "action_name",
+    "target",
+    "target_rule",
+    "predecessor",
+    "reconciliation",
+    "receipt_bucket",
+    "maximum_target_mutations",
+    "automatic_retry",
+    "consumption_mode",
+    "public_traffic",
+    "live_model_call",
+    "production_activation",
+    "signer_principal",
+    "executor_principal",
+    "kms_key_version",
+    "signing_algorithm",
+    "public_key_sha256",
+    "issued_at",
+    "not_before",
+    "expires_at",
+    "signature_b64"
+  ],
+  "properties": {
+    "schema_version": {"const": "aigc.nexus-staging-action-permit.v2"},
+    "permit_id": {"type": "string", "pattern": "^ACT-[A-Z0-9_-]{8,64}$"},
+    "nonce": {"$ref": "#/$defs/sha256"},
+    "permit_kind": {"enum": ["execute", "reconcile"]},
+    "repository": {"const": "Lornt1666/AIGC"},
+    "project_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]{4,28}[a-z0-9]$"},
+    "project_number": {"type": "string", "pattern": "^[0-9]{6,20}$"},
+    "region": {"const": "northamerica-northeast1"},
+    "release_sha": {"$ref": "#/$defs/gitSha"},
+    "release_tree_sha": {"$ref": "#/$defs/gitSha"},
+    "resource_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "ci_admission_sha256": {"$ref": "#/$defs/sha256"},
+    "authorization_sha256": {"$ref": "#/$defs/sha256"},
+    "plan_sha256": {"$ref": "#/$defs/sha256"},
+    "action_index": {"type": "integer", "minimum": 0, "maximum": 5},
+    "action_name": {
+      "enum": [
+        "cloud_build_submit",
+        "sbom_export",
+        "migration_job_deploy",
+        "migration_execute",
+        "operator_deploy",
+        "judge_deploy"
+      ]
+    },
+    "target": {"type": "string", "minLength": 1, "maxLength": 1024},
+    "target_rule": {
+      "enum": [
+        "exact_immutable_release_tag",
+        "verified_predecessor_image_digest",
+        "exact_migration_job",
+        "exact_migration_job_execution",
+        "exact_private_no_traffic_service"
+      ]
+    },
+    "predecessor": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/predecessor"}
+      ]
+    },
+    "reconciliation": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/reconciliation"}
+      ]
+    },
+    "receipt_bucket": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{1,61}[a-z0-9]$"
+    },
+    "maximum_target_mutations": {"type": "integer", "minimum": 0, "maximum": 1},
+    "automatic_retry": {"const": false},
+    "consumption_mode": {"const": "gcs_if_generation_match_zero"},
+    "public_traffic": {"const": false},
+    "live_model_call": {"const": false},
+    "production_activation": {"const": false},
+    "signer_principal": {"$ref": "#/$defs/serviceAccount"},
+    "executor_principal": {"$ref": "#/$defs/serviceAccount"},
+    "kms_key_version": {
+      "type": "string",
+      "pattern": "^projects/[a-z][a-z0-9-]{4,28}[a-z0-9]/locations/northamerica-northeast1/keyRings/[A-Za-z0-9_-]{1,63}/cryptoKeys/[A-Za-z0-9_-]{1,63}/cryptoKeyVersions/[1-9][0-9]*$"
+    },
+    "signing_algorithm": {"const": "RSA_SIGN_PSS_2048_SHA256"},
+    "public_key_sha256": {"$ref": "#/$defs/sha256"},
+    "issued_at": {"type": "string", "format": "date-time"},
+    "not_before": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "signature_b64": {"type": "string", "minLength": 32, "maxLength": 2048}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"action_index": {"const": 0}}, "required": ["action_index"]},
+      "then": {"properties": {"predecessor": {"type": "null"}}},
+      "else": {"properties": {"predecessor": {"$ref": "#/$defs/predecessor"}}}
+    },
+    {
+      "if": {"properties": {"permit_kind": {"const": "execute"}}, "required": ["permit_kind"]},
+      "then": {
+        "properties": {
+          "maximum_target_mutations": {"const": 1},
+          "reconciliation": {"type": "null"}
+        }
+      },
+      "else": {
+        "properties": {
+          "maximum_target_mutations": {"const": 0},
+          "reconciliation": {"$ref": "#/$defs/reconciliation"}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "gitSha": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "generation": {"type": "string", "pattern": "^[1-9][0-9]*$"},
+    "serviceAccount": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{4,28}[a-z0-9]@[a-z][a-z0-9-]{4,28}[a-z0-9]\\.iam\\.gserviceaccount\\.com$"
+    },
+    "checkpointUri": {
+      "type": "string",
+      "pattern": "^gs://[a-z0-9][a-z0-9._-]{1,61}[a-z0-9]/staging-action-checkpoints/[a-f0-9]{40}/[0-9]{2}-[a-f0-9]{64}\\.json$"
+    },
+    "permitConsumptionUri": {
+      "type": "string",
+      "pattern": "^gs://[a-z0-9][a-z0-9._-]{1,61}[a-z0-9]/staging-action-permits/[a-f0-9]{40}/[0-9]{2}-ACT-[A-Z0-9_-]{8,64}\\.json$"
+    },
+    "predecessor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action_index",
+        "action_name",
+        "action_receipt_sha256",
+        "action_permit_sha256",
+        "checkpoint_sha256",
+        "checkpoint_object_uri",
+        "checkpoint_object_generation",
+        "checkpoint_object_sha256"
+      ],
+      "properties": {
+        "action_index": {"type": "integer", "minimum": 0, "maximum": 4},
+        "action_name": {
+          "enum": [
+            "cloud_build_submit",
+            "sbom_export",
+            "migration_job_deploy",
+            "migration_execute",
+            "operator_deploy"
+          ]
+        },
+        "action_receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "action_permit_sha256": {"$ref": "#/$defs/sha256"},
+        "checkpoint_sha256": {"$ref": "#/$defs/sha256"},
+        "checkpoint_object_uri": {"$ref": "#/$defs/checkpointUri"},
+        "checkpoint_object_generation": {"$ref": "#/$defs/generation"},
+        "checkpoint_object_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "reconciliation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "original_permit_id",
+        "original_permit_sha256",
+        "original_predecessor_action_permit_sha256",
+        "original_consumption_uri",
+        "original_consumption_generation",
+        "original_consumption_record_sha256",
+        "readback_hint_sha256",
+        "reason"
+      ],
+      "properties": {
+        "original_permit_id": {"type": "string", "pattern": "^ACT-[A-Z0-9_-]{8,64}$"},
+        "original_permit_sha256": {"$ref": "#/$defs/sha256"},
+        "original_predecessor_action_permit_sha256": {"$ref": "#/$defs/sha256"},
+        "original_consumption_uri": {"$ref": "#/$defs/permitConsumptionUri"},
+        "original_consumption_generation": {"$ref": "#/$defs/generation"},
+        "original_consumption_record_sha256": {"$ref": "#/$defs/sha256"},
+        "readback_hint_sha256": {"$ref": "#/$defs/sha256"},
+        "reason": {"const": "indeterminate_target_mutation"}
+      }
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://regenexcalibur.invalid/schemas/nexus_canary_jit_impersonation_receipt.schema.json",
+  "title": "AIGC Canary External JIT Impersonation Grant Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "receipt_id", "action", "project_id", "region",
+    "source_principal", "target_principal", "target_service_account_resource",
+    "target_resource", "governed_permit_id", "request_sha256", "role",
+    "grant_scope", "grant_condition_expression", "grant_observed", "source_authority_verified",
+    "account_level_grant", "service_account_key_used",
+    "workload_identity_federation_used", "revocation_required", "revoked_at",
+    "kms_key_version", "signing_algorithm", "public_key_sha256",
+    "issued_at", "not_before", "expires_at", "signature_b64"
+  ],
+  "properties": {
+    "schema_version": {"const": "aigc.nexus-canary-jit-impersonation-receipt.v1"},
+    "receipt_id": {"type": "string", "pattern": "^JIT-[A-Z0-9_-]{8,64}$"},
+    "action": {"enum": ["provision_job", "bind_executor", "execute_job", "publish_receipt"]},
+    "project_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]{4,28}[a-z0-9]$"},
+    "region": {"const": "northamerica-northeast1"},
+    "source_principal": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.+@:-]{2,254}$"},
+    "target_principal": {"$ref": "#/$defs/serviceAccount"},
+    "target_service_account_resource": {
+      "type": "string",
+      "pattern": "^projects/-/serviceAccounts/[a-z][a-z0-9-]{4,28}[a-z0-9]@[a-z][a-z0-9-]{4,28}[a-z0-9]\\.iam\\.gserviceaccount\\.com$"
+    },
+    "target_resource": {"type": "string", "minLength": 10, "maxLength": 1000},
+    "governed_permit_id": {"type": "string", "pattern": "^[A-Z][A-Z0-9_-]{7,79}$"},
+    "request_sha256": {"$ref": "#/$defs/sha256"},
+    "role": {"const": "roles/iam.serviceAccountTokenCreator"},
+    "grant_scope": {"const": "exact_target_service_account"},
+    "grant_condition_expression": {"type": "string", "minLength": 30, "maxLength": 200},
+    "grant_observed": {"const": true},
+    "source_authority_verified": {"const": true},
+    "account_level_grant": {"const": false},
+    "service_account_key_used": {"const": false},
+    "workload_identity_federation_used": {"const": false},
+    "revocation_required": {"const": true},
+    "revoked_at": {"type": "null"},
+    "kms_key_version": {
+      "type": "string",
+      "pattern": "^projects/[a-z][a-z0-9-]{4,28}[a-z0-9]/locations/northamerica-northeast1/keyRings/[A-Za-z0-9_-]{1,63}/cryptoKeys/[A-Za-z0-9_-]{1,63}/cryptoKeyVersions/[1-9][0-9]*$"
+    },
+    "signing_algorithm": {"const": "RSA_SIGN_PSS_2048_SHA256"},
+    "public_key_sha256": {"$ref": "#/$defs/sha256"},
+    "issued_at": {"type": "string", "format": "date-time"},
+    "not_before": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "signature_b64": {"type": "string", "minLength": 32, "maxLength": 2048}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "serviceAccount": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{4,28}[a-z0-9]@[a-z][a-z0-9-]{4,28}[a-z0-9]\\.iam\\.gserviceaccount\\.com$"
+    }
+  }
+}

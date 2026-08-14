@@ -6,17 +6,17 @@ on:
       - "**"
   pull_request:
     branches:
-      - main
+      - "**"
 
 permissions:
   contents: read
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     services:
       postgres:
-        image: postgres:16-alpine
+        image: postgres:16.14-alpine3.24@sha256:57c72fd2a128e416c7fcc499958864df5301e940bca0a56f58fddf30ffc07777
         env:
           POSTGRES_HOST_AUTH_METHOD: trust
           POSTGRES_DB: aigc_test
@@ -55,7 +55,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
-          python-version: "3.12"
+          python-version: "3.12.13"
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e
@@ -63,8 +63,10 @@ jobs:
           terraform_version: "1.10.5"
           terraform_wrapper: false
 
-      - name: Install dependencies
-        run: python -m pip install -r requirements.txt
+      - name: Install hash-locked dependencies
+        run: |
+          python -m pip install --require-hashes -r requirements.lock
+          python -m pip check
 
       - name: Resolve tested tree
         id: tested
@@ -84,37 +86,172 @@ jobs:
             --run-number "$GITHUB_RUN_NUMBER" \
             --run-id "$GITHUB_RUN_ID"
 
-      - name: Build Nexus staging container locally
+      - name: Build and harden-smoke Nexus staging container locally
         shell: bash
         run: |
           set -euo pipefail
+          context_dir="$RUNNER_TEMP/nexus-build-context"
+          python scripts/prepare_nexus_build_context.py \
+            --expected-sha "$REQUESTED_REVISION" \
+            --expected-tree "${{ steps.tested.outputs.tree_sha }}" \
+            --allowlist config/nexus_build_context_allowlist.json \
+            --output-dir "$context_dir" \
+            > "$RUNNER_TEMP/aigc-ci-stage-results/nexus_build_context_receipt.json"
+          context_digest="$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["manifest_sha256"])' "$RUNNER_TEMP/aigc-ci-stage-results/nexus_build_context_receipt.json")"
+          base_image="$(sed -n 's/^ARG PYTHON_BASE_IMAGE=//p' "$context_dir/Dockerfile.nexus")"
+          if ! [[ "$base_image" =~ @sha256:[a-f0-9]{64}$ ]]; then
+            echo "Nexus local CI base image must be pinned by digest." >&2
+            exit 1
+          fi
           image_tag="aigc-nexus-ci:${REQUESTED_REVISION}"
-          docker build --file Dockerfile.nexus --tag "$image_tag" .
+          docker build \
+            --file "$context_dir/Dockerfile.nexus" \
+            --tag "$image_tag" \
+            --build-arg "RELEASE_SHA=$REQUESTED_REVISION" \
+            --build-arg "SOURCE_CONTEXT_SHA256=$context_digest" \
+            "$context_dir"
           image_id="$(docker image inspect "$image_tag" --format '{{.Id}}')"
           image_user="$(docker image inspect "$image_tag" --format '{{.Config.User}}')"
           if [ "$image_user" != "aigc" ]; then
             echo "Nexus staging image must run as non-root user aigc." >&2
             exit 1
           fi
+
+          revision_label="$(docker image inspect "$image_tag" --format '{{index .Config.Labels "org.opencontainers.image.revision"}}')"
+          context_label="$(docker image inspect "$image_tag" --format '{{index .Config.Labels "ai.aigc.source-context-sha256"}}')"
+          if [ "$revision_label" != "$REQUESTED_REVISION" ] || [ "$context_label" != "$context_digest" ]; then
+            echo "Nexus staging image identity labels do not match the admitted context." >&2
+            exit 1
+          fi
+
+          container_name="aigc-nexus-smoke-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          cleanup_container() {
+            docker rm --force "$container_name" >/dev/null 2>&1 || true
+          }
+          trap cleanup_container EXIT
+          docker run \
+            --detach \
+            --name "$container_name" \
+            --read-only \
+            --network none \
+            --cap-drop ALL \
+            --security-opt no-new-privileges:true \
+            --pids-limit 256 \
+            --memory 512m \
+            --cpus 1 \
+            --tmpfs /tmp:rw,nosuid,nodev,noexec,size=16777216 \
+            "$image_tag" >/dev/null
+
+          health_json=""
+          for _attempt in $(seq 1 30); do
+            if health_json="$(docker exec "$container_name" python -c "import urllib.request; print(urllib.request.urlopen('http://127.0.0.1:8080/health', timeout=1).read().decode())" 2>/dev/null)"; then
+              break
+            fi
+            sleep 1
+          done
+          if [ -z "$health_json" ]; then
+            echo "Hardened Nexus /health smoke check did not become ready." >&2
+            exit 1
+          fi
+
+          runtime_uid="$(docker exec "$container_name" id -u)"
+          runtime_read_only="$(docker inspect "$container_name" --format '{{.HostConfig.ReadonlyRootfs}}')"
+          runtime_network="$(docker inspect "$container_name" --format '{{.HostConfig.NetworkMode}}')"
+          runtime_cap_drop="$(docker inspect "$container_name" --format '{{json .HostConfig.CapDrop}}')"
+          runtime_security_opt="$(docker inspect "$container_name" --format '{{json .HostConfig.SecurityOpt}}')"
+          if [ "$runtime_uid" = "0" ] || [ "$runtime_read_only" != "true" ] || [ "$runtime_network" != "none" ]; then
+            echo "Nexus hardened runtime identity/filesystem/network policy failed." >&2
+            exit 1
+          fi
+          if [ "$runtime_cap_drop" != '["ALL"]' ] || [[ "$runtime_security_opt" != *'no-new-privileges:true'* ]]; then
+            echo "Nexus hardened runtime capability policy failed." >&2
+            exit 1
+          fi
+
           export NEXUS_CI_IMAGE_ID="$image_id"
           export NEXUS_CI_IMAGE_USER="$image_user"
+          export NEXUS_CI_CONTEXT_DIGEST="$context_digest"
+          export NEXUS_CI_REVISION_LABEL="$revision_label"
+          export NEXUS_CI_CONTEXT_LABEL="$context_label"
+          export NEXUS_CI_RUNTIME_UID="$runtime_uid"
+          export NEXUS_CI_RUNTIME_READ_ONLY="$runtime_read_only"
+          export NEXUS_CI_RUNTIME_NETWORK="$runtime_network"
+          export NEXUS_CI_RUNTIME_CAP_DROP="$runtime_cap_drop"
+          export NEXUS_CI_RUNTIME_SECURITY_OPT="$runtime_security_opt"
+          export NEXUS_CI_HEALTH_JSON="$health_json"
+          export NEXUS_CI_BASE_IMAGE="$base_image"
+          export NEXUS_CI_TESTED_TREE="${{ steps.tested.outputs.tree_sha }}"
           python - <<'PY'
           import json
+          import hashlib
           import os
           from datetime import datetime, timezone
           from pathlib import Path
 
+          health = json.loads(os.environ["NEXUS_CI_HEALTH_JSON"])
+          required_health = {
+              "ok": True,
+              "service": "aigc-nexus-v1",
+              "process_alive": True,
+              "live_provider_execution_enabled": False,
+              "production_activation": False,
+              "live_model_call_performed": False,
+          }
+          if any(health.get(key) != value for key, value in required_health.items()):
+              raise SystemExit("Nexus /health returned an unsafe or incomplete contract")
+
+          context_receipt_path = Path(
+              os.environ["RUNNER_TEMP"],
+              "aigc-ci-stage-results",
+              "nexus_build_context_receipt.json",
+          )
           receipt = {
-              "schema_version": "aigc.nexus-local-container-build.v1",
+              "schema_version": "aigc.nexus-local-container-build.v2",
               "repository_revision": os.environ["REQUESTED_REVISION"],
+              "tested_tree_sha": os.environ["NEXUS_CI_TESTED_TREE"],
               "image_id": os.environ["NEXUS_CI_IMAGE_ID"],
-              "container_user": os.environ["NEXUS_CI_IMAGE_USER"],
+              "image_config_user": os.environ["NEXUS_CI_IMAGE_USER"],
+              "image_identity_labels": {
+                  "org.opencontainers.image.revision": os.environ["NEXUS_CI_REVISION_LABEL"],
+                  "ai.aigc.source-context-sha256": os.environ["NEXUS_CI_CONTEXT_LABEL"],
+              },
+              "source_context_sha256": os.environ["NEXUS_CI_CONTEXT_DIGEST"],
+              "source_context_receipt_sha256": hashlib.sha256(
+                  context_receipt_path.read_bytes()
+              ).hexdigest(),
+              "dependency_lock_sha256": hashlib.sha256(
+                  Path("requirements.lock").read_bytes()
+              ).hexdigest(),
+              "python_base_image": os.environ["NEXUS_CI_BASE_IMAGE"],
+              "dockerfile_sha256": hashlib.sha256(
+                  Path("Dockerfile.nexus").read_bytes()
+              ).hexdigest(),
               "dockerfile": "Dockerfile.nexus",
+              "runtime_smoke": {
+                  "health_contract_passed": True,
+                  "health_response_sha256": hashlib.sha256(
+                      os.environ["NEXUS_CI_HEALTH_JSON"].encode()
+                  ).hexdigest(),
+                  "non_root": os.environ["NEXUS_CI_RUNTIME_UID"] != "0",
+                  "runtime_uid": int(os.environ["NEXUS_CI_RUNTIME_UID"]),
+                  "read_only_root_filesystem": os.environ["NEXUS_CI_RUNTIME_READ_ONLY"] == "true",
+                  "network_mode": os.environ["NEXUS_CI_RUNTIME_NETWORK"],
+                  "capabilities_dropped": json.loads(os.environ["NEXUS_CI_RUNTIME_CAP_DROP"]),
+                  "no_new_privileges": "no-new-privileges:true" in os.environ["NEXUS_CI_RUNTIME_SECURITY_OPT"],
+                  "live_provider_execution_enabled": False,
+                  "production_activation": False,
+                  "live_model_call_performed": False,
+              },
+              "release_base_image_status": "immutable_default_verified",
               "registry_push_performed": False,
               "cloud_build_performed": False,
               "deployment_performed": False,
+              "external_action_performed": False,
               "captured_at": datetime.now(timezone.utc).isoformat(),
           }
+          receipt["receipt_sha256"] = hashlib.sha256(
+              json.dumps(receipt, sort_keys=True, separators=(",", ":")).encode()
+          ).hexdigest()
           Path(os.environ["RUNNER_TEMP"], "aigc-ci-stage-results", "nexus_local_container_build_receipt.json").write_text(
               json.dumps(receipt, sort_keys=True, indent=2) + "\n",
               encoding="utf-8",
@@ -127,31 +264,106 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/aigc-ci-stage-results"
           python - <<'PY'
+          import hashlib
           import json
           import os
+          import platform
+          import subprocess
           from datetime import datetime, timezone
           from pathlib import Path
 
+          results_dir = Path(os.environ["RUNNER_TEMP"], "aigc-ci-stage-results")
+          contract = json.loads(
+              Path("config/exact_sha_ci_validation_contract.json").read_text(
+                  encoding="utf-8"
+              )
+          )
+          expected_stage_ids = [item["id"] for item in contract["stages"]]
+          stage_receipts = {}
+          successful_stage_ids = []
+          for stage_id in expected_stage_ids:
+              path = results_dir / f"{stage_id}.json"
+              if not path.is_file():
+                  stage_receipts[stage_id] = {"present": False}
+                  continue
+              payload = json.loads(path.read_text(encoding="utf-8"))
+              status = payload.get("status")
+              stage_receipts[stage_id] = {
+                  "present": True,
+                  "status": status,
+                  "receipt_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                  "record_sha256": payload.get("record_sha256"),
+              }
+              if status == "success":
+                  successful_stage_ids.append(stage_id)
+
+          lockfile_path = Path("infra/gcp/quebec/.terraform.lock.hcl")
+          lockfile_committed = subprocess.run(
+              ["git", "ls-files", "--error-unmatch", lockfile_path.as_posix()],
+              stdout=subprocess.DEVNULL,
+              stderr=subprocess.DEVNULL,
+          ).returncode == 0
+          terraform_version = "unavailable"
+          try:
+              terraform_version = json.loads(
+                  subprocess.check_output(
+                      ["terraform", "version", "-json"], text=True
+                  )
+              )["terraform_version"]
+          except (KeyError, json.JSONDecodeError, OSError, subprocess.SubprocessError):
+              pass
+
           receipt = {
+              "schema_version": "aigc.exact-head-admission-receipt.v2",
               "repository": os.environ["GITHUB_REPOSITORY"],
               "pr_number": int(os.environ.get("PR_NUMBER", "0")),
               "workflow_event": os.environ["GITHUB_EVENT_NAME"],
-              "requested_head_sha": os.environ.get("REQUESTED_HEAD_SHA", ""),
+              "requested_head_sha": os.environ.get("REQUESTED_HEAD_SHA") or os.environ["REQUESTED_REVISION"],
               "observed_head_sha": os.environ.get("OBSERVED_HEAD_SHA", ""),
               "tested_tree_sha": os.environ.get("TESTED_TREE_SHA", ""),
               "base_sha": os.environ.get("BASE_SHA", ""),
               "workflow_revision": os.environ.get("WORKFLOW_REVISION", ""),
               "workflow_run_number": int(os.environ["GITHUB_RUN_NUMBER"]),
               "workflow_run_id": int(os.environ["GITHUB_RUN_ID"]),
+              "workflow_run_attempt": int(os.environ["GITHUB_RUN_ATTEMPT"]),
               "artifact_name": os.environ.get("ARTIFACT_NAME", ""),
+              "job_status": os.environ.get("JOB_STATUS", "unknown"),
+              "canonical_contract_sha256": hashlib.sha256(
+                  json.dumps(
+                      contract,
+                      sort_keys=True,
+                      separators=(",", ":"),
+                      ensure_ascii=False,
+                  ).encode()
+              ).hexdigest(),
+              "expected_stage_ids": expected_stage_ids,
+              "successful_stage_ids": successful_stage_ids,
+              "all_canonical_stages_success": successful_stage_ids == expected_stage_ids,
+              "stage_receipts": stage_receipts,
+              "toolchain": {
+                  "runner": "ubuntu-24.04",
+                  "python": platform.python_version(),
+                  "terraform": terraform_version,
+                  "postgres_service_image": "postgres:16.14-alpine3.24@sha256:57c72fd2a128e416c7fcc499958864df5301e940bca0a56f58fddf30ffc07777",
+              },
+              "quebec_provider_lockfile_committed": lockfile_committed,
+              "quebec_provider_lockfile_sha256": (
+                  hashlib.sha256(lockfile_path.read_bytes()).hexdigest()
+                  if lockfile_committed and lockfile_path.is_file()
+                  else None
+              ),
               "captured_timestamp": datetime.now(timezone.utc).isoformat(),
               "external_authority_granted": False,
+              "external_action_performed": False,
               "merge_authority_granted": False,
               "deployment_authority_granted": False,
               "live_model_call_authority_granted": False,
               "financial_authority_granted": False,
           }
-          Path(os.environ["RUNNER_TEMP"], "aigc-ci-stage-results", "exact_head_admission_receipt.json").write_text(
+          receipt["receipt_sha256"] = hashlib.sha256(
+              json.dumps(receipt, sort_keys=True, separators=(",", ":")).encode()
+          ).hexdigest()
+          (results_dir / "exact_head_admission_receipt.json").write_text(
               json.dumps(receipt, sort_keys=True, indent=2) + "\n",
               encoding="utf-8",
           )
@@ -164,6 +376,7 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
           WORKFLOW_REVISION: ${{ github.workflow_sha || github.sha }}
           ARTIFACT_NAME: aigc-colosseum-orchestration-exact-head-${{ env.REQUESTED_REVISION }}
+          JOB_STATUS: ${{ job.status }}
 
       - name: Upload canonical validation evidence
         if: always()
@@ -172,3 +385,4 @@ jobs:
           name: aigc-colosseum-orchestration-exact-head-${{ env.REQUESTED_REVISION }}
           path: ${{ runner.temp }}/aigc-ci-stage-results
           if-no-files-found: error
+          include-hidden-files: true

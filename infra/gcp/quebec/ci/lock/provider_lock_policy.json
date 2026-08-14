@@ -1,0 +1,10 @@
+{
+  "schema_version": "aigc.terraform-provider-lock-policy.v1",
+  "lockfile_path": "infra/gcp/quebec/.terraform.lock.hcl",
+  "provider_source": "registry.terraform.io/hashicorp/google",
+  "provider_version": "6.49.0",
+  "bootstrap_command": "terraform -chdir=infra/gcp/quebec init -backend=false -input=false -no-color",
+  "bootstrap_artifact_path": "quebec_terraform_lock_bootstrap/terraform.lock.hcl.generated",
+  "committed_lockfile_required_for_pass": true,
+  "handwritten_lockfile_permitted": false
+}

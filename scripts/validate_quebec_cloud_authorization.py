@@ -33,8 +33,12 @@ SERVICE_ACCOUNT = re.compile(
 )
 SECRET_REF = re.compile(
     r"^projects/(?P<project>[a-z][a-z0-9-]{4,28}[a-z0-9])/"
-    r"locations/northamerica-northeast1/secrets/[A-Za-z0-9_-]{1,255}/"
-    r"versions/[1-9][0-9]*$"
+    r"locations/northamerica-northeast1/secrets/(?P<secret>[A-Za-z0-9_-]{1,255})/"
+    r"versions/(?P<version>[1-9][0-9]*)$"
+)
+RESOURCE_PREFIX = re.compile(r"^[a-z][a-z0-9-]{2,18}$")
+IMMUTABLE_CONTAINER_IMAGE = re.compile(
+    r"^[A-Za-z0-9][A-Za-z0-9._:/-]*@sha256:[a-f0-9]{64}$"
 )
 REQUIRED_REVIEWS = (
     "cloud_run_montreal",
@@ -68,6 +72,24 @@ REQUIRED_SECRETS = (
     "runtime_admin_binding_key",
     "judge_token",
     "judge_binding_key",
+)
+REQUIRED_RESOURCES = (
+    "artifact_registry_repository",
+    "operator_service",
+    "judge_service",
+    "cloud_sql_instance",
+    "database_name",
+    "evidence_bucket",
+    "judge_bucket",
+    "receipt_bucket",
+    "build_source_bucket",
+    "log_bucket",
+    "kms_key_ring",
+)
+REQUIRED_SUPPLY_CHAIN = (
+    "docker_builder_image",
+    "python_base_image",
+    "sbom_generator_image",
 )
 FALSE_AUTHORITIES = (
     "production_activation_authorized",
@@ -121,6 +143,154 @@ def _time(value: Any, name: str) -> datetime:
     if parsed.tzinfo is None:
         raise AuthorizationError(f"{name} must include a timezone")
     return parsed.astimezone(timezone.utc)
+
+
+def authorization_inventory(payload: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "project_id": payload.get("project_id"),
+        "project_number": payload.get("project_number"),
+        "region": payload.get("region"),
+        "resource_prefix": payload.get("resource_prefix"),
+        "resources": payload.get("resources"),
+        "service_accounts": payload.get("service_accounts"),
+        "exact_secret_version_refs": payload.get("exact_secret_version_refs"),
+        "supply_chain": payload.get("supply_chain"),
+        "ci_admission_sha256": payload.get("ci_admission_sha256"),
+    }
+
+
+def _verify_manifest_authorization_bindings(
+    payload: dict[str, Any], manifest: dict[str, Any]
+) -> str:
+    for name in ("project_id", "project_number", "region"):
+        if manifest.get(name) != payload.get(name):
+            raise AuthorizationError(f"resource manifest {name} does not match authorization")
+    if manifest.get("resource_prefix") != payload.get("resource_prefix"):
+        raise AuthorizationError("resource manifest resource_prefix does not match authorization")
+    bindings = _mapping(manifest, "authorization_bindings")
+    for name in ("resources", "service_accounts", "exact_secret_version_refs"):
+        if bindings.get(name) != payload.get(name):
+            raise AuthorizationError(
+                f"resource manifest authorization_bindings.{name} does not match authorization"
+            )
+    scope = deterministic_authorized_scope(payload)
+    resources = scope["resources"]
+    expected_resource_pairs = {
+        ("artifact_registry", resources["artifact_registry_repository"]),
+        ("cloud_sql_postgresql", resources["cloud_sql_instance"]),
+        ("cloud_run_service", resources["operator_service"]),
+        ("cloud_run_service", resources["judge_service"]),
+        ("storage_bucket", resources["evidence_bucket"]),
+        ("storage_bucket", resources["judge_bucket"]),
+        ("storage_bucket", resources["receipt_bucket"]),
+        ("storage_bucket", resources["build_source_bucket"]),
+        ("regional_secret_manager", f"{scope['resource_prefix']}-secret-set"),
+        ("kms_key_ring", resources["kms_key_ring"]),
+        ("logging_bucket", resources["log_bucket"]),
+    }
+    resource_items = manifest.get("resources")
+    if not isinstance(resource_items, list):
+        raise AuthorizationError("resource manifest resources must be an array")
+    observed_resource_pairs = [
+        (item.get("kind"), item.get("name"))
+        for item in resource_items
+        if isinstance(item, dict)
+    ]
+    if (
+        len(observed_resource_pairs) != len(expected_resource_pairs)
+        or set(observed_resource_pairs) != expected_resource_pairs
+    ):
+        raise AuthorizationError(
+            "resource manifest resources do not match the deterministic authorized inventory"
+        )
+    expected_control_pairs = {
+        ("google_cloud_project", scope["project_id"]),
+        ("iam_and_service_accounts", f"{scope['resource_prefix']}-gha"),
+        ("billing_and_budget", payload.get("billing_account_id")),
+        ("vpc_network", f"{scope['resource_prefix']}-vpc"),
+        ("private_service_access", f"{scope['resource_prefix']}-private-services"),
+    }
+    control_items = manifest.get("control_plane_resources")
+    if not isinstance(control_items, list):
+        raise AuthorizationError(
+            "resource manifest control_plane_resources must be an array"
+        )
+    observed_control_pairs = [
+        (item.get("kind"), item.get("name"))
+        for item in control_items
+        if isinstance(item, dict)
+    ]
+    if (
+        len(observed_control_pairs) != len(expected_control_pairs)
+        or set(observed_control_pairs) != expected_control_pairs
+    ):
+        raise AuthorizationError(
+            "resource manifest control plane does not match the deterministic authorized inventory"
+        )
+    inventory_digest = canonical_sha256(authorization_inventory(payload))
+    if payload.get("authorization_inventory_sha256") != inventory_digest:
+        raise AuthorizationError(
+            "authorization_inventory_sha256 does not match the exact project/resource/identity/secret inventory"
+        )
+    return inventory_digest
+
+
+def deterministic_authorized_scope(payload: dict[str, Any]) -> dict[str, Any]:
+    project = _text(payload, "project_id")
+    prefix = _text(payload, "resource_prefix")
+    if not RESOURCE_PREFIX.fullmatch(prefix):
+        raise AuthorizationError("resource_prefix is invalid")
+    resources = {
+        "artifact_registry_repository": f"{prefix}-runtime",
+        "operator_service": f"{prefix}-operator",
+        "judge_service": f"{prefix}-judge",
+        "cloud_sql_instance": f"{prefix}-control",
+        "database_name": "aigc_control",
+        "evidence_bucket": f"{project}-{prefix}-evidence",
+        "judge_bucket": f"{project}-{prefix}-judge",
+        "receipt_bucket": f"{project}-{prefix}-receipts",
+        "build_source_bucket": f"{project}-{prefix}-build-source",
+        "log_bucket": f"{prefix}-logs",
+        "kms_key_ring": f"{prefix}-keys",
+    }
+    service_accounts = {
+        role: f"{prefix}-{suffix}@{project}.iam.gserviceaccount.com"
+        for role, suffix in {
+            "deployer": "deployer",
+            "cloud_build": "build",
+            "operator": "operator",
+            "canary_gemini": "can-gem",
+            "canary_openai": "can-oai",
+            "canary_provisioner": "can-prov",
+            "canary_binder": "can-bind",
+            "canary_executor": "can-exec",
+            "canary_publisher": "can-pub",
+            "judge": "judge",
+            "security_review": "security",
+            "authority_signer": "signer",
+        }.items()
+    }
+    secret_ids = {
+        purpose: f"{prefix}-{suffix}"
+        for purpose, suffix in {
+            "runtime_control_dsn": "runtime-control-dsn",
+            "operator_token": "operator-token",
+            "operator_binding_key": "operator-binding-key",
+            "runtime_admin_token": "runtime-admin-token",
+            "runtime_admin_binding_key": "runtime-admin-binding-key",
+            "judge_token": "judge-token",
+            "judge_binding_key": "judge-binding-key",
+        }.items()
+    }
+    return {
+        "project_id": project,
+        "project_number": payload.get("project_number"),
+        "region": REGION,
+        "resource_prefix": prefix,
+        "resources": resources,
+        "service_accounts": service_accounts,
+        "regional_secret_ids": secret_ids,
+    }
 
 
 def validate(
@@ -185,6 +355,9 @@ def validate(
         raise AuthorizationError("project_number is invalid")
     if not BILLING.fullmatch(_text(payload, "billing_account_id")):
         raise AuthorizationError("billing_account_id is invalid")
+    prefix = _text(payload, "resource_prefix")
+    if not RESOURCE_PREFIX.fullmatch(prefix):
+        raise AuthorizationError("resource_prefix is invalid")
     if payload.get("billing_account_currency") != costs.get("currency"):
         raise AuthorizationError(
             "billing-account currency must match the authorized budget currency"
@@ -193,6 +366,11 @@ def validate(
         raise AuthorizationError("release_sha is invalid")
     if not SHA.fullmatch(_text(payload, "release_tree_sha")):
         raise AuthorizationError("release_tree_sha is invalid")
+    ci_admission_digest = _text(payload, "ci_admission_sha256")
+    if not SHA256.fullmatch(ci_admission_digest) or ci_admission_digest == "0" * 64:
+        raise AuthorizationError(
+            "ci_admission_sha256 must bind a retained exact-head CI admission artifact"
+        )
     manifest_digest = _text(payload, "resource_manifest_sha256")
     if not SHA256.fullmatch(manifest_digest):
         raise AuthorizationError("resource_manifest_sha256 is invalid")
@@ -207,6 +385,10 @@ def validate(
             raise AuthorizationError(
                 "resource manifest failed the Québec customer-content and control-plane classification gate"
             ) from exc
+
+    inventory_digest = _text(payload, "authorization_inventory_sha256")
+    if not SHA256.fullmatch(inventory_digest):
+        raise AuthorizationError("authorization_inventory_sha256 is invalid")
 
     if gate == "ci":
         if authority.get("resource_creation_authorized") is not False:
@@ -251,8 +433,15 @@ def validate(
         "deployer",
         "cloud_build",
         "operator",
+        "canary_gemini",
+        "canary_openai",
+        "canary_provisioner",
+        "canary_binder",
+        "canary_executor",
+        "canary_publisher",
         "judge",
         "security_review",
+        "authority_signer",
     }
     if set(accounts) != expected_account_names:
         raise AuthorizationError("service account inventory is incomplete")
@@ -268,6 +457,36 @@ def validate(
     if len(values) != len(set(values)):
         raise AuthorizationError("service accounts must be distinct")
 
+    resources = _mapping(payload, "resources")
+    if set(resources) != set(REQUIRED_RESOURCES):
+        raise AuthorizationError("resource inventory is incomplete")
+    for name, value in resources.items():
+        if not isinstance(value, str) or not value.strip():
+            raise AuthorizationError(f"resources.{name} is invalid")
+
+    expected_scope = deterministic_authorized_scope(payload)
+    if resources != expected_scope["resources"]:
+        raise AuthorizationError(
+            "resources do not match the deterministic authorized inventory"
+        )
+    if accounts != expected_scope["service_accounts"]:
+        raise AuthorizationError(
+            "service accounts do not match the deterministic authorized inventory"
+        )
+
+    supply_chain = _mapping(payload, "supply_chain")
+    if set(supply_chain) != set(REQUIRED_SUPPLY_CHAIN):
+        raise AuthorizationError("supply-chain image inventory is incomplete")
+    for name, image in supply_chain.items():
+        if not isinstance(image, str) or not IMMUTABLE_CONTAINER_IMAGE.fullmatch(image):
+            raise AuthorizationError(
+                f"supply_chain.{name} must be an immutable container image digest"
+            )
+        if image.endswith("@sha256:" + "0" * 64):
+            raise AuthorizationError(
+                f"supply_chain.{name} cannot use the inert placeholder digest"
+            )
+
     refs = _mapping(payload, "exact_secret_version_refs")
     if set(refs) != set(REQUIRED_SECRETS):
         raise AuthorizationError("exact secret version inventory is incomplete")
@@ -277,10 +496,17 @@ def validate(
                 f"exact_secret_version_refs.{name} is invalid"
             )
         match = SECRET_REF.fullmatch(reference)
-        if match is None or match.group("project") != project_id:
+        if (
+            match is None
+            or match.group("project") != project_id
+            or match.group("secret")
+            != expected_scope["regional_secret_ids"][name]
+        ):
             raise AuthorizationError(
                 f"exact_secret_version_refs.{name} must be a numeric Montréal version in the authorized project"
             )
+
+    observed_inventory_digest = _verify_manifest_authorization_bindings(payload, manifest)
 
     if authority.get("configuration_reviewed") is not True:
         raise AuthorizationError("configuration has not been reviewed")
@@ -307,6 +533,7 @@ def validate(
         "AUTHORIZE AIGC QUEBEC STAGING "
         f"PROJECT {project_id} REGION {REGION} RELEASE {payload['release_sha']} "
         f"RESOURCE-DIGEST {payload['resource_manifest_sha256']} "
+        f"INVENTORY-DIGEST {observed_inventory_digest} "
         f"MONTHLY-CEILING-CAD {_amount(ceiling)} NO-PUBLIC-TRAFFIC "
         "NO-LIVE-MODEL-CALL EXPIRES " + authority["expires_at"]
     )
@@ -316,6 +543,12 @@ def validate(
         )
     result = _summary(payload, gate)
     result["authorized_by"] = authorized_by
+    result["authorized_scope"] = {
+        **expected_scope,
+        "exact_secret_version_refs": dict(refs),
+        "supply_chain": dict(supply_chain),
+        "ci_admission_sha256": ci_admission_digest,
+    }
     return result
 
 
@@ -333,6 +566,7 @@ def _summary(payload: dict[str, Any], gate: Gate) -> dict[str, Any]:
         "region": REGION,
         "release_sha": payload.get("release_sha"),
         "release_tree_sha": payload.get("release_tree_sha"),
+        "authorization_inventory_sha256": payload.get("authorization_inventory_sha256"),
         "contract_sha256": canonical_sha256(payload),
         "resource_creation_performed": False,
         "deployment_performed": False,

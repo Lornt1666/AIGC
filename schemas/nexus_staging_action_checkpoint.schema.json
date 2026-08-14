@@ -1,0 +1,468 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://regenexcalibur.invalid/schemas/nexus_staging_action_checkpoint.schema.json",
+  "title": "AIGC Nexus Immutable Staging Action Checkpoint Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "checkpoint",
+    "checkpoint_object_uri",
+    "checkpoint_object_generation",
+    "checkpoint_object_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "aigc.nexus-staging-action-checkpoint-envelope.v1"},
+    "checkpoint": {"$ref": "#/$defs/checkpoint"},
+    "checkpoint_object_uri": {"$ref": "#/$defs/checkpointUri"},
+    "checkpoint_object_generation": {"$ref": "#/$defs/generation"},
+    "checkpoint_object_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "gitSha": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "generation": {"type": "string", "pattern": "^[1-9][0-9]*$"},
+    "checkpointUri": {
+      "type": "string",
+      "pattern": "^gs://[a-z0-9][a-z0-9._-]{1,61}[a-z0-9]/staging-action-checkpoints/[a-f0-9]{40}/[0-9]{2}-[a-f0-9]{64}\\.json$"
+    },
+    "checkpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "repository",
+        "project_id",
+        "project_number",
+        "region",
+        "release_sha",
+        "release_tree_sha",
+        "resource_manifest_sha256",
+        "ci_admission_sha256",
+        "authorization_sha256",
+        "plan_sha256",
+        "action_index",
+        "action_name",
+        "permit_kind",
+        "permit_sha256",
+        "predecessor_checkpoint_sha256",
+        "completed_actions",
+        "release_state",
+        "status",
+        "reconciliation_required",
+        "reconciliation_authority",
+        "terminal_deployment_receipt",
+        "terminal_deployment_receipt_sha256",
+        "captured_at",
+        "checkpoint_sha256"
+      ],
+      "properties": {
+        "schema_version": {"const": "aigc.nexus-staging-action-checkpoint.v1"},
+        "repository": {"const": "Lornt1666/AIGC"},
+        "project_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]{4,28}[a-z0-9]$"},
+        "project_number": {"type": "string", "pattern": "^[0-9]{6,20}$"},
+        "region": {"const": "northamerica-northeast1"},
+        "release_sha": {"$ref": "#/$defs/gitSha"},
+        "release_tree_sha": {"$ref": "#/$defs/gitSha"},
+        "resource_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "ci_admission_sha256": {"$ref": "#/$defs/sha256"},
+        "authorization_sha256": {"$ref": "#/$defs/sha256"},
+        "plan_sha256": {"$ref": "#/$defs/sha256"},
+        "action_index": {"type": "integer", "minimum": 0, "maximum": 5},
+        "action_name": {
+          "enum": [
+            "cloud_build_submit",
+            "sbom_export",
+            "migration_job_deploy",
+            "migration_execute",
+            "operator_deploy",
+            "judge_deploy"
+          ]
+        },
+        "permit_kind": {"enum": ["execute", "reconcile"]},
+        "permit_sha256": {"$ref": "#/$defs/sha256"},
+        "predecessor_checkpoint_sha256": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/sha256"}]
+        },
+        "completed_actions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 6,
+          "items": {"$ref": "#/$defs/actionReceipt"}
+        },
+        "release_state": {"$ref": "#/$defs/releaseState"},
+        "status": {"const": "succeeded"},
+        "reconciliation_required": {"const": false},
+        "reconciliation_authority": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/authorityEvidence"}]
+        },
+        "terminal_deployment_receipt": {
+          "oneOf": [{"type": "null"}, {"type": "object", "minProperties": 1}]
+        },
+        "terminal_deployment_receipt_sha256": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/sha256"}]
+        },
+        "captured_at": {"type": "string", "format": "date-time"},
+        "checkpoint_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "actionReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action", "target", "mutation_count", "automatic_retry", "status", "evidence"],
+      "properties": {
+        "action": {
+          "enum": [
+            "cloud_build_submit",
+            "sbom_export",
+            "migration_job_deploy",
+            "migration_execute",
+            "operator_deploy",
+            "judge_deploy"
+          ]
+        },
+        "target": {"type": "string", "minLength": 1, "maxLength": 1024},
+        "mutation_count": {"const": 1},
+        "automatic_retry": {"const": false},
+        "status": {"const": "succeeded"},
+        "evidence": {"$ref": "#/$defs/actionEvidence"}
+      }
+    },
+    "authorityEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action_permit_id",
+        "action_permit_sha256",
+        "predecessor_permit_sha256",
+        "permit_consumption_uri",
+        "permit_consumption_generation",
+        "permit_consumption_record_sha256"
+      ],
+      "properties": {
+        "action_permit_id": {"type": "string", "pattern": "^ACT-[A-Z0-9_-]{8,64}$"},
+        "action_permit_sha256": {"$ref": "#/$defs/sha256"},
+        "predecessor_permit_sha256": {"$ref": "#/$defs/sha256"},
+        "permit_consumption_uri": {
+          "type": "string",
+          "pattern": "^gs://[a-z0-9][a-z0-9._-]{1,61}[a-z0-9]/staging-action-permits/[a-f0-9]{40}/[0-9]{2}-ACT-[A-Z0-9_-]{8,64}\\.json$"
+        },
+        "permit_consumption_generation": {"$ref": "#/$defs/generation"},
+        "permit_consumption_record_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "actionEvidence": {
+      "type": "object",
+      "required": [
+        "action_permit_id",
+        "action_permit_sha256",
+        "predecessor_permit_sha256",
+        "permit_consumption_uri",
+        "permit_consumption_generation",
+        "permit_consumption_record_sha256"
+      ],
+      "properties": {
+        "action_permit_id": {"type": "string", "pattern": "^ACT-[A-Z0-9_-]{8,64}$"},
+        "action_permit_sha256": {"$ref": "#/$defs/sha256"},
+        "predecessor_permit_sha256": {"$ref": "#/$defs/sha256"},
+        "permit_consumption_uri": {
+          "type": "string",
+          "pattern": "^gs://[a-z0-9][a-z0-9._-]{1,61}[a-z0-9]/staging-action-permits/[a-f0-9]{40}/[0-9]{2}-ACT-[A-Z0-9_-]{8,64}\\.json$"
+        },
+        "permit_consumption_generation": {"$ref": "#/$defs/generation"},
+        "permit_consumption_record_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "releaseState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ci_evidence",
+        "foundation",
+        "build_id",
+        "build_context_manifest_sha256",
+        "build_substitutions",
+        "image_digest",
+        "immutable_image_uri"
+      ],
+      "properties": {
+        "ci_evidence": {"$ref": "#/$defs/ciEvidence"},
+        "foundation": {"$ref": "#/$defs/foundation"},
+        "build_id": {"type": "string", "minLength": 1, "maxLength": 512},
+        "build_context_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "build_substitutions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "_IMAGE_URI",
+            "_DOCKER_BUILDER_IMAGE",
+            "_PYTHON_BASE_IMAGE",
+            "_RELEASE_SHA",
+            "_SOURCE_CONTEXT_SHA256"
+          ],
+          "properties": {
+            "_IMAGE_URI": {"type": "string", "minLength": 1},
+            "_DOCKER_BUILDER_IMAGE": {"type": "string", "minLength": 1},
+            "_PYTHON_BASE_IMAGE": {"type": "string", "minLength": 1},
+            "_RELEASE_SHA": {"$ref": "#/$defs/gitSha"},
+            "_SOURCE_CONTEXT_SHA256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        "image_digest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+        "immutable_image_uri": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*@sha256:[a-f0-9]{64}$"
+        },
+        "artifact_security": {"$ref": "#/$defs/artifactSecurity"},
+        "migration_job": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["job_name", "immutable_image_uri", "service_account"],
+          "properties": {
+            "job_name": {"type": "string", "minLength": 1},
+            "immutable_image_uri": {"type": "string", "minLength": 1},
+            "service_account": {"type": "string", "minLength": 1}
+          }
+        },
+        "migration": {"$ref": "#/$defs/migration"},
+        "targets": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "operator": {"$ref": "#/$defs/serviceTarget"},
+            "judge": {"$ref": "#/$defs/serviceTarget"}
+          }
+        },
+        "readiness": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "operator": {"$ref": "#/$defs/readiness"},
+            "judge": {"$ref": "#/$defs/readiness"}
+          }
+        }
+      }
+    },
+    "ciEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workflow_run_id",
+        "workflow_run_url",
+        "artifact_id",
+        "artifact_digest",
+        "ci_admission_sha256",
+        "stage_count",
+        "container_receipt_sha256"
+      ],
+      "properties": {
+        "workflow_run_id": {"type": "string", "pattern": "^[1-9][0-9]*$"},
+        "workflow_run_url": {"type": "string", "format": "uri"},
+        "artifact_id": {"type": "string", "pattern": "^[1-9][0-9]*$"},
+        "artifact_digest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+        "ci_admission_sha256": {"$ref": "#/$defs/sha256"},
+        "stage_count": {"const": 15},
+        "container_receipt_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "foundation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_repository_sha256",
+        "cloud_sql_sha256",
+        "network_sha256",
+        "subnet_sha256",
+        "service_account_metadata_sha256",
+        "cloud_sql_connection_name",
+        "region",
+        "action_permission_preflight_sha256"
+      ],
+      "properties": {
+        "artifact_repository_sha256": {"$ref": "#/$defs/sha256"},
+        "cloud_sql_sha256": {"$ref": "#/$defs/sha256"},
+        "network_sha256": {"$ref": "#/$defs/sha256"},
+        "subnet_sha256": {"$ref": "#/$defs/sha256"},
+        "service_account_metadata_sha256": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {"$ref": "#/$defs/sha256"}
+        },
+        "cloud_sql_connection_name": {"type": "string", "minLength": 1},
+        "region": {"const": "northamerica-northeast1"},
+        "action_permission_preflight_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "artifactSecurity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provenance_sha256",
+        "provenance_builder_id",
+        "provenance_build_id",
+        "sbom_generator_image",
+        "sbom_source_image_uri",
+        "sbom_local_sha256",
+        "sbom_format",
+        "sbom_package_count",
+        "sbom_document_namespace_sha256",
+        "sbom_reference_count",
+        "sbom_metadata_sha256",
+        "sbom_gcs_uri",
+        "sbom_gcs_bucket",
+        "sbom_gcs_location",
+        "sbom_occurrence_name",
+        "vulnerability_finding_count",
+        "release_blocking_vulnerability_count",
+        "vulnerability_metadata_sha256",
+        "vulnerability_scan_status",
+        "vulnerability_scan_note",
+        "vulnerability_scan_occurrence_name",
+        "vulnerability_scan_metadata_sha256"
+      ],
+      "properties": {
+        "provenance_sha256": {"$ref": "#/$defs/sha256"},
+        "provenance_builder_id": {"const": "https://cloudbuild.googleapis.com/GoogleHostedWorker"},
+        "provenance_build_id": {"type": "string", "minLength": 1},
+        "sbom_generator_image": {"type": "string", "pattern": "^(docker\\.io/)?anchore/syft@sha256:[a-f0-9]{64}$"},
+        "sbom_source_image_uri": {"type": "string", "pattern": "^.+@sha256:[a-f0-9]{64}$"},
+        "sbom_local_sha256": {"$ref": "#/$defs/sha256"},
+        "sbom_format": {"enum": ["SPDX-2.2", "SPDX-2.3"]},
+        "sbom_package_count": {"type": "integer", "minimum": 1},
+        "sbom_document_namespace_sha256": {"$ref": "#/$defs/sha256"},
+        "sbom_reference_count": {"const": 1},
+        "sbom_metadata_sha256": {"$ref": "#/$defs/sha256"},
+        "sbom_gcs_uri": {"type": "string", "pattern": "^gs://[^\\s?#]+$"},
+        "sbom_gcs_bucket": {"type": "string", "minLength": 3},
+        "sbom_gcs_location": {"const": "northamerica-northeast1"},
+        "sbom_occurrence_name": {"type": "string", "minLength": 1},
+        "vulnerability_finding_count": {"type": "integer", "minimum": 0},
+        "release_blocking_vulnerability_count": {"const": 0},
+        "vulnerability_metadata_sha256": {"$ref": "#/$defs/sha256"},
+        "vulnerability_scan_status": {"const": "FINISHED_SUCCESS"},
+        "vulnerability_scan_note": {"type": "string", "minLength": 1},
+        "vulnerability_scan_occurrence_name": {"type": "string", "minLength": 1},
+        "vulnerability_scan_metadata_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "migration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "job_name",
+        "execution_name",
+        "immutable_image_uri",
+        "service_account",
+        "exact_execution_log_verified",
+        "migration_receipt"
+      ],
+      "properties": {
+        "job_name": {"type": "string", "minLength": 1},
+        "execution_name": {"type": "string", "minLength": 1},
+        "immutable_image_uri": {"type": "string", "pattern": "^.+@sha256:[a-f0-9]{64}$"},
+        "service_account": {"type": "string", "minLength": 1},
+        "exact_execution_log_verified": {"const": true},
+        "migration_receipt": {"$ref": "#/$defs/migrationReceipt"}
+      }
+    },
+    "migrationReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "migrations",
+        "migration_bundle_sha256",
+        "runtime_control_singleton_verified",
+        "persisted_authority_table_verified",
+        "secret_value_emitted",
+        "provider_call_performed",
+        "captured_at"
+      ],
+      "properties": {
+        "schema_version": {"const": "aigc.nexus-runtime-control-migration-receipt.v2"},
+        "migrations": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "sha256"],
+            "properties": {
+              "name": {"enum": ["003_nexus_provider_runtime_controls.sql", "004_nexus_persisted_authority.sql"]},
+              "sha256": {"$ref": "#/$defs/sha256"}
+            }
+          }
+        },
+        "migration_bundle_sha256": {"$ref": "#/$defs/sha256"},
+        "runtime_control_singleton_verified": {"const": true},
+        "persisted_authority_table_verified": {"const": true},
+        "secret_value_emitted": {"const": false},
+        "provider_call_performed": {"const": false},
+        "captured_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "serviceTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "service",
+        "service_url",
+        "candidate_tag",
+        "candidate_url",
+        "revision",
+        "runtime_role",
+        "service_account",
+        "immutable_image_uri",
+        "private_iam_verified",
+        "inherited_deployer_invoker_verified"
+      ],
+      "properties": {
+        "service": {"type": "string", "minLength": 1},
+        "service_url": {"type": "string", "format": "uri"},
+        "candidate_tag": {"type": "string", "minLength": 1},
+        "candidate_url": {"type": "string", "format": "uri"},
+        "revision": {"type": "string", "minLength": 1},
+        "runtime_role": {"enum": ["operator", "judge"]},
+        "service_account": {"type": "string", "minLength": 1},
+        "immutable_image_uri": {"type": "string", "pattern": "^.+@sha256:[a-f0-9]{64}$"},
+        "private_iam_verified": {"const": true},
+        "inherited_deployer_invoker_verified": {"const": true}
+      }
+    },
+    "readiness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ready",
+        "project_id",
+        "runtime_role",
+        "release_revision",
+        "image_digest",
+        "region",
+        "deployment_authorization_sha256",
+        "provider_capable",
+        "live_provider_execution_enabled",
+        "production_activation",
+        "runtime_control_backend",
+        "emergency_active",
+        "stop_epoch"
+      ],
+      "properties": {
+        "ready": {"const": true},
+        "project_id": {"type": "string", "minLength": 1},
+        "runtime_role": {"enum": ["operator", "judge"]},
+        "release_revision": {"$ref": "#/$defs/gitSha"},
+        "image_digest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+        "region": {"const": "northamerica-northeast1"},
+        "deployment_authorization_sha256": {"$ref": "#/$defs/sha256"},
+        "provider_capable": {"type": "boolean"},
+        "live_provider_execution_enabled": {"const": false},
+        "production_activation": {"const": false},
+        "runtime_control_backend": {"enum": ["postgresql", "not_applicable"]},
+        "emergency_active": {"const": false},
+        "stop_epoch": {"type": ["integer", "null"], "minimum": 0}
+      }
+    }
+  }
+}

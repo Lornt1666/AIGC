@@ -4,22 +4,653 @@
   "title": "AIGC Québec Deployment Receipt",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "project_id", "region", "release_sha", "release_tree_sha", "ci_run_id", "build_id", "image_digest", "operator_revision", "judge_revision", "public_traffic", "live_model_call_performed", "resource_locations", "captured_at", "receipt_sha256"],
+  "required": [
+    "schema_version",
+    "repository",
+    "project_id",
+    "project_number",
+    "region",
+    "release_sha",
+    "release_tree_sha",
+    "ci_run_id",
+    "ci_admission",
+    "authorization_sha256",
+    "resource_manifest_sha256",
+    "build_id",
+    "build_context_manifest_sha256",
+    "build_source_bucket",
+    "tagged_image_uri",
+    "image_digest",
+    "immutable_image_uri",
+    "foundation",
+    "supply_chain",
+    "operator_revision",
+    "judge_revision",
+    "migration",
+    "services",
+    "actions",
+    "public_traffic",
+    "public_access_enabled",
+    "traffic_migration_performed",
+    "live_model_call_performed",
+    "production_activation",
+    "resource_locations",
+    "captured_at",
+    "receipt_sha256"
+  ],
   "properties": {
     "schema_version": {"const": "aigc.quebec-deployment-receipt.v1"},
-    "project_id": {"type": "string"},
+    "repository": {"const": "Lornt1666/AIGC"},
+    "project_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]{4,28}[a-z0-9]$"},
+    "project_number": {"type": "string", "pattern": "^[0-9]{6,20}$"},
     "region": {"const": "northamerica-northeast1"},
-    "release_sha": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
-    "release_tree_sha": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
-    "ci_run_id": {"type": "string"},
-    "build_id": {"type": "string"},
-    "image_digest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
-    "operator_revision": {"type": "string"},
-    "judge_revision": {"type": "string"},
+    "release_sha": {"$ref": "#/$defs/gitSha"},
+    "release_tree_sha": {"$ref": "#/$defs/gitSha"},
+    "ci_run_id": {"type": "string", "minLength": 1},
+    "ci_admission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workflow_run_id",
+        "workflow_run_url",
+        "artifact_id",
+        "artifact_digest",
+        "ci_admission_sha256",
+        "stage_count",
+        "container_receipt_sha256"
+      ],
+      "properties": {
+        "workflow_run_id": {"type": "string", "pattern": "^[1-9][0-9]*$"},
+        "workflow_run_url": {"type": "string"},
+        "artifact_id": {"type": "string", "pattern": "^[1-9][0-9]*$"},
+        "artifact_digest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+        "ci_admission_sha256": {"$ref": "#/$defs/sha256"},
+        "stage_count": {"const": 15},
+        "container_receipt_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "authorization_sha256": {"$ref": "#/$defs/sha256"},
+    "resource_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "build_id": {"type": "string", "minLength": 1},
+    "build_context_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "build_source_bucket": {"type": "string", "minLength": 3},
+    "tagged_image_uri": {"type": "string", "minLength": 1},
+    "image_digest": {"$ref": "#/$defs/imageDigest"},
+    "immutable_image_uri": {"type": "string", "pattern": "^.+@sha256:[a-f0-9]{64}$"},
+    "foundation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_repository_sha256",
+        "cloud_sql_sha256",
+        "network_sha256",
+        "subnet_sha256",
+        "service_account_metadata_sha256",
+        "cloud_sql_connection_name",
+        "region",
+        "action_permission_preflight_sha256"
+      ],
+      "properties": {
+        "artifact_repository_sha256": {"$ref": "#/$defs/sha256"},
+        "cloud_sql_sha256": {"$ref": "#/$defs/sha256"},
+        "network_sha256": {"$ref": "#/$defs/sha256"},
+        "subnet_sha256": {"$ref": "#/$defs/sha256"},
+        "service_account_metadata_sha256": {
+          "type": "object",
+          "minProperties": 5,
+          "additionalProperties": {"$ref": "#/$defs/sha256"}
+        },
+        "cloud_sql_connection_name": {"type": "string", "minLength": 1},
+        "region": {"const": "northamerica-northeast1"},
+        "action_permission_preflight_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "supply_chain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "docker_builder_image",
+        "python_base_image",
+        "sbom_generator_image",
+        "sbom_source_image_uri",
+        "sbom_local_sha256",
+        "sbom_format",
+        "sbom_package_count",
+        "sbom_document_namespace_sha256",
+        "provenance_sha256",
+        "provenance_builder_id",
+        "provenance_build_id",
+        "sbom_reference_count",
+        "sbom_metadata_sha256",
+        "sbom_gcs_uri",
+        "sbom_gcs_bucket",
+        "sbom_gcs_location",
+        "sbom_occurrence_name",
+        "vulnerability_finding_count",
+        "release_blocking_vulnerability_count",
+        "vulnerability_metadata_sha256",
+        "vulnerability_scan_status",
+        "vulnerability_scan_note",
+        "vulnerability_scan_occurrence_name",
+        "vulnerability_scan_metadata_sha256"
+      ],
+      "properties": {
+        "docker_builder_image": {"$ref": "#/$defs/immutableImage"},
+        "python_base_image": {"$ref": "#/$defs/immutableImage"},
+        "sbom_generator_image": {"$ref": "#/$defs/syftImage"},
+        "sbom_source_image_uri": {"$ref": "#/$defs/immutableImage"},
+        "sbom_local_sha256": {"$ref": "#/$defs/sha256"},
+        "sbom_format": {"enum": ["SPDX-2.2", "SPDX-2.3"]},
+        "sbom_package_count": {"type": "integer", "minimum": 1},
+        "sbom_document_namespace_sha256": {"$ref": "#/$defs/sha256"},
+        "provenance_sha256": {"$ref": "#/$defs/sha256"},
+        "provenance_builder_id": {"const": "https://cloudbuild.googleapis.com/GoogleHostedWorker"},
+        "provenance_build_id": {"type": "string", "minLength": 1},
+        "sbom_reference_count": {"const": 1},
+        "sbom_metadata_sha256": {"$ref": "#/$defs/sha256"},
+        "sbom_gcs_uri": {"$ref": "#/$defs/gcsObjectUri"},
+        "sbom_gcs_bucket": {"$ref": "#/$defs/bucketName"},
+        "sbom_gcs_location": {"const": "northamerica-northeast1"},
+        "sbom_occurrence_name": {"$ref": "#/$defs/regionalOccurrence"},
+        "vulnerability_finding_count": {"type": "integer", "minimum": 0},
+        "release_blocking_vulnerability_count": {"const": 0},
+        "vulnerability_metadata_sha256": {"$ref": "#/$defs/sha256"},
+        "vulnerability_scan_status": {"const": "FINISHED_SUCCESS"},
+        "vulnerability_scan_note": {"$ref": "#/$defs/packageVulnerabilityNote"},
+        "vulnerability_scan_occurrence_name": {"$ref": "#/$defs/regionalOccurrence"},
+        "vulnerability_scan_metadata_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "operator_revision": {"type": "string", "minLength": 1},
+    "judge_revision": {"type": "string", "minLength": 1},
+    "migration": {"$ref": "#/$defs/migration"},
+    "services": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operator", "judge"],
+      "properties": {
+        "operator": {
+          "allOf": [
+            {"$ref": "#/$defs/serviceTarget"},
+            {
+              "properties": {
+                "runtime_role": {"const": "operator"},
+                "readiness": {
+                  "properties": {
+                    "runtime_role": {"const": "operator"},
+                    "provider_capable": {"const": true},
+                    "runtime_control_backend": {"const": "postgresql"}
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "judge": {
+          "allOf": [
+            {"$ref": "#/$defs/serviceTarget"},
+            {
+              "properties": {
+                "runtime_role": {"const": "judge"},
+                "readiness": {
+                  "required": ["provider_capable"],
+                  "properties": {
+                    "runtime_role": {"const": "judge"},
+                    "provider_capable": {"const": false},
+                    "runtime_control_backend": {"const": "not_applicable"},
+                    "stop_epoch": {"const": null}
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "prefixItems": [
+        {
+          "allOf": [
+            {"$ref": "#/$defs/actionReceipt"},
+            {
+              "properties": {
+                "action": {"const": "cloud_build_submit"},
+                "evidence": {"$ref": "#/$defs/cloudBuildEvidence"}
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {"$ref": "#/$defs/actionReceipt"},
+            {
+              "properties": {
+                "action": {"const": "sbom_export"},
+                "evidence": {"$ref": "#/$defs/sbomExportEvidence"}
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {"$ref": "#/$defs/actionReceipt"},
+            {
+              "properties": {
+                "action": {"const": "migration_job_deploy"},
+                "evidence": {"$ref": "#/$defs/migrationJobEvidence"}
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {"$ref": "#/$defs/actionReceipt"},
+            {
+              "properties": {
+                "action": {"const": "migration_execute"},
+                "evidence": {
+                  "allOf": [
+                    {"$ref": "#/$defs/migration"},
+                    {"required": ["action_permit_id", "action_permit_sha256", "predecessor_permit_sha256", "permit_consumption_uri", "permit_consumption_generation", "permit_consumption_record_sha256"]}
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {"$ref": "#/$defs/actionReceipt"},
+            {
+              "properties": {
+                "action": {"const": "operator_deploy"},
+                "evidence": {"$ref": "#/$defs/serviceDeployEvidence"}
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {"$ref": "#/$defs/actionReceipt"},
+            {
+              "properties": {
+                "action": {"const": "judge_deploy"},
+                "evidence": {"$ref": "#/$defs/serviceDeployEvidence"}
+              }
+            }
+          ]
+        }
+      ],
+      "items": false
+    },
     "public_traffic": {"const": false},
+    "public_access_enabled": {"const": false},
+    "traffic_migration_performed": {"const": false},
     "live_model_call_performed": {"const": false},
-    "resource_locations": {"type": "object"},
+    "production_activation": {"const": false},
+    "resource_locations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cloud_build",
+        "artifact_registry",
+        "cloud_run",
+        "cloud_sql",
+        "secret_manager",
+        "build_source_bucket",
+        "sbom_bucket"
+      ],
+      "properties": {
+        "cloud_build": {"const": "northamerica-northeast1"},
+        "artifact_registry": {"const": "northamerica-northeast1"},
+        "cloud_run": {"const": "northamerica-northeast1"},
+        "cloud_sql": {"const": "northamerica-northeast1"},
+        "secret_manager": {"const": "northamerica-northeast1"},
+        "build_source_bucket": {"const": "northamerica-northeast1"},
+        "sbom_bucket": {"const": "northamerica-northeast1"}
+      }
+    },
     "captured_at": {"type": "string", "format": "date-time"},
-    "receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+    "receipt_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "gitSha": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "actionPermitId": {"type": "string", "pattern": "^ACT-[A-Z0-9_-]{8,64}$"},
+    "permitConsumptionUri": {"type": "string", "pattern": "^gs://[a-z0-9][a-z0-9._-]{1,61}[a-z0-9]/staging-action-permits/[a-f0-9]{40}/[0-9]{2}-ACT-[A-Z0-9_-]{8,64}\\.json$"},
+    "generation": {"type": "string", "pattern": "^[1-9][0-9]*$"},
+    "imageDigest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "immutableImage": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*@sha256:[a-f0-9]{64}$"},
+    "syftImage": {"type": "string", "pattern": "^(docker\\.io/)?anchore/syft@sha256:[a-f0-9]{64}$"},
+    "bucketName": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{1,61}[a-z0-9]$"},
+    "gcsObjectUri": {"type": "string", "pattern": "^gs://[a-z0-9][a-z0-9._-]{1,61}[a-z0-9]/[^\\s?#]+$"},
+    "regionalOccurrence": {"type": "string", "pattern": "^projects/[a-z][a-z0-9-]{4,28}[a-z0-9]/locations/northamerica-northeast1/occurrences/[^/]+$"},
+    "packageVulnerabilityNote": {
+      "enum": [
+        "projects/goog-analysis/notes/PACKAGE_VULNERABILITY",
+        "projects/goog-analysis/locations/northamerica-northeast1/notes/PACKAGE_VULNERABILITY"
+      ]
+    },
+    "actionReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action", "target", "mutation_count", "automatic_retry", "status", "evidence"],
+      "properties": {
+        "action": {
+          "enum": [
+            "cloud_build_submit",
+            "sbom_export",
+            "migration_job_deploy",
+            "migration_execute",
+            "operator_deploy",
+            "judge_deploy"
+          ]
+        },
+        "target": {"type": "string", "minLength": 1},
+        "mutation_count": {"const": 1},
+        "automatic_retry": {"const": false},
+        "status": {"const": "succeeded"},
+        "evidence": {"type": "object"}
+      }
+    },
+    "cloudBuildEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "build_id",
+        "tagged_image_uri",
+        "image_digest",
+        "source_bucket",
+        "service_account",
+        "docker_builder_image",
+        "python_base_image",
+        "build_context_manifest_sha256",
+        "immutable_image_uri",
+        "sbom_generator_image",
+        "sbom_source_image_uri",
+        "sbom_local_sha256",
+        "sbom_format",
+        "sbom_package_count",
+        "sbom_document_namespace_sha256",
+        "provenance_sha256",
+        "provenance_builder_id",
+        "provenance_build_id",
+        "sbom_reference_count",
+        "sbom_metadata_sha256",
+        "sbom_gcs_uri",
+        "sbom_gcs_bucket",
+        "sbom_gcs_location",
+        "sbom_occurrence_name",
+        "vulnerability_finding_count",
+        "release_blocking_vulnerability_count",
+        "vulnerability_metadata_sha256",
+        "vulnerability_scan_status",
+        "vulnerability_scan_note",
+        "vulnerability_scan_occurrence_name",
+        "vulnerability_scan_metadata_sha256",
+        "action_permit_id",
+        "action_permit_sha256",
+        "predecessor_permit_sha256",
+        "permit_consumption_uri",
+        "permit_consumption_generation",
+        "permit_consumption_record_sha256"
+      ],
+      "properties": {
+        "build_id": {"type": "string", "minLength": 1},
+        "tagged_image_uri": {"type": "string", "minLength": 1},
+        "image_digest": {"$ref": "#/$defs/imageDigest"},
+        "source_bucket": {"type": "string", "minLength": 3},
+        "service_account": {"type": "string", "minLength": 1},
+        "docker_builder_image": {"$ref": "#/$defs/immutableImage"},
+        "python_base_image": {"$ref": "#/$defs/immutableImage"},
+        "build_context_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "immutable_image_uri": {"type": "string", "pattern": "^.+@sha256:[a-f0-9]{64}$"},
+        "sbom_generator_image": {"$ref": "#/$defs/syftImage"},
+        "sbom_source_image_uri": {"$ref": "#/$defs/immutableImage"},
+        "sbom_local_sha256": {"$ref": "#/$defs/sha256"},
+        "sbom_format": {"enum": ["SPDX-2.2", "SPDX-2.3"]},
+        "sbom_package_count": {"type": "integer", "minimum": 1},
+        "sbom_document_namespace_sha256": {"$ref": "#/$defs/sha256"},
+        "provenance_sha256": {"$ref": "#/$defs/sha256"},
+        "provenance_builder_id": {"const": "https://cloudbuild.googleapis.com/GoogleHostedWorker"},
+        "provenance_build_id": {"type": "string", "minLength": 1},
+        "sbom_reference_count": {"const": 1},
+        "sbom_metadata_sha256": {"$ref": "#/$defs/sha256"},
+        "sbom_gcs_uri": {"$ref": "#/$defs/gcsObjectUri"},
+        "sbom_gcs_bucket": {"$ref": "#/$defs/bucketName"},
+        "sbom_gcs_location": {"const": "northamerica-northeast1"},
+        "sbom_occurrence_name": {"$ref": "#/$defs/regionalOccurrence"},
+        "vulnerability_finding_count": {"type": "integer", "minimum": 0},
+        "release_blocking_vulnerability_count": {"const": 0},
+        "vulnerability_metadata_sha256": {"$ref": "#/$defs/sha256"},
+        "vulnerability_scan_status": {"const": "FINISHED_SUCCESS"},
+        "vulnerability_scan_note": {"$ref": "#/$defs/packageVulnerabilityNote"},
+        "vulnerability_scan_occurrence_name": {"$ref": "#/$defs/regionalOccurrence"},
+        "vulnerability_scan_metadata_sha256": {"$ref": "#/$defs/sha256"},
+        "action_permit_id": {"$ref": "#/$defs/actionPermitId"},
+        "action_permit_sha256": {"$ref": "#/$defs/sha256"},
+        "predecessor_permit_sha256": {"$ref": "#/$defs/sha256"},
+        "permit_consumption_uri": {"$ref": "#/$defs/permitConsumptionUri"},
+        "permit_consumption_generation": {"$ref": "#/$defs/generation"},
+        "permit_consumption_record_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "sbomExportEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "immutable_image_uri",
+        "sbom_generator_image",
+        "sbom_source_image_uri",
+        "sbom_local_sha256",
+        "sbom_format",
+        "sbom_package_count",
+        "sbom_document_namespace_sha256",
+        "sbom_reference_count",
+        "sbom_metadata_sha256",
+        "sbom_gcs_uri",
+        "sbom_gcs_bucket",
+        "sbom_gcs_location",
+        "sbom_occurrence_name",
+        "action_permit_id",
+        "action_permit_sha256",
+        "predecessor_permit_sha256",
+        "permit_consumption_uri",
+        "permit_consumption_generation",
+        "permit_consumption_record_sha256"
+      ],
+      "properties": {
+        "immutable_image_uri": {"type": "string", "pattern": "^.+@sha256:[a-f0-9]{64}$"},
+        "sbom_generator_image": {"$ref": "#/$defs/syftImage"},
+        "sbom_source_image_uri": {"$ref": "#/$defs/immutableImage"},
+        "sbom_local_sha256": {"$ref": "#/$defs/sha256"},
+        "sbom_format": {"enum": ["SPDX-2.2", "SPDX-2.3"]},
+        "sbom_package_count": {"type": "integer", "minimum": 1},
+        "sbom_document_namespace_sha256": {"$ref": "#/$defs/sha256"},
+        "sbom_reference_count": {"const": 1},
+        "sbom_metadata_sha256": {"$ref": "#/$defs/sha256"},
+        "sbom_gcs_uri": {"$ref": "#/$defs/gcsObjectUri"},
+        "sbom_gcs_bucket": {"$ref": "#/$defs/bucketName"},
+        "sbom_gcs_location": {"const": "northamerica-northeast1"},
+        "sbom_occurrence_name": {"$ref": "#/$defs/regionalOccurrence"},
+        "action_permit_id": {"$ref": "#/$defs/actionPermitId"},
+        "action_permit_sha256": {"$ref": "#/$defs/sha256"},
+        "predecessor_permit_sha256": {"$ref": "#/$defs/sha256"},
+        "permit_consumption_uri": {"$ref": "#/$defs/permitConsumptionUri"},
+        "permit_consumption_generation": {"$ref": "#/$defs/generation"},
+        "permit_consumption_record_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "migrationJobEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["job_name", "immutable_image_uri", "action_permit_id", "action_permit_sha256", "predecessor_permit_sha256", "permit_consumption_uri", "permit_consumption_generation", "permit_consumption_record_sha256"],
+      "properties": {
+        "job_name": {"type": "string", "minLength": 1},
+        "immutable_image_uri": {"type": "string", "pattern": "^.+@sha256:[a-f0-9]{64}$"},
+        "action_permit_id": {"$ref": "#/$defs/actionPermitId"},
+        "action_permit_sha256": {"$ref": "#/$defs/sha256"},
+        "predecessor_permit_sha256": {"$ref": "#/$defs/sha256"},
+        "permit_consumption_uri": {"$ref": "#/$defs/permitConsumptionUri"},
+        "permit_consumption_generation": {"$ref": "#/$defs/generation"},
+        "permit_consumption_record_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "serviceDeployEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["revision", "candidate_tag", "immutable_image_uri", "readiness_verified", "action_permit_id", "action_permit_sha256", "predecessor_permit_sha256", "permit_consumption_uri", "permit_consumption_generation", "permit_consumption_record_sha256"],
+      "properties": {
+        "revision": {"type": "string", "minLength": 1},
+        "candidate_tag": {"type": "string", "minLength": 1},
+        "immutable_image_uri": {"type": "string", "pattern": "^.+@sha256:[a-f0-9]{64}$"},
+        "readiness_verified": {"const": true},
+        "action_permit_id": {"$ref": "#/$defs/actionPermitId"},
+        "action_permit_sha256": {"$ref": "#/$defs/sha256"},
+        "predecessor_permit_sha256": {"$ref": "#/$defs/sha256"},
+        "permit_consumption_uri": {"$ref": "#/$defs/permitConsumptionUri"},
+        "permit_consumption_generation": {"$ref": "#/$defs/generation"},
+        "permit_consumption_record_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "migration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "job_name",
+        "execution_name",
+        "immutable_image_uri",
+        "service_account",
+        "exact_execution_log_verified",
+        "migration_receipt"
+      ],
+      "properties": {
+        "job_name": {"type": "string", "minLength": 1},
+        "execution_name": {"type": "string", "minLength": 1},
+        "immutable_image_uri": {"type": "string", "pattern": "^.+@sha256:[a-f0-9]{64}$"},
+        "service_account": {"type": "string", "minLength": 1},
+        "exact_execution_log_verified": {"const": true},
+        "action_permit_id": {"$ref": "#/$defs/actionPermitId"},
+        "action_permit_sha256": {"$ref": "#/$defs/sha256"},
+        "predecessor_permit_sha256": {"$ref": "#/$defs/sha256"},
+        "permit_consumption_uri": {"$ref": "#/$defs/permitConsumptionUri"},
+        "permit_consumption_generation": {"$ref": "#/$defs/generation"},
+        "permit_consumption_record_sha256": {"$ref": "#/$defs/sha256"},
+        "migration_receipt": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "schema_version",
+            "migrations",
+            "migration_bundle_sha256",
+            "runtime_control_singleton_verified",
+            "persisted_authority_table_verified",
+            "secret_value_emitted",
+            "provider_call_performed",
+            "captured_at"
+          ],
+          "properties": {
+            "schema_version": {"const": "aigc.nexus-runtime-control-migration-receipt.v2"},
+            "migrations": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "prefixItems": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["name", "sha256"],
+                  "properties": {
+                    "name": {"const": "003_nexus_provider_runtime_controls.sql"},
+                    "sha256": {"$ref": "#/$defs/sha256"}
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["name", "sha256"],
+                  "properties": {
+                    "name": {"const": "004_nexus_persisted_authority.sql"},
+                    "sha256": {"$ref": "#/$defs/sha256"}
+                  }
+                }
+              ]
+            },
+            "migration_bundle_sha256": {"$ref": "#/$defs/sha256"},
+            "runtime_control_singleton_verified": {"const": true},
+            "persisted_authority_table_verified": {"const": true},
+            "secret_value_emitted": {"const": false},
+            "provider_call_performed": {"const": false},
+            "captured_at": {"type": "string", "format": "date-time"}
+          }
+        }
+      }
+    },
+    "serviceTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "service",
+        "service_url",
+        "candidate_tag",
+        "candidate_url",
+        "revision",
+        "runtime_role",
+        "service_account",
+        "immutable_image_uri",
+        "private_iam_verified",
+        "inherited_deployer_invoker_verified",
+        "readiness"
+      ],
+      "properties": {
+        "service": {"type": "string", "minLength": 1},
+        "service_url": {"type": "string", "format": "uri"},
+        "candidate_tag": {"type": "string", "minLength": 1},
+        "candidate_url": {"type": "string", "format": "uri"},
+        "revision": {"type": "string", "minLength": 1},
+        "runtime_role": {"enum": ["operator", "judge"]},
+        "service_account": {"type": "string", "minLength": 1},
+        "immutable_image_uri": {"type": "string", "pattern": "^.+@sha256:[a-f0-9]{64}$"},
+        "private_iam_verified": {"const": true},
+        "inherited_deployer_invoker_verified": {"const": true},
+        "readiness": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "ready",
+            "project_id",
+            "runtime_role",
+            "release_revision",
+            "image_digest",
+            "region",
+            "deployment_authorization_sha256",
+            "provider_capable",
+            "live_provider_execution_enabled",
+            "production_activation",
+            "runtime_control_backend",
+            "emergency_active",
+            "stop_epoch"
+          ],
+          "properties": {
+            "ready": {"const": true},
+            "project_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]{4,28}[a-z0-9]$"},
+            "runtime_role": {"enum": ["operator", "judge"]},
+            "release_revision": {"$ref": "#/$defs/gitSha"},
+            "image_digest": {"$ref": "#/$defs/imageDigest"},
+            "region": {"const": "northamerica-northeast1"},
+            "deployment_authorization_sha256": {"$ref": "#/$defs/sha256"},
+            "provider_capable": {"type": "boolean"},
+            "live_provider_execution_enabled": {"const": false},
+            "production_activation": {"const": false},
+            "runtime_control_backend": {"enum": ["postgresql", "not_applicable"]},
+            "emergency_active": {"const": false},
+            "stop_epoch": {"type": ["integer", "null"], "minimum": 0}
+          }
+        }
+      }
+    }
   }
 }

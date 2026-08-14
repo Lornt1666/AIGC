@@ -8,6 +8,7 @@ from psycopg.errors import Error as PsycopgError
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 
+from src.core.epistemic.canonicalization import canonical_sha256
 from src.core.nexus.provider_runtime import (
     EmergencyStopActive,
     IdempotencyConflict,
@@ -37,6 +38,84 @@ def _minute_start(value: datetime) -> datetime:
 
 def _day_start(value: datetime) -> datetime:
     return value.astimezone(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+
+
+def _sanitized_finish_status(*, status: str, finish_status: str | None) -> str | None:
+    if finish_status is None:
+        return None
+    if status == "succeeded" and finish_status.replace("_", "").replace("-", "").isalnum():
+        return finish_status[:64]
+    if status == "not_started":
+        failure_class = finish_status.split(":", 1)[0]
+        if failure_class.replace("_", "").replace("-", "").isalnum():
+            return failure_class[:100]
+    return f"{status.upper()}_PROVIDER_DETAIL_REDACTED"
+
+
+def _sanitize_canary_execution_result(
+    *,
+    row: dict,
+    result: ProviderRuntimeExecution,
+) -> ProviderRuntimeExecution:
+    """Validate result correlation and remove provider content before JSONB persistence."""
+
+    invocation_id = row["invocation_id"]
+    if result.invocation_id != invocation_id or result.attempt.invocation_id != invocation_id:
+        raise ProviderRuntimeError("canary execution result invocation mismatch")
+    if result.attempt.provider_id != row["provider_id"]:
+        raise ProviderRuntimeError("canary execution result provider mismatch")
+    receipt = result.receipt
+    if receipt.permit_id != row["permit_id"]:
+        raise ProviderRuntimeError("canary execution result permit mismatch")
+    if receipt.execution_status != result.attempt.status:
+        raise ProviderRuntimeError("canary execution result status mismatch")
+    if len(receipt.operations) != 1:
+        raise ProviderRuntimeError("canary execution result must contain one operation")
+    operation = receipt.operations[0]
+    if operation.operation_id != invocation_id or operation.status != result.attempt.status:
+        raise ProviderRuntimeError("canary execution operation correlation mismatch")
+    expected_after_hash = (
+        result.attempt.response_digest if result.attempt.status == "succeeded" else None
+    )
+    if operation.after_hash != expected_after_hash:
+        raise ProviderRuntimeError("canary execution response digest correlation mismatch")
+
+    original_receipt_payload = {
+        "invocation_id": invocation_id,
+        "request_digest": row["request_digest"],
+        "attempt": result.attempt.model_dump(mode="json"),
+        "change_set_id": receipt.change_set_id,
+        "parent_state_hash": receipt.parent_state_hash,
+    }
+    original_receipt_id = "EXEC-" + canonical_sha256(original_receipt_payload)[:24].upper()
+    if receipt.receipt_id != original_receipt_id:
+        raise ProviderRuntimeError("canary execution receipt ID mismatch before persistence")
+
+    safe_attempt = result.attempt.model_copy(
+        update={
+            "response_payload": None,
+            "finish_status": _sanitized_finish_status(
+                status=result.attempt.status,
+                finish_status=result.attempt.finish_status,
+            ),
+        }
+    )
+    safe_receipt_payload = {
+        **original_receipt_payload,
+        "attempt": safe_attempt.model_dump(mode="json"),
+    }
+    safe_receipt_id = "EXEC-" + canonical_sha256(safe_receipt_payload)[:24].upper()
+    safe_operation = operation.model_copy(
+        update={
+            "failure_class": (
+                None if safe_attempt.status == "succeeded" else safe_attempt.finish_status
+            )
+        }
+    )
+    safe_receipt = receipt.model_copy(
+        update={"receipt_id": safe_receipt_id, "operations": (safe_operation,)}
+    )
+    return result.model_copy(update={"attempt": safe_attempt, "receipt": safe_receipt})
 
 
 class PostgresRuntimeControlStore:
@@ -188,6 +267,82 @@ class PostgresRuntimeControlStore:
         except PsycopgError as exc:
             raise RuntimeControlUnavailable(
                 f"Postgres emergency-stop clear failed: {type(exc).__name__}"
+            ) from None
+
+    def claim_canary_authority(
+        self,
+        *,
+        permit_id: str,
+        attestation_id: str,
+        attestation_sha256: str,
+        execution_nonce: str,
+        procurement_sha256: str,
+        deployment_sha256: str,
+        plan_sha256: str,
+        governance_decision_sha256: str,
+        execution_permit_sha256: str,
+        request_digest: str,
+        principal: str,
+        exact_revision: str,
+        job_name: str,
+        execution_name: str,
+    ) -> None:
+        digests = {
+            "attestation_sha256": attestation_sha256,
+            "execution_nonce": execution_nonce,
+            "procurement_sha256": procurement_sha256,
+            "deployment_sha256": deployment_sha256,
+            "plan_sha256": plan_sha256,
+            "governance_decision_sha256": governance_decision_sha256,
+            "execution_permit_sha256": execution_permit_sha256,
+            "request_digest": request_digest,
+        }
+        if any(
+            len(value) != 64 or any(character not in "0123456789abcdef" for character in value)
+            for value in digests.values()
+        ):
+            raise ValueError("canary authority claim contains an invalid digest")
+        if not all(
+            value.strip()
+            for value in (permit_id, attestation_id, principal, exact_revision, job_name, execution_name)
+        ):
+            raise ValueError("canary authority claim identity fields are required")
+        now = self._now()
+        try:
+            with self._connect() as conn, conn.cursor() as cur:
+                cur.execute(
+                    "INSERT INTO nexus_canary_authority_claim("
+                    "permit_id, attestation_id, attestation_sha256, execution_nonce, "
+                    "procurement_sha256, deployment_sha256, plan_sha256, "
+                    "governance_decision_sha256, execution_permit_sha256, request_digest, "
+                    "principal, exact_revision, job_name, execution_name, claimed_at) "
+                    "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
+                    "ON CONFLICT DO NOTHING RETURNING permit_id",
+                    (
+                        permit_id,
+                        attestation_id,
+                        attestation_sha256,
+                        execution_nonce,
+                        procurement_sha256,
+                        deployment_sha256,
+                        plan_sha256,
+                        governance_decision_sha256,
+                        execution_permit_sha256,
+                        request_digest,
+                        principal,
+                        exact_revision,
+                        job_name,
+                        execution_name,
+                        now,
+                    ),
+                )
+                if cur.fetchone() is None:
+                    raise RuntimeLimitExceeded(
+                        "canary permit/attestation/request authority was already consumed"
+                    )
+        except PsycopgError as exc:
+            raise RuntimeControlUnavailable(
+                f"Postgres canary authority claim failed: {type(exc).__name__}"
             ) from None
 
     def reserve_invocation(
@@ -430,7 +585,12 @@ class PostgresRuntimeControlStore:
                     raise StaleControlEpoch("provider invocation was reserved under a stale control epoch")
                 if row["state"] != "executing":
                     raise ProviderRuntimeError(f"cannot complete invocation in state {row['state']}")
-                attempt = result.attempt
+                persisted_result = (
+                    _sanitize_canary_execution_result(row=row, result=result)
+                    if row["provider_id"] in {"google_vertex_gemini", "openai_responses"}
+                    else result
+                )
+                attempt = persisted_result.attempt
                 state = {
                     "succeeded": "completed",
                     "failed": "failed",
@@ -438,9 +598,10 @@ class PostgresRuntimeControlStore:
                     "indeterminate": "indeterminate",
                     "not_started": "failed",
                 }[attempt.status]
-                actual = max(
-                    int(row["reserved_usage_units"]),
-                    int(attempt.usage_units or 0),
+                actual = (
+                    int(attempt.usage_units)
+                    if attempt.usage_units is not None
+                    else None
                 )
                 failure = None if attempt.status == "succeeded" else attempt.finish_status
                 cur.execute(
@@ -451,22 +612,23 @@ class PostgresRuntimeControlStore:
                         actual,
                         now,
                         failure,
-                        Jsonb(result.model_dump(mode="json")),
+                        Jsonb(persisted_result.model_dump(mode="json")),
                         invocation_id,
                     ),
                 )
                 created = row["created_at"].astimezone(timezone.utc)
-                for scope_type, scope_id, kind, start in (
-                    ("principal", row["principal"], "minute", _minute_start(created)),
-                    ("global", "*", "minute", _minute_start(created)),
-                    ("principal", row["principal"], "day", _day_start(created)),
-                    ("global", "*", "day", _day_start(created)),
-                ):
-                    cur.execute(
-                        "UPDATE nexus_runtime_usage SET actual_usage_units=actual_usage_units+%s "
-                        "WHERE scope_type=%s AND scope_id=%s AND window_kind=%s AND window_start=%s",
-                        (actual, scope_type, scope_id, kind, start),
-                    )
+                if actual is not None:
+                    for scope_type, scope_id, kind, start in (
+                        ("principal", row["principal"], "minute", _minute_start(created)),
+                        ("global", "*", "minute", _minute_start(created)),
+                        ("principal", row["principal"], "day", _day_start(created)),
+                        ("global", "*", "day", _day_start(created)),
+                    ):
+                        cur.execute(
+                            "UPDATE nexus_runtime_usage SET actual_usage_units=actual_usage_units+%s "
+                            "WHERE scope_type=%s AND scope_id=%s AND window_kind=%s AND window_start=%s",
+                            (actual, scope_type, scope_id, kind, start),
+                        )
                 row["state"] = state
                 row["actual_usage_units"] = actual
                 row["updated_at"] = now
@@ -502,6 +664,91 @@ class PostgresRuntimeControlStore:
         except PsycopgError as exc:
             raise RuntimeControlUnavailable(
                 f"Postgres fail-invocation failed: {type(exc).__name__}"
+            ) from None
+
+    def record_reconciliation_result(
+        self,
+        *,
+        invocation_id: str,
+        result: ProviderRuntimeExecution,
+    ) -> InvocationReservation:
+        """Create durable redacted evidence after an ambiguous completion failure.
+
+        If the original completion committed but its acknowledgement was lost, the
+        existing result wins and usage is not counted twice.  Otherwise this writes
+        one indeterminate terminal record without requiring the now-stale execution
+        epoch to still be active.
+        """
+
+        now = self._now()
+        try:
+            with self._connect() as conn, conn.cursor() as cur:
+                cur.execute(
+                    "SELECT * FROM nexus_runtime_invocation WHERE invocation_id=%s FOR UPDATE",
+                    (invocation_id,),
+                )
+                row = cur.fetchone()
+                if row is None:
+                    raise ProviderRuntimeError("runtime invocation reservation not found")
+                if row.get("result_json") is not None:
+                    return self._reservation(row)
+                persisted_result = (
+                    _sanitize_canary_execution_result(row=row, result=result)
+                    if row["provider_id"] in {"google_vertex_gemini", "openai_responses"}
+                    else result
+                )
+                attempt = persisted_result.attempt
+                if (
+                    persisted_result.invocation_id != invocation_id
+                    or attempt.invocation_id != invocation_id
+                    or attempt.status != "indeterminate"
+                    or attempt.outcome_known
+                    or attempt.response_payload is not None
+                ):
+                    raise ProviderRuntimeError(
+                        "reconciliation result must be correlated, redacted, and indeterminate"
+                    )
+                if row["state"] not in {"reserved", "executing", "failed", "indeterminate"}:
+                    raise ProviderRuntimeError(
+                        f"cannot record reconciliation result in state {row['state']}"
+                    )
+                actual = (
+                    int(attempt.usage_units)
+                    if attempt.usage_units is not None
+                    else None
+                )
+                cur.execute(
+                    "UPDATE nexus_runtime_invocation SET state='indeterminate', actual_usage_units=%s, "
+                    "updated_at=%s, failure_reason=%s, result_json=%s WHERE invocation_id=%s",
+                    (
+                        actual,
+                        now,
+                        attempt.finish_status,
+                        Jsonb(persisted_result.model_dump(mode="json")),
+                        invocation_id,
+                    ),
+                )
+                if actual is not None:
+                    created = row["created_at"].astimezone(timezone.utc)
+                    for scope_type, scope_id, kind, start in (
+                        ("principal", row["principal"], "minute", _minute_start(created)),
+                        ("global", "*", "minute", _minute_start(created)),
+                        ("principal", row["principal"], "day", _day_start(created)),
+                        ("global", "*", "day", _day_start(created)),
+                    ):
+                        cur.execute(
+                            "UPDATE nexus_runtime_usage SET actual_usage_units=actual_usage_units+%s "
+                            "WHERE scope_type=%s AND scope_id=%s AND window_kind=%s AND window_start=%s",
+                            (actual, scope_type, scope_id, kind, start),
+                        )
+                row["state"] = "indeterminate"
+                row["actual_usage_units"] = actual
+                row["updated_at"] = now
+                row["failure_reason"] = attempt.finish_status
+                return self._reservation(row)
+        except PsycopgError as exc:
+            raise RuntimeControlUnavailable(
+                f"Postgres reconciliation finalization failed: {type(exc).__name__}"
             ) from None
 
     def healthcheck(self) -> RuntimeControlHealth:

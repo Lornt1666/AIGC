@@ -129,6 +129,11 @@ class GovernedLiveNexusProviderRuntime(NexusProviderRuntime):
         if reservation.replayed:
             prior = self._control_store.get_execution_result(reservation.invocation_id)
             if prior is None:
+                if reservation.state not in {"reserved", "executing"}:
+                    raise ProviderExecutionBlocked(
+                        "live invocation is terminal without execution evidence; "
+                        "manual reconciliation is required"
+                    )
                 raise InvocationAlreadyInProgress(
                     "idempotent invocation is already reserved or executing"
                 )
@@ -139,31 +144,67 @@ class GovernedLiveNexusProviderRuntime(NexusProviderRuntime):
             expected_epoch=reservation.stop_epoch,
         )
         attempt = self._invoke_live_adapter(adapter, invocation)
-        self._validate_attempt(invocation, descriptor.provider_id, attempt)
-        receipt = self._receipt(invocation, attempt)
-        attempted = attempt.status != "not_started"
-        external = bool(attempt.external_action_performed)
-        audit = ProviderRuntimeAudit(
-            adapter_invocations=1,
-            provider_api_calls_performed=1 if attempted and descriptor.live_provider else 0,
-            network_calls_performed=1 if attempted and descriptor.network_required else 0,
-            credentials_used=1 if attempted and descriptor.credentials_required else 0,
-            external_actions_performed=1 if external else 0,
-            spend_cad=attempt.cost_cad,
-        )
-        result = ProviderRuntimeExecution(
-            invocation_id=invocation.invocation_id,
-            consequence_assessment=assessment,
-            attempt=attempt,
-            receipt=receipt,
-            audit=audit,
-            replayed=False,
-        )
-        self._control_store.complete_invocation(
-            invocation_id=reservation.invocation_id,
-            expected_epoch=reservation.stop_epoch,
-            result=result,
-        )
+        try:
+            self._validate_attempt(invocation, descriptor.provider_id, attempt)
+            receipt = self._receipt(invocation, attempt)
+            attempted = attempt.status != "not_started"
+            external = bool(attempt.external_action_performed)
+            audit = ProviderRuntimeAudit(
+                adapter_invocations=1,
+                provider_api_calls_performed=1 if attempted and descriptor.live_provider else 0,
+                network_calls_performed=1 if attempted and descriptor.network_required else 0,
+                credentials_used=1 if attempted and descriptor.credentials_required else 0,
+                external_actions_performed=1 if external else 0,
+                spend_cad=attempt.cost_cad,
+                spend_known=attempt.cost_known,
+            )
+            result = ProviderRuntimeExecution(
+                invocation_id=invocation.invocation_id,
+                consequence_assessment=assessment,
+                attempt=attempt,
+                receipt=receipt,
+                audit=audit,
+                replayed=False,
+            )
+        except Exception as exc:
+            attempted = attempt.status != "not_started"
+            self._terminalize_post_attempt_failure(
+                invocation=invocation,
+                expected_epoch=reservation.stop_epoch,
+                assessment=assessment,
+                trusted_provider_id=descriptor.provider_id,
+                attempt=attempt,
+                cause=exc,
+                provider_api_calls_performed=(
+                    1 if attempted and descriptor.live_provider else 0
+                ),
+                network_calls_performed=(
+                    1 if attempted and descriptor.network_required else 0
+                ),
+                credentials_used=(
+                    1 if attempted and descriptor.credentials_required else 0
+                ),
+            )
+            raise
+        try:
+            self._control_store.complete_invocation(
+                invocation_id=reservation.invocation_id,
+                expected_epoch=reservation.stop_epoch,
+                result=result,
+            )
+        except Exception as exc:
+            if attempt.status != "not_started":
+                self._durably_record_finalization_reconciliation(
+                    invocation=invocation,
+                    result=result,
+                    cause=exc,
+                )
+            else:
+                self._durably_fail_finalization(
+                    invocation_id=reservation.invocation_id,
+                    cause=exc,
+                )
+            raise
         return result
 
     @staticmethod
@@ -181,6 +222,7 @@ class GovernedLiveNexusProviderRuntime(NexusProviderRuntime):
                     latency_ms=0,
                     usage_units=None,
                     cost_cad=Decimal("0.00"),
+                    cost_known=True,
                     finish_status=f"{type(exc).__name__}:{exc}",
                     response_digest=None,
                     response_payload=None,
@@ -197,6 +239,7 @@ class GovernedLiveNexusProviderRuntime(NexusProviderRuntime):
                 latency_ms=0,
                 usage_units=None,
                 cost_cad=Decimal("0.00"),
+                cost_known=exc.outcome_known,
                 finish_status=f"{type(exc).__name__}:{exc}",
                 response_digest=None,
                 response_payload=None,
@@ -213,6 +256,7 @@ class GovernedLiveNexusProviderRuntime(NexusProviderRuntime):
                 latency_ms=0,
                 usage_units=None,
                 cost_cad=Decimal("0.00"),
+                cost_known=False,
                 finish_status=f"UNCLASSIFIED_LIVE_ADAPTER_EXCEPTION:{type(exc).__name__}",
                 response_digest=None,
                 response_payload=None,

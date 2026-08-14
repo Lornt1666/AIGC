@@ -49,12 +49,26 @@ variable "resource_creation_authorized" {
   description = "Exact human authorization to create foundational staging resources."
   type        = bool
   default     = false
+  validation {
+    condition = (
+      !var.resource_creation_authorized ||
+      length(var.budget_notification_channels) > 0
+    )
+    error_message = "Resource creation requires at least one reviewed Monitoring notification channel."
+  }
 }
 
 variable "staging_deployment_authorized" {
   description = "Separate no-production deployment authorization. Terraform does not perform the deployment."
   type        = bool
   default     = false
+  validation {
+    condition = (
+      !var.staging_deployment_authorized ||
+      var.resource_creation_authorized
+    )
+    error_message = "Staging deployment cannot be authorized before foundational resource creation."
+  }
 }
 
 variable "production_activation_authorized" {
@@ -150,6 +164,15 @@ variable "resource_manifest_sha256" {
   }
 }
 
+variable "authorization_inventory_sha256" {
+  description = "Canonical digest binding the exact project, resources, service accounts, and secret-version inventory."
+  type        = string
+  validation {
+    condition     = can(regex("^[a-f0-9]{64}$", var.authorization_inventory_sha256))
+    error_message = "authorization_inventory_sha256 must be a lowercase SHA-256 digest."
+  }
+}
+
 variable "operator_invoker_members" {
   description = "Explicit IAM members allowed to invoke the private operator service after deployment."
   type        = set(string)
@@ -186,6 +209,25 @@ variable "exact_secret_version_refs" {
       can(regex("^projects/[a-z][a-z0-9-]{4,28}[a-z0-9]/locations/northamerica-northeast1/secrets/[A-Za-z0-9_-]{1,255}/versions/[1-9][0-9]*$", reference))
     ])
     error_message = "Every secret reference must use an exact numeric version in regional Montréal Secret Manager."
+  }
+  validation {
+    condition = !var.staging_deployment_authorized || (
+      setequals(toset(keys(var.exact_secret_version_refs)), toset([
+        "runtime_control_dsn",
+        "operator_token",
+        "operator_binding_key",
+        "runtime_admin_token",
+        "runtime_admin_binding_key",
+        "judge_token",
+        "judge_binding_key",
+      ])) &&
+      alltrue([
+        for reference in values(var.exact_secret_version_refs) :
+        startswith(reference, "projects/${var.project_id}/locations/${var.region}/secrets/") &&
+        !endswith(reference, "/versions/latest")
+      ])
+    )
+    error_message = "Deployment requires the complete exact numeric Montréal secret inventory in the authorized project."
   }
 }
 

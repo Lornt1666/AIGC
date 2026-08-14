@@ -104,9 +104,10 @@ class FoundationStaticTests(unittest.TestCase):
 
     def test_cloud_run_is_separated_from_foundation_authority(self) -> None:
         cloud_run = tf_text("main.tf")
+        variables = tf_text("variables.tf")
         self.assertNotIn('resource "google_cloud_run', cloud_run)
         self.assertIn("intentionally not created", cloud_run)
-        self.assertIn("live_model_call_authorized == false", cloud_run)
+        self.assertIn("live_model_call_authorized == false", variables)
 
     def test_cloud_sql_is_private_regional_ha(self) -> None:
         sql = tf_text("main.tf")
@@ -135,11 +136,10 @@ class FoundationStaticTests(unittest.TestCase):
 
     def test_secret_references_require_numeric_montreal_versions(self) -> None:
         variables = tf_text("variables.tf")
-        secrets = tf_text("main.tf")
         self.assertIn("locations/northamerica-northeast1", variables)
         self.assertIn("versions/[1-9][0-9]*", variables)
-        self.assertIn("/versions/latest", secrets)
-        self.assertIn("!endswith", secrets)
+        self.assertIn("/versions/latest", variables)
+        self.assertIn("!endswith", variables)
 
     def test_budget_is_cad_and_bounded(self) -> None:
         budgets = tf_text("main.tf")
@@ -148,6 +148,20 @@ class FoundationStaticTests(unittest.TestCase):
         self.assertIn("var.monthly_budget_cad <= 200", variables)
         self.assertIn("0.50", budgets)
         self.assertIn("1.00", budgets)
+
+    def test_authority_invariants_are_blocking_validations_not_checks(self) -> None:
+        main = tf_text("main.tf")
+        variables = tf_text("variables.tf")
+        self.assertNotIn('check "staging_authority_boundary"', main)
+        self.assertNotIn('check "deployment_requires_foundation"', main)
+        self.assertNotIn('check "exact_regional_secret_versions"', main)
+        self.assertNotIn('check "notification_channels_reviewed"', main)
+        self.assertIn("!var.resource_creation_authorized", variables)
+        self.assertIn("length(var.budget_notification_channels) > 0", variables)
+        self.assertIn("!var.staging_deployment_authorized", variables)
+        self.assertIn("var.resource_creation_authorized", variables)
+        self.assertIn("setequals(toset(keys(var.exact_secret_version_refs))", variables)
+        self.assertIn("projects/${var.project_id}/locations/${var.region}", variables)
 
     def test_every_resource_is_default_deny_gated(self) -> None:
         main = tf_text("main.tf")

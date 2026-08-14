@@ -11,6 +11,7 @@ _REGIONAL_SECRET = re.compile(
     r"locations/(?P<location>[a-z0-9-]+)/secrets/"
     r"(?P<secret>[A-Za-z0-9_-]{1,255})/versions/(?P<version>[1-9][0-9]*)$"
 )
+_PROJECT = re.compile(r"^[a-z][a-z0-9-]{4,28}[a-z0-9]$")
 
 
 class RegionalSecretError(RuntimeError):
@@ -25,6 +26,17 @@ class RegionalSecretMetadata:
     version: str
 
 
+def _crc32c(data: bytes) -> int:
+    """Return Castagnoli CRC-32C without adding a runtime dependency."""
+
+    checksum = 0xFFFFFFFF
+    for octet in data:
+        checksum ^= octet
+        for _ in range(8):
+            checksum = (checksum >> 1) ^ (0x82F63B78 if checksum & 1 else 0)
+    return (~checksum) & 0xFFFFFFFF
+
+
 class RegionalSecretManagerResolver:
     """Exact-version Montréal Secret Manager data-plane resolver.
 
@@ -37,11 +49,15 @@ class RegionalSecretManagerResolver:
         self,
         *,
         location: str = REGION,
+        expected_project_id: str | None = None,
         client_factory: Callable[[str], Any] | None = None,
     ) -> None:
         if location != REGION:
             raise ValueError(f"Nexus V1 regional secrets must use {REGION}")
+        if expected_project_id is not None and not _PROJECT.fullmatch(expected_project_id):
+            raise ValueError("expected_project_id must be an exact Google Cloud project ID")
         self.location = location
+        self.expected_project_id = expected_project_id
         self.endpoint = f"secretmanager.{location}.rep.googleapis.com"
         self._client_factory = client_factory
         self._client: Any | None = None
@@ -55,6 +71,11 @@ class RegionalSecretManagerResolver:
             )
         if match.group("location") != self.location:
             raise RegionalSecretError("regional secret reference location mismatch")
+        if (
+            self.expected_project_id is not None
+            and match.group("project") != self.expected_project_id
+        ):
+            raise RegionalSecretError("regional secret reference project mismatch")
         return RegionalSecretMetadata(
             project_id=match.group("project"),
             location=match.group("location"),
@@ -82,12 +103,19 @@ class RegionalSecretManagerResolver:
 
     def resolve_text(self, reference: str) -> str:
         self.parse_reference(reference)
+        exact_reference = reference.strip()
         self.access_calls += 1
         try:
             response = self._client_for_endpoint().access_secret_version(
-                request={"name": reference}
+                request={"name": exact_reference}
             )
-            value = bytes(response.payload.data).decode("utf-8")
+            if str(response.name) != exact_reference:
+                raise RegionalSecretError("regional secret response name mismatch")
+            data = bytes(response.payload.data)
+            observed_checksum = response.payload.data_crc32c
+            if not isinstance(observed_checksum, int) or observed_checksum != _crc32c(data):
+                raise RegionalSecretError("regional secret payload checksum mismatch")
+            value = data.decode("utf-8")
         except RegionalSecretError:
             raise
         except Exception as exc:

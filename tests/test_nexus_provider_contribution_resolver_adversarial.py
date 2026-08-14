@@ -88,6 +88,8 @@ def route(
         purpose="adversarial contribution resolution test",
         bounded_prompt=prompt,
         reserved_usage_units=10,
+        maximum_input_units=5,
+        maximum_output_units=5,
         maximum_cost_cad=cost,
         requested_effect_class=effect_class,
         uncertainty=0.2,

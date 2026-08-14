@@ -53,6 +53,8 @@ def make_invocation(
     resource_ref: str = "provider://offline",
     purpose: str = "deterministic provider runtime test",
     reserved_usage_units: int = 10,
+    maximum_input_units: int | None = None,
+    maximum_output_units: int | None = None,
     maximum_cost_cad: Decimal = Decimal("0.00"),
     permit_id: str | None = None,
 ) -> ProviderInvocation:
@@ -69,6 +71,17 @@ def make_invocation(
         request_digest="0" * 64,
         idempotency_key=idempotency_key,
         reserved_usage_units=reserved_usage_units,
+        maximum_input_units=(
+            maximum_input_units
+            if maximum_input_units is not None
+            else reserved_usage_units // 2
+        ),
+        maximum_output_units=(
+            maximum_output_units
+            if maximum_output_units is not None
+            else reserved_usage_units - (reserved_usage_units // 2)
+        ),
+        request_timeout_seconds=30,
         maximum_cost_cad=maximum_cost_cad,
         resource_ref=resource_ref,
         purpose=purpose,
@@ -151,6 +164,8 @@ class FakeAdapter:
             model_or_resource=invocation.model_or_resource,
             latency_ms=0,
             usage_units=invocation.reserved_usage_units,
+            input_usage_units=invocation.maximum_input_units,
+            output_usage_units=invocation.maximum_output_units,
             cost_cad=Decimal("0.00"),
             finish_status="fake_complete",
             response_digest=canonical_sha256({"response_payload": payload}),

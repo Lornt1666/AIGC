@@ -1,13 +1,21 @@
 steps:
-  - name: gcr.io/cloud-builders/docker
+  - name: ${_DOCKER_BUILDER_IMAGE}
     args:
       - build
+      - --platform=linux/amd64
       - --file
       - Dockerfile.nexus
       - --tag
       - ${_IMAGE_URI}
+      - --build-arg
+      - PYTHON_BASE_IMAGE=${_PYTHON_BASE_IMAGE}
+      - --build-arg
+      - RELEASE_SHA=${_RELEASE_SHA}
+      - --build-arg
+      - SOURCE_CONTEXT_SHA256=${_SOURCE_CONTEXT_SHA256}
       - .
 images:
   - ${_IMAGE_URI}
 options:
   logging: CLOUD_LOGGING_ONLY
+  requestedVerifyOption: VERIFIED

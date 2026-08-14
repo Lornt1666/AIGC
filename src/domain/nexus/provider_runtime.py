@@ -64,12 +64,23 @@ class ProviderInvocation(NexusContract):
     request_digest: str = Field(pattern=r"^[a-f0-9]{64}$")
     idempotency_key: str = Field(pattern=r"^[a-f0-9]{64}$")
     reserved_usage_units: int = Field(ge=1)
+    maximum_input_units: int = Field(ge=0)
+    maximum_output_units: int = Field(ge=1)
+    request_timeout_seconds: int = Field(ge=1, le=120)
     maximum_cost_cad: Decimal = Field(default=Decimal("0.00"), ge=0)
     resource_ref: str = Field(min_length=1, max_length=1000)
     purpose: str = Field(min_length=1, max_length=4000)
     requested_effect_class: EffectClass
     input_payload: str = Field(default="", max_length=50000)
     permit_id: str | None = Field(default=None, pattern=r"^PERMIT-[A-Z0-9_-]{6,64}$")
+
+    @model_validator(mode="after")
+    def validate_usage_partition(self) -> "ProviderInvocation":
+        if self.maximum_input_units + self.maximum_output_units > self.reserved_usage_units:
+            raise ValueError(
+                "maximum input and output units exceed reserved usage units"
+            )
+        return self
 
 
 class ProviderAttemptResult(NexusContract):
@@ -80,7 +91,10 @@ class ProviderAttemptResult(NexusContract):
     model_or_resource: str
     latency_ms: int = Field(ge=0)
     usage_units: int | None = Field(default=None, ge=0)
+    input_usage_units: int | None = Field(default=None, ge=0)
+    output_usage_units: int | None = Field(default=None, ge=0)
     cost_cad: Decimal = Field(default=Decimal("0.00"), ge=0)
+    cost_known: bool = True
     finish_status: str | None = Field(default=None, max_length=300)
     response_digest: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
     response_payload: str | None = Field(default=None, max_length=100000)
@@ -96,6 +110,19 @@ class ProviderAttemptResult(NexusContract):
             raise ValueError("only indeterminate provider attempts may have unknown outcome")
         if self.status == "not_started" and self.external_action_performed not in {False, None}:
             raise ValueError("not_started provider attempt cannot claim external action")
+        if not self.cost_known and self.status != "indeterminate":
+            raise ValueError("unknown provider cost requires an indeterminate attempt")
+        components = (self.input_usage_units, self.output_usage_units)
+        if self.usage_units is None:
+            if any(value is not None for value in components):
+                raise ValueError("provider usage components require total usage")
+        else:
+            if any(value is None for value in components):
+                raise ValueError("measured provider usage requires input and output components")
+            assert self.input_usage_units is not None
+            assert self.output_usage_units is not None
+            if self.usage_units < self.input_usage_units + self.output_usage_units:
+                raise ValueError("provider total usage cannot be less than its components")
         if self.response_payload is not None and self.response_digest is None:
             raise ValueError("provider response payload requires response_digest")
         return self
@@ -177,6 +204,7 @@ class ProviderRuntimeAudit(NexusContract):
     credentials_used: int = Field(default=0, ge=0)
     external_actions_performed: int = Field(default=0, ge=0)
     spend_cad: Decimal = Field(default=Decimal("0.00"), ge=0)
+    spend_known: bool = True
 
 
 class ProviderRuntimeExecution(NexusContract):

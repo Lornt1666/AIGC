@@ -7,6 +7,25 @@ import pytest
 import scripts.validate_nexus_staging_runtime as validator
 
 
+RELEASE_SHA = "a" * 40
+IMAGE_DIGEST = "sha256:" + "b" * 64
+
+
+def target(**updates):
+    values = {
+        "project_id": "aigc-stage-12345",
+        "region": validator.REGION,
+        "service": "aigc-operator-stg",
+        "revision": "aigc-operator-stg-00001-abc",
+        "release_sha": RELEASE_SHA,
+        "image_digest": IMAGE_DIGEST,
+        "candidate_url": "https://candidate-a1b2c3---aigc-operator-stg-xyz.nn.a.run.app",
+        "audience": "https://aigc-operator-stg-xyz.nn.a.run.app",
+    }
+    values.update(updates)
+    return validator.VerifiedCandidateTarget(**values)
+
+
 class Response:
     def __init__(self, status_code: int, payload: dict | None = None) -> None:
         self.status_code = status_code
@@ -43,8 +62,7 @@ def test_candidate_validation_records_bounded_load_security_and_reconciliation(m
         lambda *_args, **_kwargs: Response(200, {"ready": True}),
     )
     result = validator.validate_candidate(
-        candidate_url="https://candidate.example.invalid",
-        audience="https://service.example.invalid",
+        target=target(),
         requests=8,
         concurrency=2,
         token_supplier=lambda _audience: "opaque-test-token",
@@ -64,9 +82,73 @@ def test_candidate_validation_records_bounded_load_security_and_reconciliation(m
 def test_candidate_validation_rejects_unbounded_load():
     with pytest.raises(ValueError, match="load bounds"):
         validator.validate_candidate(
-            candidate_url="https://candidate.example.invalid",
-            audience="https://service.example.invalid",
+            target=target(),
             requests=201,
             concurrency=1,
             token_supplier=lambda _audience: "opaque-test-token",
+        )
+
+
+def test_candidate_target_rejects_independent_token_destination():
+    with pytest.raises(ValueError, match="not bound"):
+        target(candidate_url="https://attacker.example.run.app")
+
+
+def test_candidate_target_rejects_non_cloud_run_origin_and_url_components():
+    with pytest.raises(ValueError, match="Cloud Run"):
+        target(candidate_url="https://attacker.example.invalid")
+    with pytest.raises(ValueError, match="without credentials"):
+        target(candidate_url="https://aigc-operator-stg-xyz.nn.a.run.app/steal")
+
+
+def test_resolver_requires_exact_tag_revision_digest_and_release_label(monkeypatch):
+    service = {
+        "status": {
+            "url": "https://aigc-operator-stg-xyz.nn.a.run.app",
+            "traffic": [{
+                "tag": "candidate-aaaaaaaa",
+                "revisionName": "aigc-operator-stg-00001-abc",
+                "url": "https://candidate-aaaaaaaa---aigc-operator-stg-xyz.nn.a.run.app",
+            }],
+        }
+    }
+    revision = {
+        "metadata": {"labels": {"aigc-release-sha": RELEASE_SHA}},
+        "spec": {"containers": [{"image": "northamerica-northeast1-docker.pkg.dev/p/r/i@" + IMAGE_DIGEST}]},
+    }
+    responses = iter((service, revision))
+    monkeypatch.setattr(validator, "_gcloud_json", lambda _command: next(responses))
+    resolved = validator.resolve_candidate_target(
+        project_id="aigc-stage-12345",
+        service="aigc-operator-stg",
+        revision="aigc-operator-stg-00001-abc",
+        release_sha=RELEASE_SHA,
+        image_digest=IMAGE_DIGEST,
+    )
+    assert resolved.revision == "aigc-operator-stg-00001-abc"
+    assert resolved.audience == "https://aigc-operator-stg-xyz.nn.a.run.app"
+
+
+def test_resolver_rejects_stale_candidate_revision(monkeypatch):
+    monkeypatch.setattr(
+        validator,
+        "_gcloud_json",
+        lambda _command: {
+            "status": {
+                "url": "https://aigc-operator-stg-xyz.nn.a.run.app",
+                "traffic": [{
+                    "tag": "candidate-aaaaaaaa",
+                    "revisionName": "aigc-operator-stg-00000-old",
+                    "url": "https://candidate-aaaaaaaa---aigc-operator-stg-xyz.nn.a.run.app",
+                }],
+            }
+        },
+    )
+    with pytest.raises(validator.NexusStagingValidationError, match="exact tagged"):
+        validator.resolve_candidate_target(
+            project_id="aigc-stage-12345",
+            service="aigc-operator-stg",
+            revision="aigc-operator-stg-00001-abc",
+            release_sha=RELEASE_SHA,
+            image_digest=IMAGE_DIGEST,
         )

@@ -22,7 +22,7 @@ cross_region_replication_authorized=false
 service_account_key_creation_authorized=false
 ```
 
-Terraform creates nothing unless an exact, validated authorization packet sets `resource_creation_authorized=true`. Cloud Run deployment remains outside this root and must use the admitted exact release SHA and immutable image digest through the governed deployment procedure in PR #170. This root prepares foundational resources only.
+Terraform creates nothing unless an exact, validated authorization packet sets `resource_creation_authorized=true`. Cloud Run deployment remains outside this root and must use the admitted exact release SHA, tree, CI receipt and immutable image digest through the release-closure procedure based on PR #181. This root prepares foundational resources only.
 
 ## Required external identifiers
 
@@ -47,14 +47,20 @@ python scripts/validate_quebec_cloud_authorization.py \
   --gate plan
 
 terraform fmt -check -recursive infra/gcp/quebec
-terraform -chdir=infra/gcp/quebec init -backend=false
-terraform -chdir=infra/gcp/quebec validate
+terraform -chdir=infra/gcp/quebec init -backend=false -lockfile=readonly
+terraform -chdir=infra/gcp/quebec validate -json
+terraform -chdir=infra/gcp/quebec test -test-directory=ci/tftest -filter=ci/tftest/inert_authority.tftest.hcl -json -verbose
 ```
+
+The plan-only test uses Terraform's isolated in-memory test state and emits a
+machine-readable `test_plan`. CI must not run a standalone plan after
+`init -backend=false`: this production root declares a GCS backend, and a
+standalone plan would require that backend to be initialized.
 
 ## Deployment sequence
 
-1. Obtain exact-head PR #170 CI evidence.
-2. Review this foundation PR and obtain its own exact-head CI evidence.
+1. Obtain fresh exact-head CI evidence for the release-closure branch based on PR #181 head `18e886d48c57b85d8ab8115a6fb765fa6e655fc9`.
+2. Require the committed Terraform provider lockfile and native Québec validation stage to pass.
 3. Complete the Québec authorization packet.
 4. Apply only the foundational staging resources.
 5. Inspect and retain regional provider receipts.

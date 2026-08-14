@@ -1,0 +1,88 @@
+name: AIGC Exact-Head CI Admission
+
+on:
+  workflow_run:
+    workflows:
+      - AIGC CI
+    types:
+      - completed
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  assemble:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout the exact successful main revision
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Resolve exact tree and verify protected main
+        id: identity
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$RELEASE_SHA"
+          test "$(gh api "repos/$GITHUB_REPOSITORY/branches/main" --jq '.protected')" = "true"
+          echo "tree_sha=$(git rev-parse 'HEAD^{tree}')" >> "$GITHUB_OUTPUT"
+
+      - name: Download exact canonical evidence and metadata
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_SHA: ${{ github.event.workflow_run.head_sha }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          set -euo pipefail
+          artifact_name="aigc-colosseum-orchestration-exact-head-$RELEASE_SHA"
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" > "$RUNNER_TEMP/run.json"
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID/artifacts?per_page=100" \
+            | jq --arg name "$artifact_name" \
+              '[.artifacts[] | select(.name == $name)] | if length == 1 then .[0] else error("exact artifact count is not one") end' \
+              > "$RUNNER_TEMP/artifact.json"
+          artifact_id="$(jq -r '.id' "$RUNNER_TEMP/artifact.json")"
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$artifact_id/zip" \
+            > "$RUNNER_TEMP/exact-head-evidence.zip"
+
+      - name: Assemble verified exact-head CI admission
+        shell: bash
+        env:
+          RELEASE_SHA: ${{ github.event.workflow_run.head_sha }}
+          RELEASE_TREE_SHA: ${{ steps.identity.outputs.tree_sha }}
+        run: |
+          set -euo pipefail
+          python -m scripts.assemble_exact_head_ci_admission \
+            --run-metadata "$RUNNER_TEMP/run.json" \
+            --artifact-metadata "$RUNNER_TEMP/artifact.json" \
+            --artifact-archive "$RUNNER_TEMP/exact-head-evidence.zip" \
+            --contract config/exact_sha_ci_validation_contract.json \
+            --lockfile infra/gcp/quebec/.terraform.lock.hcl \
+            --provider-lock-policy infra/gcp/quebec/ci/lock/provider_lock_policy.json \
+            --release-sha "$RELEASE_SHA" \
+            --release-tree-sha "$RELEASE_TREE_SHA" \
+            --protected-main \
+            --output "$RUNNER_TEMP/exact-head-ci-admission.json" \
+            > "$RUNNER_TEMP/exact-head-ci-admission-summary.json"
+
+      - name: Retain exact-head CI admission
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: aigc-exact-head-ci-admission-${{ github.event.workflow_run.head_sha }}
+          path: |
+            ${{ runner.temp }}/exact-head-ci-admission.json
+            ${{ runner.temp }}/exact-head-ci-admission-summary.json
+          if-no-files-found: error
+          include-hidden-files: false
