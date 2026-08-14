@@ -5,8 +5,34 @@
   "result": "BLOCKED",
   "canonical_registry_mutated": false,
   "dry_run_executed": false,
-  "blocker_class": "EXECUTION_ENVIRONMENT_BINARY_TRANSFER_UNAVAILABLE",
-  "blocker_detail": "Authoritative source endpoints were resolved, including ESCO's official web-service API. This execution environment still cannot materialize the required full payload bytes into the local runtime: the web layer can inspect pages/API documentation but does not expose arbitrary binary archives as local files, and the local container has no outbound DNS/network access. SHA-256 receipts and adapter dry-runs therefore cannot be truthfully produced in this run.",
+  "blocker_class": "EXECUTION_ENVIRONMENT_PAYLOAD_MATERIALIZATION_UNAVAILABLE",
+  "blocker_detail": "Official publisher pages and direct payload endpoints were independently resolved on 2026-08-14. Live acquisition was attempted. The web retrieval layer reached the exact Statistics Canada CSV and O*NET archive URLs but rejected them as unsupported content types (text/csv and application/zip), and a direct container download of the O*NET archive also failed. Therefore no source bytes entered quarantine, no SHA-256 payload receipt can be truthfully emitted, and no adapter dry-run is eligible.",
+  "live_attempts": [
+    {
+      "authority": "NOC",
+      "dataset_kind": "CLASSIFICATION_STRUCTURE",
+      "endpoint": "https://www.statcan.gc.ca/en/subjects/standard/noc/2021/indexV1/noc-2021-v1.0-classification-structure.csv",
+      "resolution": "OFFICIAL_ENDPOINT_CONFIRMED",
+      "transfer_result": "BLOCKED_UNSUPPORTED_CONTENT_TYPE_TEXT_CSV",
+      "payload_materialized": false
+    },
+    {
+      "authority": "NOC",
+      "dataset_kind": "ELEMENTS",
+      "endpoint": "https://www.statcan.gc.ca/en/subjects/standard/noc/2021/indexV1/noc-2021-v1.0-elements.csv",
+      "resolution": "OFFICIAL_ENDPOINT_CONFIRMED",
+      "transfer_result": "BLOCKED_UNSUPPORTED_CONTENT_TYPE_TEXT_CSV",
+      "payload_materialized": false
+    },
+    {
+      "authority": "ONET",
+      "dataset_kind": "CORE_DATABASE_ARCHIVE",
+      "endpoint": "https://www.onetcenter.org/dl_files/database/db_30_3_csv.zip",
+      "resolution": "OFFICIAL_CURRENT_RELEASE_30_3_CONFIRMED",
+      "transfer_result": "WEB_BINARY_UNSUPPORTED_AND_CONTAINER_DOWNLOAD_FAILED",
+      "payload_materialized": false
+    }
+  ],
   "sources": [
     {
       "authority": "ISCO",
@@ -33,7 +59,7 @@
       "sha256": null,
       "byte_size": null,
       "dry_run_status": "NOT_EXECUTED",
-      "note": "Correction: ESCO is not categorically email-gated. The Commission provides a public web-service API for machine-to-machine access. The separate downloadable-package UI uses privacy acknowledgement/email delivery. Official current site metadata reports ESCO v1.2.1, while the public web-service API page presently documents selectable versions through v1.2.0; exact v1.2.1 API completeness must therefore be verified before treating API output as a full v1.2.1 acquisition."
+      "note": "ESCO machine-to-machine access is valid. Exact v1.2.1 completeness must be observed from official metadata before a v1.2.1 acquisition receipt may be emitted; silent downgrade is forbidden."
     },
     {
       "authority": "NOC",
@@ -42,7 +68,7 @@
       "dataset_kind": "CLASSIFICATION_STRUCTURE",
       "official_page": "https://www.statcan.gc.ca/en/subjects/standard/noc/2021/indexV1",
       "direct_payload_url": "https://www.statcan.gc.ca/en/subjects/standard/noc/2021/indexV1/noc-2021-v1.0-classification-structure.csv",
-      "payload_status": "RESOLVED_NOT_MATERIALIZED",
+      "payload_status": "RESOLVED_TRANSFER_BLOCKED_BY_CURRENT_TOOLING",
       "sha256": null,
       "byte_size": null,
       "dry_run_status": "NOT_EXECUTED"
@@ -54,7 +80,7 @@
       "dataset_kind": "ELEMENTS",
       "official_page": "https://www.statcan.gc.ca/en/subjects/standard/noc/2021/indexV1",
       "direct_payload_url": "https://www.statcan.gc.ca/en/subjects/standard/noc/2021/indexV1/noc-2021-v1.0-elements.csv",
-      "payload_status": "RESOLVED_NOT_MATERIALIZED",
+      "payload_status": "RESOLVED_TRANSFER_BLOCKED_BY_CURRENT_TOOLING",
       "sha256": null,
       "byte_size": null,
       "dry_run_status": "NOT_EXECUTED"
@@ -64,7 +90,7 @@
       "publisher": "U.S. Bureau of Labor Statistics",
       "version": "2018",
       "dataset_kind": "STRUCTURE",
-      "official_page": "https://www.bls.gov/soc/2018/home.htm",
+      "official_page": "https://www.bls.gov/soc/2018/",
       "direct_payload_url": "https://www.bls.gov/soc/2018/soc_structure_2018.xlsx",
       "payload_status": "RESOLVED_NOT_MATERIALIZED",
       "sha256": null,
@@ -78,7 +104,7 @@
       "dataset_kind": "CORE_DATABASE_CSV_ARCHIVE",
       "official_page": "https://www.onetcenter.org/database.html",
       "direct_payload_url": "https://www.onetcenter.org/dl_files/database/db_30_3_csv.zip",
-      "payload_status": "RESOLVED_NOT_MATERIALIZED",
+      "payload_status": "RESOLVED_TRANSFER_BLOCKED_BY_CURRENT_TOOLING",
       "sha256": null,
       "byte_size": null,
       "dry_run_status": "NOT_EXECUTED"
@@ -91,5 +117,5 @@
     "unsupported_records": "NOT_COMPUTED_NO_PAYLOAD_BYTES"
   },
   "canonical_ingestion_recommendation": "DENY_UNTIL_PAYLOADS_MATERIALIZED_HASHED_AND_DRY_RUN_PASSES",
-  "next_transition": "Use official direct files or official machine-to-machine APIs to materialize payload bytes in a network-capable runtime. For ESCO, verify the exact selectable API version before asserting v1.2.1 completeness. Compute SHA-256 before normalization, then execute dry-run imports and inspect conflicts/crosswalk gaps before seeking canonical-ingestion approval."
+  "next_transition": "Run OccupationalProcurementRelay in a runtime that can stream public HTTPS payload bytes to local quarantine, or provide the exact official files as inputs. Verify observed source version, compute SHA-256 during transfer, quarantine by content hash, then execute source-native normalization and dry-run reports before seeking a separate canonical-admission WorkCommission."
 }
