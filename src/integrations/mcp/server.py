@@ -18,6 +18,7 @@ from src.integrations.mcp.tools import (
     assess_aigc_action,
     procure_deep_research_plan,
     run_aigc_dry_run,
+    seed_aigc_regenexcalibur_universe,
 )
 
 
@@ -145,6 +146,23 @@ def build_mcp_server(*, host: str = "127.0.0.1", port: int = 8000) -> FastMCP:
             jurisdictions=jurisdictions,
             maximum_sources=maximum_sources,
             maximum_spend_cad=maximum_spend_cad,
+        )
+
+    @server.tool(
+        name="aigc_seed_regenexcalibur_universe",
+        title="Seed the RegenExcalibur universe",
+        description=(
+            "Use this to validate the canonical 1JGM Genesis seed and create a "
+            "deterministic, bounded, zero-egress universe-plan receipt."
+        ),
+        annotations=READ_ONLY,
+        structured_output=True,
+    )
+    def regenexcalibur_seed_tool(
+        requested_evolution_depth: int = 1,
+    ) -> dict[str, object]:
+        return seed_aigc_regenexcalibur_universe(
+            requested_evolution_depth=requested_evolution_depth
         )
 
     @server.tool(

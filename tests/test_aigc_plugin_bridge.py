@@ -40,6 +40,27 @@ def test_one_click_sandbox_defaults_to_valid_zero_egress_scenario():
     assert len(result["receipt_sha256"]) == 64
 
 
+def test_regenexcalibur_bridge_is_closed_and_zero_egress():
+    result = dispatch_bridge_request(
+        {
+            "operation": "aigc_seed_regenexcalibur_universe",
+            "arguments": {"requested_evolution_depth": 1},
+        }
+    )
+    assert result["terminal_status"] == "PASS"
+    assert result["provider_calls_performed"] == 0
+    assert result["external_actions_performed"] == 0
+    assert result["authority_granted"] is False
+
+    with pytest.raises(ValueError, match="unknown RegenExcalibur fields"):
+        dispatch_bridge_request(
+            {
+                "operation": "aigc_seed_regenexcalibur_universe",
+                "arguments": {"permit_id": "not-authority"},
+            }
+        )
+
+
 @pytest.mark.parametrize(
     "bridge_request",
     [

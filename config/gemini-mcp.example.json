@@ -11,7 +11,8 @@
         "assess_aigc_action",
         "run_aigc_dry_run",
         "procure_deep_research_plan",
-        "aigc_run_employer_sandbox"
+        "aigc_run_employer_sandbox",
+        "aigc_seed_regenexcalibur_universe"
       ]
     }
   }

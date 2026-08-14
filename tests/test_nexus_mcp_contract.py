@@ -12,6 +12,7 @@ from src.integrations.mcp.tools import (
     procure_deep_research_plan,
     run_aigc_dry_run,
     run_employer_sandbox,
+    seed_aigc_regenexcalibur_universe,
 )
 
 
@@ -22,6 +23,7 @@ EXPECTED_TOOLS = {
     "run_aigc_dry_run",
     "aigc_run_employer_sandbox",
     "procure_deep_research_plan",
+    "aigc_seed_regenexcalibur_universe",
 }
 
 
@@ -140,3 +142,16 @@ def test_deep_research_mcp_tool_only_builds_a_local_procurement_plan():
     assert result["external_action_performed"] is False
     assert result["authority_granted"] is False
     assert result["final_status"] == "BLOCKED_BEFORE_SOURCE_RETRIEVAL"
+
+
+def test_regenexcalibur_mcp_tool_emits_deterministic_zero_egress_receipt():
+    first = seed_aigc_regenexcalibur_universe(requested_evolution_depth=1)
+    second = seed_aigc_regenexcalibur_universe(requested_evolution_depth=1)
+    assert first == second
+    assert first["terminal_status"] == "PASS"
+    assert first["zero_egress"] is True
+    assert first["provider_calls_performed"] == 0
+    assert first["external_actions_performed"] == 0
+    assert first["authority_granted"] is False
+    assert len(first["agents"]) == 8
+    assert len(first["receipt_sha256"]) == 64

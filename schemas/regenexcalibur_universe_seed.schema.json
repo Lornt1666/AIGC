@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/regenexcalibur_universe_seed.schema.json",
+  "title": "RegenExcalibur Universe Seed v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "universe_name",
+    "seeded_by",
+    "coordinator",
+    "watermark",
+    "core_intent",
+    "life_domains",
+    "success_criteria",
+    "recursion_limit",
+    "execution_mode",
+    "grants_external_authority"
+  ],
+  "properties": {
+    "schema_version": {"const": "regenexcalibur.universe-seed.v1"},
+    "universe_name": {"const": "RegenExcalibur OS"},
+    "seeded_by": {"const": "Alpha-Omega-Creatir"},
+    "coordinator": {"const": "Justice Gray Maciocha"},
+    "watermark": {"const": "1JGM"},
+    "core_intent": {"type": "string", "minLength": 20, "maxLength": 2000},
+    "life_domains": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "success_criteria": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "recursion_limit": {"type": "integer", "minimum": 1, "maximum": 12},
+    "execution_mode": {"const": "PLAN_ONLY"},
+    "grants_external_authority": {"const": false}
+  }
+}

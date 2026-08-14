@@ -27,8 +27,9 @@ UI only after the server works without it:
 | `run_aigc_dry_run` | Simulate work search, application preparation, communication, or daily work | None; always stops before `EXECUTE` |
 | `procure_deep_research_plan` | Create a decision-bound source, challenge, synthesis, and verification plan | None; stops before source retrieval or provider dispatch |
 | `aigc_run_employer_sandbox` | Exercise one declared capability against deterministic fixtures | None; emits a canonical receipt and denies adversarial/regulated scenarios |
+| `aigc_seed_regenexcalibur_universe` | Validate the canonical 1JGM seed and synthesize the bounded Genesis plan | None; emits a deterministic zero-egress receipt and never self-modifies |
 
-All six tools advertise:
+All seven tools advertise:
 
 ```text
 readOnlyHint    = true
@@ -79,7 +80,7 @@ When an approved private test connection exists:
 2. Connect it using OpenAI Secure MCP Tunnel or an approved HTTPS test endpoint.
 3. In ChatGPT, enable Developer mode under Settings → Security and login.
 4. Add a plugin connection with the complete `/mcp` URL or selected tunnel.
-5. Review the six discovered tools and their annotations.
+5. Review the seven discovered tools and their annotations.
 6. Test direct, indirect, follow-up, malformed, and unsupported prompts.
 7. Verify every execution request remains blocked and refresh metadata after a change.
 
@@ -114,6 +115,7 @@ It performs zero provider calls and zero source retrieval.
 .venv/bin/python scripts/validate_aigc_occupation_packs.py
 .venv/bin/python scripts/validate_aigc_deep_research_policy.py
 .venv/bin/python scripts/validate_aigc_universal_integration.py
+.venv/bin/python scripts/validate_regenexcalibur_universe.py
 .venv/bin/python -m pytest -q tests/test_nexus_mcp_contract.py \
   tests/test_nexus_occupation_packs.py \
   tests/test_nexus_deep_research_procurement.py

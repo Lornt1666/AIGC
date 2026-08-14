@@ -13,6 +13,7 @@ from src.domain.nexus.autonomy import ActionIntent
 from src.domain.nexus.contracts import EffectClass
 from src.domain.nexus.research import ResearchProcurementRequest
 from src.operations.employer_sandbox import run_employer_sandbox as run_employer_sandbox_operation
+from src.regenexcalibur.orchestrator import seed_regenexcalibur_universe
 from src.webapp.nexus_dashboard import build_nexus_dashboard_snapshot
 
 
@@ -30,6 +31,21 @@ SandboxScenario = Literal[
 ]
 
 ROOT = Path(__file__).resolve().parents[3]
+
+
+def seed_aigc_regenexcalibur_universe(
+    *, requested_evolution_depth: int = 1
+) -> dict[str, object]:
+    """Validate the canonical Genesis seed and emit a deterministic zero-egress receipt."""
+
+    import json
+
+    seed_path = ROOT / "config" / "regenexcalibur_universe_seed.v1.json"
+    seed = json.loads(seed_path.read_text(encoding="utf-8"))
+    return seed_regenexcalibur_universe(
+        seed=seed,
+        requested_evolution_depth=requested_evolution_depth,
+    )
 
 
 def get_aigc_status() -> dict[str, object]:

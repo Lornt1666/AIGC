@@ -8,7 +8,10 @@ import sys
 from collections.abc import Mapping
 from typing import Any, Literal
 
-from src.integrations.mcp.tools import get_aigc_status
+from src.integrations.mcp.tools import (
+    get_aigc_status,
+    seed_aigc_regenexcalibur_universe,
+)
 from src.operations.employer_sandbox import run_employer_sandbox
 
 
@@ -16,6 +19,7 @@ BridgeOperation = Literal[
     "aigc_get_status",
     "aigc_render_control_center",
     "aigc_run_employer_sandbox",
+    "aigc_seed_regenexcalibur_universe",
 ]
 
 
@@ -42,6 +46,7 @@ def aigc_render_control_center() -> dict[str, object]:
         "available_actions": [
             "inspect_status",
             "run_zero_egress_employer_sandbox",
+            "seed_zero_egress_regenexcalibur_universe",
         ],
         "blocked_actions": [
             "external_provider_call",
@@ -79,6 +84,12 @@ def dispatch_bridge_request(request: Mapping[str, Any]) -> dict[str, object]:
         if extra:
             raise ValueError(f"unknown employer sandbox fields: {', '.join(extra)}")
         return run_employer_sandbox(**dict(arguments))
+    if operation == "aigc_seed_regenexcalibur_universe":
+        permitted = {"requested_evolution_depth"}
+        extra = sorted(set(arguments).difference(permitted))
+        if extra:
+            raise ValueError(f"unknown RegenExcalibur fields: {', '.join(extra)}")
+        return seed_aigc_regenexcalibur_universe(**dict(arguments))
     raise ValueError("unknown bridge operation")
 
 

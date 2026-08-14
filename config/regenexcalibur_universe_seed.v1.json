@@ -1,0 +1,27 @@
+{
+  "schema_version": "regenexcalibur.universe-seed.v1",
+  "universe_name": "RegenExcalibur OS",
+  "seeded_by": "Alpha-Omega-Creatir",
+  "coordinator": "Justice Gray Maciocha",
+  "watermark": "1JGM",
+  "core_intent": "Design and verify reusable, human-governed multi-agent architectures across LIFE domains without silently acquiring authority or performing external actions.",
+  "life_domains": [
+    "Technological evolution",
+    "Cognitive augmentation",
+    "Creative generation",
+    "Ecological alignment",
+    "Social cooperation",
+    "Economic optimization",
+    "Mythic-narrative expansion"
+  ],
+  "success_criteria": [
+    "Design bounded subsystem proposals",
+    "Coordinate typed agent roles",
+    "Evolve through verified human-reviewed patches",
+    "Enforce LIFE and factual-alignment gates",
+    "Produce reusable architectures, pipelines, and universe seeds"
+  ],
+  "recursion_limit": 5,
+  "execution_mode": "PLAN_ONLY",
+  "grants_external_authority": false
+}

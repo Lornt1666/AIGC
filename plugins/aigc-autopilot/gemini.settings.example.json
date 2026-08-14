@@ -8,7 +8,8 @@
       "includeTools": [
         "aigc_get_status",
         "aigc_render_control_center",
-        "aigc_run_employer_sandbox"
+        "aigc_run_employer_sandbox",
+        "aigc_seed_regenexcalibur_universe"
       ]
     }
   }

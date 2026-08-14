@@ -11,6 +11,7 @@ This directory is the canonical distribution entrypoint for the portable AIGC MC
 | `aigc_get_status` | Sanitized read-only connector, occupation-pack and runtime status |
 | `aigc_render_control_center` | Structured control-center projection; a widget is optional |
 | `aigc_run_employer_sandbox` | Deterministic zero-egress employer fixture with a canonical receipt |
+| `aigc_seed_regenexcalibur_universe` | Validate the 1JGM Genesis seed and emit a bounded zero-egress universe receipt |
 
 Additional pure planning tools may be exposed, but no live provider adapter, credential operation, cloud mutation, message, application submission, billing mutation or production activation is exposed through this facade.
 
