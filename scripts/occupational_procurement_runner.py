@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
 import io
 import json
@@ -163,7 +164,7 @@ def main() -> int:
             member_name = f"{base_name}.{member_index:02d}_{package.dataset_name}".replace("/", "_")
             try:
                 dry = pipeline.dry_run(package, adapter, receipt_id=f"local:{member_name}:dry-run")
-            except (UnicodeDecodeError, ValueError, csv.Error) as exc:  # type: ignore[name-defined]
+            except (UnicodeDecodeError, ValueError, csv.Error) as exc:
                 blocked += 1
                 record = {
                     "receipt_type": "OCCUPATIONAL_SOURCE_DRY_RUN",
