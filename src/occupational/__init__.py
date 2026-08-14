@@ -1,5 +1,14 @@
 """Governed occupational runtime primitives for AIGC."""
 
+from .browser_connection_bootstrap import (
+    BrowserConnectionBootstrapController,
+    BrowserConnectionProbe,
+    BrowserConnectionState,
+    BrowserSkillReceipt,
+    GitHubActionsBudgetAuthorization,
+    GitHubActionsBudgetObservation,
+    GitHubActionsBudgetPlan,
+)
 from .contracts import (
     EvidenceReceipt,
     OccupationalBinding,
@@ -18,7 +27,14 @@ from .repository_engineering import (
 )
 
 __all__ = [
+    "BrowserConnectionBootstrapController",
+    "BrowserConnectionProbe",
+    "BrowserConnectionState",
+    "BrowserSkillReceipt",
     "EvidenceReceipt",
+    "GitHubActionsBudgetAuthorization",
+    "GitHubActionsBudgetObservation",
+    "GitHubActionsBudgetPlan",
     "OccupationalBinding",
     "OutcomeContract",
     "QuestCompatibilityAlias",
