@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "skill_version": "aigc.browser-connection-bootstrap.v1",
+  "connector": "Opera_Browser_Connector",
+  "manual_user_activation_required": true,
+  "connection_probe": "list-tabs",
+  "max_disconnected_probes_without_user_activation_acknowledgement": 1,
+  "credential_automation_allowed": false,
+  "captcha_bypass_allowed": false,
+  "mfa_bypass_allowed": false,
+  "secret_logging_allowed": false,
+  "ambient_authority_allowed": false,
+  "profiles": {
+    "github_actions_capacity_remediation": {
+      "authorization_reference": "Lornt1666/AIGC#218",
+      "account": "Lornt1666",
+      "product": "GitHub Actions",
+      "currency": "USD",
+      "maximum_additional_budget_usd": 12,
+      "stop_usage_at_budget_required": true,
+      "purpose": "exact-head AIGC validation only",
+      "expires_on": "2026-09-01",
+      "payment_method_change_allowed": false,
+      "unrelated_product_change_allowed": false,
+      "maximum_ci_attempts_after_verified_remediation": 1
+    }
+  }
+}
