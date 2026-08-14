@@ -16,96 +16,20 @@
     "same_version_overwrite_allowed": false
   },
   "sources": [
-    {
-      "authority": "ISCO",
-      "role": "GLOBAL_BACKBONE",
-      "pinned_version": "ISCO-08",
-      "concept_kinds": ["OCCUPATION"],
-      "expected_adapter": "IscoAdapter",
-      "adapter_implemented": true,
-      "row_identity": "classification_code"
-    },
-    {
-      "authority": "ESCO",
-      "role": "CANONICAL_OCCUPATIONS_AND_SKILLS",
-      "pinned_version": "1.2.1",
-      "concept_kinds": ["OCCUPATION", "TITLE", "SKILL", "KNOWLEDGE"],
-      "expected_adapter": "EscoAdapter",
-      "adapter_implemented": true,
-      "row_identity": "concept_uri"
-    },
-    {
-      "authority": "NOC",
-      "role": "CANADIAN_LOCALIZATION_TEER_REGULATION",
-      "pinned_version": "2021.0",
-      "concept_kinds": ["OCCUPATION", "TITLE", "CREDENTIAL_REQUIREMENT"],
-      "expected_adapter": "NocAdapter",
-      "adapter_implemented": true,
-      "row_identity": "noc_code_for_occupations; noc_code_plus_native_row_id_or_row_hash_for_non_occupations"
-    },
-    {
-      "authority": "SOC",
-      "role": "US_STRICT_CLASSIFICATION",
-      "pinned_version": "2018",
-      "concept_kinds": ["OCCUPATION"],
-      "expected_adapter": "SocAdapter",
-      "adapter_implemented": true,
-      "row_identity": "soc_code"
-    },
-    {
-      "authority": "ONET",
-      "role": "OCCUPATIONAL_INTELLIGENCE_AND_TITLE_RESOLUTION",
-      "pinned_version": "30.3",
-      "concept_kinds": [
-        "OCCUPATION",
-        "TITLE",
-        "TASK",
-        "WORK_ACTIVITY",
-        "WORK_CONTEXT",
-        "SKILL",
-        "KNOWLEDGE",
-        "ABILITY",
-        "WORK_STYLE",
-        "TECHNOLOGY"
-      ],
-      "expected_adapter": "OnetAdapter",
-      "adapter_implemented": true,
-      "row_identity": "onet_soc_code_for_occupation; occupation_plus_concept_kind_plus_native_row_id_or_row_hash_for_other_tables"
-    }
+    {"authority":"ISCO","role":"GLOBAL_BACKBONE","pinned_version":"ISCO-08","concept_kinds":["OCCUPATION"],"expected_adapter":"IscoAdapter","adapter_implemented":true,"row_identity":"classification_code"},
+    {"authority":"ESCO","role":"CANONICAL_OCCUPATIONS_AND_SKILLS","pinned_version":"1.2.1","concept_kinds":["OCCUPATION","TITLE","SKILL","KNOWLEDGE"],"expected_adapter":"EscoAdapter","adapter_implemented":true,"row_identity":"concept_uri"},
+    {"authority":"NOC","role":"CANADIAN_LOCALIZATION_TEER_REGULATION","pinned_version":"2021.0","concept_kinds":["OCCUPATION","TITLE","CREDENTIAL_REQUIREMENT"],"expected_adapter":"NocAdapter","adapter_implemented":true,"row_identity":"noc_code_for_occupations; noc_code_plus_native_row_id_or_row_hash_for_non_occupations"},
+    {"authority":"SOC","role":"US_STRICT_CLASSIFICATION","pinned_version":"2018","concept_kinds":["OCCUPATION"],"expected_adapter":"SocAdapter","adapter_implemented":true,"row_identity":"soc_code"},
+    {"authority":"ONET","role":"OCCUPATIONAL_INTELLIGENCE_AND_TITLE_RESOLUTION","pinned_version":"30.3","concept_kinds":["OCCUPATION","TITLE","TASK","WORK_ACTIVITY","WORK_CONTEXT","SKILL","KNOWLEDGE","ABILITY","WORK_STYLE","TECHNOLOGY"],"expected_adapter":"OnetAdapter","adapter_implemented":true,"row_identity":"onet_soc_code_for_occupation; occupation_plus_concept_kind_plus_native_row_id_or_row_hash_for_other_tables"}
   ],
-  "crosswalk_relations": [
-    "EXACT_MATCH",
-    "CLOSE_MATCH",
-    "BROADER_THAN",
-    "NARROWER_THAN",
-    "SPLIT_INTO",
-    "MERGED_FROM",
-    "DEPRECATED_BY",
-    "UNMAPPED"
-  ],
-  "ingestion_order": ["ISCO", "ESCO", "NOC", "SOC", "ONET"],
-  "ingestion_sequence": [
-    "ACQUIRE_OUTSIDE_REGISTRY",
-    "VERIFY_EXPECTED_SHA256",
-    "VERIFY_SOURCE_AND_DATASET_KIND",
-    "NORMALIZE_WITH_SOURCE_ADAPTER",
-    "DRY_RUN_DIFF",
-    "BLOCK_ON_IMMUTABLE_HISTORY_CONFLICT",
-    "APPEND_ONLY_COMMIT",
-    "EMIT_INGESTION_RECEIPT"
-  ],
+  "crosswalk_relations": ["EXACT_MATCH","CLOSE_MATCH","BROADER_THAN","NARROWER_THAN","SPLIT_INTO","MERGED_FROM","DEPRECATED_BY","UNMAPPED"],
+  "ingestion_order": ["ISCO","ESCO","NOC","SOC","ONET"],
+  "ingestion_sequence": ["ACQUIRE_OUTSIDE_REGISTRY","VERIFY_EXPECTED_SHA256","VERIFY_SOURCE_AND_DATASET_KIND","NORMALIZE_WITH_SOURCE_ADAPTER","DRY_RUN_DIFF","BLOCK_ON_IMMUTABLE_HISTORY_CONFLICT","APPEND_ONLY_COMMIT","EMIT_INGESTION_RECEIPT"],
   "runtime_components": {
     "source_adapters": "src/occupational/source_adapters.py",
     "ingestion_pipeline": "src/occupational/ingestion_pipeline.py",
     "knowledge_registry": "src/occupational/knowledge_ingestion.py",
     "test_contract": "tests/occupational/test_occupational_source_adapters.py"
   },
-  "emergent_occupation_states": [
-    "OBSERVED",
-    "PROVISIONAL",
-    "EVIDENCE_ACCUMULATING",
-    "MAPPED_TO_EXISTING",
-    "AIGC_EXTENSION_ACCEPTED",
-    "REVIEWED"
-  ]
+  "emergent_occupation_states": ["OBSERVED","PROVISIONAL","EVIDENCE_ACCUMULATING","MAPPED_TO_EXISTING","AIGC_EXTENSION_ACCEPTED","REVIEWED"]
 }
