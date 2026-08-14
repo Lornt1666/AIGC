@@ -1,0 +1,81 @@
+{
+  "manifest_version": "1.0.0",
+  "policy": {
+    "flatten_taxonomies": false,
+    "retain_source_versions": true,
+    "retain_historical_concepts": true,
+    "require_source_hash": true,
+    "require_crosswalk_provenance": true,
+    "title_is_not_occupation": true,
+    "classify_by_work_performed": true,
+    "market_titles_may_modify_canonical_ontology": false,
+    "regulatory_restrictions_override_capability": true
+  },
+  "sources": [
+    {
+      "authority": "ISCO",
+      "role": "GLOBAL_BACKBONE",
+      "pinned_version": "ISCO-08",
+      "concept_kinds": ["OCCUPATION"],
+      "expected_adapter": "isco"
+    },
+    {
+      "authority": "ESCO",
+      "role": "CANONICAL_OCCUPATIONS_AND_SKILLS",
+      "pinned_version": "1.2.1",
+      "concept_kinds": ["OCCUPATION", "TITLE", "SKILL", "KNOWLEDGE"],
+      "expected_adapter": "esco"
+    },
+    {
+      "authority": "NOC",
+      "role": "CANADIAN_LOCALIZATION_TEER_REGULATION",
+      "pinned_version": "2021.0",
+      "concept_kinds": ["OCCUPATION", "TITLE", "CREDENTIAL_REQUIREMENT"],
+      "expected_adapter": "noc"
+    },
+    {
+      "authority": "SOC",
+      "role": "US_STRICT_CLASSIFICATION",
+      "pinned_version": "2018",
+      "concept_kinds": ["OCCUPATION"],
+      "expected_adapter": "soc"
+    },
+    {
+      "authority": "ONET",
+      "role": "OCCUPATIONAL_INTELLIGENCE_AND_TITLE_RESOLUTION",
+      "pinned_version": "30.3",
+      "concept_kinds": [
+        "OCCUPATION",
+        "TITLE",
+        "TASK",
+        "WORK_ACTIVITY",
+        "WORK_CONTEXT",
+        "SKILL",
+        "KNOWLEDGE",
+        "ABILITY",
+        "WORK_STYLE",
+        "TECHNOLOGY"
+      ],
+      "expected_adapter": "onet"
+    }
+  ],
+  "crosswalk_relations": [
+    "EXACT_MATCH",
+    "CLOSE_MATCH",
+    "BROADER_THAN",
+    "NARROWER_THAN",
+    "SPLIT_INTO",
+    "MERGED_FROM",
+    "DEPRECATED_BY",
+    "UNMAPPED"
+  ],
+  "ingestion_order": ["ISCO", "ESCO", "NOC", "SOC", "ONET"],
+  "emergent_occupation_states": [
+    "OBSERVED",
+    "PROVISIONAL",
+    "EVIDENCE_ACCUMULATING",
+    "MAPPED_TO_EXISTING",
+    "AIGC_EXTENSION_ACCEPTED",
+    "REVIEWED"
+  ]
+}
