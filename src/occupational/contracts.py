@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+# Runtime contract module; this comment intentionally records the approved
+# exact-head CI verification trigger for the occupational runtime slice.
 import hashlib
 import json
 from datetime import datetime, timezone
