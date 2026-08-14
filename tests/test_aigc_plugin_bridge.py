@@ -61,6 +61,54 @@ def test_regenexcalibur_bridge_is_closed_and_zero_egress():
         )
 
 
+def test_wealth_operator_bridge_exposes_planning_without_authority():
+    result = dispatch_bridge_request(
+        {
+            "operation": "aigc_plan_wealth_work",
+            "arguments": {
+                "request_id": "WREQ-BRIDGE001",
+                "action": "RESEARCH_OPPORTUNITIES",
+                "objective": "Find verified remote contract opportunities.",
+            },
+        }
+    )
+    assert result["terminal_status"] == "PASS"
+    assert result["authority_granted"] is False
+    assert result["external_action_performed"] is False
+
+    with pytest.raises(ValueError, match="unknown wealth work fields"):
+        dispatch_bridge_request(
+            {
+                "operation": "aigc_plan_wealth_work",
+                "arguments": {
+                    "request_id": "WREQ-BRIDGE002",
+                    "action": "SPEND_FUNDS",
+                    "objective": "Attempt authority injection.",
+                    "permit_id": "PERMIT-FAKE001",
+                },
+            }
+        )
+
+
+def test_llm_lifecycle_bridge_is_closed_and_zero_action():
+    result = dispatch_bridge_request(
+        {"operation": "aigc_plan_llm_lifecycle", "arguments": {}}
+    )
+    assert result["terminal_status"] == "BLOCKED"
+    assert result["training_steps_performed"] == 0
+    assert result["provider_calls_performed"] == 0
+    assert result["external_actions_performed"] == 0
+    assert result["authority_granted"] is False
+
+    with pytest.raises(ValueError, match="accepts no arguments"):
+        dispatch_bridge_request(
+            {
+                "operation": "aigc_plan_llm_lifecycle",
+                "arguments": {"execution_authorized": True},
+            }
+        )
+
+
 @pytest.mark.parametrize(
     "bridge_request",
     [

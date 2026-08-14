@@ -9,6 +9,7 @@ from src.integrations.mcp.server import build_mcp_server
 from src.integrations.mcp.tools import (
     assess_aigc_action,
     get_aigc_status,
+    plan_aigc_llm_lifecycle,
     procure_deep_research_plan,
     run_aigc_dry_run,
     run_employer_sandbox,
@@ -24,6 +25,8 @@ EXPECTED_TOOLS = {
     "aigc_run_employer_sandbox",
     "procure_deep_research_plan",
     "aigc_seed_regenexcalibur_universe",
+    "aigc_plan_wealth_work",
+    "aigc_plan_llm_lifecycle",
 }
 
 
@@ -155,3 +158,38 @@ def test_regenexcalibur_mcp_tool_emits_deterministic_zero_egress_receipt():
     assert first["authority_granted"] is False
     assert len(first["agents"]) == 8
     assert len(first["receipt_sha256"]) == 64
+
+
+def test_wealth_operator_mcp_tool_prepares_but_never_executes_financial_action():
+    content, structured = asyncio.run(
+        build_mcp_server().call_tool(
+            "aigc_plan_wealth_work",
+            {
+                "request_id": "WREQ-MCP001",
+                "action": "EXECUTE_TRANSACTION",
+                "objective": "Prepare a governed transaction for review.",
+                "target_ref": "urn:aigc:test-target",
+                "financial_amount_cad": "25.00",
+            },
+        )
+    )
+    assert content[0].type == "text"
+    assert structured["terminal_status"] == "BLOCKED"
+    assert structured["approval_packet"]["required"] is True
+    assert structured["authority_granted"] is False
+    assert structured["external_action_performed"] is False
+    assert structured["financial_action_performed"] is False
+
+
+def test_llm_lifecycle_mcp_tool_is_deterministic_and_zero_action():
+    direct = plan_aigc_llm_lifecycle()
+    content, structured = asyncio.run(
+        build_mcp_server().call_tool("aigc_plan_llm_lifecycle", {})
+    )
+    assert content[0].type == "text"
+    assert structured == direct
+    assert structured["terminal_status"] == "BLOCKED"
+    assert structured["training_steps_performed"] == 0
+    assert structured["provider_calls_performed"] == 0
+    assert structured["external_actions_performed"] == 0
+    assert structured["production_ready"] is False

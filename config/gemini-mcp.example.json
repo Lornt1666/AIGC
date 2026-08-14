@@ -12,7 +12,9 @@
         "run_aigc_dry_run",
         "procure_deep_research_plan",
         "aigc_run_employer_sandbox",
-        "aigc_seed_regenexcalibur_universe"
+        "aigc_seed_regenexcalibur_universe",
+        "aigc_plan_wealth_work",
+        "aigc_plan_llm_lifecycle"
       ]
     }
   }

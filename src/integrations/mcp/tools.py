@@ -9,9 +9,12 @@ from src.core.nexus.autonomy_policy import assess_autonomy
 from src.core.nexus.occupation_registry import load_occupation_packs
 from src.core.nexus.research_procurement import build_deep_research_plan
 from src.core.nexus.universal_integration import evaluate_registry, load_and_validate_registry
+from src.core.nexus.wealth_operator import build_wealth_work_plan, load_wealth_policy
 from src.domain.nexus.autonomy import ActionIntent
 from src.domain.nexus.contracts import EffectClass
 from src.domain.nexus.research import ResearchProcurementRequest
+from src.domain.nexus.wealth import WealthAction, WealthWorkRequest
+from src.llm_stack.orchestrator import plan_llm_lifecycle
 from src.operations.employer_sandbox import run_employer_sandbox as run_employer_sandbox_operation
 from src.regenexcalibur.orchestrator import seed_regenexcalibur_universe
 from src.webapp.nexus_dashboard import build_nexus_dashboard_snapshot
@@ -31,6 +34,15 @@ SandboxScenario = Literal[
 ]
 
 ROOT = Path(__file__).resolve().parents[3]
+
+
+def plan_aigc_llm_lifecycle() -> dict[str, object]:
+    """Validate the canonical LLM stack and return a zero-action lifecycle plan."""
+
+    import json
+
+    config_path = ROOT / "config" / "aigc_llm_stack.v1.json"
+    return plan_llm_lifecycle(json.loads(config_path.read_text(encoding="utf-8")))
 
 
 def seed_aigc_regenexcalibur_universe(
@@ -74,15 +86,49 @@ def get_aigc_status() -> dict[str, object]:
         }
         for pack in load_occupation_packs()
     ]
+    wealth_policy = load_wealth_policy()
     return {
         "product": snapshot["product"],
         "system": snapshot["system"],
         "connectors": snapshot["connectors"],
         "occupation_packs": occupations,
+        "wealth_operator": {
+            "policy_id": wealth_policy.policy_id,
+            "base_currency": wealth_policy.base_currency,
+            "mission": wealth_policy.mission,
+            "autonomous_actions": list(wealth_policy.autonomous_actions),
+            "approval_gated_actions": list(wealth_policy.approval_gated_actions),
+            "consequential_financial_actions_require_explicit_authority": True,
+            "guaranteed_profit_claims_allowed": False,
+            "raw_credentials_allowed": False,
+        },
         "readiness": readiness.to_dict(),
         "authority_granted": False,
         "external_action_performed": False,
     }
+
+
+def plan_aigc_wealth_work(
+    *,
+    request_id: str,
+    action: WealthAction,
+    objective: str,
+    target_ref: str | None = None,
+    financial_amount_cad: str = "0.00",
+    evidence_refs: list[str] | None = None,
+) -> dict[str, object]:
+    """Create a governed wealth-work plan without retrieval, persistence, or execution."""
+
+    return build_wealth_work_plan(
+        WealthWorkRequest(
+            request_id=request_id,
+            action=action,
+            objective=objective,
+            target_ref=target_ref,
+            financial_amount_cad=financial_amount_cad,
+            evidence_refs=tuple(evidence_refs or ()),
+        )
+    )
 
 
 def assess_aigc_action(

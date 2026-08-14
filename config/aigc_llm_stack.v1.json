@@ -1,0 +1,58 @@
+{
+  "schema_version": "aigc.llm-stack.v1",
+  "stack_id": "LLM-STACK-REGENEXCALIBUR_V1",
+  "status": "DRAFT",
+  "data": {
+    "source_kind": "SYNTHETIC_FIXTURE",
+    "paths": ["tests/fixtures/llm_stack/synthetic_corpus.txt"],
+    "rights_verified": true,
+    "contains_personal_data": false
+  },
+  "tokenizer": {
+    "implementation": "BYTE_REFERENCE_V1",
+    "vocab_size": 256
+  },
+  "model": {
+    "architecture": "GPT_CAUSAL_REFERENCE_V1",
+    "vocab_size": 256,
+    "d_model": 128,
+    "n_layers": 4,
+    "n_heads": 4,
+    "d_ff": 512,
+    "max_sequence_length": 256,
+    "dropout": 0.1
+  },
+  "training": {
+    "device": "cpu",
+    "pretraining": {"enabled": false, "epochs": 1, "batch_size": 2, "learning_rate": 0.0003, "maximum_steps": 10},
+    "supervised_finetuning": {"enabled": false, "epochs": 1, "batch_size": 2, "learning_rate": 0.0001, "maximum_steps": 10},
+    "preference_alignment": {"enabled": false, "epochs": 1, "batch_size": 2, "learning_rate": 0.00001, "maximum_steps": 10},
+    "alignment_method": "DPO",
+    "checkpoint_directory": "artifacts/llm-checkpoints",
+    "execution_authorized": false
+  },
+  "evaluation": {
+    "required": true,
+    "maximum_benchmark_examples": 100,
+    "require_safety_suite": true,
+    "require_data_contamination_check": true
+  },
+  "serving": {
+    "mode": "PLAN_ONLY",
+    "maximum_new_tokens": 128,
+    "minimum_temperature": 0.01,
+    "maximum_temperature": 1.5,
+    "authentication_required": true,
+    "rate_limit_required": true
+  },
+  "resources": {
+    "maximum_training_cost_cad": 0,
+    "maximum_gpu_hours": 0,
+    "maximum_dataset_bytes": 1048576,
+    "exact_compute_identity": null,
+    "expires_at": null
+  },
+  "provider_calls_enabled": false,
+  "external_action_authorized": false,
+  "production_activation_authorized": false
+}

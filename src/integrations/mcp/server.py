@@ -7,6 +7,7 @@ from mcp.server.fastmcp import FastMCP
 from mcp.types import ToolAnnotations
 
 from src.domain.nexus.contracts import EffectClass
+from src.domain.nexus.wealth import WealthAction
 from src.integrations.aigc_plugin_bridge import (
     aigc_get_status,
     aigc_render_control_center,
@@ -16,7 +17,9 @@ from src.integrations.mcp.tools import (
     DryRunGoal,
     SandboxScenario,
     assess_aigc_action,
+    plan_aigc_llm_lifecycle,
     procure_deep_research_plan,
+    plan_aigc_wealth_work,
     run_aigc_dry_run,
     seed_aigc_regenexcalibur_universe,
 )
@@ -149,6 +152,35 @@ def build_mcp_server(*, host: str = "127.0.0.1", port: int = 8000) -> FastMCP:
         )
 
     @server.tool(
+        name="aigc_plan_wealth_work",
+        title="Plan governed wealth-producing work",
+        description=(
+            "Use this to coordinate opportunity research, local deliverable production, "
+            "applications, sales, revenue tracking, invoices, or transactions. It prepares "
+            "a deterministic approval packet and never submits, sends, records, spends, "
+            "transfers, trades, signs, or promises a financial outcome."
+        ),
+        annotations=READ_ONLY,
+        structured_output=True,
+    )
+    def wealth_work_tool(
+        request_id: str,
+        action: WealthAction,
+        objective: str,
+        target_ref: str | None = None,
+        financial_amount_cad: str = "0.00",
+        evidence_refs: list[str] | None = None,
+    ) -> dict[str, object]:
+        return plan_aigc_wealth_work(
+            request_id=request_id,
+            action=action,
+            objective=objective,
+            target_ref=target_ref,
+            financial_amount_cad=financial_amount_cad,
+            evidence_refs=evidence_refs,
+        )
+
+    @server.tool(
         name="aigc_seed_regenexcalibur_universe",
         title="Seed the RegenExcalibur universe",
         description=(
@@ -164,6 +196,20 @@ def build_mcp_server(*, host: str = "127.0.0.1", port: int = 8000) -> FastMCP:
         return seed_aigc_regenexcalibur_universe(
             requested_evolution_depth=requested_evolution_depth
         )
+
+    @server.tool(
+        name="aigc_plan_llm_lifecycle",
+        title="Plan the governed AIGC LLM lifecycle",
+        description=(
+            "Use this to validate and coordinate the canonical data, tokenizer, model, "
+            "training, evaluation, and serving lifecycle. It performs no training, "
+            "provider call, spend, deployment, or production activation."
+        ),
+        annotations=READ_ONLY,
+        structured_output=True,
+    )
+    def llm_lifecycle_tool() -> dict[str, object]:
+        return plan_aigc_llm_lifecycle()
 
     @server.tool(
         name="aigc_run_employer_sandbox",

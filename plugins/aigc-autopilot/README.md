@@ -12,8 +12,10 @@ This directory is the canonical distribution entrypoint for the portable AIGC MC
 | `aigc_render_control_center` | Structured control-center projection; a widget is optional |
 | `aigc_run_employer_sandbox` | Deterministic zero-egress employer fixture with a canonical receipt |
 | `aigc_seed_regenexcalibur_universe` | Validate the 1JGM Genesis seed and emit a bounded zero-egress universe receipt |
+| `aigc_plan_wealth_work` | Plan governed opportunity, deliverable, sales, revenue, invoice and transaction work without performing the consequential action |
+| `aigc_plan_llm_lifecycle` | Validate and coordinate the canonical data-to-serving lifecycle without training, provider calls, spend, deployment, or activation |
 
-Additional pure planning tools may be exposed, but no live provider adapter, credential operation, cloud mutation, message, application submission, billing mutation or production activation is exposed through this facade.
+The wealth operator permits public zero-cost research and local reversible preparation. Recording revenue, submitting applications, sending outreach or invoices, accepting contracts, spending or transferring funds, placing trades and executing transactions remain request-bound approval gates. The LLM lifecycle tool validates a reproducible reference stack but deliberately cannot start training or serving. No live provider adapter, credential operation, cloud mutation, message, application submission, billing mutation or production activation is exposed through this facade.
 
 ## Run
 

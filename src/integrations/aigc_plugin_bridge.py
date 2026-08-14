@@ -10,6 +10,8 @@ from typing import Any, Literal
 
 from src.integrations.mcp.tools import (
     get_aigc_status,
+    plan_aigc_llm_lifecycle,
+    plan_aigc_wealth_work,
     seed_aigc_regenexcalibur_universe,
 )
 from src.operations.employer_sandbox import run_employer_sandbox
@@ -20,6 +22,8 @@ BridgeOperation = Literal[
     "aigc_render_control_center",
     "aigc_run_employer_sandbox",
     "aigc_seed_regenexcalibur_universe",
+    "aigc_plan_wealth_work",
+    "aigc_plan_llm_lifecycle",
 ]
 
 
@@ -43,10 +47,13 @@ def aigc_render_control_center() -> dict[str, object]:
         "summary": status["system"],
         "readiness": status["readiness"],
         "connectors": status["connectors"],
+        "wealth_operator": status["wealth_operator"],
         "available_actions": [
             "inspect_status",
             "run_zero_egress_employer_sandbox",
             "seed_zero_egress_regenexcalibur_universe",
+            "plan_governed_wealth_work",
+            "plan_governed_llm_lifecycle",
         ],
         "blocked_actions": [
             "external_provider_call",
@@ -54,6 +61,12 @@ def aigc_render_control_center() -> dict[str, object]:
             "application_submission",
             "cloud_mutation",
             "production_activation",
+            "application_submission",
+            "contract_acceptance",
+            "invoice_send",
+            "financial_transaction",
+            "funds_transfer",
+            "trade_execution",
         ],
         "widget_required": False,
         "authority_granted": False,
@@ -90,6 +103,23 @@ def dispatch_bridge_request(request: Mapping[str, Any]) -> dict[str, object]:
         if extra:
             raise ValueError(f"unknown RegenExcalibur fields: {', '.join(extra)}")
         return seed_aigc_regenexcalibur_universe(**dict(arguments))
+    if operation == "aigc_plan_wealth_work":
+        permitted = {
+            "request_id",
+            "action",
+            "objective",
+            "target_ref",
+            "financial_amount_cad",
+            "evidence_refs",
+        }
+        extra = sorted(set(arguments).difference(permitted))
+        if extra:
+            raise ValueError(f"unknown wealth work fields: {', '.join(extra)}")
+        return plan_aigc_wealth_work(**dict(arguments))
+    if operation == "aigc_plan_llm_lifecycle":
+        if arguments:
+            raise ValueError("aigc_plan_llm_lifecycle accepts no arguments")
+        return plan_aigc_llm_lifecycle()
     raise ValueError("unknown bridge operation")
 
 

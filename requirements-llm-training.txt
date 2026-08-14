@@ -1,0 +1,3 @@
+# Optional isolated training environment; not installed in the AIGC control-plane image.
+-r requirements.txt
+torch>=2.4,<3

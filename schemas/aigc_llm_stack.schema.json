@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/aigc_llm_stack.schema.json",
+  "title": "AIGC LLM Stack V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "stack_id", "status", "data", "tokenizer", "model", "training", "evaluation", "serving", "resources", "provider_calls_enabled", "external_action_authorized", "production_activation_authorized"],
+  "properties": {
+    "schema_version": {"const": "aigc.llm-stack.v1"},
+    "stack_id": {"type": "string", "pattern": "^LLM-STACK-[A-Z0-9_-]{4,80}$"},
+    "status": {"const": "DRAFT"},
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_kind", "paths", "rights_verified", "contains_personal_data"],
+      "properties": {
+        "source_kind": {"enum": ["SYNTHETIC_FIXTURE", "RIGHTS_VERIFIED_CORPUS"]},
+        "paths": {"type": "array", "minItems": 1, "maxItems": 128, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "rights_verified": {"type": "boolean"},
+        "contains_personal_data": {"const": false}
+      }
+    },
+    "tokenizer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["implementation", "vocab_size"],
+      "properties": {"implementation": {"const": "BYTE_REFERENCE_V1"}, "vocab_size": {"const": 256}}
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["architecture", "vocab_size", "d_model", "n_layers", "n_heads", "d_ff", "max_sequence_length", "dropout"],
+      "properties": {
+        "architecture": {"const": "GPT_CAUSAL_REFERENCE_V1"},
+        "vocab_size": {"type": "integer", "minimum": 32, "maximum": 262144},
+        "d_model": {"type": "integer", "minimum": 32, "maximum": 16384},
+        "n_layers": {"type": "integer", "minimum": 1, "maximum": 256},
+        "n_heads": {"type": "integer", "minimum": 1, "maximum": 256},
+        "d_ff": {"type": "integer", "minimum": 64, "maximum": 65536},
+        "max_sequence_length": {"type": "integer", "minimum": 8, "maximum": 131072},
+        "dropout": {"type": "number", "minimum": 0, "exclusiveMaximum": 1}
+      }
+    },
+    "training": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["device", "pretraining", "supervised_finetuning", "preference_alignment", "alignment_method", "checkpoint_directory", "execution_authorized"],
+      "properties": {
+        "device": {"enum": ["cpu", "cuda", "mps"]},
+        "pretraining": {"$ref": "#/$defs/training_stage"},
+        "supervised_finetuning": {"$ref": "#/$defs/training_stage"},
+        "preference_alignment": {"$ref": "#/$defs/training_stage"},
+        "alignment_method": {"enum": ["DPO", "PPO_RLHF"]},
+        "checkpoint_directory": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*$"},
+        "execution_authorized": {"const": false}
+      }
+    },
+    "evaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "maximum_benchmark_examples", "require_safety_suite", "require_data_contamination_check"],
+      "properties": {
+        "required": {"const": true},
+        "maximum_benchmark_examples": {"type": "integer", "minimum": 1, "maximum": 100000},
+        "require_safety_suite": {"const": true},
+        "require_data_contamination_check": {"const": true}
+      }
+    },
+    "serving": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "maximum_new_tokens", "minimum_temperature", "maximum_temperature", "authentication_required", "rate_limit_required"],
+      "properties": {
+        "mode": {"const": "PLAN_ONLY"},
+        "maximum_new_tokens": {"type": "integer", "minimum": 1, "maximum": 4096},
+        "minimum_temperature": {"type": "number", "exclusiveMinimum": 0, "maximum": 2},
+        "maximum_temperature": {"type": "number", "exclusiveMinimum": 0, "maximum": 5},
+        "authentication_required": {"const": true},
+        "rate_limit_required": {"const": true}
+      }
+    },
+    "resources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maximum_training_cost_cad", "maximum_gpu_hours", "maximum_dataset_bytes", "exact_compute_identity", "expires_at"],
+      "properties": {
+        "maximum_training_cost_cad": {"type": "number", "minimum": 0, "maximum": 100000000},
+        "maximum_gpu_hours": {"type": "number", "minimum": 0, "maximum": 100000000},
+        "maximum_dataset_bytes": {"type": "integer", "minimum": 1, "maximum": 1000000000000000},
+        "exact_compute_identity": {"type": ["string", "null"]},
+        "expires_at": {"type": ["string", "null"]}
+      }
+    },
+    "provider_calls_enabled": {"const": false},
+    "external_action_authorized": {"const": false},
+    "production_activation_authorized": {"const": false}
+  },
+  "$defs": {
+    "training_stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "epochs", "batch_size", "learning_rate", "maximum_steps"],
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "epochs": {"type": "integer", "minimum": 1, "maximum": 10000},
+        "batch_size": {"type": "integer", "minimum": 1, "maximum": 65536},
+        "learning_rate": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+        "maximum_steps": {"type": "integer", "minimum": 1, "maximum": 1000000000}
+      }
+    }
+  }
+}
