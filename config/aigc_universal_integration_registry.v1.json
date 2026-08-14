@@ -115,8 +115,8 @@
       "status": "implemented",
       "required_evidence": ["MCP initialize", "tool list", "read-only workflow", "confirmed-write workflow", "host validation"],
       "evidence_receipts": {
-        "MCP initialize": "reports/artifacts/aigc_mcp_loopback_local_validation.json",
-        "tool list": "reports/artifacts/aigc_mcp_loopback_local_validation.json",
+        "MCP initialize": "reports/artifacts/aigc_mcp_loopback_local_validation_v2.json",
+        "tool list": "reports/artifacts/aigc_mcp_loopback_local_validation_v2.json",
         "read-only workflow": "SBX-4F88AB73D87044790709ABBF"
       },
       "blockers": ["No confirmed-write workflow is exposed by the initial read/simulate facade", "No ChatGPT host validation receipt", "No hosted exact-head CI receipt"]

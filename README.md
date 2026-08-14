@@ -22,6 +22,11 @@ surfaces and explicit external blockers.
   diagrams, system dimensions, parametrics, delivery surfaces, and readiness.
 - [AIGC System Atlas presentation](docs/presentations/AIGC_SYSTEM_ATLAS_V1.pptx)
   — presentation-ready visual explanation.
+- [AIGC Evidence Program](docs/release/AIGC_EVIDENCE_PROGRAM_V1.md) — canonical
+  88-gate proof ledger, receipt lineage, acceptance criteria, and exact request
+  packets for every unresolved required and optional boundary.
+- [AIGC Evidence Program presentation](docs/presentations/AIGC_EVIDENCE_PROGRAM_V1.pptx)
+  — executive visual of the 12/34 evidence position and proof critical path.
 - [Alpha Plan Orchestrator](docs/architecture/AIGC_ALPHA_PLAN_ORCHESTRATOR_V1.md)
   — deterministic hierarchical planning, simulation, memory, meta-policy, and
   exact authority boundaries.
@@ -88,6 +93,9 @@ product-quality score and must not be increased without new exact-artifact proof
 ```bash
 .venv/bin/python scripts/build_aigc_system_atlas_data.py \
   --output reports/artifacts/aigc_system_atlas_local_snapshot.json
+.venv/bin/python scripts/validate_aigc_mcp_loopback_v2.py --check
+.venv/bin/python scripts/validate_aigc_universal_integration.py --check
+.venv/bin/python scripts/build_aigc_evidence_program.py --check
 .venv/bin/python scripts/validate_aigc_procurement_sandbox.py --check
 .venv/bin/python -m pytest -q
 ```
