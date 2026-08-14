@@ -14,7 +14,10 @@ Auto-design, CHCM, Alpha Plan, coordination engineering, multi-agent execution, 
 
 Normative occupational architecture: [AIGC Occupational Autonomy Architecture v2](docs/architecture/AIGC_OCCUPATIONAL_AUTONOMY_V2.md).
 
-Machine-readable contract: [`schemas/aigc_occupational_control_plane.schema.json`](schemas/aigc_occupational_control_plane.schema.json).
+Machine-readable contracts:
+
+- [`schemas/aigc_occupational_control_plane.schema.json`](schemas/aigc_occupational_control_plane.schema.json)
+- [`schemas/aigc_work_execution_plane.schema.json`](schemas/aigc_work_execution_plane.schema.json)
 
 ## Authority Precedence
 
@@ -26,112 +29,125 @@ CareerConstitution
   > WorkCommission
   > OutcomeContract
   > MethodGenome / TaskGraph
-  > Attempt Instructions
+  > WorkAttempt Instructions
   > Model Output
 ```
 
-## Six-Plane Architecture
+`WorkCommission` and `OutcomeContract` are sealed occupational records after acceptance. Execution never mutates them. A material change creates a new commission/contract revision and supersedes any attempt bound to the old revision.
 
-AIGC is divided into six planes with explicit ownership boundaries.
+## Six-Plane Architecture
 
 ### 1. Governance Plane
 
-**Owns:**
+**Owns:** constitutional supervision, policies, approval gates, emergency stop, evidence standards, readiness rules, evolution governance, and the maximum occupational authority ceiling.
 
-- Omega-X constitutional supervision
-- Policies, constitutions, contracts, schemas, and validators
-- Authorization and approval gates
-- Emergency stop and default-deny controls
-- Readiness rules and release decisions
-- Evolution-patch governance
-- Maximum occupational authority ceiling
-
-**Does not own:**
-
-- Transactional Quest state
-- Provider execution
-- Secret values
-- External communications or delivery
-- Fabrication of professional credentials or work evidence
+**Does not own:** mutable execution state, provider execution, secret values, external communications, or fabricated professional evidence.
 
 ### 2. Occupational Control Plane
 
-**Owns:**
+**Owns immutable or versioned occupational truth:**
 
 - `CareerConstitution`
 - `OccupationProfile` and `DisciplineProfile`
 - `CareerMandate`
-- `WorkCommission` and `OutcomeContract`
+- immutable accepted `WorkCommission` revisions
+- immutable `OutcomeContract` revisions
 - `CompetencyGraph`
 - `AuthorityEnvelope`
-- Stakeholder and professional-ethics context
-- Evidence-backed `WorkPortfolio`
-- Opportunity acceptance policy
-- Continuing-learning proposals
+- stakeholder and professional-ethics context
+- evidence-backed `WorkPortfolio`
+- opportunity acceptance policy
+- continuing-learning proposals
 
-**May autonomously:**
+A `WorkCommission` becomes sealed when accepted. Its scope, authority envelope, discipline, requested outcome, risk tier, and acceptance basis cannot be altered by an executing agent. A material amendment creates revision `N+1` with explicit lineage to the prior revision.
 
-- Discover and normalize opportunities through admitted read-only channels
-- Qualify opportunities against current mandate and competence
-- Accept work only when the complete requested effect is inside the current autonomous authority envelope
-- Select and evaluate bounded methods
-- Execute admitted low-risk internal work
-- Verify outcomes through discipline-appropriate evaluators
-- Record verified portfolio evidence
-- Propose learning and method improvements
+The Occupational Control Plane may discover and qualify opportunities and issue/admit commissions. It may not invent licenses, credentials, employment status, contractual authority, payment authority, production authority, secret access, or identity claims.
 
-**May not autonomously:**
-
-- Invent licenses, credentials, employment status, contractual authority, payment authority, secret access, production authority, or identity claims
-- Expand its own authority ceiling
-- Weaken evidence or evaluator requirements
-- Convert a proposed capability into verified competence without evidence
-
-Target occupational maturity is O4/O5: autonomous career operator / governed multi-discipline professional, while consequential authority remains externally bounded.
+Target occupational maturity is O4/O5 while consequential authority remains externally bounded.
 
 ### 3. Phase / Method Plane
 
-**Owns:**
+**Owns how admitted work may be attempted:**
 
-- Numbered AIGC phases
-- Research, assessment, drafting, compliance, quality, and evolution processes
-- Long-running or batch-oriented internal workflows
-- Internal reports and proposed artifacts
-- Coordination Engineering and Alpha Plan methods
-- CHCM and bounded autodesign
-- MethodGenome candidate generation and comparison
-- Multi-agent planning and bounded specialist work
+- research, assessment, drafting, compliance, quality, and evolution methods;
+- Coordination Engineering and Alpha Plan;
+- CHCM and bounded autodesign;
+- `MethodGenome` candidate generation/comparison;
+- TaskGraph planning;
+- multi-agent planning and bounded specialist work.
 
-The Phase / Method Plane answers **how** admitted work should be performed. It cannot decide that AIGC possesses an occupation, credential, authority, or completed outcome merely because a method generated one.
+It cannot mutate the governing WorkCommission or OutcomeContract. If method discovery reveals that the accepted scope is insufficient or contradictory, it must request a commission amendment rather than silently expanding execution.
 
-Software-oriented autodesign is generalized to `MethodGenome` so the same governed search/evaluation mechanism can support software/API work, CAD/building design, automation, DevSecOps, technical documentation, research, construction planning, and other admitted disciplines.
+Software-oriented autodesign is generalized to `MethodGenome` for software/API work, CAD/building design, automation, DevSecOps, technical documentation, research, construction planning, and other admitted disciplines.
 
-### 4. Quest / Work Plane
+### 4. Work Execution Plane
 
-**Owns:**
+**Owns mutable execution state only:**
 
-- FastAPI operator application
-- Candidate and Quest persistence
-- Transactional Quest / WorkCommission lifecycle
-- Work-acceptance authorization
-- Review Evidence Packets
-- Accountable human judgment
-- Delivery-state and rework decisions
+- `WorkAttempt`;
+- TaskGraph execution state;
+- agent/session/run identities;
+- tool calls and capability leases;
+- checkpoints and resumable state;
+- bounded retries and rework;
+- method-selection execution records;
+- mutable worktrees/artifact staging;
+- execution stop, cancellation, rollback, and no-progress state.
 
-A Quest is the runtime representation of a bounded WorkCommission; it is not the occupational identity itself.
+**Does not own and may not mutate:**
 
-Canonical occupational lifecycle:
+- `CareerConstitution`;
+- `CareerMandate`;
+- `WorkCommission`;
+- `OutcomeContract`;
+- occupational authority ceilings;
+- verified evidence history.
+
+Every `WorkAttempt` MUST bind to exact immutable occupational inputs:
 
 ```text
+WorkAttempt
+  -> WorkCommission@commission_revision + commission_sha256
+  -> OutcomeContract@contract_revision + contract_sha256
+  -> CareerMandate@version
+  -> policy_version
+  -> MethodGenome/TaskGraph revision
+```
+
+Before every consequential transition, the execution controller revalidates that these bindings remain current and unsuperseded. If any governing occupational revision changes, the active attempt enters `STALE_AUTHORIZATION` or `SUPERSEDED`; it may reconcile read-only state but may not continue consequential execution.
+
+A commission amendment follows:
+
+```text
+WorkCommission@N
+   -> amendment proposal
+   -> occupational/governance decision
+   -> WorkCommission@N+1 (new immutable record)
+   -> old WorkAttempt becomes SUPERSEDED
+   -> new WorkAttempt binds to N+1
+```
+
+A **Quest is no longer a domain authority object**. Legacy `Quest` identifiers/states may remain as UI or compatibility aliases during migration, but they must resolve to a `WorkCommission` and/or `WorkAttempt` and may never override either canonical record.
+
+Canonical occupational lifecycle is split across ownership boundaries:
+
+```text
+OCCUPATIONAL CONTROL
 OBSERVE
 -> DISCOVER_OPPORTUNITY
 -> QUALIFY
 -> ACCEPT_WITHIN_MANDATE | APPROVAL_REQUIRED
--> CONTRACT
+-> CONTRACT / SEAL COMMISSION
+
+WORK EXECUTION
+-> PLAN_ATTEMPT
 -> DESIGN_METHOD
 -> EXECUTE
 -> VERIFY
--> DELIVER
+-> DELIVERY_READY
+
+OCCUPATIONAL / EVIDENCE CLOSURE
+-> DELIVER (when separately authorized)
 -> RECORD_EVIDENCE
 -> UPDATE_PORTFOLIO
 -> REFLECT
@@ -139,12 +155,14 @@ OBSERVE
 -> READY
 ```
 
-Cross-cutting interruption states:
+Execution interruption states:
 
 ```text
 BLOCKED
 NO_PROGRESS
 APPROVAL_REQUIRED
+STALE_AUTHORIZATION
+SUPERSEDED
 ESCALATED
 CANCELLED
 FAILED
@@ -152,47 +170,17 @@ REWORK_REQUIRED
 ROLLED_BACK
 ```
 
-`DELIVER` does not imply permission to perform a consequential external action. Delivery must remain separately authorized when its effect leaves the approved autonomous envelope.
-
-Legacy Quest lifecycle states remain valid as compatibility states during migration, but they must map to this occupational lifecycle rather than define career identity.
+`DELIVERY_READY` is not external-delivery authority. Delivery remains separately authorized when its effect leaves the approved autonomous envelope.
 
 ### 5. Infrastructure Plane
 
-**Owns:**
-
-- Isolated Google Cloud staging and production environments
-- Workload Identity Federation
-- Cloud Run
-- Cloud SQL for PostgreSQL
-- Google Secret Manager
-- Google Cloud Identity Platform
-- Networking, managed TLS, monitoring, backup, and recovery
-- Terraform planning and separately authorized application
-
-Target geography:
-
-- Toronto primary: `northamerica-northeast2`
-- Montréal recovery: `northamerica-northeast1`
-
-The Infrastructure Plane may act only through exact-revision, time-bounded, phase-specific authorization.
+Owns isolated compute, cloud/runtime environments, identities, networking, persistence, secrets infrastructure, observability, deployment surfaces, backup, and recovery. Infrastructure authority remains exact-revision, scoped, time-bounded, and independently revocable.
 
 ### 6. Evidence Plane
 
-**Owns:**
+Owns structural and operational evidence, authorization/execution receipts, test/CI evidence, artifact digests, provenance, deployment/rollback receipts, competency evidence, delivery receipts, portfolio provenance, and current external-state verification.
 
-- Structural repository evidence
-- Operational staging evidence
-- Authorization and execution receipts
-- Test and CI evidence
-- Artifact digests and provenance
-- Deployment and rollback receipts
-- Recovery-drill evidence
-- Production-readiness reports
-- Attempt-bound competency evidence
-- Delivery receipts and portfolio provenance
-- Current external-state verification when required
-
-The Evidence Plane records truth. It does not grant authority, silently change lifecycle state, manufacture experience, or certify a legal credential without external proof.
+The Evidence Plane records truth. It does not grant authority, mutate WorkCommission state, manufacture experience, or certify a legal credential without external proof.
 
 ## Plane Relationships
 
@@ -204,30 +192,54 @@ Governance Plane
         |
         v
 Occupational Control Plane
-   career / discipline / mandate
+ immutable career / mandate / commission / outcome contract
         |
-        +--------------------------+
-        v                          v
-Phase / Method Plane         Quest / Work Plane
-how work is designed         what work is active
-        |                          |
-        +------- artifacts --------+
-                                   v
-                         Infrastructure Plane
-                                   |
-                                   v
-                             Evidence Plane
-                                   |
-                      verified truth / learning
-                                   |
-                                   +----> Governance + Occupational Control
+        v
+Phase / Method Plane
+ proposes HOW
+        |
+        v
+Work Execution Plane
+ mutable WorkAttempt only
+        |
+        v
+Infrastructure Plane
+        |
+        v
+Evidence Plane
+        |
+        +----> Governance + Occupational Control
 ```
 
-Omega-X may supervise all planes. Multi-agent execution must preserve one authoritative writer per mutable artifact set and independent verification for high-risk outcomes.
+## Commission Immutability Invariant
+
+```text
+COMMISSION_SEALED := accepted_at != null
+
+IF COMMISSION_SEALED:
+    mutation(scope | authority | discipline | requested_outcome | risk | acceptance_basis) = FORBIDDEN
+    material_change = NEW_REVISION
+```
+
+A new revision never retroactively changes the authorization basis of an existing attempt.
+
+## Attempt Binding Invariant
+
+```text
+ATTEMPT_ELIGIBLE :=
+    commission_revision_is_exact
+    AND commission_sha256_matches
+    AND outcome_contract_revision_is_exact
+    AND outcome_contract_sha256_matches
+    AND career_mandate_version_is_current
+    AND policy_version_is_current
+    AND commission_is_not_superseded
+    AND attempt_is_not_cancelled_or_revoked
+```
+
+Failure of any condition stops consequential execution.
 
 ## Work Acceptance Invariant
-
-AIGC may auto-accept work only when:
 
 ```text
 AUTO_ACCEPT :=
@@ -242,13 +254,14 @@ AUTO_ACCEPT :=
     AND no_required_human_approval_is_missing
 ```
 
-Otherwise the work enters `APPROVAL_REQUIRED`, `BLOCKED`, or `DECLINED`.
+Otherwise work enters `APPROVAL_REQUIRED`, `BLOCKED`, or `DECLINED`.
 
 ## Work Completion Invariant
 
 ```text
 WORK_COMPLETE :=
-    career_mandate_is_current
+    sealed_commission_is_current
+    AND exact_attempt_binding_is_valid
     AND outcome_contract_is_current
     AND required_artifacts_exist
     AND all_hard_gates_pass
@@ -265,9 +278,9 @@ Model self-report is never sufficient evidence of completion.
 
 ## Semantic No-Progress Invariant
 
-Execution must stop rather than loop when a configured no-progress rule fires. Default policy is no more than three plan/execute/review cycles per task and no more than two retries for an identical failure class unless the WorkCommission explicitly authorizes a different bounded budget.
+Execution stops rather than loops when configured no-progress rules fire. Default policy is no more than three plan/execute/review cycles per task and no more than two retries for an identical failure class unless the sealed OutcomeContract explicitly defines a different bounded budget.
 
-A stopped attempt emits a blocker/evidence receipt and transitions to `NO_PROGRESS`, `BLOCKED`, or `ESCALATED` instead of retry-until-green.
+A stopped attempt emits a blocker/evidence receipt and enters `NO_PROGRESS`, `BLOCKED`, or `ESCALATED` rather than retry-until-green.
 
 ## Architectural Invariants
 
@@ -279,10 +292,15 @@ A stopped attempt emits a blocker/evidence receipt and transitions to `NO_PROGRE
 6. Secret values never enter repository files, prompts, logs, memory, or receipts.
 7. Production readiness is calculated from canonical evidence, never manually asserted.
 8. Occupational identity outranks Quest, Phase, CHCM, autodesign, task, attempt, and model instructions.
-9. A generated skill claim is not a verified competency; a verified competency is not a legal credential unless separately proven.
-10. Portfolio experience requires attempt-bound delivery evidence.
-11. Capability may grow autonomously; authority may not.
-12. Auto-design is finite per execution and remains proposal-first until verification/admission.
-13. One authoritative writer owns a mutable worktree/artifact set at a time; independent evaluators may read in parallel.
-14. High-risk outcomes cannot be independently verified solely by the same execution lineage that authored them.
-15. Repeated no-progress cycles terminate rather than consume unbounded time, tools, tokens, or money.
+9. `WorkCommission` is immutable after acceptance; amendments create new revisions.
+10. `WorkAttempt` is the mutable execution object and never owns occupational authority.
+11. Every attempt binds to exact commission/contract revisions and digests.
+12. Governing-revision drift forces `STALE_AUTHORIZATION`/`SUPERSEDED` before further consequential execution.
+13. Quest is compatibility/UI state only, never canonical occupational or execution authority.
+14. A generated skill claim is not a verified competency; verified competency is not a legal credential unless separately proven.
+15. Portfolio experience requires attempt-bound delivery evidence.
+16. Capability may grow autonomously; authority may not.
+17. Auto-design is finite per execution and remains proposal-first until verification/admission.
+18. One authoritative writer owns a mutable worktree/artifact set at a time; independent evaluators may read in parallel.
+19. High-risk outcomes cannot be independently verified solely by the same execution lineage that authored them.
+20. Repeated no-progress cycles terminate rather than consume unbounded time, tools, tokens, or money.
