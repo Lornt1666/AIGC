@@ -5,6 +5,11 @@ import json
 import sys
 from pathlib import Path
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+SRC_ROOT = REPO_ROOT / "src"
+if str(SRC_ROOT) not in sys.path:
+    sys.path.insert(0, str(SRC_ROOT))
+
 from occupational.ingestion_pipeline import OccupationalIngestionPipeline
 from occupational.procurement_relay import OccupationalProcurementRelay, SourceProcurementContract, receipt_json
 from occupational.source_adapters import adapter_for
@@ -33,9 +38,9 @@ def _select(contracts: list[SourceProcurementContract], authorities: set[str] | 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run the sealed AIGC occupational taxonomy acquisition commission locally.")
-    parser.add_argument("--contracts", default="config/aigc_occupational_procurement_contracts.v1.json")
-    parser.add_argument("--quarantine", default="data/occupational/quarantine")
-    parser.add_argument("--receipts", default="evidence/occupational_procurement/local")
+    parser.add_argument("--contracts", default=str(REPO_ROOT / "config" / "aigc_occupational_procurement_contracts.v1.json"))
+    parser.add_argument("--quarantine", default=str(REPO_ROOT / "data" / "occupational" / "quarantine"))
+    parser.add_argument("--receipts", default=str(REPO_ROOT / "evidence" / "occupational_procurement" / "local"))
     parser.add_argument("--authority", action="append", help="Limit acquisition to one or more authorities, e.g. NOC or ONET")
     parser.add_argument("--observed-version", action="append", default=[], help="AUTHORITY=VERSION evidence from an official version probe")
     args = parser.parse_args()
