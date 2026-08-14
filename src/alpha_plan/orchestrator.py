@@ -332,11 +332,16 @@ def compose_alpha_plan(request: AlphaPlanRequest) -> dict[str, object]:
         "composite_node_id": composite.node_id,
     }
     plan_id = "ALPHA-PLAN-" + canonical_sha256(plan_seed)[:24].upper()
-    first_blocker = (
-        f"{blocked_nodes[0].node_id}:EXPLICIT_AUTHORITY_REQUIRED"
-        if blocked_nodes
-        else None
-    )
+    first_blocker = None
+    if blocked_nodes:
+        first_blocked_node = blocked_nodes[0]
+        blocker_code = (
+            "READ_ONLY_RECONCILIATION_REQUIRED"
+            if first_blocked_node.authorization_requirements.authority_requirement
+            == "RECONCILIATION"
+            else "EXPLICIT_AUTHORITY_REQUIRED"
+        )
+        first_blocker = f"{first_blocked_node.node_id}:{blocker_code}"
     plan_payload = {
         "alpha_plan_version": "aigc.alpha-plan.v1",
         "id": plan_id,

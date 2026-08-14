@@ -30,6 +30,9 @@ surfaces and explicit external blockers.
 - [Alpha Plan Orchestrator](docs/architecture/AIGC_ALPHA_PLAN_ORCHESTRATOR_V1.md)
   — deterministic hierarchical planning, simulation, memory, meta-policy, and
   exact authority boundaries.
+- [Coordination Engineering Endpoint](docs/architecture/AIGC_COORDINATION_ENGINEERING_ENDPOINT_V1.md)
+  — one closed HTTP contract for canonical state, bounded iteration, typed tool
+  functions, multi-agent DAG waves, Alpha Plan simulation, and hashed receipts.
 - [Procurement acceleration sandbox](docs/architecture/AIGC_PROCUREMENT_SANDBOX_V1.md)
   — corrected 13-agent catalog, synthetic adversarial simulations, OPA policy,
   and inert zero-replica deployment templates.
@@ -97,6 +100,7 @@ product-quality score and must not be increased without new exact-artifact proof
 .venv/bin/python scripts/validate_aigc_universal_integration.py --check
 .venv/bin/python scripts/build_aigc_evidence_program.py --check
 .venv/bin/python scripts/validate_aigc_procurement_sandbox.py --check
+.venv/bin/python scripts/run_coordination_endpoint_acceptance.py
 .venv/bin/python -m pytest -q
 ```
 

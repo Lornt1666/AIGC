@@ -1,0 +1,101 @@
+{
+  "request_id": "COORD-REQ-REFERENCE001",
+  "objective": "Coordinate one bounded AIGC design, engineering, and independent verification iteration.",
+  "state": {
+    "state_id": "COORD-STATE-REFERENCE001",
+    "revision": 12,
+    "artifact_refs": [
+      "repo://AIGC/README.md",
+      "repo://AIGC/docs/architecture/AIGC_SYSTEM_ATLAS_V1.md"
+    ],
+    "values": {
+      "phase": "engineering",
+      "verified_required_checks": 12,
+      "applicable_required_checks": 34
+    }
+  },
+  "iteration": {
+    "current_iteration": 0,
+    "maximum_iterations": 4,
+    "minimum_progress_delta": 0.05,
+    "no_progress_limit": 2,
+    "stop_conditions": [
+      "ACCEPTANCE_SATISFIED",
+      "SAFETY_BLOCKER",
+      "ITERATION_BUDGET_EXHAUSTED",
+      "NO_PROGRESS_LIMIT"
+    ]
+  },
+  "tools": [
+    {
+      "tool_id": "TOOL-LOCAL-INSPECT",
+      "function_name": "repository.inspect",
+      "purpose": "Inspect bounded local AIGC source and artifact paths.",
+      "parameters": {
+        "path": "src"
+      },
+      "expected_outputs": {
+        "inventory": "array"
+      },
+      "effect_class": "READ_LOCAL",
+      "maximum_calls_per_iteration": 2,
+      "estimated_time_ms": 50
+    },
+    {
+      "tool_id": "TOOL-LOCAL-VERIFY",
+      "function_name": "verification.run",
+      "purpose": "Run deterministic local contract and acceptance checks.",
+      "expected_outputs": {
+        "verification_receipt": "object"
+      },
+      "effect_class": "PURE",
+      "maximum_calls_per_iteration": 1,
+      "estimated_time_ms": 100
+    }
+  ],
+  "agents": [
+    {
+      "agent_id": "AGT-DESIGNER",
+      "role": "AUTO_DESIGNER",
+      "mandate": "Turn the objective and state into a bounded architecture candidate.",
+      "capabilities": ["architecture", "contract_design"],
+      "assigned_tool_ids": ["TOOL-LOCAL-INSPECT"],
+      "output_contract": "versioned architecture candidate",
+      "verification_function": "verification.architecture"
+    },
+    {
+      "agent_id": "AGT-ENGINEER",
+      "role": "AUTO_ENGINEER",
+      "mandate": "Turn the approved design candidate into an implementation candidate.",
+      "capabilities": ["implementation", "schema_engineering"],
+      "assigned_tool_ids": ["TOOL-LOCAL-INSPECT"],
+      "depends_on_agent_ids": ["AGT-DESIGNER"],
+      "output_contract": "implementation candidate",
+      "verification_function": "verification.implementation"
+    },
+    {
+      "agent_id": "AGT-VERIFIER",
+      "role": "INDEPENDENT_VERIFIER",
+      "mandate": "Independently test the implementation against the exact acceptance criteria.",
+      "capabilities": ["contract_testing", "safety_testing"],
+      "assigned_tool_ids": ["TOOL-LOCAL-VERIFY"],
+      "depends_on_agent_ids": ["AGT-ENGINEER"],
+      "output_contract": "immutable verification receipt",
+      "verification_function": "verification.independent"
+    }
+  ],
+  "coordination": {
+    "strategy": "HIERARCHICAL_DAG",
+    "maximum_parallel_agents": 3,
+    "fail_fast": true,
+    "require_independent_verification": true
+  },
+  "acceptance_criteria": [
+    "closed request and response contracts validate",
+    "agent graph is acyclic and dependency-complete",
+    "tool and iteration budgets are bounded",
+    "receipt proves zero egress and zero authority"
+  ],
+  "execution_requested": false,
+  "deterministic_seed": 42
+}

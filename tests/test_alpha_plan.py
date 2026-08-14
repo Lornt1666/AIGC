@@ -102,6 +102,27 @@ def test_consequential_function_is_blocked_with_no_automatic_retry() -> None:
     assert plan["external_actions_performed"] == 0
 
 
+def test_indeterminate_function_reports_reconciliation_not_explicit_authority() -> None:
+    plan = compose_alpha_plan(
+        _request(
+            AlphaOperationRequest(
+                operation_id="ALPHA-OP-RECON001",
+                function_name="aigc.reconcile_outcome",
+                effect_class="READ_EXTERNAL",
+                target_ref="receipt://indeterminate/001",
+                outcome_indeterminate=True,
+            )
+        )
+    )
+    node = plan["alpha_levels"][0]["nodes"][0]
+    assert node["authorization_requirements"]["authority_requirement"] == "RECONCILIATION"
+    assert plan["verification"]["first_blocker"].endswith(
+        ":READ_ONLY_RECONCILIATION_REQUIRED"
+    )
+    assert node["retry_policy"]["max_retries"] == 0
+    assert plan["external_actions_performed"] == 0
+
+
 @pytest.mark.parametrize(
     "parameters",
     [
