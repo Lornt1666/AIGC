@@ -202,9 +202,11 @@ def test_evidence_is_attempt_bound_and_writer_cannot_self_verify_independently()
     assert receipt.independent is True
 
 
-def test_semantic_no_progress_halts_bounded_retries() -> None:
+def test_semantic_no_progress_halts_after_initial_failure_plus_two_identical_retries() -> None:
     _, contract, attempt = _attempt()
 
+    attempt.record_failure("same-failure", contract.no_progress_policy)
+    assert attempt.status is WorkAttemptStatus.CREATED
     attempt.record_failure("same-failure", contract.no_progress_policy)
     assert attempt.status is WorkAttemptStatus.CREATED
     attempt.record_failure("same-failure", contract.no_progress_policy)
