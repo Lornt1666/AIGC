@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/aigc_work_execution_plane.schema.json",
+  "title": "AIGC Work Execution Plane v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "work_attempt"],
+  "properties": {
+    "schema_version": {"const": "aigc.work-execution-plane.v1"},
+    "work_attempt": {"$ref": "#/$defs/WorkAttempt"}
+  },
+  "$defs": {
+    "Id": {"type": "string", "pattern": "^[A-Z][A-Z0-9_-]{2,127}$"},
+    "Sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "NonEmptyString": {"type": "string", "minLength": 1, "maxLength": 2000},
+    "OccupationalBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "commission_id",
+        "commission_revision",
+        "commission_sha256",
+        "outcome_contract_id",
+        "outcome_contract_revision",
+        "outcome_contract_sha256",
+        "career_mandate_id",
+        "career_mandate_version",
+        "policy_version"
+      ],
+      "properties": {
+        "commission_id": {"$ref": "#/$defs/Id"},
+        "commission_revision": {"type": "integer", "minimum": 1},
+        "commission_sha256": {"$ref": "#/$defs/Sha256"},
+        "outcome_contract_id": {"$ref": "#/$defs/Id"},
+        "outcome_contract_revision": {"type": "integer", "minimum": 1},
+        "outcome_contract_sha256": {"$ref": "#/$defs/Sha256"},
+        "career_mandate_id": {"$ref": "#/$defs/Id"},
+        "career_mandate_version": {"type": "integer", "minimum": 1},
+        "policy_version": {"$ref": "#/$defs/NonEmptyString"}
+      }
+    },
+    "WorkAttempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "work_attempt_id",
+        "occupational_binding",
+        "status",
+        "task_graph_version",
+        "mutable_execution_revision",
+        "no_progress",
+        "created_at"
+      ],
+      "properties": {
+        "work_attempt_id": {"$ref": "#/$defs/Id"},
+        "parent_work_attempt_id": {"anyOf": [{"$ref": "#/$defs/Id"}, {"type": "null"}]},
+        "occupational_binding": {"$ref": "#/$defs/OccupationalBinding"},
+        "method_genome_id": {"anyOf": [{"$ref": "#/$defs/Id"}, {"type": "null"}]},
+        "task_graph_version": {"type": "integer", "minimum": 1},
+        "mutable_execution_revision": {"type": "integer", "minimum": 0},
+        "status": {
+          "enum": [
+            "CREATED",
+            "PLANNING",
+            "DESIGNING_METHOD",
+            "EXECUTING",
+            "VERIFYING",
+            "DELIVERY_READY",
+            "BLOCKED",
+            "NO_PROGRESS",
+            "APPROVAL_REQUIRED",
+            "STALE_AUTHORIZATION",
+            "SUPERSEDED",
+            "ESCALATED",
+            "CANCELLED",
+            "FAILED",
+            "REWORK_REQUIRED",
+            "ROLLED_BACK",
+            "COMPLETED"
+          ]
+        },
+        "agent_definition_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/Id"}},
+        "model_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/NonEmptyString"}},
+        "worktree_id": {"type": ["string", "null"], "maxLength": 500},
+        "capability_lease_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/Id"}},
+        "checkpoint_refs": {"type": "array", "items": {"$ref": "#/$defs/NonEmptyString"}},
+        "staged_artifact_refs": {"type": "array", "items": {"$ref": "#/$defs/NonEmptyString"}},
+        "approval_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/Id"}},
+        "evidence_refs": {"type": "array", "items": {"$ref": "#/$defs/NonEmptyString"}},
+        "no_progress": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["cycle_count", "identical_failure_retries", "last_material_progress_revision"],
+          "properties": {
+            "cycle_count": {"type": "integer", "minimum": 0},
+            "identical_failure_retries": {"type": "integer", "minimum": 0},
+            "last_material_progress_revision": {"type": "integer", "minimum": 0},
+            "last_failure_signature": {"type": ["string", "null"], "maxLength": 500}
+          }
+        },
+        "stale_reason": {"type": ["string", "null"], "maxLength": 1000},
+        "superseded_by_work_attempt_id": {"anyOf": [{"$ref": "#/$defs/Id"}, {"type": "null"}]},
+        "created_at": {"type": "string", "format": "date-time"},
+        "updated_at": {"type": ["string", "null"], "format": "date-time"}
+      }
+    }
+  }
+}
