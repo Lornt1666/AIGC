@@ -3,7 +3,6 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-import shutil
 import tempfile
 import urllib.error
 import urllib.parse
@@ -62,6 +61,7 @@ class SourceProcurementContract(BaseModel):
     expected_sha256: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
     max_download_bytes: int = Field(default=200_000_000, gt=0)
     max_archive_uncompressed_bytes: int = Field(default=1_000_000_000, gt=0)
+    note: str | None = None
     canonical_commit_allowed: Literal[False] = False
 
     @model_validator(mode="after")
@@ -190,7 +190,7 @@ class OccupationalProcurementRelay:
             package = RawSourcePackage(
                 authority=contract.authority,
                 version=contract.version,
-                dataset_kind=contract.dataset_kind,
+                dataset_name=contract.dataset_kind,
                 concept_kind=contract.concept_kind,
                 source_uri=final_url,
                 payload=payload,
