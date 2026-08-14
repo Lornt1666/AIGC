@@ -6,7 +6,7 @@
   "canonical_registry_mutated": false,
   "dry_run_executed": false,
   "blocker_class": "EXECUTION_ENVIRONMENT_BINARY_TRANSFER_UNAVAILABLE",
-  "blocker_detail": "Authoritative endpoints were resolved and version semantics verified from official publishers, but this execution environment cannot materialize the binary/CSV payload bytes: the web retrieval layer reports unsupported binary/CSV content types and the local container has no outbound DNS/network access. SHA-256 receipts and adapter dry-runs therefore cannot be truthfully produced in this run.",
+  "blocker_detail": "Authoritative source endpoints were resolved, including ESCO's official web-service API. This execution environment still cannot materialize the required full payload bytes into the local runtime: the web layer can inspect pages/API documentation but does not expose arbitrary binary archives as local files, and the local container has no outbound DNS/network access. SHA-256 receipts and adapter dry-runs therefore cannot be truthfully produced in this run.",
   "sources": [
     {
       "authority": "ISCO",
@@ -26,12 +26,14 @@
       "version": "1.2.1",
       "dataset_kind": "CLASSIFICATION",
       "official_page": "https://esco.ec.europa.eu/en/use-esco/download",
-      "direct_payload_url": null,
-      "payload_status": "BLOCKED_INTERACTIVE_EMAIL_DOWNLOAD_FLOW",
+      "official_api_documentation": "https://ec.europa.eu/esco/api/doc/esco_api_doc.html",
+      "official_api_base": "https://ec.europa.eu/esco/api",
+      "api_status": "OFFICIAL_NON_INTERACTIVE_MACHINE_TO_MACHINE_ACCESS_CONFIRMED",
+      "payload_status": "API_ACCESS_CONFIRMED_FULL_V1_2_1_MATERIALIZATION_NOT_COMPLETED",
       "sha256": null,
       "byte_size": null,
       "dry_run_status": "NOT_EXECUTED",
-      "note": "Current official download workflow requires privacy-statement acknowledgement and an email address; the sealed commission prohibits submitting personal information or bypassing that flow."
+      "note": "Correction: ESCO is not categorically email-gated. The Commission provides a public web-service API for machine-to-machine access. The separate downloadable-package UI uses privacy acknowledgement/email delivery. Official current site metadata reports ESCO v1.2.1, while the public web-service API page presently documents selectable versions through v1.2.0; exact v1.2.1 API completeness must therefore be verified before treating API output as a full v1.2.1 acquisition."
     },
     {
       "authority": "NOC",
@@ -89,5 +91,5 @@
     "unsupported_records": "NOT_COMPUTED_NO_PAYLOAD_BYTES"
   },
   "canonical_ingestion_recommendation": "DENY_UNTIL_PAYLOADS_MATERIALIZED_HASHED_AND_DRY_RUN_PASSES",
-  "next_transition": "Resume this exact sealed commission in a runtime capable of downloading official payload bytes, or provide the official downloaded files to AIGC. Compute SHA-256 before normalization, then execute dry-run imports and inspect conflicts/crosswalk gaps before seeking canonical-ingestion approval."
+  "next_transition": "Use official direct files or official machine-to-machine APIs to materialize payload bytes in a network-capable runtime. For ESCO, verify the exact selectable API version before asserting v1.2.1 completeness. Compute SHA-256 before normalization, then execute dry-run imports and inspect conflicts/crosswalk gaps before seeking canonical-ingestion approval."
 }
