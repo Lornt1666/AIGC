@@ -1,0 +1,100 @@
+{
+  "schema_version": "aigc.quebec-resource-manifest.v1",
+  "provider": "google_cloud",
+  "project_id": "oceanic-base-485407-i7",
+  "project_number": "170151535592",
+  "region": "northamerica-northeast1",
+  "resources": [
+    {
+      "kind": "artifact_registry",
+      "name": "aigc-qc-stg-runtime",
+      "location": "northamerica-northeast1"
+    },
+    {
+      "kind": "cloud_sql_postgresql",
+      "name": "aigc-qc-stg-control",
+      "location": "northamerica-northeast1",
+      "availability_type": "REGIONAL"
+    },
+    {
+      "kind": "storage_bucket",
+      "name": "oceanic-base-485407-i7-aigc-qc-stg-evidence",
+      "location": "NORTHAMERICA-NORTHEAST1",
+      "public_access_prevention": "enforced"
+    },
+    {
+      "kind": "storage_bucket",
+      "name": "oceanic-base-485407-i7-aigc-qc-stg-judge",
+      "location": "NORTHAMERICA-NORTHEAST1",
+      "public_access_prevention": "enforced"
+    },
+    {
+      "kind": "storage_bucket",
+      "name": "oceanic-base-485407-i7-aigc-qc-stg-receipts",
+      "location": "NORTHAMERICA-NORTHEAST1",
+      "public_access_prevention": "enforced"
+    },
+    {
+      "kind": "regional_secret_manager",
+      "name": "aigc-qc-stg-regional-secret-set",
+      "location": "northamerica-northeast1"
+    },
+    {
+      "kind": "kms_key_ring",
+      "name": "aigc-qc-stg-keys",
+      "location": "northamerica-northeast1"
+    },
+    {
+      "kind": "logging_bucket",
+      "name": "aigc-qc-stg-logs",
+      "location": "northamerica-northeast1"
+    }
+  ],
+  "control_plane_resources": [
+    {
+      "kind": "google_cloud_project",
+      "name": "oceanic-base-485407-i7",
+      "location": "global",
+      "classification": "CONTROL_PLANE_METADATA",
+      "customer_content": false,
+      "residency_status": "VERIFIED_WITH_LIMITATION"
+    },
+    {
+      "kind": "iam_and_service_accounts",
+      "name": "aigc-qc-stg-identity-control-plane",
+      "location": "global",
+      "classification": "CONTROL_PLANE_METADATA",
+      "customer_content": false,
+      "residency_status": "VERIFIED_WITH_LIMITATION"
+    },
+    {
+      "kind": "billing_and_budget",
+      "name": "0156E0-2BDD06-7561F1",
+      "location": "global",
+      "classification": "CONTROL_PLANE_METADATA",
+      "customer_content": false,
+      "residency_status": "VERIFIED_WITH_LIMITATION"
+    },
+    {
+      "kind": "vpc_network",
+      "name": "aigc-qc-stg-vpc",
+      "location": "global",
+      "classification": "CONTROL_PLANE_METADATA",
+      "customer_content": false,
+      "residency_status": "VERIFIED_WITH_LIMITATION"
+    },
+    {
+      "kind": "private_service_access",
+      "name": "aigc-qc-stg-private-services",
+      "location": "global",
+      "classification": "CONTROL_PLANE_METADATA",
+      "customer_content": false,
+      "residency_status": "VERIFIED_WITH_LIMITATION"
+    }
+  ],
+  "cross_region_replication": false,
+  "public_resources": false,
+  "production_resources": false,
+  "service_account_keys": false,
+  "strict_quebec_data_residency_verified": false
+}
