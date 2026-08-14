@@ -1,0 +1,102 @@
+{
+  "schema_version": "aigc.repository-engineering-self-hosting-commission.v1",
+  "work_commission": {
+    "commission_id": "WC_AIGC_REPO_ENGINEERING_001",
+    "commission_revision": 1,
+    "discipline_id": "REPOSITORY_ENGINEERING",
+    "target_repository": "Lornt1666/AIGC",
+    "target_base_revision": "451156970e511b2781e486a3e290edaa5c0f231b",
+    "requested_outcome": "Implement the runtime vertical slice that realizes WorkCommission -> MethodGenome -> WorkAttempt -> Evidence inside AIGC while preserving occupational immutability, attempt binding, evidence non-authority, no-progress, one-writer, and independent-verification invariants.",
+    "scope": [
+      "typed immutable WorkCommission and OutcomeContract runtime models",
+      "WorkAttempt mutable execution aggregate",
+      "exact revision and digest binding",
+      "pre-transition eligibility validation",
+      "STALE_AUTHORIZATION and SUPERSEDED enforcement",
+      "MethodGenome runtime contracts for repository engineering",
+      "attempt-bound evidence receipt generation and mismatch rejection",
+      "Quest compatibility adapter without canonical authority ownership",
+      "semantic no-progress enforcement",
+      "independent verification lineage checks",
+      "tests proving the constitutional invariants"
+    ],
+    "explicit_exclusions": [
+      "merge PR #225",
+      "production deployment",
+      "provider/model dispatch requiring credentials",
+      "billing or spending mutation",
+      "employer or external-party contact",
+      "job application submission",
+      "secret access",
+      "unbounded repository cleanup",
+      "unrelated refactors discovered during implementation"
+    ],
+    "acceptance_mode": "EXPLICIT_USER_AUTHORIZATION_CURRENT_CONVERSATION",
+    "risk_tier": "R2",
+    "authority_envelope": {
+      "autonomous_actions": [
+        "read repository state",
+        "map and analyze repository",
+        "create or modify files only on the existing draft design/occupational-autonomy-v2 branch within this commission scope",
+        "prepare tests and evidence artifacts",
+        "update draft PR metadata"
+      ],
+      "approval_required_actions": [
+        "merge",
+        "ready-for-review promotion",
+        "deployment",
+        "external provider dispatch with credentials",
+        "spending",
+        "external communication"
+      ],
+      "prohibited_actions": [
+        "self-expand authority",
+        "rewrite commission scope in place",
+        "use secrets",
+        "fabricate test or execution evidence",
+        "treat discovered unrelated work as admitted scope"
+      ]
+    },
+    "sealed": true
+  },
+  "outcome_contract": {
+    "contract_id": "OC_AIGC_REPO_ENGINEERING_001",
+    "contract_revision": 1,
+    "required_artifacts": [
+      "runtime models and validators",
+      "repository engineering MethodGenome contracts",
+      "WorkAttempt transition guards",
+      "attempt-bound evidence implementation",
+      "Quest compatibility adapter",
+      "unit and adversarial tests",
+      "exact-head implementation evidence receipt"
+    ],
+    "hard_gates": [
+      "WorkCommission cannot be mutated by WorkAttempt code",
+      "OutcomeContract cannot be mutated by WorkAttempt code",
+      "WorkAttempt cannot execute consequential transition on digest mismatch",
+      "governing revision drift yields STALE_AUTHORIZATION or SUPERSEDED",
+      "evidence cannot grant authority or mutate occupational truth",
+      "Quest compatibility state cannot override WorkCommission or WorkAttempt",
+      "scope expansion is classified rather than silently admitted",
+      "one authoritative writer rule is enforced for mutable attempt state",
+      "high-risk independent verification lineage cannot equal sole writer lineage",
+      "semantic no-progress terminates bounded retries"
+    ],
+    "required_evidence": [
+      "exact base/head/tree identity",
+      "changed-file manifest",
+      "test command and result receipt",
+      "schema/contract validation receipt",
+      "scope-classification report",
+      "unresolved findings report"
+    ],
+    "delivery_receipt_required": false,
+    "independent_verification_required": true,
+    "no_progress_policy": {
+      "max_cycles": 3,
+      "max_identical_failure_retries": 2
+    },
+    "sealed": true
+  }
+}
