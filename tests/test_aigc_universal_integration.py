@@ -31,7 +31,7 @@ class UniversalIntegrationTests(unittest.TestCase):
         self.assertFalse(result.external_action_performed)
         self.assertIn("registry remains template_only", result.blockers)
         self.assertIn(
-            "required surface chatgpt_mcp is not_implemented without complete receipts",
+            "required surface chatgpt_mcp is implemented with 3/5 receipt-bound checks",
             result.blockers,
         )
 
@@ -50,11 +50,14 @@ class UniversalIntegrationTests(unittest.TestCase):
     def test_receipt_count_without_verified_status_cannot_pass_surface(self) -> None:
         registry = load_registry()
         surface = next(item for item in registry["surfaces"] if item["id"] == "chatgpt_mcp")
-        surface["receipt_ids"] = [f"receipt-{index}" for index, _ in enumerate(surface["required_evidence"])]
+        surface["evidence_receipts"] = {
+            item: f"receipt-{index}"
+            for index, item in enumerate(surface["required_evidence"])
+        }
         result = evaluate_registry(registry)
         self.assertFalse(result.production_ready)
         self.assertIn(
-            "required surface chatgpt_mcp is not_implemented without complete receipts",
+            "required surface chatgpt_mcp is implemented with 5/5 receipt-bound checks",
             result.blockers,
         )
 
@@ -62,10 +65,15 @@ class UniversalIntegrationTests(unittest.TestCase):
         registry = load_registry()
         surface = next(item for item in registry["surfaces"] if item["id"] == "chatgpt_mcp")
         surface["status"] = "verified"
-        surface["receipt_ids"] = ["one-receipt-is-not-the-five-required"]
+        surface["evidence_receipts"] = {
+            surface["required_evidence"][0]: "one-receipt-is-not-the-five-required"
+        }
         result = evaluate_registry(registry)
         self.assertFalse(result.production_ready)
-        self.assertIn("required surface chatgpt_mcp is verified without complete receipts", result.blockers)
+        self.assertIn(
+            "required surface chatgpt_mcp is verified with 1/5 receipt-bound checks",
+            result.blockers,
+        )
 
     def test_connector_requires_every_certification_dimension(self) -> None:
         registry = load_registry()

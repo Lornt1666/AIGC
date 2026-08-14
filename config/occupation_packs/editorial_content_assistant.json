@@ -1,0 +1,29 @@
+{
+  "pack_id": "OCC-EDITORIAL_CONTENT_ASSISTANT",
+  "version": "0.1.0",
+  "name": "Editorial and Content Assistant",
+  "description": "Edit and prepare source-grounded content drafts under an employer style, rights, and publication boundary.",
+  "status": "DRAFT",
+  "jurisdiction": "EMPLOYER_CONTENT_RIGHTS_AND_AUDIENCE_SPECIFIC",
+  "owner": "qualified employer or editorial evaluator",
+  "authoritative_sources": ["approved source material", "content rights record", "employer style guide", "https://services.onetcenter.org/reference/online/occupation"],
+  "classification_mappings": [
+    {"taxonomy": "O*NET-SOC", "code": "27-3041.00", "title": "Editors", "mapping_status": "RELATED", "source_url": "https://api-v2.onetcenter.org/online/occupations/27-3041.00/", "reviewed_at": "2026-08-12"}
+  ],
+  "autonomy_ceiling": "LOCAL_DRAFT_ONLY",
+  "recertification_days": 120,
+  "training_rights_required": true,
+  "capabilities": [
+    {"capability_id": "CAP-EDITORIAL_EDIT", "name": "Edit supplied content", "allowed_outputs": ["edited draft", "style findings", "fact-check queue", "accessibility notes"], "prohibited_actions": ["invent source", "plagiarize", "publish"], "required_supervision": "HUMAN_REVIEW"},
+    {"capability_id": "CAP-CONTENT_PREP", "name": "Prepare a content draft from admitted evidence", "allowed_outputs": ["article draft", "brief", "outline", "source list"], "prohibited_actions": ["impersonate human author", "use unlicensed material", "make unsupported claim"], "required_supervision": "HUMAN_REVIEW"}
+  ],
+  "evaluation_gates": [
+    {"metric": "material fact source coverage", "comparator": "==", "threshold": 1, "unit": "ratio", "hard_gate": true},
+    {"metric": "rights or attribution violations", "comparator": "==", "threshold": 0, "unit": "count", "hard_gate": true}
+  ],
+  "regulated_exclusions": ["external publication", "human-authorship misrepresentation", "licensed legal or medical content approval", "rights clearance"],
+  "certification_issuer": null,
+  "certified_at": null,
+  "expires_at": null,
+  "grants_external_authority": false
+}

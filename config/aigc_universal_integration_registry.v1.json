@@ -62,7 +62,7 @@
       "required_for_v1": true,
       "status": "implemented",
       "required_evidence": ["exact-head CI", "immutable image digest", "authenticated health/readiness", "bounded load/security/recovery"],
-      "receipt_ids": [],
+      "evidence_receipts": {},
       "blockers": ["Current release head has no combined status receipt", "No external deployment receipt", "No public traffic authority"]
     },
     {
@@ -71,26 +71,30 @@
       "required_for_v1": true,
       "status": "implemented",
       "required_evidence": ["deployed URL", "accessibility test", "browser compatibility matrix", "security headers", "observability"],
-      "receipt_ids": [],
+      "evidence_receipts": {},
       "blockers": ["No deployed web receipt", "No browser/device validation receipts"]
     },
     {
       "id": "chatgpt_mcp",
       "kind": "chatgpt_mcp",
       "required_for_v1": true,
-      "status": "not_implemented",
+      "status": "implemented",
       "required_evidence": ["MCP initialize", "tool list", "read-only workflow", "confirmed-write workflow", "host validation"],
-      "receipt_ids": [],
-      "blockers": ["plugins/aigc-autopilot/README.md is absent on the release branch", "No ChatGPT host validation receipt"]
+      "evidence_receipts": {
+        "MCP initialize": "reports/artifacts/aigc_mcp_loopback_local_validation.json",
+        "tool list": "reports/artifacts/aigc_mcp_loopback_local_validation.json",
+        "read-only workflow": "SBX-4F88AB73D87044790709ABBF"
+      },
+      "blockers": ["No confirmed-write workflow is exposed by the initial read/simulate facade", "No ChatGPT host validation receipt", "No hosted exact-head CI receipt"]
     },
     {
       "id": "gemini_mcp",
       "kind": "gemini_mcp",
       "required_for_v1": false,
-      "status": "proposed",
+      "status": "implemented",
       "required_evidence": ["MCP initialize", "allowlisted tool list", "trust=false configuration", "client validation"],
-      "receipt_ids": [],
-      "blockers": ["No portable MCP server integrated into the release train"]
+      "evidence_receipts": {},
+      "blockers": ["No Gemini client validation receipt", "No hosted exact-head CI receipt"]
     },
     {
       "id": "ios_client",
@@ -98,7 +102,7 @@
       "required_for_v1": false,
       "status": "not_implemented",
       "required_evidence": ["supported Xcode build", "simulator tests", "physical-device tests", "privacy manifest", "signing and TestFlight receipts"],
-      "receipt_ids": [],
+      "evidence_receipts": {},
       "blockers": ["No native iOS target in the release train", "Apple account, bundle, signing, privacy, and submission facts unresolved"]
     },
     {
@@ -107,7 +111,7 @@
       "required_for_v1": false,
       "status": "not_implemented",
       "required_evidence": ["reproducible Android build", "emulator matrix", "physical-device tests", "data safety declaration", "signed internal-track receipt"],
-      "receipt_ids": [],
+      "evidence_receipts": {},
       "blockers": ["No Android project in the release train", "Play Console identity, package, signing, and listing facts unresolved"]
     },
     {
@@ -116,7 +120,7 @@
       "required_for_v1": false,
       "status": "blocked",
       "required_evidence": ["chain-specific threat model", "independent contract audit", "key custody design", "legal review", "testnet receipts", "treasury and rollback plan"],
-      "receipt_ids": [],
+      "evidence_receipts": {},
       "blockers": ["No chain, contract, token, custody, legal purpose, or spend authority is specified"]
     },
     {
@@ -125,7 +129,7 @@
       "required_for_v1": false,
       "status": "implemented",
       "required_evidence": ["integrated commercial lineage", "jurisdiction decision", "versioned agreement", "sandbox settlement", "payment reconciliation", "production billing authority"],
-      "receipt_ids": [],
+      "evidence_receipts": {},
       "blockers": ["Revenue-Ω exists on separate draft branches and is not admitted into Nexus V1", "No production payment or billing authority"]
     }
   ],

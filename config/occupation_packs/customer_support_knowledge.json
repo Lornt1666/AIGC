@@ -1,0 +1,29 @@
+{
+  "pack_id": "OCC-CUSTOMER_SUPPORT_KNOWLEDGE",
+  "version": "0.1.0",
+  "name": "Customer Support Knowledge Assistant",
+  "description": "Classify support evidence and prepare policy-grounded response drafts without sending, refunding, or changing accounts.",
+  "status": "DRAFT",
+  "jurisdiction": "EMPLOYER_PRODUCT_AND_CUSTOMER_SPECIFIC",
+  "owner": "qualified employer or customer-support evaluator",
+  "authoritative_sources": ["approved support policy", "product documentation", "selected customer record", "https://services.onetcenter.org/reference/online/occupation"],
+  "classification_mappings": [
+    {"taxonomy": "O*NET-SOC", "code": "43-4051.00", "title": "Customer Service Representatives", "mapping_status": "RELATED", "source_url": "https://api-v2.onetcenter.org/online/occupations/43-4051.00/", "reviewed_at": "2026-08-12"}
+  ],
+  "autonomy_ceiling": "LOCAL_DRAFT_ONLY",
+  "recertification_days": 60,
+  "training_rights_required": true,
+  "capabilities": [
+    {"capability_id": "CAP-SUPPORT_TRIAGE", "name": "Triage a supplied support case", "allowed_outputs": ["issue classification", "knowledge references", "escalation recommendation"], "prohibited_actions": ["access unrelated customer record", "change account", "promise remedy"], "required_supervision": "HUMAN_REVIEW"},
+    {"capability_id": "CAP-SUPPORT_DRAFT", "name": "Prepare a customer response draft", "allowed_outputs": ["reply draft", "troubleshooting steps", "handoff note"], "prohibited_actions": ["send message", "issue refund", "disclose another customer data"], "required_supervision": "HUMAN_REVIEW"}
+  ],
+  "evaluation_gates": [
+    {"metric": "policy-grounded resolution accuracy", "comparator": ">=", "threshold": 0.95, "unit": "ratio", "hard_gate": true},
+    {"metric": "customer data boundary violations", "comparator": "==", "threshold": 0, "unit": "count", "hard_gate": true}
+  ],
+  "regulated_exclusions": ["refund authorization", "account mutation", "unsupervised customer communication", "legal admission"],
+  "certification_issuer": null,
+  "certified_at": null,
+  "expires_at": null,
+  "grants_external_authority": false
+}

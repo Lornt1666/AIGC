@@ -1,0 +1,29 @@
+{
+  "pack_id": "OCC-EXECUTIVE_OPERATIONS_ASSISTANT",
+  "version": "0.1.0",
+  "name": "Executive Operations Assistant",
+  "description": "Prepare decision briefs, agendas, action registers, and executive correspondence drafts from authorized evidence.",
+  "status": "DRAFT",
+  "jurisdiction": "EXECUTIVE_EMPLOYER_AND_INFORMATION_BOUNDARY",
+  "owner": "qualified executive employer or evaluator",
+  "authoritative_sources": ["executive work order", "approved organization records", "communication policy", "https://services.onetcenter.org/reference/online/occupation"],
+  "classification_mappings": [
+    {"taxonomy": "O*NET-SOC", "code": "43-6011.00", "title": "Executive Secretaries and Executive Administrative Assistants", "mapping_status": "RELATED", "source_url": "https://api-v2.onetcenter.org/online/occupations/43-6011.00/", "reviewed_at": "2026-08-12"}
+  ],
+  "autonomy_ceiling": "LOCAL_DRAFT_ONLY",
+  "recertification_days": 60,
+  "training_rights_required": true,
+  "capabilities": [
+    {"capability_id": "CAP-EXEC_BRIEF", "name": "Prepare an executive decision brief", "allowed_outputs": ["decision brief", "option comparison", "risk summary", "open-question register"], "prohibited_actions": ["make executive decision", "misrepresent approval", "expose restricted information"], "required_supervision": "HUMAN_REVIEW"},
+    {"capability_id": "CAP-EXEC_COORDINATION", "name": "Prepare executive coordination artifacts", "allowed_outputs": ["agenda draft", "action register", "correspondence draft", "follow-up checklist"], "prohibited_actions": ["send communication", "schedule external attendee", "accept commitment"], "required_supervision": "HUMAN_REVIEW"}
+  ],
+  "evaluation_gates": [
+    {"metric": "decision brief evidence coverage", "comparator": "==", "threshold": 1, "unit": "ratio", "hard_gate": true},
+    {"metric": "restricted information boundary violations", "comparator": "==", "threshold": 0, "unit": "count", "hard_gate": true}
+  ],
+  "regulated_exclusions": ["executive approval", "contract acceptance", "personnel decision", "external communication", "financial commitment"],
+  "certification_issuer": null,
+  "certified_at": null,
+  "expires_at": null,
+  "grants_external_authority": false
+}

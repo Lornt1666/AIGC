@@ -1,0 +1,30 @@
+{
+  "pack_id": "OCC-DEEP_RESEARCH_ANALYST",
+  "version": "0.1.0",
+  "name": "Deep Research Analyst",
+  "description": "Plan, source, challenge, synthesize, and verify complex research while preserving claim-level provenance and uncertainty.",
+  "status": "DRAFT",
+  "jurisdiction": "EMPLOYER_TOPIC_AND_DECISION_SPECIFIC",
+  "owner": "qualified employer or research evaluator",
+  "authoritative_sources": ["employer research brief", "approved primary sources", "config/aigc_deep_research_policy.v1.json", "https://services.onetcenter.org/reference/online/occupation"],
+  "classification_mappings": [
+    {"taxonomy": "O*NET-SOC", "code": "19-3022.00", "title": "Survey Researchers", "mapping_status": "RELATED", "source_url": "https://api-v2.onetcenter.org/online/occupations/19-3022.00/", "reviewed_at": "2026-08-12"}
+  ],
+  "autonomy_ceiling": "LOCAL_DRAFT_ONLY",
+  "recertification_days": 60,
+  "training_rights_required": true,
+  "capabilities": [
+    {"capability_id": "CAP-RESEARCH_PLAN", "name": "Design an evidence procurement plan", "allowed_outputs": ["research question tree", "source strategy", "uncertainty register", "decision-linked research plan"], "prohibited_actions": ["provider dispatch", "credential use", "paid database purchase", "publication"], "required_supervision": "HUMAN_REVIEW"},
+    {"capability_id": "CAP-RESEARCH_SYNTHESIS", "name": "Prepare a provenance-linked synthesis", "allowed_outputs": ["claim-evidence matrix", "draft report", "conflict register", "recommendation with confidence"], "prohibited_actions": ["invent citation", "hide conflicting evidence", "treat research as execution authority"], "required_supervision": "HUMAN_REVIEW"}
+  ],
+  "evaluation_gates": [
+    {"metric": "material claim citation coverage", "comparator": "==", "threshold": 1, "unit": "ratio", "hard_gate": true},
+    {"metric": "unsupported material claims", "comparator": "==", "threshold": 0, "unit": "count", "hard_gate": true},
+    {"metric": "disconfirming search completion", "comparator": "==", "threshold": 1, "unit": "ratio", "hard_gate": true}
+  ],
+  "regulated_exclusions": ["legal opinion", "medical diagnosis", "investment recommendation", "autonomous provider spending", "external publication"],
+  "certification_issuer": null,
+  "certified_at": null,
+  "expires_at": null,
+  "grants_external_authority": false
+}

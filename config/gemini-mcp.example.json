@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "aigc-nexus": {
+      "command": "/absolute/path/to/repository/.venv/bin/python",
+      "args": ["-m", "src.integrations.mcp.server", "--transport", "stdio"],
+      "cwd": "/absolute/path/to/repository",
+      "trust": false,
+      "includeTools": [
+        "aigc_get_status",
+        "aigc_render_control_center",
+        "assess_aigc_action",
+        "run_aigc_dry_run",
+        "procure_deep_research_plan",
+        "aigc_run_employer_sandbox"
+      ]
+    }
+  }
+}

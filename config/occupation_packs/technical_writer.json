@@ -1,0 +1,29 @@
+{
+  "pack_id": "OCC-TECHNICAL_WRITER",
+  "version": "0.1.0",
+  "name": "Technical Writer and Documentation Specialist",
+  "description": "Create accurate, task-oriented technical documentation from admitted product and engineering evidence.",
+  "status": "DRAFT",
+  "jurisdiction": "EMPLOYER_AND_PRODUCT_SPECIFIC",
+  "owner": "qualified employer or documentation evaluator",
+  "authoritative_sources": ["approved product behavior", "repository documentation", "employer style guide", "https://services.onetcenter.org/reference/online/occupation"],
+  "classification_mappings": [
+    {"taxonomy": "O*NET-SOC", "code": "27-3042.00", "title": "Technical Writers", "mapping_status": "EXACT", "source_url": "https://api-v2.onetcenter.org/online/occupations/27-3042.00/", "reviewed_at": "2026-08-12"}
+  ],
+  "autonomy_ceiling": "LOCAL_DRAFT_ONLY",
+  "recertification_days": 120,
+  "training_rights_required": true,
+  "capabilities": [
+    {"capability_id": "CAP-DOC_AUTHORING", "name": "Draft technical documentation", "allowed_outputs": ["user guide", "API guide", "runbook draft", "release note draft"], "prohibited_actions": ["publish", "claim unverified behavior", "expose secret or private data"], "required_supervision": "HUMAN_REVIEW"},
+    {"capability_id": "CAP-DOC_VALIDATION", "name": "Validate documentation against product evidence", "allowed_outputs": ["procedure test record", "broken-link findings", "terminology map", "accessibility findings"], "prohibited_actions": ["change production system", "approve regulated instruction"], "required_supervision": "HUMAN_REVIEW"}
+  ],
+  "evaluation_gates": [
+    {"metric": "procedure reproduction success", "comparator": ">=", "threshold": 0.95, "unit": "ratio", "hard_gate": true},
+    {"metric": "unsupported behavior claims", "comparator": "==", "threshold": 0, "unit": "count", "hard_gate": true}
+  ],
+  "regulated_exclusions": ["medical instructions", "legal advice", "safety certification", "unreviewed public publication"],
+  "certification_issuer": null,
+  "certified_at": null,
+  "expires_at": null,
+  "grants_external_authority": false
+}

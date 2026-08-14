@@ -1,0 +1,41 @@
+{
+  "pack_id": "OCC-DATA_ANALYSIS_REPORTING",
+  "version": "0.1.0",
+  "name": "Data Analysis and Reporting Specialist",
+  "description": "Validate data, perform reproducible analysis, and prepare evidence-linked reports inside an admitted data boundary.",
+  "status": "DRAFT",
+  "jurisdiction": "EMPLOYER_AND_TASK_SPECIFIC",
+  "owner": "qualified employer or evaluator",
+  "authoritative_sources": ["employer data dictionary", "approved dataset", "analysis specification", "https://services.onetcenter.org/reference/online/occupation"],
+  "classification_mappings": [
+    {"taxonomy": "O*NET-SOC", "code": "15-2051.00", "title": "Data Scientists", "mapping_status": "RELATED", "source_url": "https://api-v2.onetcenter.org/online/occupations/15-2051.00/", "reviewed_at": "2026-08-12"}
+  ],
+  "autonomy_ceiling": "LOCAL_DRAFT_ONLY",
+  "recertification_days": 90,
+  "training_rights_required": true,
+  "capabilities": [
+    {
+      "capability_id": "CAP-DATA_QUALITY",
+      "name": "Assess data quality",
+      "allowed_outputs": ["quality profile", "lineage notes", "validation findings"],
+      "prohibited_actions": ["source data mutation", "identity re-identification", "unapproved export"],
+      "required_supervision": "HUMAN_REVIEW"
+    },
+    {
+      "capability_id": "CAP-REPRODUCIBLE_REPORT",
+      "name": "Prepare a reproducible analytical report",
+      "allowed_outputs": ["local notebook", "chart", "draft report", "assumption register"],
+      "prohibited_actions": ["fabricate data", "publish", "make regulated financial or medical determination"],
+      "required_supervision": "HUMAN_REVIEW"
+    }
+  ],
+  "evaluation_gates": [
+    {"metric": "reproducible result agreement", "comparator": ">=", "threshold": 0.99, "unit": "ratio", "hard_gate": true},
+    {"metric": "unsupported material claims", "comparator": "==", "threshold": 0, "unit": "count", "hard_gate": true}
+  ],
+  "regulated_exclusions": ["tax filing", "audit opinion", "medical diagnosis", "investment recommendation", "unapproved personal-data processing"],
+  "certification_issuer": null,
+  "certified_at": null,
+  "expires_at": null,
+  "grants_external_authority": false
+}

@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.example/schemas/aigc_occupation_pack.schema.json",
+  "title": "AIGC Occupation Capability Pack",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "pack_id", "version", "name", "description", "status", "jurisdiction",
+    "owner", "authoritative_sources", "classification_mappings", "autonomy_ceiling",
+    "recertification_days", "training_rights_required", "capabilities",
+    "evaluation_gates", "regulated_exclusions", "certification_issuer",
+    "certified_at", "expires_at", "grants_external_authority"
+  ],
+  "properties": {
+    "pack_id": {"type": "string", "pattern": "^OCC-[A-Z0-9_-]{4,64}$"},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "name": {"type": "string", "minLength": 1},
+    "description": {"type": "string", "minLength": 1},
+    "status": {"enum": ["DRAFT", "SHADOW_ONLY", "SUPERVISED", "CERTIFIED", "EXPIRED", "REVOKED"]},
+    "jurisdiction": {"type": "string", "minLength": 1},
+    "owner": {"type": "string", "minLength": 1},
+    "authoritative_sources": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "classification_mappings": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/classification_mapping"}},
+    "autonomy_ceiling": {"enum": ["LOCAL_DRAFT_ONLY", "SUPERVISED_INTERNAL", "CERTIFIED_BOUNDED_EXECUTION"]},
+    "recertification_days": {"type": "integer", "minimum": 1, "maximum": 365},
+    "training_rights_required": {"const": true},
+    "capabilities": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/capability"}},
+    "evaluation_gates": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/gate"}},
+    "regulated_exclusions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "certification_issuer": {"type": ["string", "null"], "minLength": 1},
+    "certified_at": {"type": ["string", "null"], "format": "date"},
+    "expires_at": {"type": ["string", "null"], "format": "date"},
+    "grants_external_authority": {"const": false}
+  },
+  "$defs": {
+    "classification_mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["taxonomy", "code", "title", "mapping_status", "source_url", "reviewed_at"],
+      "properties": {
+        "taxonomy": {"enum": ["O*NET-SOC", "ESCO", "NOC"]},
+        "code": {"type": ["string", "null"], "minLength": 1},
+        "title": {"type": "string", "minLength": 1},
+        "mapping_status": {"enum": ["EXACT", "RELATED", "PROVISIONAL", "UNRESOLVED"]},
+        "source_url": {"type": "string", "pattern": "^https://"},
+        "reviewed_at": {"type": "string", "format": "date"}
+      }
+    },
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capability_id", "name", "allowed_outputs", "prohibited_actions", "required_supervision"],
+      "properties": {
+        "capability_id": {"type": "string", "pattern": "^CAP-[A-Z0-9_-]{4,64}$"},
+        "name": {"type": "string", "minLength": 1},
+        "allowed_outputs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "prohibited_actions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "required_supervision": {"enum": ["HUMAN_REVIEW", "HUMAN_ON_LOOP", "NONE"]}
+      }
+    },
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metric", "comparator", "threshold", "unit", "hard_gate"],
+      "properties": {
+        "metric": {"type": "string", "minLength": 1},
+        "comparator": {"enum": [">=", "<=", "=="]},
+        "threshold": {"type": "number"},
+        "unit": {"type": "string", "minLength": 1},
+        "hard_gate": {"type": "boolean"}
+      }
+    }
+  }
+}

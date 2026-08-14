@@ -643,7 +643,7 @@ CURRENT AIGC FIRST-ORDER EXECUTION
 1. Preserve PR #181 as the canonical Nexus V1 integration train at its observed head.
 2. Reconcile PR #219’s two closure-repair commits with PR #181’s newer Employment-OPS commit; never erase either lineage.
 3. Resolve GitHub Actions billing/minute restrictions and obtain fresh exact-head CI before admission claims.
-4. Integrate the portable AIGC MCP server and zero-egress employer sandbox as a separate reviewed vertical slice; the expected plugins/aigc-autopilot path is currently absent from the release branch.
+4. Admit the implemented portable AIGC MCP server and zero-egress employer sandbox through fresh exact-head CI, then obtain separate ChatGPT and Gemini host receipts; hosted validation remains absent.
 5. Adopt the machine-readable universal integration registry and update it only from exact receipts.
 6. Qualify API + Linux + web/PWA + ChatGPT MCP as the first release contract.
 7. Keep native iOS/Android and store releases as separately evidenced tracks until real toolchain/device/account receipts exist.

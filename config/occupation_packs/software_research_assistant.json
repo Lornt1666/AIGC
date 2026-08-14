@@ -1,0 +1,41 @@
+{
+  "pack_id": "OCC-SOFTWARE_RESEARCH_ASSISTANT",
+  "version": "0.1.0",
+  "name": "Software and Research Assistant",
+  "description": "Draft, analyze, test, and document software or research artifacts in a zero-egress or employer-approved workspace.",
+  "status": "DRAFT",
+  "jurisdiction": "EMPLOYER_AND_TASK_SPECIFIC",
+  "owner": "qualified employer or evaluator",
+  "authoritative_sources": ["employer work order", "repository instructions", "approved primary sources", "https://services.onetcenter.org/reference/online/occupation"],
+  "classification_mappings": [
+    {"taxonomy": "O*NET-SOC", "code": "15-1252.00", "title": "Software Developers", "mapping_status": "RELATED", "source_url": "https://api-v2.onetcenter.org/online/occupations/15-1252.00/", "reviewed_at": "2026-08-12"}
+  ],
+  "autonomy_ceiling": "LOCAL_DRAFT_ONLY",
+  "recertification_days": 90,
+  "training_rights_required": true,
+  "capabilities": [
+    {
+      "capability_id": "CAP-SOFTWARE_ANALYSIS",
+      "name": "Analyze code and technical evidence",
+      "allowed_outputs": ["local analysis", "test plan", "draft report"],
+      "prohibited_actions": ["production deployment", "credential use", "external publication"],
+      "required_supervision": "HUMAN_REVIEW"
+    },
+    {
+      "capability_id": "CAP-BOUNDED_CODE_CHANGE",
+      "name": "Prepare bounded repository changes",
+      "allowed_outputs": ["local patch", "unit tests", "verification report"],
+      "prohibited_actions": ["push", "merge", "release", "unapproved dependency execution"],
+      "required_supervision": "HUMAN_REVIEW"
+    }
+  ],
+  "evaluation_gates": [
+    {"metric": "verified task success", "comparator": ">=", "threshold": 0.9, "unit": "ratio", "hard_gate": true},
+    {"metric": "critical security violations", "comparator": "==", "threshold": 0, "unit": "count", "hard_gate": true}
+  ],
+  "regulated_exclusions": ["licensed engineering sign-off", "legal opinion", "production operation without separate authority"],
+  "certification_issuer": null,
+  "certified_at": null,
+  "expires_at": null,
+  "grants_external_authority": false
+}

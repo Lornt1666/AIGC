@@ -1,0 +1,188 @@
+from __future__ import annotations
+
+import argparse
+from typing import Literal
+
+from mcp.server.fastmcp import FastMCP
+from mcp.types import ToolAnnotations
+
+from src.domain.nexus.contracts import EffectClass
+from src.integrations.aigc_plugin_bridge import (
+    aigc_get_status,
+    aigc_render_control_center,
+)
+from src.operations.employer_sandbox import run_employer_sandbox as run_canonical_employer_sandbox
+from src.integrations.mcp.tools import (
+    DryRunGoal,
+    SandboxScenario,
+    assess_aigc_action,
+    procure_deep_research_plan,
+    run_aigc_dry_run,
+)
+
+
+READ_ONLY = ToolAnnotations(
+    readOnlyHint=True,
+    destructiveHint=False,
+    idempotentHint=True,
+    openWorldHint=False,
+)
+
+
+def build_mcp_server(*, host: str = "127.0.0.1", port: int = 8000) -> FastMCP:
+    server = FastMCP(
+        "aigc-nexus",
+        instructions=(
+            "All tools are local read/simulate operations. They never grant authority, "
+            "use credentials, contact employers, submit applications, send messages, or "
+            "mutate external systems. BLOCKED_PERMISSION is a truthful terminal result."
+        ),
+        host=host,
+        port=port,
+        streamable_http_path="/mcp",
+        stateless_http=True,
+        json_response=True,
+    )
+
+    @server.tool(
+        name="aigc_get_status",
+        title="Get AIGC status",
+        description="Use this when the user wants the current local AIGC, connector, and occupation-pack status.",
+        annotations=READ_ONLY,
+        structured_output=True,
+    )
+    def status_tool() -> dict[str, object]:
+        return aigc_get_status()
+
+    @server.tool(
+        name="aigc_render_control_center",
+        title="Render AIGC control center",
+        description="Use this to obtain a structured, widget-independent AIGC control-center projection.",
+        annotations=READ_ONLY,
+        structured_output=True,
+    )
+    def control_center_tool() -> dict[str, object]:
+        return aigc_render_control_center()
+
+    @server.tool(
+        name="assess_aigc_action",
+        title="Assess an AIGC action",
+        description="Use this before planning an action to classify consequence and determine whether separate authority is required; this never grants authority.",
+        annotations=READ_ONLY,
+        structured_output=True,
+    )
+    def assessment_tool(
+        intent_id: str,
+        effect_class: EffectClass,
+        public_read_only: bool = False,
+        internal_sandbox_only: bool = False,
+        accesses_private_data: bool = False,
+        credentials_required: bool = False,
+        persistent_internal_mutation: bool = False,
+        external_mutation: bool = False,
+        communication: bool = False,
+        financial_spend_cad: str = "0.00",
+        legal_commitment: bool = False,
+        security_sensitive: bool = False,
+        production_change: bool = False,
+        physical_effect: bool = False,
+        destructive: bool = False,
+        irreversible: bool = False,
+        outcome_indeterminate: bool = False,
+    ) -> dict[str, object]:
+        return assess_aigc_action(
+            intent_id=intent_id,
+            effect_class=effect_class,
+            public_read_only=public_read_only,
+            internal_sandbox_only=internal_sandbox_only,
+            accesses_private_data=accesses_private_data,
+            credentials_required=credentials_required,
+            persistent_internal_mutation=persistent_internal_mutation,
+            external_mutation=external_mutation,
+            communication=communication,
+            financial_spend_cad=financial_spend_cad,
+            legal_commitment=legal_commitment,
+            security_sensitive=security_sensitive,
+            production_change=production_change,
+            physical_effect=physical_effect,
+            destructive=destructive,
+            irreversible=irreversible,
+            outcome_indeterminate=outcome_indeterminate,
+        )
+
+    @server.tool(
+        name="run_aigc_dry_run",
+        title="Run an AIGC dry run",
+        description="Use this when the user wants to preview a governed work-search, application, communication, or daily-work workflow without external action.",
+        annotations=READ_ONLY,
+        structured_output=True,
+    )
+    def dry_run_tool(goal: DryRunGoal) -> dict[str, object]:
+        return run_aigc_dry_run(goal=goal)
+
+    @server.tool(
+        name="procure_deep_research_plan",
+        title="Procure a Deep Research plan",
+        description=(
+            "Use this to create a deterministic, source-governed research plan. "
+            "It does not retrieve sources, spend money, call a model, or publish."
+        ),
+        annotations=READ_ONLY,
+        structured_output=True,
+    )
+    def deep_research_tool(
+        request_id: str,
+        question: str,
+        intended_decision: str,
+        jurisdictions: list[str] | None = None,
+        maximum_sources: int = 20,
+        maximum_spend_cad: str = "0.00",
+    ) -> dict[str, object]:
+        return procure_deep_research_plan(
+            request_id=request_id,
+            question=question,
+            intended_decision=intended_decision,
+            jurisdictions=jurisdictions,
+            maximum_sources=maximum_sources,
+            maximum_spend_cad=maximum_spend_cad,
+        )
+
+    @server.tool(
+        name="aigc_run_employer_sandbox",
+        title="Run an employer sandbox scenario",
+        description="Use this when the user wants to test one declared occupation capability against a deterministic zero-egress scenario.",
+        annotations=READ_ONLY,
+        structured_output=True,
+    )
+    def employer_sandbox_tool(
+        mode: Literal["sandbox"] = "sandbox",
+        pack_id: str = "OCC-DATA_ANALYSIS_REPORTING",
+        capability_id: str = "CAP-DATA_QUALITY",
+        scenario: SandboxScenario = "NORMAL_TASK",
+    ) -> dict[str, object]:
+        return run_canonical_employer_sandbox(
+            mode=mode,
+            pack_id=pack_id,
+            capability_id=capability_id,
+            scenario=scenario,
+        )
+
+    return server
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Run the governed AIGC Nexus MCP facade")
+    parser.add_argument("--transport", choices=("stdio", "streamable-http"), default="stdio")
+    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--port", type=int, default=8000)
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    build_mcp_server(host=args.host, port=args.port).run(transport=args.transport)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

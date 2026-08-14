@@ -1,0 +1,29 @@
+{
+  "pack_id": "OCC-SOFTWARE_QA_ANALYST",
+  "version": "0.1.0",
+  "name": "Software Quality Assurance Analyst",
+  "description": "Design and execute bounded tests in approved local or sandbox environments and report reproducible defects.",
+  "status": "DRAFT",
+  "jurisdiction": "EMPLOYER_REPOSITORY_AND_ENVIRONMENT_SPECIFIC",
+  "owner": "qualified employer or software quality evaluator",
+  "authoritative_sources": ["acceptance criteria", "approved test environment", "repository instructions", "https://services.onetcenter.org/reference/online/occupation"],
+  "classification_mappings": [
+    {"taxonomy": "O*NET-SOC", "code": "15-1253.00", "title": "Software Quality Assurance Analysts and Testers", "mapping_status": "EXACT", "source_url": "https://api-v2.onetcenter.org/online/occupations/15-1253.00/", "reviewed_at": "2026-08-12"}
+  ],
+  "autonomy_ceiling": "LOCAL_DRAFT_ONLY",
+  "recertification_days": 90,
+  "training_rights_required": true,
+  "capabilities": [
+    {"capability_id": "CAP-QA_TEST_DESIGN", "name": "Design risk-based tests", "allowed_outputs": ["test plan", "test cases", "traceability matrix", "risk register"], "prohibited_actions": ["test production without permit", "weaken acceptance criteria", "fabricate coverage"], "required_supervision": "HUMAN_REVIEW"},
+    {"capability_id": "CAP-QA_LOCAL_EXECUTION", "name": "Execute approved local tests", "allowed_outputs": ["local test output", "defect reproduction", "verification report"], "prohibited_actions": ["production mutation", "destructive test outside sandbox", "automatic external retry"], "required_supervision": "HUMAN_REVIEW"}
+  ],
+  "evaluation_gates": [
+    {"metric": "critical requirement coverage", "comparator": "==", "threshold": 1, "unit": "ratio", "hard_gate": true},
+    {"metric": "uncontained external side effects", "comparator": "==", "threshold": 0, "unit": "count", "hard_gate": true}
+  ],
+  "regulated_exclusions": ["production release approval", "safety certification", "penetration testing without written authority"],
+  "certification_issuer": null,
+  "certified_at": null,
+  "expires_at": null,
+  "grants_external_authority": false
+}

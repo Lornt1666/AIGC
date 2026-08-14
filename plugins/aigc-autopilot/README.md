@@ -1,0 +1,40 @@
+# AIGC Autopilot MCP
+
+Status: `LOCAL STREAMABLE HTTP VERIFIED — CHATGPT HOST AND PUBLIC DEPLOYMENT NOT PERFORMED`
+
+This directory is the canonical distribution entrypoint for the portable AIGC MCP facade. The implementation remains in the governed Python core so every client receives the same structured truth without depending on a custom widget.
+
+## Canonical tools
+
+| Tool | Effect |
+|---|---|
+| `aigc_get_status` | Sanitized read-only connector, occupation-pack and runtime status |
+| `aigc_render_control_center` | Structured control-center projection; a widget is optional |
+| `aigc_run_employer_sandbox` | Deterministic zero-egress employer fixture with a canonical receipt |
+
+Additional pure planning tools may be exposed, but no live provider adapter, credential operation, cloud mutation, message, application submission, billing mutation or production activation is exposed through this facade.
+
+## Run
+
+```bash
+.venv/bin/python -m src.integrations.mcp.server --transport streamable-http --host 127.0.0.1 --port 8000
+```
+
+The endpoint is `http://127.0.0.1:8000/mcp`. Keep it on loopback until an authenticated, separately authorized HTTPS deployment exists.
+
+Fixed JSON bridge example:
+
+```bash
+printf '%s' '{"operation":"aigc_run_employer_sandbox","arguments":{"mode":"sandbox"}}' \
+  | .venv/bin/python -m src.integrations.aigc_plugin_bridge
+```
+
+Acceptance requires:
+
+- `external_actions_performed == 0`;
+- `provider_calls_performed == 0`;
+- a valid `receipt_sha256`;
+- explicit terminal status;
+- no credential or secret material.
+
+The ChatGPT host connection, Gemini client validation, authenticated cloud deployment, public plugin publication and any live employment action are separate evidence and authority boundaries.

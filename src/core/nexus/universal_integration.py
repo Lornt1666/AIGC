@@ -111,6 +111,15 @@ def _validate_core_contract(registry: Mapping[str, Any]) -> None:
             seen.add(item_id)
             if item.get("status") not in valid_statuses:
                 raise RegistryValidationError(f"invalid {collection} status: {item_id}")
+            if collection == "surfaces":
+                required_evidence = set(item.get("required_evidence", ()))
+                receipt_keys = set(item.get("evidence_receipts", {}))
+                unknown_receipts = sorted(receipt_keys.difference(required_evidence))
+                if unknown_receipts:
+                    raise RegistryValidationError(
+                        f"surface {item_id} has receipts for undeclared evidence: "
+                        + ", ".join(unknown_receipts)
+                    )
 
     threshold = registry["completion_policy"].get("minimum_verified_applicable_ratio")
     if not isinstance(threshold, (int, float)) or isinstance(threshold, bool) or not 0 <= threshold <= 1:
@@ -143,10 +152,15 @@ def evaluate_registry(registry: Mapping[str, Any]) -> IntegrationReadiness:
             continue
         required_evidence = surface["required_evidence"]
         applicable += max(1, len(required_evidence))
-        if surface["status"] == "verified" and len(surface["receipt_ids"]) >= len(required_evidence):
-            verified += max(1, len(required_evidence))
-        else:
-            blockers.add(f"required surface {surface['id']} is {surface['status']} without complete receipts")
+        evidence_receipts = surface["evidence_receipts"]
+        verified_count = sum(1 for item in required_evidence if item in evidence_receipts)
+        if surface["status"] in {"implemented", "verified"}:
+            verified += verified_count
+        if surface["status"] != "verified" or verified_count != len(required_evidence):
+            blockers.add(
+                f"required surface {surface['id']} is {surface['status']} with "
+                f"{verified_count}/{len(required_evidence)} receipt-bound checks"
+            )
 
     for connector in registry["connectors"]:
         if not connector["required_for_v1"]:

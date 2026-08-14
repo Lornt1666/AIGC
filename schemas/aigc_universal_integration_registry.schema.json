@@ -112,14 +112,18 @@
     "surface": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "kind", "required_for_v1", "status", "required_evidence", "receipt_ids", "blockers"],
+      "required": ["id", "kind", "required_for_v1", "status", "required_evidence", "evidence_receipts", "blockers"],
       "properties": {
         "id": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{1,63}$"},
         "kind": {"enum": ["linux_server", "web", "pwa", "chatgpt_mcp", "gemini_mcp", "ios", "android", "app_store", "play_store", "blockchain_mainnet", "commercial"]},
         "required_for_v1": {"type": "boolean"},
         "status": {"$ref": "#/$defs/status"},
         "required_evidence": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
-        "receipt_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "evidence_receipts": {
+          "type": "object",
+          "propertyNames": {"minLength": 1},
+          "additionalProperties": {"type": "string", "minLength": 1}
+        },
         "blockers": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
       }
     },
