@@ -19,6 +19,7 @@ This directory is the canonical distribution entrypoint for the portable AIGC MC
 | `aigc_plan_llm_lifecycle` | Validate and coordinate the canonical data-to-serving lifecycle without training, provider calls, spend, deployment, or activation |
 | `aigc_plan_regenexcalibur_workflow` | Prepare affix-tagged job, employer-practice, work-delivery, or invoice workflows without external execution |
 | `aigc_run_regenexcalibur_diagnostics` | Run the six isolated blocked-action fixtures and emit an audit-bound acceptance report |
+| `aigc_compose_alpha_plan` | Compose and simulate a deterministic Alpha Plan with exact node metadata, zero persistence and zero external action |
 
 The wealth operator permits public zero-cost research and local reversible preparation. Recording revenue, submitting applications, sending outreach or invoices, accepting contracts, spending or transferring funds, placing trades and executing transactions remain request-bound approval gates. The LLM lifecycle tool validates a reproducible reference stack but deliberately cannot start training or serving. No live provider adapter, credential operation, cloud mutation, message, application submission, billing mutation or production activation is exposed through this facade.
 

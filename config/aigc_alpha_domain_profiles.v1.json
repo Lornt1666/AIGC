@@ -1,0 +1,169 @@
+{
+  "schema_version": "aigc.alpha-domain-profiles.v1",
+  "profiles": {
+    "GENERAL": {
+      "description": "General request analysis, composition, and verification.",
+      "operations": [
+        {
+          "operation_id": "ALPHA-OP-VALIDATE_REQUEST",
+          "function_name": "aigc.validate_request",
+          "parameters": {},
+          "expected_outputs": {"intent_frame": "object"},
+          "priority": 0
+        },
+        {
+          "operation_id": "ALPHA-OP-COMPOSE_RESPONSE",
+          "function_name": "aigc.compose_response",
+          "parameters": {},
+          "expected_outputs": {"candidate_artifact": "object"},
+          "depends_on": ["ALPHA-OP-VALIDATE_REQUEST"],
+          "priority": 10
+        },
+        {
+          "operation_id": "ALPHA-OP-VERIFY_RESPONSE",
+          "function_name": "aigc.verify_candidate",
+          "parameters": {"checks": ["factuality", "safety", "authority", "format"]},
+          "expected_outputs": {"verifier_report": "object"},
+          "depends_on": ["ALPHA-OP-COMPOSE_RESPONSE"],
+          "priority": 20
+        }
+      ]
+    },
+    "MULTIMODAL_ECOSYSTEM": {
+      "description": "Nine-domain blueprint spanning architecture through legal and organizational controls.",
+      "operations": [
+        {
+          "operation_id": "ALPHA-OP-ARCHITECTURE01",
+          "function_name": "aigc.blueprint.architecture",
+          "parameters": {"dimensions": ["topology", "fabric", "deployment", "resilience", "latency", "cost"]},
+          "expected_outputs": {"topology_manifest": "object", "architecture_diagram_spec": "object"},
+          "priority": 10
+        },
+        {
+          "operation_id": "ALPHA-OP-AGENTCATALOG01",
+          "function_name": "aigc.blueprint.agent_catalog",
+          "parameters": {"agent_classes": ["perception", "language", "reasoning", "planner", "action", "evaluation", "orchestration"]},
+          "expected_outputs": {"agent_catalog": "object"},
+          "depends_on": ["ALPHA-OP-ARCHITECTURE01"],
+          "priority": 20
+        },
+        {
+          "operation_id": "ALPHA-OP-DATAPLANE001",
+          "function_name": "aigc.blueprint.data_plane",
+          "parameters": {"controls": ["ingestion", "lineage", "retention", "pii", "schema_registry"]},
+          "expected_outputs": {"data_manifest": "object"},
+          "depends_on": ["ALPHA-OP-ARCHITECTURE01"],
+          "priority": 20
+        },
+        {
+          "operation_id": "ALPHA-OP-RUNTIME001",
+          "function_name": "aigc.blueprint.runtime",
+          "parameters": {"controls": ["dag", "scheduler", "quotas", "routing", "backpressure"]},
+          "expected_outputs": {"runtime_manifest": "object"},
+          "depends_on": ["ALPHA-OP-AGENTCATALOG01", "ALPHA-OP-DATAPLANE001"],
+          "priority": 30
+        },
+        {
+          "operation_id": "ALPHA-OP-GOVERNANCE01",
+          "function_name": "aigc.blueprint.governance",
+          "parameters": {"controls": ["policy", "capabilities", "approval", "kill_switch", "audit"]},
+          "expected_outputs": {"policy_manifest": "object"},
+          "depends_on": ["ALPHA-OP-RUNTIME001"],
+          "priority": 40
+        },
+        {
+          "operation_id": "ALPHA-OP-DEVOPS001",
+          "function_name": "aigc.blueprint.devsecops",
+          "parameters": {"controls": ["ci", "provenance", "sbom", "canary", "observability", "rollback"]},
+          "expected_outputs": {"delivery_manifest": "object"},
+          "depends_on": ["ALPHA-OP-GOVERNANCE01"],
+          "priority": 50
+        },
+        {
+          "operation_id": "ALPHA-OP-EVALUATION01",
+          "function_name": "aigc.blueprint.evaluation",
+          "parameters": {"controls": ["holdout", "ood", "adversarial", "drift", "calibration"]},
+          "expected_outputs": {"evaluation_manifest": "object"},
+          "depends_on": ["ALPHA-OP-DEVOPS001"],
+          "priority": 60
+        },
+        {
+          "operation_id": "ALPHA-OP-HUMANUX001",
+          "function_name": "aigc.blueprint.human_factors",
+          "parameters": {"controls": ["roles", "review", "explainability", "feedback", "training"]},
+          "expected_outputs": {"human_factors_manifest": "object"},
+          "depends_on": ["ALPHA-OP-GOVERNANCE01"],
+          "priority": 60
+        },
+        {
+          "operation_id": "ALPHA-OP-LEGALORG001",
+          "function_name": "aigc.blueprint.legal_organization",
+          "parameters": {"controls": ["jurisdiction", "contracts", "residency", "retention", "insurance", "raci"]},
+          "expected_outputs": {"legal_org_manifest": "object"},
+          "depends_on": ["ALPHA-OP-EVALUATION01", "ALPHA-OP-HUMANUX001"],
+          "priority": 70
+        }
+      ]
+    },
+    "PROCUREMENT_ACCELERATION": {
+      "description": "Seven-stage plan-only procurement acceleration graph with governance embedded at every transition.",
+      "operations": [
+        {
+          "operation_id": "ALPHA-OP-DISCOVERY001",
+          "function_name": "aigc.blueprint.procurement.discovery",
+          "parameters": {"crawl_cadence": "15m", "freshness_ttl": "24h", "maximum_results": 1000, "confidence_threshold": 0.7},
+          "expected_outputs": {"discovery_manifest": "object"},
+          "priority": 10
+        },
+        {
+          "operation_id": "ALPHA-OP-SOURCING001",
+          "function_name": "aigc.blueprint.procurement.sourcing",
+          "parameters": {"auction_type": "sealed_first_price", "bid_window_seconds": 3600, "reserve_price_policy": "market_index_plus_5_percent"},
+          "expected_outputs": {"sourcing_blueprint": "object"},
+          "depends_on": ["ALPHA-OP-DISCOVERY001"],
+          "priority": 20
+        },
+        {
+          "operation_id": "ALPHA-OP-NEGOTIATE001",
+          "function_name": "aigc.blueprint.procurement.negotiation",
+          "parameters": {"rounds": 5, "concession_schedule": "linear", "walkaway_utility": 0.85, "exploration_enabled": false},
+          "expected_outputs": {"negotiation_policy": "object"},
+          "depends_on": ["ALPHA-OP-SOURCING001"],
+          "priority": 30
+        },
+        {
+          "operation_id": "ALPHA-OP-CONTRACT001",
+          "function_name": "aigc.blueprint.procurement.contracting",
+          "parameters": {"automatic_signature": false, "required_reviews": ["legal", "procurement_manager"]},
+          "expected_outputs": {"contract_review_manifest": "object"},
+          "depends_on": ["ALPHA-OP-NEGOTIATE001"],
+          "priority": 40
+        },
+        {
+          "operation_id": "ALPHA-OP-FULFILL001",
+          "function_name": "aigc.blueprint.procurement.fulfillment",
+          "parameters": {"routing_cost_weight": 0.6, "lead_time_confidence_percent": 95, "exception_escalation_minutes": 30},
+          "expected_outputs": {"fulfillment_manifest": "object"},
+          "depends_on": ["ALPHA-OP-CONTRACT001"],
+          "priority": 50
+        },
+        {
+          "operation_id": "ALPHA-OP-PAYMENT001",
+          "function_name": "aigc.blueprint.procurement.finance",
+          "parameters": {"payment_terms": ["Net30", "Net45", "Net60"], "automatic_transfer": false, "fx_hedge_execution": false},
+          "expected_outputs": {"finance_control_manifest": "object"},
+          "depends_on": ["ALPHA-OP-FULFILL001"],
+          "priority": 60
+        },
+        {
+          "operation_id": "ALPHA-OP-EVALUATE001",
+          "function_name": "aigc.blueprint.procurement.evaluation",
+          "parameters": {"metrics": ["cycle_time", "tco_delta", "supplier_sla", "policy_violations", "mttr"]},
+          "expected_outputs": {"evaluation_manifest": "object"},
+          "depends_on": ["ALPHA-OP-PAYMENT001"],
+          "priority": 70
+        }
+      ]
+    }
+  }
+}

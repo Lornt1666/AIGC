@@ -32,8 +32,9 @@ UI only after the server works without it:
 | `aigc_run_regenexcalibur_diagnostics` | Run the six deterministic blocked-action diagnostic fixtures | None; emits a local audit-bound acceptance report |
 | `aigc_plan_wealth_work` | Coordinate bounded wealth-work planning | None; consequential financial and external actions remain approval-gated |
 | `aigc_plan_llm_lifecycle` | Validate and coordinate the canonical data-to-serving LLM lifecycle | None; no training, provider call, spend, deployment, or activation |
+| `aigc_compose_alpha_plan` | Compose and simulate a deterministic hierarchical action graph | None; returns an exact sequence and receipt but performs no execution, persistence, policy update, provider call, or external action |
 
-All eleven tools advertise:
+All twelve tools advertise:
 
 ```text
 readOnlyHint    = true
@@ -84,7 +85,7 @@ When an approved private test connection exists:
 2. Connect it using OpenAI Secure MCP Tunnel or an approved HTTPS test endpoint.
 3. In ChatGPT, enable Developer mode under Settings → Security and login.
 4. Add a plugin connection with the complete `/mcp` URL or selected tunnel.
-5. Review the eleven discovered tools and their annotations.
+5. Review the twelve discovered tools and their annotations.
 6. Test direct, indirect, follow-up, malformed, and unsupported prompts.
 7. Verify every execution request remains blocked and refresh metadata after a change.
 
@@ -121,6 +122,7 @@ It performs zero provider calls and zero source retrieval.
 .venv/bin/python scripts/validate_aigc_universal_integration.py
 .venv/bin/python scripts/validate_regenexcalibur_universe.py
 .venv/bin/python scripts/validate_aigc_llm_stack.py
+.venv/bin/python scripts/validate_aigc_procurement_sandbox.py --check
 .venv/bin/python -m pytest -q tests/test_nexus_mcp_contract.py \
   tests/test_nexus_occupation_packs.py \
   tests/test_nexus_deep_research_procurement.py

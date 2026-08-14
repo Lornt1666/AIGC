@@ -10,8 +10,11 @@ from typing import Any, Literal
 
 from src.integrations.mcp.tools import (
     get_aigc_status,
+    plan_aigc_alpha_request,
+    plan_aigc_regenexcalibur_workflow,
     plan_aigc_llm_lifecycle,
     plan_aigc_wealth_work,
+    run_aigc_regenexcalibur_diagnostics,
     seed_aigc_regenexcalibur_universe,
 )
 from src.operations.employer_sandbox import run_employer_sandbox
@@ -24,6 +27,9 @@ BridgeOperation = Literal[
     "aigc_seed_regenexcalibur_universe",
     "aigc_plan_wealth_work",
     "aigc_plan_llm_lifecycle",
+    "aigc_plan_regenexcalibur_workflow",
+    "aigc_run_regenexcalibur_diagnostics",
+    "aigc_compose_alpha_plan",
 ]
 
 
@@ -53,7 +59,10 @@ def aigc_render_control_center() -> dict[str, object]:
             "run_zero_egress_employer_sandbox",
             "seed_zero_egress_regenexcalibur_universe",
             "plan_governed_wealth_work",
+            "plan_regenexcalibur_employer_workflow",
+            "run_regenexcalibur_zero_egress_diagnostics",
             "plan_governed_llm_lifecycle",
+            "compose_governed_alpha_plan",
         ],
         "blocked_actions": [
             "external_provider_call",
@@ -108,6 +117,7 @@ def dispatch_bridge_request(request: Mapping[str, Any]) -> dict[str, object]:
             "request_id",
             "action",
             "objective",
+            "domain_profile",
             "target_ref",
             "financial_amount_cad",
             "evidence_refs",
@@ -120,6 +130,37 @@ def dispatch_bridge_request(request: Mapping[str, Any]) -> dict[str, object]:
         if arguments:
             raise ValueError("aigc_plan_llm_lifecycle accepts no arguments")
         return plan_aigc_llm_lifecycle()
+    if operation == "aigc_plan_regenexcalibur_workflow":
+        permitted = {
+            "request_id",
+            "workflow",
+            "objective",
+            "target_ref",
+            "artifact_refs",
+            "consent_artifact_ref",
+            "credential_ref",
+            "requested_modalities",
+        }
+        extra = sorted(set(arguments).difference(permitted))
+        if extra:
+            raise ValueError(f"unknown RegenExcalibur workflow fields: {', '.join(extra)}")
+        return plan_aigc_regenexcalibur_workflow(**dict(arguments))
+    if operation == "aigc_run_regenexcalibur_diagnostics":
+        if arguments:
+            raise ValueError("aigc_run_regenexcalibur_diagnostics accepts no arguments")
+        return run_aigc_regenexcalibur_diagnostics()
+    if operation == "aigc_compose_alpha_plan":
+        permitted = {
+            "request_id",
+            "objective",
+            "context_refs",
+            "operations",
+            "execution_requested",
+        }
+        extra = sorted(set(arguments).difference(permitted))
+        if extra:
+            raise ValueError(f"unknown Alpha Plan fields: {', '.join(extra)}")
+        return plan_aigc_alpha_request(**dict(arguments))
     raise ValueError("unknown bridge operation")
 
 

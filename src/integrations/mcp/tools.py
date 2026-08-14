@@ -4,6 +4,8 @@ from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Literal
 
+from src.alpha_plan.models import AlphaPlanRequest
+from src.alpha_plan.orchestrator import compose_alpha_plan
 from src.core.epistemic.canonicalization import canonical_sha256
 from src.core.nexus.autonomy_policy import assess_autonomy
 from src.core.nexus.occupation_registry import load_occupation_packs
@@ -17,6 +19,9 @@ from src.domain.nexus.wealth import WealthAction, WealthWorkRequest
 from src.llm_stack.orchestrator import plan_llm_lifecycle
 from src.operations.employer_sandbox import run_employer_sandbox as run_employer_sandbox_operation
 from src.regenexcalibur.orchestrator import seed_regenexcalibur_universe
+from src.regenexcalibur.diagnostics import run_all_diagnostics
+from src.regenexcalibur.doctrine_coordinator import plan_regenexcalibur_workflow
+from src.regenexcalibur.doctrine_models import CoordinatorRequest, CoordinatorWorkflow, Modality
 from src.webapp.nexus_dashboard import build_nexus_dashboard_snapshot
 
 
@@ -34,6 +39,29 @@ SandboxScenario = Literal[
 ]
 
 ROOT = Path(__file__).resolve().parents[3]
+
+
+def plan_aigc_alpha_request(
+    *,
+    request_id: str,
+    objective: str,
+    domain_profile: str = "GENERAL",
+    context_refs: list[str] | None = None,
+    operations: list[dict[str, object]] | None = None,
+    execution_requested: bool = False,
+) -> dict[str, object]:
+    """Compose and simulate one deterministic Alpha Plan; never execute it."""
+
+    return compose_alpha_plan(
+        AlphaPlanRequest(
+            request_id=request_id,
+            objective=objective,
+            domain_profile=domain_profile,
+            context_refs=tuple(context_refs or ()),
+            operations=tuple(operations or ()),
+            execution_requested=execution_requested,
+        )
+    )
 
 
 def plan_aigc_llm_lifecycle() -> dict[str, object]:
@@ -58,6 +86,39 @@ def seed_aigc_regenexcalibur_universe(
         seed=seed,
         requested_evolution_depth=requested_evolution_depth,
     )
+
+
+def plan_aigc_regenexcalibur_workflow(
+    *,
+    request_id: str,
+    workflow: CoordinatorWorkflow,
+    objective: str,
+    target_ref: str | None = None,
+    artifact_refs: list[str] | None = None,
+    consent_artifact_ref: str | None = None,
+    credential_ref: str | None = None,
+    requested_modalities: list[Modality] | None = None,
+) -> dict[str, object]:
+    """Plan one affix-tagged workflow without accepting execution authority."""
+
+    return plan_regenexcalibur_workflow(
+        CoordinatorRequest(
+            request_id=request_id,
+            workflow=workflow,
+            objective=objective,
+            target_ref=target_ref,
+            artifact_refs=tuple(artifact_refs or ()),
+            consent_artifact_ref=consent_artifact_ref,
+            credential_ref=credential_ref,
+            requested_modalities=tuple(requested_modalities or ("TEXT",)),
+        )
+    )
+
+
+def run_aigc_regenexcalibur_diagnostics() -> dict[str, object]:
+    """Run the six isolated blocked-action fixtures with zero egress."""
+
+    return run_all_diagnostics()
 
 
 def get_aigc_status() -> dict[str, object]:

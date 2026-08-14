@@ -1,0 +1,23 @@
+{
+  "schema_version": "aigc.procurement-sandbox.task-graph.v1",
+  "graph_id": "EDGE-COMPUTE-NA-EU-GRAPH-V1",
+  "classification": "DESIGN_ONLY",
+  "deterministic": true,
+  "effect_ceiling": "LOCAL_SIMULATION_ONLY",
+  "nodes": [
+    {"id":"discover","priority":10,"agent_ids":["discovery.v1","normalizer.v1"],"depends_on":[],"output":"normalized_candidate_set","approval":"NONE_FOR_SYNTHETIC"},
+    {"id":"screen","priority":20,"agent_ids":["risk.v1","kyc.v1"],"depends_on":["discover"],"output":"eligible_supplier_set","approval":"COMPLIANCE_FOR_REAL_DATA"},
+    {"id":"source","priority":30,"agent_ids":["sourcing.v1","auction.v1"],"depends_on":["screen"],"output":"ranked_bid_set","approval":"EXPLICIT_BEFORE_SUPPLIER_CONTACT"},
+    {"id":"negotiate","priority":40,"agent_ids":["negotiation.v1"],"depends_on":["source"],"output":"recommended_terms","approval":"EXPLICIT_BEFORE_SUPPLIER_CONTACT"},
+    {"id":"contract","priority":50,"agent_ids":["contracting.v1"],"depends_on":["negotiate"],"output":"unsigned_contract_draft","approval":"LEGAL_AND_PROCUREMENT_MANAGER"},
+    {"id":"fulfill","priority":60,"agent_ids":["fulfillment.v1","logistics.v1"],"depends_on":["contract"],"output":"simulation_fulfillment_plan","approval":"EXPLICIT_BEFORE_ORDER"},
+    {"id":"finance","priority":70,"agent_ids":["finance.v1"],"depends_on":["contract"],"output":"non_executable_payment_recommendation","approval":"TWO_PARTY_AND_ONE_USE_PERMIT"},
+    {"id":"evaluate","priority":80,"agent_ids":["evaluation.v1"],"depends_on":["fulfill","finance"],"output":"sandbox_evaluation_receipt","approval":"NONE"}
+  ],
+  "orchestration": {"agent_id":"orchestrator.v1","maximum_parallel_nodes":4,"fail_closed":true,"automatic_external_retry":false},
+  "terminal_conditions": {
+    "pass": "All synthetic checks pass and no external effect occurs.",
+    "blocked": "Any missing evidence, authority, KYC, policy, or reconciliation condition.",
+    "failure": "Schema, integrity, determinism, or safety invariant fails."
+  }
+}

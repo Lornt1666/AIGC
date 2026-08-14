@@ -19,7 +19,7 @@ def test_atlas_snapshot_is_derived_from_canonical_sources() -> None:
         "connectors": 5,
         "occupation_packs": 13,
         "wealth_actions": 16,
-        "mcp_tools": 11,
+        "mcp_tools": 12,
         "life_domains": 7,
         "regenexcalibur_agent_roles": 8,
         "llm_training_cost_cad": 0,

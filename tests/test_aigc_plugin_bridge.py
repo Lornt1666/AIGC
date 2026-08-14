@@ -109,6 +109,77 @@ def test_llm_lifecycle_bridge_is_closed_and_zero_action():
         )
 
 
+def test_doctrine_coordinator_bridge_plans_and_diagnoses_without_execution():
+    planned = dispatch_bridge_request(
+        {
+            "operation": "aigc_plan_regenexcalibur_workflow",
+            "arguments": {
+                "request_id": "RXREQ-BRIDGE001",
+                "workflow": "SUBMIT_WORK",
+                "objective": "Prepare a provenance-bound delivery packet.",
+                "artifact_refs": ["artifact://delivery/example"],
+            },
+        }
+    )
+    diagnosed = dispatch_bridge_request(
+        {"operation": "aigc_run_regenexcalibur_diagnostics", "arguments": {}}
+    )
+
+    assert planned["terminal_status"] == "BLOCKED"
+    assert planned["external_actions_performed"] == 0
+    assert diagnosed["terminal_status"] == "PASS"
+    assert diagnosed["detected_count"] == 6
+
+    with pytest.raises(ValueError, match="unknown RegenExcalibur workflow fields"):
+        dispatch_bridge_request(
+            {
+                "operation": "aigc_plan_regenexcalibur_workflow",
+                "arguments": {
+                    "request_id": "RXREQ-BRIDGE002",
+                    "workflow": "APPLY_JOBS",
+                    "objective": "Attempt authority injection.",
+                    "permit_id": "PERMIT-FAKE001",
+                },
+            }
+        )
+
+
+def test_alpha_plan_bridge_emits_exact_sequence_without_execution_authority():
+    result = dispatch_bridge_request(
+        {
+            "operation": "aigc_compose_alpha_plan",
+            "arguments": {
+                "request_id": "ALPHA-REQ-BRIDGE001",
+                "objective": "Plan a deterministic local documentation update.",
+                "execution_requested": True,
+            },
+        }
+    )
+    assert result["terminal_status"] == "PASS"
+    assert result["execution_sequence"]
+    assert result["external_actions_performed"] == 0
+    assert result["authority_granted"] is False
+
+    with pytest.raises(ValueError, match="unknown Alpha Plan fields"):
+        dispatch_bridge_request(
+            {
+                "operation": "aigc_compose_alpha_plan",
+                "arguments": {
+                    "request_id": "ALPHA-REQ-BRIDGE002",
+                    "objective": "Attempt authority injection.",
+                    "permit_id": "PERMIT-FAKE001",
+                },
+            }
+        )
+    with pytest.raises(ValueError, match="accepts no arguments"):
+        dispatch_bridge_request(
+            {
+                "operation": "aigc_run_regenexcalibur_diagnostics",
+                "arguments": {"external_execution": True},
+            }
+        )
+
+
 @pytest.mark.parametrize(
     "bridge_request",
     [

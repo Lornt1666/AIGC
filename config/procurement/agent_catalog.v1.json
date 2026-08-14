@@ -1,0 +1,96 @@
+{
+  "catalog_version": "2026-08-14.v2",
+  "catalog_id": "AIGC-PROCUREMENT-SANDBOX-AGENTS-V1",
+  "human_summary": "Catalog of 13 design-only agents for a synthetic edge-compute procurement sandbox. No model, dataset, capability, connection, supplier, spend, or deployment is represented as verified or authorized.",
+  "seed_ref": "config/procurement/edge_compute_seed.v1.json",
+  "agent_count": 13,
+  "shared_assertions": {
+    "implementation_status": "DESIGN_ONLY",
+    "model_evidence_status": "UNVERIFIED",
+    "dataset_evidence_status": "UNVERIFIED",
+    "effect_ceiling": "LOCAL_SIMULATION_ONLY",
+    "external_action_authorized": false,
+    "external_action_performed": false
+  },
+  "agents": [
+    {
+      "agent_id":"discovery.v1","agent_type":"Discovery","version":"1.0.0","model_family":"semantic-embedding-plus-classifier","model_size_claim":"embed768-plus-classifier50M-unverified",
+      "input":{"type":"object","required":["request_id","category","requirements","constraints"]},"output":{"type":"object","required":["candidates"],"candidate_fields":["supplier_ref","sku","price_usd","lead_time_days","moq","confidence","provenance"]},
+      "compute_profile":{"cpu":"4 vCPU","memory":"8Gi","gpu":"none"},"latency_slo":{"p95_ms":2000},"requested_capabilities":["read:synthetic_catalogs","read:synthetic_erp"],
+      "safety_filters":["pii_redaction","supplier_allowlist"],"training_data_refs":[{"ref":"vendor_catalog_snapshots_2026Q2","status":"UNVERIFIED"},{"ref":"market_index_timeseries","status":"UNVERIFIED"}],
+      "default_params":{"crawl_cadence_minutes":15,"freshness_ttl_hours":24,"max_results_per_cycle":1000,"confidence_threshold":0.7}
+    },
+    {
+      "agent_id":"normalizer.v1","agent_type":"Normalizer","version":"1.0.0","model_family":"rules-plus-unit-mapper","model_size_claim":"10M-unverified",
+      "input":{"type":"object","required":["supplier_ref","sku","price","currency","unit","attributes"]},"output":{"type":"object","required":["supplier_ref","sku","price_usd","unit_standard","attributes_normalized"]},
+      "compute_profile":{"cpu":"2 vCPU","memory":"4Gi","gpu":"none"},"latency_slo":{"p95_ms":500},"requested_capabilities":["read:synthetic_catalogs"],
+      "safety_filters":["currency_conversion_audit","unit_consistency"],"training_data_refs":[{"ref":"unit_mappings_v1","status":"UNVERIFIED"}],"default_params":{"currency_base":"USD","unit_conversion_map_version":"2026-07"}
+    },
+    {
+      "agent_id":"sourcing.v1","agent_type":"Sourcing","version":"1.0.0","model_family":"rule-engine-plus-optimizer","model_size_claim":"20M-unverified",
+      "input":{"type":"object","required":["request_id","normalized_candidates","requirements","constraints"]},"output":{"type":"object","required":["request_id","shortlist_candidates","scoring"]},
+      "compute_profile":{"cpu":"4 vCPU","memory":"8Gi","gpu":"none"},"latency_slo":{"p95_ms":3000},"requested_capabilities":["read:synthetic_catalogs","write:local_procurement_events"],
+      "safety_filters":["hypothetical_spend_ceiling","supplier_denylist"],"training_data_refs":[{"ref":"historical_rfx_outcomes","status":"UNVERIFIED"}],"default_params":{"auction_type":"sealed_first_price","bid_window_seconds":3600,"reserve_price_policy":"market_index_plus_5_percent"}
+    },
+    {
+      "agent_id":"auction.v1","agent_type":"Auction","version":"1.0.0","model_family":"deterministic-auction-simulator","model_size_claim":"5M-unverified",
+      "input":{"type":"object","required":["auction_id","items","synthetic_participants","auction_params"]},"output":{"type":"object","required":["auction_id","simulated_winners","bids","metrics"]},
+      "compute_profile":{"cpu":"2 vCPU","memory":"4Gi","gpu":"none"},"latency_slo":{"p95_ms":5000},"requested_capabilities":["read:synthetic_catalogs","write:local_procurement_events"],
+      "safety_filters":["synthetic_participants_only","bid_normalization","anti_fraud"],"training_data_refs":[{"ref":"auction_history","status":"UNVERIFIED"}],"default_params":{"auction_type":"sealed_first_price","bid_window_seconds":3600,"max_participants":200}
+    },
+    {
+      "agent_id":"negotiation.v1","agent_type":"Negotiation","version":"1.0.0","model_family":"policy-simulator-plus-heuristics","model_size_claim":"100M-unverified",
+      "input":{"type":"object","required":["session_id","synthetic_party_profiles","initial_offers","utility_weights"]},"output":{"type":"object","required":["session_id","recommended_offer","rounds","concessions","confidence"]},
+      "compute_profile":{"cpu":"8 vCPU","memory":"16Gi","gpu":"optional-unprovisioned"},"latency_slo":{"p95_ms":10000},"requested_capabilities":["read:synthetic_catalogs","write:local_procurement_events"],
+      "safety_filters":["no_external_messaging","walkaway_threshold","legal_clause_check"],"training_data_refs":[{"ref":"negotiation_logs_synthetic","status":"UNVERIFIED"}],"default_params":{"concession_schedule":"linear_5_rounds","walkaway_threshold":0.85,"exploration_rate":0.0}
+    },
+    {
+      "agent_id":"risk.v1","agent_type":"RiskAndCompliance","version":"1.0.0","model_family":"scoring-ensemble","model_size_claim":"50M-unverified",
+      "input":{"type":"object","required":["supplier_ref","financials","watchlist_fixture","esg","history"]},"output":{"type":"object","required":["supplier_ref","risk_score","flags","recommendations"]},
+      "compute_profile":{"cpu":"4 vCPU","memory":"8Gi","gpu":"none"},"latency_slo":{"p95_ms":2000},"requested_capabilities":["read:synthetic_watchlists","read:synthetic_erp"],
+      "safety_filters":["sanctions_fixture_screening","kyc_required"],"training_data_refs":[{"ref":"watchlist_feeds","status":"UNVERIFIED"},{"ref":"esg_datasets","status":"UNVERIFIED"}],"default_params":{"watchlist_refresh_hours":6,"risk_score_threshold":0.6,"remediation_action":"block_and_escalate"}
+    },
+    {
+      "agent_id":"kyc.v1","agent_type":"KYC","version":"1.0.0","model_family":"document-fixture-parser-plus-rules","model_size_claim":"30M-unverified",
+      "input":{"type":"object","required":["supplier_ref","synthetic_documents"]},"output":{"type":"object","required":["supplier_ref","status","issues","confidence"]},
+      "compute_profile":{"cpu":"4 vCPU","memory":"8Gi","gpu":"optional-unprovisioned"},"latency_slo":{"p95_ms":10000},"requested_capabilities":["read:synthetic_documents","write:local_compliance_events"],
+      "safety_filters":["synthetic_pii_only","retention_policy"],"training_data_refs":[{"ref":"kyc_templates","status":"UNVERIFIED"}],"default_params":{"document_retention_days":30,"manual_review_threshold":0.8}
+    },
+    {
+      "agent_id":"contracting.v1","agent_type":"Contracting","version":"1.0.0","model_family":"clause-extractor-plus-templater","model_size_claim":"80M-unverified",
+      "input":{"type":"object","required":["request_id","selected_supplier_ref","terms","required_clauses"]},"output":{"type":"object","required":["draft_id","local_artifact_ref","obligations","approval_requirements"]},
+      "compute_profile":{"cpu":"4 vCPU","memory":"8Gi","gpu":"none"},"latency_slo":{"p95_ms":15000},"requested_capabilities":["read:local_templates","write:local_contract_drafts"],
+      "safety_filters":["unsigned_draft_only","sensitive_clause_flagging","automatic_signature_block"],"training_data_refs":[{"ref":"contract_templates_v1","status":"UNVERIFIED"}],"default_params":{"template_version":"v1.2","automatic_signature":false,"required_approvals":["legal","procurement_manager"]}
+    },
+    {
+      "agent_id":"fulfillment.v1","agent_type":"Fulfillment","version":"1.0.0","model_family":"routing-simulator-plus-predictor","model_size_claim":"40M-unverified",
+      "input":{"type":"object","required":["synthetic_order_id","items","supplier_ref","ship_to_region","delivery_window"]},"output":{"type":"object","required":["synthetic_order_id","simulated_carrier","eta","cost_usd","exceptions"]},
+      "compute_profile":{"cpu":"4 vCPU","memory":"8Gi","gpu":"none"},"latency_slo":{"p95_ms":5000},"requested_capabilities":["read:synthetic_logistics","write:local_fulfillment_events"],
+      "safety_filters":["no_order_submission","export_control_fixture","hazmat_flag"],"training_data_refs":[{"ref":"logistics_history","status":"UNVERIFIED"}],"default_params":{"routing_cost_weight":0.6,"lead_time_confidence_percent":95,"exception_escalation_minutes":30}
+    },
+    {
+      "agent_id":"logistics.v1","agent_type":"Logistics","version":"1.0.0","model_family":"carrier-simulator-plus-tracking","model_size_claim":"20M-unverified",
+      "input":{"type":"object","required":["synthetic_shipment_id","origin_region","destination_region","dimensions","priority"]},"output":{"type":"object","required":["synthetic_shipment_id","status","simulated_location","eta","alerts"]},
+      "compute_profile":{"cpu":"2 vCPU","memory":"4Gi","gpu":"none"},"latency_slo":{"p95_ms":2000},"requested_capabilities":["read:synthetic_carrier_data","write:local_shipment_events"],
+      "safety_filters":["no_carrier_booking","sanctions_fixture","route_restrictions"],"training_data_refs":[{"ref":"carrier_performance","status":"UNVERIFIED"}],"default_params":{"carrier_selection_policy":"cost_plus_leadtime_plus_reliability","tracking_poll_interval_seconds":300}
+    },
+    {
+      "agent_id":"finance.v1","agent_type":"Finance","version":"1.0.0","model_family":"optimizer-plus-rule-engine","model_size_claim":"30M-unverified",
+      "input":{"type":"object","required":["synthetic_invoice_id","synthetic_order_id","amount","currency","terms"]},"output":{"type":"object","required":["synthetic_invoice_id","recommended_payment_date","discount_recommendation","fx_hedge_recommendation"]},
+      "compute_profile":{"cpu":"4 vCPU","memory":"8Gi","gpu":"none"},"latency_slo":{"p95_ms":3000},"requested_capabilities":["read:synthetic_erp","write:local_finance_events"],
+      "safety_filters":["no_payment_execution","payment_ceiling","duplicate_invoice","fraud_fixture"],"training_data_refs":[{"ref":"payment_history","status":"UNVERIFIED"}],"default_params":{"early_pay_discount_threshold":0.015,"payment_terms_options":["Net30","Net45","Net60"],"fx_hedge_enabled":false}
+    },
+    {
+      "agent_id":"evaluation.v1","agent_type":"Evaluation","version":"1.0.0","model_family":"metrics-aggregator-plus-anomaly-detector","model_size_claim":"15M-unverified",
+      "input":{"type":"object","required":["local_events"]},"output":{"type":"object","required":["period","metrics","alerts","recommendations","receipt_sha256"]},
+      "compute_profile":{"cpu":"4 vCPU","memory":"8Gi","gpu":"none"},"latency_slo":{"p95_ms":2000},"requested_capabilities":["read:local_procurement_events","read:local_monitoring"],
+      "safety_filters":["policy_violation_alert","anomaly_threshold"],"training_data_refs":[{"ref":"historical_metrics","status":"UNVERIFIED"}],"default_params":{"metric_windows":["24h","7d","30d"],"alert_thresholds":{"cycle_time_p95_hours":72,"policy_violations":1}}
+    },
+    {
+      "agent_id":"orchestrator.v1","agent_type":"Orchestration","version":"1.0.0","model_family":"deterministic-workflow-engine-plus-router","model_size_claim":"25M-unverified",
+      "input":{"type":"object","required":["workflow_id","task_graph","context_refs"]},"output":{"type":"object","required":["workflow_id","task_statuses","trace_id","terminal_status"]},
+      "compute_profile":{"cpu":"8 vCPU","memory":"16Gi","gpu":"none"},"latency_slo":{"p95_ms":1000},"requested_capabilities":["plan:local_agents","write:local_procurement_events"],
+      "safety_filters":["human_approval_gate","capability_token_check","zero_egress","fail_closed"],"training_data_refs":[{"ref":"workflow_templates","status":"UNVERIFIED"}],"default_params":{"task_timeout_seconds":7200,"max_concurrent_tasks":50,"retry_policy":{"max_retries":2,"backoff":2.0,"jitter":false,"reconcile_before_retry":true}}
+    }
+  ]
+}

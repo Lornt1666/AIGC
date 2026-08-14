@@ -1,0 +1,518 @@
+{
+  "$defs": {
+    "AlphaLevel": {
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "maximum": 32,
+          "minimum": 0,
+          "title": "Level",
+          "type": "integer"
+        },
+        "nodes": {
+          "items": {
+            "$ref": "#/$defs/AlphaNode"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "title": "Nodes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "level",
+        "nodes"
+      ],
+      "title": "AlphaLevel",
+      "type": "object"
+    },
+    "AlphaNode": {
+      "additionalProperties": false,
+      "properties": {
+        "authorization_requirements": {
+          "$ref": "#/$defs/AuthorizationRequirements"
+        },
+        "children": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Children",
+          "type": "array"
+        },
+        "disposition": {
+          "enum": [
+            "READY_FOR_EXECUTOR",
+            "BLOCKED_PERMISSION"
+          ],
+          "title": "Disposition",
+          "type": "string"
+        },
+        "error_handling": {
+          "$ref": "#/$defs/ErrorHandling"
+        },
+        "estimated_cost": {
+          "$ref": "#/$defs/EstimatedCost"
+        },
+        "expected_outputs": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Expected Outputs",
+          "type": "object"
+        },
+        "idempotency_token": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Idempotency Token",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "node_id": {
+          "pattern": "^ALPHA-NODE-[A-F0-9]{24}$",
+          "title": "Node Id",
+          "type": "string"
+        },
+        "observability": {
+          "$ref": "#/$defs/ObservabilityHooks"
+        },
+        "params": {
+          "additionalProperties": true,
+          "title": "Params",
+          "type": "object"
+        },
+        "postconditions": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Postconditions",
+          "type": "array"
+        },
+        "preconditions": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Preconditions",
+          "type": "array"
+        },
+        "priority": {
+          "maximum": 1000,
+          "minimum": 0,
+          "title": "Priority",
+          "type": "integer"
+        },
+        "retry_policy": {
+          "$ref": "#/$defs/RetryPolicy"
+        },
+        "type": {
+          "enum": [
+            "atomic",
+            "composite"
+          ],
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "node_id",
+        "name",
+        "type",
+        "priority",
+        "idempotency_token",
+        "authorization_requirements",
+        "retry_policy",
+        "error_handling",
+        "observability",
+        "estimated_cost",
+        "disposition"
+      ],
+      "title": "AlphaNode",
+      "type": "object"
+    },
+    "AlphaVerification": {
+      "additionalProperties": false,
+      "properties": {
+        "authorization_checks": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Authorization Checks",
+          "type": "array"
+        },
+        "first_blocker": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "First Blocker"
+        },
+        "graph_checks": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Graph Checks",
+          "type": "array"
+        },
+        "safety_checks": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Safety Checks",
+          "type": "array"
+        },
+        "simulation_result": {
+          "enum": [
+            "OK",
+            "BLOCKED"
+          ],
+          "title": "Simulation Result",
+          "type": "string"
+        }
+      },
+      "required": [
+        "safety_checks",
+        "authorization_checks",
+        "graph_checks",
+        "simulation_result"
+      ],
+      "title": "AlphaVerification",
+      "type": "object"
+    },
+    "AuthorizationRequirements": {
+      "additionalProperties": false,
+      "properties": {
+        "authority_granted": {
+          "const": false,
+          "default": false,
+          "title": "Authority Granted",
+          "type": "boolean"
+        },
+        "authority_requirement": {
+          "enum": [
+            "POLICY",
+            "EXPLICIT",
+            "RECONCILIATION"
+          ],
+          "title": "Authority Requirement",
+          "type": "string"
+        },
+        "caller_supplied_authority_accepted": {
+          "const": false,
+          "default": false,
+          "title": "Caller Supplied Authority Accepted",
+          "type": "boolean"
+        },
+        "consent_required": {
+          "title": "Consent Required",
+          "type": "boolean"
+        },
+        "one_use_permit_required": {
+          "title": "One Use Permit Required",
+          "type": "boolean"
+        },
+        "required_bindings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Required Bindings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "authority_requirement",
+        "consent_required",
+        "one_use_permit_required"
+      ],
+      "title": "AuthorizationRequirements",
+      "type": "object"
+    },
+    "ErrorHandling": {
+      "additionalProperties": false,
+      "properties": {
+        "compensate_steps": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Compensate Steps",
+          "type": "array"
+        },
+        "indeterminate_result_policy": {
+          "const": "STOP_AND_RECONCILE",
+          "default": "STOP_AND_RECONCILE",
+          "title": "Indeterminate Result Policy",
+          "type": "string"
+        },
+        "on_error": {
+          "enum": [
+            "abort",
+            "compensate",
+            "reconcile"
+          ],
+          "title": "On Error",
+          "type": "string"
+        }
+      },
+      "required": [
+        "on_error"
+      ],
+      "title": "ErrorHandling",
+      "type": "object"
+    },
+    "EstimatedCost": {
+      "additionalProperties": false,
+      "properties": {
+        "monetary_cad": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Monetary Cad"
+        },
+        "time_ms": {
+          "minimum": 0,
+          "title": "Time Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "time_ms",
+        "monetary_cad"
+      ],
+      "title": "EstimatedCost",
+      "type": "object"
+    },
+    "ObservabilityHooks": {
+      "additionalProperties": false,
+      "properties": {
+        "audit_fields": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Audit Fields",
+          "type": "array"
+        },
+        "log_id": {
+          "pattern": "^ALOG-[A-F0-9]{24}$",
+          "title": "Log Id",
+          "type": "string"
+        },
+        "metrics": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Metrics",
+          "type": "array"
+        }
+      },
+      "required": [
+        "log_id",
+        "metrics",
+        "audit_fields"
+      ],
+      "title": "ObservabilityHooks",
+      "type": "object"
+    },
+    "RetryPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "base_delay_ms": {
+          "maximum": 60000,
+          "minimum": 0,
+          "title": "Base Delay Ms",
+          "type": "integer"
+        },
+        "max_retries": {
+          "maximum": 3,
+          "minimum": 0,
+          "title": "Max Retries",
+          "type": "integer"
+        },
+        "reconciliation_before_retry": {
+          "title": "Reconciliation Before Retry",
+          "type": "boolean"
+        },
+        "strategy": {
+          "enum": [
+            "none",
+            "fixed",
+            "exponential"
+          ],
+          "title": "Strategy",
+          "type": "string"
+        }
+      },
+      "required": [
+        "strategy",
+        "max_retries",
+        "base_delay_ms",
+        "reconciliation_before_retry"
+      ],
+      "title": "RetryPolicy",
+      "type": "object"
+    }
+  },
+  "$id": "https://aigc.local/schemas/aigc_alpha_plan.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "alpha_levels": {
+      "items": {
+        "$ref": "#/$defs/AlphaLevel"
+      },
+      "maxItems": 33,
+      "minItems": 2,
+      "title": "Alpha Levels",
+      "type": "array"
+    },
+    "alpha_plan_version": {
+      "const": "aigc.alpha-plan.v1",
+      "title": "Alpha Plan Version",
+      "type": "string"
+    },
+    "authority_granted": {
+      "const": false,
+      "default": false,
+      "title": "Authority Granted",
+      "type": "boolean"
+    },
+    "created_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Created At"
+    },
+    "deterministic_seed": {
+      "const": 42,
+      "title": "Deterministic Seed",
+      "type": "integer"
+    },
+    "domain_profile": {
+      "enum": [
+        "GENERAL",
+        "MULTIMODAL_ECOSYSTEM",
+        "PROCUREMENT_ACCELERATION"
+      ],
+      "title": "Domain Profile",
+      "type": "string"
+    },
+    "execution_sequence": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Execution Sequence",
+      "type": "array"
+    },
+    "external_actions_performed": {
+      "const": 0,
+      "default": 0,
+      "title": "External Actions Performed",
+      "type": "integer"
+    },
+    "human_summary": {
+      "title": "Human Summary",
+      "type": "string"
+    },
+    "id": {
+      "pattern": "^ALPHA-PLAN-[A-F0-9]{24}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "memory_writes_performed": {
+      "const": 0,
+      "default": 0,
+      "title": "Memory Writes Performed",
+      "type": "integer"
+    },
+    "meta_config": {
+      "additionalProperties": true,
+      "title": "Meta Config",
+      "type": "object"
+    },
+    "policy_updates_applied": {
+      "const": 0,
+      "default": 0,
+      "title": "Policy Updates Applied",
+      "type": "integer"
+    },
+    "priority": {
+      "maximum": 1000,
+      "minimum": 0,
+      "title": "Priority",
+      "type": "integer"
+    },
+    "provider_calls_performed": {
+      "const": 0,
+      "default": 0,
+      "title": "Provider Calls Performed",
+      "type": "integer"
+    },
+    "receipt_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Receipt Sha256",
+      "type": "string"
+    },
+    "request_id": {
+      "title": "Request Id",
+      "type": "string"
+    },
+    "terminal_status": {
+      "enum": [
+        "PASS",
+        "BLOCKED"
+      ],
+      "title": "Terminal Status",
+      "type": "string"
+    },
+    "verification": {
+      "$ref": "#/$defs/AlphaVerification"
+    },
+    "zero_egress": {
+      "const": true,
+      "default": true,
+      "title": "Zero Egress",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "alpha_plan_version",
+    "id",
+    "request_id",
+    "domain_profile",
+    "priority",
+    "alpha_levels",
+    "deterministic_seed",
+    "created_at",
+    "human_summary",
+    "execution_sequence",
+    "verification",
+    "meta_config",
+    "terminal_status",
+    "receipt_sha256"
+  ],
+  "title": "AlphaPlan",
+  "type": "object"
+}

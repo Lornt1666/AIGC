@@ -14,7 +14,10 @@
         "aigc_run_employer_sandbox",
         "aigc_seed_regenexcalibur_universe",
         "aigc_plan_wealth_work",
-        "aigc_plan_llm_lifecycle"
+        "aigc_plan_llm_lifecycle",
+        "aigc_plan_regenexcalibur_workflow",
+        "aigc_run_regenexcalibur_diagnostics",
+        "aigc_compose_alpha_plan"
       ]
     }
   }

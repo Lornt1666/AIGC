@@ -143,7 +143,7 @@
     "life_domains": 7,
     "llm_gpu_hours": 0,
     "llm_training_cost_cad": 0,
-    "mcp_tools": 11,
+    "mcp_tools": 12,
     "occupation_packs": 13,
     "regenexcalibur_agent_roles": 8,
     "wealth_actions": 16
@@ -171,7 +171,7 @@
     "verified_required_checks": 12
   },
   "schema_version": "aigc.system-atlas-snapshot.v1",
-  "snapshot_sha256": "7bf9a8d6b5c9af3bfe04c39732caf7f6e5120ff2572990c94d7aa14a2f84148f",
+  "snapshot_sha256": "29bb364eb352bf849431cc3231dea6d1d75560bf7e487c064cf0879b7b684a7c",
   "subsystems": [
     {
       "contract_count": 3,

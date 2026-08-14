@@ -22,6 +22,12 @@ surfaces and explicit external blockers.
   diagrams, system dimensions, parametrics, delivery surfaces, and readiness.
 - [AIGC System Atlas presentation](docs/presentations/AIGC_SYSTEM_ATLAS_V1.pptx)
   — presentation-ready visual explanation.
+- [Alpha Plan Orchestrator](docs/architecture/AIGC_ALPHA_PLAN_ORCHESTRATOR_V1.md)
+  — deterministic hierarchical planning, simulation, memory, meta-policy, and
+  exact authority boundaries.
+- [Procurement acceleration sandbox](docs/architecture/AIGC_PROCUREMENT_SANDBOX_V1.md)
+  — corrected 13-agent catalog, synthetic adversarial simulations, OPA policy,
+  and inert zero-replica deployment templates.
 - [Frozen Nexus integration contract](docs/architecture/AIGC_INTEGRATION_CONTRACT_V1.md)
   — canonical state, verification, authority, execution, and evidence semantics.
 - [Autonomy amendment](docs/architecture/AIGC_INTEGRATION_CONTRACT_V1_AUTONOMY_AMENDMENT_001.md)
@@ -82,6 +88,7 @@ product-quality score and must not be increased without new exact-artifact proof
 ```bash
 .venv/bin/python scripts/build_aigc_system_atlas_data.py \
   --output reports/artifacts/aigc_system_atlas_local_snapshot.json
+.venv/bin/python scripts/validate_aigc_procurement_sandbox.py --check
 .venv/bin/python -m pytest -q
 ```
 

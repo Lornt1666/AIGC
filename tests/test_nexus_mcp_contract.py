@@ -27,7 +27,51 @@ EXPECTED_TOOLS = {
     "aigc_seed_regenexcalibur_universe",
     "aigc_plan_wealth_work",
     "aigc_plan_llm_lifecycle",
+    "aigc_plan_regenexcalibur_workflow",
+    "aigc_run_regenexcalibur_diagnostics",
+    "aigc_compose_alpha_plan",
 }
+
+
+def test_doctrine_coordinator_mcp_tools_are_read_only_and_zero_egress():
+    server = build_mcp_server()
+    _, planned = asyncio.run(
+        server.call_tool(
+            "aigc_plan_regenexcalibur_workflow",
+            {
+                "request_id": "RXREQ-MCP001",
+                "workflow": "INVOICE_HOURS",
+                "objective": "Prepare an invoice packet for operator review.",
+                "artifact_refs": [],
+            },
+        )
+    )
+    _, diagnostics = asyncio.run(
+        server.call_tool("aigc_run_regenexcalibur_diagnostics", {})
+    )
+
+    assert planned["terminal_status"] == "BLOCKED"
+    assert planned["external_actions_performed"] == 0
+    assert diagnostics["terminal_status"] == "PASS"
+    assert diagnostics["detected_count"] == 6
+    assert diagnostics["external_actions_performed"] == 0
+
+
+def test_alpha_plan_mcp_tool_is_deterministic_closed_and_zero_egress():
+    server = build_mcp_server()
+    arguments = {
+        "request_id": "ALPHA-REQ-MCP001",
+        "objective": "Prepare a canonical plan for a local repository review.",
+        "execution_requested": True,
+    }
+    _, first = asyncio.run(server.call_tool("aigc_compose_alpha_plan", arguments))
+    _, second = asyncio.run(server.call_tool("aigc_compose_alpha_plan", arguments))
+    assert first == second
+    assert first["terminal_status"] == "PASS"
+    assert first["external_actions_performed"] == 0
+    assert first["memory_writes_performed"] == 0
+    assert first["policy_updates_applied"] == 0
+    assert first["authority_granted"] is False
 
 
 def test_status_is_safe_and_truthful():
@@ -109,6 +153,9 @@ def test_mcp_metadata_is_exact_read_only_and_closed_to_authority_inputs():
     assessment = next(item for item in tools if item.name == "assess_aigc_action")
     assert "existing_explicit_authority" not in assessment.inputSchema["properties"]
     assert "permit_id" not in assessment.inputSchema["properties"]
+    alpha = next(item for item in tools if item.name == "aigc_compose_alpha_plan")
+    assert "permit_id" not in alpha.inputSchema["properties"]
+    assert "authority_granted" not in alpha.inputSchema["properties"]
 
 
 def test_mcp_tool_call_returns_model_readable_and_structured_results():

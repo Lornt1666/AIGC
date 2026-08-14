@@ -1,0 +1,29 @@
+schema_version: aigc.procurement-sandbox.simulation-plan.v1
+plan_id: EDGE-COMPUTE-ADVERSARIAL-SIMULATION-V1
+classification: DESIGN_ONLY
+deterministic_seed: 42
+synthetic_data_only: true
+network_egress: false
+external_action_performed: false
+fixtures:
+  market: tests/fixtures/procurement_sandbox/synthetic_market.json
+  scenarios: tests/fixtures/procurement_sandbox/adversarial_scenarios.json
+execution:
+  replay_mode: synthetic_rfx_replay
+  historical_data_connected: false
+  stages: [discover, screen, source, negotiate, contract, fulfill, finance, evaluate]
+  automatic_external_retry: false
+  indeterminate_outcome: BLOCK_AND_RECONCILE
+metrics:
+  - eligible_supplier_count
+  - price_variance_percent
+  - delivery_confidence
+  - policy_violation_count
+  - blocked_external_action_count
+  - deterministic_receipt_match
+acceptance:
+  all_scenarios_have_expected_terminal_status: true
+  external_action_count: 0
+  policy_bypass_count: 0
+  unredacted_pii_artifact_count: 0
+  deterministic_receipt_required: true

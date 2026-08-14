@@ -8,6 +8,7 @@ from mcp.types import ToolAnnotations
 
 from src.domain.nexus.contracts import EffectClass
 from src.domain.nexus.wealth import WealthAction
+from src.regenexcalibur.doctrine_models import CoordinatorWorkflow, Modality
 from src.integrations.aigc_plugin_bridge import (
     aigc_get_status,
     aigc_render_control_center,
@@ -17,10 +18,13 @@ from src.integrations.mcp.tools import (
     DryRunGoal,
     SandboxScenario,
     assess_aigc_action,
+    plan_aigc_alpha_request,
     plan_aigc_llm_lifecycle,
+    plan_aigc_regenexcalibur_workflow,
     procure_deep_research_plan,
     plan_aigc_wealth_work,
     run_aigc_dry_run,
+    run_aigc_regenexcalibur_diagnostics,
     seed_aigc_regenexcalibur_universe,
 )
 
@@ -195,6 +199,84 @@ def build_mcp_server(*, host: str = "127.0.0.1", port: int = 8000) -> FastMCP:
     ) -> dict[str, object]:
         return seed_aigc_regenexcalibur_universe(
             requested_evolution_depth=requested_evolution_depth
+        )
+
+    @server.tool(
+        name="aigc_plan_regenexcalibur_workflow",
+        title="Plan a RegenExcalibur employer workflow",
+        description=(
+            "Use this to prepare an affix-tagged job application, employer-practice "
+            "articulation, work-delivery, or invoice workflow. It never authenticates, "
+            "submits, signs, sends, charges, or accepts caller-supplied authority."
+        ),
+        annotations=READ_ONLY,
+        structured_output=True,
+    )
+    def doctrine_workflow_tool(
+        request_id: str,
+        workflow: CoordinatorWorkflow,
+        objective: str,
+        target_ref: str | None = None,
+        artifact_refs: list[str] | None = None,
+        consent_artifact_ref: str | None = None,
+        credential_ref: str | None = None,
+        requested_modalities: list[Modality] | None = None,
+    ) -> dict[str, object]:
+        return plan_aigc_regenexcalibur_workflow(
+            request_id=request_id,
+            workflow=workflow,
+            objective=objective,
+            target_ref=target_ref,
+            artifact_refs=artifact_refs,
+            consent_artifact_ref=consent_artifact_ref,
+            credential_ref=credential_ref,
+            requested_modalities=requested_modalities,
+        )
+
+    @server.tool(
+        name="aigc_run_regenexcalibur_diagnostics",
+        title="Run RegenExcalibur blocked-action diagnostics",
+        description=(
+            "Use this to run six deterministic isolated blocked-action fixtures and "
+            "produce an audit-bound acceptance report. No credentials, network, provider, "
+            "database, employer, billing, or external system is accessed."
+        ),
+        annotations=READ_ONLY,
+        structured_output=True,
+    )
+    def doctrine_diagnostics_tool() -> dict[str, object]:
+        return run_aigc_regenexcalibur_diagnostics()
+
+    @server.tool(
+        name="aigc_compose_alpha_plan",
+        title="Compose a governed Alpha Plan",
+        description=(
+            "Use this to turn an objective and optional proposed function calls into a "
+            "deterministic hierarchical action graph. It validates and simulates the "
+            "plan, returns the exact call sequence, and blocks consequential nodes. "
+            "It never executes a function, persists memory, applies a policy update, "
+            "uses a credential, or accepts caller-supplied authority."
+        ),
+        annotations=READ_ONLY,
+        structured_output=True,
+    )
+    def alpha_plan_tool(
+        request_id: str,
+        objective: str,
+        domain_profile: Literal[
+            "GENERAL", "MULTIMODAL_ECOSYSTEM", "PROCUREMENT_ACCELERATION"
+        ] = "GENERAL",
+        context_refs: list[str] | None = None,
+        operations: list[dict[str, object]] | None = None,
+        execution_requested: bool = False,
+    ) -> dict[str, object]:
+        return plan_aigc_alpha_request(
+            request_id=request_id,
+            objective=objective,
+            domain_profile=domain_profile,
+            context_refs=context_refs,
+            operations=operations,
+            execution_requested=execution_requested,
         )
 
     @server.tool(
