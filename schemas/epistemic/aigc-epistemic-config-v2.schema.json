@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aigc:schema:meta-epistemic-config:2.0.0",
+  "title": "AIGC Epistemic Governance Configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "version",
+    "schema_id",
+    "teleological_vector",
+    "epistemic_governance",
+    "polyphonic_agents",
+    "orchestration"
+  ],
+  "properties": {
+    "name": {"const": "Meta-Epistemic Prompt Specification"},
+    "version": {"const": "2.0.0"},
+    "schema_id": {"const": "urn:aigc:schema:meta-epistemic-config:2.0.0"},
+    "teleological_vector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["information_utility_objective"],
+      "properties": {
+        "information_utility_objective": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "maximize", "minimize", "semantic_fidelity"],
+          "properties": {
+            "type": {"const": "weighted_semantic_utility"},
+            "maximize": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {"enum": ["semantic_fidelity", "evidence_coverage", "structural_completeness"]}
+            },
+            "minimize": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {"enum": ["redundancy", "unsupported_claims", "contradictions"]}
+            },
+            "semantic_fidelity": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["metric_id", "threshold", "components", "hard_gate"],
+              "properties": {
+                "metric_id": {"const": "weighted_semantic_drift_v1"},
+                "threshold": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+                "hard_gate": {"type": "boolean"},
+                "components": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "entity_preservation_weight",
+                    "relation_preservation_weight",
+                    "contradiction_avoidance_weight",
+                    "evidence_preservation_weight"
+                  ],
+                  "properties": {
+                    "entity_preservation_weight": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+                    "relation_preservation_weight": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+                    "contradiction_avoidance_weight": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+                    "evidence_preservation_weight": {"type": "number", "minimum": 0.0, "maximum": 1.0}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "epistemic_governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim_envelope"],
+      "properties": {
+        "claim_envelope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["basis_options", "verification_states", "required_invariants"],
+          "properties": {
+            "basis_options": {
+              "type": "array",
+              "minItems": 5,
+              "uniqueItems": true,
+              "items": {"enum": ["axiom", "observation", "inference", "simulation", "hypothesis"]}
+            },
+            "verification_states": {
+              "type": "array",
+              "minItems": 5,
+              "uniqueItems": true,
+              "items": {"enum": ["verified", "corroborated", "unverified", "falsified", "not_applicable"]}
+            },
+            "required_invariants": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {"enum": ["preserve_entity_ids", "preserve_claim_ids", "preserve_evidence_refs"]}
+            }
+          }
+        }
+      }
+    },
+    "polyphonic_agents": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "role", "input_schema_ref", "output_schema_ref", "required_invariants", "denied_side_effects"],
+        "properties": {
+          "id": {"pattern": "^AGT-[A-Z][A-Z0-9-]{2,63}$"},
+          "role": {"enum": ["Architect", "Critic", "Synthesizer", "Verifier"]},
+          "input_schema_ref": {"type": "string", "minLength": 1},
+          "output_schema_ref": {"type": "string", "minLength": 1},
+          "required_invariants": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"enum": ["preserve_entity_ids", "preserve_claim_ids", "preserve_evidence_refs"]}
+          },
+          "denied_side_effects": {
+            "type": "array",
+            "minItems": 3,
+            "uniqueItems": true,
+            "items": {"enum": ["repository_write", "external_message", "deployment", "output_modification"]}
+          }
+        }
+      }
+    },
+    "orchestration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maximum_rounds", "unresolved_dissent_policy", "transitions", "terminal_states", "no_consensus_behavior"],
+      "properties": {
+        "maximum_rounds": {"type": "integer", "minimum": 1, "maximum": 10},
+        "unresolved_dissent_policy": {"enum": ["preserve_and_surface", "terminate_run", "human_override"]},
+        "transitions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["architect_to_critic", "critic_to_synthesizer", "synthesizer_to_verifier"],
+          "properties": {
+            "architect_to_critic": {"const": "required"},
+            "critic_to_synthesizer": {"const": "required"},
+            "synthesizer_to_verifier": {"const": "required"}
+          }
+        },
+        "terminal_states": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {"enum": ["accepted", "rejected", "blocked", "requires_human_review"]}
+        },
+        "no_consensus_behavior": {"const": "requires_human_review"}
+      }
+    }
+  }
+}

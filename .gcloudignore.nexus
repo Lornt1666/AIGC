@@ -1,0 +1,27 @@
+.git
+.gitignore
+.github
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+__pycache__
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.venv
+venv
+node_modules
+reports
+product evidence
+data
+artifacts
+tests
+infra
+docs
+schemas
+config
+scripts
+*.log
