@@ -57,6 +57,16 @@ from .ontology import (
     StandardOfPractice,
     action_permitted,
 )
+from .procurement_relay import (
+    AcquisitionMode,
+    AcquisitionReceipt,
+    ArchiveGuard,
+    OccupationalProcurementRelay,
+    ProcurementResult,
+    ProcurementState,
+    SourceProcurementContract,
+    receipt_json,
+)
 from .repository_engineering import (
     RepositoryAtlas,
     RepositoryEngineer,
@@ -88,19 +98,20 @@ from .source_adapters import (
 )
 
 __all__ = [
-    "ADAPTERS", "BrowserConnectionBootstrapController", "BrowserConnectionProbe", "BrowserConnectionState",
-    "BrowserSkillReceipt", "CareerTrajectory", "ClassificationStatus", "CommissionEconomics", "CompetencyLevel",
-    "CompetencyRecord", "CompletionDecision", "ConceptKind", "CredentialRecord", "CrosswalkEdge", "CrosswalkRelation",
-    "DevelopmentPlan", "DisciplineProfileV2", "EmergentOccupationCandidate", "Engagement", "EngineeringMemoryEntry",
-    "EscoAdapter", "EvaluatorProfile", "EvidenceReceipt", "ExperienceNode", "GitHubActionsBudgetAuthorization",
-    "GitHubActionsBudgetObservation", "GitHubActionsBudgetPlan", "ImpactDomain", "ImpactEdge", "ImpactGraph",
-    "InMemoryRegistryStore", "IngestionDiff", "IngestionReceipt", "InterdisciplinaryPractice", "IscoAdapter",
-    "MethodOutcome", "NocAdapter", "NormalizedSourceRecord", "OccupationProfileV3", "OccupationalBinding",
-    "OccupationalConcept", "OccupationalIngestionPipeline", "OccupationalKnowledgeRegistry", "OccupationalRegistry",
-    "OccupationalRegistryStore", "OccupationalRisk", "OccupationalSourceAdapter", "OnetAdapter", "OutcomeContract",
-    "QuestCompatibilityAlias", "RawSourcePackage", "RepositoryAtlas", "RepositoryEngineer",
-    "RepositoryEngineeringAuthority", "RepositoryEngineeringOrchestratorV2", "ScopeClassification", "ScopeOfPractice",
-    "SocAdapter", "SourceAuthority", "SourceDescriptor", "StandardOfPractice", "TitleResolutionCandidate", "TitleResolver",
-    "WorkAttempt", "WorkAttemptStatus", "WorkCommission", "WriteEligibility", "action_permitted", "adapter_for",
-    "canonical_sha256",
+    "ADAPTERS", "AcquisitionMode", "AcquisitionReceipt", "ArchiveGuard", "BrowserConnectionBootstrapController",
+    "BrowserConnectionProbe", "BrowserConnectionState", "BrowserSkillReceipt", "CareerTrajectory", "ClassificationStatus",
+    "CommissionEconomics", "CompetencyLevel", "CompetencyRecord", "CompletionDecision", "ConceptKind", "CredentialRecord",
+    "CrosswalkEdge", "CrosswalkRelation", "DevelopmentPlan", "DisciplineProfileV2", "EmergentOccupationCandidate",
+    "Engagement", "EngineeringMemoryEntry", "EscoAdapter", "EvaluatorProfile", "EvidenceReceipt", "ExperienceNode",
+    "GitHubActionsBudgetAuthorization", "GitHubActionsBudgetObservation", "GitHubActionsBudgetPlan", "ImpactDomain",
+    "ImpactEdge", "ImpactGraph", "InMemoryRegistryStore", "IngestionDiff", "IngestionReceipt", "InterdisciplinaryPractice",
+    "IscoAdapter", "MethodOutcome", "NocAdapter", "NormalizedSourceRecord", "OccupationProfileV3", "OccupationalBinding",
+    "OccupationalConcept", "OccupationalIngestionPipeline", "OccupationalKnowledgeRegistry", "OccupationalProcurementRelay",
+    "OccupationalRegistry", "OccupationalRegistryStore", "OccupationalRisk", "OccupationalSourceAdapter", "OnetAdapter",
+    "OutcomeContract", "ProcurementResult", "ProcurementState", "QuestCompatibilityAlias", "RawSourcePackage",
+    "RepositoryAtlas", "RepositoryEngineer", "RepositoryEngineeringAuthority", "RepositoryEngineeringOrchestratorV2",
+    "ScopeClassification", "ScopeOfPractice", "SocAdapter", "SourceAuthority", "SourceDescriptor",
+    "SourceProcurementContract", "StandardOfPractice", "TitleResolutionCandidate", "TitleResolver", "WorkAttempt",
+    "WorkAttemptStatus", "WorkCommission", "WriteEligibility", "action_permitted", "adapter_for", "canonical_sha256",
+    "receipt_json",
 ]
