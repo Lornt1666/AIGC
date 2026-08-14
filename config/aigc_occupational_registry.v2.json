@@ -1,0 +1,40 @@
+{
+  "registry_version": "occupational-registry-v2",
+  "disciplines": [
+    {
+      "discipline_id": "REPOSITORY_ENGINEERING",
+      "profession_id": "SOFTWARE_AND_SYSTEMS_ENGINEERING",
+      "occupation_id": "AUTONOMOUS_REPOSITORY_ENGINEER",
+      "specializations": ["REPOSITORY_REFORMATION", "ARCHITECTURE_MIGRATION", "CI_REPAIR", "SECURITY_HARDENING"],
+      "roles": ["REPOSITORY_SCOUT", "ARCHITECTURE_SCOUT", "REQUIREMENTS_TRACER", "SECURITY_SCOUT", "TEST_EVAL_DESIGNER", "PLANNER", "AUTHORITATIVE_WRITER", "INDEPENDENT_VERIFIER"],
+      "capabilities": ["repo.discover", "repo.atlas.build", "repo.requirements.trace", "repo.architecture.analyze", "repo.dependency.analyze", "repo.dead_code.detect", "repo.change.plan", "repo.impact.predict", "repo.worktree.create", "repo.patch.execute", "repo.build.verify", "repo.tests.verify", "repo.architecture.verify", "repo.security.verify", "repo.diff.review", "repo.evidence.emit", "repo.pr.prepare"],
+      "skills": ["static_analysis", "multi_file_refactoring", "test_design", "architecture_conformance", "git_workflows", "evidence_generation"],
+      "techniques": ["repository_atlas", "impact_graph", "one_writer_many_reviewers", "requirements_traceability", "bounded_repair"],
+      "scope_of_practice": {
+        "independently_permitted": ["repository analysis", "software implementation", "automated testing", "documentation", "refactoring in authorized worktree"],
+        "permitted_with_review": ["security-sensitive changes", "production migrations", "authentication architecture", "merge"],
+        "credential_restricted": ["legally regulated attestations"],
+        "prohibited": ["fabricated certifications", "unauthorized system access", "silent scope expansion", "self-granted merge/deploy authority"],
+        "jurisdiction_dependencies": []
+      },
+      "standard_of_practice": {
+        "quality_dimensions": ["correctness", "maintainability", "testability", "security", "traceability", "reversibility", "documentation", "architectural conformity"],
+        "required_evaluator_profile": "risk_tiered_repository_evaluator_v2",
+        "minimum_evidence_types": ["exact revision", "test result", "diff review", "scope classification"]
+      },
+      "occupational_risk_ceiling": "P3",
+      "credential_requirements": [],
+      "tool_capabilities": ["GitHub", "sandbox shell", "static analysis", "test runner", "browser bootstrap when separately authorized"],
+      "method_genomes": ["BUG_REPAIR", "FEATURE_IMPLEMENTATION", "REPOSITORY_REFORMATION", "ARCHITECTURE_MIGRATION", "DEPENDENCY_MODERNIZATION", "TEST_HARDENING", "CI_REPAIR", "SECURITY_HARDENING", "DOCUMENTATION_RECONSTRUCTION", "OPERATIONALIZATION", "DEAD_CODE_ELIMINATION", "RELEASE_PREPARATION"]
+    }
+  ],
+  "interdisciplinary_practices": [
+    {
+      "practice_id": "CONSTRUCTION_TECH_AUTOMATION",
+      "contributing_disciplines": ["CONSTRUCTION", "CAD_DESIGN", "SOFTWARE_ENGINEERING", "AI_AUTOMATION"],
+      "competency_requirements": ["construction domain competence", "CAD competence", "software competence", "automation competence"],
+      "synthesis_method_genomes": ["PRODUCT_DESIGN", "SYSTEMS_INTEGRATION", "AUTOMATION_WORKFLOW"],
+      "evaluator_profile": "construction_tech_cross_discipline_v1"
+    }
+  ]
+}

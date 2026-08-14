@@ -1,0 +1,108 @@
+{
+  "schema_version": "aigc.occupational-taxonomy-acquisition-commission.v1",
+  "work_commission": {
+    "commission_id": "WC_AIGC_OCCUPATIONAL_TAXONOMY_ACQUISITION_001",
+    "commission_revision": 1,
+    "discipline_id": "TECHNICAL_RESEARCH",
+    "target_repository": "Lornt1666/AIGC",
+    "target_base_revision": "cdef132471060fc083369ddf164099581558e9a3",
+    "requested_outcome": "Acquire official ISCO, ESCO, NOC, SOC, and O*NET occupational taxonomy datasets from authoritative public sources; bind source authority/version/dataset identity; compute SHA-256 receipts; normalize through AIGC source adapters; perform dry-run imports only; inspect immutable-history conflicts and crosswalk gaps; and produce evidence sufficient to decide whether a later canonical registry ingestion may be admitted.",
+    "scope": [
+      "official public source discovery and version verification",
+      "download publicly available taxonomy packages where direct official retrieval is possible without account creation or private credentials",
+      "compute exact SHA-256 and byte-size receipts for acquired payloads",
+      "bind source authority, taxonomy version, dataset kind, media type, source URL and observed retrieval time",
+      "normalize acquired payloads through source-specific ISCO/ESCO/NOC/SOC/O*NET adapters",
+      "run dry-run ingestion only against an isolated empty or snapshot registry",
+      "generate dry-run diff, collision, unsupported-record and crosswalk-gap reports",
+      "record sources that require interactive/email/API-auth acquisition as BLOCKED rather than bypassing access controls",
+      "update draft PR metadata and evidence artifacts with acquisition truth"
+    ],
+    "explicit_exclusions": [
+      "canonical registry commit of acquired taxonomy data",
+      "merge PR #225",
+      "ready-for-review promotion",
+      "production deployment",
+      "GitHub Actions retry",
+      "billing or spending mutation",
+      "account creation",
+      "email submission for gated downloads",
+      "credential or API-key use",
+      "bypassing privacy acknowledgements, authentication, CAPTCHA, rate limits, or download controls",
+      "third-party mirrors when an authoritative source is unavailable",
+      "employer contact or job application submission"
+    ],
+    "acceptance_mode": "EXPLICIT_USER_AUTHORIZATION_CURRENT_CONVERSATION",
+    "risk_tier": "R1",
+    "authority_envelope": {
+      "autonomous_actions": [
+        "read official public taxonomy documentation",
+        "download directly accessible official public taxonomy files",
+        "hash and inspect acquired files",
+        "run local normalization and dry-run ingestion",
+        "write bounded evidence/config/report files on design/occupational-autonomy-v2",
+        "update draft PR #225 metadata"
+      ],
+      "approval_required_actions": [
+        "canonical registry ingestion",
+        "account creation",
+        "credentialed API access",
+        "submitting email or personal information to obtain a dataset",
+        "merge",
+        "deployment",
+        "spending"
+      ],
+      "prohibited_actions": [
+        "self-expand acquisition scope",
+        "rewrite this commission in place",
+        "use unofficial mirrors as authoritative payloads",
+        "fabricate source hashes or versions",
+        "classify an inaccessible source as acquired",
+        "commit taxonomy data into the canonical registry during dry-run phase"
+      ]
+    },
+    "sealed": true
+  },
+  "outcome_contract": {
+    "contract_id": "OC_AIGC_OCCUPATIONAL_TAXONOMY_ACQUISITION_001",
+    "contract_revision": 1,
+    "required_artifacts": [
+      "official-source acquisition manifest",
+      "per-payload SHA-256 and byte-size receipts",
+      "source/version/dataset-kind verification report",
+      "dry-run normalization/import report",
+      "immutable-history conflict report",
+      "crosswalk-gap report",
+      "blocked-source report for any acquisition requiring unsupported user interaction or credentials",
+      "canonical-ingestion admission recommendation"
+    ],
+    "hard_gates": [
+      "every acquired payload originates from an authoritative official source",
+      "every acquired payload has an exact SHA-256 receipt",
+      "source version and dataset semantics are bound before normalization",
+      "no canonical registry mutation occurs",
+      "dry-run executes before any future canonical ingestion decision",
+      "immutable-history conflicts are surfaced rather than overwritten",
+      "crosswalk uncertainty is represented explicitly rather than promoted to exact equivalence",
+      "gated or inaccessible official datasets are marked BLOCKED without bypass"
+    ],
+    "required_evidence": [
+      "source URLs and authoritative publisher identity",
+      "retrieval timestamps",
+      "payload SHA-256 hashes",
+      "payload sizes",
+      "normalization counts by concept kind",
+      "dry-run diff counts",
+      "conflict counts",
+      "crosswalk-gap counts or explicit not-yet-computed status",
+      "blocked reasons where applicable"
+    ],
+    "delivery_receipt_required": false,
+    "independent_verification_required": false,
+    "no_progress_policy": {
+      "max_cycles": 2,
+      "max_identical_failure_retries": 1
+    },
+    "sealed": true
+  }
+}

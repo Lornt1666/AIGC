@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/aigc_repository_engineering_discipline.schema.json",
+  "title": "AIGC Repository Engineering Discipline v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "discipline", "repository_atlas", "method_genomes", "write_eligibility", "scope_classification"],
+  "properties": {
+    "schema_version": {"const": "aigc.repository-engineering-discipline.v1"},
+    "discipline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["discipline_id", "name", "capabilities", "minimum_evaluators"],
+      "properties": {
+        "discipline_id": {"const": "REPOSITORY_ENGINEERING"},
+        "name": {"const": "Repository Engineering"},
+        "capabilities": {
+          "type": "array",
+          "minItems": 17,
+          "maxItems": 17,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "repo.discover", "repo.atlas.build", "repo.requirements.trace", "repo.architecture.analyze",
+              "repo.dependency.analyze", "repo.dead_code.detect", "repo.change.plan", "repo.impact.predict",
+              "repo.worktree.create", "repo.patch.execute", "repo.build.verify", "repo.tests.verify",
+              "repo.architecture.verify", "repo.security.verify", "repo.diff.review", "repo.evidence.emit",
+              "repo.pr.prepare"
+            ]
+          }
+        },
+        "minimum_evaluators": {
+          "type": "array",
+          "minItems": 5,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 200}
+        }
+      }
+    },
+    "repository_atlas": {
+      "$ref": "#/$defs/RepositoryAtlas"
+    },
+    "method_genomes": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "BUG_REPAIR", "FEATURE_IMPLEMENTATION", "REPOSITORY_REFORMATION", "ARCHITECTURE_MIGRATION",
+          "DEPENDENCY_MODERNIZATION", "TEST_HARDENING", "CI_REPAIR", "SECURITY_HARDENING",
+          "DOCUMENTATION_RECONSTRUCTION", "OPERATIONALIZATION", "DEAD_CODE_ELIMINATION", "RELEASE_PREPARATION"
+        ]
+      }
+    },
+    "write_eligibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository_mapped", "requirements_bound", "impact_analyzed", "work_attempt_valid", "authority_valid", "eligible"],
+      "properties": {
+        "repository_mapped": {"type": "boolean"},
+        "requirements_bound": {"type": "boolean"},
+        "impact_analyzed": {"type": "boolean"},
+        "work_attempt_valid": {"type": "boolean"},
+        "authority_valid": {"type": "boolean"},
+        "eligible": {"type": "boolean"}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "repository_mapped": {"const": true},
+              "requirements_bound": {"const": true},
+              "impact_analyzed": {"const": true},
+              "work_attempt_valid": {"const": true},
+              "authority_valid": {"const": true}
+            },
+            "required": ["repository_mapped", "requirements_bound", "impact_analyzed", "work_attempt_valid", "authority_valid"]
+          },
+          "then": {"properties": {"eligible": {"const": true}}},
+          "else": {"properties": {"eligible": {"const": false}}}
+        }
+      ]
+    },
+    "scope_classification": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["finding_id", "classification", "description"],
+        "properties": {
+          "finding_id": {"type": "string", "minLength": 1, "maxLength": 128},
+          "classification": {
+            "enum": ["ADMITTED_DEPENDENCY", "FINDING", "IMPROVEMENT_PROPOSAL", "BLOCKING_FINDING", "COMMISSION_AMENDMENT_PROPOSAL"]
+          },
+          "description": {"type": "string", "minLength": 1, "maxLength": 2000},
+          "evidence_refs": {"type": "array", "items": {"type": "string", "minLength": 1, "maxLength": 1000}}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "Sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "GraphState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {"enum": ["NOT_BUILT", "PARTIAL", "COMPLETE"]},
+        "coverage": {"type": "number", "minimum": 0, "maximum": 1},
+        "artifact_ref": {"type": ["string", "null"], "maxLength": 1000}
+      }
+    },
+    "RepositoryAtlas": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "atlas_id", "repository", "repository_revision", "atlas_revision", "file_graph", "symbol_graph",
+        "import_graph", "call_graph", "test_coverage_graph", "configuration_graph", "build_graph",
+        "deployment_graph", "data_flow_graph", "authority_boundary_graph", "evidence_graph",
+        "requirement_traceability_graph", "unknowns"
+      ],
+      "properties": {
+        "atlas_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "repository": {"type": "string", "minLength": 1, "maxLength": 500},
+        "repository_revision": {"type": "string", "minLength": 1, "maxLength": 128},
+        "atlas_revision": {"type": "integer", "minimum": 1},
+        "atlas_sha256": {"anyOf": [{"$ref": "#/$defs/Sha256"}, {"type": "null"}]},
+        "file_graph": {"$ref": "#/$defs/GraphState"},
+        "symbol_graph": {"$ref": "#/$defs/GraphState"},
+        "import_graph": {"$ref": "#/$defs/GraphState"},
+        "call_graph": {"$ref": "#/$defs/GraphState"},
+        "test_coverage_graph": {"$ref": "#/$defs/GraphState"},
+        "configuration_graph": {"$ref": "#/$defs/GraphState"},
+        "build_graph": {"$ref": "#/$defs/GraphState"},
+        "deployment_graph": {"$ref": "#/$defs/GraphState"},
+        "data_flow_graph": {"$ref": "#/$defs/GraphState"},
+        "authority_boundary_graph": {"$ref": "#/$defs/GraphState"},
+        "evidence_graph": {"$ref": "#/$defs/GraphState"},
+        "requirement_traceability_graph": {"$ref": "#/$defs/GraphState"},
+        "unknowns": {"type": "array", "items": {"type": "string", "minLength": 1, "maxLength": 1000}}
+      }
+    }
+  }
+}

@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/aigc_occupational_control_plane.schema.json",
+  "title": "AIGC Occupational Control Plane v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "career_constitution",
+    "career_mandate",
+    "discipline_profiles",
+    "work_commission",
+    "outcome_contract"
+  ],
+  "properties": {
+    "schema_version": {"const": "aigc.occupational-control-plane.v2"},
+    "career_constitution": {"$ref": "#/$defs/CareerConstitution"},
+    "career_mandate": {"$ref": "#/$defs/CareerMandate"},
+    "discipline_profiles": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {"$ref": "#/$defs/DisciplineProfile"}
+    },
+    "work_commission": {"$ref": "#/$defs/WorkCommission"},
+    "outcome_contract": {"$ref": "#/$defs/OutcomeContract"}
+  },
+  "$defs": {
+    "NonEmptyString": {"type": "string", "minLength": 1, "maxLength": 2000},
+    "Id": {"type": "string", "pattern": "^[A-Z][A-Z0-9_-]{2,127}$"},
+    "Sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "AuthorityEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["autonomous_actions", "approval_required_actions", "prohibited_actions", "risk_ceiling"],
+      "properties": {
+        "autonomous_actions": {"type": "array", "uniqueItems": true, "maxItems": 128, "items": {"$ref": "#/$defs/NonEmptyString"}},
+        "approval_required_actions": {"type": "array", "uniqueItems": true, "maxItems": 128, "items": {"$ref": "#/$defs/NonEmptyString"}},
+        "prohibited_actions": {"type": "array", "uniqueItems": true, "minItems": 1, "maxItems": 128, "items": {"$ref": "#/$defs/NonEmptyString"}},
+        "risk_ceiling": {"enum": ["R0", "R1", "R2", "R3", "R4"]},
+        "financial_limit": {"type": ["number", "null"], "minimum": 0},
+        "financial_currency": {"type": ["string", "null"], "pattern": "^[A-Z]{3}$"}
+      }
+    },
+    "CareerConstitution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["career_id", "worker_id", "identity", "mission", "root_invariants", "professional_ethics", "evidence_standards", "authority_ceiling", "constitutional_precedence"],
+      "properties": {
+        "career_id": {"$ref": "#/$defs/Id"},
+        "worker_id": {"$ref": "#/$defs/Id"},
+        "identity": {"$ref": "#/$defs/NonEmptyString"},
+        "mission": {"$ref": "#/$defs/NonEmptyString"},
+        "root_invariants": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/NonEmptyString"}},
+        "professional_ethics": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/NonEmptyString"}},
+        "evidence_standards": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/NonEmptyString"}},
+        "authority_ceiling": {"$ref": "#/$defs/AuthorityEnvelope"},
+        "constitutional_precedence": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "prefixItems": [
+            {"const": "CareerConstitution"},
+            {"const": "CareerMandate"},
+            {"const": "WorkCommission"},
+            {"const": "OutcomeContract"},
+            {"const": "MethodGenome/TaskGraph"},
+            {"const": "WorkAttemptInstructions"},
+            {"const": "ModelOutput"}
+          ],
+          "items": false
+        }
+      }
+    },
+    "CareerMandate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mandate_id", "career_id", "version", "target_autonomy_level", "admitted_discipline_ids", "active_goals", "authority_envelope", "opportunity_policy", "learning_policy"],
+      "properties": {
+        "mandate_id": {"$ref": "#/$defs/Id"},
+        "career_id": {"$ref": "#/$defs/Id"},
+        "version": {"type": "integer", "minimum": 1},
+        "target_autonomy_level": {"enum": ["O0", "O1", "O2", "O3", "O4", "O5"]},
+        "admitted_discipline_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/Id"}},
+        "active_goals": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/NonEmptyString"}},
+        "authority_envelope": {"$ref": "#/$defs/AuthorityEnvelope"},
+        "opportunity_policy": {"$ref": "#/$defs/NonEmptyString"},
+        "learning_policy": {"$ref": "#/$defs/NonEmptyString"},
+        "valid_until": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "CompetencyRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["competency_id", "description", "minimum_state", "evaluator_ids"],
+      "properties": {
+        "competency_id": {"$ref": "#/$defs/Id"},
+        "description": {"$ref": "#/$defs/NonEmptyString"},
+        "minimum_state": {"enum": ["UNKNOWN", "LEARNING", "DEMONSTRATED", "VERIFIED", "REVALIDATION_REQUIRED"]},
+        "evaluator_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/Id"}},
+        "legal_credential_required": {"type": "boolean", "default": false}
+      }
+    },
+    "DisciplineProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["discipline_id", "name", "scope", "competency_requirements", "minimum_evaluator_ids", "professional_constraints"],
+      "properties": {
+        "discipline_id": {"$ref": "#/$defs/Id"},
+        "name": {"$ref": "#/$defs/NonEmptyString"},
+        "scope": {"$ref": "#/$defs/NonEmptyString"},
+        "competency_requirements": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/CompetencyRequirement"}},
+        "minimum_evaluator_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/Id"}},
+        "professional_constraints": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/NonEmptyString"}}
+      }
+    },
+    "WorkCommission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "commission_id",
+        "commission_revision",
+        "commission_sha256",
+        "sealed",
+        "mandate_id",
+        "mandate_version",
+        "discipline_id",
+        "source",
+        "requested_outcome",
+        "scope",
+        "acceptance_mode",
+        "authority_envelope",
+        "risk_tier",
+        "method_selection_mode"
+      ],
+      "properties": {
+        "commission_id": {"$ref": "#/$defs/Id"},
+        "commission_revision": {"type": "integer", "minimum": 1},
+        "commission_sha256": {"$ref": "#/$defs/Sha256"},
+        "sealed": {"const": true},
+        "parent_commission_revision": {"type": ["integer", "null"], "minimum": 1},
+        "parent_commission_sha256": {"anyOf": [{"$ref": "#/$defs/Sha256"}, {"type": "null"}]},
+        "supersedes_revision": {"type": ["integer", "null"], "minimum": 1},
+        "mandate_id": {"$ref": "#/$defs/Id"},
+        "mandate_version": {"type": "integer", "minimum": 1},
+        "discipline_id": {"$ref": "#/$defs/Id"},
+        "source": {"$ref": "#/$defs/NonEmptyString"},
+        "requested_outcome": {"$ref": "#/$defs/NonEmptyString"},
+        "scope": {"$ref": "#/$defs/NonEmptyString"},
+        "exclusions": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/NonEmptyString"}},
+        "acceptance_mode": {"enum": ["AUTO_ACCEPT_WITHIN_MANDATE", "APPROVAL_REQUIRED"]},
+        "acceptance_basis": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/NonEmptyString"}},
+        "authority_envelope": {"$ref": "#/$defs/AuthorityEnvelope"},
+        "risk_tier": {"enum": ["R0", "R1", "R2", "R3", "R4"]},
+        "method_selection_mode": {"enum": ["SINGLE_METHOD", "MULTI_CANDIDATE_PARETO"]},
+        "client_or_stakeholder": {"type": ["string", "null"], "maxLength": 500},
+        "accepted_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "OutcomeContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_id",
+        "contract_revision",
+        "contract_sha256",
+        "sealed",
+        "commission_id",
+        "commission_revision",
+        "commission_sha256",
+        "required_artifacts",
+        "hard_gates",
+        "required_evidence",
+        "independent_verification_required",
+        "delivery_receipt_required",
+        "no_progress_policy"
+      ],
+      "properties": {
+        "contract_id": {"$ref": "#/$defs/Id"},
+        "contract_revision": {"type": "integer", "minimum": 1},
+        "contract_sha256": {"$ref": "#/$defs/Sha256"},
+        "sealed": {"const": true},
+        "parent_contract_revision": {"type": ["integer", "null"], "minimum": 1},
+        "parent_contract_sha256": {"anyOf": [{"$ref": "#/$defs/Sha256"}, {"type": "null"}]},
+        "commission_id": {"$ref": "#/$defs/Id"},
+        "commission_revision": {"type": "integer", "minimum": 1},
+        "commission_sha256": {"$ref": "#/$defs/Sha256"},
+        "required_artifacts": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/NonEmptyString"}},
+        "hard_gates": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/NonEmptyString"}},
+        "required_evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/NonEmptyString"}},
+        "independent_verification_required": {"type": "boolean"},
+        "delivery_receipt_required": {"type": "boolean"},
+        "no_progress_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["max_cycles", "max_identical_failure_retries"],
+          "properties": {
+            "max_cycles": {"type": "integer", "minimum": 1, "maximum": 50},
+            "max_identical_failure_retries": {"type": "integer", "minimum": 0, "maximum": 10}
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,103 @@
+from __future__ import annotations
+
+import hashlib
+
+import pytest
+
+from occupational.ingestion_pipeline import InMemoryRegistryStore, OccupationalIngestionPipeline
+from occupational.knowledge_ingestion import ConceptKind, SourceAuthority
+from occupational.source_adapters import IscoAdapter, OnetAdapter, RawSourcePackage, adapter_for
+
+
+def package(payload: bytes, *, version: str = "ISCO-08") -> RawSourcePackage:
+    return RawSourcePackage(
+        authority=SourceAuthority.ISCO,
+        version=version,
+        source_uri="https://example.invalid/isco.csv",
+        payload=payload,
+        expected_sha256=hashlib.sha256(payload).hexdigest(),
+        dataset_name="ISCO unit groups",
+        concept_kind=ConceptKind.OCCUPATION,
+    )
+
+
+def test_adapter_rejects_checksum_mismatch() -> None:
+    p = RawSourcePackage(
+        authority=SourceAuthority.ISCO,
+        version="ISCO-08",
+        source_uri="https://example.invalid/isco.csv",
+        payload=b"code,title\n2512,Software developers\n",
+        expected_sha256="0" * 64,
+        dataset_name="ISCO unit groups",
+        concept_kind=ConceptKind.OCCUPATION,
+    )
+    with pytest.raises(ValueError, match="checksum mismatch"):
+        IscoAdapter().normalize(p)
+
+
+def test_isco_normalizes_to_occupation() -> None:
+    records = IscoAdapter().normalize(package(b"code,title,level\n2512,Software developers,unit_group\n"))
+    assert len(records) == 1
+    assert records[0].kind == ConceptKind.OCCUPATION
+    assert records[0].source_id == "2512"
+    assert records[0].metadata["classification_level"] == "unit_group"
+
+
+def test_dry_run_never_persists() -> None:
+    store = InMemoryRegistryStore()
+    pipeline = OccupationalIngestionPipeline(store)
+    receipt = pipeline.dry_run(package(b"code,title\n2512,Software developers\n"), IscoAdapter(), receipt_id="r1")
+    assert receipt.result == "PASS"
+    assert receipt.imported_concept_count == 0
+    assert receipt.diff.new_concepts == 1
+    assert store.receipts == []
+
+
+def test_commit_persists_only_after_clean_dry_run() -> None:
+    store = InMemoryRegistryStore()
+    pipeline = OccupationalIngestionPipeline(store)
+    receipt = pipeline.commit(package(b"code,title\n2512,Software developers\n"), IscoAdapter(), receipt_id="r2")
+    assert receipt.result == "PASS"
+    assert receipt.imported_concept_count == 1
+    assert len(store.receipts) == 1
+
+
+def test_same_version_conflict_is_blocked() -> None:
+    store = InMemoryRegistryStore()
+    pipeline = OccupationalIngestionPipeline(store)
+    assert pipeline.commit(package(b"code,title\n2512,Software developers\n"), IscoAdapter(), receipt_id="r3").result == "PASS"
+    receipt = pipeline.commit(package(b"code,title\n2512,Completely different occupation\n"), IscoAdapter(), receipt_id="r4")
+    assert receipt.result == "BLOCKED"
+    assert receipt.imported_concept_count == 0
+    assert receipt.diff.conflicting_concepts == 1
+
+
+def test_new_taxonomy_version_is_append_only_new_identity() -> None:
+    store = InMemoryRegistryStore()
+    pipeline = OccupationalIngestionPipeline(store)
+    assert pipeline.commit(package(b"code,title\n2512,Software developers\n", version="ISCO-08"), IscoAdapter(), receipt_id="r5").result == "PASS"
+    receipt = pipeline.commit(package(b"code,title\n2512,Software developers revised\n", version="ISCO-NEXT"), IscoAdapter(), receipt_id="r6")
+    assert receipt.result == "PASS"
+    assert receipt.imported_concept_count == 1
+
+
+def test_onet_tasks_get_unique_source_ids_within_same_occupation() -> None:
+    payload = b"O*NET-SOC Code,Task ID,Task\n15-1252.00,1,Write software\n15-1252.00,2,Test software\n"
+    p = RawSourcePackage(
+        authority=SourceAuthority.ONET,
+        version="30.3",
+        source_uri="https://example.invalid/onet-tasks.csv",
+        payload=payload,
+        expected_sha256=hashlib.sha256(payload).hexdigest(),
+        dataset_name="Task Statements",
+        concept_kind=ConceptKind.TASK,
+    )
+    records = OnetAdapter().normalize(p)
+    assert len(records) == 2
+    assert records[0].source_id != records[1].source_id
+    assert all(record.kind == ConceptKind.TASK for record in records)
+
+
+def test_adapter_registry_has_all_official_sources() -> None:
+    for source in (SourceAuthority.ISCO, SourceAuthority.ESCO, SourceAuthority.NOC, SourceAuthority.SOC, SourceAuthority.ONET):
+        assert adapter_for(source).authority == source
