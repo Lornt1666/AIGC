@@ -62,34 +62,110 @@ SourceConcept
 ├── WorkStyle
 ├── Technology
 └── CredentialRequirement
-
-OccupationProfileV3
-├── classifications
-├── title aliases
-├── tasks
-├── activities
-├── contexts
-├── skills / knowledge / abilities / work styles
-├── technologies
-├── credential requirements
-├── jurisdiction
-├── exclusions / adjacency / progression / mobility
-└── AIGC occupational-control references
 ```
 
-## Stable identity
+## Stable identity and temporal policy
 
-AIGC internal identifiers are deterministically derived from:
+AIGC identifiers derive from `ConceptKind | SourceAuthority | TaxonomyVersion | SourceID`. Existing `(authority, version, kind, source_id)` concepts are immutable. Legitimate upstream changes require a new taxonomy version and explicit temporal/crosswalk relations rather than destructive overwrite.
+
+## Acquisition and ingestion boundary
 
 ```text
-ConceptKind | SourceAuthority | TaxonomyVersion | SourceID
+NETWORK / FILE ACQUISITION
+        ↓
+RawSourcePackage
+  authority
+  version
+  dataset_name
+  concept_kind
+  source_uri
+  expected_sha256
+        ↓
+CHECKSUM + SOURCE VALIDATION
+        ↓
+SOURCE-SPECIFIC ADAPTER
+  IscoAdapter
+  EscoAdapter
+  NocAdapter
+  SocAdapter
+  OnetAdapter
+        ↓
+NormalizedSourceRecord[]
+        ↓
+DRY-RUN DIFF
+  new
+  unchanged
+  conflicts
+        ↓
+CONFLICTS? ──yes──> BLOCKED
+        │
+        no
+        ↓
+APPEND-ONLY COMMIT
+        ↓
+IngestionReceipt
 ```
 
-This prevents a display label from becoming identity and ensures a new taxonomy version creates a new version-bound internal concept rather than overwriting history.
+The runtime does not fetch internet data itself. Acquisition remains a separately authorized capability boundary. Adapters consume bytes only after an expected SHA-256 is supplied and verified.
 
-## Temporal/version policy
+## Dataset identity
 
-A concept already imported for the same `(authority, version, kind, source_id)` is immutable. If the same source/version/source identifier produces a different canonical digest, ingestion fails closed. Legitimate upstream changes must be represented as a new source version and, where appropriate, linked with `DEPRECATED_BY`, `SPLIT_INTO`, `MERGED_FROM`, or other explicit crosswalk relations.
+`RawSourcePackage` binds source authority, taxonomy version, dataset name, optional explicit concept kind, URI, payload bytes, and expected SHA-256. This prevents a parser from treating unrelated files from the same taxonomy as interchangeable.
+
+For O*NET and other multi-table sources, non-occupation rows require row-level identity. An occupation code alone is insufficient for tasks, activities, contexts, skills, knowledge, abilities, work styles, technologies, or titles.
+
+```text
+occupation identity:
+  15-1252.00
+
+task identity:
+  15-1252.00:TASK:<task-id-or-deterministic-row-hash>
+```
+
+This prevents distinct records from colliding under a shared occupation code.
+
+## Dry-run law
+
+Canonical mutation is forbidden until a dry run reports zero immutable-history conflicts.
+
+```text
+INGESTION_COMMIT_ELIGIBLE :=
+    source_checksum_valid
+    AND adapter_authority_matches
+    AND concept_kind_supported
+    AND dry_run_completed
+    AND immutable_history_conflicts = 0
+```
+
+A dry run emits `IngestionReceipt(mode=DRY_RUN)` and performs no persistence.
+
+## Persistence contract
+
+`OccupationalRegistryStore` is the persistence boundary. Implementations must preserve append-only source/version history. `InMemoryRegistryStore` is only a deterministic contract/test implementation; durable database storage requires a later sealed WorkCommission.
+
+A commit re-runs normalization after a clean dry run and persists only concepts absent under the exact source/version/kind/source-ID tuple. The receipt records source hash, normalized count, imported count, diff, mode, result, and notes.
+
+## Source adapter rules
+
+### ISCO
+
+Normalize global hierarchy/unit-group datasets to `OCCUPATION` while retaining classification-level metadata.
+
+### ESCO
+
+Support occupation, title, skill, and knowledge datasets. Explicit package `concept_kind` overrides weak inference so source dataset semantics remain authoritative.
+
+### NOC
+
+Preserve NOC code and TEER metadata. Occupation rows use the NOC code as identity; title and credential-requirement datasets use row-level identities attached to the NOC code.
+
+### SOC
+
+Normalize strict occupation codes/titles without importing O*NET semantics into SOC.
+
+### O*NET
+
+Treat O*NET as a multi-dataset source. Explicit concept kind is preferred. Non-occupation records combine the O*NET-SOC occupation code with source-native row IDs such as Task ID, Element ID, or Title ID, falling back to a deterministic row hash only when no source-native row identifier exists.
 
 ## Crosswalk relations
 
@@ -104,57 +180,31 @@ DEPRECATED_BY
 UNMAPPED
 ```
 
-`EXACT_MATCH` requires a high-confidence mapping. Semantic similarity alone should normally produce `CLOSE_MATCH` until authoritative or expert evidence supports exact equivalence.
+Mappings retain relation, confidence, method, evidence references, and review time. Semantic similarity alone never creates exact equivalence.
 
 ## Title resolution
 
-Titles seed occupation candidates but do not determine them. Candidate scoring may use:
-
-```text
-observed title
-+ job-description task evidence
-+ observed skill evidence
-+ industry / work-context evidence (future adapter)
-+ jurisdiction (future adapter)
-```
-
-Market/employer titles remain aliases or observations unless a reviewed emergent-occupation process establishes a new AIGC extension.
+Titles seed candidates but do not determine occupations. Resolution combines observed title, job-description task evidence, observed skills, and eventually work context/jurisdiction. Market/employer titles remain aliases or observations unless the emergent-occupation process promotes them with evidence.
 
 ## Emergent occupations
 
 ```text
 OBSERVED
--> PROVISIONAL
--> EVIDENCE_ACCUMULATING
--> MAPPED_TO_EXISTING
-   or AIGC_EXTENSION_ACCEPTED
--> REVIEWED
+→ PROVISIONAL
+→ EVIDENCE_ACCUMULATING
+→ MAPPED_TO_EXISTING | AIGC_EXTENSION_ACCEPTED
+→ REVIEWED
 ```
 
-Promotion to an accepted/mapped state requires evidence. An emergent label is never presented as an official ISCO/ESCO/NOC/SOC/O*NET occupation unless that source actually contains it.
+Promoted states require evidence and never masquerade as official taxonomy entries.
 
-## Ingestion pipeline
+## Verification requirements
 
-```text
-fetch/download source outside core registry
--> verify source authority/version/digest
--> parse source-specific representation
--> normalize into SourceConcepts
--> retain original identifiers and URIs
--> import append-only concepts
--> construct source-native relations
--> propose crosswalks
--> validate crosswalk confidence/provenance
--> construct OccupationProfileV3 projections
--> expose title-resolution and career-mobility queries
--> emit ingestion receipt
-```
-
-Network retrieval is intentionally separated from the core model. The current runtime implements normalization/identity/crosswalk/title-resolution primitives; source-specific download adapters and persistent storage remain follow-on WorkCommissions.
+Tests must cover checksum rejection, source/adapter mismatch, unsupported concept kind, title/occupation separation, stable IDs, same-version overwrite denial, dry-run no-mutation behavior, append-only commit behavior, new-version acceptance, O*NET row uniqueness, crosswalk validation, emergent-state evidence gates, and task/skill-aware title resolution.
 
 ## Authority boundary
 
-Occupational knowledge is descriptive evidence. It cannot itself authorize an action.
+Occupational knowledge is descriptive evidence, not permission.
 
 ```text
 occupation match != competency
@@ -164,4 +214,4 @@ source classification != permission
 market demand != authority
 ```
 
-Actual work remains governed by `ScopeOfPractice + Jurisdiction + WorkCommission + OutcomeContract + AuthorityEnvelope + WorkAttempt`.
+Actual work remains governed by `ScopeOfPractice + Jurisdiction + WorkCommission + OutcomeContract + AuthorityEnvelope + WorkAttempt`. Hosted exact-head verification remains required before this layer can be promoted from draft architectural/runtime status.
