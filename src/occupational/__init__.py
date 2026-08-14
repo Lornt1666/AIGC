@@ -19,6 +19,20 @@ from .contracts import (
     WorkCommission,
     canonical_sha256,
 )
+from .knowledge_ingestion import (
+    ClassificationStatus,
+    ConceptKind,
+    CrosswalkEdge,
+    CrosswalkRelation,
+    EmergentOccupationCandidate,
+    OccupationProfileV3,
+    OccupationalConcept,
+    OccupationalKnowledgeRegistry,
+    SourceAuthority,
+    SourceDescriptor,
+    TitleResolutionCandidate,
+    TitleResolver,
+)
 from .ontology import (
     CareerTrajectory,
     CommissionEconomics,
@@ -56,12 +70,15 @@ from .repository_orchestrator_v2 import (
 
 __all__ = [
     "BrowserConnectionBootstrapController", "BrowserConnectionProbe", "BrowserConnectionState", "BrowserSkillReceipt",
-    "CareerTrajectory", "CommissionEconomics", "CompetencyLevel", "CompetencyRecord", "CompletionDecision",
-    "CredentialRecord", "DevelopmentPlan", "DisciplineProfileV2", "Engagement", "EngineeringMemoryEntry", "EvaluatorProfile",
+    "CareerTrajectory", "ClassificationStatus", "CommissionEconomics", "CompetencyLevel", "CompetencyRecord",
+    "CompletionDecision", "ConceptKind", "CredentialRecord", "CrosswalkEdge", "CrosswalkRelation", "DevelopmentPlan",
+    "DisciplineProfileV2", "EmergentOccupationCandidate", "Engagement", "EngineeringMemoryEntry", "EvaluatorProfile",
     "EvidenceReceipt", "ExperienceNode", "GitHubActionsBudgetAuthorization", "GitHubActionsBudgetObservation",
     "GitHubActionsBudgetPlan", "ImpactDomain", "ImpactEdge", "ImpactGraph", "InterdisciplinaryPractice", "MethodOutcome",
-    "OccupationalBinding", "OccupationalRegistry", "OccupationalRisk", "OutcomeContract", "QuestCompatibilityAlias",
-    "RepositoryAtlas", "RepositoryEngineer", "RepositoryEngineeringAuthority", "RepositoryEngineeringOrchestratorV2",
-    "ScopeClassification", "ScopeOfPractice", "StandardOfPractice", "WorkAttempt", "WorkAttemptStatus", "WorkCommission",
-    "WriteEligibility", "action_permitted", "canonical_sha256",
+    "OccupationProfileV3", "OccupationalBinding", "OccupationalConcept", "OccupationalKnowledgeRegistry",
+    "OccupationalRegistry", "OccupationalRisk", "OutcomeContract", "QuestCompatibilityAlias", "RepositoryAtlas",
+    "RepositoryEngineer", "RepositoryEngineeringAuthority", "RepositoryEngineeringOrchestratorV2", "ScopeClassification",
+    "ScopeOfPractice", "SourceAuthority", "SourceDescriptor", "StandardOfPractice", "TitleResolutionCandidate",
+    "TitleResolver", "WorkAttempt", "WorkAttemptStatus", "WorkCommission", "WriteEligibility", "action_permitted",
+    "canonical_sha256",
 ]
