@@ -1,5 +1,5 @@
 {
-  "manifest_version": "1.1.0",
+  "manifest_version": "1.1.1",
   "policy": {
     "flatten_taxonomies": false,
     "retain_source_versions": true,
@@ -22,6 +22,7 @@
       "pinned_version": "ISCO-08",
       "concept_kinds": ["OCCUPATION"],
       "expected_adapter": "IscoAdapter",
+      "adapter_implemented": true,
       "row_identity": "classification_code"
     },
     {
@@ -30,6 +31,7 @@
       "pinned_version": "1.2.1",
       "concept_kinds": ["OCCUPATION", "TITLE", "SKILL", "KNOWLEDGE"],
       "expected_adapter": "EscoAdapter",
+      "adapter_implemented": true,
       "row_identity": "concept_uri"
     },
     {
@@ -38,6 +40,7 @@
       "pinned_version": "2021.0",
       "concept_kinds": ["OCCUPATION", "TITLE", "CREDENTIAL_REQUIREMENT"],
       "expected_adapter": "NocAdapter",
+      "adapter_implemented": true,
       "row_identity": "noc_code_for_occupations; noc_code_plus_native_row_id_or_row_hash_for_non_occupations"
     },
     {
@@ -46,6 +49,7 @@
       "pinned_version": "2018",
       "concept_kinds": ["OCCUPATION"],
       "expected_adapter": "SocAdapter",
+      "adapter_implemented": true,
       "row_identity": "soc_code"
     },
     {
@@ -65,6 +69,7 @@
         "TECHNOLOGY"
       ],
       "expected_adapter": "OnetAdapter",
+      "adapter_implemented": true,
       "row_identity": "onet_soc_code_for_occupation; occupation_plus_concept_kind_plus_native_row_id_or_row_hash_for_other_tables"
     }
   ],
@@ -89,6 +94,12 @@
     "APPEND_ONLY_COMMIT",
     "EMIT_INGESTION_RECEIPT"
   ],
+  "runtime_components": {
+    "source_adapters": "src/occupational/source_adapters.py",
+    "ingestion_pipeline": "src/occupational/ingestion_pipeline.py",
+    "knowledge_registry": "src/occupational/knowledge_ingestion.py",
+    "test_contract": "tests/occupational/test_occupational_source_adapters.py"
+  },
   "emergent_occupation_states": [
     "OBSERVED",
     "PROVISIONAL",
