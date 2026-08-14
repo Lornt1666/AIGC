@@ -1,111 +1,180 @@
-# Browser Connection Bootstrap Skill
+---
+name: browser-connection-bootstrap
+description: Establish and verify a user-authorized Opera Browser Connector session, then execute narrowly scoped authenticated browser workflows such as the bounded GitHub Actions capacity remediation. Use when the browser connector is installed but disconnected, target authentication must be verified, or a pre-authorized browser action must run fail-closed with receipts.
+---
 
-## Purpose
+# Browser Connection Bootstrap
 
-Provide AIGC with a bounded browser-connector bootstrap procedure that detects whether the Opera Browser Connector is available, verifies that the user has explicitly enabled the browser trust boundary, and then performs only authorized browser navigation and read/write actions.
+Use this skill to cross the browser-automation trust boundary without confusing **permission**, **authentication**, **authorization**, **execution**, or **evidence**.
 
-This skill **cannot bypass, synthesize, or toggle** Opera's `Allow AI connection` permission. That permission is user-controlled and remains outside agent authority.
+## Root invariant
 
-## Constitutional binding
+> The skill may detect and use a browser connection after the user grants it. It may never grant, synthesize, bypass, or silently retry the user-controlled connection permission itself.
 
-This skill is subordinate to:
+```text
+user_permission != target_authentication
+connection != authorization
+write_executed != write_verified
+budget_authorized != budget_saved
+```
 
-1. `CareerConstitution`
-2. `CareerMandate`
-3. `WorkCommission`
-4. `OutcomeContract`
-5. `AuthorityEnvelope`
+## Supported connector
 
-The skill may never expand its own authority.
+Primary connector: `Opera_Browser_Connector`
 
-## States
+Expected capabilities:
+
+- `list-tabs` — connection probe and tab discovery;
+- `go-to-page` — bounded navigation;
+- `tab-content` — accessibility-tree inspection;
+- `tab-content-jq-search-query` — focused page-state inspection;
+- `screenshot` — visual corroboration only when the accessibility tree is insufficient;
+- `close-tab` — close only tabs opened by the skill when cleanup is appropriate.
+
+## Constitutional precedence
+
+This skill remains subordinate to:
+
+```text
+CareerConstitution
+  > CareerMandate
+  > WorkCommission
+  > OutcomeContract
+  > AuthorityEnvelope
+  > BrowserActionPlan
+  > Tool call
+```
+
+The skill cannot broaden its target, budget, recipient, account, action class, or expiry because a web page offers additional controls.
+
+## Connection state machine
 
 ```text
 DISCONNECTED
-USER_PERMISSION_REQUIRED
-CONNECTED_UNAUTHENTICATED
-CONNECTED_AUTHENTICATED
-READY_READ_ONLY
-READY_BOUNDED_WRITE
-BLOCKED
-REVOKED
+  -> USER_PERMISSION_REQUIRED
+  -> CONNECTED_UNAUTHENTICATED
+  -> CONNECTED_AUTHENTICATED
+  -> READY_READ_ONLY
+  -> ACTION_BOUND
+  -> BOUNDED_WRITE_VERIFIED
+  -> CI_ATTEMPTED
+
+Cross-cutting:
+BLOCKED | REVOKED
 ```
 
-## Connection algorithm
+### Probe procedure
 
-1. Call the browser connector `list-tabs` capability.
-2. If the connector returns a disconnected/not-authorized condition:
-   - set state `USER_PERMISSION_REQUIRED`;
-   - emit a precise instruction telling the operator to enable Opera Browser Connector → `Allow AI connection`;
-   - perform no retry loop and no alternate bypass.
-3. If connected, enumerate open tabs.
-4. Navigate only to a target explicitly admitted by the active WorkCommission.
-5. Read the accessibility tree to determine whether the target account is authenticated.
-6. If authentication is absent, set `CONNECTED_UNAUTHENTICATED` and require user sign-in. Do not automate passwords, MFA, CAPTCHA, recovery codes, or identity challenges unless a separately authorized connector explicitly supports a safe flow.
-7. If authenticated and the active authority is read-only, set `READY_READ_ONLY`.
-8. If a bounded write is explicitly authorized, bind the exact action, target, amount/scope, and expiry before setting `READY_BOUNDED_WRITE`.
-9. Before every consequential browser action, revalidate the current WorkCommission, OutcomeContract, AuthorityEnvelope, and action digest.
-10. Record a receipt containing the target URL class, action class, result, timestamp, and any external state needed for verification. Never store secrets, session cookies, authorization headers, payment details, or raw credential values.
+1. Call `list-tabs` once.
+2. If the connector reports disconnected, unavailable, or permission denied:
+   - set `USER_PERMISSION_REQUIRED`;
+   - tell the operator exactly: enable Opera Browser Connector → **Allow AI connection**, and sign into Opera if required;
+   - stop. Do not loop, retry, use another browser, or attempt OS-level permission automation.
+3. After the operator reports the permission was enabled, call `list-tabs` once more. The operator's statement does not itself prove connection.
+4. A connection is established only when the connector returns a valid tab list.
+5. Navigate only to a target admitted by the current WorkCommission.
+6. Inspect the target page to establish whether the required account is authenticated.
+7. If sign-in, MFA, CAPTCHA, recovery, password, or identity verification is required, stop at `CONNECTED_UNAUTHENTICATED` and hand control to the user. Never capture or automate secret credentials.
 
-## Required safety properties
+## Read-only behavior
 
-```text
-browser_permission_bypass = false
-credential_theft = false
-captcha_bypass = false
-mfa_bypass = false
-ambient_authority = false
-silent_scope_growth = false
-secret_logging = false
-auto_retry_on_permission_denial = false
-```
+Once connected and authenticated, begin in `READY_READ_ONLY`.
 
-## GitHub Actions billing remediation profile
+Read-only actions may:
 
-When the active WorkCommission authorizes the current AIGC GitHub Actions remediation, this skill may:
+- inspect current account identity;
+- inspect GitHub Actions usage, budgets, policies, and runner-admission notices;
+- inspect the exact PR, workflow run, job, and artifact state;
+- compare observed state with the active authorization record;
+- prepare an exact action digest.
 
-- verify authenticated GitHub state;
-- navigate to billing / Actions usage and budget settings;
-- read current Actions usage and current budget state;
-- set a GitHub Actions budget only when an exact bounded financial authorization is current;
-- enable `Stop usage at budget` only when required by the authorization;
-- save the setting;
-- re-read the page to verify the persisted value;
-- emit a non-sensitive remediation receipt.
+Read-only evidence does not grant write authority.
 
-For the current authorized AIGC remediation, the permitted bound is:
+## Consequential browser actions
+
+Before a bounded write:
+
+1. Resolve the exact authorization source.
+2. Bind account, product, target page, action, amount/scope, stop conditions, purpose, and expiry.
+3. Compute an action digest.
+4. Revalidate the authorization immediately before the final save/submit action.
+5. Execute only the bound action.
+6. Re-read the page after save.
+7. Emit a sanitized receipt.
+
+Stop if the page displays an unexpected account, payment-method change, identity challenge, broader product scope, higher amount, missing stop-at-budget protection, or material UI ambiguity.
+
+## Current GitHub Actions capacity-remediation profile
+
+Authorization source: AIGC issue `#218` and the current operator authorization.
 
 ```text
 account = Lornt1666
 product = GitHub Actions
+currency = USD
 maximum_additional_budget_usd <= 12
 stop_usage_at_budget = true
 purpose = exact-head AIGC validation only
-expires = 2026-09-01
+expires_on = 2026-09-01
+payment_method_change = prohibited
+unrelated_product_budget_change = prohibited
 ```
 
-The skill must fail closed if the UI shows a different account, a broader budget, missing stop-at-budget protection, an expired authorization, or any unexpected payment/identity prompt.
-
-## Success condition
-
-A browser session is considered connected only when:
+Execution sequence:
 
 ```text
-connector_available
-AND user_permission_present
-AND target_session_state_observed
+probe connector
+-> verify GitHub authentication and account
+-> read Actions usage and budget state
+-> verify current authorization is unexpired
+-> prepare exact <= USD 12 action digest
+-> save budget with Stop usage at budget enabled
+-> re-read persisted state
+-> emit remediation receipt
+-> permit exactly one exact-current-head PR #225 CI attempt
+-> inspect runner_id, steps, logs, tests, and artifacts
+-> no blind retry
 ```
 
-A bounded write is complete only when:
+`CI_RETRY_ELIGIBLE` becomes true only after the saved budget state is re-read and exactly matches the action plan.
+
+## Receipt requirements
+
+Record only non-sensitive fields:
 
 ```text
-authority_valid
-AND action_digest_bound
-AND write_executed
-AND persisted_state_re-read
-AND evidence_receipt_recorded
+skill_version
+connector
+connection_state
+target_service
+target_account
+authorization_reference
+action_digest
+requested_budget_usd
+stop_usage_at_budget
+persisted_state_verified
+observed_at
+ci_retry_eligible
+external_action_performed
+```
+
+Never record passwords, cookies, tokens, authorization headers, payment card or bank details, MFA values, recovery codes, or full sensitive screenshots.
+
+## Failure behavior
+
+```text
+connector unavailable -> USER_PERMISSION_REQUIRED
+user permission absent -> USER_PERMISSION_REQUIRED
+GitHub signed out -> CONNECTED_UNAUTHENTICATED
+wrong GitHub account -> BLOCKED
+expired authorization -> BLOCKED
+budget > USD 12 -> BLOCKED
+Stop usage disabled -> BLOCKED
+payment-method prompt -> BLOCKED
+persisted state mismatch -> BLOCKED
+second CI attempt without classified repair/transient cause -> BLOCKED
 ```
 
 ## Non-goals
 
-This skill does not install Opera, enable the connector permission, impersonate the user, bypass authentication, expose credentials, or create authority that does not already exist.
+This skill does not install Opera, toggle `Allow AI connection`, impersonate the user, bypass authentication, solve CAPTCHA, bypass MFA, change payment methods, expose credentials, or create authority that does not already exist.
