@@ -12,8 +12,8 @@ def test_status_bridge_is_sanitized_and_non_authorizing():
     assert result["authority_granted"] is False
     assert result["external_action_performed"] is False
     assert result["plugin"]["host_validation"] == "NOT_PERFORMED"
-    assert result["readiness"]["verified_required_checks"] == 10
-    assert result["readiness"]["verified_applicable_ratio"] == 0.294118
+    assert result["readiness"]["verified_required_checks"] == 12
+    assert result["readiness"]["verified_applicable_ratio"] == 0.352941
     assert result["readiness"]["production_ready"] is False
     serialized = json.dumps(result).lower()
     assert "authorization: bearer" not in serialized
@@ -25,7 +25,7 @@ def test_control_center_is_structured_and_widget_independent():
         {"operation": "aigc_render_control_center", "arguments": {}}
     )
     assert result["widget_required"] is False
-    assert result["readiness"]["verified_required_checks"] == 10
+    assert result["readiness"]["verified_required_checks"] == 12
     assert "cloud_mutation" in result["blocked_actions"]
     assert result["authority_granted"] is False
 

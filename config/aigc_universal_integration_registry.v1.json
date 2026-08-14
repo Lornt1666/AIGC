@@ -173,7 +173,7 @@
       "class": "llm",
       "required_for_v1": true,
       "status": "implemented",
-      "certification": {"terms_reviewed": false, "identity_bound": false, "scope_bound": true, "recovery_tested": false, "live_receipt_ids": []},
+      "certification": {"terms_reviewed": true, "terms_review_receipt_id": "TERMS-REVIEW-20260814-OAI-GCP", "identity_bound": false, "scope_bound": true, "recovery_tested": false, "live_receipt_ids": []},
       "allowed_effects": ["generate.text under a one-use exact request permit"],
       "forbidden_effects": ["unbounded tool use", "secret exposure", "automatic retry after indeterminate outcome"]
     },
@@ -182,7 +182,7 @@
       "class": "llm",
       "required_for_v1": true,
       "status": "implemented",
-      "certification": {"terms_reviewed": false, "identity_bound": false, "scope_bound": true, "recovery_tested": false, "live_receipt_ids": []},
+      "certification": {"terms_reviewed": true, "terms_review_receipt_id": "TERMS-REVIEW-20260814-OAI-GCP", "identity_bound": false, "scope_bound": true, "recovery_tested": false, "live_receipt_ids": []},
       "allowed_effects": ["generate.text under a one-use exact request permit"],
       "forbidden_effects": ["unbounded tool use", "cross-region secret access", "automatic retry after indeterminate outcome"]
     },
@@ -191,7 +191,7 @@
       "class": "website",
       "required_for_v1": false,
       "status": "blocked",
-      "certification": {"terms_reviewed": false, "identity_bound": false, "scope_bound": false, "recovery_tested": false, "live_receipt_ids": []},
+      "certification": {"terms_reviewed": false, "terms_review_receipt_id": null, "identity_bound": false, "scope_bound": false, "recovery_tested": false, "live_receipt_ids": []},
       "allowed_effects": ["public read-only discovery when site policy permits"],
       "forbidden_effects": ["generic unrestricted automation", "credential capture", "CAPTCHA bypass", "mass messaging", "unapproved purchase or submission"]
     },
@@ -200,7 +200,7 @@
       "class": "payment",
       "required_for_v1": false,
       "status": "not_implemented",
-      "certification": {"terms_reviewed": false, "identity_bound": false, "scope_bound": false, "recovery_tested": false, "live_receipt_ids": []},
+      "certification": {"terms_reviewed": false, "terms_review_receipt_id": null, "identity_bound": false, "scope_bound": false, "recovery_tested": false, "live_receipt_ids": []},
       "allowed_effects": ["tokenized sandbox transaction after agreement and permit validation"],
       "forbidden_effects": ["worker wage deduction", "unapproved charge", "unreconciled retry", "raw payment credential storage"]
     },
@@ -209,7 +209,7 @@
       "class": "marketplace",
       "required_for_v1": false,
       "status": "blocked",
-      "certification": {"terms_reviewed": false, "identity_bound": false, "scope_bound": false, "recovery_tested": false, "live_receipt_ids": []},
+      "certification": {"terms_reviewed": false, "terms_review_receipt_id": null, "identity_bound": false, "scope_bound": false, "recovery_tested": false, "live_receipt_ids": []},
       "allowed_effects": ["internal research and draft preparation"],
       "forbidden_effects": ["automatic outreach", "securities solicitation", "patent ownership claims", "IP listing or transfer without verified title and explicit authority"]
     }

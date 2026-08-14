@@ -132,6 +132,14 @@ def _validate_core_contract(registry: Mapping[str, Any]) -> None:
                         f"surface {item_id} has receipts for undeclared evidence: "
                         + ", ".join(unknown_receipts)
                     )
+            elif collection == "connectors":
+                certification = item.get("certification", {})
+                terms_reviewed = certification.get("terms_reviewed") is True
+                terms_receipt = certification.get("terms_review_receipt_id")
+                if terms_reviewed != (isinstance(terms_receipt, str) and bool(terms_receipt)):
+                    raise RegistryValidationError(
+                        f"connector {item_id} terms review and receipt must be bound together"
+                    )
 
     threshold = registry["completion_policy"].get("minimum_verified_applicable_ratio")
     if not isinstance(threshold, (int, float)) or isinstance(threshold, bool) or not 0 <= threshold <= 1:
@@ -186,7 +194,7 @@ def evaluate_registry(registry: Mapping[str, Any]) -> IntegrationReadiness:
         certification = connector["certification"]
         checks = (
             connector["status"] == "verified",
-            certification["terms_reviewed"],
+            certification["terms_reviewed"] and bool(certification["terms_review_receipt_id"]),
             certification["identity_bound"],
             certification["scope_bound"],
             certification["recovery_tested"],

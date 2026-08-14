@@ -665,6 +665,7 @@ The prompt is paired with:
 - `schemas/aigc_universal_integration_registry.schema.json`
 - `schemas/aigc_subsystem_contracts.schema.json`
 - `schemas/aigc_subsystem_validation_receipt.schema.json`
+- `schemas/aigc_provider_terms_review.schema.json`
 - `src/core/nexus/universal_integration.py`
 - `src/core/nexus/subsystem_contracts.py`
 - `scripts/validate_aigc_universal_integration.py`
@@ -672,5 +673,6 @@ The prompt is paired with:
 - `tests/test_aigc_universal_integration.py`
 - `tests/test_aigc_subsystem_contracts.py`
 - `reports/artifacts/aigc_subsystem_contracts_local_validation.json`
+- `reports/artifacts/aigc_provider_terms_review_2026-08-14.json`
 
-The five named subsystem contracts are locally implemented and receipt-verified. That raises the deterministic readiness result to `10/34` (`0.294118`) while `production_ready=false` remains mandatory. Local contract verification does not pretend that cloud, hardware, mobile, stores, host plugins, revenue, patents, investors or mainnet are already real.
+The five named subsystem contracts are locally implemented and receipt-verified. A source-bound engineering policy review of the current OpenAI and Google provider terms adds two more bounded checks. That raises the deterministic readiness result to `12/34` (`0.352941`) while `production_ready=false` remains mandatory. Local contract and policy verification do not pretend that cloud, hardware, mobile, stores, host plugins, revenue, patents, investors or mainnet are already real.

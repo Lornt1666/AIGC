@@ -145,9 +145,15 @@
         "certification": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["terms_reviewed", "identity_bound", "scope_bound", "recovery_tested", "live_receipt_ids"],
+          "required": ["terms_reviewed", "terms_review_receipt_id", "identity_bound", "scope_bound", "recovery_tested", "live_receipt_ids"],
           "properties": {
             "terms_reviewed": {"type": "boolean"},
+            "terms_review_receipt_id": {
+              "oneOf": [
+                {"type": "string", "minLength": 1},
+                {"type": "null"}
+              ]
+            },
             "identity_bound": {"type": "boolean"},
             "scope_bound": {"type": "boolean"},
             "recovery_tested": {"type": "boolean"},

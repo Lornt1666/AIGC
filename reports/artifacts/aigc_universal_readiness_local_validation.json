@@ -15,7 +15,7 @@
   ],
   "external_action_performed": false,
   "production_ready": false,
-  "registry_sha256": "e27b3613c774d79c5125a3a637db75382da4b3b16f721e24d9be3a4b374d1189",
-  "verified_applicable_ratio": 0.294118,
-  "verified_required_checks": 10
+  "registry_sha256": "844f61dbf34355201d567a96365632062553c995e30983ad84fbaa8f0c0aa752",
+  "verified_applicable_ratio": 0.352941,
+  "verified_required_checks": 12
 }

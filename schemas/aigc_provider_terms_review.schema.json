@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aigc:schema:provider-terms-review:v1",
+  "title": "AIGC Provider Terms Engineering Review V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "review_id", "reviewed_at", "scope", "providers", "mandatory_revalidation", "legal_approval_granted", "provider_identity_verified", "provider_calls_performed", "authority_granted", "external_action_performed", "review_sha256"],
+  "properties": {
+    "schema_version": {"const": "aigc.provider-terms-review.v1"},
+    "review_id": {"type": "string", "pattern": "^TERMS-REVIEW-[A-Z0-9-]+$"},
+    "reviewed_at": {"type": "string", "format": "date"},
+    "scope": {"const": "ENGINEERING_POLICY_REVIEW_NOT_LEGAL_ADVICE"},
+    "providers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["openai_responses", "vertex_gemini"],
+      "properties": {
+        "openai_responses": {"$ref": "#/$defs/provider"},
+        "vertex_gemini": {"$ref": "#/$defs/provider"}
+      }
+    },
+    "mandatory_revalidation": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"type": "string", "minLength": 10}},
+    "legal_approval_granted": {"const": false},
+    "provider_identity_verified": {"const": false},
+    "provider_calls_performed": {"const": 0},
+    "authority_granted": {"const": false},
+    "external_action_performed": {"const": false},
+    "review_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "$defs": {
+    "provider": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["terms_reviewed", "sources", "binding_findings", "live_use_disposition"],
+      "properties": {
+        "terms_reviewed": {"const": true},
+        "sources": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["url", "effective_or_modified"],
+            "properties": {
+              "url": {"type": "string", "format": "uri", "pattern": "^https://"},
+              "effective_or_modified": {"type": "string", "minLength": 10}
+            }
+          }
+        },
+        "binding_findings": {"type": "array", "minItems": 5, "items": {"type": "string", "minLength": 20}},
+        "live_use_disposition": {"type": "string", "pattern": "^BLOCKED_"}
+      }
+    }
+  }
+}
