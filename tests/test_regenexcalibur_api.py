@@ -91,3 +91,68 @@ def test_coordination_endpoint_rejects_caller_secret_material_with_422():
     )
 
     assert response.status_code == 422
+
+
+def test_autodesign_endpoint_runs_one_bounded_iteration_and_exposes_closed_schema():
+    payload = {
+        "request_id": "AUTODESIGN-REQ-API001",
+        "objective": "Autodesign the bounded RegenExcalibur kernel.",
+        "target_component": "REGENEXCALIBUR_AUTODESIGN_KERNEL",
+        "industry_scope": ["AI_SYSTEMS", "CLOUD"],
+        "state": {
+            "state_id": "AUTODESIGN-STATE-API001",
+            "revision": 1,
+            "current_capabilities": [
+                "CAP-CHCM-TYPED-REGISTRY",
+                "CAP-BOUNDED-AUTODESIGN-KERNEL",
+                "CAP-DETERMINISTIC-COORDINATION-BRIDGE",
+            ],
+            "capability_evidence": {
+                "CAP-CHCM-TYPED-REGISTRY": ["artifact://chcm"],
+                "CAP-BOUNDED-AUTODESIGN-KERNEL": ["artifact://kernel"],
+                "CAP-DETERMINISTIC-COORDINATION-BRIDGE": ["artifact://bridge"],
+            },
+            "artifact_refs": [],
+        },
+        "iteration": {
+            "current_iteration": 0,
+            "maximum_iterations": 4,
+            "proposal_limit": 3,
+        },
+    }
+    client = TestClient(create_regenexcalibur_app())
+    response = client.post("/v1/autodesign/iterate", json=payload)
+
+    assert response.status_code == 200
+    assert response.json()["terminal_status"] == "PASS"
+    assert response.json()["self_modification_performed"] is False
+    assert response.json()["external_actions_performed"] == 0
+    openapi = client.get("/openapi.json").json()
+    operation = openapi["paths"]["/v1/autodesign/iterate"]["post"]
+    assert operation["summary"] == (
+        "Run one bounded RegenExcalibur autodesign iteration"
+    )
+    schema = openapi["components"]["schemas"]["AutodesignRequest"]
+    assert schema["additionalProperties"] is False
+    assert "permit_id" not in str(schema)
+
+
+def test_autodesign_endpoint_maps_blueprint_reference_errors_to_422():
+    payload = {
+        "request_id": "AUTODESIGN-REQ-API002",
+        "objective": "Reject an undeclared domain.",
+        "target_component": "REGENEXCALIBUR_AUTODESIGN_KERNEL",
+        "industry_scope": ["UNDECLARED_REALM"],
+        "state": {
+            "state_id": "AUTODESIGN-STATE-API002",
+            "current_capabilities": [],
+            "capability_evidence": {},
+        },
+        "iteration": {"current_iteration": 0, "maximum_iterations": 2},
+    }
+    response = TestClient(create_regenexcalibur_app()).post(
+        "/v1/autodesign/iterate", json=payload
+    )
+
+    assert response.status_code == 422
+    assert "unknown industry domains" in response.json()["detail"]

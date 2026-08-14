@@ -33,6 +33,9 @@ surfaces and explicit external blockers.
 - [Coordination Engineering Endpoint](docs/architecture/AIGC_COORDINATION_ENGINEERING_ENDPOINT_V1.md)
   — one closed HTTP contract for canonical state, bounded iteration, typed tool
   functions, multi-agent DAG waves, Alpha Plan simulation, and hashed receipts.
+- [RegenExcalibur CHCM and bounded autodesign](docs/architecture/AIGC_REGENEXCALIBUR_CHCM_AUTODESIGN_V1.md)
+  — typed Pantheon/CEO/Archon/C-suite mapping, runtime kernel, nine-domain
+  projection, finite Ω∞ evolution, and the executed zero-egress shadow campaign.
 - [Procurement acceleration sandbox](docs/architecture/AIGC_PROCUREMENT_SANDBOX_V1.md)
   — corrected 13-agent catalog, synthetic adversarial simulations, OPA policy,
   and inert zero-replica deployment templates.
@@ -101,6 +104,8 @@ product-quality score and must not be increased without new exact-artifact proof
 .venv/bin/python scripts/build_aigc_evidence_program.py --check
 .venv/bin/python scripts/validate_aigc_procurement_sandbox.py --check
 .venv/bin/python scripts/run_coordination_endpoint_acceptance.py
+.venv/bin/python scripts/generate_autodesign_contracts.py
+.venv/bin/python scripts/run_regenexcalibur_autodesign.py
 .venv/bin/python -m pytest -q
 ```
 

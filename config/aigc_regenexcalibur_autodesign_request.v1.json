@@ -1,0 +1,49 @@
+{
+  "request_id": "AUTODESIGN-REQ-REFERENCE001",
+  "objective": "Autodesign the RegenExcalibur autodesign kernel across the declared industry matrix while preserving evidence, safety, authority, and finite-run invariants.",
+  "target_component": "REGENEXCALIBUR_AUTODESIGN_KERNEL",
+  "industry_scope": [
+    "ENERGY",
+    "ROBOTICS",
+    "CLOUD",
+    "BIOTECH",
+    "MATERIALS",
+    "DEFENSE",
+    "LOGISTICS",
+    "FINANCE",
+    "AI_SYSTEMS"
+  ],
+  "state": {
+    "state_id": "AUTODESIGN-STATE-REFERENCE001",
+    "revision": 1,
+    "current_capabilities": [
+      "CAP-CHCM-TYPED-REGISTRY",
+      "CAP-BOUNDED-AUTODESIGN-KERNEL",
+      "CAP-DETERMINISTIC-COORDINATION-BRIDGE"
+    ],
+    "capability_evidence": {
+      "CAP-CHCM-TYPED-REGISTRY": [
+        "repo://AIGC/config/aigc_regenexcalibur_chcm.v1.json"
+      ],
+      "CAP-BOUNDED-AUTODESIGN-KERNEL": [
+        "repo://AIGC/src/autodesign/engine.py"
+      ],
+      "CAP-DETERMINISTIC-COORDINATION-BRIDGE": [
+        "repo://AIGC/src/coordination/engine.py",
+        "repo://AIGC/reports/artifacts/aigc_coordination_endpoint_local_validation.json"
+      ]
+    },
+    "artifact_refs": [
+      "repo://AIGC/config/aigc_regenexcalibur_chcm.v1.json",
+      "repo://AIGC/src/autodesign/engine.py",
+      "repo://AIGC/src/coordination/engine.py"
+    ]
+  },
+  "iteration": {
+    "current_iteration": 0,
+    "maximum_iterations": 6,
+    "proposal_limit": 3
+  },
+  "execution_requested": false,
+  "deterministic_seed": 42
+}

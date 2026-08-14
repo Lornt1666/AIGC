@@ -1,7 +1,9 @@
 from __future__ import annotations
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
+from src.autodesign import AutodesignRequest, run_autodesign_iteration
+from src.autodesign.models import AutodesignReceipt
 from src.coordination import CoordinationEngineeringRequest, engineer_coordination_plan
 from src.coordination.models import CoordinationEngineeringReceipt
 from src.regenexcalibur.diagnostics import run_all_diagnostics
@@ -42,6 +44,17 @@ def create_regenexcalibur_app() -> FastAPI:
         request: CoordinationEngineeringRequest,
     ) -> dict[str, object]:
         return engineer_coordination_plan(request)
+
+    @app.post(
+        "/v1/autodesign/iterate",
+        response_model=AutodesignReceipt,
+        summary="Run one bounded RegenExcalibur autodesign iteration",
+    )
+    def autodesign_iteration(request: AutodesignRequest) -> dict[str, object]:
+        try:
+            return run_autodesign_iteration(request)
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
 
     return app
 
