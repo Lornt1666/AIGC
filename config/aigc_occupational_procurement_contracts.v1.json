@@ -1,0 +1,79 @@
+{
+  "schema_version": "aigc.occupational-procurement-contracts.v1",
+  "canonical_commit_allowed": false,
+  "contracts": [
+    {
+      "authority": "ISCO",
+      "version": "ISCO-08",
+      "dataset_kind": "STRUCTURE_AND_DEFINITIONS",
+      "acquisition_mode": "DIRECT_FILE",
+      "endpoint": "https://www.ilo.org/ilostat-files/ISCO/newdocs-08-2021/ISCO-08/ISCO-08%20EN%20Structure%20and%20definitions.xlsx",
+      "allowed_hosts": ["www.ilo.org"],
+      "concept_kind": "OCCUPATION",
+      "expected_media_types": ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/octet-stream"],
+      "max_download_bytes": 50000000,
+      "max_archive_uncompressed_bytes": 250000000
+    },
+    {
+      "authority": "NOC",
+      "version": "2021.0",
+      "dataset_kind": "CLASSIFICATION_STRUCTURE",
+      "acquisition_mode": "DIRECT_FILE",
+      "endpoint": "https://www.statcan.gc.ca/en/subjects/standard/noc/2021/indexV1/noc-2021-v1.0-classification-structure.csv",
+      "allowed_hosts": ["www.statcan.gc.ca"],
+      "concept_kind": "OCCUPATION",
+      "expected_media_types": ["text/csv", "text/plain", "application/octet-stream"],
+      "max_download_bytes": 50000000,
+      "max_archive_uncompressed_bytes": 50000000
+    },
+    {
+      "authority": "NOC",
+      "version": "2021.0",
+      "dataset_kind": "ELEMENTS",
+      "acquisition_mode": "DIRECT_FILE",
+      "endpoint": "https://www.statcan.gc.ca/en/subjects/standard/noc/2021/indexV1/noc-2021-v1.0-elements.csv",
+      "allowed_hosts": ["www.statcan.gc.ca"],
+      "concept_kind": "OCCUPATION",
+      "expected_media_types": ["text/csv", "text/plain", "application/octet-stream"],
+      "max_download_bytes": 100000000,
+      "max_archive_uncompressed_bytes": 100000000
+    },
+    {
+      "authority": "SOC",
+      "version": "2018",
+      "dataset_kind": "STRUCTURE",
+      "acquisition_mode": "DIRECT_FILE",
+      "endpoint": "https://www.bls.gov/soc/2018/soc_structure_2018.xlsx",
+      "allowed_hosts": ["www.bls.gov"],
+      "concept_kind": "OCCUPATION",
+      "expected_media_types": ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/octet-stream"],
+      "max_download_bytes": 50000000,
+      "max_archive_uncompressed_bytes": 250000000
+    },
+    {
+      "authority": "ONET",
+      "version": "30.3",
+      "dataset_kind": "CORE_DATABASE_CSV_ARCHIVE",
+      "acquisition_mode": "OFFICIAL_ARCHIVE",
+      "endpoint": "https://www.onetcenter.org/dl_files/database/db_30_3_csv.zip",
+      "allowed_hosts": ["www.onetcenter.org"],
+      "concept_kind": "OCCUPATION",
+      "expected_media_types": ["application/zip", "application/octet-stream"],
+      "max_download_bytes": 500000000,
+      "max_archive_uncompressed_bytes": 2000000000
+    },
+    {
+      "authority": "ESCO",
+      "version": "1.2.1",
+      "dataset_kind": "CLASSIFICATION_API_SNAPSHOT",
+      "acquisition_mode": "API_PAGINATED",
+      "endpoint": "https://ec.europa.eu/esco/api",
+      "allowed_hosts": ["ec.europa.eu"],
+      "concept_kind": "OCCUPATION",
+      "expected_media_types": ["application/json", "application/ld+json"],
+      "max_download_bytes": 1000000000,
+      "max_archive_uncompressed_bytes": 1000000000,
+      "note": "Exact v1.2.1 API availability must be observed from official metadata before acquisition proceeds; do not silently fall back to a different selectable API version."
+    }
+  ]
+}
