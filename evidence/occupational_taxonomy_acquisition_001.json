@@ -1,0 +1,93 @@
+{
+  "commission_id": "WC_AIGC_OCCUPATIONAL_TAXONOMY_ACQUISITION_001",
+  "contract_id": "OC_AIGC_OCCUPATIONAL_TAXONOMY_ACQUISITION_001",
+  "phase": "ACQUISITION_AND_DRY_RUN",
+  "result": "BLOCKED",
+  "canonical_registry_mutated": false,
+  "dry_run_executed": false,
+  "blocker_class": "EXECUTION_ENVIRONMENT_BINARY_TRANSFER_UNAVAILABLE",
+  "blocker_detail": "Authoritative endpoints were resolved and version semantics verified from official publishers, but this execution environment cannot materialize the binary/CSV payload bytes: the web retrieval layer reports unsupported binary/CSV content types and the local container has no outbound DNS/network access. SHA-256 receipts and adapter dry-runs therefore cannot be truthfully produced in this run.",
+  "sources": [
+    {
+      "authority": "ISCO",
+      "publisher": "International Labour Organization",
+      "version": "ISCO-08",
+      "dataset_kind": "STRUCTURE_AND_DEFINITIONS",
+      "official_page": "https://isco.ilo.org/en/isco-08/",
+      "direct_payload_url": "https://www.ilo.org/ilostat-files/ISCO/newdocs-08-2021/ISCO-08/ISCO-08%20EN%20Structure%20and%20definitions.xlsx",
+      "payload_status": "RESOLVED_NOT_MATERIALIZED",
+      "sha256": null,
+      "byte_size": null,
+      "dry_run_status": "NOT_EXECUTED"
+    },
+    {
+      "authority": "ESCO",
+      "publisher": "European Commission DG Employment, Social Affairs and Inclusion",
+      "version": "1.2.1",
+      "dataset_kind": "CLASSIFICATION",
+      "official_page": "https://esco.ec.europa.eu/en/use-esco/download",
+      "direct_payload_url": null,
+      "payload_status": "BLOCKED_INTERACTIVE_EMAIL_DOWNLOAD_FLOW",
+      "sha256": null,
+      "byte_size": null,
+      "dry_run_status": "NOT_EXECUTED",
+      "note": "Current official download workflow requires privacy-statement acknowledgement and an email address; the sealed commission prohibits submitting personal information or bypassing that flow."
+    },
+    {
+      "authority": "NOC",
+      "publisher": "Statistics Canada / Employment and Social Development Canada",
+      "version": "2021.0",
+      "dataset_kind": "CLASSIFICATION_STRUCTURE",
+      "official_page": "https://www.statcan.gc.ca/en/subjects/standard/noc/2021/indexV1",
+      "direct_payload_url": "https://www.statcan.gc.ca/en/subjects/standard/noc/2021/indexV1/noc-2021-v1.0-classification-structure.csv",
+      "payload_status": "RESOLVED_NOT_MATERIALIZED",
+      "sha256": null,
+      "byte_size": null,
+      "dry_run_status": "NOT_EXECUTED"
+    },
+    {
+      "authority": "NOC",
+      "publisher": "Statistics Canada / Employment and Social Development Canada",
+      "version": "2021.0",
+      "dataset_kind": "ELEMENTS",
+      "official_page": "https://www.statcan.gc.ca/en/subjects/standard/noc/2021/indexV1",
+      "direct_payload_url": "https://www.statcan.gc.ca/en/subjects/standard/noc/2021/indexV1/noc-2021-v1.0-elements.csv",
+      "payload_status": "RESOLVED_NOT_MATERIALIZED",
+      "sha256": null,
+      "byte_size": null,
+      "dry_run_status": "NOT_EXECUTED"
+    },
+    {
+      "authority": "SOC",
+      "publisher": "U.S. Bureau of Labor Statistics",
+      "version": "2018",
+      "dataset_kind": "STRUCTURE",
+      "official_page": "https://www.bls.gov/soc/2018/home.htm",
+      "direct_payload_url": "https://www.bls.gov/soc/2018/soc_structure_2018.xlsx",
+      "payload_status": "RESOLVED_NOT_MATERIALIZED",
+      "sha256": null,
+      "byte_size": null,
+      "dry_run_status": "NOT_EXECUTED"
+    },
+    {
+      "authority": "ONET",
+      "publisher": "U.S. Department of Labor Employment and Training Administration / O*NET Resource Center",
+      "version": "30.3",
+      "dataset_kind": "CORE_DATABASE_CSV_ARCHIVE",
+      "official_page": "https://www.onetcenter.org/database.html",
+      "direct_payload_url": "https://www.onetcenter.org/dl_files/database/db_30_3_csv.zip",
+      "payload_status": "RESOLVED_NOT_MATERIALIZED",
+      "sha256": null,
+      "byte_size": null,
+      "dry_run_status": "NOT_EXECUTED"
+    }
+  ],
+  "reports": {
+    "immutable_history_conflicts": "NOT_COMPUTED_NO_PAYLOAD_BYTES",
+    "crosswalk_gaps": "NOT_COMPUTED_NO_PAYLOAD_BYTES",
+    "normalization_counts": "NOT_COMPUTED_NO_PAYLOAD_BYTES",
+    "unsupported_records": "NOT_COMPUTED_NO_PAYLOAD_BYTES"
+  },
+  "canonical_ingestion_recommendation": "DENY_UNTIL_PAYLOADS_MATERIALIZED_HASHED_AND_DRY_RUN_PASSES",
+  "next_transition": "Resume this exact sealed commission in a runtime capable of downloading official payload bytes, or provide the official downloaded files to AIGC. Compute SHA-256 before normalization, then execute dry-run imports and inspect conflicts/crosswalk gaps before seeking canonical-ingestion approval."
+}
