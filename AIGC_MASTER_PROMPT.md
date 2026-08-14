@@ -46,6 +46,60 @@ Before any consequential transition, the controller must revalidate those bindin
 
 `Quest` is a UI/migration compatibility alias only. Quest state never outranks or mutates canonical WorkCommission/WorkAttempt state.
 
+## Occupational knowledge law
+
+Official occupational knowledge is federated, source-versioned descriptive evidence. It never creates execution authority.
+
+```text
+ISCO  -> global classification backbone
+ESCO  -> granular occupation + skills graph
+NOC   -> Canadian TEER/regulatory localization
+SOC   -> strict U.S. classification
+O*NET -> task/activity/context/worker/title intelligence
+AIGC  -> competency/evidence/scope/authority/methods/experience
+```
+
+Permanent occupational-knowledge invariants:
+
+- `Job != Occupation != Discipline != Role`.
+- Title aliases are not canonical occupations.
+- Classify by work performed, tasks, responsibilities, outputs, skills, and context rather than title alone.
+- Every imported concept retains source authority, taxonomy version, source ID/URI, checksum, and stable AIGC identity.
+- Existing `(source, version, concept-kind, source-id)` concepts are immutable.
+- Taxonomy updates append new versions; historical concepts remain addressable.
+- Crosswalks are typed, confidence-bearing, and provenance-bearing; semantic similarity is not exact equivalence.
+- Market/emergent titles cannot silently modify official occupational truth.
+- Credential != competency != authority.
+- Regulatory/jurisdictional restrictions override raw capability.
+- Network/file acquisition cannot mutate the canonical occupational registry directly.
+
+Occupational ingestion must follow:
+
+```text
+ACQUIRE OUTSIDE REGISTRY
+-> BIND SOURCE + VERSION + DATASET KIND + EXPECTED SHA256
+-> VERIFY CHECKSUM
+-> NORMALIZE THROUGH SOURCE-SPECIFIC ADAPTER
+-> DRY-RUN DIFF
+-> BLOCK ON IMMUTABLE-HISTORY CONFLICT
+-> APPEND-ONLY COMMIT
+-> EMIT INGESTION RECEIPT
+```
+
+`RawSourcePackage` must identify the dataset and, when needed, its concept kind. Multi-table sources such as O*NET require row-level identities for non-occupation records; an occupation code alone may never identify multiple tasks, skills, titles, activities, contexts, or technologies.
+
+Canonical occupational mutation is forbidden unless:
+
+```text
+INGESTION_COMMIT_ELIGIBLE :=
+    source_checksum_valid
+    AND adapter_authority_matches
+    AND dataset_semantics_bound
+    AND concept_kind_supported
+    AND dry_run_completed
+    AND immutable_history_conflicts = 0
+```
+
 ## Repository Engineering discipline
 
 `REPOSITORY_ENGINEERING` is a bounded occupational specialist discipline. It may map, analyze, repair, refactor, test, document, modernize, and operationalize repositories only under a sealed WorkCommission and OutcomeContract.
@@ -206,6 +260,7 @@ Definition of done:
 - Contracts and schemas validate.
 - Required deterministic, adversarial, domain-specific, security, and independent evaluator gates pass.
 - Repository Engineering mutation, when applicable, had `WRITE_ELIGIBLE=true` before the first authoritative write.
+- Occupational knowledge ingestion, when applicable, had a verified source checksum and clean dry-run before canonical persistence.
 - Secret scanning passes where applicable.
 - CI passes where CI is an applicable acceptance gate.
 - Required delivery or external-state receipts exist.
@@ -218,10 +273,4 @@ Reference architecture:
 
 - `ARCHITECTURE.md`
 - `docs/architecture/AIGC_OCCUPATIONAL_AUTONOMY_V2.md`
-- `docs/architecture/AIGC_TRUTH_METHOD_ATTEMPT_EVIDENCE_INVARIANT_V1.md`
-- `docs/architecture/AIGC_REPOSITORY_ENGINEERING_DISCIPLINE_V1.md`
-- `schemas/aigc_occupational_control_plane.schema.json`
-- `schemas/aigc_work_execution_plane.schema.json`
-- `schemas/aigc_work_evidence_receipt.schema.json`
-- `schemas/aigc_repository_engineering_discipline.schema.json`
-- `config/aigc_repository_engineering_self_hosting_commission.v1.json`
+- `docs/architecture/AIGC_OCCUPATIONAL_KNOWLEDGE_INGESTION_V1.md`
