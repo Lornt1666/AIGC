@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/aigc_work_evidence_receipt.schema.json",
+  "title": "AIGC Work Evidence Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "receipt_id",
+    "work_attempt_id",
+    "occupational_binding",
+    "attempt_execution_revision",
+    "evidence_kind",
+    "observed_result",
+    "artifact_digests",
+    "verifier",
+    "recorded_at"
+  ],
+  "properties": {
+    "schema_version": {"const": "aigc.work-evidence-receipt.v1"},
+    "receipt_id": {"$ref": "#/$defs/Id"},
+    "work_attempt_id": {"$ref": "#/$defs/Id"},
+    "occupational_binding": {"$ref": "#/$defs/OccupationalBinding"},
+    "attempt_execution_revision": {"type": "integer", "minimum": 0},
+    "evidence_kind": {
+      "enum": [
+        "STRUCTURAL",
+        "TEST",
+        "SECURITY",
+        "PERFORMANCE",
+        "DOMAIN",
+        "INDEPENDENT_VERIFICATION",
+        "EXTERNAL_STATE",
+        "DELIVERY",
+        "ROLLBACK",
+        "PORTFOLIO"
+      ]
+    },
+    "observed_result": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "artifact_digests": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/Sha256"}
+    },
+    "verifier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verifier_type", "verifier_id", "independent_of_authoring_lineage"],
+      "properties": {
+        "verifier_type": {
+          "enum": ["DETERMINISTIC_ORACLE", "INDEPENDENT_AGENT", "HUMAN", "EXTERNAL_SYSTEM"]
+        },
+        "verifier_id": {"$ref": "#/$defs/NonEmptyString"},
+        "independent_of_authoring_lineage": {"type": "boolean"}
+      }
+    },
+    "external_state_freshness": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["observed_at", "source"],
+      "properties": {
+        "observed_at": {"type": "string", "format": "date-time"},
+        "source": {"$ref": "#/$defs/NonEmptyString"}
+      }
+    },
+    "recorded_at": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "Id": {"type": "string", "pattern": "^[A-Z][A-Z0-9_-]{2,127}$"},
+    "Sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "NonEmptyString": {"type": "string", "minLength": 1, "maxLength": 2000},
+    "OccupationalBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "commission_id",
+        "commission_revision",
+        "commission_sha256",
+        "outcome_contract_id",
+        "outcome_contract_revision",
+        "outcome_contract_sha256",
+        "career_mandate_id",
+        "career_mandate_version",
+        "policy_version"
+      ],
+      "properties": {
+        "commission_id": {"$ref": "#/$defs/Id"},
+        "commission_revision": {"type": "integer", "minimum": 1},
+        "commission_sha256": {"$ref": "#/$defs/Sha256"},
+        "outcome_contract_id": {"$ref": "#/$defs/Id"},
+        "outcome_contract_revision": {"type": "integer", "minimum": 1},
+        "outcome_contract_sha256": {"$ref": "#/$defs/Sha256"},
+        "career_mandate_id": {"$ref": "#/$defs/Id"},
+        "career_mandate_version": {"type": "integer", "minimum": 1},
+        "policy_version": {"$ref": "#/$defs/NonEmptyString"}
+      }
+    }
+  }
+}
