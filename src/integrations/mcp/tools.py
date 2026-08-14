@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 from decimal import Decimal, InvalidOperation
+from pathlib import Path
 from typing import Literal
 
 from src.core.epistemic.canonicalization import canonical_sha256
 from src.core.nexus.autonomy_policy import assess_autonomy
 from src.core.nexus.occupation_registry import load_occupation_packs
 from src.core.nexus.research_procurement import build_deep_research_plan
+from src.core.nexus.universal_integration import evaluate_registry, load_and_validate_registry
 from src.domain.nexus.autonomy import ActionIntent
 from src.domain.nexus.contracts import EffectClass
 from src.domain.nexus.research import ResearchProcurementRequest
@@ -27,11 +29,19 @@ SandboxScenario = Literal[
     "REGULATED_SCOPE_REQUEST",
 ]
 
+ROOT = Path(__file__).resolve().parents[3]
+
 
 def get_aigc_status() -> dict[str, object]:
     """Return a concise, safe status projection without reading external systems."""
 
     snapshot = build_nexus_dashboard_snapshot()
+    readiness = evaluate_registry(
+        load_and_validate_registry(
+            ROOT / "config" / "aigc_universal_integration_registry.v1.json",
+            ROOT / "schemas" / "aigc_universal_integration_registry.schema.json",
+        )
+    )
     occupations = [
         {
             "pack_id": pack.pack_id,
@@ -53,6 +63,7 @@ def get_aigc_status() -> dict[str, object]:
         "system": snapshot["system"],
         "connectors": snapshot["connectors"],
         "occupation_packs": occupations,
+        "readiness": readiness.to_dict(),
         "authority_granted": False,
         "external_action_performed": False,
     }

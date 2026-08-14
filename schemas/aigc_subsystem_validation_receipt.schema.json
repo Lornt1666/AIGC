@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aigc:schema:subsystem-validation-receipt:v1",
+  "title": "AIGC Local Subsystem Validation Receipt V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "verification_scope",
+    "contract_set_sha256",
+    "terminal_status",
+    "subsystem_results",
+    "provider_calls_performed",
+    "credentials_accessed",
+    "authority_granted",
+    "external_action_performed",
+    "receipt_sha256",
+    "receipt_id"
+  ],
+  "properties": {
+    "schema_version": {"const": "aigc.subsystem-validation-receipt.v1"},
+    "verification_scope": {"const": "LOCAL_CONTRACT_ONLY"},
+    "contract_set_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "terminal_status": {"const": "PASS"},
+    "subsystem_results": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["silva", "hexgate", "vanis", "correlation_station", "chorus"],
+      "properties": {
+        "silva": {"$ref": "#/$defs/result"},
+        "hexgate": {"$ref": "#/$defs/result"},
+        "vanis": {"$ref": "#/$defs/result"},
+        "correlation_station": {"$ref": "#/$defs/result"},
+        "chorus": {"$ref": "#/$defs/result"}
+      }
+    },
+    "provider_calls_performed": {"const": 0},
+    "credentials_accessed": {"const": false},
+    "authority_granted": {"const": false},
+    "external_action_performed": {"const": false},
+    "receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "receipt_id": {"type": "string", "pattern": "^SUBSYS-[A-F0-9]{24}$"}
+  },
+  "$defs": {
+    "result": {
+      "type": "object",
+      "required": ["terminal_status", "authority_granted", "external_action_performed"],
+      "properties": {
+        "terminal_status": {"type": "string", "minLength": 1},
+        "authority_granted": {"const": false},
+        "external_action_performed": {"const": false}
+      }
+    }
+  }
+}

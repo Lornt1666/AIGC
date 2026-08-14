@@ -37,6 +37,7 @@ def aigc_render_control_center() -> dict[str, object]:
         "schema_version": "aigc.control-center.v1",
         "title": "AIGC Control Center",
         "summary": status["system"],
+        "readiness": status["readiness"],
         "connectors": status["connectors"],
         "available_actions": [
             "inspect_status",

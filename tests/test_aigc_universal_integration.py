@@ -17,6 +17,7 @@ from src.core.nexus.universal_integration import (
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "config" / "aigc_universal_integration_registry.v1.json"
 SCHEMA = ROOT / "schemas" / "aigc_universal_integration_registry.schema.json"
+LOCAL_RECEIPT = ROOT / "reports" / "artifacts" / "aigc_universal_readiness_local_validation.json"
 
 
 def load_registry() -> dict:
@@ -39,6 +40,10 @@ class UniversalIntegrationTests(unittest.TestCase):
         registry = load_registry()
         reordered = json.loads(json.dumps(registry, sort_keys=True))
         self.assertEqual(canonical_sha256(registry), canonical_sha256(reordered))
+
+    def test_committed_local_readiness_receipt_matches_fresh_evaluation(self) -> None:
+        committed = json.loads(LOCAL_RECEIPT.read_text(encoding="utf-8"))
+        self.assertEqual(committed, evaluate_registry(load_registry()).to_dict())
 
     def test_ninety_five_percent_threshold_cannot_hide_a_known_blocker(self) -> None:
         registry = load_registry()
@@ -100,6 +105,26 @@ class UniversalIntegrationTests(unittest.TestCase):
     def test_schema_rejects_subsystem_self_authority(self) -> None:
         registry = copy.deepcopy(load_registry())
         registry["subsystems"][0]["authority_granted"] = True
+        with tempfile.TemporaryDirectory() as directory:
+            invalid = Path(directory) / "invalid_registry.json"
+            invalid.write_text(json.dumps(registry), encoding="utf-8")
+            with self.assertRaises(RegistryValidationError):
+                load_and_validate_registry(invalid, SCHEMA)
+
+    def test_verified_subsystem_requires_every_declared_contract_receipt(self) -> None:
+        registry = load_registry()
+        subsystem = registry["subsystems"][0]
+        subsystem["evidence_receipts"].pop(subsystem["contracts"][0])
+        result = evaluate_registry(registry)
+        self.assertFalse(result.production_ready)
+        self.assertIn(
+            "subsystem silva is verified with 2/3 receipt-bound contracts",
+            result.blockers,
+        )
+
+    def test_subsystem_receipt_cannot_cover_an_undeclared_contract(self) -> None:
+        registry = copy.deepcopy(load_registry())
+        registry["subsystems"][0]["evidence_receipts"]["undeclared"] = "receipt"
         with tempfile.TemporaryDirectory() as directory:
             invalid = Path(directory) / "invalid_registry.json"
             invalid.write_text(json.dumps(registry), encoding="utf-8")

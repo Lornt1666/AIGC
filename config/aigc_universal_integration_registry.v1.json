@@ -13,8 +13,14 @@
       "id": "silva",
       "name": "SILVA — System Integration and Lifecycle Validation Architecture",
       "purpose": "Own the device, operating-system, application-lifecycle, compatibility, accessibility, and performance evidence matrix.",
-      "status": "proposed",
+      "status": "verified",
+      "verification_scope": "LOCAL_CONTRACT_ONLY",
       "contracts": ["platform capability manifest", "hardware/OS test matrix", "compatibility receipt"],
+      "evidence_receipts": {
+        "platform capability manifest": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "hardware/OS test matrix": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "compatibility receipt": "SUBSYS-746DA22A9BE241EED68DB1AA"
+      },
       "authority_granted": false,
       "external_action_performed": false
     },
@@ -22,8 +28,15 @@
       "id": "hexgate",
       "name": "HexGate — Six-Gate Trust Boundary",
       "purpose": "Enforce identity, authorization, privacy, safety, cost, and evidence gates before any consequential connector or runtime effect.",
-      "status": "proposed",
+      "status": "verified",
+      "verification_scope": "LOCAL_CONTRACT_ONLY",
       "contracts": ["consequence assessment", "governance decision", "one-use execution permit", "execution receipt"],
+      "evidence_receipts": {
+        "consequence assessment": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "governance decision": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "one-use execution permit": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "execution receipt": "SUBSYS-746DA22A9BE241EED68DB1AA"
+      },
       "authority_granted": false,
       "external_action_performed": false
     },
@@ -31,8 +44,15 @@
       "id": "vanis",
       "name": "VANIS — Verifiable Agent Network Integration Substrate",
       "purpose": "Provide provider-neutral agent, model, tool, and connector routing with bounded inputs, outputs, budgets, retries, and identities.",
-      "status": "proposed",
+      "status": "verified",
+      "verification_scope": "LOCAL_CONTRACT_ONLY",
       "contracts": ["agent capability manifest", "tool invocation request", "provider adapter contract", "bounded result envelope"],
+      "evidence_receipts": {
+        "agent capability manifest": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "tool invocation request": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "provider adapter contract": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "bounded result envelope": "SUBSYS-746DA22A9BE241EED68DB1AA"
+      },
       "authority_granted": false,
       "external_action_performed": false
     },
@@ -40,8 +60,15 @@
       "id": "correlation_station",
       "name": "Correlation Station — Evidence and Observability Plane",
       "purpose": "Correlate work orders, artifacts, verifier reports, permits, executions, costs, telemetry, incidents, and outcomes without turning correlation into causation or authority.",
-      "status": "proposed",
+      "status": "verified",
+      "verification_scope": "LOCAL_CONTRACT_ONLY",
       "contracts": ["evidence lineage", "telemetry envelope", "data quality record", "reconciliation report"],
+      "evidence_receipts": {
+        "evidence lineage": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "telemetry envelope": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "data quality record": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "reconciliation report": "SUBSYS-746DA22A9BE241EED68DB1AA"
+      },
       "authority_granted": false,
       "external_action_performed": false
     },
@@ -49,8 +76,15 @@
       "id": "chorus",
       "name": "CHORUS — Coordinated Human-Orchestrated Runtime and User Surface",
       "purpose": "Deliver accessible, comprehensible, multilingual human review, approval, progress, recovery, and audit experiences across supported clients.",
-      "status": "proposed",
+      "status": "verified",
+      "verification_scope": "LOCAL_CONTRACT_ONLY",
       "contracts": ["intent envelope", "approval presentation", "accessibility receipt", "human-readable audit summary"],
+      "evidence_receipts": {
+        "intent envelope": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "approval presentation": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "accessibility receipt": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "human-readable audit summary": "SUBSYS-746DA22A9BE241EED68DB1AA"
+      },
       "authority_granted": false,
       "external_action_performed": false
     }

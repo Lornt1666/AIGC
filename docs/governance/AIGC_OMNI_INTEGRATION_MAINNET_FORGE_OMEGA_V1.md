@@ -661,9 +661,16 @@ Autodesign the complete system. Autoengineer the highest-leverage verified verti
 The prompt is paired with:
 
 - `config/aigc_universal_integration_registry.v1.json`
+- `config/aigc_subsystem_contracts.v1.json`
 - `schemas/aigc_universal_integration_registry.schema.json`
+- `schemas/aigc_subsystem_contracts.schema.json`
+- `schemas/aigc_subsystem_validation_receipt.schema.json`
 - `src/core/nexus/universal_integration.py`
+- `src/core/nexus/subsystem_contracts.py`
 - `scripts/validate_aigc_universal_integration.py`
+- `scripts/validate_aigc_subsystem_contracts.py`
 - `tests/test_aigc_universal_integration.py`
+- `tests/test_aigc_subsystem_contracts.py`
+- `reports/artifacts/aigc_subsystem_contracts_local_validation.json`
 
-The initial registry intentionally evaluates to `production_ready=false`. It converts ambition into a machine-enforced critical path without pretending that cloud, mobile, stores, plugins, revenue, patents, investors or mainnet are already real.
+The five named subsystem contracts are locally implemented and receipt-verified. That raises the deterministic readiness result to `10/34` (`0.294118`) while `production_ready=false` remains mandatory. Local contract verification does not pretend that cloud, hardware, mobile, stores, host plugins, revenue, patents, investors or mainnet are already real.

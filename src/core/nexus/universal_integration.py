@@ -97,6 +97,18 @@ def _validate_core_contract(registry: Mapping[str, Any]) -> None:
         subsystem_ids.add(subsystem_id)
         if subsystem.get("status") not in valid_statuses:
             raise RegistryValidationError(f"invalid subsystem status: {subsystem_id}")
+        if subsystem.get("verification_scope") != "LOCAL_CONTRACT_ONLY":
+            raise RegistryValidationError(
+                f"subsystem {subsystem_id} verification scope must remain LOCAL_CONTRACT_ONLY"
+            )
+        contracts = set(subsystem.get("contracts", ()))
+        receipt_keys = set(subsystem.get("evidence_receipts", {}))
+        unknown_receipts = sorted(receipt_keys.difference(contracts))
+        if unknown_receipts:
+            raise RegistryValidationError(
+                f"subsystem {subsystem_id} has receipts for undeclared contracts: "
+                + ", ".join(unknown_receipts)
+            )
         if subsystem.get("authority_granted") is not False:
             raise RegistryValidationError(f"subsystem {subsystem_id} cannot grant authority")
         if subsystem.get("external_action_performed") is not False:
@@ -142,10 +154,16 @@ def evaluate_registry(registry: Mapping[str, Any]) -> IntegrationReadiness:
 
     for subsystem in registry["subsystems"]:
         applicable += 1
-        if subsystem["status"] == "verified":
+        contracts = subsystem["contracts"]
+        receipt_keys = set(subsystem["evidence_receipts"])
+        verified_count = sum(1 for contract in contracts if contract in receipt_keys)
+        if subsystem["status"] == "verified" and verified_count == len(contracts):
             verified += 1
         else:
-            blockers.add(f"subsystem {subsystem['id']} is {subsystem['status']}")
+            blockers.add(
+                f"subsystem {subsystem['id']} is {subsystem['status']} with "
+                f"{verified_count}/{len(contracts)} receipt-bound contracts"
+            )
 
     for surface in registry["surfaces"]:
         if not surface["required_for_v1"]:
