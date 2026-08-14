@@ -1,0 +1,22 @@
+{
+  "authority_granted": false,
+  "capability_id": "CAP-DATA_QUALITY",
+  "credentials_accessed": false,
+  "disposition": "LOCAL_DRAFT_REQUIRES_HUMAN_REVIEW",
+  "external_action_performed": false,
+  "external_actions_performed": 0,
+  "first_blocker": null,
+  "mode": "sandbox",
+  "pack_id": "OCC-DATA_ANALYSIS_REPORTING",
+  "pack_status": "DRAFT",
+  "pack_version": "0.1.0",
+  "provider_calls_performed": 0,
+  "reason": "declared local output may be prepared under the pack supervision requirement",
+  "receipt_id": "SBX-4F88AB73D87044790709ABBF",
+  "receipt_sha256": "4f88ab73d87044790709abbfe25f4dd62455a21bd6e53ab713316697a041369e",
+  "required_supervision": "HUMAN_REVIEW",
+  "scenario": "NORMAL_TASK",
+  "schema_version": "aigc.employer-sandbox-receipt.v1",
+  "terminal_status": "PASS",
+  "zero_egress": true
+}

@@ -1,0 +1,14 @@
+{
+  "fixture_version": "2026-08-14.v1",
+  "classification": "SYNTHETIC",
+  "currency": "USD",
+  "supplier_count": 4,
+  "suppliers": [
+    {"supplier_ref":"SYN-A","region":"NA","unit_price":980,"capacity":4000,"lead_time_days":55,"risk_score":0.18,"kyc":"PASS","sanctions_match":false},
+    {"supplier_ref":"SYN-B","region":"EU","unit_price":1025,"capacity":3500,"lead_time_days":48,"risk_score":0.22,"kyc":"PASS","sanctions_match":false},
+    {"supplier_ref":"SYN-C","region":"NA","unit_price":940,"capacity":3000,"lead_time_days":70,"risk_score":0.58,"kyc":"PASS","sanctions_match":false},
+    {"supplier_ref":"SYN-D","region":"EU","unit_price":875,"capacity":5000,"lead_time_days":35,"risk_score":0.91,"kyc":"FAIL","sanctions_match":true}
+  ],
+  "contains_real_supplier_data": false,
+  "contains_pii": false
+}

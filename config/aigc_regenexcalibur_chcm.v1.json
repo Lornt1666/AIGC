@@ -1,0 +1,160 @@
+{
+  "schema_version": "aigc.regenexcalibur-chcm.v1",
+  "blueprint_id": "CHCM-REGENEXCALIBUR-OMEGA001",
+  "title": "RegenExcalibur Cosmic Hierarchical Coordination Matrix",
+  "owner": "Justice Gray Maciocha",
+  "operating_mode": "BOUNDED_AUTODESIGN_PLAN_ONLY",
+  "invariants": [
+    "Reasoning != Verification != Authority != Execution != Evidence",
+    "Capability may grow autonomously; authority may not",
+    "Infinite evolution means an open-ended sequence of terminating bounded runs",
+    "Indeterminate external effect requires read-only reconciliation and no blind retry",
+    "Every design mutation remains a proposal until independently verified and admitted"
+  ],
+  "hierarchy": {
+    "pantheon_board": [
+      {"role_id":"ROLE-META-POLICY","title":"Meta-Policy Steward","corporate_role":"Pantheon Board","agent_cluster_id":"CLUSTER-PANTHEON","mandate":"Maintain constitutional policy and authority separation."},
+      {"role_id":"ROLE-ETHICS","title":"LIFE and Ethics Steward","corporate_role":"Pantheon Board","agent_cluster_id":"CLUSTER-PANTHEON","mandate":"Evaluate human, ecological, dignity, consent, and safety impacts."},
+      {"role_id":"ROLE-CAPITAL","title":"Capital Allocation Steward","corporate_role":"Pantheon Board","agent_cluster_id":"CLUSTER-TREASURY","mandate":"Model resource envelopes without authorizing spending."},
+      {"role_id":"ROLE-RISK","title":"Risk Projection Steward","corporate_role":"Pantheon Board","agent_cluster_id":"CLUSTER-RISK-LEGAL","mandate":"Project failure, liability, compliance, and recovery paths."}
+    ],
+    "sovereign_orchestrator": {"role_id":"ROLE-HIGH-IMPERATOR","title":"High Imperator","corporate_role":"CEO","agent_cluster_id":"CLUSTER-SOVEREIGN","mandate":"Compile objectives into bounded, prioritized, verification-aware work graphs."},
+    "archons": [
+      {"division_id":"DIV-ENERGY","domain":"ENERGY","title":"Archon of Energy","agent_cluster_id":"CLUSTER-DOMAIN-COUNCIL"},
+      {"division_id":"DIV-ROBOTICS","domain":"ROBOTICS","title":"Archon of Robotics","agent_cluster_id":"CLUSTER-DOMAIN-COUNCIL"},
+      {"division_id":"DIV-CLOUD","domain":"CLOUD","title":"Archon of Cloud","agent_cluster_id":"CLUSTER-DOMAIN-COUNCIL"},
+      {"division_id":"DIV-BIOTECH","domain":"BIOTECH","title":"Archon of Biotech","agent_cluster_id":"CLUSTER-DOMAIN-COUNCIL"},
+      {"division_id":"DIV-MATERIALS","domain":"MATERIALS","title":"Archon of Materials","agent_cluster_id":"CLUSTER-DOMAIN-COUNCIL"},
+      {"division_id":"DIV-DEFENSE","domain":"DEFENSE","title":"Archon of Defensive Systems","agent_cluster_id":"CLUSTER-DOMAIN-COUNCIL"},
+      {"division_id":"DIV-LOGISTICS","domain":"LOGISTICS","title":"Archon of Logistics","agent_cluster_id":"CLUSTER-DOMAIN-COUNCIL"},
+      {"division_id":"DIV-FINANCE","domain":"FINANCE","title":"Archon of Finance","agent_cluster_id":"CLUSTER-DOMAIN-COUNCIL"},
+      {"division_id":"DIV-AI-SYSTEMS","domain":"AI_SYSTEMS","title":"Archon of AI Systems","agent_cluster_id":"CLUSTER-DOMAIN-COUNCIL"}
+    ],
+    "c_suite": [
+      {"role_id":"ROLE-COO","title":"Warden of Systems","corporate_role":"COO","agent_cluster_id":"CLUSTER-OPERATIONS","mandate":"Design workflows, logistics, resilience, and operational controls."},
+      {"role_id":"ROLE-CFO","title":"Keeper of Treasury","corporate_role":"CFO","agent_cluster_id":"CLUSTER-TREASURY","mandate":"Model cost, capital, forecast, and financial risk without transacting."},
+      {"role_id":"ROLE-CLO","title":"Shieldbearer of Law","corporate_role":"CLO","agent_cluster_id":"CLUSTER-RISK-LEGAL","mandate":"Map laws, contracts, jurisdiction, and approval requirements."},
+      {"role_id":"ROLE-CRO","title":"Sentinel of Catastrophe","corporate_role":"CRO","agent_cluster_id":"CLUSTER-RISK-LEGAL","mandate":"Model catastrophic failure, containment, rollback, and reconciliation."},
+      {"role_id":"ROLE-CSO-STRATEGY","title":"Oracle of Trajectory","corporate_role":"Chief Strategy Officer","agent_cluster_id":"CLUSTER-DOMAIN-COUNCIL","mandate":"Synthesize portfolio strategy and dependency-aware sequencing."},
+      {"role_id":"ROLE-CTO","title":"Forge-Master of Innovation","corporate_role":"CTO","agent_cluster_id":"CLUSTER-TECHNOLOGY","mandate":"Design architecture, engineering contracts, and implementation paths."},
+      {"role_id":"ROLE-CSCI","title":"Arch-Scholar of Frontier","corporate_role":"Chief Science Officer","agent_cluster_id":"CLUSTER-DOMAIN-COUNCIL","mandate":"Grade evidence and separate production proof from research hypotheses."},
+      {"role_id":"ROLE-CHRO","title":"Custodian of Potential","corporate_role":"CHRO","agent_cluster_id":"CLUSTER-OPERATIONS","mandate":"Design human roles, competence gates, training, and oversight."},
+      {"role_id":"ROLE-CCO","title":"Herald of Narrative","corporate_role":"Chief Communications Officer","agent_cluster_id":"CLUSTER-OPERATIONS","mandate":"Translate system truth into accessible stakeholder narratives."},
+      {"role_id":"ROLE-CIO","title":"Keeper of Digital Citadel","corporate_role":"CIO","agent_cluster_id":"CLUSTER-TECHNOLOGY","mandate":"Design information, API, repository, and infrastructure topology."},
+      {"role_id":"ROLE-CSEC","title":"Guardian of Gates","corporate_role":"Chief Security Officer","agent_cluster_id":"CLUSTER-RISK-LEGAL","mandate":"Enforce zero trust, secret isolation, and fail-closed boundaries."},
+      {"role_id":"ROLE-CINO","title":"Spark-Bearer of New Realms","corporate_role":"Chief Innovation Officer","agent_cluster_id":"CLUSTER-DOMAIN-COUNCIL","mandate":"Discover bounded innovations and test their evidence maturity."}
+    ]
+  },
+  "function_catalog": [
+    {"tool_id":"TOOL-AUTODESIGN-INTENT","function_name":"autodesign.intent.deconstruct","purpose":"Compile the objective into atomic design requirements.","expected_outputs":{"intent_frame":"object"},"effect_class":"PURE"},
+    {"tool_id":"TOOL-AUTODESIGN-GOVERN","function_name":"autodesign.governance.evaluate","purpose":"Evaluate proposals against constitutional and LIFE constraints.","expected_outputs":{"governance_assessment":"object"},"effect_class":"PURE"},
+    {"tool_id":"TOOL-AUTODESIGN-ARCHITECT","function_name":"autodesign.architecture.synthesize","purpose":"Synthesize a versioned architecture proposal from admitted requirements.","expected_outputs":{"architecture_proposal":"object"},"effect_class":"PURE"},
+    {"tool_id":"TOOL-AUTODESIGN-PROCURE","function_name":"autodesign.procurement.plan","purpose":"Create an inert BOM, supplier, cost, and compliance plan.","expected_outputs":{"procurement_plan":"object"},"effect_class":"PURE"},
+    {"tool_id":"TOOL-AUTODESIGN-KPI","function_name":"autodesign.kpi.score","purpose":"Score progress, risk, cost, and evidence without changing state.","expected_outputs":{"kpi_scorecard":"object"},"effect_class":"PURE"}
+  ],
+  "agent_clusters": [
+    {"cluster_id":"CLUSTER-ALPHA","agent_id":"AGT-ALPHA","role":"INTENT_DECONSTRUCTOR","mandate":"Deconstruct the objective and compile acceptance criteria.","capabilities":["intent_compilation","requirement_decomposition"],"assigned_tool_ids":["TOOL-AUTODESIGN-INTENT"],"depends_on_cluster_ids":[],"output_contract":"parsed intent and requirement graph","verification_function":"autodesign.verify.intent"},
+    {"cluster_id":"CLUSTER-SOVEREIGN","agent_id":"AGT-SOVEREIGN","role":"SOVEREIGN_ORCHESTRATOR","mandate":"Route admitted work through the CHCM dependency graph.","capabilities":["dag_routing","budget_allocation"],"assigned_tool_ids":[],"depends_on_cluster_ids":["CLUSTER-ALPHA"],"output_contract":"bounded orchestration graph","verification_function":"autodesign.verify.graph"},
+    {"cluster_id":"CLUSTER-PANTHEON","agent_id":"AGT-PANTHEON","role":"GOVERNANCE_BOARD","mandate":"Evaluate policy, ethics, LIFE alignment, and capital constraints.","capabilities":["policy","ethics","capital_constraints"],"assigned_tool_ids":["TOOL-AUTODESIGN-GOVERN"],"depends_on_cluster_ids":["CLUSTER-ALPHA"],"output_contract":"governance and LIFE assessment","verification_function":"autodesign.verify.governance"},
+    {"cluster_id":"CLUSTER-OPERATIONS","agent_id":"AGT-OPERATIONS","role":"OPERATIONS_CONSTELLATION","mandate":"Design workflows, logistics, people, narrative, and recovery operations.","capabilities":["workflow","logistics","human_factors","communications"],"assigned_tool_ids":["TOOL-AUTODESIGN-ARCHITECT"],"depends_on_cluster_ids":["CLUSTER-SOVEREIGN"],"output_contract":"operating model proposal","verification_function":"autodesign.verify.operations"},
+    {"cluster_id":"CLUSTER-TREASURY","agent_id":"AGT-TREASURY","role":"TREASURY_CONSTELLATION","mandate":"Model budgets, forecasts, capital risk, and economic sustainability.","capabilities":["cost_modeling","forecasting","capital_risk"],"assigned_tool_ids":[],"depends_on_cluster_ids":["CLUSTER-SOVEREIGN"],"output_contract":"non-authorizing financial model","verification_function":"autodesign.verify.treasury"},
+    {"cluster_id":"CLUSTER-RISK-LEGAL","agent_id":"AGT-RISK-LEGAL","role":"RISK_LEGAL_SECURITY","mandate":"Evaluate legal, security, compliance, liability, and recovery boundaries.","capabilities":["legal_mapping","threat_modeling","compliance","reconciliation"],"assigned_tool_ids":["TOOL-AUTODESIGN-GOVERN"],"depends_on_cluster_ids":["CLUSTER-PANTHEON"],"output_contract":"risk, law, security, and recovery assessment","verification_function":"autodesign.verify.risk"},
+    {"cluster_id":"CLUSTER-TECHNOLOGY","agent_id":"AGT-TECHNOLOGY","role":"TECHNOLOGY_CONSTELLATION","mandate":"Design APIs, repositories, schemas, infrastructure, and engineering changes.","capabilities":["architecture","api_design","repository_design","cloud_blueprint"],"assigned_tool_ids":["TOOL-AUTODESIGN-ARCHITECT"],"depends_on_cluster_ids":["CLUSTER-SOVEREIGN"],"output_contract":"technical architecture and changeset proposal","verification_function":"autodesign.verify.technology"},
+    {"cluster_id":"CLUSTER-DOMAIN-COUNCIL","agent_id":"AGT-DOMAIN-COUNCIL","role":"ARCHON_DOMAIN_COUNCIL","mandate":"Project the architecture across the nine declared industry domains.","capabilities":["domain_mapping","science_grading","strategy","innovation"],"assigned_tool_ids":["TOOL-AUTODESIGN-ARCHITECT"],"depends_on_cluster_ids":["CLUSTER-SOVEREIGN"],"output_contract":"industry projection matrix","verification_function":"autodesign.verify.domains"},
+    {"cluster_id":"CLUSTER-PROCUREMENT","agent_id":"AGT-PROCUREMENT","role":"PROCUREMENT_ENGINE","mandate":"Plan BOM, sourcing, vendor, lead-time, quality, and compliance paths.","capabilities":["bom","sourcing","vendor_risk","cost_optimization"],"assigned_tool_ids":["TOOL-AUTODESIGN-PROCURE"],"depends_on_cluster_ids":["CLUSTER-OPERATIONS","CLUSTER-TREASURY","CLUSTER-RISK-LEGAL"],"output_contract":"inert procurement blueprint","verification_function":"autodesign.verify.procurement"},
+    {"cluster_id":"CLUSTER-KPI","agent_id":"AGT-KPI","role":"KPI_OBSERVATORY","mandate":"Measure progress, cost, time, risk, evidence, and resource efficiency.","capabilities":["metrics","scoring","drift_detection"],"assigned_tool_ids":["TOOL-AUTODESIGN-KPI"],"depends_on_cluster_ids":["CLUSTER-DOMAIN-COUNCIL","CLUSTER-PROCUREMENT","CLUSTER-TECHNOLOGY"],"output_contract":"deterministic KPI scorecard","verification_function":"autodesign.verify.kpi"},
+    {"cluster_id":"CLUSTER-OMEGA","agent_id":"AGT-OMEGA","role":"COMPLETION_VERIFIER","mandate":"Independently verify completion claims and emit the first exact blocker.","capabilities":["independent_verification","evidence_reconciliation"],"assigned_tool_ids":["TOOL-AUTODESIGN-KPI"],"depends_on_cluster_ids":["CLUSTER-KPI","CLUSTER-RISK-LEGAL"],"output_contract":"completion verification receipt","verification_function":"autodesign.verify.omega"}
+  ],
+  "runtime_kernel": [
+    {"node_id":"KERNEL-ALPHA","name":"Alpha Intent Deconstructor","function_name":"autodesign.intent.deconstruct","depends_on_node_ids":[]},
+    {"node_id":"KERNEL-SOVEREIGN","name":"Sovereign Orchestrator","function_name":"coordination.agent.coordinate","depends_on_node_ids":["KERNEL-ALPHA"]},
+    {"node_id":"KERNEL-PANTHEON","name":"Pantheon Governance Gate","function_name":"autodesign.governance.evaluate","depends_on_node_ids":["KERNEL-ALPHA"]},
+    {"node_id":"KERNEL-DOMAINS","name":"Archon Domain Council","function_name":"autodesign.architecture.synthesize","depends_on_node_ids":["KERNEL-SOVEREIGN"]},
+    {"node_id":"KERNEL-PROCUREMENT","name":"Procurement Planner","function_name":"autodesign.procurement.plan","depends_on_node_ids":["KERNEL-DOMAINS","KERNEL-PANTHEON"]},
+    {"node_id":"KERNEL-CLOUD","name":"Cloud and Repository Planner","function_name":"autodesign.architecture.synthesize","depends_on_node_ids":["KERNEL-DOMAINS"]},
+    {"node_id":"KERNEL-KPI","name":"KPI Observatory","function_name":"autodesign.kpi.score","depends_on_node_ids":["KERNEL-PROCUREMENT","KERNEL-CLOUD"]},
+    {"node_id":"KERNEL-OMEGA","name":"Omega Completion Verifier","function_name":"autodesign.verify.omega","depends_on_node_ids":["KERNEL-KPI","KERNEL-PANTHEON"]}
+  ],
+  "connector_fabric": [
+    {"connector_id":"CONNECTOR-REST","protocol":"REST","status":"DESIGN_ONLY","egress_enabled":false},
+    {"connector_id":"CONNECTOR-GRPC","protocol":"GRPC","status":"DESIGN_ONLY","egress_enabled":false},
+    {"connector_id":"CONNECTOR-WEBHOOK","protocol":"WEBHOOK","status":"DESIGN_ONLY","egress_enabled":false},
+    {"connector_id":"CONNECTOR-EVENTBUS","protocol":"EVENT_BUS","status":"DESIGN_ONLY","egress_enabled":false},
+    {"connector_id":"CONNECTOR-QUEUE","protocol":"MESSAGE_QUEUE","status":"DESIGN_ONLY","egress_enabled":false}
+  ],
+  "repository_federation": [
+    {"repository_id":"REPO-ROBOTICS","namespace":"RegenExcalibur/robotics","status":"LOGICAL_NAMESPACE_ONLY"},
+    {"repository_id":"REPO-ENERGY","namespace":"RegenExcalibur/energy","status":"LOGICAL_NAMESPACE_ONLY"},
+    {"repository_id":"REPO-CLOUD","namespace":"RegenExcalibur/cloud","status":"LOGICAL_NAMESPACE_ONLY"},
+    {"repository_id":"REPO-BIOTECH","namespace":"RegenExcalibur/biotech","status":"LOGICAL_NAMESPACE_ONLY"},
+    {"repository_id":"REPO-MATERIALS","namespace":"RegenExcalibur/materials","status":"LOGICAL_NAMESPACE_ONLY"},
+    {"repository_id":"REPO-DEFENSIVE-SYSTEMS","namespace":"RegenExcalibur/defensive-systems","status":"LOGICAL_NAMESPACE_ONLY"},
+    {"repository_id":"REPO-LOGISTICS","namespace":"RegenExcalibur/logistics","status":"LOGICAL_NAMESPACE_ONLY"},
+    {"repository_id":"REPO-AI-SYSTEMS","namespace":"RegenExcalibur/ai-systems","status":"LOGICAL_NAMESPACE_ONLY"},
+    {"repository_id":"REPO-PROCUREMENT","namespace":"RegenExcalibur/procurement","status":"LOGICAL_NAMESPACE_ONLY"},
+    {"repository_id":"REPO-FINANCE","namespace":"RegenExcalibur/finance","status":"LOGICAL_NAMESPACE_ONLY"},
+    {"repository_id":"REPO-META","namespace":"Lornt1666/AIGC","status":"IMPLEMENTED_META_REPOSITORY"}
+  ],
+  "experience_projections": [
+    {"projection_id":"PROJECTION-CORPORATION","mode":"CORPORATION","purpose":"Govern a clean-technology multi-domain venture portfolio through explicit human legal entities and contracts.","boundary":"AI roles advise and prepare; accountable humans retain fiduciary and legal authority."},
+    {"projection_id":"PROJECTION-OPERATING-SYSTEM","mode":"OPERATING_SYSTEM","purpose":"Coordinate typed state, agents, tools, evidence, iteration, and recovery as a software control plane.","boundary":"The operating-system metaphor does not imply consciousness, sovereignty, or unrestricted device control."},
+    {"projection_id":"PROJECTION-CINEMATIC","mode":"CINEMATIC_UNIVERSE","purpose":"Project divisions into coherent mythic realms for narrative, education, and brand communication.","boundary":"Lore remains clearly separated from operational facts, scientific evidence, and legal claims."},
+    {"projection_id":"PROJECTION-RPG","mode":"RPG_WORLD","purpose":"Represent skills, evidence, missions, and capability progression through transparent game mechanics.","boundary":"Levels and rewards never create real permissions, credentials, money, or authority."}
+  ],
+  "deployment_blueprint": [
+    {"component_id":"DEPLOY-KUBERNETES","technology":"Kubernetes","purpose":"Desired-state workload orchestration and bounded recovery.","status":"DESIGN_ONLY_NOT_PROVISIONED"},
+    {"component_id":"DEPLOY-SERVERLESS","technology":"Serverless functions","purpose":"Event-driven stateless computation for bounded functions.","status":"DESIGN_ONLY_NOT_PROVISIONED"},
+    {"component_id":"DEPLOY-DISTRIBUTED","technology":"Distributed compute","purpose":"Partition verified workloads under explicit quotas.","status":"DESIGN_ONLY_NOT_PROVISIONED"},
+    {"component_id":"DEPLOY-MULTICLOUD","technology":"Multi-cloud portability","purpose":"Reduce vendor concentration through provider-neutral contracts.","status":"DESIGN_ONLY_NOT_PROVISIONED"},
+    {"component_id":"DEPLOY-ZEROTRUST","technology":"Zero-trust security","purpose":"Authenticate and authorize every consequential boundary.","status":"DESIGN_ONLY_NOT_PROVISIONED"},
+    {"component_id":"DEPLOY-GATEWAY","technology":"API gateway","purpose":"Enforce identity, schemas, quotas, routing, and observability.","status":"DESIGN_ONLY_NOT_PROVISIONED"},
+    {"component_id":"DEPLOY-CICD","technology":"CI/CD","purpose":"Build, test, attest, promote, rollback, and retain evidence by exact revision.","status":"DESIGN_ONLY_NOT_PROVISIONED"}
+  ],
+  "interface_registry": [
+    {"interface_id":"API-DESIGN","path":"/design","maps_to":"POST /v1/autodesign/iterate","status":"PLANNED_ALIAS","effect_class":"PURE"},
+    {"interface_id":"API-PROCURE","path":"/procure","maps_to":"procurement planning contracts","status":"PLANNED_ALIAS","effect_class":"PURE"},
+    {"interface_id":"API-SIMULATE","path":"/simulate","maps_to":"POST /v1/coordination/engineer","status":"PLANNED_ALIAS","effect_class":"PURE"},
+    {"interface_id":"API-VALIDATE","path":"/validate","maps_to":"POST /v1/diagnostics/run","status":"PLANNED_ALIAS","effect_class":"PURE"},
+    {"interface_id":"API-DEPLOY","path":"/deploy","maps_to":"governed deployment executor","status":"BLOCKED_NOT_EXPOSED","effect_class":"DEPLOYMENT"},
+    {"interface_id":"API-MONITOR","path":"/monitor","maps_to":"GET /health and read-only status surfaces","status":"PLANNED_ALIAS","effect_class":"READ_LOCAL"}
+  ],
+  "kpis": [
+    {"kpi_id":"KPI-COST","name":"Cost efficiency","formula":"verified_value_units / max(cost_cad, epsilon)","unit":"ratio","target_direction":"MAXIMIZE","status":"DESIGN_ONLY"},
+    {"kpi_id":"KPI-TIME","name":"Time to verified design","formula":"verified_at - request_received_at","unit":"milliseconds","target_direction":"MINIMIZE","status":"DESIGN_ONLY"},
+    {"kpi_id":"KPI-RISK","name":"Residual risk exposure","formula":"sum(probability * impact * uncertainty)","unit":"risk_points","target_direction":"MINIMIZE","status":"DESIGN_ONLY"},
+    {"kpi_id":"KPI-INNOVATION","name":"Verified innovation velocity","formula":"admitted_novel_capabilities / evaluation_window","unit":"capabilities_per_window","target_direction":"MAXIMIZE","status":"DESIGN_ONLY"},
+    {"kpi_id":"KPI-EVIDENCE","name":"Evidence coverage","formula":"verified_applicable_checks / applicable_required_checks","unit":"ratio","target_direction":"MAXIMIZE","status":"DESIGN_ONLY"},
+    {"kpi_id":"KPI-RESOURCE","name":"Resource utilization efficiency","formula":"useful_work_units / allocated_compute_units","unit":"ratio","target_direction":"MAXIMIZE","status":"DESIGN_ONLY"},
+    {"kpi_id":"KPI-HUMAN","name":"Human prosperity impact","formula":"weighted_accessibility_safety_value_score","unit":"score","target_direction":"MAXIMIZE","status":"DESIGN_ONLY"}
+  ],
+  "procurement_pipeline": [
+    {"stage_id":"PROC-NEED","name":"Need decomposition","output":"typed requirement and acceptance criteria","effect_ceiling":"PLAN_ONLY"},
+    {"stage_id":"PROC-BOM","name":"BOM generation","output":"versioned bill of materials or services","effect_ceiling":"PLAN_ONLY"},
+    {"stage_id":"PROC-SOURCE","name":"Supplier discovery","output":"source-governed candidate plan","effect_ceiling":"PLAN_ONLY"},
+    {"stage_id":"PROC-SELECT","name":"Vendor evaluation","output":"cost, lead-time, quality, compliance, and risk matrix","effect_ceiling":"PLAN_ONLY"},
+    {"stage_id":"PROC-APPROVE","name":"Human approval gate","output":"exact consequence-bound approval request","effect_ceiling":"PLAN_ONLY"},
+    {"stage_id":"PROC-VERIFY","name":"Receipt reconciliation","output":"immutable execution and delivery evidence requirements","effect_ceiling":"PLAN_ONLY"}
+  ],
+  "autodesign_policy": {
+    "maximum_iterations_per_run": 12,
+    "maximum_proposals_per_iteration": 3,
+    "maximum_parallel_agents": 4,
+    "minimum_progress_delta": 0.05,
+    "no_progress_limit": 2,
+    "infinite_semantics": "OPEN_ENDED_SEQUENCE_OF_TERMINATING_BOUNDED_RUNS",
+    "self_modification_allowed": false,
+    "external_execution_allowed": false
+  },
+  "capability_roadmap": [
+    {"capability_id":"CAP-CHCM-TYPED-REGISTRY","name":"Typed CHCM registry","priority":10,"depends_on":[],"effect_class":"PURE","responsible_cluster_id":"CLUSTER-PANTHEON","change_targets":["config/aigc_regenexcalibur_chcm.v1.json","src/autodesign/models.py"],"acceptance_criteria":["closed schema validates","hierarchy references resolve"]},
+    {"capability_id":"CAP-BOUNDED-AUTODESIGN-KERNEL","name":"Bounded autodesign kernel","priority":20,"depends_on":["CAP-CHCM-TYPED-REGISTRY"],"effect_class":"PURE","responsible_cluster_id":"CLUSTER-TECHNOLOGY","change_targets":["src/autodesign/engine.py"],"acceptance_criteria":["deterministic proposal selection","bounded iteration","zero self-modification"]},
+    {"capability_id":"CAP-DETERMINISTIC-COORDINATION-BRIDGE","name":"Deterministic coordination bridge","priority":30,"depends_on":["CAP-BOUNDED-AUTODESIGN-KERNEL"],"effect_class":"PURE","responsible_cluster_id":"CLUSTER-SOVEREIGN","change_targets":["src/coordination/engine.py","src/webapp/regenexcalibur_api.py"],"acceptance_criteria":["typed agent DAG","embedded Alpha Plan","zero egress"]},
+    {"capability_id":"CAP-RUNTIME-KPI-EVALUATOR","name":"Runtime KPI evaluator","priority":40,"depends_on":["CAP-DETERMINISTIC-COORDINATION-BRIDGE"],"effect_class":"PURE","responsible_cluster_id":"CLUSTER-KPI","change_targets":["src/autodesign/kpi.py"],"acceptance_criteria":["formulas are executable","measurements identify provenance and uncertainty"]},
+    {"capability_id":"CAP-PROCUREMENT-SANDBOX-BRIDGE","name":"Procurement sandbox bridge","priority":50,"depends_on":["CAP-DETERMINISTIC-COORDINATION-BRIDGE"],"effect_class":"PURE","responsible_cluster_id":"CLUSTER-PROCUREMENT","change_targets":["src/autodesign/procurement.py"],"acceptance_criteria":["BOM and sourcing remain simulation-only","financial and contract actions are gated"]},
+    {"capability_id":"CAP-DOMAIN-REPOSITORY-ADAPTERS","name":"Domain repository adapters","priority":60,"depends_on":["CAP-CHCM-TYPED-REGISTRY"],"effect_class":"READ_LOCAL","responsible_cluster_id":"CLUSTER-TECHNOLOGY","change_targets":["src/autodesign/repositories.py"],"acceptance_criteria":["logical namespaces resolve","no repository creation or write occurs"]},
+    {"capability_id":"CAP-CONNECTOR-CERTIFICATION-HARNESS","name":"Connector certification harness","priority":70,"depends_on":["CAP-DETERMINISTIC-COORDINATION-BRIDGE"],"effect_class":"READ_LOCAL","responsible_cluster_id":"CLUSTER-RISK-LEGAL","change_targets":["src/autodesign/connectors.py"],"acceptance_criteria":["each connector has exact identity, scope, terms, and evidence gates","uncertified egress remains disabled"]},
+    {"capability_id":"CAP-CLOUD-SANDBOX-DEPLOYMENT","name":"Cloud sandbox deployment","priority":80,"depends_on":["CAP-RUNTIME-KPI-EVALUATOR","CAP-PROCUREMENT-SANDBOX-BRIDGE","CAP-CONNECTOR-CERTIFICATION-HARNESS"],"effect_class":"DEPLOYMENT","responsible_cluster_id":"CLUSTER-TECHNOLOGY","change_targets":["deploy/regenexcalibur"],"acceptance_criteria":["exact immutable image","non-production authority","health, security, rollback, and cost receipts"]},
+    {"capability_id":"CAP-INDUSTRY-PILOT-EVIDENCE","name":"Industry pilot evidence","priority":90,"depends_on":["CAP-CLOUD-SANDBOX-DEPLOYMENT","CAP-DOMAIN-REPOSITORY-ADAPTERS"],"effect_class":"READ_EXTERNAL","responsible_cluster_id":"CLUSTER-DOMAIN-COUNCIL","change_targets":["reports/industry_pilots"],"acceptance_criteria":["exact consenting pilot","domain-qualified evaluation","current receipts"]},
+    {"capability_id":"CAP-PRODUCTION-ACTIVATION","name":"Production activation","priority":100,"depends_on":["CAP-INDUSTRY-PILOT-EVIDENCE"],"effect_class":"DEPLOYMENT","responsible_cluster_id":"CLUSTER-PANTHEON","change_targets":["production activation boundary"],"acceptance_criteria":["authenticated explicit authority","all release gates verified","rollback and reconciliation proven"]}
+  ]
+}

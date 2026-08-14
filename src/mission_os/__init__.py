@@ -1,5 +1,6 @@
-"""Omega Mission OS read-only coordination package."""
+"""Mission OS integration boundaries."""
 
-from .mission_director import MissionDirector, SourceSpec
+from .connector_adapters import GovernedGitHubKernelAdapter
 
-__all__ = ["MissionDirector", "SourceSpec"]
+__all__ = ["GovernedGitHubKernelAdapter"]
+

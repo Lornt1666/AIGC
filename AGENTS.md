@@ -2,7 +2,7 @@
 
 Copyright (c) 2026 Justice Gray Maciocha. All Rights Reserved.
 
-This repository contains AIGC - Artificial Intelligence Gladiator Colosseum.
+This repository contains AIGC — Artificial Intelligence Gladiator Coliseum.
 
 Omega-X is the apex orchestrator. It supervises phases, memory, audits, safety gates, evolution patches, and approval boundaries.
 

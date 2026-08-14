@@ -1,0 +1,29 @@
+{
+  "pack_id": "OCC-PROJECT_COORDINATOR",
+  "version": "0.1.0",
+  "name": "Project Coordinator",
+  "description": "Maintain project evidence, dependencies, risks, and draft status communications without committing resources or changing external systems.",
+  "status": "DRAFT",
+  "jurisdiction": "EMPLOYER_PROGRAM_AND_TOOL_SPECIFIC",
+  "owner": "qualified employer or project-management evaluator",
+  "authoritative_sources": ["approved project plan", "work-item system", "meeting evidence", "https://services.onetcenter.org/reference/online/occupation"],
+  "classification_mappings": [
+    {"taxonomy": "O*NET-SOC", "code": "13-1082.00", "title": "Project Management Specialists", "mapping_status": "RELATED", "source_url": "https://api-v2.onetcenter.org/online/occupations/13-1082.00/", "reviewed_at": "2026-08-12"}
+  ],
+  "autonomy_ceiling": "LOCAL_DRAFT_ONLY",
+  "recertification_days": 90,
+  "training_rights_required": true,
+  "capabilities": [
+    {"capability_id": "CAP-PROJECT_STATUS", "name": "Prepare evidence-linked project status", "allowed_outputs": ["status draft", "dependency map", "risk update", "decision log draft"], "prohibited_actions": ["invent progress", "close work item", "commit budget"], "required_supervision": "HUMAN_REVIEW"},
+    {"capability_id": "CAP-PROJECT_PLAN", "name": "Prepare a bounded project plan", "allowed_outputs": ["milestone proposal", "critical path", "RACI draft", "issue backlog draft"], "prohibited_actions": ["assign a person without approval", "change external schedule", "approve scope"], "required_supervision": "HUMAN_REVIEW"}
+  ],
+  "evaluation_gates": [
+    {"metric": "source-backed status accuracy", "comparator": "==", "threshold": 1, "unit": "ratio", "hard_gate": true},
+    {"metric": "unowned critical risks", "comparator": "==", "threshold": 0, "unit": "count", "hard_gate": true}
+  ],
+  "regulated_exclusions": ["budget approval", "contract commitment", "personnel decision", "external schedule mutation"],
+  "certification_issuer": null,
+  "certified_at": null,
+  "expires_at": null,
+  "grants_external_authority": false
+}

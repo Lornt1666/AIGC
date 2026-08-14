@@ -1,0 +1,51 @@
+{
+  "schema_version": "aigc.provider-terms-review.v1",
+  "review_id": "TERMS-REVIEW-20260814-OAI-GCP",
+  "reviewed_at": "2026-08-14",
+  "scope": "ENGINEERING_POLICY_REVIEW_NOT_LEGAL_ADVICE",
+  "providers": {
+    "openai_responses": {
+      "terms_reviewed": true,
+      "sources": [
+        {"url": "https://openai.com/policies/services-agreement/", "effective_or_modified": "2025-12-01"},
+        {"url": "https://openai.com/policies/usage-policies/", "effective_or_modified": "2025-10-29"},
+        {"url": "https://developers.openai.com/api/docs/guides/your-data", "effective_or_modified": "reviewed-2026-08-14"}
+      ],
+      "binding_findings": [
+        "API integration is permitted subject to the agreement, applicable law, third-party rights, account controls, fees, and current OpenAI policies.",
+        "Employment high-stakes decisions require human review; AIGC may assist but may not autonomously decide employment outcomes.",
+        "The adapter uses Responses API text generation only, defines no provider tools, and sets store=false.",
+        "store=false does not prove zero retention; abuse-monitoring and prompt-cache retention remain account and endpoint dependent.",
+        "API keys may not be transferred; AIGC requires a project-bound secret-broker identity before live use."
+      ],
+      "live_use_disposition": "BLOCKED_PENDING_IDENTITY_BUDGET_AND_ONE_USE_CANARY"
+    },
+    "vertex_gemini": {
+      "terms_reviewed": true,
+      "sources": [
+        {"url": "https://cloud.google.com/terms/service-terms", "effective_or_modified": "2026-07-29"},
+        {"url": "https://policies.google.com/terms/generative-ai/use-policy", "effective_or_modified": "2024-12-17"},
+        {"url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/resources/zero-data-retention", "effective_or_modified": "reviewed-2026-08-14"}
+      ],
+      "binding_findings": [
+        "Generated output requires human evaluation and cannot substitute for regulatory, legal, or professional obligations.",
+        "Employment decisions with material detrimental impact require human supervision.",
+        "Safety filters and provider safeguards may not be bypassed or silently disabled.",
+        "Data retention depends on the selected service, model, account configuration, abuse monitoring, grounding, and caching features.",
+        "The adapter uses project- and region-bound Vertex AI ADC, text generation only, and an empty provider-tool list."
+      ],
+      "live_use_disposition": "BLOCKED_PENDING_IDENTITY_BUDGET_MODEL_STATUS_AND_ONE_USE_CANARY"
+    }
+  },
+  "mandatory_revalidation": [
+    "before first live provider call",
+    "when a provider policy effective date changes",
+    "when model, modality, tool, retention, geography, or employment-decision scope changes"
+  ],
+  "legal_approval_granted": false,
+  "provider_identity_verified": false,
+  "provider_calls_performed": 0,
+  "authority_granted": false,
+  "external_action_performed": false,
+  "review_sha256": "2a2f5a22c4b1655d042143e8ccee8600db4f1539e9193b1c0393fbc8fd9db769"
+}

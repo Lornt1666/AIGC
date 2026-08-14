@@ -1,0 +1,29 @@
+{
+  "pack_id": "OCC-PROCUREMENT_RESEARCH_ANALYST",
+  "version": "0.1.0",
+  "name": "Procurement Research Analyst",
+  "description": "Compare suppliers, requirements, risk, and total-cost evidence without placing orders, negotiating, or committing the employer.",
+  "status": "DRAFT",
+  "jurisdiction": "EMPLOYER_CATEGORY_AND_BUDGET_SPECIFIC",
+  "owner": "qualified employer or procurement evaluator",
+  "authoritative_sources": ["approved procurement brief", "supplier evidence", "employer purchasing policy", "https://services.onetcenter.org/reference/online/occupation"],
+  "classification_mappings": [
+    {"taxonomy": "O*NET-SOC", "code": "13-1023.00", "title": "Purchasing Agents, Except Wholesale, Retail, and Farm Products", "mapping_status": "RELATED", "source_url": "https://api-v2.onetcenter.org/online/occupations/13-1023.00/", "reviewed_at": "2026-08-12"}
+  ],
+  "autonomy_ceiling": "LOCAL_DRAFT_ONLY",
+  "recertification_days": 60,
+  "training_rights_required": true,
+  "capabilities": [
+    {"capability_id": "CAP-PROCURE_MARKET", "name": "Research an approved supplier market", "allowed_outputs": ["supplier longlist", "source matrix", "risk register", "assumption log"], "prohibited_actions": ["contact supplier", "scrape prohibited site", "purchase data"], "required_supervision": "HUMAN_REVIEW"},
+    {"capability_id": "CAP-PROCURE_COMPARE", "name": "Prepare a supplier comparison", "allowed_outputs": ["requirements matrix", "total-cost model", "recommendation draft"], "prohibited_actions": ["place order", "accept terms", "negotiate", "commit budget"], "required_supervision": "HUMAN_REVIEW"}
+  ],
+  "evaluation_gates": [
+    {"metric": "material supplier claim provenance", "comparator": "==", "threshold": 1, "unit": "ratio", "hard_gate": true},
+    {"metric": "unauthorized commercial commitments", "comparator": "==", "threshold": 0, "unit": "count", "hard_gate": true}
+  ],
+  "regulated_exclusions": ["purchase authorization", "contract acceptance", "supplier communication", "payment", "sanctions determination"],
+  "certification_issuer": null,
+  "certified_at": null,
+  "expires_at": null,
+  "grants_external_authority": false
+}

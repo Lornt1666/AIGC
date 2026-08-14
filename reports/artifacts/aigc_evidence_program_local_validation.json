@@ -1,0 +1,1852 @@
+{
+  "authority_granted": false,
+  "coverage": {
+    "all_gates": 88,
+    "deferred_or_optional_gates": 52,
+    "open_request_packets": 76,
+    "required_counted_gates": 34,
+    "required_open_request_packets": 24,
+    "required_prerequisites": 2
+  },
+  "evidence_scope": "LOCAL_LEDGER_AND_EXTERNAL_REQUESTS_NO_EXTERNAL_EXECUTION",
+  "external_action_performed": false,
+  "gates": [
+    {
+      "acceptance_criteria": [
+        "template_only_false is bound to the exact release",
+        "evidence is immutable, current, independently verifiable, and non-circular"
+      ],
+      "artifact": null,
+      "category": "prerequisite",
+      "counts_toward_readiness": false,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "prerequisite.release.template_only_false",
+      "narrative": "A production claim is forbidden while the registry is explicitly a template.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-4DD044118FF3BDCF47CB0416",
+      "required_for_v1": true,
+      "requirement": "template_only_false",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "release"
+    },
+    {
+      "acceptance_criteria": [
+        "current_release_binding is bound to the exact release",
+        "evidence is immutable, current, independently verifiable, and non-circular"
+      ],
+      "artifact": null,
+      "category": "prerequisite",
+      "counts_toward_readiness": false,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "prerequisite.release.current_release_binding",
+      "narrative": "Evidence must bind the exact candidate head, not a branch name or local working copy.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-C4D11D8A1FD2DBD1B8A2B965",
+      "required_for_v1": true,
+      "requirement": "current_release_binding",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "release"
+    },
+    {
+      "acceptance_criteria": [
+        "silva contract manifest validates against its schema",
+        "deterministic positive and fail-closed tests pass",
+        "receipt is local-only and cannot grant authority or claim egress"
+      ],
+      "artifact": {
+        "artifact_path": "reports/artifacts/aigc_subsystem_contracts_local_validation.json",
+        "artifact_sha256": "f90a6edefc287fcdef674389f65b02c6e69e79753aaf3f9358d536b04ccd8595",
+        "schema_version": "aigc.subsystem-validation-receipt.v1"
+      },
+      "category": "subsystem",
+      "counts_toward_readiness": true,
+      "evidence_scope": "LOCAL",
+      "gate_id": "subsystem.silva.contract_bundle",
+      "narrative": "Own the device, operating-system, application-lifecycle, compatibility, accessibility, and performance evidence matrix. Verification is contract-level only, not production proof.",
+      "receipt_ref": "SUBSYS-746DA22A9BE241EED68DB1AA",
+      "receipt_resolved": true,
+      "request_packet_id": null,
+      "required_for_v1": true,
+      "requirement": "contract_bundle",
+      "status": "VERIFIED_LOCAL",
+      "subject_id": "silva"
+    },
+    {
+      "acceptance_criteria": [
+        "hexgate contract manifest validates against its schema",
+        "deterministic positive and fail-closed tests pass",
+        "receipt is local-only and cannot grant authority or claim egress"
+      ],
+      "artifact": {
+        "artifact_path": "reports/artifacts/aigc_subsystem_contracts_local_validation.json",
+        "artifact_sha256": "f90a6edefc287fcdef674389f65b02c6e69e79753aaf3f9358d536b04ccd8595",
+        "schema_version": "aigc.subsystem-validation-receipt.v1"
+      },
+      "category": "subsystem",
+      "counts_toward_readiness": true,
+      "evidence_scope": "LOCAL",
+      "gate_id": "subsystem.hexgate.contract_bundle",
+      "narrative": "Enforce identity, authorization, privacy, safety, cost, and evidence gates before any consequential connector or runtime effect. Verification is contract-level only, not production proof.",
+      "receipt_ref": "SUBSYS-746DA22A9BE241EED68DB1AA",
+      "receipt_resolved": true,
+      "request_packet_id": null,
+      "required_for_v1": true,
+      "requirement": "contract_bundle",
+      "status": "VERIFIED_LOCAL",
+      "subject_id": "hexgate"
+    },
+    {
+      "acceptance_criteria": [
+        "vanis contract manifest validates against its schema",
+        "deterministic positive and fail-closed tests pass",
+        "receipt is local-only and cannot grant authority or claim egress"
+      ],
+      "artifact": {
+        "artifact_path": "reports/artifacts/aigc_subsystem_contracts_local_validation.json",
+        "artifact_sha256": "f90a6edefc287fcdef674389f65b02c6e69e79753aaf3f9358d536b04ccd8595",
+        "schema_version": "aigc.subsystem-validation-receipt.v1"
+      },
+      "category": "subsystem",
+      "counts_toward_readiness": true,
+      "evidence_scope": "LOCAL",
+      "gate_id": "subsystem.vanis.contract_bundle",
+      "narrative": "Provide provider-neutral agent, model, tool, and connector routing with bounded inputs, outputs, budgets, retries, and identities. Verification is contract-level only, not production proof.",
+      "receipt_ref": "SUBSYS-746DA22A9BE241EED68DB1AA",
+      "receipt_resolved": true,
+      "request_packet_id": null,
+      "required_for_v1": true,
+      "requirement": "contract_bundle",
+      "status": "VERIFIED_LOCAL",
+      "subject_id": "vanis"
+    },
+    {
+      "acceptance_criteria": [
+        "correlation_station contract manifest validates against its schema",
+        "deterministic positive and fail-closed tests pass",
+        "receipt is local-only and cannot grant authority or claim egress"
+      ],
+      "artifact": {
+        "artifact_path": "reports/artifacts/aigc_subsystem_contracts_local_validation.json",
+        "artifact_sha256": "f90a6edefc287fcdef674389f65b02c6e69e79753aaf3f9358d536b04ccd8595",
+        "schema_version": "aigc.subsystem-validation-receipt.v1"
+      },
+      "category": "subsystem",
+      "counts_toward_readiness": true,
+      "evidence_scope": "LOCAL",
+      "gate_id": "subsystem.correlation_station.contract_bundle",
+      "narrative": "Correlate work orders, artifacts, verifier reports, permits, executions, costs, telemetry, incidents, and outcomes without turning correlation into causation or authority. Verification is contract-level only, not production proof.",
+      "receipt_ref": "SUBSYS-746DA22A9BE241EED68DB1AA",
+      "receipt_resolved": true,
+      "request_packet_id": null,
+      "required_for_v1": true,
+      "requirement": "contract_bundle",
+      "status": "VERIFIED_LOCAL",
+      "subject_id": "correlation_station"
+    },
+    {
+      "acceptance_criteria": [
+        "chorus contract manifest validates against its schema",
+        "deterministic positive and fail-closed tests pass",
+        "receipt is local-only and cannot grant authority or claim egress"
+      ],
+      "artifact": {
+        "artifact_path": "reports/artifacts/aigc_subsystem_contracts_local_validation.json",
+        "artifact_sha256": "f90a6edefc287fcdef674389f65b02c6e69e79753aaf3f9358d536b04ccd8595",
+        "schema_version": "aigc.subsystem-validation-receipt.v1"
+      },
+      "category": "subsystem",
+      "counts_toward_readiness": true,
+      "evidence_scope": "LOCAL",
+      "gate_id": "subsystem.chorus.contract_bundle",
+      "narrative": "Deliver accessible, comprehensible, multilingual human review, approval, progress, recovery, and audit experiences across supported clients. Verification is contract-level only, not production proof.",
+      "receipt_ref": "SUBSYS-746DA22A9BE241EED68DB1AA",
+      "receipt_resolved": true,
+      "request_packet_id": null,
+      "required_for_v1": true,
+      "requirement": "contract_bundle",
+      "status": "VERIFIED_LOCAL",
+      "subject_id": "chorus"
+    },
+    {
+      "acceptance_criteria": [
+        "GitHub-hosted run is bound to the exact candidate commit SHA",
+        "checkout occurred and every required job/step completed successfully",
+        "run URL, job IDs, timestamps, and immutable artifacts are retained"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.nexus_linux_server.exact_head_ci",
+      "narrative": "linux_server evidence requirement; implementation status is implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-7974A5EF4C8E0E27FCCBEBF7",
+      "required_for_v1": true,
+      "requirement": "exact-head CI",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "nexus_linux_server"
+    },
+    {
+      "acceptance_criteria": [
+        "image is built from the exact candidate commit",
+        "registry returns an immutable sha256 digest",
+        "SBOM, provenance attestation, signature verification, and scan result bind to that digest"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.nexus_linux_server.immutable_image_digest",
+      "narrative": "linux_server evidence requirement; implementation status is implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-49FA806DAC9ADEBABDD0CE8E",
+      "required_for_v1": true,
+      "requirement": "immutable image digest",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "nexus_linux_server"
+    },
+    {
+      "acceptance_criteria": [
+        "deployed release, image digest, region, and service identity are recorded",
+        "authenticated health and readiness probes pass from the intended trust boundary",
+        "receipt contains request IDs and redacted logs without credentials"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.nexus_linux_server.authenticated_health_readiness",
+      "narrative": "linux_server evidence requirement; implementation status is implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-D27406B3C974A049B04AFF2F",
+      "required_for_v1": true,
+      "requirement": "authenticated health/readiness",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "nexus_linux_server"
+    },
+    {
+      "acceptance_criteria": [
+        "declared load envelope meets p95/error-rate SLOs",
+        "security checks report no release-blocking finding",
+        "rollback and restore are exercised and reconciled to the original state"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.nexus_linux_server.bounded_load_security_recovery",
+      "narrative": "linux_server evidence requirement; implementation status is implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-5668436C703FF9FCB0667888",
+      "required_for_v1": true,
+      "requirement": "bounded load/security/recovery",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "nexus_linux_server"
+    },
+    {
+      "acceptance_criteria": [
+        "HTTPS URL resolves to the exact release and immutable artifact",
+        "ownership, environment, and region are identified",
+        "health check passes without exposing a secret"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.nexus_web.deployed_url",
+      "narrative": "web evidence requirement; implementation status is implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-819006015DB24A2A03082114",
+      "required_for_v1": true,
+      "requirement": "deployed URL",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "nexus_web"
+    },
+    {
+      "acceptance_criteria": [
+        "automated WCAG checks pass on declared routes",
+        "keyboard, focus, labels, contrast, and screen-reader smoke tests are recorded",
+        "exceptions have owners, severity, and due dates"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.nexus_web.accessibility_test",
+      "narrative": "web evidence requirement; implementation status is implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-949AF840180C4C6D8B38F522",
+      "required_for_v1": true,
+      "requirement": "accessibility test",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "nexus_web"
+    },
+    {
+      "acceptance_criteria": [
+        "supported browser/version matrix is declared",
+        "automated journeys pass for every required matrix cell",
+        "failures include trace, screenshot, and reproducible environment"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.nexus_web.browser_compatibility_matrix",
+      "narrative": "web evidence requirement; implementation status is implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-5BABB8A48D78143BAB185B40",
+      "required_for_v1": true,
+      "requirement": "browser compatibility matrix",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "nexus_web"
+    },
+    {
+      "acceptance_criteria": [
+        "TLS and HTTP security headers are captured from the deployed origin",
+        "CSP, HSTS, framing, MIME, and referrer policies meet the declared baseline",
+        "scanner output is bound to URL, release, and timestamp"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.nexus_web.security_headers",
+      "narrative": "web evidence requirement; implementation status is implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-AAAB104CEB03C7B184D55481",
+      "required_for_v1": true,
+      "requirement": "security headers",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "nexus_web"
+    },
+    {
+      "acceptance_criteria": [
+        "logs, metrics, and traces correlate by release and request ID",
+        "SLO alerts and dashboards are addressable",
+        "a synthetic failure proves alert delivery and recovery closure"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.nexus_web.observability",
+      "narrative": "web evidence requirement; implementation status is implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-346E594A94FC8874B29E24D9",
+      "required_for_v1": true,
+      "requirement": "observability",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "nexus_web"
+    },
+    {
+      "acceptance_criteria": [
+        "MCP initialize succeeds on the declared transport and protocol",
+        "server identity is aigc-nexus",
+        "receipt binds the server implementation source hashes"
+      ],
+      "artifact": {
+        "artifact_path": "reports/artifacts/aigc_mcp_loopback_local_validation_v2.json",
+        "artifact_sha256": "77174fe04b7455bee20370fae8a7562c3605be7affd809f69b6bfae4d3fad886",
+        "schema_version": "aigc.mcp-loopback-validation.v2"
+      },
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "LOCAL",
+      "gate_id": "surface.chatgpt_mcp.mcp_initialize",
+      "narrative": "chatgpt_mcp evidence requirement; implementation status is implemented.",
+      "receipt_ref": "reports/artifacts/aigc_mcp_loopback_local_validation_v2.json",
+      "receipt_resolved": true,
+      "request_packet_id": null,
+      "required_for_v1": true,
+      "requirement": "MCP initialize",
+      "status": "VERIFIED_LOCAL",
+      "subject_id": "chatgpt_mcp"
+    },
+    {
+      "acceptance_criteria": [
+        "tool list is complete and deterministic",
+        "every tool has typed input/output schemas and read-only closed-world annotations",
+        "caller cannot inject authority or permit state"
+      ],
+      "artifact": {
+        "artifact_path": "reports/artifacts/aigc_mcp_loopback_local_validation_v2.json",
+        "artifact_sha256": "77174fe04b7455bee20370fae8a7562c3605be7affd809f69b6bfae4d3fad886",
+        "schema_version": "aigc.mcp-loopback-validation.v2"
+      },
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "LOCAL",
+      "gate_id": "surface.chatgpt_mcp.tool_list",
+      "narrative": "chatgpt_mcp evidence requirement; implementation status is implemented.",
+      "receipt_ref": "reports/artifacts/aigc_mcp_loopback_local_validation_v2.json",
+      "receipt_resolved": true,
+      "request_packet_id": null,
+      "required_for_v1": true,
+      "requirement": "tool list",
+      "status": "VERIFIED_LOCAL",
+      "subject_id": "chatgpt_mcp"
+    },
+    {
+      "acceptance_criteria": [
+        "one representative tool call returns a schema-valid result",
+        "provider, credential, financial, communication, and external-action counts remain zero",
+        "receipt is deterministic and hash-bound"
+      ],
+      "artifact": {
+        "artifact_path": "reports/artifacts/aigc_employer_sandbox_local_receipt.json",
+        "artifact_sha256": "62c054797b46502fcd6d983833d235487d6421466de2226ae9a69e070d373f33",
+        "schema_version": "aigc.employer-sandbox-receipt.v1"
+      },
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "LOCAL",
+      "gate_id": "surface.chatgpt_mcp.read_only_workflow",
+      "narrative": "chatgpt_mcp evidence requirement; implementation status is implemented.",
+      "receipt_ref": "SBX-4F88AB73D87044790709ABBF",
+      "receipt_resolved": true,
+      "request_packet_id": null,
+      "required_for_v1": true,
+      "requirement": "read-only workflow",
+      "status": "VERIFIED_LOCAL",
+      "subject_id": "chatgpt_mcp"
+    },
+    {
+      "acceptance_criteria": [
+        "a non-production adapter demonstrates prepare, confirm, consume-once, reconcile, and receipt states",
+        "wrong subject, expired, replayed, and parameter-mismatched permits are rejected",
+        "no real external mutation or financial transfer occurs in the evidence environment"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.chatgpt_mcp.confirmed_write_workflow",
+      "narrative": "chatgpt_mcp evidence requirement; implementation status is implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-1515545A18A0D57264A3522D",
+      "required_for_v1": true,
+      "requirement": "confirmed-write workflow",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "chatgpt_mcp"
+    },
+    {
+      "acceptance_criteria": [
+        "ChatGPT connector imports the exact deployed MCP endpoint",
+        "initialize, discovery, read-only tool call, and error rendering pass in the host",
+        "host, deployment release, and timestamps are captured without secrets"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.chatgpt_mcp.host_validation",
+      "narrative": "chatgpt_mcp evidence requirement; implementation status is implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-D9526558D8D2991771C7CC8B",
+      "required_for_v1": true,
+      "requirement": "host validation",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "chatgpt_mcp"
+    },
+    {
+      "acceptance_criteria": [
+        "MCP initialize succeeds on the declared transport and protocol",
+        "server identity is aigc-nexus",
+        "receipt binds the server implementation source hashes"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.gemini_mcp.mcp_initialize",
+      "narrative": "gemini_mcp evidence requirement; implementation status is implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-82D45C2C0672452D93E0E7C0",
+      "required_for_v1": false,
+      "requirement": "MCP initialize",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "gemini_mcp"
+    },
+    {
+      "acceptance_criteria": [
+        "gemini_mcp produces a receipt for allowlisted tool list",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.gemini_mcp.allowlisted_tool_list",
+      "narrative": "gemini_mcp evidence requirement; implementation status is implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-3A3E7F62151534E34FFD602F",
+      "required_for_v1": false,
+      "requirement": "allowlisted tool list",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "gemini_mcp"
+    },
+    {
+      "acceptance_criteria": [
+        "gemini_mcp produces a receipt for trust=false configuration",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.gemini_mcp.trust_false_configuration",
+      "narrative": "gemini_mcp evidence requirement; implementation status is implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-ABF107FF86A4624A15F5FB4A",
+      "required_for_v1": false,
+      "requirement": "trust=false configuration",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "gemini_mcp"
+    },
+    {
+      "acceptance_criteria": [
+        "gemini_mcp produces a receipt for client validation",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.gemini_mcp.client_validation",
+      "narrative": "gemini_mcp evidence requirement; implementation status is implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-6C30F8FC473558B3F2D45CE0",
+      "required_for_v1": false,
+      "requirement": "client validation",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "gemini_mcp"
+    },
+    {
+      "acceptance_criteria": [
+        "ios_client produces a receipt for supported Xcode build",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.ios_client.supported_xcode_build",
+      "narrative": "ios evidence requirement; implementation status is not_implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-37F679E292839C60B60A7BE9",
+      "required_for_v1": false,
+      "requirement": "supported Xcode build",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "ios_client"
+    },
+    {
+      "acceptance_criteria": [
+        "ios_client produces a receipt for simulator tests",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.ios_client.simulator_tests",
+      "narrative": "ios evidence requirement; implementation status is not_implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-567385C5491CC20D77A3CB27",
+      "required_for_v1": false,
+      "requirement": "simulator tests",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "ios_client"
+    },
+    {
+      "acceptance_criteria": [
+        "ios_client produces a receipt for physical-device tests",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.ios_client.physical_device_tests",
+      "narrative": "ios evidence requirement; implementation status is not_implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-DF59F17ECB9456A9DD150893",
+      "required_for_v1": false,
+      "requirement": "physical-device tests",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "ios_client"
+    },
+    {
+      "acceptance_criteria": [
+        "ios_client produces a receipt for privacy manifest",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.ios_client.privacy_manifest",
+      "narrative": "ios evidence requirement; implementation status is not_implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-B2ECE5AEDD683E2795A8A91D",
+      "required_for_v1": false,
+      "requirement": "privacy manifest",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "ios_client"
+    },
+    {
+      "acceptance_criteria": [
+        "ios_client produces a receipt for signing and TestFlight receipts",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.ios_client.signing_and_testflight_receipts",
+      "narrative": "ios evidence requirement; implementation status is not_implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-4440CB983FC51DC1ACA703BE",
+      "required_for_v1": false,
+      "requirement": "signing and TestFlight receipts",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "ios_client"
+    },
+    {
+      "acceptance_criteria": [
+        "android_client produces a receipt for reproducible Android build",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.android_client.reproducible_android_build",
+      "narrative": "android evidence requirement; implementation status is not_implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-A6CB0E3F93BE40E8F85EA42F",
+      "required_for_v1": false,
+      "requirement": "reproducible Android build",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "android_client"
+    },
+    {
+      "acceptance_criteria": [
+        "android_client produces a receipt for emulator matrix",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.android_client.emulator_matrix",
+      "narrative": "android evidence requirement; implementation status is not_implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-0DECE2968933642F170328BC",
+      "required_for_v1": false,
+      "requirement": "emulator matrix",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "android_client"
+    },
+    {
+      "acceptance_criteria": [
+        "android_client produces a receipt for physical-device tests",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.android_client.physical_device_tests",
+      "narrative": "android evidence requirement; implementation status is not_implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-2F186BF7640335698B1B75EC",
+      "required_for_v1": false,
+      "requirement": "physical-device tests",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "android_client"
+    },
+    {
+      "acceptance_criteria": [
+        "android_client produces a receipt for data safety declaration",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.android_client.data_safety_declaration",
+      "narrative": "android evidence requirement; implementation status is not_implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-76F4509D27B09090E90FF19A",
+      "required_for_v1": false,
+      "requirement": "data safety declaration",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "android_client"
+    },
+    {
+      "acceptance_criteria": [
+        "android_client produces a receipt for signed internal-track receipt",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.android_client.signed_internal_track_receipt",
+      "narrative": "android evidence requirement; implementation status is not_implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-71B4FA99E4E22D79EFAF3BC8",
+      "required_for_v1": false,
+      "requirement": "signed internal-track receipt",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "android_client"
+    },
+    {
+      "acceptance_criteria": [
+        "public_blockchain_mainnet produces a receipt for chain-specific threat model",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.public_blockchain_mainnet.chain_specific_threat_model",
+      "narrative": "blockchain_mainnet evidence requirement; implementation status is blocked.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-5A4401EF16E1F990C03F8359",
+      "required_for_v1": false,
+      "requirement": "chain-specific threat model",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "public_blockchain_mainnet"
+    },
+    {
+      "acceptance_criteria": [
+        "public_blockchain_mainnet produces a receipt for independent contract audit",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.public_blockchain_mainnet.independent_contract_audit",
+      "narrative": "blockchain_mainnet evidence requirement; implementation status is blocked.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-4CB402576F4611A7A0FDE3CE",
+      "required_for_v1": false,
+      "requirement": "independent contract audit",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "public_blockchain_mainnet"
+    },
+    {
+      "acceptance_criteria": [
+        "public_blockchain_mainnet produces a receipt for key custody design",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.public_blockchain_mainnet.key_custody_design",
+      "narrative": "blockchain_mainnet evidence requirement; implementation status is blocked.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-3AF6ADA9F6ECBDF7A3F8EDBC",
+      "required_for_v1": false,
+      "requirement": "key custody design",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "public_blockchain_mainnet"
+    },
+    {
+      "acceptance_criteria": [
+        "public_blockchain_mainnet produces a receipt for legal review",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.public_blockchain_mainnet.legal_review",
+      "narrative": "blockchain_mainnet evidence requirement; implementation status is blocked.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-E07C3EC7F25BBF7F02A1D49A",
+      "required_for_v1": false,
+      "requirement": "legal review",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "public_blockchain_mainnet"
+    },
+    {
+      "acceptance_criteria": [
+        "public_blockchain_mainnet produces a receipt for testnet receipts",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.public_blockchain_mainnet.testnet_receipts",
+      "narrative": "blockchain_mainnet evidence requirement; implementation status is blocked.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-CA8991C5D30630CD01B09ABC",
+      "required_for_v1": false,
+      "requirement": "testnet receipts",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "public_blockchain_mainnet"
+    },
+    {
+      "acceptance_criteria": [
+        "public_blockchain_mainnet produces a receipt for treasury and rollback plan",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.public_blockchain_mainnet.treasury_and_rollback_plan",
+      "narrative": "blockchain_mainnet evidence requirement; implementation status is blocked.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-31FE070DA559F14675C8B6F5",
+      "required_for_v1": false,
+      "requirement": "treasury and rollback plan",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "public_blockchain_mainnet"
+    },
+    {
+      "acceptance_criteria": [
+        "revenue_omega produces a receipt for integrated commercial lineage",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.revenue_omega.integrated_commercial_lineage",
+      "narrative": "commercial evidence requirement; implementation status is implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-C13D6201B0CC3B44B7EF3092",
+      "required_for_v1": false,
+      "requirement": "integrated commercial lineage",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "revenue_omega"
+    },
+    {
+      "acceptance_criteria": [
+        "revenue_omega produces a receipt for jurisdiction decision",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.revenue_omega.jurisdiction_decision",
+      "narrative": "commercial evidence requirement; implementation status is implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-534AFDB750AEBAA2AC49C0CD",
+      "required_for_v1": false,
+      "requirement": "jurisdiction decision",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "revenue_omega"
+    },
+    {
+      "acceptance_criteria": [
+        "revenue_omega produces a receipt for versioned agreement",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.revenue_omega.versioned_agreement",
+      "narrative": "commercial evidence requirement; implementation status is implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-91D7C74ED394C396E6AD1583",
+      "required_for_v1": false,
+      "requirement": "versioned agreement",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "revenue_omega"
+    },
+    {
+      "acceptance_criteria": [
+        "revenue_omega produces a receipt for sandbox settlement",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.revenue_omega.sandbox_settlement",
+      "narrative": "commercial evidence requirement; implementation status is implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-CAA21F6902D3F6C98C28167D",
+      "required_for_v1": false,
+      "requirement": "sandbox settlement",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "revenue_omega"
+    },
+    {
+      "acceptance_criteria": [
+        "revenue_omega produces a receipt for payment reconciliation",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.revenue_omega.payment_reconciliation",
+      "narrative": "commercial evidence requirement; implementation status is implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-779668016EC008DD3A2E3218",
+      "required_for_v1": false,
+      "requirement": "payment reconciliation",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "revenue_omega"
+    },
+    {
+      "acceptance_criteria": [
+        "revenue_omega produces a receipt for production billing authority",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "artifact": null,
+      "category": "surface",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "surface.revenue_omega.production_billing_authority",
+      "narrative": "commercial evidence requirement; implementation status is implemented.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-0FB9BDC095649C99B51093E1",
+      "required_for_v1": false,
+      "requirement": "production billing authority",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "revenue_omega"
+    },
+    {
+      "acceptance_criteria": [
+        "openai_responses certification field status_verified is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.openai_responses.status_verified",
+      "narrative": "Connector certification dimension for class llm.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-043F141FEA21E7FD8D68FA53",
+      "required_for_v1": true,
+      "requirement": "status_verified",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "openai_responses"
+    },
+    {
+      "acceptance_criteria": [
+        "openai_responses certification field terms_reviewed is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": {
+        "artifact_path": "reports/artifacts/aigc_provider_terms_review_2026-08-14.json",
+        "artifact_sha256": "09e448f6aafccc8b8daf1e2d2bee99327b93d4a3b16db0444a59840f384d96a2",
+        "schema_version": "aigc.provider-terms-review.v1"
+      },
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "LOCAL",
+      "gate_id": "connector.openai_responses.terms_reviewed",
+      "narrative": "Connector certification dimension for class llm.",
+      "receipt_ref": "TERMS-REVIEW-20260814-OAI-GCP",
+      "receipt_resolved": true,
+      "request_packet_id": null,
+      "required_for_v1": true,
+      "requirement": "terms_reviewed",
+      "status": "VERIFIED_LOCAL",
+      "subject_id": "openai_responses"
+    },
+    {
+      "acceptance_criteria": [
+        "openai_responses certification field identity_bound is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.openai_responses.identity_bound",
+      "narrative": "Connector certification dimension for class llm.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-BAFC90D543D436CB7EEDC726",
+      "required_for_v1": true,
+      "requirement": "identity_bound",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "openai_responses"
+    },
+    {
+      "acceptance_criteria": [
+        "openai_responses certification field scope_bound is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": {
+        "artifact_path": "reports/artifacts/aigc_provider_terms_review_2026-08-14.json",
+        "artifact_sha256": "09e448f6aafccc8b8daf1e2d2bee99327b93d4a3b16db0444a59840f384d96a2",
+        "schema_version": "aigc.provider-terms-review.v1"
+      },
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "LOCAL",
+      "gate_id": "connector.openai_responses.scope_bound",
+      "narrative": "Connector certification dimension for class llm.",
+      "receipt_ref": "TERMS-REVIEW-20260814-OAI-GCP",
+      "receipt_resolved": true,
+      "request_packet_id": null,
+      "required_for_v1": true,
+      "requirement": "scope_bound",
+      "status": "VERIFIED_LOCAL",
+      "subject_id": "openai_responses"
+    },
+    {
+      "acceptance_criteria": [
+        "openai_responses certification field recovery_tested is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.openai_responses.recovery_tested",
+      "narrative": "Connector certification dimension for class llm.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-1F520FCB01920D040100DD7C",
+      "required_for_v1": true,
+      "requirement": "recovery_tested",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "openai_responses"
+    },
+    {
+      "acceptance_criteria": [
+        "openai_responses certification field live_receipt is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.openai_responses.live_receipt",
+      "narrative": "Connector certification dimension for class llm.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-038EE8D7492E879F802A2789",
+      "required_for_v1": true,
+      "requirement": "live_receipt",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "openai_responses"
+    },
+    {
+      "acceptance_criteria": [
+        "vertex_gemini certification field status_verified is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.vertex_gemini.status_verified",
+      "narrative": "Connector certification dimension for class llm.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-18F213C6D2A04C4C086BA949",
+      "required_for_v1": true,
+      "requirement": "status_verified",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "vertex_gemini"
+    },
+    {
+      "acceptance_criteria": [
+        "vertex_gemini certification field terms_reviewed is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": {
+        "artifact_path": "reports/artifacts/aigc_provider_terms_review_2026-08-14.json",
+        "artifact_sha256": "09e448f6aafccc8b8daf1e2d2bee99327b93d4a3b16db0444a59840f384d96a2",
+        "schema_version": "aigc.provider-terms-review.v1"
+      },
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "LOCAL",
+      "gate_id": "connector.vertex_gemini.terms_reviewed",
+      "narrative": "Connector certification dimension for class llm.",
+      "receipt_ref": "TERMS-REVIEW-20260814-OAI-GCP",
+      "receipt_resolved": true,
+      "request_packet_id": null,
+      "required_for_v1": true,
+      "requirement": "terms_reviewed",
+      "status": "VERIFIED_LOCAL",
+      "subject_id": "vertex_gemini"
+    },
+    {
+      "acceptance_criteria": [
+        "vertex_gemini certification field identity_bound is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.vertex_gemini.identity_bound",
+      "narrative": "Connector certification dimension for class llm.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-31DA703D2D486398CF465BD3",
+      "required_for_v1": true,
+      "requirement": "identity_bound",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "vertex_gemini"
+    },
+    {
+      "acceptance_criteria": [
+        "vertex_gemini certification field scope_bound is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": {
+        "artifact_path": "reports/artifacts/aigc_provider_terms_review_2026-08-14.json",
+        "artifact_sha256": "09e448f6aafccc8b8daf1e2d2bee99327b93d4a3b16db0444a59840f384d96a2",
+        "schema_version": "aigc.provider-terms-review.v1"
+      },
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "LOCAL",
+      "gate_id": "connector.vertex_gemini.scope_bound",
+      "narrative": "Connector certification dimension for class llm.",
+      "receipt_ref": "TERMS-REVIEW-20260814-OAI-GCP",
+      "receipt_resolved": true,
+      "request_packet_id": null,
+      "required_for_v1": true,
+      "requirement": "scope_bound",
+      "status": "VERIFIED_LOCAL",
+      "subject_id": "vertex_gemini"
+    },
+    {
+      "acceptance_criteria": [
+        "vertex_gemini certification field recovery_tested is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.vertex_gemini.recovery_tested",
+      "narrative": "Connector certification dimension for class llm.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-D1D335DE467E924716EF3421",
+      "required_for_v1": true,
+      "requirement": "recovery_tested",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "vertex_gemini"
+    },
+    {
+      "acceptance_criteria": [
+        "vertex_gemini certification field live_receipt is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.vertex_gemini.live_receipt",
+      "narrative": "Connector certification dimension for class llm.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-4343BAD3AD0894DBA82A6010",
+      "required_for_v1": true,
+      "requirement": "live_receipt",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "vertex_gemini"
+    },
+    {
+      "acceptance_criteria": [
+        "generic_websites certification field status_verified is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.generic_websites.status_verified",
+      "narrative": "Connector certification dimension for class website.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-1DDAB98BBDA28BEFD5DDDFAF",
+      "required_for_v1": false,
+      "requirement": "status_verified",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "generic_websites"
+    },
+    {
+      "acceptance_criteria": [
+        "generic_websites certification field terms_reviewed is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.generic_websites.terms_reviewed",
+      "narrative": "Connector certification dimension for class website.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-071992F3059818E2F8BE6691",
+      "required_for_v1": false,
+      "requirement": "terms_reviewed",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "generic_websites"
+    },
+    {
+      "acceptance_criteria": [
+        "generic_websites certification field identity_bound is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.generic_websites.identity_bound",
+      "narrative": "Connector certification dimension for class website.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-C3FC4598091A6BB219606C64",
+      "required_for_v1": false,
+      "requirement": "identity_bound",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "generic_websites"
+    },
+    {
+      "acceptance_criteria": [
+        "generic_websites certification field scope_bound is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.generic_websites.scope_bound",
+      "narrative": "Connector certification dimension for class website.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-1B01A063E0387F2174EE6634",
+      "required_for_v1": false,
+      "requirement": "scope_bound",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "generic_websites"
+    },
+    {
+      "acceptance_criteria": [
+        "generic_websites certification field recovery_tested is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.generic_websites.recovery_tested",
+      "narrative": "Connector certification dimension for class website.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-B403161547D6EAADEE796C43",
+      "required_for_v1": false,
+      "requirement": "recovery_tested",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "generic_websites"
+    },
+    {
+      "acceptance_criteria": [
+        "generic_websites certification field live_receipt is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.generic_websites.live_receipt",
+      "narrative": "Connector certification dimension for class website.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-C6C64A8BDD5CD9FABF3D813A",
+      "required_for_v1": false,
+      "requirement": "live_receipt",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "generic_websites"
+    },
+    {
+      "acceptance_criteria": [
+        "payment_provider certification field status_verified is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.payment_provider.status_verified",
+      "narrative": "Connector certification dimension for class payment.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-8446489D8763D38FEF34D0E6",
+      "required_for_v1": false,
+      "requirement": "status_verified",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "payment_provider"
+    },
+    {
+      "acceptance_criteria": [
+        "payment_provider certification field terms_reviewed is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.payment_provider.terms_reviewed",
+      "narrative": "Connector certification dimension for class payment.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-5E54DE181CBC6C22B837C4F0",
+      "required_for_v1": false,
+      "requirement": "terms_reviewed",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "payment_provider"
+    },
+    {
+      "acceptance_criteria": [
+        "payment_provider certification field identity_bound is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.payment_provider.identity_bound",
+      "narrative": "Connector certification dimension for class payment.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-911C879F7DE4852660A60013",
+      "required_for_v1": false,
+      "requirement": "identity_bound",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "payment_provider"
+    },
+    {
+      "acceptance_criteria": [
+        "payment_provider certification field scope_bound is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.payment_provider.scope_bound",
+      "narrative": "Connector certification dimension for class payment.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-78317819A816EE18CF393910",
+      "required_for_v1": false,
+      "requirement": "scope_bound",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "payment_provider"
+    },
+    {
+      "acceptance_criteria": [
+        "payment_provider certification field recovery_tested is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.payment_provider.recovery_tested",
+      "narrative": "Connector certification dimension for class payment.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-427FF5ACCA4297517DCD2448",
+      "required_for_v1": false,
+      "requirement": "recovery_tested",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "payment_provider"
+    },
+    {
+      "acceptance_criteria": [
+        "payment_provider certification field live_receipt is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.payment_provider.live_receipt",
+      "narrative": "Connector certification dimension for class payment.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-1026688E6D81778554BDCB2A",
+      "required_for_v1": false,
+      "requirement": "live_receipt",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "payment_provider"
+    },
+    {
+      "acceptance_criteria": [
+        "investor_and_ip_marketplaces certification field status_verified is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.investor_and_ip_marketplaces.status_verified",
+      "narrative": "Connector certification dimension for class marketplace.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-5BED99DE51EA3059F57EAB20",
+      "required_for_v1": false,
+      "requirement": "status_verified",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "investor_and_ip_marketplaces"
+    },
+    {
+      "acceptance_criteria": [
+        "investor_and_ip_marketplaces certification field terms_reviewed is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.investor_and_ip_marketplaces.terms_reviewed",
+      "narrative": "Connector certification dimension for class marketplace.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-A587F85F50051A99A3A96B03",
+      "required_for_v1": false,
+      "requirement": "terms_reviewed",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "investor_and_ip_marketplaces"
+    },
+    {
+      "acceptance_criteria": [
+        "investor_and_ip_marketplaces certification field identity_bound is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.investor_and_ip_marketplaces.identity_bound",
+      "narrative": "Connector certification dimension for class marketplace.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-2A1F7BC36BCF5268AC93C247",
+      "required_for_v1": false,
+      "requirement": "identity_bound",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "investor_and_ip_marketplaces"
+    },
+    {
+      "acceptance_criteria": [
+        "investor_and_ip_marketplaces certification field scope_bound is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.investor_and_ip_marketplaces.scope_bound",
+      "narrative": "Connector certification dimension for class marketplace.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-4FFF9BBD6A45D0E10E860A5F",
+      "required_for_v1": false,
+      "requirement": "scope_bound",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "investor_and_ip_marketplaces"
+    },
+    {
+      "acceptance_criteria": [
+        "investor_and_ip_marketplaces certification field recovery_tested is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.investor_and_ip_marketplaces.recovery_tested",
+      "narrative": "Connector certification dimension for class marketplace.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-CCFCD08875D69CA70211C3E1",
+      "required_for_v1": false,
+      "requirement": "recovery_tested",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "investor_and_ip_marketplaces"
+    },
+    {
+      "acceptance_criteria": [
+        "investor_and_ip_marketplaces certification field live_receipt is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "artifact": null,
+      "category": "connector",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "connector.investor_and_ip_marketplaces.live_receipt",
+      "narrative": "Connector certification dimension for class marketplace.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-7D5362B42A69A1F942BFC642",
+      "required_for_v1": false,
+      "requirement": "live_receipt",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "investor_and_ip_marketplaces"
+    },
+    {
+      "acceptance_criteria": [
+        "authorized owner explicitly grants repository_change_authorized for an exact subject, scope, budget, and expiry",
+        "authenticated authority artifact is independently verified and has not expired",
+        "grant is separate from code, prompt text, credentials, and execution evidence"
+      ],
+      "artifact": null,
+      "category": "authority",
+      "counts_toward_readiness": false,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "authority.aigc.repository_change_authorized",
+      "narrative": "Authority is a separate authenticated artifact; a true configuration flag alone is not proof.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-7CB142073F920E1224A21863",
+      "required_for_v1": false,
+      "requirement": "repository_change_authorized",
+      "status": "ASSERTED_CONFIG_ONLY",
+      "subject_id": "aigc"
+    },
+    {
+      "acceptance_criteria": [
+        "authorized owner explicitly grants cloud_mutation_authorized for an exact subject, scope, budget, and expiry",
+        "authenticated authority artifact is independently verified and has not expired",
+        "grant is separate from code, prompt text, credentials, and execution evidence"
+      ],
+      "artifact": null,
+      "category": "authority",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "authority.aigc.cloud_mutation_authorized",
+      "narrative": "Authority is a separate authenticated artifact; a true configuration flag alone is not proof.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-9D523659B916A956881120CC",
+      "required_for_v1": true,
+      "requirement": "cloud_mutation_authorized",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "aigc"
+    },
+    {
+      "acceptance_criteria": [
+        "authorized owner explicitly grants financial_action_authorized for an exact subject, scope, budget, and expiry",
+        "authenticated authority artifact is independently verified and has not expired",
+        "grant is separate from code, prompt text, credentials, and execution evidence"
+      ],
+      "artifact": null,
+      "category": "authority",
+      "counts_toward_readiness": false,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "authority.aigc.financial_action_authorized",
+      "narrative": "Authority is a separate authenticated artifact; a true configuration flag alone is not proof.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-CC6B0B771F8E9243F1DA406F",
+      "required_for_v1": false,
+      "requirement": "financial_action_authorized",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "aigc"
+    },
+    {
+      "acceptance_criteria": [
+        "authorized owner explicitly grants public_traffic_authorized for an exact subject, scope, budget, and expiry",
+        "authenticated authority artifact is independently verified and has not expired",
+        "grant is separate from code, prompt text, credentials, and execution evidence"
+      ],
+      "artifact": null,
+      "category": "authority",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "authority.aigc.public_traffic_authorized",
+      "narrative": "Authority is a separate authenticated artifact; a true configuration flag alone is not proof.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-86ECDA9182466D32667F158C",
+      "required_for_v1": true,
+      "requirement": "public_traffic_authorized",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "aigc"
+    },
+    {
+      "acceptance_criteria": [
+        "authorized owner explicitly grants production_activation_authorized for an exact subject, scope, budget, and expiry",
+        "authenticated authority artifact is independently verified and has not expired",
+        "grant is separate from code, prompt text, credentials, and execution evidence"
+      ],
+      "artifact": null,
+      "category": "authority",
+      "counts_toward_readiness": true,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "authority.aigc.production_activation_authorized",
+      "narrative": "Authority is a separate authenticated artifact; a true configuration flag alone is not proof.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-C2BD58B5EBC7349FF1C024B8",
+      "required_for_v1": true,
+      "requirement": "production_activation_authorized",
+      "status": "BLOCKED_EXTERNAL",
+      "subject_id": "aigc"
+    },
+    {
+      "acceptance_criteria": [
+        "authorized owner explicitly grants external_communication_authorized for an exact subject, scope, budget, and expiry",
+        "authenticated authority artifact is independently verified and has not expired",
+        "grant is separate from code, prompt text, credentials, and execution evidence"
+      ],
+      "artifact": null,
+      "category": "authority",
+      "counts_toward_readiness": false,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "authority.aigc.external_communication_authorized",
+      "narrative": "Authority is a separate authenticated artifact; a true configuration flag alone is not proof.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-550174E7DBC39058B15D2E70",
+      "required_for_v1": false,
+      "requirement": "external_communication_authorized",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "aigc"
+    },
+    {
+      "acceptance_criteria": [
+        "authorized owner explicitly grants app_store_submission_authorized for an exact subject, scope, budget, and expiry",
+        "authenticated authority artifact is independently verified and has not expired",
+        "grant is separate from code, prompt text, credentials, and execution evidence"
+      ],
+      "artifact": null,
+      "category": "authority",
+      "counts_toward_readiness": false,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "authority.aigc.app_store_submission_authorized",
+      "narrative": "Authority is a separate authenticated artifact; a true configuration flag alone is not proof.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-BBEDB3023738E2633E4A45D2",
+      "required_for_v1": false,
+      "requirement": "app_store_submission_authorized",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "aigc"
+    },
+    {
+      "acceptance_criteria": [
+        "authorized owner explicitly grants play_store_submission_authorized for an exact subject, scope, budget, and expiry",
+        "authenticated authority artifact is independently verified and has not expired",
+        "grant is separate from code, prompt text, credentials, and execution evidence"
+      ],
+      "artifact": null,
+      "category": "authority",
+      "counts_toward_readiness": false,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "authority.aigc.play_store_submission_authorized",
+      "narrative": "Authority is a separate authenticated artifact; a true configuration flag alone is not proof.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-0679324397F06858586A4BCF",
+      "required_for_v1": false,
+      "requirement": "play_store_submission_authorized",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "aigc"
+    },
+    {
+      "acceptance_criteria": [
+        "authorized owner explicitly grants token_or_blockchain_mainnet_authorized for an exact subject, scope, budget, and expiry",
+        "authenticated authority artifact is independently verified and has not expired",
+        "grant is separate from code, prompt text, credentials, and execution evidence"
+      ],
+      "artifact": null,
+      "category": "authority",
+      "counts_toward_readiness": false,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "authority.aigc.token_or_blockchain_mainnet_authorized",
+      "narrative": "Authority is a separate authenticated artifact; a true configuration flag alone is not proof.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-BC0495333E69D546820B8C60",
+      "required_for_v1": false,
+      "requirement": "token_or_blockchain_mainnet_authorized",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "aigc"
+    },
+    {
+      "acceptance_criteria": [
+        "authorized owner explicitly grants patent_or_ip_listing_authorized for an exact subject, scope, budget, and expiry",
+        "authenticated authority artifact is independently verified and has not expired",
+        "grant is separate from code, prompt text, credentials, and execution evidence"
+      ],
+      "artifact": null,
+      "category": "authority",
+      "counts_toward_readiness": false,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "authority.aigc.patent_or_ip_listing_authorized",
+      "narrative": "Authority is a separate authenticated artifact; a true configuration flag alone is not proof.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-22EC7BAC6BD487DB46E429F7",
+      "required_for_v1": false,
+      "requirement": "patent_or_ip_listing_authorized",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "aigc"
+    },
+    {
+      "acceptance_criteria": [
+        "authorized owner explicitly grants investor_outreach_authorized for an exact subject, scope, budget, and expiry",
+        "authenticated authority artifact is independently verified and has not expired",
+        "grant is separate from code, prompt text, credentials, and execution evidence"
+      ],
+      "artifact": null,
+      "category": "authority",
+      "counts_toward_readiness": false,
+      "evidence_scope": "EXTERNAL_OR_UNAVAILABLE",
+      "gate_id": "authority.aigc.investor_outreach_authorized",
+      "narrative": "Authority is a separate authenticated artifact; a true configuration flag alone is not proof.",
+      "receipt_ref": null,
+      "receipt_resolved": false,
+      "request_packet_id": "EREQ-3CFE9D0265AEDB7A9EC5D748",
+      "required_for_v1": false,
+      "requirement": "investor_outreach_authorized",
+      "status": "DEFERRED_NOT_REQUIRED",
+      "subject_id": "aigc"
+    }
+  ],
+  "legacy_readiness": {
+    "applicable_required_checks": 34,
+    "authority_granted": false,
+    "blockers": [
+      "registry remains template_only",
+      "release evidence is absent",
+      "required authority cloud_mutation_authorized is false",
+      "required authority production_activation_authorized is false",
+      "required authority public_traffic_authorized is false",
+      "required connector openai_responses is not fully certified",
+      "required connector vertex_gemini is not fully certified",
+      "required surface chatgpt_mcp is implemented with 3/5 receipt-bound checks",
+      "required surface nexus_linux_server is implemented with 0/4 receipt-bound checks",
+      "required surface nexus_web is implemented with 0/5 receipt-bound checks"
+    ],
+    "external_action_performed": false,
+    "production_ready": false,
+    "registry_sha256": "647021363654ab52e5ef8982f7fa3413155b952ecc47894f81ec5e05d2aec745",
+    "verified_applicable_ratio": 0.352941,
+    "verified_required_checks": 12
+  },
+  "production_ready": false,
+  "program_id": "AIGC-EVIDENCE-PROGRAM-V1",
+  "program_sha256": "d96c1b8bb2015076d8852f15cfc8233ee9f61c626f024732ea93cc4e0ff6d752",
+  "receipt_resolved_readiness": {
+    "applicable_required_checks": 34,
+    "verified_applicable_ratio": 0.352941,
+    "verified_required_checks": 12
+  },
+  "registry_sha256": "647021363654ab52e5ef8982f7fa3413155b952ecc47894f81ec5e05d2aec745",
+  "schema_version": "aigc.evidence-program.v1"
+}

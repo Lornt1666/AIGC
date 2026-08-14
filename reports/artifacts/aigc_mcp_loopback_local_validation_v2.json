@@ -1,0 +1,166 @@
+{
+  "authority_granted": false,
+  "bind_host": "127.0.0.1",
+  "chatgpt_host_validation_performed": false,
+  "checks": {
+    "initialize": "PASS",
+    "read_only_annotations": "PASS",
+    "tool_call": "PASS",
+    "tools_list": "PASS"
+  },
+  "credentials_accessed": false,
+  "evidence_scope": "LOCAL_IN_PROCESS_STREAMABLE_HTTP_NOT_HOST_VALIDATION",
+  "external_actions_performed": 0,
+  "gemini_client_validation_performed": false,
+  "path": "/mcp",
+  "protocol_version": "2025-06-18",
+  "provider_calls_performed": 0,
+  "public_deployment_performed": false,
+  "receipt_id": "MCP-LOOPBACK-V2-20260814",
+  "receipt_sha256": "8d88e517af557d3dca9a4d796694b5326eb63a21a7a241b60573f3b3cbf48b88",
+  "sandbox_receipt_id": "SBX-4F88AB73D87044790709ABBF",
+  "schema_version": "aigc.mcp-loopback-validation.v2",
+  "server_name": "aigc-nexus",
+  "source_files": {
+    "src/integrations/mcp/server.py": "ac8fbb04b949da14a232f027261486b2e1e01f321ce8afa5e64a6fe0ed091f9c",
+    "src/integrations/mcp/tools.py": "c78bb8eeb864be97a5b89f2dc28e6aebdf5310a11490877199ecc3dba82c7365",
+    "src/operations/employer_sandbox.py": "56a11150e36054cd999ebddc87dfc776aea098b43201f2eb93d9021e52a85d3c"
+  },
+  "terminal_status": "PASS",
+  "tool_count": 12,
+  "tools": [
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "input_schema_sha256": "69a99c91bf5f94e748d54c4e977c35628e77bd8204898a11776140ca6ae5e9fb",
+      "name": "aigc_compose_alpha_plan",
+      "output_schema_present": true
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "input_schema_sha256": "8b633fac04dc144935869484b58cef18cf0239cb1c85eab13a97d95f8e513490",
+      "name": "aigc_get_status",
+      "output_schema_present": true
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "input_schema_sha256": "b4c7e60d427265b46b0b7f6fdba796b43a4e20bf970caa9572d448bcc0ac9fd7",
+      "name": "aigc_plan_llm_lifecycle",
+      "output_schema_present": true
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "input_schema_sha256": "45fc107895c5e74435c39eb9c0a0216c0e6cf77ef0360c2145ced1c722b07e8c",
+      "name": "aigc_plan_regenexcalibur_workflow",
+      "output_schema_present": true
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "input_schema_sha256": "07fdf88f9fa235ce21d13cb1696324646739b0dffbf11ca43a1f5a7308a8b0dc",
+      "name": "aigc_plan_wealth_work",
+      "output_schema_present": true
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "input_schema_sha256": "1bd2e9a19b8f2334b6df2fb3c41bb81b940aa9908a04ae27ea54b234c8a0bb62",
+      "name": "aigc_render_control_center",
+      "output_schema_present": true
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "input_schema_sha256": "73e4cb890b5a02164ec172a6824b271ed9ebd0b37772dfb73ee3449ae3a8f843",
+      "name": "aigc_run_employer_sandbox",
+      "output_schema_present": true
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "input_schema_sha256": "fd18bcacb7fd3db6b9d6303db4c8f77e64a5c18c852699e7da5b2c47dafebd69",
+      "name": "aigc_run_regenexcalibur_diagnostics",
+      "output_schema_present": true
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "input_schema_sha256": "f1b53dd41208fcc9eae0f514fb85f826f165a020a58933b5a9b1d690742af743",
+      "name": "aigc_seed_regenexcalibur_universe",
+      "output_schema_present": true
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "input_schema_sha256": "08feed4d7d7f285b50fdb58479e5b7d84c62e2a90f2e6f3b0c51ba9040aa9f54",
+      "name": "assess_aigc_action",
+      "output_schema_present": true
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "input_schema_sha256": "9a6b9d6672a1354f1e1cca4806253c6c32b22a107efcb6ea4436d1b3241f600a",
+      "name": "procure_deep_research_plan",
+      "output_schema_present": true
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "input_schema_sha256": "6f95795ea73d7b45b48684ae15ab028da9976bf1970d34e2a95ca3847d1e079c",
+      "name": "run_aigc_dry_run",
+      "output_schema_present": true
+    }
+  ],
+  "transport": "streamable-http"
+}

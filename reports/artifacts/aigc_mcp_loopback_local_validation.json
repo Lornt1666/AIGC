@@ -1,0 +1,28 @@
+{
+  "schema_version": "aigc.mcp-loopback-validation.v1",
+  "evidence_scope": "LOCAL_CANDIDATE_NOT_EXACT_HEAD_CI",
+  "parent_revision": "a196493e9bf36f3a7dd23a3a002f3aca2f7db623",
+  "transport": "streamable-http",
+  "bind_host": "127.0.0.1",
+  "path": "/mcp",
+  "protocol_version": "2025-06-18",
+  "initialize_status": "PASS",
+  "tools_list_status": "PASS",
+  "tool_call_status": "PASS",
+  "tools": [
+    "aigc_get_status",
+    "aigc_render_control_center",
+    "assess_aigc_action",
+    "run_aigc_dry_run",
+    "procure_deep_research_plan",
+    "aigc_run_employer_sandbox"
+  ],
+  "sandbox_receipt_id": "SBX-4F88AB73D87044790709ABBF",
+  "provider_calls_performed": 0,
+  "external_actions_performed": 0,
+  "authority_granted": false,
+  "external_action_performed": false,
+  "chatgpt_host_validation_performed": false,
+  "gemini_client_validation_performed": false,
+  "public_deployment_performed": false
+}

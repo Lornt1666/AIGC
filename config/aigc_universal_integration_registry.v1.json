@@ -1,0 +1,235 @@
+{
+  "schema_version": "aigc.universal-integration-registry.v1",
+  "registry_id": "AIGC-UNIVERSAL-INTEGRATION-REGISTRY-V1",
+  "template_only": true,
+  "release_binding": {
+    "repository": "Lornt1666/AIGC",
+    "base_branch": "release/aigc-nexus-v1",
+    "base_revision": "f0f784d963427019183b86f54423a28e29c5a630",
+    "evidence_state": "absent"
+  },
+  "subsystems": [
+    {
+      "id": "silva",
+      "name": "SILVA — System Integration and Lifecycle Validation Architecture",
+      "purpose": "Own the device, operating-system, application-lifecycle, compatibility, accessibility, and performance evidence matrix.",
+      "status": "verified",
+      "verification_scope": "LOCAL_CONTRACT_ONLY",
+      "contracts": ["platform capability manifest", "hardware/OS test matrix", "compatibility receipt"],
+      "evidence_receipts": {
+        "platform capability manifest": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "hardware/OS test matrix": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "compatibility receipt": "SUBSYS-746DA22A9BE241EED68DB1AA"
+      },
+      "authority_granted": false,
+      "external_action_performed": false
+    },
+    {
+      "id": "hexgate",
+      "name": "HexGate — Six-Gate Trust Boundary",
+      "purpose": "Enforce identity, authorization, privacy, safety, cost, and evidence gates before any consequential connector or runtime effect.",
+      "status": "verified",
+      "verification_scope": "LOCAL_CONTRACT_ONLY",
+      "contracts": ["consequence assessment", "governance decision", "one-use execution permit", "execution receipt"],
+      "evidence_receipts": {
+        "consequence assessment": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "governance decision": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "one-use execution permit": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "execution receipt": "SUBSYS-746DA22A9BE241EED68DB1AA"
+      },
+      "authority_granted": false,
+      "external_action_performed": false
+    },
+    {
+      "id": "vanis",
+      "name": "VANIS — Verifiable Agent Network Integration Substrate",
+      "purpose": "Provide provider-neutral agent, model, tool, and connector routing with bounded inputs, outputs, budgets, retries, and identities.",
+      "status": "verified",
+      "verification_scope": "LOCAL_CONTRACT_ONLY",
+      "contracts": ["agent capability manifest", "tool invocation request", "provider adapter contract", "bounded result envelope"],
+      "evidence_receipts": {
+        "agent capability manifest": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "tool invocation request": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "provider adapter contract": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "bounded result envelope": "SUBSYS-746DA22A9BE241EED68DB1AA"
+      },
+      "authority_granted": false,
+      "external_action_performed": false
+    },
+    {
+      "id": "correlation_station",
+      "name": "Correlation Station — Evidence and Observability Plane",
+      "purpose": "Correlate work orders, artifacts, verifier reports, permits, executions, costs, telemetry, incidents, and outcomes without turning correlation into causation or authority.",
+      "status": "verified",
+      "verification_scope": "LOCAL_CONTRACT_ONLY",
+      "contracts": ["evidence lineage", "telemetry envelope", "data quality record", "reconciliation report"],
+      "evidence_receipts": {
+        "evidence lineage": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "telemetry envelope": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "data quality record": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "reconciliation report": "SUBSYS-746DA22A9BE241EED68DB1AA"
+      },
+      "authority_granted": false,
+      "external_action_performed": false
+    },
+    {
+      "id": "chorus",
+      "name": "CHORUS — Coordinated Human-Orchestrated Runtime and User Surface",
+      "purpose": "Deliver accessible, comprehensible, multilingual human review, approval, progress, recovery, and audit experiences across supported clients.",
+      "status": "verified",
+      "verification_scope": "LOCAL_CONTRACT_ONLY",
+      "contracts": ["intent envelope", "approval presentation", "accessibility receipt", "human-readable audit summary"],
+      "evidence_receipts": {
+        "intent envelope": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "approval presentation": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "accessibility receipt": "SUBSYS-746DA22A9BE241EED68DB1AA",
+        "human-readable audit summary": "SUBSYS-746DA22A9BE241EED68DB1AA"
+      },
+      "authority_granted": false,
+      "external_action_performed": false
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "nexus_linux_server",
+      "kind": "linux_server",
+      "required_for_v1": true,
+      "status": "implemented",
+      "required_evidence": ["exact-head CI", "immutable image digest", "authenticated health/readiness", "bounded load/security/recovery"],
+      "evidence_receipts": {},
+      "blockers": ["Current release head has no combined status receipt", "No external deployment receipt", "No public traffic authority"]
+    },
+    {
+      "id": "nexus_web",
+      "kind": "web",
+      "required_for_v1": true,
+      "status": "implemented",
+      "required_evidence": ["deployed URL", "accessibility test", "browser compatibility matrix", "security headers", "observability"],
+      "evidence_receipts": {},
+      "blockers": ["No deployed web receipt", "No browser/device validation receipts"]
+    },
+    {
+      "id": "chatgpt_mcp",
+      "kind": "chatgpt_mcp",
+      "required_for_v1": true,
+      "status": "implemented",
+      "required_evidence": ["MCP initialize", "tool list", "read-only workflow", "confirmed-write workflow", "host validation"],
+      "evidence_receipts": {
+        "MCP initialize": "reports/artifacts/aigc_mcp_loopback_local_validation_v2.json",
+        "tool list": "reports/artifacts/aigc_mcp_loopback_local_validation_v2.json",
+        "read-only workflow": "SBX-4F88AB73D87044790709ABBF"
+      },
+      "blockers": ["No confirmed-write workflow is exposed by the initial read/simulate facade", "No ChatGPT host validation receipt", "No hosted exact-head CI receipt"]
+    },
+    {
+      "id": "gemini_mcp",
+      "kind": "gemini_mcp",
+      "required_for_v1": false,
+      "status": "implemented",
+      "required_evidence": ["MCP initialize", "allowlisted tool list", "trust=false configuration", "client validation"],
+      "evidence_receipts": {},
+      "blockers": ["No Gemini client validation receipt", "No hosted exact-head CI receipt"]
+    },
+    {
+      "id": "ios_client",
+      "kind": "ios",
+      "required_for_v1": false,
+      "status": "not_implemented",
+      "required_evidence": ["supported Xcode build", "simulator tests", "physical-device tests", "privacy manifest", "signing and TestFlight receipts"],
+      "evidence_receipts": {},
+      "blockers": ["No native iOS target in the release train", "Apple account, bundle, signing, privacy, and submission facts unresolved"]
+    },
+    {
+      "id": "android_client",
+      "kind": "android",
+      "required_for_v1": false,
+      "status": "not_implemented",
+      "required_evidence": ["reproducible Android build", "emulator matrix", "physical-device tests", "data safety declaration", "signed internal-track receipt"],
+      "evidence_receipts": {},
+      "blockers": ["No Android project in the release train", "Play Console identity, package, signing, and listing facts unresolved"]
+    },
+    {
+      "id": "public_blockchain_mainnet",
+      "kind": "blockchain_mainnet",
+      "required_for_v1": false,
+      "status": "blocked",
+      "required_evidence": ["chain-specific threat model", "independent contract audit", "key custody design", "legal review", "testnet receipts", "treasury and rollback plan"],
+      "evidence_receipts": {},
+      "blockers": ["No chain, contract, token, custody, legal purpose, or spend authority is specified"]
+    },
+    {
+      "id": "revenue_omega",
+      "kind": "commercial",
+      "required_for_v1": false,
+      "status": "implemented",
+      "required_evidence": ["integrated commercial lineage", "jurisdiction decision", "versioned agreement", "sandbox settlement", "payment reconciliation", "production billing authority"],
+      "evidence_receipts": {},
+      "blockers": ["Revenue-Ω exists on separate draft branches and is not admitted into Nexus V1", "No production payment or billing authority"]
+    }
+  ],
+  "connectors": [
+    {
+      "id": "openai_responses",
+      "class": "llm",
+      "required_for_v1": true,
+      "status": "implemented",
+      "certification": {"terms_reviewed": true, "terms_review_receipt_id": "TERMS-REVIEW-20260814-OAI-GCP", "identity_bound": false, "scope_bound": true, "recovery_tested": false, "live_receipt_ids": []},
+      "allowed_effects": ["generate.text under a one-use exact request permit"],
+      "forbidden_effects": ["unbounded tool use", "secret exposure", "automatic retry after indeterminate outcome"]
+    },
+    {
+      "id": "vertex_gemini",
+      "class": "llm",
+      "required_for_v1": true,
+      "status": "implemented",
+      "certification": {"terms_reviewed": true, "terms_review_receipt_id": "TERMS-REVIEW-20260814-OAI-GCP", "identity_bound": false, "scope_bound": true, "recovery_tested": false, "live_receipt_ids": []},
+      "allowed_effects": ["generate.text under a one-use exact request permit"],
+      "forbidden_effects": ["unbounded tool use", "cross-region secret access", "automatic retry after indeterminate outcome"]
+    },
+    {
+      "id": "generic_websites",
+      "class": "website",
+      "required_for_v1": false,
+      "status": "blocked",
+      "certification": {"terms_reviewed": false, "terms_review_receipt_id": null, "identity_bound": false, "scope_bound": false, "recovery_tested": false, "live_receipt_ids": []},
+      "allowed_effects": ["public read-only discovery when site policy permits"],
+      "forbidden_effects": ["generic unrestricted automation", "credential capture", "CAPTCHA bypass", "mass messaging", "unapproved purchase or submission"]
+    },
+    {
+      "id": "payment_provider",
+      "class": "payment",
+      "required_for_v1": false,
+      "status": "not_implemented",
+      "certification": {"terms_reviewed": false, "terms_review_receipt_id": null, "identity_bound": false, "scope_bound": false, "recovery_tested": false, "live_receipt_ids": []},
+      "allowed_effects": ["tokenized sandbox transaction after agreement and permit validation"],
+      "forbidden_effects": ["worker wage deduction", "unapproved charge", "unreconciled retry", "raw payment credential storage"]
+    },
+    {
+      "id": "investor_and_ip_marketplaces",
+      "class": "marketplace",
+      "required_for_v1": false,
+      "status": "blocked",
+      "certification": {"terms_reviewed": false, "terms_review_receipt_id": null, "identity_bound": false, "scope_bound": false, "recovery_tested": false, "live_receipt_ids": []},
+      "allowed_effects": ["internal research and draft preparation"],
+      "forbidden_effects": ["automatic outreach", "securities solicitation", "patent ownership claims", "IP listing or transfer without verified title and explicit authority"]
+    }
+  ],
+  "authority": {
+    "repository_change_authorized": true,
+    "cloud_mutation_authorized": false,
+    "financial_action_authorized": false,
+    "public_traffic_authorized": false,
+    "production_activation_authorized": false,
+    "external_communication_authorized": false,
+    "app_store_submission_authorized": false,
+    "play_store_submission_authorized": false,
+    "token_or_blockchain_mainnet_authorized": false,
+    "patent_or_ip_listing_authorized": false,
+    "investor_outreach_authorized": false
+  },
+  "completion_policy": {
+    "minimum_verified_applicable_ratio": 0.95,
+    "unknowns_block_release": true,
+    "required_authorities": ["cloud_mutation_authorized", "public_traffic_authorized", "production_activation_authorized"]
+  }
+}

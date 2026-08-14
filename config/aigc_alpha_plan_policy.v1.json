@@ -1,0 +1,26 @@
+{
+  "schema_version": "aigc.alpha-plan-policy.v1",
+  "policy_id": "ALPHA-PLAN-POLICY-V1",
+  "deterministic_seed": 42,
+  "maximum_operations": 32,
+  "maximum_parameter_bytes": 65536,
+  "maximum_automatic_retries": 2,
+  "stable_meta_config": {
+    "weight_plan_length": -0.1,
+    "weight_latency": -0.01,
+    "weight_verification": 1.0,
+    "weight_authority_integrity": 1.0
+  },
+  "required_external_bindings": [
+    "EXACT_ACTOR",
+    "EXACT_ACCOUNT",
+    "EXACT_DESTINATION",
+    "CANONICAL_PAYLOAD_DIGEST",
+    "CERTIFIED_CONNECTOR",
+    "COST_CEILING",
+    "EXPIRY",
+    "EXACT_REVISION",
+    "ONE_USE_EXECUTION_PERMIT",
+    "RECONCILIATION_PLAN"
+  ]
+}

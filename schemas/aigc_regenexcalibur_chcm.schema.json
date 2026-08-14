@@ -1,0 +1,882 @@
+{
+  "$defs": {
+    "AgentClusterSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "pattern": "^AGT-[A-Z][A-Z0-9-]{2,63}$",
+          "title": "Agent Id",
+          "type": "string"
+        },
+        "assigned_tool_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Assigned Tool Ids",
+          "type": "array"
+        },
+        "capabilities": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Capabilities",
+          "type": "array"
+        },
+        "cluster_id": {
+          "pattern": "^CLUSTER-[A-Z0-9-]{3,80}$",
+          "title": "Cluster Id",
+          "type": "string"
+        },
+        "depends_on_cluster_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Depends On Cluster Ids",
+          "type": "array"
+        },
+        "mandate": {
+          "maxLength": 1000,
+          "minLength": 8,
+          "title": "Mandate",
+          "type": "string"
+        },
+        "output_contract": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Output Contract",
+          "type": "string"
+        },
+        "role": {
+          "pattern": "^[A-Z][A-Z0-9_]{2,80}$",
+          "title": "Role",
+          "type": "string"
+        },
+        "verification_function": {
+          "pattern": "^[a-z][a-z0-9_.-]{2,120}$",
+          "title": "Verification Function",
+          "type": "string"
+        }
+      },
+      "required": [
+        "cluster_id",
+        "agent_id",
+        "role",
+        "mandate",
+        "output_contract",
+        "verification_function"
+      ],
+      "title": "AgentClusterSpec",
+      "type": "object"
+    },
+    "AutodesignPolicySpec": {
+      "additionalProperties": false,
+      "properties": {
+        "external_execution_allowed": {
+          "const": false,
+          "default": false,
+          "title": "External Execution Allowed",
+          "type": "boolean"
+        },
+        "infinite_semantics": {
+          "const": "OPEN_ENDED_SEQUENCE_OF_TERMINATING_BOUNDED_RUNS",
+          "title": "Infinite Semantics",
+          "type": "string"
+        },
+        "maximum_iterations_per_run": {
+          "maximum": 12,
+          "minimum": 1,
+          "title": "Maximum Iterations Per Run",
+          "type": "integer"
+        },
+        "maximum_parallel_agents": {
+          "maximum": 12,
+          "minimum": 1,
+          "title": "Maximum Parallel Agents",
+          "type": "integer"
+        },
+        "maximum_proposals_per_iteration": {
+          "maximum": 6,
+          "minimum": 1,
+          "title": "Maximum Proposals Per Iteration",
+          "type": "integer"
+        },
+        "minimum_progress_delta": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Minimum Progress Delta",
+          "type": "number"
+        },
+        "no_progress_limit": {
+          "maximum": 6,
+          "minimum": 1,
+          "title": "No Progress Limit",
+          "type": "integer"
+        },
+        "self_modification_allowed": {
+          "const": false,
+          "default": false,
+          "title": "Self Modification Allowed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "maximum_iterations_per_run",
+        "maximum_proposals_per_iteration",
+        "maximum_parallel_agents",
+        "minimum_progress_delta",
+        "no_progress_limit",
+        "infinite_semantics"
+      ],
+      "title": "AutodesignPolicySpec",
+      "type": "object"
+    },
+    "CapabilityRoadmapItem": {
+      "additionalProperties": false,
+      "properties": {
+        "acceptance_criteria": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Acceptance Criteria",
+          "type": "array"
+        },
+        "capability_id": {
+          "pattern": "^CAP-[A-Z0-9-]{3,100}$",
+          "title": "Capability Id",
+          "type": "string"
+        },
+        "change_targets": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Change Targets",
+          "type": "array"
+        },
+        "depends_on": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Depends On",
+          "type": "array"
+        },
+        "effect_class": {
+          "enum": [
+            "PURE",
+            "READ_LOCAL",
+            "READ_EXTERNAL",
+            "WRITE_REVERSIBLE",
+            "WRITE_COMPENSATABLE",
+            "WRITE_IRREVERSIBLE",
+            "FINANCIAL",
+            "COMMUNICATION",
+            "DEPLOYMENT",
+            "SECURITY_SENSITIVE"
+          ],
+          "title": "Effect Class",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 200,
+          "minLength": 3,
+          "title": "Name",
+          "type": "string"
+        },
+        "priority": {
+          "maximum": 1000,
+          "minimum": 0,
+          "title": "Priority",
+          "type": "integer"
+        },
+        "responsible_cluster_id": {
+          "pattern": "^CLUSTER-[A-Z0-9-]{3,80}$",
+          "title": "Responsible Cluster Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "capability_id",
+        "name",
+        "priority",
+        "effect_class",
+        "responsible_cluster_id",
+        "change_targets",
+        "acceptance_criteria"
+      ],
+      "title": "CapabilityRoadmapItem",
+      "type": "object"
+    },
+    "ConnectorSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "connector_id": {
+          "pattern": "^CONNECTOR-[A-Z0-9-]{3,80}$",
+          "title": "Connector Id",
+          "type": "string"
+        },
+        "egress_enabled": {
+          "const": false,
+          "default": false,
+          "title": "Egress Enabled",
+          "type": "boolean"
+        },
+        "protocol": {
+          "enum": [
+            "REST",
+            "GRPC",
+            "WEBHOOK",
+            "EVENT_BUS",
+            "MESSAGE_QUEUE"
+          ],
+          "title": "Protocol",
+          "type": "string"
+        },
+        "status": {
+          "const": "DESIGN_ONLY",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "connector_id",
+        "protocol",
+        "status"
+      ],
+      "title": "ConnectorSpec",
+      "type": "object"
+    },
+    "DeploymentComponentSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "component_id": {
+          "pattern": "^DEPLOY-[A-Z0-9-]{3,80}$",
+          "title": "Component Id",
+          "type": "string"
+        },
+        "purpose": {
+          "maxLength": 500,
+          "minLength": 8,
+          "title": "Purpose",
+          "type": "string"
+        },
+        "status": {
+          "const": "DESIGN_ONLY_NOT_PROVISIONED",
+          "title": "Status",
+          "type": "string"
+        },
+        "technology": {
+          "maxLength": 160,
+          "minLength": 2,
+          "title": "Technology",
+          "type": "string"
+        }
+      },
+      "required": [
+        "component_id",
+        "technology",
+        "purpose",
+        "status"
+      ],
+      "title": "DeploymentComponentSpec",
+      "type": "object"
+    },
+    "DivisionSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_cluster_id": {
+          "pattern": "^CLUSTER-[A-Z0-9-]{3,80}$",
+          "title": "Agent Cluster Id",
+          "type": "string"
+        },
+        "division_id": {
+          "pattern": "^DIV-[A-Z0-9-]{3,80}$",
+          "title": "Division Id",
+          "type": "string"
+        },
+        "domain": {
+          "pattern": "^[A-Z][A-Z0-9_]{2,80}$",
+          "title": "Domain",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 120,
+          "minLength": 3,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "division_id",
+        "domain",
+        "title",
+        "agent_cluster_id"
+      ],
+      "title": "DivisionSpec",
+      "type": "object"
+    },
+    "ExperienceProjectionSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "boundary": {
+          "maxLength": 500,
+          "minLength": 8,
+          "title": "Boundary",
+          "type": "string"
+        },
+        "mode": {
+          "enum": [
+            "CORPORATION",
+            "OPERATING_SYSTEM",
+            "CINEMATIC_UNIVERSE",
+            "RPG_WORLD"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "projection_id": {
+          "pattern": "^PROJECTION-[A-Z0-9-]{3,80}$",
+          "title": "Projection Id",
+          "type": "string"
+        },
+        "purpose": {
+          "maxLength": 500,
+          "minLength": 8,
+          "title": "Purpose",
+          "type": "string"
+        }
+      },
+      "required": [
+        "projection_id",
+        "mode",
+        "purpose",
+        "boundary"
+      ],
+      "title": "ExperienceProjectionSpec",
+      "type": "object"
+    },
+    "FunctionCatalogItem": {
+      "additionalProperties": false,
+      "properties": {
+        "effect_class": {
+          "enum": [
+            "PURE",
+            "READ_LOCAL",
+            "READ_EXTERNAL",
+            "WRITE_REVERSIBLE",
+            "WRITE_COMPENSATABLE",
+            "WRITE_IRREVERSIBLE",
+            "FINANCIAL",
+            "COMMUNICATION",
+            "DEPLOYMENT",
+            "SECURITY_SENSITIVE"
+          ],
+          "title": "Effect Class",
+          "type": "string"
+        },
+        "expected_outputs": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Expected Outputs",
+          "type": "object"
+        },
+        "function_name": {
+          "pattern": "^[a-z][a-z0-9_.-]{2,120}$",
+          "title": "Function Name",
+          "type": "string"
+        },
+        "purpose": {
+          "maxLength": 1000,
+          "minLength": 8,
+          "title": "Purpose",
+          "type": "string"
+        },
+        "tool_id": {
+          "pattern": "^TOOL-[A-Z0-9-]{3,80}$",
+          "title": "Tool Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool_id",
+        "function_name",
+        "purpose",
+        "effect_class"
+      ],
+      "title": "FunctionCatalogItem",
+      "type": "object"
+    },
+    "HierarchyRole": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_cluster_id": {
+          "pattern": "^CLUSTER-[A-Z0-9-]{3,80}$",
+          "title": "Agent Cluster Id",
+          "type": "string"
+        },
+        "corporate_role": {
+          "maxLength": 120,
+          "minLength": 2,
+          "title": "Corporate Role",
+          "type": "string"
+        },
+        "mandate": {
+          "maxLength": 1000,
+          "minLength": 8,
+          "title": "Mandate",
+          "type": "string"
+        },
+        "role_id": {
+          "pattern": "^ROLE-[A-Z0-9-]{3,80}$",
+          "title": "Role Id",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 120,
+          "minLength": 3,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "role_id",
+        "title",
+        "corporate_role",
+        "agent_cluster_id",
+        "mandate"
+      ],
+      "title": "HierarchyRole",
+      "type": "object"
+    },
+    "HierarchySpec": {
+      "additionalProperties": false,
+      "properties": {
+        "archons": {
+          "items": {
+            "$ref": "#/$defs/DivisionSpec"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Archons",
+          "type": "array"
+        },
+        "c_suite": {
+          "items": {
+            "$ref": "#/$defs/HierarchyRole"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "C Suite",
+          "type": "array"
+        },
+        "pantheon_board": {
+          "items": {
+            "$ref": "#/$defs/HierarchyRole"
+          },
+          "maxItems": 12,
+          "minItems": 1,
+          "title": "Pantheon Board",
+          "type": "array"
+        },
+        "sovereign_orchestrator": {
+          "$ref": "#/$defs/HierarchyRole"
+        }
+      },
+      "required": [
+        "pantheon_board",
+        "sovereign_orchestrator",
+        "archons",
+        "c_suite"
+      ],
+      "title": "HierarchySpec",
+      "type": "object"
+    },
+    "InterfaceSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "effect_class": {
+          "enum": [
+            "PURE",
+            "READ_LOCAL",
+            "READ_EXTERNAL",
+            "WRITE_REVERSIBLE",
+            "WRITE_COMPENSATABLE",
+            "WRITE_IRREVERSIBLE",
+            "FINANCIAL",
+            "COMMUNICATION",
+            "DEPLOYMENT",
+            "SECURITY_SENSITIVE"
+          ],
+          "title": "Effect Class",
+          "type": "string"
+        },
+        "interface_id": {
+          "pattern": "^API-[A-Z0-9-]{3,80}$",
+          "title": "Interface Id",
+          "type": "string"
+        },
+        "maps_to": {
+          "maxLength": 300,
+          "minLength": 3,
+          "title": "Maps To",
+          "type": "string"
+        },
+        "path": {
+          "pattern": "^/[a-z][a-z0-9/_-]{1,120}$",
+          "title": "Path",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "IMPLEMENTED_VERSIONED_ROUTE",
+            "PLANNED_ALIAS",
+            "BLOCKED_NOT_EXPOSED"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "interface_id",
+        "path",
+        "maps_to",
+        "status",
+        "effect_class"
+      ],
+      "title": "InterfaceSpec",
+      "type": "object"
+    },
+    "KernelNodeSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "depends_on_node_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Depends On Node Ids",
+          "type": "array"
+        },
+        "function_name": {
+          "pattern": "^[a-z][a-z0-9_.-]{2,120}$",
+          "title": "Function Name",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 160,
+          "minLength": 3,
+          "title": "Name",
+          "type": "string"
+        },
+        "node_id": {
+          "pattern": "^KERNEL-[A-Z0-9-]{3,80}$",
+          "title": "Node Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "node_id",
+        "name",
+        "function_name"
+      ],
+      "title": "KernelNodeSpec",
+      "type": "object"
+    },
+    "KpiSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "formula": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Formula",
+          "type": "string"
+        },
+        "kpi_id": {
+          "pattern": "^KPI-[A-Z0-9-]{3,80}$",
+          "title": "Kpi Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 160,
+          "minLength": 3,
+          "title": "Name",
+          "type": "string"
+        },
+        "status": {
+          "const": "DESIGN_ONLY",
+          "title": "Status",
+          "type": "string"
+        },
+        "target_direction": {
+          "enum": [
+            "MINIMIZE",
+            "MAXIMIZE",
+            "TARGET_RANGE"
+          ],
+          "title": "Target Direction",
+          "type": "string"
+        },
+        "unit": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kpi_id",
+        "name",
+        "formula",
+        "unit",
+        "target_direction",
+        "status"
+      ],
+      "title": "KpiSpec",
+      "type": "object"
+    },
+    "ProcurementStageSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "effect_ceiling": {
+          "const": "PLAN_ONLY",
+          "title": "Effect Ceiling",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 160,
+          "minLength": 3,
+          "title": "Name",
+          "type": "string"
+        },
+        "output": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Output",
+          "type": "string"
+        },
+        "stage_id": {
+          "pattern": "^PROC-[A-Z0-9-]{3,80}$",
+          "title": "Stage Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "stage_id",
+        "name",
+        "output",
+        "effect_ceiling"
+      ],
+      "title": "ProcurementStageSpec",
+      "type": "object"
+    },
+    "RepositorySpec": {
+      "additionalProperties": false,
+      "properties": {
+        "namespace": {
+          "maxLength": 240,
+          "minLength": 3,
+          "title": "Namespace",
+          "type": "string"
+        },
+        "repository_id": {
+          "pattern": "^REPO-[A-Z0-9-]{3,80}$",
+          "title": "Repository Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "LOGICAL_NAMESPACE_ONLY",
+            "IMPLEMENTED_META_REPOSITORY"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "repository_id",
+        "namespace",
+        "status"
+      ],
+      "title": "RepositorySpec",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "agent_clusters": {
+      "items": {
+        "$ref": "#/$defs/AgentClusterSpec"
+      },
+      "maxItems": 12,
+      "minItems": 1,
+      "title": "Agent Clusters",
+      "type": "array"
+    },
+    "autodesign_policy": {
+      "$ref": "#/$defs/AutodesignPolicySpec"
+    },
+    "blueprint_id": {
+      "pattern": "^CHCM-[A-Z0-9-]{6,100}$",
+      "title": "Blueprint Id",
+      "type": "string"
+    },
+    "capability_roadmap": {
+      "items": {
+        "$ref": "#/$defs/CapabilityRoadmapItem"
+      },
+      "maxItems": 64,
+      "minItems": 1,
+      "title": "Capability Roadmap",
+      "type": "array"
+    },
+    "connector_fabric": {
+      "items": {
+        "$ref": "#/$defs/ConnectorSpec"
+      },
+      "maxItems": 16,
+      "minItems": 1,
+      "title": "Connector Fabric",
+      "type": "array"
+    },
+    "deployment_blueprint": {
+      "items": {
+        "$ref": "#/$defs/DeploymentComponentSpec"
+      },
+      "maxItems": 16,
+      "minItems": 1,
+      "title": "Deployment Blueprint",
+      "type": "array"
+    },
+    "experience_projections": {
+      "items": {
+        "$ref": "#/$defs/ExperienceProjectionSpec"
+      },
+      "maxItems": 4,
+      "minItems": 4,
+      "title": "Experience Projections",
+      "type": "array"
+    },
+    "function_catalog": {
+      "items": {
+        "$ref": "#/$defs/FunctionCatalogItem"
+      },
+      "maxItems": 16,
+      "minItems": 1,
+      "title": "Function Catalog",
+      "type": "array"
+    },
+    "hierarchy": {
+      "$ref": "#/$defs/HierarchySpec"
+    },
+    "interface_registry": {
+      "items": {
+        "$ref": "#/$defs/InterfaceSpec"
+      },
+      "maxItems": 16,
+      "minItems": 1,
+      "title": "Interface Registry",
+      "type": "array"
+    },
+    "invariants": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "Invariants",
+      "type": "array"
+    },
+    "kpis": {
+      "items": {
+        "$ref": "#/$defs/KpiSpec"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "Kpis",
+      "type": "array"
+    },
+    "operating_mode": {
+      "const": "BOUNDED_AUTODESIGN_PLAN_ONLY",
+      "title": "Operating Mode",
+      "type": "string"
+    },
+    "owner": {
+      "const": "Justice Gray Maciocha",
+      "title": "Owner",
+      "type": "string"
+    },
+    "procurement_pipeline": {
+      "items": {
+        "$ref": "#/$defs/ProcurementStageSpec"
+      },
+      "maxItems": 16,
+      "minItems": 1,
+      "title": "Procurement Pipeline",
+      "type": "array"
+    },
+    "repository_federation": {
+      "items": {
+        "$ref": "#/$defs/RepositorySpec"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "Repository Federation",
+      "type": "array"
+    },
+    "runtime_kernel": {
+      "items": {
+        "$ref": "#/$defs/KernelNodeSpec"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "Runtime Kernel",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "aigc.regenexcalibur-chcm.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "title": {
+      "maxLength": 240,
+      "minLength": 8,
+      "title": "Title",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "blueprint_id",
+    "title",
+    "owner",
+    "operating_mode",
+    "invariants",
+    "hierarchy",
+    "function_catalog",
+    "agent_clusters",
+    "runtime_kernel",
+    "connector_fabric",
+    "repository_federation",
+    "experience_projections",
+    "deployment_blueprint",
+    "interface_registry",
+    "kpis",
+    "procurement_pipeline",
+    "autodesign_policy",
+    "capability_roadmap"
+  ],
+  "title": "CHCMBlueprint",
+  "type": "object"
+}

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: procurement-sandbox
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    aigc.justicegray.com/effect-ceiling: local-simulation-only
+  annotations:
+    aigc.justicegray.com/deployment-authorized: "false"
+    aigc.justicegray.com/external-actions-authorized: "false"

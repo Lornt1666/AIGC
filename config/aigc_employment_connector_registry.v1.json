@@ -1,0 +1,66 @@
+{
+  "schema_version": "aigc.employment-connector-registry.v1",
+  "registry_id": "AIGC-EMPLOYMENT-CONNECTORS-V1",
+  "connectors": [
+    {
+      "id": "PASSPORT_GMAIL",
+      "name": "Gmail per-user communication",
+      "owner": "Google and the connected mailbox user",
+      "certification_status": "BLOCKED_PERMISSION",
+      "identity_binding": "No transferable AIGC OAuth grant or verified mailbox identity exists.",
+      "terms_binding": "Official Google Workspace and OAuth policies require exact integration-time review.",
+      "capabilities": [
+        {"action": "search_threads", "stage": "OBSERVE", "status": "BLOCKED_PERMISSION", "reason": "real per-user OAuth and exact mailbox binding are absent", "live_mutation_allowed": false},
+        {"action": "create_draft", "stage": "DRAFT", "status": "BLOCKED_PERMISSION", "reason": "compose scope and recipient-bound draft permit are absent", "live_mutation_allowed": false},
+        {"action": "send_message", "stage": "EXECUTE", "status": "BLOCKED_PERMISSION", "reason": "exact recipient, payload digest and one-use send permit are absent", "live_mutation_allowed": false},
+        {"action": "reconcile_draft_or_send", "stage": "RECONCILE", "status": "NOT_IMPLEMENTED", "reason": "no live operation boundary exists", "live_mutation_allowed": false}
+      ]
+    },
+    {
+      "id": "PASSPORT_INDEED",
+      "name": "Indeed employment platform",
+      "owner": "Indeed",
+      "certification_status": "BLOCKED_PERMISSION",
+      "identity_binding": "No AIGC Indeed partner application, user grant or provisioned service exists.",
+      "terms_binding": "Written provider permission is required for the intended automation.",
+      "capabilities": [
+        {"action": "discover_jobs", "stage": "OBSERVE", "status": "BLOCKED_PERMISSION", "reason": "documented connector access is not provisioned", "live_mutation_allowed": false},
+        {"action": "prepare_application", "stage": "DRAFT", "status": "HUMAN_HANDOFF", "reason": "AIGC may prepare truthful materials from user-supplied data only", "live_mutation_allowed": false},
+        {"action": "submit_application", "stage": "EXECUTE", "status": "BLOCKED_PERMISSION", "reason": "no approved automated submission route or written permission exists", "live_mutation_allowed": false},
+        {"action": "verify_application", "stage": "VERIFY", "status": "HUMAN_HANDOFF", "reason": "the user verifies through the official interface", "live_mutation_allowed": false}
+      ]
+    },
+    {
+      "id": "PASSPORT_GENERIC_WEB",
+      "name": "Generic employer and work websites",
+      "owner": "each individual site owner",
+      "certification_status": "HUMAN_HANDOFF",
+      "identity_binding": "No wildcard identity is permitted; each account is bound separately.",
+      "terms_binding": "Each domain and operation requires a current capability passport.",
+      "capabilities": [
+        {"action": "inspect_public_page", "stage": "OBSERVE", "status": "HUMAN_HANDOFF", "reason": "no site passport or certified browser boundary exists", "live_mutation_allowed": false},
+        {"action": "draft_form_values", "stage": "DRAFT", "status": "HUMAN_HANDOFF", "reason": "local preparation is allowed but site interaction is not certified", "live_mutation_allowed": false},
+        {"action": "submit_or_message", "stage": "EXECUTE", "status": "BLOCKED_PERMISSION", "reason": "exact domain, account, destination, terms and permit are absent", "live_mutation_allowed": false},
+        {"action": "verify_or_reconcile", "stage": "RECONCILE", "status": "NOT_IMPLEMENTED", "reason": "no authoritative site readback adapter exists", "live_mutation_allowed": false}
+      ]
+    },
+    {
+      "id": "PASSPORT_PORTABLE_AI",
+      "name": "ChatGPT, Gemini developer surfaces and other certified MCP clients",
+      "owner": "AIGC plus each AI platform",
+      "certification_status": "READ_ONLY",
+      "identity_binding": "The verified local MCP facade is loopback or stdio only and has no authenticated external identity.",
+      "terms_binding": "Only officially documented client surfaces may be claimed; host validation remains separate.",
+      "capabilities": [
+        {"action": "read_status", "stage": "OBSERVE", "status": "READ_ONLY", "reason": "local MCP tool returns sanitized connector and occupation truth", "live_mutation_allowed": false},
+        {"action": "render_control_center", "stage": "OBSERVE", "status": "READ_ONLY", "reason": "structured control-center projection is widget-independent", "live_mutation_allowed": false},
+        {"action": "assess_action", "stage": "SIMULATE", "status": "READ_ONLY", "reason": "pure consequence classification omits caller-asserted authority", "live_mutation_allowed": false},
+        {"action": "run_local_dry_run", "stage": "SIMULATE", "status": "READ_ONLY", "reason": "deterministic simulation stops before execute", "live_mutation_allowed": false},
+        {"action": "run_employer_sandbox", "stage": "SIMULATE", "status": "READ_ONLY", "reason": "thirteen draft occupation packs can run against zero-egress fixtures", "live_mutation_allowed": false},
+        {"action": "delegate_external_work", "stage": "EXECUTE", "status": "BLOCKED_PERMISSION", "reason": "server-side permit and deployed connector boundary are absent", "live_mutation_allowed": false}
+      ]
+    }
+  ],
+  "authority_granted": false,
+  "external_action_performed": false
+}

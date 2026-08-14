@@ -1,0 +1,3222 @@
+{
+  "authority_granted": false,
+  "bundle_id": "AIGC-EVIDENCE-REQUESTS-V1",
+  "bundle_sha256": "8a6599c6eb296d787bd7d36446d8d4551f25991f732790ca553fe77b581d5995",
+  "external_action_performed": false,
+  "purpose": "Exact receipt requests for every unresolved required and optional registry gate.",
+  "requests": [
+    {
+      "acceptance_criteria": [
+        "template_only_false is bound to the exact release",
+        "evidence is immutable, current, independently verifiable, and non-circular"
+      ],
+      "category": "prerequisite",
+      "current_blockers": [
+        "Registry remains template_only"
+      ],
+      "gate_id": "prerequisite.release.template_only_false",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-4DD044118FF3BDCF47CB0416",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "release_manager_approval"
+      ],
+      "required_for_v1": true,
+      "requirement": "template_only_false",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "release"
+    },
+    {
+      "acceptance_criteria": [
+        "current_release_binding is bound to the exact release",
+        "evidence is immutable, current, independently verifiable, and non-circular"
+      ],
+      "category": "prerequisite",
+      "current_blockers": [
+        "Release evidence is absent"
+      ],
+      "gate_id": "prerequisite.release.current_release_binding",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-C4D11D8A1FD2DBD1B8A2B965",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "repository_status_evidence"
+      ],
+      "required_for_v1": true,
+      "requirement": "current_release_binding",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "release"
+    },
+    {
+      "acceptance_criteria": [
+        "GitHub-hosted run is bound to the exact candidate commit SHA",
+        "checkout occurred and every required job/step completed successfully",
+        "run URL, job IDs, timestamps, and immutable artifacts are retained"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "Current release head has no combined status receipt",
+        "No external deployment receipt",
+        "No public traffic authority"
+      ],
+      "gate_id": "surface.nexus_linux_server.exact_head_ci",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-7974A5EF4C8E0E27FCCBEBF7",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized",
+        "public_traffic_authorized"
+      ],
+      "required_for_v1": true,
+      "requirement": "exact-head CI",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "nexus_linux_server"
+    },
+    {
+      "acceptance_criteria": [
+        "image is built from the exact candidate commit",
+        "registry returns an immutable sha256 digest",
+        "SBOM, provenance attestation, signature verification, and scan result bind to that digest"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "Current release head has no combined status receipt",
+        "No external deployment receipt",
+        "No public traffic authority"
+      ],
+      "gate_id": "surface.nexus_linux_server.immutable_image_digest",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-49FA806DAC9ADEBABDD0CE8E",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized",
+        "public_traffic_authorized"
+      ],
+      "required_for_v1": true,
+      "requirement": "immutable image digest",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "nexus_linux_server"
+    },
+    {
+      "acceptance_criteria": [
+        "deployed release, image digest, region, and service identity are recorded",
+        "authenticated health and readiness probes pass from the intended trust boundary",
+        "receipt contains request IDs and redacted logs without credentials"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "Current release head has no combined status receipt",
+        "No external deployment receipt",
+        "No public traffic authority"
+      ],
+      "gate_id": "surface.nexus_linux_server.authenticated_health_readiness",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-D27406B3C974A049B04AFF2F",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized",
+        "public_traffic_authorized"
+      ],
+      "required_for_v1": true,
+      "requirement": "authenticated health/readiness",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "nexus_linux_server"
+    },
+    {
+      "acceptance_criteria": [
+        "declared load envelope meets p95/error-rate SLOs",
+        "security checks report no release-blocking finding",
+        "rollback and restore are exercised and reconciled to the original state"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "Current release head has no combined status receipt",
+        "No external deployment receipt",
+        "No public traffic authority"
+      ],
+      "gate_id": "surface.nexus_linux_server.bounded_load_security_recovery",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-5668436C703FF9FCB0667888",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized",
+        "public_traffic_authorized"
+      ],
+      "required_for_v1": true,
+      "requirement": "bounded load/security/recovery",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "nexus_linux_server"
+    },
+    {
+      "acceptance_criteria": [
+        "HTTPS URL resolves to the exact release and immutable artifact",
+        "ownership, environment, and region are identified",
+        "health check passes without exposing a secret"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No deployed web receipt",
+        "No browser/device validation receipts"
+      ],
+      "gate_id": "surface.nexus_web.deployed_url",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-819006015DB24A2A03082114",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized",
+        "public_traffic_authorized"
+      ],
+      "required_for_v1": true,
+      "requirement": "deployed URL",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "nexus_web"
+    },
+    {
+      "acceptance_criteria": [
+        "automated WCAG checks pass on declared routes",
+        "keyboard, focus, labels, contrast, and screen-reader smoke tests are recorded",
+        "exceptions have owners, severity, and due dates"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No deployed web receipt",
+        "No browser/device validation receipts"
+      ],
+      "gate_id": "surface.nexus_web.accessibility_test",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-949AF840180C4C6D8B38F522",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized",
+        "public_traffic_authorized"
+      ],
+      "required_for_v1": true,
+      "requirement": "accessibility test",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "nexus_web"
+    },
+    {
+      "acceptance_criteria": [
+        "supported browser/version matrix is declared",
+        "automated journeys pass for every required matrix cell",
+        "failures include trace, screenshot, and reproducible environment"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No deployed web receipt",
+        "No browser/device validation receipts"
+      ],
+      "gate_id": "surface.nexus_web.browser_compatibility_matrix",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-5BABB8A48D78143BAB185B40",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized",
+        "public_traffic_authorized"
+      ],
+      "required_for_v1": true,
+      "requirement": "browser compatibility matrix",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "nexus_web"
+    },
+    {
+      "acceptance_criteria": [
+        "TLS and HTTP security headers are captured from the deployed origin",
+        "CSP, HSTS, framing, MIME, and referrer policies meet the declared baseline",
+        "scanner output is bound to URL, release, and timestamp"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No deployed web receipt",
+        "No browser/device validation receipts"
+      ],
+      "gate_id": "surface.nexus_web.security_headers",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-AAAB104CEB03C7B184D55481",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized",
+        "public_traffic_authorized"
+      ],
+      "required_for_v1": true,
+      "requirement": "security headers",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "nexus_web"
+    },
+    {
+      "acceptance_criteria": [
+        "logs, metrics, and traces correlate by release and request ID",
+        "SLO alerts and dashboards are addressable",
+        "a synthetic failure proves alert delivery and recovery closure"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No deployed web receipt",
+        "No browser/device validation receipts"
+      ],
+      "gate_id": "surface.nexus_web.observability",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-346E594A94FC8874B29E24D9",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized",
+        "public_traffic_authorized"
+      ],
+      "required_for_v1": true,
+      "requirement": "observability",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "nexus_web"
+    },
+    {
+      "acceptance_criteria": [
+        "a non-production adapter demonstrates prepare, confirm, consume-once, reconcile, and receipt states",
+        "wrong subject, expired, replayed, and parameter-mismatched permits are rejected",
+        "no real external mutation or financial transfer occurs in the evidence environment"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No confirmed-write workflow is exposed by the initial read/simulate facade",
+        "No ChatGPT host validation receipt",
+        "No hosted exact-head CI receipt"
+      ],
+      "gate_id": "surface.chatgpt_mcp.confirmed_write_workflow",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-1515545A18A0D57264A3522D",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized",
+        "public_traffic_authorized"
+      ],
+      "required_for_v1": true,
+      "requirement": "confirmed-write workflow",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "chatgpt_mcp"
+    },
+    {
+      "acceptance_criteria": [
+        "ChatGPT connector imports the exact deployed MCP endpoint",
+        "initialize, discovery, read-only tool call, and error rendering pass in the host",
+        "host, deployment release, and timestamps are captured without secrets"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No confirmed-write workflow is exposed by the initial read/simulate facade",
+        "No ChatGPT host validation receipt",
+        "No hosted exact-head CI receipt"
+      ],
+      "gate_id": "surface.chatgpt_mcp.host_validation",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-D9526558D8D2991771C7CC8B",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized",
+        "public_traffic_authorized"
+      ],
+      "required_for_v1": true,
+      "requirement": "host validation",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "chatgpt_mcp"
+    },
+    {
+      "acceptance_criteria": [
+        "MCP initialize succeeds on the declared transport and protocol",
+        "server identity is aigc-nexus",
+        "receipt binds the server implementation source hashes"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No Gemini client validation receipt",
+        "No hosted exact-head CI receipt"
+      ],
+      "gate_id": "surface.gemini_mcp.mcp_initialize",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-82D45C2C0672452D93E0E7C0",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized",
+        "public_traffic_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "MCP initialize",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "gemini_mcp"
+    },
+    {
+      "acceptance_criteria": [
+        "gemini_mcp produces a receipt for allowlisted tool list",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No Gemini client validation receipt",
+        "No hosted exact-head CI receipt"
+      ],
+      "gate_id": "surface.gemini_mcp.allowlisted_tool_list",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-3A3E7F62151534E34FFD602F",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized",
+        "public_traffic_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "allowlisted tool list",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "gemini_mcp"
+    },
+    {
+      "acceptance_criteria": [
+        "gemini_mcp produces a receipt for trust=false configuration",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No Gemini client validation receipt",
+        "No hosted exact-head CI receipt"
+      ],
+      "gate_id": "surface.gemini_mcp.trust_false_configuration",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-ABF107FF86A4624A15F5FB4A",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized",
+        "public_traffic_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "trust=false configuration",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "gemini_mcp"
+    },
+    {
+      "acceptance_criteria": [
+        "gemini_mcp produces a receipt for client validation",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No Gemini client validation receipt",
+        "No hosted exact-head CI receipt"
+      ],
+      "gate_id": "surface.gemini_mcp.client_validation",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-6C30F8FC473558B3F2D45CE0",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized",
+        "public_traffic_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "client validation",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "gemini_mcp"
+    },
+    {
+      "acceptance_criteria": [
+        "ios_client produces a receipt for supported Xcode build",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No native iOS target in the release train",
+        "Apple account, bundle, signing, privacy, and submission facts unresolved"
+      ],
+      "gate_id": "surface.ios_client.supported_xcode_build",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-37F679E292839C60B60A7BE9",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "supported Xcode build",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "ios_client"
+    },
+    {
+      "acceptance_criteria": [
+        "ios_client produces a receipt for simulator tests",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No native iOS target in the release train",
+        "Apple account, bundle, signing, privacy, and submission facts unresolved"
+      ],
+      "gate_id": "surface.ios_client.simulator_tests",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-567385C5491CC20D77A3CB27",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "simulator tests",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "ios_client"
+    },
+    {
+      "acceptance_criteria": [
+        "ios_client produces a receipt for physical-device tests",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No native iOS target in the release train",
+        "Apple account, bundle, signing, privacy, and submission facts unresolved"
+      ],
+      "gate_id": "surface.ios_client.physical_device_tests",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-DF59F17ECB9456A9DD150893",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "physical-device tests",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "ios_client"
+    },
+    {
+      "acceptance_criteria": [
+        "ios_client produces a receipt for privacy manifest",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No native iOS target in the release train",
+        "Apple account, bundle, signing, privacy, and submission facts unresolved"
+      ],
+      "gate_id": "surface.ios_client.privacy_manifest",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-B2ECE5AEDD683E2795A8A91D",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "privacy manifest",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "ios_client"
+    },
+    {
+      "acceptance_criteria": [
+        "ios_client produces a receipt for signing and TestFlight receipts",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No native iOS target in the release train",
+        "Apple account, bundle, signing, privacy, and submission facts unresolved"
+      ],
+      "gate_id": "surface.ios_client.signing_and_testflight_receipts",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-4440CB983FC51DC1ACA703BE",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "signing and TestFlight receipts",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "ios_client"
+    },
+    {
+      "acceptance_criteria": [
+        "android_client produces a receipt for reproducible Android build",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No Android project in the release train",
+        "Play Console identity, package, signing, and listing facts unresolved"
+      ],
+      "gate_id": "surface.android_client.reproducible_android_build",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-A6CB0E3F93BE40E8F85EA42F",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "reproducible Android build",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "android_client"
+    },
+    {
+      "acceptance_criteria": [
+        "android_client produces a receipt for emulator matrix",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No Android project in the release train",
+        "Play Console identity, package, signing, and listing facts unresolved"
+      ],
+      "gate_id": "surface.android_client.emulator_matrix",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-0DECE2968933642F170328BC",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "emulator matrix",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "android_client"
+    },
+    {
+      "acceptance_criteria": [
+        "android_client produces a receipt for physical-device tests",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No Android project in the release train",
+        "Play Console identity, package, signing, and listing facts unresolved"
+      ],
+      "gate_id": "surface.android_client.physical_device_tests",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-2F186BF7640335698B1B75EC",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "physical-device tests",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "android_client"
+    },
+    {
+      "acceptance_criteria": [
+        "android_client produces a receipt for data safety declaration",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No Android project in the release train",
+        "Play Console identity, package, signing, and listing facts unresolved"
+      ],
+      "gate_id": "surface.android_client.data_safety_declaration",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-76F4509D27B09090E90FF19A",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "data safety declaration",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "android_client"
+    },
+    {
+      "acceptance_criteria": [
+        "android_client produces a receipt for signed internal-track receipt",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No Android project in the release train",
+        "Play Console identity, package, signing, and listing facts unresolved"
+      ],
+      "gate_id": "surface.android_client.signed_internal_track_receipt",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-71B4FA99E4E22D79EFAF3BC8",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "signed internal-track receipt",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "android_client"
+    },
+    {
+      "acceptance_criteria": [
+        "public_blockchain_mainnet produces a receipt for chain-specific threat model",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No chain, contract, token, custody, legal purpose, or spend authority is specified"
+      ],
+      "gate_id": "surface.public_blockchain_mainnet.chain_specific_threat_model",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-5A4401EF16E1F990C03F8359",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "chain-specific threat model",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "public_blockchain_mainnet"
+    },
+    {
+      "acceptance_criteria": [
+        "public_blockchain_mainnet produces a receipt for independent contract audit",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No chain, contract, token, custody, legal purpose, or spend authority is specified"
+      ],
+      "gate_id": "surface.public_blockchain_mainnet.independent_contract_audit",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-4CB402576F4611A7A0FDE3CE",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "independent contract audit",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "public_blockchain_mainnet"
+    },
+    {
+      "acceptance_criteria": [
+        "public_blockchain_mainnet produces a receipt for key custody design",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No chain, contract, token, custody, legal purpose, or spend authority is specified"
+      ],
+      "gate_id": "surface.public_blockchain_mainnet.key_custody_design",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-3AF6ADA9F6ECBDF7A3F8EDBC",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "key custody design",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "public_blockchain_mainnet"
+    },
+    {
+      "acceptance_criteria": [
+        "public_blockchain_mainnet produces a receipt for legal review",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No chain, contract, token, custody, legal purpose, or spend authority is specified"
+      ],
+      "gate_id": "surface.public_blockchain_mainnet.legal_review",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-E07C3EC7F25BBF7F02A1D49A",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "legal review",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "public_blockchain_mainnet"
+    },
+    {
+      "acceptance_criteria": [
+        "public_blockchain_mainnet produces a receipt for testnet receipts",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No chain, contract, token, custody, legal purpose, or spend authority is specified"
+      ],
+      "gate_id": "surface.public_blockchain_mainnet.testnet_receipts",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-CA8991C5D30630CD01B09ABC",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "testnet receipts",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "public_blockchain_mainnet"
+    },
+    {
+      "acceptance_criteria": [
+        "public_blockchain_mainnet produces a receipt for treasury and rollback plan",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "No chain, contract, token, custody, legal purpose, or spend authority is specified"
+      ],
+      "gate_id": "surface.public_blockchain_mainnet.treasury_and_rollback_plan",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-31FE070DA559F14675C8B6F5",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "treasury and rollback plan",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "public_blockchain_mainnet"
+    },
+    {
+      "acceptance_criteria": [
+        "revenue_omega produces a receipt for integrated commercial lineage",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "Revenue-\u03a9 exists on separate draft branches and is not admitted into Nexus V1",
+        "No production payment or billing authority"
+      ],
+      "gate_id": "surface.revenue_omega.integrated_commercial_lineage",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-C13D6201B0CC3B44B7EF3092",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "integrated commercial lineage",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "revenue_omega"
+    },
+    {
+      "acceptance_criteria": [
+        "revenue_omega produces a receipt for jurisdiction decision",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "Revenue-\u03a9 exists on separate draft branches and is not admitted into Nexus V1",
+        "No production payment or billing authority"
+      ],
+      "gate_id": "surface.revenue_omega.jurisdiction_decision",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-534AFDB750AEBAA2AC49C0CD",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "jurisdiction decision",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "revenue_omega"
+    },
+    {
+      "acceptance_criteria": [
+        "revenue_omega produces a receipt for versioned agreement",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "Revenue-\u03a9 exists on separate draft branches and is not admitted into Nexus V1",
+        "No production payment or billing authority"
+      ],
+      "gate_id": "surface.revenue_omega.versioned_agreement",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-91D7C74ED394C396E6AD1583",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "versioned agreement",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "revenue_omega"
+    },
+    {
+      "acceptance_criteria": [
+        "revenue_omega produces a receipt for sandbox settlement",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "Revenue-\u03a9 exists on separate draft branches and is not admitted into Nexus V1",
+        "No production payment or billing authority"
+      ],
+      "gate_id": "surface.revenue_omega.sandbox_settlement",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-CAA21F6902D3F6C98C28167D",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "sandbox settlement",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "revenue_omega"
+    },
+    {
+      "acceptance_criteria": [
+        "revenue_omega produces a receipt for payment reconciliation",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "Revenue-\u03a9 exists on separate draft branches and is not admitted into Nexus V1",
+        "No production payment or billing authority"
+      ],
+      "gate_id": "surface.revenue_omega.payment_reconciliation",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-779668016EC008DD3A2E3218",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "payment reconciliation",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "revenue_omega"
+    },
+    {
+      "acceptance_criteria": [
+        "revenue_omega produces a receipt for production billing authority",
+        "receipt binds exact inputs, environment, release, verifier, outcome, and artifact hashes",
+        "negative-path, rollback, and reconciliation evidence is included where consequential"
+      ],
+      "category": "surface",
+      "current_blockers": [
+        "Revenue-\u03a9 exists on separate draft branches and is not admitted into Nexus V1",
+        "No production payment or billing authority"
+      ],
+      "gate_id": "surface.revenue_omega.production_billing_authority",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-0FB9BDC095649C99B51093E1",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "production billing authority",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "revenue_omega"
+    },
+    {
+      "acceptance_criteria": [
+        "openai_responses certification field status_verified is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is implemented",
+        "Certification status_verified is not evidenced"
+      ],
+      "gate_id": "connector.openai_responses.status_verified",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-043F141FEA21E7FD8D68FA53",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized"
+      ],
+      "required_for_v1": true,
+      "requirement": "status_verified",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "openai_responses"
+    },
+    {
+      "acceptance_criteria": [
+        "openai_responses certification field identity_bound is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is implemented",
+        "Certification identity_bound is not evidenced"
+      ],
+      "gate_id": "connector.openai_responses.identity_bound",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-BAFC90D543D436CB7EEDC726",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized"
+      ],
+      "required_for_v1": true,
+      "requirement": "identity_bound",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "openai_responses"
+    },
+    {
+      "acceptance_criteria": [
+        "openai_responses certification field recovery_tested is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is implemented",
+        "Certification recovery_tested is not evidenced"
+      ],
+      "gate_id": "connector.openai_responses.recovery_tested",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-1F520FCB01920D040100DD7C",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized"
+      ],
+      "required_for_v1": true,
+      "requirement": "recovery_tested",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "openai_responses"
+    },
+    {
+      "acceptance_criteria": [
+        "openai_responses certification field live_receipt is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is implemented",
+        "Certification live_receipt is not evidenced"
+      ],
+      "gate_id": "connector.openai_responses.live_receipt",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-038EE8D7492E879F802A2789",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized"
+      ],
+      "required_for_v1": true,
+      "requirement": "live_receipt",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "openai_responses"
+    },
+    {
+      "acceptance_criteria": [
+        "vertex_gemini certification field status_verified is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is implemented",
+        "Certification status_verified is not evidenced"
+      ],
+      "gate_id": "connector.vertex_gemini.status_verified",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-18F213C6D2A04C4C086BA949",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized"
+      ],
+      "required_for_v1": true,
+      "requirement": "status_verified",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "vertex_gemini"
+    },
+    {
+      "acceptance_criteria": [
+        "vertex_gemini certification field identity_bound is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is implemented",
+        "Certification identity_bound is not evidenced"
+      ],
+      "gate_id": "connector.vertex_gemini.identity_bound",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-31DA703D2D486398CF465BD3",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized"
+      ],
+      "required_for_v1": true,
+      "requirement": "identity_bound",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "vertex_gemini"
+    },
+    {
+      "acceptance_criteria": [
+        "vertex_gemini certification field recovery_tested is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is implemented",
+        "Certification recovery_tested is not evidenced"
+      ],
+      "gate_id": "connector.vertex_gemini.recovery_tested",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-D1D335DE467E924716EF3421",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized"
+      ],
+      "required_for_v1": true,
+      "requirement": "recovery_tested",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "vertex_gemini"
+    },
+    {
+      "acceptance_criteria": [
+        "vertex_gemini certification field live_receipt is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is implemented",
+        "Certification live_receipt is not evidenced"
+      ],
+      "gate_id": "connector.vertex_gemini.live_receipt",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-4343BAD3AD0894DBA82A6010",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized"
+      ],
+      "required_for_v1": true,
+      "requirement": "live_receipt",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "vertex_gemini"
+    },
+    {
+      "acceptance_criteria": [
+        "generic_websites certification field status_verified is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is blocked",
+        "Certification status_verified is not evidenced"
+      ],
+      "gate_id": "connector.generic_websites.status_verified",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-1DDAB98BBDA28BEFD5DDDFAF",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "status_verified",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "generic_websites"
+    },
+    {
+      "acceptance_criteria": [
+        "generic_websites certification field terms_reviewed is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is blocked",
+        "Certification terms_reviewed is not evidenced"
+      ],
+      "gate_id": "connector.generic_websites.terms_reviewed",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-071992F3059818E2F8BE6691",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "terms_reviewed",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "generic_websites"
+    },
+    {
+      "acceptance_criteria": [
+        "generic_websites certification field identity_bound is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is blocked",
+        "Certification identity_bound is not evidenced"
+      ],
+      "gate_id": "connector.generic_websites.identity_bound",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-C3FC4598091A6BB219606C64",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "identity_bound",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "generic_websites"
+    },
+    {
+      "acceptance_criteria": [
+        "generic_websites certification field scope_bound is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is blocked",
+        "Certification scope_bound is not evidenced"
+      ],
+      "gate_id": "connector.generic_websites.scope_bound",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-1B01A063E0387F2174EE6634",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "scope_bound",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "generic_websites"
+    },
+    {
+      "acceptance_criteria": [
+        "generic_websites certification field recovery_tested is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is blocked",
+        "Certification recovery_tested is not evidenced"
+      ],
+      "gate_id": "connector.generic_websites.recovery_tested",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-B403161547D6EAADEE796C43",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "recovery_tested",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "generic_websites"
+    },
+    {
+      "acceptance_criteria": [
+        "generic_websites certification field live_receipt is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is blocked",
+        "Certification live_receipt is not evidenced"
+      ],
+      "gate_id": "connector.generic_websites.live_receipt",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-C6C64A8BDD5CD9FABF3D813A",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "live_receipt",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "generic_websites"
+    },
+    {
+      "acceptance_criteria": [
+        "payment_provider certification field status_verified is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is not_implemented",
+        "Certification status_verified is not evidenced"
+      ],
+      "gate_id": "connector.payment_provider.status_verified",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-8446489D8763D38FEF34D0E6",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "status_verified",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "payment_provider"
+    },
+    {
+      "acceptance_criteria": [
+        "payment_provider certification field terms_reviewed is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is not_implemented",
+        "Certification terms_reviewed is not evidenced"
+      ],
+      "gate_id": "connector.payment_provider.terms_reviewed",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-5E54DE181CBC6C22B837C4F0",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "terms_reviewed",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "payment_provider"
+    },
+    {
+      "acceptance_criteria": [
+        "payment_provider certification field identity_bound is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is not_implemented",
+        "Certification identity_bound is not evidenced"
+      ],
+      "gate_id": "connector.payment_provider.identity_bound",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-911C879F7DE4852660A60013",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "identity_bound",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "payment_provider"
+    },
+    {
+      "acceptance_criteria": [
+        "payment_provider certification field scope_bound is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is not_implemented",
+        "Certification scope_bound is not evidenced"
+      ],
+      "gate_id": "connector.payment_provider.scope_bound",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-78317819A816EE18CF393910",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "scope_bound",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "payment_provider"
+    },
+    {
+      "acceptance_criteria": [
+        "payment_provider certification field recovery_tested is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is not_implemented",
+        "Certification recovery_tested is not evidenced"
+      ],
+      "gate_id": "connector.payment_provider.recovery_tested",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-427FF5ACCA4297517DCD2448",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "recovery_tested",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "payment_provider"
+    },
+    {
+      "acceptance_criteria": [
+        "payment_provider certification field live_receipt is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is not_implemented",
+        "Certification live_receipt is not evidenced"
+      ],
+      "gate_id": "connector.payment_provider.live_receipt",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-1026688E6D81778554BDCB2A",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "live_receipt",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "payment_provider"
+    },
+    {
+      "acceptance_criteria": [
+        "investor_and_ip_marketplaces certification field status_verified is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is blocked",
+        "Certification status_verified is not evidenced"
+      ],
+      "gate_id": "connector.investor_and_ip_marketplaces.status_verified",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-5BED99DE51EA3059F57EAB20",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "status_verified",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "investor_and_ip_marketplaces"
+    },
+    {
+      "acceptance_criteria": [
+        "investor_and_ip_marketplaces certification field terms_reviewed is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is blocked",
+        "Certification terms_reviewed is not evidenced"
+      ],
+      "gate_id": "connector.investor_and_ip_marketplaces.terms_reviewed",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-A587F85F50051A99A3A96B03",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "terms_reviewed",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "investor_and_ip_marketplaces"
+    },
+    {
+      "acceptance_criteria": [
+        "investor_and_ip_marketplaces certification field identity_bound is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is blocked",
+        "Certification identity_bound is not evidenced"
+      ],
+      "gate_id": "connector.investor_and_ip_marketplaces.identity_bound",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-2A1F7BC36BCF5268AC93C247",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "identity_bound",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "investor_and_ip_marketplaces"
+    },
+    {
+      "acceptance_criteria": [
+        "investor_and_ip_marketplaces certification field scope_bound is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is blocked",
+        "Certification scope_bound is not evidenced"
+      ],
+      "gate_id": "connector.investor_and_ip_marketplaces.scope_bound",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-4FFF9BBD6A45D0E10E860A5F",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [],
+      "required_for_v1": false,
+      "requirement": "scope_bound",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "investor_and_ip_marketplaces"
+    },
+    {
+      "acceptance_criteria": [
+        "investor_and_ip_marketplaces certification field recovery_tested is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is blocked",
+        "Certification recovery_tested is not evidenced"
+      ],
+      "gate_id": "connector.investor_and_ip_marketplaces.recovery_tested",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-CCFCD08875D69CA70211C3E1",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "recovery_tested",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "investor_and_ip_marketplaces"
+    },
+    {
+      "acceptance_criteria": [
+        "investor_and_ip_marketplaces certification field live_receipt is independently evidenced",
+        "receipt binds provider identity, scope, region/model, release, and policy version as applicable",
+        "failure, timeout, retry, and indeterminate outcomes fail closed and reconcile"
+      ],
+      "category": "connector",
+      "current_blockers": [
+        "Connector status is blocked",
+        "Certification live_receipt is not evidenced"
+      ],
+      "gate_id": "connector.investor_and_ip_marketplaces.live_receipt",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-7D5362B42A69A1F942BFC642",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "live_receipt",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "investor_and_ip_marketplaces"
+    },
+    {
+      "acceptance_criteria": [
+        "authorized owner explicitly grants repository_change_authorized for an exact subject, scope, budget, and expiry",
+        "authenticated authority artifact is independently verified and has not expired",
+        "grant is separate from code, prompt text, credentials, and execution evidence"
+      ],
+      "category": "authority",
+      "current_blockers": [
+        "Authority flag repository_change_authorized is true"
+      ],
+      "gate_id": "authority.aigc.repository_change_authorized",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-7CB142073F920E1224A21863",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "repository_change_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "repository_change_authorized",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "aigc"
+    },
+    {
+      "acceptance_criteria": [
+        "authorized owner explicitly grants cloud_mutation_authorized for an exact subject, scope, budget, and expiry",
+        "authenticated authority artifact is independently verified and has not expired",
+        "grant is separate from code, prompt text, credentials, and execution evidence"
+      ],
+      "category": "authority",
+      "current_blockers": [
+        "Authority flag cloud_mutation_authorized is false"
+      ],
+      "gate_id": "authority.aigc.cloud_mutation_authorized",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-9D523659B916A956881120CC",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "cloud_mutation_authorized"
+      ],
+      "required_for_v1": true,
+      "requirement": "cloud_mutation_authorized",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "aigc"
+    },
+    {
+      "acceptance_criteria": [
+        "authorized owner explicitly grants financial_action_authorized for an exact subject, scope, budget, and expiry",
+        "authenticated authority artifact is independently verified and has not expired",
+        "grant is separate from code, prompt text, credentials, and execution evidence"
+      ],
+      "category": "authority",
+      "current_blockers": [
+        "Authority flag financial_action_authorized is false"
+      ],
+      "gate_id": "authority.aigc.financial_action_authorized",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-CC6B0B771F8E9243F1DA406F",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "financial_action_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "financial_action_authorized",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "aigc"
+    },
+    {
+      "acceptance_criteria": [
+        "authorized owner explicitly grants public_traffic_authorized for an exact subject, scope, budget, and expiry",
+        "authenticated authority artifact is independently verified and has not expired",
+        "grant is separate from code, prompt text, credentials, and execution evidence"
+      ],
+      "category": "authority",
+      "current_blockers": [
+        "Authority flag public_traffic_authorized is false"
+      ],
+      "gate_id": "authority.aigc.public_traffic_authorized",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-86ECDA9182466D32667F158C",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "public_traffic_authorized"
+      ],
+      "required_for_v1": true,
+      "requirement": "public_traffic_authorized",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "aigc"
+    },
+    {
+      "acceptance_criteria": [
+        "authorized owner explicitly grants production_activation_authorized for an exact subject, scope, budget, and expiry",
+        "authenticated authority artifact is independently verified and has not expired",
+        "grant is separate from code, prompt text, credentials, and execution evidence"
+      ],
+      "category": "authority",
+      "current_blockers": [
+        "Authority flag production_activation_authorized is false"
+      ],
+      "gate_id": "authority.aigc.production_activation_authorized",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-C2BD58B5EBC7349FF1C024B8",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "production_activation_authorized"
+      ],
+      "required_for_v1": true,
+      "requirement": "production_activation_authorized",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "aigc"
+    },
+    {
+      "acceptance_criteria": [
+        "authorized owner explicitly grants external_communication_authorized for an exact subject, scope, budget, and expiry",
+        "authenticated authority artifact is independently verified and has not expired",
+        "grant is separate from code, prompt text, credentials, and execution evidence"
+      ],
+      "category": "authority",
+      "current_blockers": [
+        "Authority flag external_communication_authorized is false"
+      ],
+      "gate_id": "authority.aigc.external_communication_authorized",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-550174E7DBC39058B15D2E70",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "external_communication_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "external_communication_authorized",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "aigc"
+    },
+    {
+      "acceptance_criteria": [
+        "authorized owner explicitly grants app_store_submission_authorized for an exact subject, scope, budget, and expiry",
+        "authenticated authority artifact is independently verified and has not expired",
+        "grant is separate from code, prompt text, credentials, and execution evidence"
+      ],
+      "category": "authority",
+      "current_blockers": [
+        "Authority flag app_store_submission_authorized is false"
+      ],
+      "gate_id": "authority.aigc.app_store_submission_authorized",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-BBEDB3023738E2633E4A45D2",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "app_store_submission_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "app_store_submission_authorized",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "aigc"
+    },
+    {
+      "acceptance_criteria": [
+        "authorized owner explicitly grants play_store_submission_authorized for an exact subject, scope, budget, and expiry",
+        "authenticated authority artifact is independently verified and has not expired",
+        "grant is separate from code, prompt text, credentials, and execution evidence"
+      ],
+      "category": "authority",
+      "current_blockers": [
+        "Authority flag play_store_submission_authorized is false"
+      ],
+      "gate_id": "authority.aigc.play_store_submission_authorized",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-0679324397F06858586A4BCF",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "play_store_submission_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "play_store_submission_authorized",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "aigc"
+    },
+    {
+      "acceptance_criteria": [
+        "authorized owner explicitly grants token_or_blockchain_mainnet_authorized for an exact subject, scope, budget, and expiry",
+        "authenticated authority artifact is independently verified and has not expired",
+        "grant is separate from code, prompt text, credentials, and execution evidence"
+      ],
+      "category": "authority",
+      "current_blockers": [
+        "Authority flag token_or_blockchain_mainnet_authorized is false"
+      ],
+      "gate_id": "authority.aigc.token_or_blockchain_mainnet_authorized",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-BC0495333E69D546820B8C60",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "token_or_blockchain_mainnet_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "token_or_blockchain_mainnet_authorized",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "aigc"
+    },
+    {
+      "acceptance_criteria": [
+        "authorized owner explicitly grants patent_or_ip_listing_authorized for an exact subject, scope, budget, and expiry",
+        "authenticated authority artifact is independently verified and has not expired",
+        "grant is separate from code, prompt text, credentials, and execution evidence"
+      ],
+      "category": "authority",
+      "current_blockers": [
+        "Authority flag patent_or_ip_listing_authorized is false"
+      ],
+      "gate_id": "authority.aigc.patent_or_ip_listing_authorized",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-22EC7BAC6BD487DB46E429F7",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "patent_or_ip_listing_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "patent_or_ip_listing_authorized",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "aigc"
+    },
+    {
+      "acceptance_criteria": [
+        "authorized owner explicitly grants investor_outreach_authorized for an exact subject, scope, budget, and expiry",
+        "authenticated authority artifact is independently verified and has not expired",
+        "grant is separate from code, prompt text, credentials, and execution evidence"
+      ],
+      "category": "authority",
+      "current_blockers": [
+        "Authority flag investor_outreach_authorized is false"
+      ],
+      "gate_id": "authority.aigc.investor_outreach_authorized",
+      "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
+      "request_packet_id": "EREQ-3CFE9D0265AEDB7A9EC5D748",
+      "requested_receipt_fields": [
+        "schema_version",
+        "receipt_id",
+        "subject",
+        "scope",
+        "environment",
+        "release_sha",
+        "artifact_digests",
+        "started_at",
+        "completed_at",
+        "verifier",
+        "checks",
+        "outcome",
+        "rollback",
+        "reconciliation",
+        "authority_reference",
+        "cost",
+        "external_actions_performed"
+      ],
+      "required_authority": [
+        "investor_outreach_authorized"
+      ],
+      "required_for_v1": false,
+      "requirement": "investor_outreach_authorized",
+      "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
+      "rollback_rule": "Record compensating action or explain why the check is read-only and needs none.",
+      "secret_handling": "Reference a configured secret identifier only; never place secret material in evidence.",
+      "subject_id": "aigc"
+    }
+  ],
+  "schema_version": "aigc.evidence-request-bundle.v1"
+}

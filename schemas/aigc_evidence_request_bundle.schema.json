@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/aigc_evidence_request_bundle.schema.json",
+  "title": "AIGC Evidence Request Bundle",
+  "type": "object",
+  "required": ["schema_version", "bundle_id", "purpose", "requests", "bundle_sha256", "authority_granted", "external_action_performed"],
+  "properties": {
+    "schema_version": {"const": "aigc.evidence-request-bundle.v1"},
+    "bundle_id": {"const": "AIGC-EVIDENCE-REQUESTS-V1"},
+    "purpose": {"type": "string", "minLength": 10},
+    "bundle_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "authority_granted": {"const": false},
+    "external_action_performed": {"const": false},
+    "requests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["request_packet_id", "gate_id", "category", "subject_id", "requirement", "required_for_v1", "current_blockers", "required_authority", "acceptance_criteria", "requested_receipt_fields", "secret_handling", "idempotency_rule", "retry_rule", "rollback_rule"],
+        "properties": {
+          "request_packet_id": {"type": "string", "pattern": "^EREQ-[0-9A-F]{24}$"},
+          "gate_id": {"type": "string"},
+          "category": {"type": "string"},
+          "subject_id": {"type": "string"},
+          "requirement": {"type": "string"},
+          "required_for_v1": {"type": "boolean"},
+          "current_blockers": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+          "required_authority": {"type": "array", "items": {"type": "string"}},
+          "acceptance_criteria": {"type": "array", "minItems": 2, "items": {"type": "string"}},
+          "requested_receipt_fields": {"type": "array", "minItems": 10, "items": {"type": "string"}},
+          "secret_handling": {"type": "string"},
+          "idempotency_rule": {"type": "string"},
+          "retry_rule": {"type": "string"},
+          "rollback_rule": {"type": "string"}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "$defs": {
+    "AutodesignIterationPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "current_iteration": {
+          "default": 0,
+          "maximum": 11,
+          "minimum": 0,
+          "title": "Current Iteration",
+          "type": "integer"
+        },
+        "maximum_iterations": {
+          "default": 6,
+          "maximum": 12,
+          "minimum": 1,
+          "title": "Maximum Iterations",
+          "type": "integer"
+        },
+        "proposal_limit": {
+          "default": 3,
+          "maximum": 6,
+          "minimum": 1,
+          "title": "Proposal Limit",
+          "type": "integer"
+        }
+      },
+      "title": "AutodesignIterationPolicy",
+      "type": "object"
+    },
+    "AutodesignState": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_refs": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 50,
+          "title": "Artifact Refs",
+          "type": "array"
+        },
+        "capability_evidence": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "maxProperties": 64,
+          "title": "Capability Evidence",
+          "type": "object"
+        },
+        "current_capabilities": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Current Capabilities",
+          "type": "array"
+        },
+        "revision": {
+          "default": 0,
+          "maximum": 1000000,
+          "minimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "state_id": {
+          "pattern": "^AUTODESIGN-STATE-[A-Z0-9_-]{6,64}$",
+          "title": "State Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "state_id"
+      ],
+      "title": "AutodesignState",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "deterministic_seed": {
+      "const": 42,
+      "default": 42,
+      "title": "Deterministic Seed",
+      "type": "integer"
+    },
+    "execution_requested": {
+      "default": false,
+      "title": "Execution Requested",
+      "type": "boolean"
+    },
+    "industry_scope": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 9,
+      "minItems": 1,
+      "title": "Industry Scope",
+      "type": "array"
+    },
+    "iteration": {
+      "$ref": "#/$defs/AutodesignIterationPolicy"
+    },
+    "objective": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Objective",
+      "type": "string"
+    },
+    "request_id": {
+      "pattern": "^AUTODESIGN-REQ-[A-Z0-9_-]{6,64}$",
+      "title": "Request Id",
+      "type": "string"
+    },
+    "state": {
+      "$ref": "#/$defs/AutodesignState"
+    },
+    "target_component": {
+      "pattern": "^[A-Z][A-Z0-9_]{2,100}$",
+      "title": "Target Component",
+      "type": "string"
+    }
+  },
+  "required": [
+    "request_id",
+    "objective",
+    "target_component",
+    "industry_scope",
+    "state"
+  ],
+  "title": "AutodesignRequest",
+  "type": "object"
+}

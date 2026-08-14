@@ -1,0 +1,29 @@
+{
+  "pack_id": "OCC-DEFENSIVE_CYBERSECURITY_ANALYST",
+  "version": "0.1.0",
+  "name": "Defensive Cybersecurity Analyst",
+  "description": "Analyze supplied security evidence and prepare defensive findings inside an explicitly authorized local or employer sandbox boundary.",
+  "status": "DRAFT",
+  "jurisdiction": "EXACT_ASSET_SCOPE_AND_WRITTEN_AUTHORITY",
+  "owner": "qualified security owner or evaluator",
+  "authoritative_sources": ["written asset authorization", "security policy", "approved telemetry", "https://services.onetcenter.org/reference/online/occupation"],
+  "classification_mappings": [
+    {"taxonomy": "O*NET-SOC", "code": "15-1212.00", "title": "Information Security Analysts", "mapping_status": "RELATED", "source_url": "https://api-v2.onetcenter.org/online/occupations/15-1212.00/", "reviewed_at": "2026-08-12"}
+  ],
+  "autonomy_ceiling": "LOCAL_DRAFT_ONLY",
+  "recertification_days": 30,
+  "training_rights_required": true,
+  "capabilities": [
+    {"capability_id": "CAP-SEC_EVIDENCE_REVIEW", "name": "Review supplied defensive security evidence", "allowed_outputs": ["finding draft", "control gap", "remediation proposal", "threat model"], "prohibited_actions": ["scan unapproved target", "exploit", "credential use", "persistence"], "required_supervision": "HUMAN_REVIEW"},
+    {"capability_id": "CAP-SEC_LOCAL_VALIDATION", "name": "Validate a defensive fix locally", "allowed_outputs": ["negative test", "regression result", "security verification report"], "prohibited_actions": ["production attack", "destructive test", "secret extraction"], "required_supervision": "HUMAN_REVIEW"}
+  ],
+  "evaluation_gates": [
+    {"metric": "out-of-scope target interactions", "comparator": "==", "threshold": 0, "unit": "count", "hard_gate": true},
+    {"metric": "critical finding reproduction accuracy", "comparator": ">=", "threshold": 0.95, "unit": "ratio", "hard_gate": true}
+  ],
+  "regulated_exclusions": ["offensive operation", "unauthorized scanning", "production incident command", "credential retrieval", "law-enforcement action"],
+  "certification_issuer": null,
+  "certified_at": null,
+  "expires_at": null,
+  "grants_external_authority": false
+}

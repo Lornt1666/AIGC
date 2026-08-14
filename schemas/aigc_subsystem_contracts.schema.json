@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aigc:schema:subsystem-contract-set:v1",
+  "title": "AIGC Core Subsystem Contract Set V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "contract_set_id", "version", "verification_scope", "authority_granted", "external_action_performed", "subsystems"],
+  "properties": {
+    "schema_version": {"const": "aigc.subsystem-contract-set.v1"},
+    "contract_set_id": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9._-]{2,127}$"},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "verification_scope": {"const": "LOCAL_CONTRACT_ONLY"},
+    "authority_granted": {"const": false},
+    "external_action_performed": {"const": false},
+    "subsystems": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "authority_granted", "external_effects_allowed", "contracts"],
+        "properties": {
+          "id": {"enum": ["silva", "hexgate", "vanis", "correlation_station", "chorus"]},
+          "name": {"type": "string", "minLength": 8},
+          "authority_granted": {"const": false},
+          "external_effects_allowed": {"const": false},
+          "contracts": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "invariant", "failure_mode"],
+              "properties": {
+                "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]{2,63}$"},
+                "invariant": {"type": "string", "minLength": 20},
+                "failure_mode": {"enum": ["BLOCKED", "BLOCKED_PERMISSION", "FAILED_SAFE", "RECONCILIATION_REQUIRED", "AWAITING_HUMAN_APPROVAL"]}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

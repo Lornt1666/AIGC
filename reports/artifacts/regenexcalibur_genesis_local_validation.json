@@ -1,0 +1,175 @@
+{
+  "agents": [
+    {
+      "can_call_providers": false,
+      "can_mutate_external_systems": false,
+      "can_spawn_processes": false,
+      "effect_ceiling": "LOCAL_DETERMINISTIC_PLAN",
+      "mandate": "Validate and normalize a supplied universe seed.",
+      "output_contract": "Universe Seed Document",
+      "role": "UNIVERSE_SEEDER"
+    },
+    {
+      "can_call_providers": false,
+      "can_mutate_external_systems": false,
+      "can_spawn_processes": false,
+      "effect_ceiling": "LOCAL_DETERMINISTIC_PLAN",
+      "mandate": "Build a bounded conceptual skeleton.",
+      "output_contract": "RegenExcalibur Ontology",
+      "role": "ONTOLOGY_ARCHITECT"
+    },
+    {
+      "can_call_providers": false,
+      "can_mutate_external_systems": false,
+      "can_spawn_processes": false,
+      "effect_ceiling": "LOCAL_DETERMINISTIC_PLAN",
+      "mandate": "Synthesize reviewable architecture proposals.",
+      "output_contract": "OS Architecture Blueprint",
+      "role": "AUTO_DESIGNER"
+    },
+    {
+      "can_call_providers": false,
+      "can_mutate_external_systems": false,
+      "can_spawn_processes": false,
+      "effect_ceiling": "LOCAL_DETERMINISTIC_PLAN",
+      "mandate": "Specify typed modules, APIs, and schemas.",
+      "output_contract": "Implementation Contracts",
+      "role": "AUTO_ENGINEER"
+    },
+    {
+      "can_call_providers": false,
+      "can_mutate_external_systems": false,
+      "can_spawn_processes": false,
+      "effect_ceiling": "LOCAL_DETERMINISTIC_PLAN",
+      "mandate": "Specify test, security, release, and recovery gates.",
+      "output_contract": "DevSecOps Plan",
+      "role": "AUTO_DEVSECOPS"
+    },
+    {
+      "can_call_providers": false,
+      "can_mutate_external_systems": false,
+      "can_spawn_processes": false,
+      "effect_ceiling": "LOCAL_DETERMINISTIC_PLAN",
+      "mandate": "Apply human-safety, ecological, factual, and authority constraints.",
+      "output_contract": "LIFE Decision",
+      "role": "LIFE_STEWARD"
+    },
+    {
+      "can_call_providers": false,
+      "can_mutate_external_systems": false,
+      "can_spawn_processes": false,
+      "effect_ceiling": "LOCAL_DETERMINISTIC_PLAN",
+      "mandate": "Propose versioned changes within recursion limits.",
+      "output_contract": "Evolution Proposal",
+      "role": "EVOLUTION_STEWARD"
+    },
+    {
+      "can_call_providers": false,
+      "can_mutate_external_systems": false,
+      "can_spawn_processes": false,
+      "effect_ceiling": "LOCAL_DETERMINISTIC_PLAN",
+      "mandate": "Map approved artifacts into repository paths.",
+      "output_contract": "Repository Map",
+      "role": "REPOSITORY_INTEGRATOR"
+    }
+  ],
+  "authority_granted": false,
+  "coordination_loop": [
+    {
+      "artifact": "Parsed Intent Frame",
+      "stage": "INPUT_PERCEPTION",
+      "status": "PASS"
+    },
+    {
+      "artifact": "Contextualized Intent Frame",
+      "stage": "CONTEXT_FUSION",
+      "status": "PASS"
+    },
+    {
+      "artifact": "Goal-Constraint Matrix",
+      "stage": "GOAL_CONSTRAINT_INFERENCE",
+      "status": "PASS"
+    },
+    {
+      "artifact": "Parametric Profile",
+      "stage": "PARAMETRIC_TUNING",
+      "status": "PASS"
+    },
+    {
+      "artifact": "Response Blueprint",
+      "stage": "RESPONSE_PLANNING",
+      "status": "PASS"
+    },
+    {
+      "artifact": "Draft Artifact Set",
+      "stage": "CONTENT_GENERATION",
+      "status": "PASS"
+    },
+    {
+      "artifact": "LIFE Gate Decision",
+      "stage": "SAFETY_ALIGNMENT_CHECK",
+      "status": "PASS"
+    },
+    {
+      "artifact": "Final Structured Artifact Set",
+      "stage": "FORMATTING_FINALIZATION",
+      "status": "PASS"
+    }
+  ],
+  "evolution_proposal": {
+    "external_action_performed": false,
+    "reason": "bounded evolution proposal admitted for review",
+    "recursion_limit": 5,
+    "requested_depth": 1,
+    "requires_human_review": true,
+    "self_modification_performed": false,
+    "status": "PASS"
+  },
+  "external_action_performed": false,
+  "external_actions_performed": 0,
+  "genesis_pipeline": [
+    {
+      "artifact": "validated closed seed contract",
+      "stage": "UNIVERSE_SEED_VALIDATION",
+      "status": "PASS"
+    },
+    {
+      "artifact": "bounded ontology blueprint",
+      "stage": "ONTOLOGY_EXPANSION",
+      "status": "PASS"
+    },
+    {
+      "artifact": "Prime Kernel and subsystem topology",
+      "stage": "ARCHITECTURE_SYNTHESIS",
+      "status": "PASS"
+    },
+    {
+      "artifact": "typed implementation contracts",
+      "stage": "MODULE_GENERATION",
+      "status": "PASS"
+    },
+    {
+      "artifact": "fail-closed authority and recursion policy",
+      "stage": "SECURITY_GATES",
+      "status": "PASS"
+    },
+    {
+      "artifact": "deterministic stage receipt plan",
+      "stage": "OBSERVABILITY_MESH_ACTIVATION",
+      "status": "PASS"
+    },
+    {
+      "artifact": "review-required evolution proposal",
+      "stage": "EVOLUTION_LOOP_TRIGGER",
+      "status": "PASS"
+    }
+  ],
+  "provider_calls_performed": 0,
+  "receipt_id": "RX-214722AA07E9DFC9B18F3242",
+  "receipt_sha256": "214722aa07e9dfc9b18f32425bddf856beb642bd56b33261d34f2b9682817bf2",
+  "schema_version": "regenexcalibur.universe-receipt.v1",
+  "seed_sha256": "7403caaa9491c00c6e973131c99f63777ca18e8ac8124ce8f3595115cc5c6c21",
+  "terminal_status": "PASS",
+  "universe_name": "RegenExcalibur OS",
+  "zero_egress": true
+}

@@ -1,0 +1,34 @@
+{
+  "policy_id": "RESEARCH-POLICY-AIGC_APEX_V1",
+  "schema_version": "aigc.deep-research-procurement.v1",
+  "status": "DRAFT",
+  "stages": ["DEFINE", "SOURCE", "RETRIEVE", "SCREEN", "EXTRACT", "TRIANGULATE", "CHALLENGE", "SYNTHESIZE", "VERIFY", "PACKAGE"],
+  "source_ladder": [
+    {"rank": 1, "source_class": "PRIMARY_OFFICIAL", "minimum": 2, "purpose": "Current statutes, regulator or provider documentation, standards, and authoritative occupational classifications."},
+    {"rank": 2, "source_class": "PRIMARY_EMPIRICAL", "minimum": 1, "purpose": "Original datasets, experiments, filings, or directly observed measurements relevant to the decision."},
+    {"rank": 3, "source_class": "EMPLOYER_INTERNAL", "minimum": 0, "purpose": "Rights-verified employer procedures and task evidence within an admitted tenant boundary."},
+    {"rank": 4, "source_class": "SECONDARY_SYNTHESIS", "minimum": 0, "purpose": "Credible synthesis used for orientation and triangulation, never as a substitute for an available primary source."},
+    {"rank": 5, "source_class": "DISCOVERY_ONLY", "minimum": 0, "purpose": "Search results or indexes used only to locate sources; snippets cannot substantiate material claims."}
+  ],
+  "minimum_primary_sources": 2,
+  "minimum_independent_domains": 2,
+  "material_claim_citation_coverage_minimum": 1.0,
+  "unsupported_material_claims_maximum": 0,
+  "unresolved_material_conflicts_maximum": 0,
+  "require_disconfirming_search": true,
+  "require_prompt_injection_screening": true,
+  "require_source_provenance": true,
+  "provider_contracts": [
+    {
+      "provider": "OpenAI",
+      "documentation_url": "https://developers.openai.com/api/docs/guides/deep-research",
+      "interface": "Responses API with at least one admitted source tool",
+      "model_selection": "REVALIDATE_CURRENT_SUPPORTED_MODEL",
+      "data_source_requirement": "At least one of web search, remote MCP, or file search over a vector store must be configured for a provider run.",
+      "execution_status": "BLOCKED_EXTERNAL"
+    }
+  ],
+  "provider_dispatch_enabled": false,
+  "grants_execution_authority": false,
+  "external_publication_enabled": false
+}

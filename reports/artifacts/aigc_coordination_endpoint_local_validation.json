@@ -1,0 +1,29 @@
+{
+  "applicable_checks": 11,
+  "authority_granted": false,
+  "checks": {
+    "acyclic_waves_emitted": true,
+    "alpha_plan_embedded": true,
+    "closed_openapi_request_schema": true,
+    "cyclic_graph_rejected": true,
+    "deterministic_response": true,
+    "execution_request_blocked": true,
+    "happy_path_http_200": true,
+    "no_authority_granted": true,
+    "secret_input_rejected": true,
+    "state_projection_hides_values": true,
+    "zero_egress_receipt": true
+  },
+  "coordination_receipt_sha256": "7357c957b89e358a7428c98582574fc1c771ee3ff387b13b993a3a8b2d48c85f",
+  "endpoint": "POST /v1/coordination/engineer",
+  "evidence_sha256": "f259c6d53e310d814c0611b0988879cf5cf720300a00ab7584cf457e157d1206",
+  "external_actions_performed": 0,
+  "production_ready": false,
+  "request_fixture": "config/aigc_coordination_example.v1.json",
+  "request_sha256": "996eb6f6475d1ef8c7eede0c573f7baf00a3bf7bd53e0909d88777ba3a905a5d",
+  "schema_version": "aigc.coordination-endpoint-validation.v1",
+  "scope": "LOCAL_ZERO_EGRESS",
+  "terminal_status": "PASS",
+  "verified_checks": 11,
+  "verified_ratio": 1.0
+}

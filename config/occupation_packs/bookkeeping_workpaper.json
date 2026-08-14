@@ -1,0 +1,29 @@
+{
+  "pack_id": "OCC-BOOKKEEPING_WORKPAPER",
+  "version": "0.1.0",
+  "name": "Bookkeeping Workpaper Assistant",
+  "description": "Prepare reconciliations and bookkeeping workpapers from admitted records without posting entries, moving money, filing tax, or issuing assurance.",
+  "status": "DRAFT",
+  "jurisdiction": "EMPLOYER_LEDGER_AND_JURISDICTION_SPECIFIC",
+  "owner": "qualified employer, bookkeeper, or accounting evaluator",
+  "authoritative_sources": ["approved chart of accounts", "source transaction records", "accounting policy", "https://services.onetcenter.org/reference/online/occupation"],
+  "classification_mappings": [
+    {"taxonomy": "O*NET-SOC", "code": "43-3031.00", "title": "Bookkeeping, Accounting, and Auditing Clerks", "mapping_status": "RELATED", "source_url": "https://api-v2.onetcenter.org/online/occupations/43-3031.00/", "reviewed_at": "2026-08-12"}
+  ],
+  "autonomy_ceiling": "LOCAL_DRAFT_ONLY",
+  "recertification_days": 30,
+  "training_rights_required": true,
+  "capabilities": [
+    {"capability_id": "CAP-BOOK_RECONCILE", "name": "Prepare a reconciliation workpaper", "allowed_outputs": ["reconciliation draft", "exception list", "source-to-ledger trace"], "prohibited_actions": ["post journal entry", "alter source record", "move funds"], "required_supervision": "HUMAN_REVIEW"},
+    {"capability_id": "CAP-BOOK_CLASSIFY", "name": "Propose transaction classifications", "allowed_outputs": ["classification proposal", "uncertainty flags", "review queue"], "prohibited_actions": ["tax filing", "audit opinion", "final accounting approval"], "required_supervision": "HUMAN_REVIEW"}
+  ],
+  "evaluation_gates": [
+    {"metric": "source-to-workpaper traceability", "comparator": "==", "threshold": 1, "unit": "ratio", "hard_gate": true},
+    {"metric": "unapproved ledger mutations", "comparator": "==", "threshold": 0, "unit": "count", "hard_gate": true}
+  ],
+  "regulated_exclusions": ["tax filing", "audit opinion", "financial statement sign-off", "payment authorization", "ledger posting"],
+  "certification_issuer": null,
+  "certified_at": null,
+  "expires_at": null,
+  "grants_external_authority": false
+}

@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import asdict
 from typing import Any
 
+from src.core.nexus.connector_registry import build_connector_status_snapshot
 from src.core.nexus.specialist_registry import select_specialists
 from src.domain.nexus.contracts import WorkOrder
 from src.domain.nexus.odse import OperationalStrategyArtifact
@@ -17,6 +18,7 @@ def build_nexus_dashboard_snapshot(
     memory_records: tuple[dict[str, Any], ...] = (),
     memory_candidates: tuple[dict[str, Any], ...] = (),
     evidence_records: tuple[dict[str, Any], ...] = (),
+    connector_status: tuple[dict[str, Any], ...] | None = None,
 ) -> dict[str, Any]:
     """Read-only dashboard projection for admitted Nexus V1 capabilities.
 
@@ -24,6 +26,11 @@ def build_nexus_dashboard_snapshot(
     authority, provider execution, credential access, deployment, or production state.
     """
     specialists = select_specialists(work_order) if work_order is not None else ()
+    connectors = (
+        list(connector_status)
+        if connector_status is not None
+        else build_connector_status_snapshot()
+    )
     synapsis = None
     if strategy is not None:
         synapsis = {
@@ -54,6 +61,7 @@ def build_nexus_dashboard_snapshot(
             "memory_adapter": "SQLITE_AVAILABLE_NOT_AUTO_CONNECTED",
             "evidence_adapter": "SQLITE_AVAILABLE_NOT_AUTO_CONNECTED",
             "odse": "ACTIVE_PROVIDER_FREE",
+            "employment_connectors": "VISIBLE_DEFAULT_DENY",
         },
         "work_order": work_order.model_dump(mode="json") if work_order else None,
         "specialists": [asdict(item) for item in specialists],
@@ -86,6 +94,13 @@ def build_nexus_dashboard_snapshot(
         },
         "evidence": {
             "records": list(evidence_records),
+            "grants_authority": False,
+        },
+        "connectors": {
+            "records": connectors,
+            "enabled_live_mutation_capabilities": sum(
+                item["live_mutation_capability_count"] for item in connectors
+            ),
             "grants_authority": False,
         },
         "verifier_findings": list(verifier_findings),

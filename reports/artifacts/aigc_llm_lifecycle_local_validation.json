@@ -1,0 +1,55 @@
+{
+  "authority_granted": false,
+  "config_sha256": "b57508a7c5d50b48b3e87da2ac3782e376c837c2ec78af1ca2b748a2b098343d",
+  "external_actions_performed": 0,
+  "first_blocker": "model checkpoint and benchmark provenance do not yet exist",
+  "production_ready": false,
+  "provider_calls_performed": 0,
+  "receipt_id": "LLMPLAN-72E32EADDEA11FA9AC21F0FA",
+  "receipt_sha256": "72e32eaddea11fa9ac21f0fa9ca50be6f7042d222a148f050bdec987ef38ad54",
+  "schema_version": "aigc.llm-lifecycle-receipt.v1",
+  "stages": [
+    {
+      "reason": "synthetic or rights-verified repository data admitted",
+      "stage": "DATA_ADMISSION",
+      "status": "READY_LOCAL"
+    },
+    {
+      "reason": "byte reference tokenizer is deterministic and lossless",
+      "stage": "TOKENIZER",
+      "status": "READY_LOCAL"
+    },
+    {
+      "reason": "causal-transformer dimensions and bounds validate",
+      "stage": "MODEL",
+      "status": "READY_LOCAL"
+    },
+    {
+      "reason": "stage is disabled in the committed zero-spend configuration",
+      "stage": "PRETRAIN",
+      "status": "NOT_REQUESTED"
+    },
+    {
+      "reason": "stage is disabled in the committed zero-spend configuration",
+      "stage": "SFT",
+      "status": "NOT_REQUESTED"
+    },
+    {
+      "reason": "stage is disabled in the committed zero-spend configuration",
+      "stage": "PREFERENCE_ALIGNMENT",
+      "status": "NOT_REQUESTED"
+    },
+    {
+      "reason": "model checkpoint and benchmark provenance do not yet exist",
+      "stage": "EVALUATION",
+      "status": "BLOCKED_PERMISSION"
+    },
+    {
+      "reason": "serving is PLAN_ONLY and has no deployed model identity or production permit",
+      "stage": "SERVING",
+      "status": "BLOCKED_PERMISSION"
+    }
+  ],
+  "terminal_status": "BLOCKED",
+  "training_steps_performed": 0
+}

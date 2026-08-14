@@ -1,0 +1,433 @@
+{
+  "$defs": {
+    "AgentFunctionSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "pattern": "^AGT-[A-Z][A-Z0-9-]{2,63}$",
+          "title": "Agent Id",
+          "type": "string"
+        },
+        "assigned_tool_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 12,
+          "title": "Assigned Tool Ids",
+          "type": "array"
+        },
+        "capabilities": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Capabilities",
+          "type": "array"
+        },
+        "depends_on_agent_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 12,
+          "title": "Depends On Agent Ids",
+          "type": "array"
+        },
+        "mandate": {
+          "maxLength": 1000,
+          "minLength": 8,
+          "title": "Mandate",
+          "type": "string"
+        },
+        "output_contract": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Output Contract",
+          "type": "string"
+        },
+        "role": {
+          "pattern": "^[A-Z][A-Z0-9_]{2,80}$",
+          "title": "Role",
+          "type": "string"
+        },
+        "verification_function": {
+          "pattern": "^[a-z][a-z0-9_.-]{2,120}$",
+          "title": "Verification Function",
+          "type": "string"
+        }
+      },
+      "required": [
+        "agent_id",
+        "role",
+        "mandate",
+        "output_contract",
+        "verification_function"
+      ],
+      "title": "AgentFunctionSpec",
+      "type": "object"
+    },
+    "CoordinationStateInput": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_refs": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 50,
+          "title": "Artifact Refs",
+          "type": "array"
+        },
+        "parent_state_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent State Sha256"
+        },
+        "revision": {
+          "default": 0,
+          "maximum": 1000000,
+          "minimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "state_id": {
+          "pattern": "^COORD-STATE-[A-Z0-9_-]{6,64}$",
+          "title": "State Id",
+          "type": "string"
+        },
+        "values": {
+          "additionalProperties": true,
+          "title": "Values",
+          "type": "object"
+        }
+      },
+      "required": [
+        "state_id"
+      ],
+      "title": "CoordinationStateInput",
+      "type": "object"
+    },
+    "IterationPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "current_iteration": {
+          "default": 0,
+          "maximum": 11,
+          "minimum": 0,
+          "title": "Current Iteration",
+          "type": "integer"
+        },
+        "maximum_iterations": {
+          "default": 4,
+          "maximum": 12,
+          "minimum": 1,
+          "title": "Maximum Iterations",
+          "type": "integer"
+        },
+        "minimum_progress_delta": {
+          "default": 0.05,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Minimum Progress Delta",
+          "type": "number"
+        },
+        "no_progress_limit": {
+          "default": 2,
+          "maximum": 6,
+          "minimum": 1,
+          "title": "No Progress Limit",
+          "type": "integer"
+        },
+        "stop_conditions": {
+          "default": [
+            "ACCEPTANCE_SATISFIED",
+            "SAFETY_BLOCKER",
+            "ITERATION_BUDGET_EXHAUSTED",
+            "NO_PROGRESS_LIMIT"
+          ],
+          "items": {
+            "enum": [
+              "ACCEPTANCE_SATISFIED",
+              "SAFETY_BLOCKER",
+              "ITERATION_BUDGET_EXHAUSTED",
+              "NO_PROGRESS_LIMIT"
+            ],
+            "type": "string"
+          },
+          "title": "Stop Conditions",
+          "type": "array"
+        }
+      },
+      "title": "IterationPolicy",
+      "type": "object"
+    },
+    "MultiAgentPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "fail_fast": {
+          "default": true,
+          "title": "Fail Fast",
+          "type": "boolean"
+        },
+        "maximum_parallel_agents": {
+          "default": 4,
+          "maximum": 16,
+          "minimum": 1,
+          "title": "Maximum Parallel Agents",
+          "type": "integer"
+        },
+        "require_independent_verification": {
+          "default": true,
+          "title": "Require Independent Verification",
+          "type": "boolean"
+        },
+        "strategy": {
+          "default": "HIERARCHICAL_DAG",
+          "enum": [
+            "HIERARCHICAL_DAG",
+            "CAPABILITY_DAG"
+          ],
+          "title": "Strategy",
+          "type": "string"
+        }
+      },
+      "title": "MultiAgentPolicy",
+      "type": "object"
+    },
+    "ToolFunctionSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "credentials_required": {
+          "default": false,
+          "title": "Credentials Required",
+          "type": "boolean"
+        },
+        "data_classification": {
+          "default": "INTERNAL",
+          "enum": [
+            "PUBLIC",
+            "INTERNAL",
+            "CONFIDENTIAL",
+            "RESTRICTED"
+          ],
+          "title": "Data Classification",
+          "type": "string"
+        },
+        "destructive": {
+          "default": false,
+          "title": "Destructive",
+          "type": "boolean"
+        },
+        "effect_class": {
+          "default": "PURE",
+          "enum": [
+            "PURE",
+            "READ_LOCAL",
+            "READ_EXTERNAL",
+            "WRITE_REVERSIBLE",
+            "WRITE_COMPENSATABLE",
+            "WRITE_IRREVERSIBLE",
+            "FINANCIAL",
+            "COMMUNICATION",
+            "DEPLOYMENT",
+            "SECURITY_SENSITIVE"
+          ],
+          "title": "Effect Class",
+          "type": "string"
+        },
+        "estimated_cost_cad": {
+          "anyOf": [
+            {
+              "maximum": 10000000.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0.00",
+          "title": "Estimated Cost Cad"
+        },
+        "estimated_time_ms": {
+          "default": 0,
+          "maximum": 3600000,
+          "minimum": 0,
+          "title": "Estimated Time Ms",
+          "type": "integer"
+        },
+        "expected_outputs": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Expected Outputs",
+          "type": "object"
+        },
+        "function_name": {
+          "pattern": "^[a-z][a-z0-9_.-]{2,120}$",
+          "title": "Function Name",
+          "type": "string"
+        },
+        "internal_sandbox_only": {
+          "default": false,
+          "title": "Internal Sandbox Only",
+          "type": "boolean"
+        },
+        "irreversible": {
+          "default": false,
+          "title": "Irreversible",
+          "type": "boolean"
+        },
+        "legal_commitment": {
+          "default": false,
+          "title": "Legal Commitment",
+          "type": "boolean"
+        },
+        "maximum_calls_per_iteration": {
+          "default": 1,
+          "maximum": 16,
+          "minimum": 1,
+          "title": "Maximum Calls Per Iteration",
+          "type": "integer"
+        },
+        "outcome_indeterminate": {
+          "default": false,
+          "title": "Outcome Indeterminate",
+          "type": "boolean"
+        },
+        "parameters": {
+          "additionalProperties": true,
+          "title": "Parameters",
+          "type": "object"
+        },
+        "physical_effect": {
+          "default": false,
+          "title": "Physical Effect",
+          "type": "boolean"
+        },
+        "purpose": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Purpose",
+          "type": "string"
+        },
+        "rollback_steps": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Rollback Steps",
+          "type": "array"
+        },
+        "target_ref": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Ref"
+        },
+        "tool_id": {
+          "pattern": "^TOOL-[A-Z0-9_-]{3,64}$",
+          "title": "Tool Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool_id",
+        "function_name",
+        "purpose"
+      ],
+      "title": "ToolFunctionSpec",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "acceptance_criteria": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "Acceptance Criteria",
+      "type": "array"
+    },
+    "agents": {
+      "items": {
+        "$ref": "#/$defs/AgentFunctionSpec"
+      },
+      "maxItems": 12,
+      "minItems": 1,
+      "title": "Agents",
+      "type": "array"
+    },
+    "coordination": {
+      "$ref": "#/$defs/MultiAgentPolicy"
+    },
+    "deterministic_seed": {
+      "const": 42,
+      "default": 42,
+      "title": "Deterministic Seed",
+      "type": "integer"
+    },
+    "execution_requested": {
+      "default": false,
+      "title": "Execution Requested",
+      "type": "boolean"
+    },
+    "iteration": {
+      "$ref": "#/$defs/IterationPolicy"
+    },
+    "objective": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Objective",
+      "type": "string"
+    },
+    "request_id": {
+      "pattern": "^COORD-REQ-[A-Z0-9_-]{6,64}$",
+      "title": "Request Id",
+      "type": "string"
+    },
+    "state": {
+      "$ref": "#/$defs/CoordinationStateInput"
+    },
+    "tools": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ToolFunctionSpec"
+      },
+      "maxItems": 12,
+      "title": "Tools",
+      "type": "array"
+    }
+  },
+  "required": [
+    "request_id",
+    "objective",
+    "state",
+    "agents",
+    "acceptance_criteria"
+  ],
+  "title": "CoordinationEngineeringRequest",
+  "type": "object"
+}

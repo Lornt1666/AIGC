@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aigc:schema:universal-integration-registry:v1",
+  "title": "AIGC Universal Integration Registry V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "registry_id",
+    "template_only",
+    "release_binding",
+    "subsystems",
+    "surfaces",
+    "connectors",
+    "authority",
+    "completion_policy"
+  ],
+  "properties": {
+    "schema_version": {"const": "aigc.universal-integration-registry.v1"},
+    "registry_id": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9._-]{2,127}$"},
+    "template_only": {"type": "boolean"},
+    "release_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "base_branch", "base_revision", "evidence_state"],
+      "properties": {
+        "repository": {"const": "Lornt1666/AIGC"},
+        "base_branch": {"type": "string", "minLength": 1},
+        "base_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "evidence_state": {"enum": ["current", "stale", "absent"]}
+      }
+    },
+    "subsystems": {
+      "type": "array",
+      "minItems": 5,
+      "items": {"$ref": "#/$defs/subsystem"}
+    },
+    "surfaces": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/surface"}
+    },
+    "connectors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/connector"}
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository_change_authorized",
+        "cloud_mutation_authorized",
+        "financial_action_authorized",
+        "public_traffic_authorized",
+        "production_activation_authorized",
+        "external_communication_authorized",
+        "app_store_submission_authorized",
+        "play_store_submission_authorized",
+        "token_or_blockchain_mainnet_authorized",
+        "patent_or_ip_listing_authorized",
+        "investor_outreach_authorized"
+      ],
+      "properties": {
+        "repository_change_authorized": {"type": "boolean"},
+        "cloud_mutation_authorized": {"type": "boolean"},
+        "financial_action_authorized": {"type": "boolean"},
+        "public_traffic_authorized": {"type": "boolean"},
+        "production_activation_authorized": {"type": "boolean"},
+        "external_communication_authorized": {"type": "boolean"},
+        "app_store_submission_authorized": {"type": "boolean"},
+        "play_store_submission_authorized": {"type": "boolean"},
+        "token_or_blockchain_mainnet_authorized": {"type": "boolean"},
+        "patent_or_ip_listing_authorized": {"type": "boolean"},
+        "investor_outreach_authorized": {"type": "boolean"}
+      }
+    },
+    "completion_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimum_verified_applicable_ratio", "unknowns_block_release", "required_authorities"],
+      "properties": {
+        "minimum_verified_applicable_ratio": {"type": "number", "minimum": 0, "maximum": 1},
+        "unknowns_block_release": {"const": true},
+        "required_authorities": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "status": {
+      "enum": ["not_implemented", "proposed", "implemented", "verified", "blocked", "not_applicable"]
+    },
+    "subsystem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "purpose", "status", "verification_scope", "contracts", "evidence_receipts", "authority_granted", "external_action_performed"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]{1,63}$"},
+        "name": {"type": "string", "minLength": 1},
+        "purpose": {"type": "string", "minLength": 12},
+        "status": {"$ref": "#/$defs/status"},
+        "verification_scope": {"const": "LOCAL_CONTRACT_ONLY"},
+        "contracts": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "evidence_receipts": {
+          "type": "object",
+          "propertyNames": {"minLength": 1},
+          "additionalProperties": {"type": "string", "minLength": 1}
+        },
+        "authority_granted": {"const": false},
+        "external_action_performed": {"const": false}
+      }
+    },
+    "surface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "required_for_v1", "status", "required_evidence", "evidence_receipts", "blockers"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{1,63}$"},
+        "kind": {"enum": ["linux_server", "web", "pwa", "chatgpt_mcp", "gemini_mcp", "ios", "android", "app_store", "play_store", "blockchain_mainnet", "commercial"]},
+        "required_for_v1": {"type": "boolean"},
+        "status": {"$ref": "#/$defs/status"},
+        "required_evidence": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "evidence_receipts": {
+          "type": "object",
+          "propertyNames": {"minLength": 1},
+          "additionalProperties": {"type": "string", "minLength": 1}
+        },
+        "blockers": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "connector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "class", "required_for_v1", "status", "certification", "allowed_effects", "forbidden_effects"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{1,63}$"},
+        "class": {"enum": ["llm", "website", "identity", "payment", "storage", "marketplace", "observability"]},
+        "required_for_v1": {"type": "boolean"},
+        "status": {"$ref": "#/$defs/status"},
+        "certification": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["terms_reviewed", "terms_review_receipt_id", "identity_bound", "scope_bound", "recovery_tested", "live_receipt_ids"],
+          "properties": {
+            "terms_reviewed": {"type": "boolean"},
+            "terms_review_receipt_id": {
+              "oneOf": [
+                {"type": "string", "minLength": 1},
+                {"type": "null"}
+              ]
+            },
+            "identity_bound": {"type": "boolean"},
+            "scope_bound": {"type": "boolean"},
+            "recovery_tested": {"type": "boolean"},
+            "live_receipt_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+          }
+        },
+        "allowed_effects": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "forbidden_effects": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  }
+}

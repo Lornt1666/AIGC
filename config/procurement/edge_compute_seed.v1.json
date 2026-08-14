@@ -1,0 +1,27 @@
+{
+  "schema_version": "aigc.procurement-sandbox.seed.v1",
+  "seed_id": "EDGE-COMPUTE-NA-EU-10000-V1",
+  "objective": "Evaluate a hypothetical procurement of 10000 edge compute nodes across North America and the European Union within 90 days.",
+  "classification": "DESIGN_ONLY",
+  "example_only": true,
+  "target_quantity": 10000,
+  "regions": ["NA", "EU"],
+  "deadline_days": 90,
+  "budget": {"amount": 12000000, "currency": "USD", "type": "HYPOTHETICAL_CEILING"},
+  "risk_tolerance": "MEDIUM",
+  "data_sources": [
+    {"name": "SAP", "status": "UNCONNECTED"},
+    {"name": "vendor_catalogs", "status": "SYNTHETIC_ONLY"},
+    {"name": "logistics_APIs", "status": "UNCONNECTED"}
+  ],
+  "authority": {
+    "spend_authorized": false,
+    "supplier_contact_authorized": false,
+    "auction_authorized": false,
+    "contract_authorized": false,
+    "payment_authorized": false,
+    "deployment_authorized": false
+  },
+  "effect_ceiling": "LOCAL_SIMULATION_ONLY",
+  "external_action_performed": false
+}

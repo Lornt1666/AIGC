@@ -1,0 +1,13 @@
+risk_id,domain,scenario,likelihood,impact,control,verification,status
+R-001,finance,Unauthorized or duplicate payment,medium,critical,"two-party approval; exact one-use permit; reconciliation before retry",OPA policy and ADV-008/009,CONTROL_DESIGNED
+R-002,legal,Unsigned or hallucinated contract published,medium,critical,"unsigned draft only; legal and procurement-manager approval",OPA decision policy,CONTROL_DESIGNED
+R-003,supplier,Sanctioned or misidentified supplier onboarded,medium,critical,"KYC; sanctions screening; identity verification; manual review",OPA supplier policy and ADV-004/005/006,CONTROL_DESIGNED
+R-004,privacy,PII stored or exported,medium,high,"redaction evidence; residency; retention; destination-bound export authority",OPA data policy and ADV-012,CONTROL_DESIGNED
+R-005,market,Price manipulation or collusion,medium,high,"index variance; identity correlation; risk escalation",ADV-002/003,CONTROL_DESIGNED
+R-006,model,Untrusted catalog prompt alters policy,high,high,"treat content as data; closed schemas; no authority-shaped fields",ADV-007 and Alpha Plan tests,VERIFIED_LOCAL
+R-007,operations,Automatic retry duplicates consequential effect,medium,critical,"no automatic retry; indeterminate means reconcile",ADV-009 and Alpha Plan policy,VERIFIED_LOCAL
+R-008,supply,Lead time misses objective,medium,high,"capacity and lead-time constraints; fallback simulation",ADV-010,CONTROL_DESIGNED
+R-009,economic,FX or TCO exceeds hypothetical ceiling,medium,high,"ceiling check; sensitivity analysis; block before action",ADV-011,CONTROL_DESIGNED
+R-010,infrastructure,Template accidentally activates,low,critical,"zero replicas; deny-all egress; invalid immutable image digests; deployment authority false",manifest validation,VERIFIED_LOCAL
+R-011,evidence,Model or dataset claims overstated,high,medium,"DESIGN_ONLY and UNVERIFIED labels on all claims",catalog validation,VERIFIED_LOCAL
+R-012,governance,Broad chat consent treated as operational authority,medium,critical,"authenticated action-specific authority outside prompts",Alpha Plan schema and MCP boundary,VERIFIED_LOCAL

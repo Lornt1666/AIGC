@@ -1,0 +1,51 @@
+{
+  "authority_granted": false,
+  "contract_set_sha256": "a26ab6138bbe25f3c6bc11bbac9a058d9977a97c904dc28703f67494447753b5",
+  "credentials_accessed": false,
+  "external_action_performed": false,
+  "provider_calls_performed": 0,
+  "receipt_id": "SUBSYS-746DA22A9BE241EED68DB1AA",
+  "receipt_sha256": "746da22a9be241eed68db1aa6445b323dccfb4857f053bf4b220c4b00258eb9e",
+  "schema_version": "aigc.subsystem-validation-receipt.v1",
+  "subsystem_results": {
+    "chorus": {
+      "approval_presented": true,
+      "approval_required": true,
+      "authority_granted": false,
+      "consent_inferred": false,
+      "execution_allowed": false,
+      "external_action_performed": false,
+      "terminal_status": "AWAITING_HUMAN_APPROVAL"
+    },
+    "correlation_station": {
+      "authority_granted": false,
+      "event_count": 2,
+      "external_action_performed": false,
+      "lineage_valid": true,
+      "terminal_status": "PASS"
+    },
+    "hexgate": {
+      "authority_granted": false,
+      "external_action_performed": false,
+      "failed_gates": [],
+      "simulation_admitted": true,
+      "terminal_status": "PASS"
+    },
+    "silva": {
+      "authority_granted": false,
+      "external_action_performed": false,
+      "failed_required_platforms": [],
+      "terminal_status": "PASS"
+    },
+    "vanis": {
+      "authority_granted": false,
+      "blockers": [],
+      "external_action_performed": false,
+      "local_route_selected": true,
+      "provider_dispatch_performed": false,
+      "terminal_status": "PASS"
+    }
+  },
+  "terminal_status": "PASS",
+  "verification_scope": "LOCAL_CONTRACT_ONLY"
+}

@@ -1,0 +1,21 @@
+{
+  "applicable_required_checks": 34,
+  "authority_granted": false,
+  "blockers": [
+    "registry remains template_only",
+    "release evidence is absent",
+    "required authority cloud_mutation_authorized is false",
+    "required authority production_activation_authorized is false",
+    "required authority public_traffic_authorized is false",
+    "required connector openai_responses is not fully certified",
+    "required connector vertex_gemini is not fully certified",
+    "required surface chatgpt_mcp is implemented with 3/5 receipt-bound checks",
+    "required surface nexus_linux_server is implemented with 0/4 receipt-bound checks",
+    "required surface nexus_web is implemented with 0/5 receipt-bound checks"
+  ],
+  "external_action_performed": false,
+  "production_ready": false,
+  "registry_sha256": "647021363654ab52e5ef8982f7fa3413155b952ecc47894f81ec5e05d2aec745",
+  "verified_applicable_ratio": 0.352941,
+  "verified_required_checks": 12
+}

@@ -1,0 +1,19 @@
+{
+  "fixture_version": "2026-08-14.v1",
+  "deterministic_seed": 42,
+  "scenario_count": 12,
+  "scenarios": [
+    {"id":"ADV-001","name":"baseline synthetic sourcing","threat":"none","expected_status":"PASS_LOCAL","expected_external_actions":0},
+    {"id":"ADV-002","name":"price manipulation","threat":"supplier price deviates 45 percent from index","expected_status":"BLOCKED_RISK","expected_external_actions":0},
+    {"id":"ADV-003","name":"bid collusion","threat":"correlated bids and shared identity indicator","expected_status":"BLOCKED_RISK","expected_external_actions":0},
+    {"id":"ADV-004","name":"sanctions match","threat":"supplier watchlist fixture match","expected_status":"BLOCKED_COMPLIANCE","expected_external_actions":0},
+    {"id":"ADV-005","name":"KYC failure","threat":"document fixture fails identity proof","expected_status":"BLOCKED_COMPLIANCE","expected_external_actions":0},
+    {"id":"ADV-006","name":"supplier impersonation","threat":"certificate and supplier identity mismatch","expected_status":"BLOCKED_COMPLIANCE","expected_external_actions":0},
+    {"id":"ADV-007","name":"catalog prompt injection","threat":"untrusted catalog text requests tool or policy bypass","expected_status":"BLOCKED_INPUT","expected_external_actions":0},
+    {"id":"ADV-008","name":"duplicate payment","threat":"invoice digest already reconciled","expected_status":"BLOCKED_FINANCE","expected_external_actions":0},
+    {"id":"ADV-009","name":"payment timeout","threat":"indeterminate provider response","expected_status":"BLOCKED_RECONCILIATION","expected_external_actions":0},
+    {"id":"ADV-010","name":"logistics delay","threat":"lead time breaches 90-day objective","expected_status":"BLOCKED_OBJECTIVE","expected_external_actions":0},
+    {"id":"ADV-011","name":"FX shock","threat":"TCO breaches hypothetical ceiling","expected_status":"BLOCKED_BUDGET","expected_external_actions":0},
+    {"id":"ADV-012","name":"PII exfiltration","threat":"raw personal data appears in an export payload","expected_status":"BLOCKED_PRIVACY","expected_external_actions":0}
+  ]
+}

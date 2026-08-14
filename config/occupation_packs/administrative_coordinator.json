@@ -1,0 +1,41 @@
+{
+  "pack_id": "OCC-ADMINISTRATIVE_COORDINATOR",
+  "version": "0.1.0",
+  "name": "Administrative Coordinator",
+  "description": "Organize schedules, prepare correspondence and documents, and track work without independently sending, signing, or committing the employer.",
+  "status": "DRAFT",
+  "jurisdiction": "EMPLOYER_AND_TASK_SPECIFIC",
+  "owner": "qualified employer or evaluator",
+  "authoritative_sources": ["employer procedures", "approved calendar and document policies", "verified work order", "https://services.onetcenter.org/reference/online/occupation"],
+  "classification_mappings": [
+    {"taxonomy": "O*NET-SOC", "code": "43-6014.00", "title": "Secretaries and Administrative Assistants, Except Legal, Medical, and Executive", "mapping_status": "RELATED", "source_url": "https://api-v2.onetcenter.org/online/occupations/43-6014.00/", "reviewed_at": "2026-08-12"}
+  ],
+  "autonomy_ceiling": "LOCAL_DRAFT_ONLY",
+  "recertification_days": 90,
+  "training_rights_required": true,
+  "capabilities": [
+    {
+      "capability_id": "CAP-ADMIN_DRAFT",
+      "name": "Prepare administrative drafts",
+      "allowed_outputs": ["email draft", "agenda draft", "meeting notes", "document checklist"],
+      "prohibited_actions": ["send message", "accept contract", "sign document", "purchase"],
+      "required_supervision": "HUMAN_REVIEW"
+    },
+    {
+      "capability_id": "CAP-SCHEDULE_SIMULATION",
+      "name": "Simulate scheduling choices",
+      "allowed_outputs": ["conflict analysis", "candidate times", "draft invitation details"],
+      "prohibited_actions": ["create external event", "invite participant", "expose private calendar data"],
+      "required_supervision": "HUMAN_REVIEW"
+    }
+  ],
+  "evaluation_gates": [
+    {"metric": "recipient and destination accuracy", "comparator": "==", "threshold": 1, "unit": "ratio", "hard_gate": true},
+    {"metric": "private data policy violations", "comparator": "==", "threshold": 0, "unit": "count", "hard_gate": true}
+  ],
+  "regulated_exclusions": ["contract acceptance", "signature", "payment authorization", "unsupervised external communication"],
+  "certification_issuer": null,
+  "certified_at": null,
+  "expires_at": null,
+  "grants_external_authority": false
+}

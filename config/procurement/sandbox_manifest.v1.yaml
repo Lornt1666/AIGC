@@ -1,0 +1,34 @@
+schema_version: aigc.procurement-sandbox.manifest.v1
+manifest_id: EDGE-COMPUTE-SANDBOX-V1
+classification: DESIGN_ONLY
+effect_ceiling: LOCAL_SIMULATION_ONLY
+seed_ref: config/procurement/edge_compute_seed.v1.json
+agent_catalog_ref: config/procurement/agent_catalog.v1.json
+task_graph_ref: config/procurement/task_graph.v1.json
+deployment:
+  authorized: false
+  requested_replicas: 0
+  kustomize_ref: deploy/procurement-sandbox/base/kustomization.yaml
+  images_verified: false
+  image_policy: immutable_digest_required_before_activation
+runtime:
+  external_network_egress: false
+  supplier_mode: SYNTHETIC_ONLY
+  storage_mode: EPHEMERAL_OR_LOCAL_FIXTURE
+  secrets_present: false
+components:
+  - {id: orchestrator, status: DESIGN_ONLY, replicas: 0}
+  - {id: agent_pool, catalog_agents: 13, status: DESIGN_ONLY, replicas: 0}
+  - {id: opa_policy, status: DESIGN_ONLY, replicas: 0}
+  - {id: event_bus, implementation: UNSELECTED, status: DESIGN_ONLY, replicas: 0}
+  - {id: relational_state, implementation: UNSELECTED, status: DESIGN_ONLY, replicas: 0}
+  - {id: human_review_ui, implementation: UNIMPLEMENTED, status: DESIGN_ONLY, replicas: 0}
+  - {id: workflow_engine, implementation: AIGC_ALPHA_PLAN, status: IMPLEMENTED_LOCAL_ONLY, replicas: 0}
+activation_blockers:
+  - independently_verified_container_digests
+  - authenticated_expiring_deployment_authority
+  - approved_region_and_account
+  - secret_broker_and_workload_identity
+  - current_legal_privacy_security_review
+  - observability_and_rollback_validation
+external_action_performed: false

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: procurement-sandbox-config
+  namespace: procurement-sandbox
+data:
+  AIGC_MODE: LOCAL_SIMULATION_ONLY
+  SYNTHETIC_SUPPLIERS_ONLY: "true"
+  EXTERNAL_ACTIONS_AUTHORIZED: "false"
+  SPEND_AUTHORIZED: "false"
+  CONTRACT_SIGNATURE_AUTHORIZED: "false"
+  PAYMENT_AUTHORIZED: "false"
+  NETWORK_EGRESS_ENABLED: "false"

@@ -1,0 +1,69 @@
+{
+  "schema_version": "aigc.subsystem-contract-set.v1",
+  "contract_set_id": "AIGC-CORE-SUBSYSTEM-CONTRACTS-V1",
+  "version": "1.0.0",
+  "verification_scope": "LOCAL_CONTRACT_ONLY",
+  "authority_granted": false,
+  "external_action_performed": false,
+  "subsystems": [
+    {
+      "id": "silva",
+      "name": "System Integration and Lifecycle Validation Architecture",
+      "authority_granted": false,
+      "external_effects_allowed": false,
+      "contracts": [
+        {"id": "platform_capability_manifest", "invariant": "Every platform assertion is explicit and closed to unknown states.", "failure_mode": "BLOCKED"},
+        {"id": "hardware_os_test_matrix", "invariant": "Every required platform result must be PASS.", "failure_mode": "BLOCKED"},
+        {"id": "compatibility_receipt", "invariant": "Compatibility evidence never grants deployment authority.", "failure_mode": "FAILED_SAFE"}
+      ]
+    },
+    {
+      "id": "hexgate",
+      "name": "Six-Gate Trust Boundary",
+      "authority_granted": false,
+      "external_effects_allowed": false,
+      "contracts": [
+        {"id": "consequence_assessment", "invariant": "Identity, authorization, privacy, safety, cost, and evidence are evaluated independently.", "failure_mode": "BLOCKED_PERMISSION"},
+        {"id": "governance_decision", "invariant": "A false or missing gate denies admission.", "failure_mode": "BLOCKED_PERMISSION"},
+        {"id": "one_use_execution_permit", "invariant": "Local contract validation cannot mint an execution permit.", "failure_mode": "FAILED_SAFE"},
+        {"id": "execution_receipt", "invariant": "A receipt may record execution but never manufacture prior authority.", "failure_mode": "RECONCILIATION_REQUIRED"}
+      ]
+    },
+    {
+      "id": "vanis",
+      "name": "Verifiable Agent Network Integration Substrate",
+      "authority_granted": false,
+      "external_effects_allowed": false,
+      "contracts": [
+        {"id": "agent_capability_manifest", "invariant": "Providers and capabilities are deny-by-default allowlists.", "failure_mode": "BLOCKED"},
+        {"id": "tool_invocation_request", "invariant": "Requests use a closed field set and non-negative bounded cost.", "failure_mode": "BLOCKED"},
+        {"id": "provider_adapter_contract", "invariant": "Local routing performs no provider dispatch.", "failure_mode": "FAILED_SAFE"},
+        {"id": "bounded_result_envelope", "invariant": "Every result declares terminal state, authority, and external-effect state.", "failure_mode": "RECONCILIATION_REQUIRED"}
+      ]
+    },
+    {
+      "id": "correlation_station",
+      "name": "Evidence and Observability Plane",
+      "authority_granted": false,
+      "external_effects_allowed": false,
+      "contracts": [
+        {"id": "evidence_lineage", "invariant": "Every parent references an earlier immutable event.", "failure_mode": "FAILED_SAFE"},
+        {"id": "telemetry_envelope", "invariant": "Telemetry is descriptive and cannot grant authority.", "failure_mode": "FAILED_SAFE"},
+        {"id": "data_quality_record", "invariant": "Missing or malformed evidence blocks downstream admission.", "failure_mode": "BLOCKED"},
+        {"id": "reconciliation_report", "invariant": "Indeterminate outcomes require reconciliation before retry.", "failure_mode": "RECONCILIATION_REQUIRED"}
+      ]
+    },
+    {
+      "id": "chorus",
+      "name": "Coordinated Human-Orchestrated Runtime and User Surface",
+      "authority_granted": false,
+      "external_effects_allowed": false,
+      "contracts": [
+        {"id": "intent_envelope", "invariant": "Human-facing intent is non-empty and explicit.", "failure_mode": "BLOCKED"},
+        {"id": "approval_presentation", "invariant": "Consequential intent requires human approval and cannot execute from presentation alone.", "failure_mode": "AWAITING_HUMAN_APPROVAL"},
+        {"id": "accessibility_receipt", "invariant": "Accessibility remains an evidence obligation rather than an inferred claim.", "failure_mode": "BLOCKED"},
+        {"id": "human_readable_audit_summary", "invariant": "Consent is never inferred from silence, memory, or prior approval.", "failure_mode": "BLOCKED_PERMISSION"}
+      ]
+    }
+  ]
+}

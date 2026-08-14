@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "aigc-nexus": {
+      "command": "/absolute/path/to/repository/.venv/bin/python",
+      "args": ["-m", "src.integrations.mcp.server", "--transport", "stdio"],
+      "cwd": "/absolute/path/to/repository",
+      "trust": false,
+      "includeTools": [
+        "aigc_get_status",
+        "aigc_render_control_center",
+        "assess_aigc_action",
+        "run_aigc_dry_run",
+        "procure_deep_research_plan",
+        "aigc_run_employer_sandbox",
+        "aigc_seed_regenexcalibur_universe",
+        "aigc_plan_wealth_work",
+        "aigc_plan_llm_lifecycle",
+        "aigc_plan_regenexcalibur_workflow",
+        "aigc_run_regenexcalibur_diagnostics",
+        "aigc_compose_alpha_plan"
+      ]
+    }
+  }
+}

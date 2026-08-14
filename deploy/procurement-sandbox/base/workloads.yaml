@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: procurement-control-plane
+  namespace: procurement-sandbox
+  annotations:
+    aigc.justicegray.com/status: DESIGN_ONLY
+spec:
+  replicas: 0
+  selector:
+    matchLabels: {app: procurement-control-plane}
+  template:
+    metadata:
+      labels: {app: procurement-control-plane}
+    spec:
+      automountServiceAccountToken: false
+      securityContext: {runAsNonRoot: true, seccompProfile: {type: RuntimeDefault}}
+      containers:
+        - name: orchestrator
+          image: registry.invalid/aigc/procurement-orchestrator@sha256:0000000000000000000000000000000000000000000000000000000000000000
+          imagePullPolicy: IfNotPresent
+          envFrom: [{configMapRef: {name: procurement-sandbox-config}}]
+          resources:
+            requests: {cpu: "500m", memory: "512Mi"}
+            limits: {cpu: "1", memory: "1Gi"}
+          securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: ["ALL"]}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: procurement-agent-pool
+  namespace: procurement-sandbox
+  annotations:
+    aigc.justicegray.com/catalog-count: "13"
+    aigc.justicegray.com/status: DESIGN_ONLY
+spec:
+  replicas: 0
+  selector:
+    matchLabels: {app: procurement-agent-pool}
+  template:
+    metadata:
+      labels: {app: procurement-agent-pool}
+    spec:
+      automountServiceAccountToken: false
+      securityContext: {runAsNonRoot: true, seccompProfile: {type: RuntimeDefault}}
+      containers:
+        - name: agent-pool
+          image: registry.invalid/aigc/procurement-agent-pool@sha256:0000000000000000000000000000000000000000000000000000000000000000
+          imagePullPolicy: IfNotPresent
+          envFrom: [{configMapRef: {name: procurement-sandbox-config}}]
+          resources:
+            requests: {cpu: "500m", memory: "512Mi"}
+            limits: {cpu: "2", memory: "2Gi"}
+          securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: ["ALL"]}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: procurement-policy
+  namespace: procurement-sandbox
+  annotations:
+    aigc.justicegray.com/status: DESIGN_ONLY
+spec:
+  replicas: 0
+  selector:
+    matchLabels: {app: procurement-policy}
+  template:
+    metadata:
+      labels: {app: procurement-policy}
+    spec:
+      automountServiceAccountToken: false
+      securityContext: {runAsNonRoot: true, seccompProfile: {type: RuntimeDefault}}
+      containers:
+        - name: opa
+          image: openpolicyagent/opa@sha256:0000000000000000000000000000000000000000000000000000000000000000
+          args: ["run", "--server", "--addr=127.0.0.1:8181", "/policies"]
+          resources:
+            requests: {cpu: "100m", memory: "128Mi"}
+            limits: {cpu: "250m", memory: "256Mi"}
+          securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: ["ALL"]}}

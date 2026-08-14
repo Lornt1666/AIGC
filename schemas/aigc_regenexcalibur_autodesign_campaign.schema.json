@@ -1,0 +1,161 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "authority_granted": {
+      "const": false,
+      "default": false,
+      "title": "Authority Granted",
+      "type": "boolean"
+    },
+    "campaign_id": {
+      "pattern": "^AUTODESIGN-CAMPAIGN-[A-F0-9]{24}$",
+      "title": "Campaign Id",
+      "type": "string"
+    },
+    "external_actions_performed": {
+      "const": 0,
+      "default": 0,
+      "title": "External Actions Performed",
+      "type": "integer"
+    },
+    "first_blocker": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "First Blocker"
+    },
+    "initial_capabilities": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Initial Capabilities",
+      "type": "array"
+    },
+    "initial_request_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Initial Request Sha256",
+      "type": "string"
+    },
+    "iteration_receipts": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Iteration Receipts",
+      "type": "array"
+    },
+    "memory_writes_performed": {
+      "const": 0,
+      "default": 0,
+      "title": "Memory Writes Performed",
+      "type": "integer"
+    },
+    "newly_proposed_capabilities": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Newly Proposed Capabilities",
+      "type": "array"
+    },
+    "processes_spawned": {
+      "const": 0,
+      "default": 0,
+      "title": "Processes Spawned",
+      "type": "integer"
+    },
+    "production_ready": {
+      "const": false,
+      "default": false,
+      "title": "Production Ready",
+      "type": "boolean"
+    },
+    "provider_calls_performed": {
+      "const": 0,
+      "default": 0,
+      "title": "Provider Calls Performed",
+      "type": "integer"
+    },
+    "receipt_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Receipt Sha256",
+      "type": "string"
+    },
+    "remaining_capabilities": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Remaining Capabilities",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "aigc.regenexcalibur-autodesign-shadow-campaign.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "self_modification_performed": {
+      "const": false,
+      "default": false,
+      "title": "Self Modification Performed",
+      "type": "boolean"
+    },
+    "shadow_capabilities": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Shadow Capabilities",
+      "type": "array"
+    },
+    "shadow_only": {
+      "const": true,
+      "default": true,
+      "title": "Shadow Only",
+      "type": "boolean"
+    },
+    "state_transition_applied": {
+      "const": false,
+      "default": false,
+      "title": "State Transition Applied",
+      "type": "boolean"
+    },
+    "terminal_status": {
+      "enum": [
+        "PASS",
+        "BLOCKED"
+      ],
+      "title": "Terminal Status",
+      "type": "string"
+    },
+    "tool_dispatches_performed": {
+      "const": 0,
+      "default": 0,
+      "title": "Tool Dispatches Performed",
+      "type": "integer"
+    },
+    "zero_egress": {
+      "const": true,
+      "default": true,
+      "title": "Zero Egress",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema_version",
+    "campaign_id",
+    "initial_request_sha256",
+    "iteration_receipts",
+    "initial_capabilities",
+    "shadow_capabilities",
+    "newly_proposed_capabilities",
+    "remaining_capabilities",
+    "first_blocker",
+    "terminal_status",
+    "receipt_sha256"
+  ],
+  "title": "AutodesignCampaignReceipt",
+  "type": "object"
+}

@@ -114,8 +114,8 @@ def main() -> int:
     col3.metric("ToolBroker", snapshot["system"]["toolbroker"])
     col4.metric("External execution", snapshot["system"]["external_execution"])
 
-    tab_graph, tab_artifacts, tab_verifier, tab_governance, tab_memory, tab_evidence = st.tabs(
-        ["Run Graph", "Artifact Canvas", "Verifier", "Governance", "Memory", "Evidence"]
+    tab_graph, tab_artifacts, tab_verifier, tab_governance, tab_connectors, tab_memory, tab_evidence = st.tabs(
+        ["Run Graph", "Artifact Canvas", "Verifier", "Governance", "Connections", "Memory", "Evidence"]
     )
 
     with tab_graph:
@@ -159,6 +159,18 @@ def main() -> int:
         st.warning("These controls are presentation-only. They do not mint GovernanceDecisions or ExecutionPermits.")
         if result is not None:
             st.json([decision.model_dump(mode="json") for decision in result.decisions])
+
+    with tab_connectors:
+        st.subheader("Employment and AI connections")
+        st.warning(
+            "A connector status is capability evidence, not execution authority. "
+            "Gmail, Indeed, generic websites, and portable AI ports remain blocked or handoff-only."
+        )
+        st.dataframe(snapshot["connectors"]["records"], use_container_width=True)
+        st.metric(
+            "Enabled live mutation capabilities",
+            snapshot["connectors"]["enabled_live_mutation_capabilities"],
+        )
 
     with tab_memory:
         st.subheader("Memory / strategic context")
