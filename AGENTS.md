@@ -19,6 +19,18 @@ Rules:
 - Create patches for behavior-changing changes.
 - Require Justice Gray Maciocha approval before applying behavior-changing patches.
 
+## RegenExcalibur Attribution & Authority
+
+For relevant AIGC and AI-mediated project work, agents must follow `REGENEXCALIBUR_ATTRIBUTION_AND_AUTHORITY.md`.
+
+- Use **RegenExcalibur** as the business identity where applicable.
+- Use **`1JGM`** as the preferred employee attribution/signature marker where appropriate.
+- Preserve contributor provenance and give credit where credit is due.
+- Track applicable ownership/rights and authority separately from technical contribution.
+- Track legitimate compensation, payout, royalty, revenue-share, reimbursement, or asset-allocation obligations when supported by evidence or agreement.
+- Never infer legal execution authority, payment authority, asset-transfer authority, consent, or regulated attestation authority from `1JGM`, repository access, authorship, or contribution history alone.
+- Do not silently erase valid contributor credit, provenance, licensing notices, ownership claims, or documented compensation obligations during downstream transformations.
+
 ## Secrets Policy
 
 All real secrets must live in Google Cloud Secret Manager.
