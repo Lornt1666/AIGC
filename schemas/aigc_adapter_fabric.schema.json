@@ -1,0 +1,208 @@
+{
+  "$defs": {
+    "AdapterKind": {
+      "enum": [
+        "MODEL",
+        "COMPUTE",
+        "STORAGE",
+        "ORCHESTRATION",
+        "MODALITY",
+        "TOOL"
+      ],
+      "title": "AdapterKind",
+      "type": "string"
+    },
+    "AdapterManifest": {
+      "additionalProperties": false,
+      "description": "Provider-neutral capability declaration for one replaceable adapter.",
+      "properties": {
+        "adapter_id": {
+          "pattern": "^ADAPTER-[A-Z0-9_-]{4,96}$",
+          "title": "Adapter Id",
+          "type": "string"
+        },
+        "capabilities": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 128,
+          "minItems": 1,
+          "title": "Capabilities",
+          "type": "array"
+        },
+        "data_locality": {
+          "enum": [
+            "LOCAL_ONLY",
+            "LOCAL_OR_REMOTE",
+            "REMOTE_ONLY"
+          ],
+          "title": "Data Locality",
+          "type": "string"
+        },
+        "estimated_cost_units": {
+          "minimum": 0.0,
+          "title": "Estimated Cost Units",
+          "type": "number"
+        },
+        "estimated_latency_ms": {
+          "minimum": 0.0,
+          "title": "Estimated Latency Ms",
+          "type": "number"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "hardware_targets": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Hardware Targets",
+          "type": "array"
+        },
+        "health_score": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Health Score",
+          "type": "number"
+        },
+        "implementation_version": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Implementation Version",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/AdapterKind"
+        },
+        "open_standard": {
+          "title": "Open Standard",
+          "type": "boolean"
+        },
+        "portability_score": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Portability Score",
+          "type": "number"
+        },
+        "proprietary_dependency": {
+          "title": "Proprietary Dependency",
+          "type": "boolean"
+        },
+        "protocol": {
+          "maxLength": 120,
+          "minLength": 2,
+          "title": "Protocol",
+          "type": "string"
+        },
+        "quality_score": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Quality Score",
+          "type": "number"
+        },
+        "status": {
+          "$ref": "#/$defs/AdapterStatus",
+          "default": "HEALTHY"
+        },
+        "supported_effects": {
+          "items": {
+            "$ref": "#/$defs/EffectClass"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Supported Effects",
+          "type": "array"
+        }
+      },
+      "required": [
+        "adapter_id",
+        "kind",
+        "protocol",
+        "implementation_version",
+        "capabilities",
+        "supported_effects",
+        "data_locality",
+        "open_standard",
+        "proprietary_dependency",
+        "quality_score",
+        "portability_score",
+        "estimated_latency_ms",
+        "estimated_cost_units",
+        "health_score",
+        "evidence_refs"
+      ],
+      "title": "AdapterManifest",
+      "type": "object"
+    },
+    "AdapterStatus": {
+      "enum": [
+        "HEALTHY",
+        "DEGRADED",
+        "UNAVAILABLE",
+        "QUARANTINED"
+      ],
+      "title": "AdapterStatus",
+      "type": "string"
+    },
+    "EffectClass": {
+      "enum": [
+        "PURE",
+        "READ_LOCAL",
+        "READ_EXTERNAL",
+        "WRITE_REVERSIBLE",
+        "WRITE_COMPENSATABLE",
+        "WRITE_IRREVERSIBLE",
+        "FINANCIAL",
+        "COMMUNICATION",
+        "DEPLOYMENT",
+        "SECURITY_SENSITIVE"
+      ],
+      "title": "EffectClass",
+      "type": "string"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "adapters": {
+      "items": {
+        "$ref": "#/$defs/AdapterManifest"
+      },
+      "maxItems": 512,
+      "minItems": 1,
+      "title": "Adapters",
+      "type": "array"
+    },
+    "registry_id": {
+      "pattern": "^FABRIC-[A-Z0-9_-]{4,96}$",
+      "title": "Registry Id",
+      "type": "string"
+    },
+    "revision": {
+      "minimum": 1,
+      "title": "Revision",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "aigc.adapter-fabric.v1",
+      "default": "aigc.adapter-fabric.v1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "registry_id",
+    "revision",
+    "adapters"
+  ],
+  "title": "FabricRegistry",
+  "type": "object"
+}

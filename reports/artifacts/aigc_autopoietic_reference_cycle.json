@@ -1,0 +1,250 @@
+{
+  "candidate": {
+    "candidate_id": "ECO-CAND-513C85CC9998A2BD0CEB9FF4",
+    "deficit": {
+      "classification": "PORTABILITY",
+      "deficit_id": "DEFICIT-D774CDD2849D80196C8E02EF",
+      "observed": 0.5,
+      "rationale": "hardware or provider portability is below the target floor",
+      "severity": 0.375,
+      "target": 0.8
+    },
+    "digest": "bf9a0debb5cb00cf3a4370a1c49bc48a42bf98b682cbd731e996ada342732ec8",
+    "effect_class": "WRITE_REVERSIBLE",
+    "evidence_requirements": [
+      "x86_64 reference test",
+      "arm64 contract test",
+      "WASM compatibility contract",
+      "no proprietary provider requirement",
+      "rollback test"
+    ],
+    "exact_repository_revision": "2a9c039e41a7d9db8410120614cde044ca785e0f",
+    "idempotency_key": "766d485d6acfdd44168e1bb722d32655f36c33dd1135db9668c64f1c3aa3c71b",
+    "objective_id": "OBJ-AUTOPOIETIC-V1",
+    "objective_sha256": "f95bf6c9badc4b662691fa1f11be8fe6a9fc44588c9f89252119ca1f70984786",
+    "operations": [
+      {
+        "depends_on": [],
+        "effect_class": "WRITE_REVERSIBLE",
+        "kind": "BIND_ADAPTER",
+        "operation_id": "ECO-OP-PORTABILITY-BIND",
+        "reversible": true,
+        "rollback_supported": true,
+        "rollback_value": null,
+        "target": "compute.default",
+        "value": "local-cpu-reference"
+      },
+      {
+        "depends_on": [
+          "ECO-OP-PORTABILITY-BIND"
+        ],
+        "effect_class": "WRITE_REVERSIBLE",
+        "kind": "REGISTER_CAPABILITY",
+        "operation_id": "ECO-OP-PORTABILITY-CAPABILITY",
+        "reversible": true,
+        "rollback_supported": true,
+        "rollback_value": null,
+        "target": "capabilities",
+        "value": "CAP-SILICON-AGNOSTIC-REFERENCE-RUNTIME"
+      }
+    ],
+    "parent_state_sha256": "64d8f2e0ae74ebbb44ccbefc24cb11458df0762950d7a148239c5aebf374c16c",
+    "predicted_metric_impacts": [
+      {
+        "delta": 0.25,
+        "metric": "portability"
+      }
+    ],
+    "producer_id": "AGT-AUTOPOIETIC-SYNTHESIZER",
+    "resource_estimate": {
+      "compute_units": 8,
+      "operations": 2,
+      "output_bytes": 4096,
+      "peak_memory_mb": 64
+    },
+    "run_id": "ECO-RUN-REFERENCE-V1",
+    "template_id": "ECO-TEMPLATE-PORTABILITY-REFERENCE"
+  },
+  "deficits": [
+    {
+      "classification": "PORTABILITY",
+      "deficit_id": "DEFICIT-D774CDD2849D80196C8E02EF",
+      "observed": 0.5,
+      "rationale": "hardware or provider portability is below the target floor",
+      "severity": 0.375,
+      "target": 0.8
+    }
+  ],
+  "ecosystem_id": "AIGC-ECO-SOVEREIGN-V1",
+  "fabric_registry_id": "FABRIC-AIGC-SOVEREIGN-V1",
+  "fabric_registry_sha256": "74cc40c4b41f3f4cc32b1677d5834c69cb2f2bc9075a81f504210b990b6ee3ac",
+  "receipt": {
+    "approved_for_shadow": true,
+    "candidate_sha256": "bf9a0debb5cb00cf3a4370a1c49bc48a42bf98b682cbd731e996ada342732ec8",
+    "canonical_state_mutated": false,
+    "events": [
+      "SENSE:DEFICIT-D774CDD2849D80196C8E02EF",
+      "FORMULATE:ECO-TEMPLATE-PORTABILITY-REFERENCE",
+      "SYNTHESIZE:ECO-CAND-513C85CC9998A2BD0CEB9FF4",
+      "VERIFY:ECO-VERIFY-8497A3F34099A5EC8D557950",
+      "SHADOW_APPLIED:ECO-OP-PORTABILITY-BIND:BIND_ADAPTER:compute.default",
+      "SHADOW_APPLIED:ECO-OP-PORTABILITY-CAPABILITY:REGISTER_CAPABILITY:capabilities",
+      "EVALUATE:DELTA:0.038461538462",
+      "PROMOTE:LOCAL_SHADOW_ONLY"
+    ],
+    "exact_repository_revision": "2a9c039e41a7d9db8410120614cde044ca785e0f",
+    "executed_in_shadow": true,
+    "external_action_performed": false,
+    "filesystem_writes_performed": 0,
+    "logical_shadow_mutations": 2,
+    "network_calls_performed": 0,
+    "objective_sha256": "f95bf6c9badc4b662691fa1f11be8fe6a9fc44588c9f89252119ca1f70984786",
+    "operator_action_required": false,
+    "parent_state_sha256": "64d8f2e0ae74ebbb44ccbefc24cb11458df0762950d7a148239c5aebf374c16c",
+    "phase": "PROMOTED_SHADOW",
+    "previous_receipt_sha256": null,
+    "processes_spawned": 0,
+    "promoted_to_shadow": true,
+    "proposed": true,
+    "provider_calls_performed": 0,
+    "reason": "LOCAL_SHADOW_FITNESS_IMPROVED",
+    "receipt_id": "ECO-RCPT-734BEFA9CB0613E958D95B01",
+    "receipt_sha256": "14014c7575cc164af49bed5eef6895b0cf00200bad7d9c8bf543d6b1fb2c7dbe",
+    "resource_use": {
+      "compute_units": 8,
+      "operations": 2,
+      "output_bytes": 4096,
+      "peak_memory_mb": 64
+    },
+    "resulting_state_sha256": "70c20c36308d86ca1ebb8402c899932b6d71ac0bdcffad0d20968d24e50055fb",
+    "rolled_back": false,
+    "run_id": "ECO-RUN-REFERENCE-V1",
+    "schema_version": "aigc.autopoietic-cycle-receipt.v1",
+    "secrets_accessed": 0,
+    "telemetry_sha256": "e4a62e625467414c4fc49b89f1151de0964af61c5ed0715df2b5e747175aef97",
+    "terminal_status": "PASS",
+    "verification_sha256": "2009cff5888f2f9f5ae43cdfcda7a48f5cda86fe8f6f83f07cab7ed373cc338e",
+    "verified": true
+  },
+  "schema_version": "aigc.autopoietic-cli-result.v1",
+  "shadow_telemetry": {
+    "cost_units": 0.5,
+    "digest": "ea9e57c4e596ecb7ac218789d33c4714154589a7d38bb818a586bb861237e17a",
+    "drift": 0.02,
+    "error_rate": 0.01,
+    "evidence_refs": [
+      "local://telemetry/reference",
+      "shadow://autopoiesis/ECO-RUN-REFERENCE-V1"
+    ],
+    "latency_ms": 200.0,
+    "observed_epoch": 2,
+    "portability": 0.75,
+    "quality": 0.9,
+    "security_findings": 0,
+    "source": "SYNTHETIC_SHADOW",
+    "source_revision": "ECO-RUN-REFERENCE-V1",
+    "state_sha256": "70c20c36308d86ca1ebb8402c899932b6d71ac0bdcffad0d20968d24e50055fb",
+    "telemetry_id": "TELEM-3FD732086442EB63AA0A79BE",
+    "throughput": 1.2
+  },
+  "state": {
+    "adapter_bindings": {
+      "compute.default": "local-cpu-reference"
+    },
+    "artifacts": {
+      "runtime.mode": "local-shadow"
+    },
+    "canonical_state": false,
+    "capabilities": [
+      "CAP-SILICON-AGNOSTIC-REFERENCE-RUNTIME"
+    ],
+    "digest": "70c20c36308d86ca1ebb8402c899932b6d71ac0bdcffad0d20968d24e50055fb",
+    "emergency_stop_active": false,
+    "exact_repository_revision": "2a9c039e41a7d9db8410120614cde044ca785e0f",
+    "revision": 1,
+    "shadow_only": true,
+    "state_id": "ECO-STATE-REFERENCE-V1"
+  },
+  "verification": {
+    "approved_for_local_shadow": true,
+    "candidate_id": "ECO-CAND-513C85CC9998A2BD0CEB9FF4",
+    "candidate_sha256": "bf9a0debb5cb00cf3a4370a1c49bc48a42bf98b682cbd731e996ada342732ec8",
+    "digest": "2009cff5888f2f9f5ae43cdfcda7a48f5cda86fe8f6f83f07cab7ed373cc338e",
+    "first_blocker": null,
+    "fitness_before": 0.850769230769,
+    "gates": [
+      {
+        "detail": "candidate, objective, and state bind the same exact repository revision",
+        "evidence_sha256": "5d21188bc6f369270cef01b216bc84d98a5cca40efc4717a13361e46221b5fba",
+        "gate_id": "GATE-EXACT-REVISION",
+        "result": "PASS"
+      },
+      {
+        "detail": "candidate is bound to the exact current state digest",
+        "evidence_sha256": "4871d3571e8a8895384c64e029732d86b3f75d4571b130c560d503ab3a9e03d0",
+        "gate_id": "GATE-PARENT-STATE",
+        "result": "PASS"
+      },
+      {
+        "detail": "verifier lineage differs from producer lineage",
+        "evidence_sha256": "3a3a3a9bf3afb6e92b24a507df0c06b2d5ed54a64a6a4ef5cdc97fbdf04dacdc",
+        "gate_id": "GATE-INDEPENDENT-VERIFIER",
+        "result": "PASS"
+      },
+      {
+        "detail": "candidate effect does not exceed the sealed objective ceiling",
+        "evidence_sha256": "e667bf32129912693fa6b63c7d00ae6325c818fb76df4c015643bd876eb81810",
+        "gate_id": "GATE-EFFECT-CEILING",
+        "result": "PASS"
+      },
+      {
+        "detail": "effect is permitted for autonomous local shadow execution",
+        "evidence_sha256": "c26bda70dc6a90d6e7f0a92d23b46d36be53d6114b105be16f5f6198d831530d",
+        "gate_id": "GATE-POLICY-EFFECT",
+        "result": "PASS"
+      },
+      {
+        "detail": "candidate resource estimate remains within all sealed ceilings",
+        "evidence_sha256": "4c3de95265313fdb68c09fa20e9a9205c4849678b5d6425cddab2d3f96c85ef4",
+        "gate_id": "GATE-BUDGET",
+        "result": "PASS"
+      },
+      {
+        "detail": "every reversible mutation has an explicit rollback path",
+        "evidence_sha256": "36ef16926b65951e855a1e13e1ae76cbd41e9e81f15f6acb701dabb727007adc",
+        "gate_id": "GATE-ROLLBACK",
+        "result": "PASS"
+      },
+      {
+        "detail": "candidate contains no raw secret-shaped material",
+        "evidence_sha256": "e5e3967246426d503d1d6fd22a4407637129c0ac7756cd356355e9107317d7b6",
+        "gate_id": "GATE-SECRETS",
+        "result": "PASS"
+      },
+      {
+        "detail": "autopoietic local shadow execution has no network egress",
+        "evidence_sha256": "42982ed43515d964fc1bfad45fd34dd471cbd722ed64aed57c2353c8ae1c0f66",
+        "gate_id": "GATE-NO-EGRESS",
+        "result": "PASS"
+      },
+      {
+        "detail": "predicted local shadow fitness meets the minimum improvement delta",
+        "evidence_sha256": "9128a50486742b08cd6a57c3db64ee273320b9a808366dfe30946a3db109e239",
+        "gate_id": "GATE-FITNESS",
+        "result": "PASS"
+      },
+      {
+        "detail": "candidate and objective both define evidence and acceptance obligations",
+        "evidence_sha256": "f831e6e5ea88db6797e9371de8370d5dfef4db11c6e6c9838b3c87f0d86d9e67",
+        "gate_id": "GATE-EVIDENCE-CONTRACT",
+        "result": "PASS"
+      }
+    ],
+    "independent": true,
+    "parent_state_sha256": "64d8f2e0ae74ebbb44ccbefc24cb11458df0762950d7a148239c5aebf374c16c",
+    "predicted_fitness_after": 0.889230769231,
+    "producer_id": "AGT-AUTOPOIETIC-SYNTHESIZER",
+    "report_id": "ECO-VERIFY-8497A3F34099A5EC8D557950",
+    "verifier_id": "AGT-OMEGA-INDEPENDENT-VERIFIER"
+  }
+}

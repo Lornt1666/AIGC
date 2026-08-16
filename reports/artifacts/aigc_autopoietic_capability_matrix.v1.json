@@ -1,0 +1,156 @@
+{
+  "schema_version": "aigc.autopoietic-capability-matrix.v1",
+  "exact_parent_revision": "2a9c039e41a7d9db8410120614cde044ca785e0f",
+  "assessment_scope": "AIGC autopoietic sovereign ecosystem V1 slice only",
+  "capabilities": [
+    {
+      "capability_id": "CAP-AUTOPOIETIC-CONSTITUTION",
+      "name": "Non-self-amendable effect and authority policy",
+      "state": "IMPLEMENTED_LOCAL",
+      "evidence": ["src/autopoiesis/contracts.py", "tests/test_autopoietic_ecosystem.py"],
+      "limitations": ["No distributed policy service", "No cryptographic operator signatures"]
+    },
+    {
+      "capability_id": "CAP-AUTOPOIETIC-OBJECTIVE",
+      "name": "Sealed exact-revision objective contracts",
+      "state": "IMPLEMENTED_LOCAL",
+      "evidence": ["src/autopoiesis/contracts.py", "config/aigc_autopoietic_local_cycle.example.json"],
+      "limitations": ["Canonical objective registry not connected"]
+    },
+    {
+      "capability_id": "CAP-AUTOPOIETIC-TELEMETRY",
+      "name": "Typed quality, throughput, latency, reliability, drift, cost, security and portability telemetry",
+      "state": "IMPLEMENTED_LOCAL",
+      "evidence": ["src/autopoiesis/contracts.py", "src/autopoiesis/kernel.py"],
+      "limitations": ["Authenticated distributed telemetry adapters not implemented"]
+    },
+    {
+      "capability_id": "CAP-AUTOPOIETIC-DEFICIT-ENGINE",
+      "name": "Deterministic fitness and deficit formulation",
+      "state": "IMPLEMENTED_AND_TESTED_LOCAL",
+      "evidence": ["src/autopoiesis/kernel.py", "reports/artifacts/aigc_autopoietic_verification_receipt.json"],
+      "limitations": ["Fitness functions remain policy-defined approximations"]
+    },
+    {
+      "capability_id": "CAP-AUTOPOIETIC-SYNTHESIS",
+      "name": "Deterministic candidate synthesis from typed templates",
+      "state": "IMPLEMENTED_AND_TESTED_LOCAL",
+      "evidence": ["config/aigc_autopoietic_ecosystem.v1.json", "src/autopoiesis/kernel.py"],
+      "limitations": ["No free-form model-generated code synthesis in this slice"]
+    },
+    {
+      "capability_id": "CAP-AUTOPOIETIC-VERIFICATION",
+      "name": "Independent hard-gate verifier",
+      "state": "IMPLEMENTED_AND_TESTED_LOCAL",
+      "evidence": ["src/autopoiesis/kernel.py", "tests/test_autopoietic_ecosystem.py"],
+      "limitations": ["Independent verifier is a separate identity and function, not a physically isolated service"]
+    },
+    {
+      "capability_id": "CAP-AUTOPOIETIC-SHADOW-RUNTIME",
+      "name": "Reversible idempotent local shadow execution",
+      "state": "IMPLEMENTED_AND_TESTED_LOCAL",
+      "evidence": ["src/autopoiesis/kernel.py", "reports/artifacts/aigc_autopoietic_reference_cycle.json"],
+      "limitations": ["In-memory only", "No OS-level container or WASM isolation"]
+    },
+    {
+      "capability_id": "CAP-AUTOPOIETIC-ROLLBACK",
+      "name": "Regression rollback semantics",
+      "state": "IMPLEMENTED_LOCAL",
+      "evidence": ["src/autopoiesis/contracts.py", "src/autopoiesis/kernel.py"],
+      "limitations": ["External compensating actions are not implemented"]
+    },
+    {
+      "capability_id": "CAP-AUTOPOIETIC-RECEIPTS",
+      "name": "Canonical SHA-256 receipts and predecessor chain",
+      "state": "IMPLEMENTED_AND_TESTED_LOCAL",
+      "evidence": ["schemas/aigc_autopoietic_cycle_receipt.schema.json", "src/autopoiesis/contracts.py"],
+      "limitations": ["Receipts are hashed but not yet digitally signed"]
+    },
+    {
+      "capability_id": "CAP-AUTOPOIETIC-KILL-SWITCH",
+      "name": "Emergency stop before planning or execution",
+      "state": "IMPLEMENTED_AND_TESTED_LOCAL",
+      "evidence": ["src/autopoiesis/kernel.py", "reports/artifacts/aigc_autopoietic_local_validation.json"],
+      "limitations": ["Distributed propagation not implemented"]
+    },
+    {
+      "capability_id": "CAP-AUTOPOIETIC-FABRIC-ROUTER",
+      "name": "Deterministic provider-neutral adapter routing",
+      "state": "IMPLEMENTED_AND_TESTED_LOCAL",
+      "evidence": ["src/autopoiesis/fabric.py", "config/aigc_adapter_fabric.v1.json"],
+      "limitations": ["Reference manifests are not production adapter certifications"]
+    },
+    {
+      "capability_id": "CAP-AUTOPOIETIC-MODEL-FABRIC",
+      "name": "Replaceable local and remote model protocols",
+      "state": "ARCHITECTED_NOT_RUNTIME_INTEGRATED",
+      "evidence": ["config/aigc_autopoietic_ecosystem.v1.json", "docs/architecture/AIGC_AUTOPOIETIC_SOVEREIGN_ECOSYSTEM_V1.md"],
+      "limitations": ["No model invocation performed", "No benchmark-based adapter certification"]
+    },
+    {
+      "capability_id": "CAP-AUTOPOIETIC-MULTIMODAL-FABRIC",
+      "name": "Text, audio, image, video, 3D, tactile and code artifact alignment",
+      "state": "ARCHITECTED_NOT_IMPLEMENTED_BY_SLICE",
+      "evidence": ["docs/architecture/AIGC_AUTOPOIETIC_SOVEREIGN_ECOSYSTEM_V1.md"],
+      "limitations": ["Modality engines and cross-modal validators remain future slices"]
+    },
+    {
+      "capability_id": "CAP-AUTOPOIETIC-COMPUTE-FABRIC",
+      "name": "CPU, GPU, NPU, TPU, WebGPU and WASM abstraction",
+      "state": "ARCHITECTED_REFERENCE_MANIFEST_ONLY",
+      "evidence": ["config/aigc_autopoietic_ecosystem.v1.json", "config/aigc_adapter_fabric.v1.json"],
+      "limitations": ["No heterogeneous distributed scheduler or hardware benchmark receipt"]
+    },
+    {
+      "capability_id": "CAP-AUTOPOIETIC-DATA-ENGINE",
+      "name": "Sovereign open-format data and synthetic-data governance",
+      "state": "ARCHITECTED_NOT_IMPLEMENTED_BY_SLICE",
+      "evidence": ["docs/architecture/AIGC_AUTOPOIETIC_SOVEREIGN_ECOSYSTEM_V1.md"],
+      "limitations": ["No corpus generator, contamination scanner or durable content-addressed store"]
+    },
+    {
+      "capability_id": "CAP-AUTOPOIETIC-DURABLE-STATE",
+      "name": "Transactional persistent state, lease and idempotency storage",
+      "state": "NOT_IMPLEMENTED_BY_SLICE",
+      "evidence": [],
+      "limitations": ["Current reference state and receipt ledger are in memory"]
+    },
+    {
+      "capability_id": "CAP-AUTOPOIETIC-LIVE-HOT-SWAP",
+      "name": "Zero-downtime service or model hot swapping",
+      "state": "NOT_PERFORMED",
+      "evidence": [],
+      "limitations": ["Only logical local shadow promotion is implemented"]
+    },
+    {
+      "capability_id": "CAP-AUTOPOIETIC-OPERATOR-CONSOLE",
+      "name": "Cross-platform approvals, health, receipts and rollback interface",
+      "state": "ARCHITECTED_NOT_IMPLEMENTED_BY_SLICE",
+      "evidence": ["docs/architecture/AIGC_AUTOPOIETIC_SOVEREIGN_ECOSYSTEM_V1.md"],
+      "limitations": ["No web, mobile or desktop UI in this slice"]
+    },
+    {
+      "capability_id": "CAP-AUTOPOIETIC-DEPLOYMENT",
+      "name": "No-traffic staging and governed production deployment",
+      "state": "BLOCKED_NOT_AUTHORIZED_NOT_PERFORMED",
+      "evidence": ["reports/artifacts/aigc_autopoietic_local_validation.json"],
+      "limitations": ["No cloud mutation", "No public traffic", "No production receipt"]
+    },
+    {
+      "capability_id": "CAP-AUTOPOIETIC-SELF-HOSTING",
+      "name": "Ecosystem capable of rebuilding every dependency from its own verified sources",
+      "state": "NOT_PROVEN",
+      "evidence": [],
+      "limitations": ["Python runtime and third-party dependencies remain external bootstrap components"]
+    }
+  ],
+  "summary": {
+    "implemented_or_tested_local": 11,
+    "architected_or_reference_only": 6,
+    "not_implemented_or_not_performed": 3,
+    "external_action_performed": false,
+    "canonical_state_mutated": false,
+    "deployment_performed": false,
+    "production_ready": false
+  }
+}

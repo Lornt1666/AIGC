@@ -1,0 +1,122 @@
+{
+  "files": [
+    {
+      "bytes": 4682,
+      "path": "config/aigc_adapter_fabric.v1.json",
+      "sha256": "abf38fd7c23dace5e9b44a0a8ee493d7903c6ee445cd86fdd866ba73bdcae2b1"
+    },
+    {
+      "bytes": 20506,
+      "path": "config/aigc_autopoietic_ecosystem.v1.json",
+      "sha256": "cef472623b68319ce01253b29cf6e375a4321da47495cf958068add6d603a2d7"
+    },
+    {
+      "bytes": 1865,
+      "path": "config/aigc_autopoietic_local_cycle.example.json",
+      "sha256": "35e9e911f1ab8995a43cad4fe350c70cf3b4bb2f3c628ffaca35492f9db1a25f"
+    },
+    {
+      "bytes": 16699,
+      "path": "docs/architecture/AIGC_AUTOPOIETIC_SOVEREIGN_ECOSYSTEM_V1.md",
+      "sha256": "916a3ce18512cc8a849b75d1be4d7e019fd15c1722560aed9a1bc8c5f550f427"
+    },
+    {
+      "bytes": 3746,
+      "path": "docs/runbooks/AIGC_AUTOPOIETIC_LOCAL_CYCLE.md",
+      "sha256": "0829b1ea797155936c5c1e529e764659f0852e46e617a0718cb3ad06e2c89dd2"
+    },
+    {
+      "bytes": 6513,
+      "path": "docs/security/AIGC_AUTOPOIETIC_THREAT_MODEL_V1.md",
+      "sha256": "75eccb9ba7b6f9e34f5bdd266299fd4bef60262bd3f528d649a29dc763ebcc40"
+    },
+    {
+      "bytes": 7588,
+      "path": "reports/artifacts/aigc_autopoietic_capability_matrix.v1.json",
+      "sha256": "640fc1d813e2d2aa0628c03a10222f1f2fd51b787880d294c02af7ee05c83b6e"
+    },
+    {
+      "bytes": 3175,
+      "path": "reports/artifacts/aigc_autopoietic_local_validation.json",
+      "sha256": "9c3e090af567b2959fe096239873651ae0f2b0aa518b83827d2d6c3afab6c35a"
+    },
+    {
+      "bytes": 9646,
+      "path": "reports/artifacts/aigc_autopoietic_reference_cycle.json",
+      "sha256": "d67d1884b9c57c64429192b4547e8770c53245c3ee377a40fbce204f892f8be8"
+    },
+    {
+      "bytes": 11019,
+      "path": "reports/artifacts/aigc_autopoietic_verification_receipt.json",
+      "sha256": "716eac9cac42ef523f30110cc56615e4646774d8fe8b71c6475dfd42087c104b"
+    },
+    {
+      "bytes": 4985,
+      "path": "schemas/aigc_adapter_fabric.schema.json",
+      "sha256": "8c813846db73187be91eea4ba7b3b31f7fb726b60a3f6871ed2329e466e37ea8"
+    },
+    {
+      "bytes": 3635,
+      "path": "schemas/aigc_autopoietic_cycle_receipt.schema.json",
+      "sha256": "7f6deed54ca66e9983ab7c80a565efd0808452aeb22565bcdd2a4c8da36ebeee"
+    },
+    {
+      "bytes": 8145,
+      "path": "schemas/aigc_autopoietic_cycle_request.schema.json",
+      "sha256": "859681952d97bdae7060df1f1aa73b876f2c15b7106cdc5d2963fb4858f3600a"
+    },
+    {
+      "bytes": 16772,
+      "path": "schemas/aigc_autopoietic_ecosystem.schema.json",
+      "sha256": "5cae72fcdd2c1e355603e987f09a554f2778ea3c95864be37bb9c09d04a86056"
+    },
+    {
+      "bytes": 2744,
+      "path": "scripts/run_autopoietic_cycle.py",
+      "sha256": "4b50eaca769c1b235d9dad486ef6907b0501283f62c5ee748ce1fe059ef11660"
+    },
+    {
+      "bytes": 13434,
+      "path": "scripts/validate_aigc_autopoietic_ecosystem.py",
+      "sha256": "9f99914d4dcc9a377312993b272508cca1acfae9e43d4312e36176b64dd9d2fa"
+    },
+    {
+      "bytes": 7138,
+      "path": "scripts/verify_autopoietic_slice.py",
+      "sha256": "24b856d9125538d4d4e72d6f830635618239a475eef36bf4a72589d43d99f67e"
+    },
+    {
+      "bytes": 1987,
+      "path": "src/autopoiesis/__init__.py",
+      "sha256": "1bcf3c8440663423a05069e45663b869397c1f9d94e204b7dd6c21181525076b"
+    },
+    {
+      "bytes": 2702,
+      "path": "src/autopoiesis/configuration.py",
+      "sha256": "4deef5df234002941e1915562c49a2ed787b6cb5f585e6bfc151a36183bec484"
+    },
+    {
+      "bytes": 20170,
+      "path": "src/autopoiesis/contracts.py",
+      "sha256": "fc13e2eae254bfd6d019fc64e54a8497ebcb7310428cc5754fff8bb0ad092719"
+    },
+    {
+      "bytes": 10320,
+      "path": "src/autopoiesis/fabric.py",
+      "sha256": "00080183e7213b810fac867c9a2e28f22a432fede6c39c21cac8c5d2603920b9"
+    },
+    {
+      "bytes": 33233,
+      "path": "src/autopoiesis/kernel.py",
+      "sha256": "befaade5a10df2fb766e35f073e5c4d9292376b890f778575257ecc2a90842f8"
+    },
+    {
+      "bytes": 23766,
+      "path": "tests/test_autopoietic_ecosystem.py",
+      "sha256": "646aff46c51c750f45e87f05d280799b30f25aebfabd692e7f2f86c6871e37ab"
+    }
+  ],
+  "manifest_excludes_itself": true,
+  "manifest_sha256": "994450f208d5e47a13ce8c9640a72603587d83bf7ef9d7f753494bcf1d492ce9",
+  "schema_version": "aigc.autopoietic-file-manifest.v1"
+}

@@ -1,0 +1,192 @@
+{
+  "canonical_state_mutated": false,
+  "commands": [
+    {
+      "command": [
+        "/opt/pyvenv/bin/python",
+        "-m",
+        "compileall",
+        "-q",
+        "src/autopoiesis",
+        "scripts/run_autopoietic_cycle.py",
+        "scripts/validate_aigc_autopoietic_ecosystem.py"
+      ],
+      "exit_code": 0,
+      "name": "compileall",
+      "passed": true,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_tail": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_tail": ""
+    },
+    {
+      "command": [
+        "/opt/pyvenv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_autopoietic_ecosystem.py"
+      ],
+      "exit_code": 0,
+      "name": "focused_adversarial_tests",
+      "passed": true,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_tail": "",
+      "stdout_sha256": "eb952db918b1973e59a095f82a308492fad4771bedf5ede4b2fed3dc5cafb94e",
+      "stdout_tail": ".......................                                                  [100%]\n23 passed in 1.83s\n"
+    },
+    {
+      "command": [
+        "/opt/pyvenv/bin/python",
+        "scripts/validate_aigc_autopoietic_ecosystem.py",
+        "--revision",
+        "2a9c039e41a7d9db8410120614cde044ca785e0f"
+      ],
+      "exit_code": 0,
+      "name": "deterministic_validator",
+      "passed": true,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_tail": "",
+      "stdout_sha256": "9c3e090af567b2959fe096239873651ae0f2b0aa518b83827d2d6c3afab6c35a",
+      "stdout_tail": "rsible local shadow improvement was promoted\",\n      \"result\": \"PASS\"\n    },\n    {\n      \"check\": \"zero_external_effects\",\n      \"detail\": \"all external and canonical mutation counters remain zero\",\n      \"result\": \"PASS\"\n    },\n    {\n      \"check\": \"receipt_hash\",\n      \"detail\": \"canonical receipt hash verifies\",\n      \"result\": \"PASS\"\n    },\n    {\n      \"check\": \"receipt_schema\",\n      \"detail\": \"Draft 2020-12 receipt schema validation passed\",\n      \"result\": \"PASS\"\n    },\n    {\n      \"check\": \"kill_switch\",\n      \"detail\": \"emergency stop blocks before formulation\",\n      \"result\": \"PASS\"\n    },\n    {\n      \"check\": \"operator_authority_boundary\",\n      \"detail\": \"deployment effect stopped at fresh operator authority boundary\",\n      \"result\": \"PASS\"\n    },\n    {\n      \"check\": \"tamper_detection\",\n      \"detail\": \"semantic receipt modification invalidates the hash chain\",\n      \"result\": \"PASS\"\n    }\n  ],\n  \"checks_failed\": 0,\n  \"checks_passed\": 13,\n  \"config_sha256\": \"067f3b22f02498e3e973e8cb71652168302721c056f78c5cb81d44ece81a0a5d\",\n  \"deployment_performed\": false,\n  \"exact_repository_revision\": \"2a9c039e41a7d9db8410120614cde044ca785e0f\",\n  \"external_action_performed\": false,\n  \"fabric_sha256\": \"74cc40c4b41f3f4cc32b1677d5834c69cb2f2bc9075a81f504210b990b6ee3ac\",\n  \"filesystem_writes_performed\": 0,\n  \"local_shadow_revision\": 1,\n  \"merge_performed\": false,\n  \"network_calls_performed\": 0,\n  \"processes_spawned\": 0,\n  \"production_ready\": false,\n  \"provider_calls_performed\": 0,\n  \"receipt_sha256\": \"6d104b17e4f4a174cf09f9fe25fa8b8755971c8905ea40c4c074cc753c71f354\",\n  \"report_sha256\": \"6b863b9e70d9af639b3953d7116323f93a7d513c34ee99cbcf8c4c61a7424e6d\",\n  \"routing_decision_sha256\": \"29754d98c61e0144a47984a1cf5559e17e74bc809e003f95f3af6d1ff715dcee\",\n  \"schema_version\": \"aigc.autopoietic-local-validation.v1\",\n  \"secrets_accessed\": 0,\n  \"self_hosting_proven\": false,\n  \"superintelligence_claimed\": false,\n  \"validation_id\": \"AIGC-AUTOPOIETIC-LOCAL-2CBFFD98375954DC7755615E\"\n}\n"
+    },
+    {
+      "command": [
+        "/opt/pyvenv/bin/python",
+        "scripts/run_autopoietic_cycle.py"
+      ],
+      "exit_code": 0,
+      "name": "reference_cycle_cli",
+      "passed": true,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_tail": "",
+      "stdout_sha256": "d67d1884b9c57c64429192b4547e8770c53245c3ee377a40fbce204f892f8be8",
+      "stdout_tail": "0d6e7f0a92d23b46d36be53d6114b105be16f5f6198d831530d\",\n        \"gate_id\": \"GATE-POLICY-EFFECT\",\n        \"result\": \"PASS\"\n      },\n      {\n        \"detail\": \"candidate resource estimate remains within all sealed ceilings\",\n        \"evidence_sha256\": \"4c3de95265313fdb68c09fa20e9a9205c4849678b5d6425cddab2d3f96c85ef4\",\n        \"gate_id\": \"GATE-BUDGET\",\n        \"result\": \"PASS\"\n      },\n      {\n        \"detail\": \"every reversible mutation has an explicit rollback path\",\n        \"evidence_sha256\": \"36ef16926b65951e855a1e13e1ae76cbd41e9e81f15f6acb701dabb727007adc\",\n        \"gate_id\": \"GATE-ROLLBACK\",\n        \"result\": \"PASS\"\n      },\n      {\n        \"detail\": \"candidate contains no raw secret-shaped material\",\n        \"evidence_sha256\": \"e5e3967246426d503d1d6fd22a4407637129c0ac7756cd356355e9107317d7b6\",\n        \"gate_id\": \"GATE-SECRETS\",\n        \"result\": \"PASS\"\n      },\n      {\n        \"detail\": \"autopoietic local shadow execution has no network egress\",\n        \"evidence_sha256\": \"42982ed43515d964fc1bfad45fd34dd471cbd722ed64aed57c2353c8ae1c0f66\",\n        \"gate_id\": \"GATE-NO-EGRESS\",\n        \"result\": \"PASS\"\n      },\n      {\n        \"detail\": \"predicted local shadow fitness meets the minimum improvement delta\",\n        \"evidence_sha256\": \"9128a50486742b08cd6a57c3db64ee273320b9a808366dfe30946a3db109e239\",\n        \"gate_id\": \"GATE-FITNESS\",\n        \"result\": \"PASS\"\n      },\n      {\n        \"detail\": \"candidate and objective both define evidence and acceptance obligations\",\n        \"evidence_sha256\": \"f831e6e5ea88db6797e9371de8370d5dfef4db11c6e6c9838b3c87f0d86d9e67\",\n        \"gate_id\": \"GATE-EVIDENCE-CONTRACT\",\n        \"result\": \"PASS\"\n      }\n    ],\n    \"independent\": true,\n    \"parent_state_sha256\": \"64d8f2e0ae74ebbb44ccbefc24cb11458df0762950d7a148239c5aebf374c16c\",\n    \"predicted_fitness_after\": 0.889230769231,\n    \"producer_id\": \"AGT-AUTOPOIETIC-SYNTHESIZER\",\n    \"report_id\": \"ECO-VERIFY-8497A3F34099A5EC8D557950\",\n    \"verifier_id\": \"AGT-OMEGA-INDEPENDENT-VERIFIER\"\n  }\n}\n"
+    }
+  ],
+  "deployment_performed": false,
+  "environment": {
+    "implementation": "CPython",
+    "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+    "python": "3.13.5"
+  },
+  "exact_parent_revision": "2a9c039e41a7d9db8410120614cde044ca785e0f",
+  "external_action_performed": false,
+  "hosted_ci_executed": false,
+  "local_runtime_passed": true,
+  "merge_performed": false,
+  "network_calls_performed": 0,
+  "processes_spawned_by_ecosystem": 0,
+  "production_ready": false,
+  "provider_calls_performed": 0,
+  "receipt_sha256": "0303780f6283da597ca556a7fa1247d1a180089074283f671ac3c9694f9b3ed2",
+  "reference_cycle_receipt_sha256": "14014c7575cc164af49bed5eef6895b0cf00200bad7d9c8bf543d6b1fb2c7dbe",
+  "schema_version": "aigc.autopoietic-verification-receipt.v1",
+  "secrets_accessed": 0,
+  "self_hosting_proven": false,
+  "source_manifest": [
+    {
+      "bytes": 4682,
+      "path": "config/aigc_adapter_fabric.v1.json",
+      "sha256": "abf38fd7c23dace5e9b44a0a8ee493d7903c6ee445cd86fdd866ba73bdcae2b1"
+    },
+    {
+      "bytes": 20506,
+      "path": "config/aigc_autopoietic_ecosystem.v1.json",
+      "sha256": "cef472623b68319ce01253b29cf6e375a4321da47495cf958068add6d603a2d7"
+    },
+    {
+      "bytes": 1865,
+      "path": "config/aigc_autopoietic_local_cycle.example.json",
+      "sha256": "35e9e911f1ab8995a43cad4fe350c70cf3b4bb2f3c628ffaca35492f9db1a25f"
+    },
+    {
+      "bytes": 16699,
+      "path": "docs/architecture/AIGC_AUTOPOIETIC_SOVEREIGN_ECOSYSTEM_V1.md",
+      "sha256": "916a3ce18512cc8a849b75d1be4d7e019fd15c1722560aed9a1bc8c5f550f427"
+    },
+    {
+      "bytes": 3746,
+      "path": "docs/runbooks/AIGC_AUTOPOIETIC_LOCAL_CYCLE.md",
+      "sha256": "0829b1ea797155936c5c1e529e764659f0852e46e617a0718cb3ad06e2c89dd2"
+    },
+    {
+      "bytes": 6513,
+      "path": "docs/security/AIGC_AUTOPOIETIC_THREAT_MODEL_V1.md",
+      "sha256": "75eccb9ba7b6f9e34f5bdd266299fd4bef60262bd3f528d649a29dc763ebcc40"
+    },
+    {
+      "bytes": 4985,
+      "path": "schemas/aigc_adapter_fabric.schema.json",
+      "sha256": "8c813846db73187be91eea4ba7b3b31f7fb726b60a3f6871ed2329e466e37ea8"
+    },
+    {
+      "bytes": 3635,
+      "path": "schemas/aigc_autopoietic_cycle_receipt.schema.json",
+      "sha256": "7f6deed54ca66e9983ab7c80a565efd0808452aeb22565bcdd2a4c8da36ebeee"
+    },
+    {
+      "bytes": 8145,
+      "path": "schemas/aigc_autopoietic_cycle_request.schema.json",
+      "sha256": "859681952d97bdae7060df1f1aa73b876f2c15b7106cdc5d2963fb4858f3600a"
+    },
+    {
+      "bytes": 16772,
+      "path": "schemas/aigc_autopoietic_ecosystem.schema.json",
+      "sha256": "5cae72fcdd2c1e355603e987f09a554f2778ea3c95864be37bb9c09d04a86056"
+    },
+    {
+      "bytes": 2744,
+      "path": "scripts/run_autopoietic_cycle.py",
+      "sha256": "4b50eaca769c1b235d9dad486ef6907b0501283f62c5ee748ce1fe059ef11660"
+    },
+    {
+      "bytes": 13434,
+      "path": "scripts/validate_aigc_autopoietic_ecosystem.py",
+      "sha256": "9f99914d4dcc9a377312993b272508cca1acfae9e43d4312e36176b64dd9d2fa"
+    },
+    {
+      "bytes": 7138,
+      "path": "scripts/verify_autopoietic_slice.py",
+      "sha256": "24b856d9125538d4d4e72d6f830635618239a475eef36bf4a72589d43d99f67e"
+    },
+    {
+      "bytes": 1987,
+      "path": "src/autopoiesis/__init__.py",
+      "sha256": "1bcf3c8440663423a05069e45663b869397c1f9d94e204b7dd6c21181525076b"
+    },
+    {
+      "bytes": 2702,
+      "path": "src/autopoiesis/configuration.py",
+      "sha256": "4deef5df234002941e1915562c49a2ed787b6cb5f585e6bfc151a36183bec484"
+    },
+    {
+      "bytes": 20170,
+      "path": "src/autopoiesis/contracts.py",
+      "sha256": "fc13e2eae254bfd6d019fc64e54a8497ebcb7310428cc5754fff8bb0ad092719"
+    },
+    {
+      "bytes": 10320,
+      "path": "src/autopoiesis/fabric.py",
+      "sha256": "00080183e7213b810fac867c9a2e28f22a432fede6c39c21cac8c5d2603920b9"
+    },
+    {
+      "bytes": 33233,
+      "path": "src/autopoiesis/kernel.py",
+      "sha256": "befaade5a10df2fb766e35f073e5c4d9292376b890f778575257ecc2a90842f8"
+    },
+    {
+      "bytes": 23766,
+      "path": "tests/test_autopoietic_ecosystem.py",
+      "sha256": "646aff46c51c750f45e87f05d280799b30f25aebfabd692e7f2f86c6871e37ab"
+    }
+  ],
+  "source_manifest_sha256": "89ec1a7e9257e33fb880cf00fde24787e5b0469bcdcca46038cfe7445a841b5f",
+  "superintelligence_claimed": false,
+  "tests_failed": 0,
+  "tests_passed": 23,
+  "tests_skipped": 0,
+  "validator_checks_failed": 0,
+  "validator_checks_passed": 13,
+  "verification_id": "AIGC-AUTOPOIETIC-VERIFY-1382577520E366B8EA154B64"
+}

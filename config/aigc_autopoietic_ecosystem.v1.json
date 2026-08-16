@@ -1,0 +1,531 @@
+{
+  "schema_version": "aigc.autopoietic-ecosystem.v1",
+  "ecosystem_id": "AIGC-ECO-SOVEREIGN-V1",
+  "owner": "Justice Gray Maciocha",
+  "operating_mode": "FINITE_EVIDENCE_GATED_LOCAL_AUTOPOIESIS",
+  "invariants": [
+    "Independence means portability across models, providers, hardware, storage, and orchestration substrates; it never means independence from operator authority, law, consent, or evidence.",
+    "Capability may evolve autonomously inside a bounded local shadow; authority may not self-expand.",
+    "Reasoning, verification, authority, execution, evidence, and canonical state are distinct planes.",
+    "Every cycle terminates, has a sealed budget, and emits a canonical hash-chained receipt.",
+    "No raw secrets, ambient credentials, network egress, provider calls, process spawning, filesystem writes, merge, deployment, publication, communication, or financial action occur in the local autopoietic kernel.",
+    "Only independently verified reversible local shadow changes may be promoted automatically.",
+    "External, irreversible, security-sensitive, communication, deployment, and financial effects require fresh human authority and a separate effect adapter.",
+    "Synthetic data and critic feedback are hypotheses until independently corroborated against non-self-generated evidence.",
+    "A failed or regressive change is rolled back rather than rationalized as progress.",
+    "No production, AGI, consciousness, superintelligence, self-hosting, or real-world completion claim is permitted without corresponding external evidence."
+  ],
+  "planes": [
+    {
+      "plane_id": "PLANE-CONSTITUTION",
+      "purpose": "Defines operator sovereignty, permissions, prohibited effects, budgets, kill-switch semantics, and non-self-amendable invariants.",
+      "authority_source": "Operator-ratified versioned policy",
+      "durable_state": ["policy versions", "approval packets", "revocations", "emergency-stop epochs"]
+    },
+    {
+      "plane_id": "PLANE-OBJECTIVE",
+      "purpose": "Converts an objective into a sealed outcome contract with acceptance criteria, exclusions, risk, and an exact revision binding.",
+      "authority_source": "Sealed ObjectiveContract",
+      "durable_state": ["objectives", "acceptance criteria", "explicit exclusions", "effect ceilings"]
+    },
+    {
+      "plane_id": "PLANE-KNOWLEDGE",
+      "purpose": "Maintains provenance-aware evidence, claims, memories, datasets, synthetic corpora, and contradiction records without treating memory as authority.",
+      "authority_source": "Evidence and provenance policy",
+      "durable_state": ["evidence graph", "claim ledger", "dataset manifests", "memory lineage"]
+    },
+    {
+      "plane_id": "PLANE-MODEL-FABRIC",
+      "purpose": "Routes tasks through provider-neutral local or remote model adapters selected by capability, evidence, policy, cost, and availability.",
+      "authority_source": "Model capability registry plus execution permits",
+      "durable_state": ["model manifests", "benchmark receipts", "routing policies", "adapter health"]
+    },
+    {
+      "plane_id": "PLANE-MULTIMODAL-GENERATION",
+      "purpose": "Coordinates text, audio, image, video, 3D, tactile, and executable-code generation through typed modality contracts and alignment checks.",
+      "authority_source": "Objective contract and modality schemas",
+      "durable_state": ["generation DAGs", "artifact manifests", "cross-modal alignments", "quality evidence"]
+    },
+    {
+      "plane_id": "PLANE-AGENT-SWARM",
+      "purpose": "Schedules specialized intent, architecture, synthesis, verification, security, and delivery agents as a bounded acyclic graph.",
+      "authority_source": "Commission-scoped agent capability assignments",
+      "durable_state": ["agent manifests", "task DAGs", "lineage", "verification independence"]
+    },
+    {
+      "plane_id": "PLANE-TOOL-EXECUTION",
+      "purpose": "Provides typed capability adapters, idempotency, reconciliation, rollback, rate limits, data classifications, and effect gates.",
+      "authority_source": "Exact execution permits and adapter policy",
+      "durable_state": ["tool registry", "permits", "idempotency ledger", "execution receipts"]
+    },
+    {
+      "plane_id": "PLANE-COMPUTE-FABRIC",
+      "purpose": "Abstracts CPU, GPU, NPU, TPU, WebGPU, and distributed compute behind measurable capability profiles rather than vendor identities.",
+      "authority_source": "Compute manifest and workload policy",
+      "durable_state": ["hardware profiles", "scheduler decisions", "resource reservations", "energy and cost telemetry"]
+    },
+    {
+      "plane_id": "PLANE-DATA-FABRIC",
+      "purpose": "Uses open formats, content-addressed storage, local-first replication, immutable raw evidence, and independently validated synthetic data.",
+      "authority_source": "Data governance and retention policy",
+      "durable_state": ["content hashes", "lineage", "retention classes", "quality and contamination reports"]
+    },
+    {
+      "plane_id": "PLANE-OBSERVABILITY",
+      "purpose": "Senses quality, throughput, latency, failures, drift, portability, security, resource cost, and receipt-chain health.",
+      "authority_source": "Authenticated telemetry sources and deterministic probes",
+      "durable_state": ["metrics", "traces", "health snapshots", "drift reports", "alerts"]
+    },
+    {
+      "plane_id": "PLANE-AUTOPOIESIS",
+      "purpose": "Runs finite Sense-Formulate-Synthesize-Verify-Instantiate-Evaluate cycles, promoting only independently verified local shadow improvements.",
+      "authority_source": "Autopoietic policy and sealed objective",
+      "durable_state": ["deficits", "candidate changes", "verification reports", "shadow receipts", "rollback records"]
+    },
+    {
+      "plane_id": "PLANE-EXPERIENCE",
+      "purpose": "Presents the operator with current truth, pending approvals, evidence, risks, health, costs, and reversible controls across web, mobile, desktop, and CLI surfaces.",
+      "authority_source": "Operator identity and role policy",
+      "durable_state": ["view preferences", "approval interactions", "notifications", "accessibility state"]
+    },
+    {
+      "plane_id": "PLANE-SUPPLY-CHAIN",
+      "purpose": "Builds reproducible artifacts with pinned dependencies, SBOMs, signatures, provenance, vulnerability scans, and rollback-ready releases.",
+      "authority_source": "Release policy and exact-head verification",
+      "durable_state": ["lockfiles", "SBOMs", "provenance", "signatures", "release receipts"]
+    },
+    {
+      "plane_id": "PLANE-ECONOMICS",
+      "purpose": "Accounts for compute, storage, bandwidth, model, licensing, and human-attention budgets without granting spending or payment authority.",
+      "authority_source": "Budget policy and independently authorized financial permits",
+      "durable_state": ["resource ledgers", "cost forecasts", "reserved budgets", "financial receipts"]
+    }
+  ],
+  "independence": {
+    "compute_targets": [
+      "x86_64-cpu",
+      "arm64-cpu",
+      "cuda-gpu",
+      "rocm-gpu",
+      "metal-gpu",
+      "webgpu",
+      "npu-adapter",
+      "tpu-adapter",
+      "wasm-wasi"
+    ],
+    "model_protocols": [
+      "local-python-callable",
+      "openai-compatible-http",
+      "ollama-compatible-http",
+      "llama.cpp-server",
+      "vllm-server",
+      "onnx-runtime",
+      "gguf-runtime",
+      "transformers-local",
+      "webgpu-model-runtime"
+    ],
+    "execution_formats": [
+      "OCI",
+      "WASM-WASI",
+      "Python-wheel",
+      "standalone-binary",
+      "Kubernetes-manifest",
+      "systemd-service",
+      "local-process-supervisor"
+    ],
+    "storage_formats": [
+      "JSON",
+      "JSONL",
+      "SQLite",
+      "PostgreSQL",
+      "Parquet",
+      "content-addressed-object-store",
+      "OCI-artifact"
+    ],
+    "orchestration_targets": [
+      "single-process",
+      "local-worker-pool",
+      "Docker-Compose",
+      "Kubernetes",
+      "Nomad",
+      "WASM-component-runtime",
+      "event-bus"
+    ],
+    "required_proprietary_providers": []
+  },
+  "policy": {
+    "policy_version": "aigc-autopoietic-policy-v1",
+    "targets": {
+      "minimum_quality": 0.85,
+      "minimum_throughput": 1.0,
+      "maximum_latency_ms": 1000.0,
+      "maximum_error_rate": 0.02,
+      "maximum_drift": 0.05,
+      "maximum_cost_units": 1.0,
+      "maximum_security_findings": 0,
+      "minimum_portability": 0.8
+    },
+    "weights": {
+      "quality": 2.0,
+      "throughput": 1.0,
+      "latency": 1.0,
+      "reliability": 2.0,
+      "drift": 1.0,
+      "cost": 1.0,
+      "security": 3.0,
+      "portability": 2.0
+    },
+    "budget": {
+      "maximum_operations": 32,
+      "maximum_compute_units": 100,
+      "maximum_memory_mb": 512,
+      "maximum_output_bytes": 1000000,
+      "maximum_cycles": 12
+    },
+    "minimum_shadow_fitness_delta": 0.01,
+    "maximum_proposals_per_cycle": 3,
+    "no_progress_limit": 2,
+    "autonomous_effects": ["PURE", "READ_LOCAL", "WRITE_REVERSIBLE"],
+    "operator_required_effects": [
+      "READ_EXTERNAL",
+      "WRITE_COMPENSATABLE",
+      "WRITE_IRREVERSIBLE",
+      "FINANCIAL",
+      "COMMUNICATION",
+      "DEPLOYMENT",
+      "SECURITY_SENSITIVE"
+    ],
+    "prohibited_effects": [],
+    "network_egress_allowed": false,
+    "ambient_credentials_allowed": false,
+    "self_authority_allowed": false,
+    "self_merge_allowed": false,
+    "canonical_state_write_allowed": false,
+    "shadow_hot_reload_allowed": true,
+    "independent_verification_required": true
+  },
+  "templates": [
+    {
+      "template_id": "ECO-TEMPLATE-QUALITY-CRITIC",
+      "deficit_class": "QUALITY",
+      "priority": 10,
+      "description": "Register a deterministic multi-critic shadow profile and require disagreement evidence before later canonical promotion.",
+      "effect_class": "WRITE_REVERSIBLE",
+      "operations": [
+        {
+          "operation_id": "ECO-OP-QUALITY-PROFILE",
+          "kind": "SET_ARTIFACT",
+          "target": "quality.critic_profile",
+          "value": {
+            "mode": "deterministic-multi-critic-shadow",
+            "minimum_critics": 3,
+            "disagreement_threshold": 0.15,
+            "human_escalation_on_material_disagreement": true
+          },
+          "effect_class": "WRITE_REVERSIBLE",
+          "reversible": true,
+          "rollback_supported": true,
+          "rollback_value": null,
+          "depends_on": []
+        },
+        {
+          "operation_id": "ECO-OP-QUALITY-CAPABILITY",
+          "kind": "REGISTER_CAPABILITY",
+          "target": "capabilities",
+          "value": "CAP-DETERMINISTIC-MULTI-CRITIC-SHADOW",
+          "effect_class": "WRITE_REVERSIBLE",
+          "reversible": true,
+          "rollback_supported": true,
+          "rollback_value": null,
+          "depends_on": ["ECO-OP-QUALITY-PROFILE"]
+        }
+      ],
+      "metric_impacts": [{"metric": "quality", "delta": 0.1}],
+      "resource_estimate": {
+        "operations": 2,
+        "compute_units": 12,
+        "peak_memory_mb": 96,
+        "output_bytes": 4096
+      },
+      "evidence_requirements": [
+        "deterministic critic configuration hash",
+        "independent disagreement test",
+        "quality regression result",
+        "zero-egress receipt"
+      ]
+    },
+    {
+      "template_id": "ECO-TEMPLATE-THROUGHPUT-SCHEDULER",
+      "deficit_class": "THROUGHPUT",
+      "priority": 10,
+      "description": "Install a bounded local scheduling profile that parallelizes only dependency-independent tasks.",
+      "effect_class": "WRITE_REVERSIBLE",
+      "operations": [
+        {
+          "operation_id": "ECO-OP-THROUGHPUT-SCHEDULER",
+          "kind": "SET_ARTIFACT",
+          "target": "runtime.scheduler",
+          "value": {
+            "strategy": "bounded-dag-waves",
+            "maximum_parallel_workers": 4,
+            "preserve_deterministic_commit_order": true
+          },
+          "effect_class": "WRITE_REVERSIBLE",
+          "reversible": true,
+          "rollback_supported": true,
+          "rollback_value": null,
+          "depends_on": []
+        }
+      ],
+      "metric_impacts": [{"metric": "throughput", "delta": 0.5}],
+      "resource_estimate": {
+        "operations": 1,
+        "compute_units": 10,
+        "peak_memory_mb": 128,
+        "output_bytes": 2048
+      },
+      "evidence_requirements": [
+        "task DAG remains acyclic",
+        "deterministic commit ordering test",
+        "bounded worker test",
+        "zero-egress receipt"
+      ]
+    },
+    {
+      "template_id": "ECO-TEMPLATE-LATENCY-QUANTIZATION",
+      "deficit_class": "LATENCY",
+      "priority": 10,
+      "description": "Register a hardware-neutral quantization decision profile that remains advisory until workload verification passes.",
+      "effect_class": "WRITE_REVERSIBLE",
+      "operations": [
+        {
+          "operation_id": "ECO-OP-LATENCY-QUANTIZATION",
+          "kind": "SET_ARTIFACT",
+          "target": "runtime.quantization_policy",
+          "value": {
+            "selection": "benchmark-driven",
+            "allowed_profiles": ["FP16", "BF16", "INT8", "INT4"],
+            "quality_floor_required": true,
+            "hardware_vendor_required": false
+          },
+          "effect_class": "WRITE_REVERSIBLE",
+          "reversible": true,
+          "rollback_supported": true,
+          "rollback_value": null,
+          "depends_on": []
+        }
+      ],
+      "metric_impacts": [{"metric": "latency_ms", "delta": -400.0}],
+      "resource_estimate": {
+        "operations": 1,
+        "compute_units": 14,
+        "peak_memory_mb": 128,
+        "output_bytes": 4096
+      },
+      "evidence_requirements": [
+        "quality floor test",
+        "latency benchmark receipt",
+        "hardware capability manifest",
+        "rollback test"
+      ]
+    },
+    {
+      "template_id": "ECO-TEMPLATE-RELIABILITY-RECONCILIATION",
+      "deficit_class": "RELIABILITY",
+      "priority": 10,
+      "description": "Install a deterministic retry and reconciliation profile that forbids blind replay after indeterminate effects.",
+      "effect_class": "WRITE_REVERSIBLE",
+      "operations": [
+        {
+          "operation_id": "ECO-OP-RELIABILITY-POLICY",
+          "kind": "SET_ARTIFACT",
+          "target": "runtime.reliability_policy",
+          "value": {
+            "maximum_identical_retries": 1,
+            "indeterminate_requires_reconciliation": true,
+            "idempotency_required": true,
+            "circuit_breaker": "fail-closed"
+          },
+          "effect_class": "WRITE_REVERSIBLE",
+          "reversible": true,
+          "rollback_supported": true,
+          "rollback_value": null,
+          "depends_on": []
+        }
+      ],
+      "metric_impacts": [{"metric": "error_rate", "delta": -0.05}],
+      "resource_estimate": {
+        "operations": 1,
+        "compute_units": 8,
+        "peak_memory_mb": 64,
+        "output_bytes": 2048
+      },
+      "evidence_requirements": [
+        "idempotency replay test",
+        "indeterminate outcome test",
+        "circuit-breaker test",
+        "rollback test"
+      ]
+    },
+    {
+      "template_id": "ECO-TEMPLATE-COST-LOCAL-FIRST",
+      "deficit_class": "COST",
+      "priority": 10,
+      "description": "Prefer admissible local execution without allowing cost to override quality, security, privacy, or jurisdiction constraints.",
+      "effect_class": "WRITE_REVERSIBLE",
+      "operations": [
+        {
+          "operation_id": "ECO-OP-COST-ROUTING",
+          "kind": "SET_ARTIFACT",
+          "target": "routing.cost_policy",
+          "value": {
+            "preference": "local-first-best-fit",
+            "cost_is_soft_objective": true,
+            "hard_constraints_never_traded": true
+          },
+          "effect_class": "WRITE_REVERSIBLE",
+          "reversible": true,
+          "rollback_supported": true,
+          "rollback_value": null,
+          "depends_on": []
+        }
+      ],
+      "metric_impacts": [{"metric": "cost_units", "delta": -0.5}],
+      "resource_estimate": {
+        "operations": 1,
+        "compute_units": 5,
+        "peak_memory_mb": 32,
+        "output_bytes": 2048
+      },
+      "evidence_requirements": [
+        "best-fit constraint test",
+        "cost calculation receipt",
+        "quality non-regression test",
+        "security non-regression test"
+      ]
+    },
+    {
+      "template_id": "ECO-TEMPLATE-SECURITY-SANDBOX",
+      "deficit_class": "SECURITY",
+      "priority": 0,
+      "description": "Tighten the local shadow sandbox profile while preserving a reversible configuration rollback path.",
+      "effect_class": "WRITE_REVERSIBLE",
+      "operations": [
+        {
+          "operation_id": "ECO-OP-SECURITY-SANDBOX",
+          "kind": "SET_ARTIFACT",
+          "target": "security.sandbox_profile",
+          "value": {
+            "network": "deny",
+            "filesystem": "none",
+            "process_spawn": "deny",
+            "ambient_credentials": "deny",
+            "syscalls": "minimal-allowlist"
+          },
+          "effect_class": "WRITE_REVERSIBLE",
+          "reversible": true,
+          "rollback_supported": true,
+          "rollback_value": null,
+          "depends_on": []
+        }
+      ],
+      "metric_impacts": [{"metric": "security_findings", "delta": -1.0}],
+      "resource_estimate": {
+        "operations": 1,
+        "compute_units": 5,
+        "peak_memory_mb": 32,
+        "output_bytes": 4096
+      },
+      "evidence_requirements": [
+        "network denial test",
+        "filesystem denial test",
+        "process denial test",
+        "secret-shape rejection test",
+        "rollback test"
+      ]
+    },
+    {
+      "template_id": "ECO-TEMPLATE-PORTABILITY-REFERENCE",
+      "deficit_class": "PORTABILITY",
+      "priority": 0,
+      "description": "Bind an open local CPU reference backend and register a portable execution capability without requiring a proprietary provider.",
+      "effect_class": "WRITE_REVERSIBLE",
+      "operations": [
+        {
+          "operation_id": "ECO-OP-PORTABILITY-BIND",
+          "kind": "BIND_ADAPTER",
+          "target": "compute.default",
+          "value": "local-cpu-reference",
+          "effect_class": "WRITE_REVERSIBLE",
+          "reversible": true,
+          "rollback_supported": true,
+          "rollback_value": null,
+          "depends_on": []
+        },
+        {
+          "operation_id": "ECO-OP-PORTABILITY-CAPABILITY",
+          "kind": "REGISTER_CAPABILITY",
+          "target": "capabilities",
+          "value": "CAP-SILICON-AGNOSTIC-REFERENCE-RUNTIME",
+          "effect_class": "WRITE_REVERSIBLE",
+          "reversible": true,
+          "rollback_supported": true,
+          "rollback_value": null,
+          "depends_on": ["ECO-OP-PORTABILITY-BIND"]
+        }
+      ],
+      "metric_impacts": [{"metric": "portability", "delta": 0.25}],
+      "resource_estimate": {
+        "operations": 2,
+        "compute_units": 8,
+        "peak_memory_mb": 64,
+        "output_bytes": 4096
+      },
+      "evidence_requirements": [
+        "x86_64 reference test",
+        "arm64 contract test",
+        "WASM compatibility contract",
+        "no proprietary provider requirement",
+        "rollback test"
+      ]
+    },
+    {
+      "template_id": "ECO-TEMPLATE-DRIFT-ALIGNMENT",
+      "deficit_class": "DRIFT",
+      "priority": 10,
+      "description": "Install a cross-modal alignment lattice profile with contradiction and drift thresholds for local verification.",
+      "effect_class": "WRITE_REVERSIBLE",
+      "operations": [
+        {
+          "operation_id": "ECO-OP-DRIFT-LATTICE",
+          "kind": "SET_ARTIFACT",
+          "target": "alignment.cross_modal_lattice",
+          "value": {
+            "modalities": ["text", "audio", "image", "video", "3d", "code"],
+            "contradiction_threshold": 0.05,
+            "drift_threshold": 0.05,
+            "independent_critic_required": true
+          },
+          "effect_class": "WRITE_REVERSIBLE",
+          "reversible": true,
+          "rollback_supported": true,
+          "rollback_value": null,
+          "depends_on": []
+        }
+      ],
+      "metric_impacts": [{"metric": "drift", "delta": -0.1}],
+      "resource_estimate": {
+        "operations": 1,
+        "compute_units": 12,
+        "peak_memory_mb": 96,
+        "output_bytes": 4096
+      },
+      "evidence_requirements": [
+        "cross-modal contradiction test",
+        "drift threshold test",
+        "independent critic test",
+        "rollback test"
+      ]
+    }
+  ]
+}

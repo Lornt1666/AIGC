@@ -1,0 +1,61 @@
+{
+  "mode": "LOCAL_SHADOW",
+  "objective": {
+    "acceptance_criteria": [
+      "independent verification passes",
+      "fitness improves by the sealed minimum",
+      "all changes remain local, reversible, and zero-egress",
+      "canonical state is not mutated"
+    ],
+    "effect_ceiling": "WRITE_REVERSIBLE",
+    "exact_repository_revision": "2a9c039e41a7d9db8410120614cde044ca785e0f",
+    "explicit_exclusions": [
+      "merge",
+      "deployment",
+      "provider call",
+      "financial action",
+      "external communication"
+    ],
+    "objective": "Improve provider and hardware portability of the local AIGC shadow ecosystem.",
+    "objective_id": "OBJ-AUTOPOIETIC-V1",
+    "revision": 1,
+    "risk_tier": "R1",
+    "sealed": true,
+    "target_component": "AIGC_AUTOPOIETIC_CONTROL_SPINE"
+  },
+  "previous_receipt_sha256": null,
+  "producer_id": "AGT-AUTOPOIETIC-SYNTHESIZER",
+  "run_id": "ECO-RUN-REFERENCE-V1",
+  "state": {
+    "adapter_bindings": {},
+    "artifacts": {
+      "runtime.mode": "local-shadow"
+    },
+    "canonical_state": false,
+    "capabilities": [],
+    "emergency_stop_active": false,
+    "exact_repository_revision": "2a9c039e41a7d9db8410120614cde044ca785e0f",
+    "revision": 0,
+    "shadow_only": true,
+    "state_id": "ECO-STATE-REFERENCE-V1"
+  },
+  "telemetry": {
+    "cost_units": 0.5,
+    "drift": 0.02,
+    "error_rate": 0.01,
+    "evidence_refs": [
+      "local://telemetry/reference"
+    ],
+    "latency_ms": 200.0,
+    "observed_epoch": 1,
+    "portability": 0.5,
+    "quality": 0.9,
+    "security_findings": 0,
+    "source": "OBSERVED_LOCAL",
+    "source_revision": "2a9c039e41a7d9db8410120614cde044ca785e0f",
+    "state_sha256": "64d8f2e0ae74ebbb44ccbefc24cb11458df0762950d7a148239c5aebf374c16c",
+    "telemetry_id": "TELEM-REFERENCE-V1",
+    "throughput": 1.2
+  },
+  "verifier_id": "AGT-OMEGA-INDEPENDENT-VERIFIER"
+}
