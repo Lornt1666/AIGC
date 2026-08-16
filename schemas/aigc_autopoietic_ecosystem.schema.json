@@ -1,0 +1,685 @@
+{
+  "$defs": {
+    "AutopoieticPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "ambient_credentials_allowed": {
+          "const": false,
+          "default": false,
+          "title": "Ambient Credentials Allowed",
+          "type": "boolean"
+        },
+        "autonomous_effects": {
+          "default": [
+            "PURE",
+            "READ_LOCAL",
+            "WRITE_REVERSIBLE"
+          ],
+          "items": {
+            "$ref": "#/$defs/EffectClass"
+          },
+          "title": "Autonomous Effects",
+          "type": "array"
+        },
+        "budget": {
+          "$ref": "#/$defs/ResourceBudget"
+        },
+        "canonical_state_write_allowed": {
+          "const": false,
+          "default": false,
+          "title": "Canonical State Write Allowed",
+          "type": "boolean"
+        },
+        "independent_verification_required": {
+          "const": true,
+          "default": true,
+          "title": "Independent Verification Required",
+          "type": "boolean"
+        },
+        "maximum_proposals_per_cycle": {
+          "default": 3,
+          "maximum": 12,
+          "minimum": 1,
+          "title": "Maximum Proposals Per Cycle",
+          "type": "integer"
+        },
+        "minimum_shadow_fitness_delta": {
+          "default": 0.01,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Minimum Shadow Fitness Delta",
+          "type": "number"
+        },
+        "network_egress_allowed": {
+          "const": false,
+          "default": false,
+          "title": "Network Egress Allowed",
+          "type": "boolean"
+        },
+        "no_progress_limit": {
+          "default": 2,
+          "maximum": 12,
+          "minimum": 1,
+          "title": "No Progress Limit",
+          "type": "integer"
+        },
+        "operator_required_effects": {
+          "default": [
+            "READ_EXTERNAL",
+            "WRITE_COMPENSATABLE",
+            "WRITE_IRREVERSIBLE",
+            "FINANCIAL",
+            "COMMUNICATION",
+            "DEPLOYMENT",
+            "SECURITY_SENSITIVE"
+          ],
+          "items": {
+            "$ref": "#/$defs/EffectClass"
+          },
+          "title": "Operator Required Effects",
+          "type": "array"
+        },
+        "policy_version": {
+          "maxLength": 120,
+          "minLength": 3,
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "prohibited_effects": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/EffectClass"
+          },
+          "title": "Prohibited Effects",
+          "type": "array"
+        },
+        "self_authority_allowed": {
+          "const": false,
+          "default": false,
+          "title": "Self Authority Allowed",
+          "type": "boolean"
+        },
+        "self_merge_allowed": {
+          "const": false,
+          "default": false,
+          "title": "Self Merge Allowed",
+          "type": "boolean"
+        },
+        "shadow_hot_reload_allowed": {
+          "const": true,
+          "default": true,
+          "title": "Shadow Hot Reload Allowed",
+          "type": "boolean"
+        },
+        "targets": {
+          "$ref": "#/$defs/FitnessTargets"
+        },
+        "weights": {
+          "$ref": "#/$defs/FitnessWeights"
+        }
+      },
+      "required": [
+        "policy_version"
+      ],
+      "title": "AutopoieticPolicy",
+      "type": "object"
+    },
+    "CandidateTemplate": {
+      "additionalProperties": false,
+      "properties": {
+        "deficit_class": {
+          "$ref": "#/$defs/DeficitClass"
+        },
+        "description": {
+          "maxLength": 1000,
+          "minLength": 8,
+          "title": "Description",
+          "type": "string"
+        },
+        "effect_class": {
+          "$ref": "#/$defs/EffectClass"
+        },
+        "evidence_requirements": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Evidence Requirements",
+          "type": "array"
+        },
+        "metric_impacts": {
+          "items": {
+            "$ref": "#/$defs/MetricImpact"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Metric Impacts",
+          "type": "array"
+        },
+        "operations": {
+          "items": {
+            "$ref": "#/$defs/PatchOperation"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Operations",
+          "type": "array"
+        },
+        "priority": {
+          "maximum": 1000,
+          "minimum": 0,
+          "title": "Priority",
+          "type": "integer"
+        },
+        "resource_estimate": {
+          "$ref": "#/$defs/ResourceUse"
+        },
+        "template_id": {
+          "pattern": "^ECO-TEMPLATE-[A-Z0-9_-]{6,80}$",
+          "title": "Template Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "template_id",
+        "deficit_class",
+        "priority",
+        "description",
+        "effect_class",
+        "operations",
+        "metric_impacts",
+        "resource_estimate",
+        "evidence_requirements"
+      ],
+      "title": "CandidateTemplate",
+      "type": "object"
+    },
+    "DeficitClass": {
+      "enum": [
+        "QUALITY",
+        "THROUGHPUT",
+        "LATENCY",
+        "RELIABILITY",
+        "COST",
+        "SECURITY",
+        "PORTABILITY",
+        "DRIFT"
+      ],
+      "title": "DeficitClass",
+      "type": "string"
+    },
+    "EcosystemPlane": {
+      "additionalProperties": false,
+      "properties": {
+        "authority_source": {
+          "maxLength": 240,
+          "minLength": 3,
+          "title": "Authority Source",
+          "type": "string"
+        },
+        "durable_state": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Durable State",
+          "type": "array"
+        },
+        "plane_id": {
+          "pattern": "^PLANE-[A-Z0-9-]{3,80}$",
+          "title": "Plane Id",
+          "type": "string"
+        },
+        "purpose": {
+          "maxLength": 1000,
+          "minLength": 8,
+          "title": "Purpose",
+          "type": "string"
+        }
+      },
+      "required": [
+        "plane_id",
+        "purpose",
+        "authority_source"
+      ],
+      "title": "EcosystemPlane",
+      "type": "object"
+    },
+    "EffectClass": {
+      "enum": [
+        "PURE",
+        "READ_LOCAL",
+        "READ_EXTERNAL",
+        "WRITE_REVERSIBLE",
+        "WRITE_COMPENSATABLE",
+        "WRITE_IRREVERSIBLE",
+        "FINANCIAL",
+        "COMMUNICATION",
+        "DEPLOYMENT",
+        "SECURITY_SENSITIVE"
+      ],
+      "title": "EffectClass",
+      "type": "string"
+    },
+    "FitnessTargets": {
+      "additionalProperties": false,
+      "properties": {
+        "maximum_cost_units": {
+          "default": 1.0,
+          "exclusiveMinimum": 0.0,
+          "title": "Maximum Cost Units",
+          "type": "number"
+        },
+        "maximum_drift": {
+          "default": 0.05,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Maximum Drift",
+          "type": "number"
+        },
+        "maximum_error_rate": {
+          "default": 0.02,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Maximum Error Rate",
+          "type": "number"
+        },
+        "maximum_latency_ms": {
+          "default": 1000.0,
+          "exclusiveMinimum": 0.0,
+          "title": "Maximum Latency Ms",
+          "type": "number"
+        },
+        "maximum_security_findings": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Maximum Security Findings",
+          "type": "integer"
+        },
+        "minimum_portability": {
+          "default": 0.8,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Minimum Portability",
+          "type": "number"
+        },
+        "minimum_quality": {
+          "default": 0.85,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Minimum Quality",
+          "type": "number"
+        },
+        "minimum_throughput": {
+          "default": 1.0,
+          "exclusiveMinimum": 0.0,
+          "title": "Minimum Throughput",
+          "type": "number"
+        }
+      },
+      "title": "FitnessTargets",
+      "type": "object"
+    },
+    "FitnessWeights": {
+      "additionalProperties": false,
+      "properties": {
+        "cost": {
+          "default": 1.0,
+          "minimum": 0.0,
+          "title": "Cost",
+          "type": "number"
+        },
+        "drift": {
+          "default": 1.0,
+          "minimum": 0.0,
+          "title": "Drift",
+          "type": "number"
+        },
+        "latency": {
+          "default": 1.0,
+          "minimum": 0.0,
+          "title": "Latency",
+          "type": "number"
+        },
+        "portability": {
+          "default": 2.0,
+          "minimum": 0.0,
+          "title": "Portability",
+          "type": "number"
+        },
+        "quality": {
+          "default": 2.0,
+          "minimum": 0.0,
+          "title": "Quality",
+          "type": "number"
+        },
+        "reliability": {
+          "default": 2.0,
+          "minimum": 0.0,
+          "title": "Reliability",
+          "type": "number"
+        },
+        "security": {
+          "default": 3.0,
+          "minimum": 0.0,
+          "title": "Security",
+          "type": "number"
+        },
+        "throughput": {
+          "default": 1.0,
+          "minimum": 0.0,
+          "title": "Throughput",
+          "type": "number"
+        }
+      },
+      "title": "FitnessWeights",
+      "type": "object"
+    },
+    "IndependenceMatrix": {
+      "additionalProperties": false,
+      "properties": {
+        "compute_targets": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Compute Targets",
+          "type": "array"
+        },
+        "execution_formats": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Execution Formats",
+          "type": "array"
+        },
+        "model_protocols": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Model Protocols",
+          "type": "array"
+        },
+        "orchestration_targets": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Orchestration Targets",
+          "type": "array"
+        },
+        "required_proprietary_providers": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Required Proprietary Providers",
+          "type": "array"
+        },
+        "storage_formats": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Storage Formats",
+          "type": "array"
+        }
+      },
+      "required": [
+        "compute_targets",
+        "model_protocols",
+        "execution_formats",
+        "storage_formats",
+        "orchestration_targets"
+      ],
+      "title": "IndependenceMatrix",
+      "type": "object"
+    },
+    "MetricImpact": {
+      "additionalProperties": false,
+      "properties": {
+        "delta": {
+          "title": "Delta",
+          "type": "number"
+        },
+        "metric": {
+          "enum": [
+            "quality",
+            "throughput",
+            "latency_ms",
+            "error_rate",
+            "drift",
+            "cost_units",
+            "security_findings",
+            "portability"
+          ],
+          "title": "Metric",
+          "type": "string"
+        }
+      },
+      "required": [
+        "metric",
+        "delta"
+      ],
+      "title": "MetricImpact",
+      "type": "object"
+    },
+    "OperationKind": {
+      "enum": [
+        "SET_ARTIFACT",
+        "DELETE_ARTIFACT",
+        "APPEND_ARTIFACT",
+        "REGISTER_CAPABILITY",
+        "BIND_ADAPTER"
+      ],
+      "title": "OperationKind",
+      "type": "string"
+    },
+    "PatchOperation": {
+      "additionalProperties": false,
+      "properties": {
+        "depends_on": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Depends On",
+          "type": "array"
+        },
+        "effect_class": {
+          "$ref": "#/$defs/EffectClass"
+        },
+        "kind": {
+          "$ref": "#/$defs/OperationKind"
+        },
+        "operation_id": {
+          "pattern": "^ECO-OP-[A-Z0-9_-]{6,80}$",
+          "title": "Operation Id",
+          "type": "string"
+        },
+        "reversible": {
+          "title": "Reversible",
+          "type": "boolean"
+        },
+        "rollback_supported": {
+          "title": "Rollback Supported",
+          "type": "boolean"
+        },
+        "rollback_value": {
+          "default": null,
+          "title": "Rollback Value"
+        },
+        "target": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Target",
+          "type": "string"
+        },
+        "value": {
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "required": [
+        "operation_id",
+        "kind",
+        "target",
+        "effect_class",
+        "reversible",
+        "rollback_supported"
+      ],
+      "title": "PatchOperation",
+      "type": "object"
+    },
+    "ResourceBudget": {
+      "additionalProperties": false,
+      "properties": {
+        "maximum_compute_units": {
+          "default": 100,
+          "maximum": 1000000,
+          "minimum": 1,
+          "title": "Maximum Compute Units",
+          "type": "integer"
+        },
+        "maximum_cycles": {
+          "default": 12,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Maximum Cycles",
+          "type": "integer"
+        },
+        "maximum_memory_mb": {
+          "default": 512,
+          "maximum": 1048576,
+          "minimum": 16,
+          "title": "Maximum Memory Mb",
+          "type": "integer"
+        },
+        "maximum_operations": {
+          "default": 32,
+          "maximum": 10000,
+          "minimum": 1,
+          "title": "Maximum Operations",
+          "type": "integer"
+        },
+        "maximum_output_bytes": {
+          "default": 1000000,
+          "maximum": 100000000,
+          "minimum": 1,
+          "title": "Maximum Output Bytes",
+          "type": "integer"
+        }
+      },
+      "title": "ResourceBudget",
+      "type": "object"
+    },
+    "ResourceUse": {
+      "additionalProperties": false,
+      "properties": {
+        "compute_units": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Compute Units",
+          "type": "integer"
+        },
+        "operations": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Operations",
+          "type": "integer"
+        },
+        "output_bytes": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Output Bytes",
+          "type": "integer"
+        },
+        "peak_memory_mb": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Peak Memory Mb",
+          "type": "integer"
+        }
+      },
+      "title": "ResourceUse",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "ecosystem_id": {
+      "pattern": "^AIGC-ECO-[A-Z0-9-]{3,80}$",
+      "title": "Ecosystem Id",
+      "type": "string"
+    },
+    "independence": {
+      "$ref": "#/$defs/IndependenceMatrix"
+    },
+    "invariants": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 64,
+      "minItems": 1,
+      "title": "Invariants",
+      "type": "array"
+    },
+    "operating_mode": {
+      "title": "Operating Mode",
+      "type": "string"
+    },
+    "owner": {
+      "title": "Owner",
+      "type": "string"
+    },
+    "planes": {
+      "items": {
+        "$ref": "#/$defs/EcosystemPlane"
+      },
+      "maxItems": 24,
+      "minItems": 8,
+      "title": "Planes",
+      "type": "array"
+    },
+    "policy": {
+      "$ref": "#/$defs/AutopoieticPolicy"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "templates": {
+      "items": {
+        "$ref": "#/$defs/CandidateTemplate"
+      },
+      "maxItems": 64,
+      "minItems": 1,
+      "title": "Templates",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "ecosystem_id",
+    "owner",
+    "operating_mode",
+    "invariants",
+    "planes",
+    "independence",
+    "policy",
+    "templates"
+  ],
+  "title": "AutopoieticEcosystemConfig",
+  "type": "object"
+}

@@ -1,0 +1,341 @@
+{
+  "$defs": {
+    "EcosystemState": {
+      "additionalProperties": false,
+      "properties": {
+        "adapter_bindings": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 128,
+          "title": "Adapter Bindings",
+          "type": "object"
+        },
+        "artifacts": {
+          "additionalProperties": true,
+          "maxProperties": 1000,
+          "title": "Artifacts",
+          "type": "object"
+        },
+        "canonical_state": {
+          "const": false,
+          "default": false,
+          "title": "Canonical State",
+          "type": "boolean"
+        },
+        "capabilities": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 256,
+          "title": "Capabilities",
+          "type": "array"
+        },
+        "emergency_stop_active": {
+          "default": false,
+          "title": "Emergency Stop Active",
+          "type": "boolean"
+        },
+        "exact_repository_revision": {
+          "pattern": "^[a-f0-9]{40}$",
+          "title": "Exact Repository Revision",
+          "type": "string"
+        },
+        "revision": {
+          "default": 0,
+          "maximum": 1000000,
+          "minimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "shadow_only": {
+          "const": true,
+          "default": true,
+          "title": "Shadow Only",
+          "type": "boolean"
+        },
+        "state_id": {
+          "pattern": "^ECO-STATE-[A-Z0-9_-]{6,80}$",
+          "title": "State Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "state_id",
+        "exact_repository_revision"
+      ],
+      "title": "EcosystemState",
+      "type": "object"
+    },
+    "EffectClass": {
+      "enum": [
+        "PURE",
+        "READ_LOCAL",
+        "READ_EXTERNAL",
+        "WRITE_REVERSIBLE",
+        "WRITE_COMPENSATABLE",
+        "WRITE_IRREVERSIBLE",
+        "FINANCIAL",
+        "COMMUNICATION",
+        "DEPLOYMENT",
+        "SECURITY_SENSITIVE"
+      ],
+      "title": "EffectClass",
+      "type": "string"
+    },
+    "ObjectiveContract": {
+      "additionalProperties": false,
+      "properties": {
+        "acceptance_criteria": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Acceptance Criteria",
+          "type": "array"
+        },
+        "effect_ceiling": {
+          "$ref": "#/$defs/EffectClass"
+        },
+        "exact_repository_revision": {
+          "pattern": "^[a-f0-9]{40}$",
+          "title": "Exact Repository Revision",
+          "type": "string"
+        },
+        "explicit_exclusions": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Explicit Exclusions",
+          "type": "array"
+        },
+        "objective": {
+          "maxLength": 8000,
+          "minLength": 8,
+          "title": "Objective",
+          "type": "string"
+        },
+        "objective_id": {
+          "pattern": "^OBJ-[A-Z0-9_-]{6,80}$",
+          "title": "Objective Id",
+          "type": "string"
+        },
+        "revision": {
+          "maximum": 1000000,
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "risk_tier": {
+          "enum": [
+            "R0",
+            "R1",
+            "R2",
+            "R3",
+            "R4"
+          ],
+          "title": "Risk Tier",
+          "type": "string"
+        },
+        "sealed": {
+          "const": true,
+          "default": true,
+          "title": "Sealed",
+          "type": "boolean"
+        },
+        "target_component": {
+          "maxLength": 240,
+          "minLength": 3,
+          "title": "Target Component",
+          "type": "string"
+        }
+      },
+      "required": [
+        "objective_id",
+        "revision",
+        "objective",
+        "target_component",
+        "acceptance_criteria",
+        "exact_repository_revision",
+        "effect_ceiling",
+        "risk_tier"
+      ],
+      "title": "ObjectiveContract",
+      "type": "object"
+    },
+    "TelemetrySnapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "cost_units": {
+          "minimum": 0.0,
+          "title": "Cost Units",
+          "type": "number"
+        },
+        "drift": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Drift",
+          "type": "number"
+        },
+        "error_rate": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Error Rate",
+          "type": "number"
+        },
+        "evidence_refs": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "latency_ms": {
+          "minimum": 0.0,
+          "title": "Latency Ms",
+          "type": "number"
+        },
+        "observed_epoch": {
+          "minimum": 0,
+          "title": "Observed Epoch",
+          "type": "integer"
+        },
+        "portability": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Portability",
+          "type": "number"
+        },
+        "quality": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Quality",
+          "type": "number"
+        },
+        "security_findings": {
+          "minimum": 0,
+          "title": "Security Findings",
+          "type": "integer"
+        },
+        "source": {
+          "$ref": "#/$defs/TelemetrySource"
+        },
+        "source_revision": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Source Revision",
+          "type": "string"
+        },
+        "state_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "State Sha256",
+          "type": "string"
+        },
+        "telemetry_id": {
+          "pattern": "^TELEM-[A-Z0-9_-]{6,80}$",
+          "title": "Telemetry Id",
+          "type": "string"
+        },
+        "throughput": {
+          "minimum": 0.0,
+          "title": "Throughput",
+          "type": "number"
+        }
+      },
+      "required": [
+        "telemetry_id",
+        "source",
+        "observed_epoch",
+        "state_sha256",
+        "source_revision",
+        "quality",
+        "throughput",
+        "latency_ms",
+        "error_rate",
+        "drift",
+        "cost_units",
+        "security_findings",
+        "portability"
+      ],
+      "title": "TelemetrySnapshot",
+      "type": "object"
+    },
+    "TelemetrySource": {
+      "enum": [
+        "OBSERVED_LOCAL",
+        "SYNTHETIC_SHADOW",
+        "EXTERNAL_RECEIPT"
+      ],
+      "title": "TelemetrySource",
+      "type": "string"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "mode": {
+      "default": "LOCAL_SHADOW",
+      "enum": [
+        "PLAN_ONLY",
+        "LOCAL_SHADOW"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "objective": {
+      "$ref": "#/$defs/ObjectiveContract"
+    },
+    "previous_receipt_sha256": {
+      "anyOf": [
+        {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Previous Receipt Sha256"
+    },
+    "producer_id": {
+      "default": "AGT-AUTOPOIETIC-SYNTHESIZER",
+      "maxLength": 120,
+      "minLength": 3,
+      "title": "Producer Id",
+      "type": "string"
+    },
+    "run_id": {
+      "pattern": "^ECO-RUN-[A-Z0-9_-]{6,80}$",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "state": {
+      "$ref": "#/$defs/EcosystemState"
+    },
+    "telemetry": {
+      "$ref": "#/$defs/TelemetrySnapshot"
+    },
+    "verifier_id": {
+      "default": "AGT-OMEGA-INDEPENDENT-VERIFIER",
+      "maxLength": 120,
+      "minLength": 3,
+      "title": "Verifier Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_id",
+    "objective",
+    "state",
+    "telemetry"
+  ],
+  "title": "CycleRequest",
+  "type": "object"
+}

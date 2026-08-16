@@ -1,0 +1,93 @@
+{
+  "all_checks_passed": true,
+  "canonical_state_mutated": false,
+  "checks": [
+    {
+      "check": "config_valid",
+      "detail": "closed Pydantic ecosystem configuration and Draft 2020-12 schema loaded",
+      "result": "PASS"
+    },
+    {
+      "check": "fabric_registry_valid",
+      "detail": "provider-neutral model, compute, storage, orchestration, modality, and tool adapters loaded",
+      "result": "PASS"
+    },
+    {
+      "check": "reference_request_valid",
+      "detail": "reference cycle request validates and binds the exact inspected repository revision",
+      "result": "PASS"
+    },
+    {
+      "check": "provider_independence",
+      "detail": "no proprietary provider is required by the sovereign profile",
+      "result": "PASS"
+    },
+    {
+      "check": "deterministic_adapter_routing",
+      "detail": "hard capability gates select the open local reference adapter reproducibly",
+      "result": "PASS"
+    },
+    {
+      "check": "deterministic_replay",
+      "detail": "fresh kernels produced byte-equivalent model results for the same request",
+      "result": "PASS"
+    },
+    {
+      "check": "shadow_promotion",
+      "detail": "one reversible local shadow improvement was promoted",
+      "result": "PASS"
+    },
+    {
+      "check": "zero_external_effects",
+      "detail": "all external and canonical mutation counters remain zero",
+      "result": "PASS"
+    },
+    {
+      "check": "receipt_hash",
+      "detail": "canonical receipt hash verifies",
+      "result": "PASS"
+    },
+    {
+      "check": "receipt_schema",
+      "detail": "Draft 2020-12 receipt schema validation passed",
+      "result": "PASS"
+    },
+    {
+      "check": "kill_switch",
+      "detail": "emergency stop blocks before formulation",
+      "result": "PASS"
+    },
+    {
+      "check": "operator_authority_boundary",
+      "detail": "deployment effect stopped at fresh operator authority boundary",
+      "result": "PASS"
+    },
+    {
+      "check": "tamper_detection",
+      "detail": "semantic receipt modification invalidates the hash chain",
+      "result": "PASS"
+    }
+  ],
+  "checks_failed": 0,
+  "checks_passed": 13,
+  "config_sha256": "067f3b22f02498e3e973e8cb71652168302721c056f78c5cb81d44ece81a0a5d",
+  "deployment_performed": false,
+  "exact_repository_revision": "2a9c039e41a7d9db8410120614cde044ca785e0f",
+  "external_action_performed": false,
+  "fabric_sha256": "74cc40c4b41f3f4cc32b1677d5834c69cb2f2bc9075a81f504210b990b6ee3ac",
+  "filesystem_writes_performed": 0,
+  "local_shadow_revision": 1,
+  "merge_performed": false,
+  "network_calls_performed": 0,
+  "processes_spawned": 0,
+  "production_ready": false,
+  "provider_calls_performed": 0,
+  "receipt_sha256": "6d104b17e4f4a174cf09f9fe25fa8b8755971c8905ea40c4c074cc753c71f354",
+  "report_sha256": "6b863b9e70d9af639b3953d7116323f93a7d513c34ee99cbcf8c4c61a7424e6d",
+  "routing_decision_sha256": "29754d98c61e0144a47984a1cf5559e17e74bc809e003f95f3af6d1ff715dcee",
+  "schema_version": "aigc.autopoietic-local-validation.v1",
+  "secrets_accessed": 0,
+  "self_hosting_proven": false,
+  "superintelligence_claimed": false,
+  "validation_id": "AIGC-AUTOPOIETIC-LOCAL-2CBFFD98375954DC7755615E"
+}
