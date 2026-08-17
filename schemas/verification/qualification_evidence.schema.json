@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.regenexcalibur.invalid/schemas/verification/qualification_evidence.schema.json",
+  "title": "AIGC qualification evidence collection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["human_qualifications", "professional_credentials"],
+  "properties": {
+    "human_qualifications": {"type": "array", "items": {"$ref": "#/$defs/humanQualification"}},
+    "professional_credentials": {"type": "array", "items": {"$ref": "#/$defs/professionalCredential"}}
+  },
+  "$defs": {
+    "humanQualification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["qualification_evidence_id", "human_identity_ref", "qualification_class", "issuing_authority", "jurisdiction", "valid_from", "valid_until", "status", "evidence_refs", "evidence_digest"],
+      "properties": {
+        "qualification_evidence_id": {"type": "string", "minLength": 1},
+        "human_identity_ref": {"type": "string", "minLength": 1},
+        "qualification_class": {"type": "string", "minLength": 1},
+        "issuing_authority": {"type": "string", "minLength": 1},
+        "jurisdiction": {"type": "string", "minLength": 1},
+        "valid_from": {"type": "string", "format": "date-time"},
+        "valid_until": {"type": "string", "format": "date-time"},
+        "status": {"enum": ["ACTIVE", "EXPIRED", "REVOKED", "UNVERIFIED"]},
+        "evidence_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "evidence_digest": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"}
+      }
+    },
+    "professionalCredential": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["credential_evidence_id", "human_identity_ref", "profession", "credential_class", "issuing_authority", "jurisdiction", "valid_from", "valid_until", "status", "evidence_refs", "evidence_digest"],
+      "properties": {
+        "credential_evidence_id": {"type": "string", "minLength": 1},
+        "human_identity_ref": {"type": "string", "minLength": 1},
+        "profession": {"type": "string", "minLength": 1},
+        "credential_class": {"type": "string", "minLength": 1},
+        "issuing_authority": {"type": "string", "minLength": 1},
+        "jurisdiction": {"type": "string", "minLength": 1},
+        "valid_from": {"type": "string", "format": "date-time"},
+        "valid_until": {"type": "string", "format": "date-time"},
+        "status": {"enum": ["ACTIVE", "EXPIRED", "REVOKED", "UNVERIFIED"]},
+        "evidence_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "evidence_digest": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"}
+      }
+    }
+  }
+}
