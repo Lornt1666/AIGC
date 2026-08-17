@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0.0",
+  "contract_id": "REGENEXCALIBUR-AIGC-FORGERUNNER-V1",
+  "external_action_authorized": false,
+  "production_activation_authorized": false,
+  "provider_call_authorized": false,
+  "network_policy": "process_environment_guard",
+  "stages": [
+    {
+      "id": "dependency_integrity",
+      "timeout_seconds": 120,
+      "commands": [
+        ["${PYTHON}", "scripts/run_operator_owned_ci.py", "dependency-check", "--requirements", "requirements.txt"]
+      ]
+    },
+    {
+      "id": "python_compilation",
+      "timeout_seconds": 180,
+      "commands": [
+        ["${PYTHON}", "-m", "compileall", "-q", "src", "scripts", "tests"]
+      ]
+    },
+    {
+      "id": "deterministic_evidence",
+      "timeout_seconds": 180,
+      "commands": [
+        ["${PYTHON}", "scripts/validate_aigc_mcp_loopback_v2.py", "--check"],
+        ["${PYTHON}", "scripts/validate_aigc_universal_integration.py", "--check"],
+        ["${PYTHON}", "scripts/build_aigc_system_atlas_data.py", "--check"],
+        ["${PYTHON}", "scripts/build_aigc_evidence_program.py", "--check"]
+      ]
+    },
+    {
+      "id": "release_secret_scan",
+      "timeout_seconds": 180,
+      "commands": [
+        ["${PYTHON}", "scripts/release_secret_scan.py"]
+      ]
+    },
+    {
+      "id": "tests",
+      "timeout_seconds": 1800,
+      "commands": [
+        ["${PYTHON}", "-m", "pytest", "-q"]
+      ]
+    }
+  ]
+}

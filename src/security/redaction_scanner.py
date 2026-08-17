@@ -38,13 +38,18 @@ class RedactionScanner:
     def scan_text(self, text: str, path: str = "<memory>") -> List[RedactionFinding]:
         findings: List[RedactionFinding] = []
         value = text or ""
-        for pattern in self.redactor.SECRET_PATTERNS + extra_secret_patterns():
-            for match in re.finditer(pattern, value, flags=re.DOTALL):
+        patterns = list(self.redactor.patterns)
+        patterns.extend(
+            re.compile(pattern, flags=re.DOTALL)
+            for pattern in extra_secret_patterns()
+        )
+        for pattern in patterns:
+            for match in pattern.finditer(value):
                 if self._is_false_positive(match.group(0)):
                     continue
                 findings.append(RedactionFinding(
                     path=path,
-                    pattern=pattern,
+                    pattern=pattern.pattern,
                     redacted_preview=self.redactor.redact_text(value)[:500],
                     severity="critical" if "PRIVATE KEY" in match.group(0) else "high",
                     line_number=line_number_for_offset(value, match.start()),
@@ -81,6 +86,8 @@ class RedactionScanner:
         value = match_text.strip()
         lowered_value = value.lower()
         if is_vault_reference_text(lowered_value):
+            return True
+        if re.fullmatch(r"(?i)basic\s+[A-Za-z]+", value):
             return True
         if ".*?" in value and "BEGIN PRIVATE KEY" in value:
             return True

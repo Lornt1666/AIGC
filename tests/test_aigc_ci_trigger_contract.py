@@ -28,8 +28,12 @@ def test_aigc_ci_retains_exact_requested_revision_identity_gate() -> None:
 
 def test_aigc_ci_only_invokes_repository_scripts_that_exist() -> None:
     text = WORKFLOW.read_text(encoding="utf-8")
-    assert "run_exact_sha_ci_contract.py" not in text
-    assert "exact_sha_ci_validation_contract.json" not in text
+    canonical_runner = "scripts/run_exact_sha_ci_contract.py"
+    canonical_contract = "config/exact_sha_ci_validation_contract.json"
+    assert (ROOT / canonical_runner).is_file()
+    assert (ROOT / canonical_contract).is_file()
+    assert canonical_runner in text
+    assert canonical_contract in text
     for script in (
         "scripts/validate_aigc_mcp_loopback_v2.py",
         "scripts/validate_aigc_universal_integration.py",

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aigc.local/schemas/aigc_wealth_operator_policy.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "policy_id", "owner", "base_currency", "mission", "consequential_financial_actions_require_explicit_authority", "guaranteed_profit_claims_allowed", "raw_credentials_allowed", "actions"],
+  "properties": {
+    "schema_version": {"const": "aigc.wealth-operator-policy.v1"},
+    "policy_id": {"type": "string", "pattern": "^AIGC-WEALTH-[A-Z0-9_-]{3,64}$"},
+    "owner": {"type": "string", "minLength": 1},
+    "base_currency": {"const": "CAD"},
+    "mission": {"type": "string", "minLength": 1},
+    "consequential_financial_actions_require_explicit_authority": {"const": true},
+    "guaranteed_profit_claims_allowed": {"const": false},
+    "raw_credentials_allowed": {"const": false},
+    "actions": {
+      "type": "array",
+      "minItems": 16,
+      "maxItems": 16,
+      "items": {"$ref": "#/$defs/action"}
+    }
+  },
+  "$defs": {
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action", "phase", "effect_class", "approval_required", "target_required", "evidence_required", "public_read_only", "internal_sandbox_only", "persistent_internal_mutation", "external_mutation", "communication", "legal_commitment", "description"],
+      "properties": {
+        "action": {"enum": ["RESEARCH_OPPORTUNITIES", "PRODUCE_DELIVERABLE", "DRAFT_APPLICATION", "DRAFT_SALES_OUTREACH", "PREPARE_INVOICE", "PREPARE_TRANSACTION", "ANALYZE_REVENUE", "RECORD_REVENUE", "SUBMIT_APPLICATION", "SEND_SALES_OUTREACH", "SEND_INVOICE", "ACCEPT_CONTRACT", "EXECUTE_TRANSACTION", "SPEND_FUNDS", "TRANSFER_FUNDS", "PLACE_TRADE"]},
+        "phase": {"enum": ["RESEARCH", "PRODUCE", "PREPARE", "TRACK", "EXECUTE"]},
+        "effect_class": {"enum": ["PURE", "READ_LOCAL", "READ_EXTERNAL", "WRITE_REVERSIBLE", "WRITE_COMPENSATABLE", "WRITE_IRREVERSIBLE", "FINANCIAL", "COMMUNICATION", "DEPLOYMENT", "SECURITY_SENSITIVE"]},
+        "approval_required": {"type": "boolean"},
+        "target_required": {"type": "boolean"},
+        "evidence_required": {"type": "boolean"},
+        "public_read_only": {"type": "boolean"},
+        "internal_sandbox_only": {"type": "boolean"},
+        "persistent_internal_mutation": {"type": "boolean"},
+        "external_mutation": {"type": "boolean"},
+        "communication": {"type": "boolean"},
+        "legal_commitment": {"type": "boolean"},
+        "description": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

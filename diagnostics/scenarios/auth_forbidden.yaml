@@ -1,0 +1,13 @@
+schema_version: regenexcalibur.diagnostic-scenario.v1
+scenario_id: auth_forbidden
+detection_code: AUTH_FORBIDDEN
+classification: AUTHORIZATION_DENIED
+remediation_mode: ESCALATE
+expected_blocker: PROVIDER_PERMISSION_REQUIRED
+observed_at: 2026-08-14T00:04:00Z
+injection:
+  endpoint_state: forbidden_fixture
+remediation_plan:
+  - stop without privilege escalation
+  - preserve the denial evidence
+  - request provider permission and operator review

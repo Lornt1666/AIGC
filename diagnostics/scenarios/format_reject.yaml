@@ -1,0 +1,13 @@
+schema_version: regenexcalibur.diagnostic-scenario.v1
+scenario_id: format_reject
+detection_code: FORMAT_REJECT_POST
+classification: SUBMISSION_SCHEMA_REJECTED
+remediation_mode: AUTO_LOCAL
+expected_blocker: null
+observed_at: 2026-08-14T00:05:00Z
+injection:
+  payload_state: invalid_fixture_schema
+remediation_plan:
+  - validate against the supplied fixture schema
+  - generate a corrected local payload candidate
+  - require operator approval before any submission
