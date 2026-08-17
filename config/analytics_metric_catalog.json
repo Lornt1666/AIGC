@@ -1,0 +1,275 @@
+{
+  "autonomous_behavior_change_allowed": false,
+  "catalog_content_sha256": "cb759dcf78fe7ab691c2e680f2d8bdb2ce70173bbbddb2db98570c905416b320",
+  "catalog_id": "AIGC-EVIDENCE-ANALYTICS-METRICS",
+  "catalog_status": "SLICE_A_DEFINITION_ONLY",
+  "catalog_version": "1.0.0",
+  "external_provider_action_authorized": false,
+  "generated_at": "2026-08-04T04:00:00Z",
+  "metrics": [
+    {
+      "accountable_owner_role": "EVIDENCE_GOVERNANCE_OPERATOR",
+      "activation_state": "DEFINED_NOT_MATERIALIZED",
+      "allowed_dimensions": [
+        "source_system",
+        "domain",
+        "work_type",
+        "source_state",
+        "target_state"
+      ],
+      "autonomous_behavior_change_allowed": false,
+      "binding": {
+        "exact_repository_revision_required": true,
+        "metric_catalog_version_required": true,
+        "source_sha256_required": true
+      },
+      "denominator": {
+        "description": "Count of distinct eligible entities entering or present in the declared source state for the same cohort and window.",
+        "eligibility": "Entity belongs to the exact declared source-state cohort and reporting window.",
+        "expression": "count(distinct entity_id where eligible=true and source_state cohort is fixed)",
+        "name": "eligible_entities_entering_source_state"
+      },
+      "deterministic_computation": {
+        "canonicalization": "RFC8785_COMPATIBLE_SORTED_JSON_SUBSET",
+        "decimal_precision": 28,
+        "rounding": "ROUND_HALF_EVEN",
+        "sort_keys": true
+      },
+      "eligibility_criteria": [
+        "The source and target states are declared before computation.",
+        "The eligible denominator and cohort window are version-bound."
+      ],
+      "evidence_requirements": [
+        "Exact source and target state definitions.",
+        "Source lineage digests and exact repository revision.",
+        "Eligible cohort membership evidence."
+      ],
+      "exclusions": [
+        "Expired authorizations are excluded from active pending cohorts.",
+        "Duplicate source records at the declared grain are rejected rather than deduplicated silently."
+      ],
+      "formula": "(numerator / denominator) * 100; denominator=0 => INSUFFICIENT_EVIDENCE",
+      "freshness_expectation": {
+        "maximum_age_seconds": 86400,
+        "on_stale": "STALE",
+        "on_unavailable": "INSUFFICIENT_EVIDENCE"
+      },
+      "grain": "One declared lifecycle transition pair per reporting window and controlled dimension set.",
+      "guardrails": [
+        "External-action and approval-boundary violations must remain exactly zero.",
+        "A denominator change requires a metric-version change.",
+        "No metric result may authorize a lifecycle transition."
+      ],
+      "insufficiency_conditions": [
+        "A mandatory source is unavailable or stale.",
+        "The eligible denominator is zero or undefined.",
+        "Transition lineage or exact repository revision is missing."
+      ],
+      "metric_id": "AIGC-METRIC-GPR",
+      "minimum_sample_size": 1,
+      "numerator": {
+        "description": "Count of eligible entities that reached the declared target state inside the reporting window.",
+        "eligibility": "Entity has an authoritative source, valid lineage, and is eligible for the declared transition.",
+        "expression": "count(distinct entity_id where eligible=true and transition_to=target_state)",
+        "name": "eligible_entities_reaching_target_state"
+      },
+      "outcome_claim_allowed": false,
+      "privacy_classification": "INTERNAL_METADATA_ONLY",
+      "purpose": "Measure where eligible governed work advances, waits, expires, fails, or requires operator intervention without treating raw stage counts as conversion.",
+      "reporting_window": {
+        "duration_seconds": 2592000,
+        "kind": "FIXED_PERIOD",
+        "timezone": "UTC"
+      },
+      "required_source_types": [
+        "ENTITY_TRANSITIONS",
+        "SOURCE_LINEAGE"
+      ],
+      "source_precedence": [
+        "CANONICAL_QUEST_STORE",
+        "PHASE_STATE_STORE",
+        "REVISION_BOUND_ARTIFACTS"
+      ],
+      "title": "Governed Progression Rate",
+      "unit": "PERCENT",
+      "version": "1.0.0"
+    },
+    {
+      "accountable_owner_role": "EVIDENCE_GOVERNANCE_OPERATOR",
+      "activation_state": "DEFINED_NOT_MATERIALIZED",
+      "allowed_dimensions": [
+        "scope_type",
+        "source_system",
+        "evidence_family",
+        "freshness_state"
+      ],
+      "autonomous_behavior_change_allowed": false,
+      "binding": {
+        "exact_repository_revision_required": true,
+        "metric_catalog_version_required": true,
+        "source_sha256_required": true
+      },
+      "denominator": {
+        "description": "All evidence records required for the exact evaluated scope.",
+        "eligibility": "Requirement is applicable to the evaluated scope and not explicitly NOT_APPLICABLE.",
+        "expression": "count(required evidence record in exact scope catalog)",
+        "name": "all_required_evidence_records"
+      },
+      "deterministic_computation": {
+        "canonicalization": "RFC8785_COMPATIBLE_SORTED_JSON_SUBSET",
+        "decimal_precision": 28,
+        "rounding": "ROUND_HALF_EVEN",
+        "sort_keys": true
+      },
+      "eligibility_criteria": [
+        "The evaluated scope and its exact evidence requirements are declared.",
+        "Every required record has a source locator and content digest."
+      ],
+      "evidence_requirements": [
+        "Versioned required-evidence catalog.",
+        "Lineage and freshness evidence for every applicable record.",
+        "Blocking data-quality finding inventory."
+      ],
+      "exclusions": [
+        "Optional evidence is excluded from the denominator unless the metric version says otherwise.",
+        "NOT_APPLICABLE requires an explicit reason and governing rule."
+      ],
+      "formula": "(numerator / denominator) * 100; any blocking finding forces FAIL; unavailable mandatory source => INSUFFICIENT_EVIDENCE",
+      "freshness_expectation": {
+        "maximum_age_seconds": 86400,
+        "on_stale": "STALE",
+        "on_unavailable": "INSUFFICIENT_EVIDENCE"
+      },
+      "grain": "One governed evaluation scope, required-evidence catalog version, and reporting window.",
+      "guardrails": [
+        "Hash-chain, immutability, secret, or privacy violations must equal zero.",
+        "Stale evidence cannot produce PASS or HEALTHY.",
+        "Blocking findings cannot be averaged into a passing aggregate."
+      ],
+      "insufficiency_conditions": [
+        "A mandatory source is unavailable.",
+        "A required record has missing or invalid lineage.",
+        "Freshness cannot be computed from trusted timestamps."
+      ],
+      "metric_id": "AIGC-METRIC-ECF",
+      "minimum_sample_size": 1,
+      "numerator": {
+        "description": "Required evidence records that pass schema, lineage, digest, and freshness validation.",
+        "eligibility": "Record is required by the exact scope and evidence catalog version.",
+        "expression": "count(required evidence record where lineage_valid=true and freshness=FRESH)",
+        "name": "valid_fresh_required_evidence_records"
+      },
+      "outcome_claim_allowed": false,
+      "privacy_classification": "INTERNAL_METADATA_ONLY",
+      "purpose": "Determine whether required evidence is complete, lineage-valid, and fresh enough for an operator or readiness decision.",
+      "reporting_window": {
+        "duration_seconds": 2592000,
+        "kind": "FIXED_PERIOD",
+        "timezone": "UTC"
+      },
+      "required_source_types": [
+        "EVIDENCE_REQUIREMENTS",
+        "DATA_QUALITY_FINDINGS",
+        "SOURCE_LINEAGE"
+      ],
+      "source_precedence": [
+        "REQUIRED_EVIDENCE_CATALOG",
+        "APPEND_ONLY_EVIDENCE",
+        "READINESS_RECEIPTS"
+      ],
+      "title": "Evidence Completeness and Freshness",
+      "unit": "PERCENT",
+      "version": "1.0.0"
+    },
+    {
+      "accountable_owner_role": "EVIDENCE_GOVERNANCE_OPERATOR",
+      "activation_state": "INACTIVE_SAMPLE_INSUFFICIENT",
+      "allowed_dimensions": [
+        "source_system",
+        "domain",
+        "work_type",
+        "score_band",
+        "outcome_class"
+      ],
+      "autonomous_behavior_change_allowed": false,
+      "binding": {
+        "exact_repository_revision_required": true,
+        "metric_catalog_version_required": true,
+        "source_sha256_required": true
+      },
+      "denominator": {
+        "description": "Count of predictions having sufficient real governed outcome evidence and an eligible sample cohort.",
+        "eligibility": "Outcome evidence is present, fresh, non-structural, and meets sample-sufficiency policy.",
+        "expression": "count(prediction where governed_outcome_evidence=PASS)",
+        "name": "all_eligible_predictions_with_governed_outcomes"
+      },
+      "deterministic_computation": {
+        "canonicalization": "RFC8785_COMPATIBLE_SORTED_JSON_SUBSET",
+        "decimal_precision": 28,
+        "rounding": "ROUND_HALF_EVEN",
+        "sort_keys": true
+      },
+      "eligibility_criteria": [
+        "Prediction and outcome definitions are immutable and versioned.",
+        "The cohort meets the minimum sample size before any aggregate is reported."
+      ],
+      "evidence_requirements": [
+        "Real governed outcome receipts linked to predictions.",
+        "Exact score and outcome definition versions.",
+        "Sample-sufficiency and cohort-selection receipt."
+      ],
+      "exclusions": [
+        "Structural repository evidence is not an outcome.",
+        "Missing or inferred outcomes are excluded and reported as insufficient evidence."
+      ],
+      "formula": "(numerator / denominator) * 100; inactive until minimum sample size and governed outcome evidence both pass",
+      "freshness_expectation": {
+        "maximum_age_seconds": 604800,
+        "on_stale": "STALE",
+        "on_unavailable": "INSUFFICIENT_EVIDENCE"
+      },
+      "grain": "One score definition version, outcome definition version, cohort, and reporting window.",
+      "guardrails": [
+        "No autonomous threshold or behavior change is permitted.",
+        "Small samples and missing outcomes must report INSUFFICIENT_EVIDENCE.",
+        "Production or business-success claims require separate runtime and outcome receipts."
+      ],
+      "insufficiency_conditions": [
+        "Real governed outcome evidence is unavailable.",
+        "The minimum sample size is not met.",
+        "Prediction or outcome definition versions are missing."
+      ],
+      "metric_id": "AIGC-METRIC-DQC",
+      "minimum_sample_size": 100,
+      "numerator": {
+        "description": "Count of sufficiently evidenced predictions whose declared class matches the later governed outcome.",
+        "eligibility": "Prediction and outcome are linked, version-bound, and independently evidenced.",
+        "expression": "count(prediction where class(score_band)=governed_outcome_class)",
+        "name": "calibrated_predictions_matching_governed_outcomes"
+      },
+      "outcome_claim_allowed": false,
+      "privacy_classification": "INTERNAL_METADATA_ONLY",
+      "purpose": "Define a future calibration contract comparing internal score bands with governed downstream outcomes without activating autonomous threshold changes.",
+      "reporting_window": {
+        "duration_seconds": 2592000,
+        "kind": "FIXED_PERIOD",
+        "timezone": "UTC"
+      },
+      "required_source_types": [
+        "PREDICTIONS",
+        "GOVERNED_OUTCOMES",
+        "SOURCE_LINEAGE"
+      ],
+      "source_precedence": [
+        "GOVERNED_OUTCOME_RECEIPTS",
+        "SCORE_DEFINITION_CATALOG",
+        "REVISION_BOUND_PREDICTIONS"
+      ],
+      "title": "Decision-Quality Calibration",
+      "unit": "PERCENT",
+      "version": "1.0.0"
+    }
+  ],
+  "production_activation_authorized": false,
+  "schema_version": "1.0.0"
+}

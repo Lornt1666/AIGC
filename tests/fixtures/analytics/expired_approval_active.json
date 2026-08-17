@@ -1,0 +1,22 @@
+{
+  "authoritative_source": {
+    "source_identifier": "quest-event-0001",
+    "source_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+    "source_system": "CANONICAL_QUEST_STORE"
+  },
+  "canonical_state_mutated": false,
+  "contradictory": false,
+  "eligible": true,
+  "entity_id": "QUEST-0001",
+  "entity_type": "AUTHORIZATION",
+  "evidence_state": "PASS",
+  "exact_repository_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "expires_at": "2026-08-03T00:00:00Z",
+  "expiry_state": "EXPIRED",
+  "external_action_performed": false,
+  "new_state": "ACTIVE_PENDING",
+  "prior_state": "QUALIFIED_CANDIDATE",
+  "transition_id": "TRANSITION-QUEST-20260804",
+  "transition_timestamp": "2026-08-04T03:00:00Z",
+  "validity_state": "VALID"
+}

@@ -1,0 +1,38 @@
+{
+  "canonical_state_mutated": false,
+  "claim_classification": "STRUCTURAL",
+  "computed_value": "80.0",
+  "denominator": "10",
+  "deterministic_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+  "dimensions": {
+    "source_state": "eligible",
+    "source_system": "phase_state_store"
+  },
+  "evidence_basis": "OBSERVED_RUNTIME",
+  "evidence_state": "PASS",
+  "exact_repository_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "external_action_performed": false,
+  "freshness_state": "FRESH",
+  "metric_catalog_version": "1.0.0",
+  "metric_id": "AIGC-METRIC-GPR",
+  "metric_version": "1.0.0",
+  "numerator": "8",
+  "observation_id": "OBS-GPR-20260804",
+  "reporting_window": {
+    "end": "2026-08-01T00:00:00Z",
+    "start": "2026-07-01T00:00:00Z"
+  },
+  "source_digests": [
+    "1111111111111111111111111111111111111111111111111111111111111111"
+  ],
+  "source_lineage": [
+    {
+      "evidence_reference": "evidence://phase-state/snapshot-20260804",
+      "lineage_id": "LINEAGE-PHASE-20260804",
+      "source_identifier": "phase-state-snapshot-20260804",
+      "source_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "source_system": "PHASE_STATE_STORE"
+    }
+  ],
+  "unit": "PERCENT"
+}

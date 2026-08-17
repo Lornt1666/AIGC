@@ -1,0 +1,112 @@
+{
+  "fixed_validation_now": "2026-08-04T04:00:00Z",
+  "negative": [
+    {
+      "expected_error_code": "SCHEMA_VALIDATION_FAILED",
+      "kind": "run_envelope",
+      "path": "missing_exact_revision.json"
+    },
+    {
+      "expected_error_code": "SCHEMA_VALIDATION_FAILED",
+      "kind": "lineage_reference",
+      "path": "missing_source_digest.json"
+    },
+    {
+      "expected_error_code": "SCHEMA_VALIDATION_FAILED",
+      "kind": "metric_observation",
+      "path": "missing_metric_definition_version.json"
+    },
+    {
+      "expected_error_code": "TIME_ORDER_INVALID",
+      "kind": "run_envelope",
+      "path": "invalid_time_ordering.json"
+    },
+    {
+      "expected_error_code": "TIMESTAMP_IMPLAUSIBLY_FUTURE",
+      "kind": "run_envelope",
+      "path": "future_timestamp.json"
+    },
+    {
+      "expected_error_code": "SCHEMA_VALIDATION_FAILED",
+      "kind": "data_quality_finding",
+      "path": "invalid_enum.json"
+    },
+    {
+      "expected_error_code": "CONFIDENCE_OUT_OF_RANGE",
+      "kind": "data_quality_finding",
+      "path": "invalid_range.json"
+    },
+    {
+      "expected_error_code": "EXPIRED_AUTHORIZATION_ACTIVE",
+      "kind": "entity_transition",
+      "path": "expired_approval_active.json"
+    },
+    {
+      "expected_error_code": "UNAVAILABLE_SOURCE_REPORTED_HEALTHY",
+      "kind": "run_envelope",
+      "path": "unavailable_source_healthy.json"
+    },
+    {
+      "expected_error_code": "STALE_SOURCE_REPORTED_FRESH",
+      "kind": "lineage_reference",
+      "path": "stale_source_fresh.json"
+    },
+    {
+      "expected_error_code": "SCHEMA_VALIDATION_FAILED",
+      "kind": "metric_definition",
+      "path": "metric_without_denominator.json"
+    },
+    {
+      "expected_error_code": "PRIVACY_FORBIDDEN_KEY",
+      "kind": "lineage_reference",
+      "path": "raw_secret_like_field.json"
+    },
+    {
+      "expected_error_code": "PRIVACY_FORBIDDEN_KEY",
+      "kind": "data_quality_finding",
+      "path": "unnecessary_personal_payload.json"
+    },
+    {
+      "expected_error_code": "STRUCTURAL_EVIDENCE_OVERCLAIM",
+      "kind": "metric_observation",
+      "path": "structural_evidence_as_production.json"
+    },
+    {
+      "expected_error_code": "DUPLICATE_DECLARED_GRAIN",
+      "kind": "observation_set",
+      "path": "duplicate_metric_observations.json"
+    },
+    {
+      "expected_error_code": "BLOCKING_FINDING_HIDDEN",
+      "kind": "aggregate_projection",
+      "path": "blocking_finding_averaged_pass.json"
+    }
+  ],
+  "schema_version": "1.0.0",
+  "valid": [
+    {
+      "kind": "run_envelope",
+      "path": "valid_run_envelope.json"
+    },
+    {
+      "kind": "lineage_reference",
+      "path": "valid_lineage_reference.json"
+    },
+    {
+      "kind": "entity_transition",
+      "path": "valid_entity_transition.json"
+    },
+    {
+      "kind": "metric_definition",
+      "path": "valid_metric_definition.json"
+    },
+    {
+      "kind": "metric_observation",
+      "path": "valid_metric_observation.json"
+    },
+    {
+      "kind": "data_quality_finding",
+      "path": "valid_data_quality_finding.json"
+    }
+  ]
+}

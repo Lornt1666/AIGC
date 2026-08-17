@@ -1,0 +1,14 @@
+{
+  "evidence_reference": "evidence://phase-state/snapshot-20260804",
+  "freshness_expectation_seconds": 60,
+  "freshness_state": "FRESH",
+  "lineage_id": "LINEAGE-PHASE-20260804",
+  "observed_at": "2026-01-01T00:00:00Z",
+  "privacy_classification": "INTERNAL_METADATA_ONLY",
+  "sensitive_payload_included": false,
+  "source_identifier": "phase-state-snapshot-20260804",
+  "source_revision_or_generation": "generation-1",
+  "source_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+  "source_status": "AVAILABLE",
+  "source_system": "PHASE_STATE_STORE"
+}

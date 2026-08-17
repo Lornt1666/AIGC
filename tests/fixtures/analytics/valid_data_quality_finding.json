@@ -1,0 +1,22 @@
+{
+  "affected_entity": {
+    "entity_id": "OBS-GPR-20260804",
+    "entity_type": "METRIC_OBSERVATION"
+  },
+  "blocking": false,
+  "confidence": "0.95",
+  "evidence_references": [
+    "evidence://analytics/observation/OBS-GPR-20260804"
+  ],
+  "evidence_state": "FAIL",
+  "exact_repository_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "finding_id": "DQF-LINEAGE-20260804",
+  "owner_role": "EVIDENCE_GOVERNANCE_OPERATOR",
+  "remediation_condition": "Publish the missing source lineage reference and validate its digest.",
+  "rule_id": "DQR-LINEAGE-PRESENT",
+  "sensitive_payload_included": false,
+  "severity": "MEDIUM",
+  "source_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+  "status": "OPEN",
+  "verification_condition": "Independent validation confirms the exact source digest and lineage reference."
+}

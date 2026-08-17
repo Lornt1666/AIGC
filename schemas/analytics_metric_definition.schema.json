@@ -1,0 +1,336 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Versioned metric definition with explicit grain, denominator, evidence, freshness, and non-authorizing boundaries.",
+  "properties": {
+    "accountable_owner_role": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "activation_state": {
+      "enum": [
+        "DEFINED_NOT_MATERIALIZED",
+        "INACTIVE_SAMPLE_INSUFFICIENT",
+        "ACTIVE_GOVERNED"
+      ]
+    },
+    "allowed_dimensions": {
+      "items": {
+        "pattern": "^[a-z][a-z0-9_]{0,63}$",
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "autonomous_behavior_change_allowed": {
+      "const": false
+    },
+    "binding": {
+      "additionalProperties": false,
+      "properties": {
+        "exact_repository_revision_required": {
+          "const": true
+        },
+        "metric_catalog_version_required": {
+          "const": true
+        },
+        "source_sha256_required": {
+          "const": true
+        }
+      },
+      "required": [
+        "exact_repository_revision_required",
+        "source_sha256_required",
+        "metric_catalog_version_required"
+      ],
+      "type": "object"
+    },
+    "denominator": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "maxLength": 1024,
+          "minLength": 1,
+          "type": "string"
+        },
+        "eligibility": {
+          "maxLength": 1024,
+          "minLength": 1,
+          "type": "string"
+        },
+        "expression": {
+          "maxLength": 512,
+          "minLength": 1,
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "expression",
+        "eligibility"
+      ],
+      "type": "object"
+    },
+    "deterministic_computation": {
+      "additionalProperties": false,
+      "properties": {
+        "canonicalization": {
+          "const": "RFC8785_COMPATIBLE_SORTED_JSON_SUBSET"
+        },
+        "decimal_precision": {
+          "maximum": 50,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "rounding": {
+          "enum": [
+            "ROUND_HALF_EVEN",
+            "EXACT_NO_ROUNDING"
+          ]
+        },
+        "sort_keys": {
+          "const": true
+        }
+      },
+      "required": [
+        "canonicalization",
+        "decimal_precision",
+        "rounding",
+        "sort_keys"
+      ],
+      "type": "object"
+    },
+    "eligibility_criteria": {
+      "items": {
+        "maxLength": 1024,
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "evidence_requirements": {
+      "items": {
+        "maxLength": 1024,
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "exclusions": {
+      "items": {
+        "maxLength": 1024,
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "formula": {
+      "maxLength": 512,
+      "minLength": 1,
+      "type": "string"
+    },
+    "freshness_expectation": {
+      "additionalProperties": false,
+      "properties": {
+        "maximum_age_seconds": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "on_stale": {
+          "const": "STALE"
+        },
+        "on_unavailable": {
+          "const": "INSUFFICIENT_EVIDENCE"
+        }
+      },
+      "required": [
+        "maximum_age_seconds",
+        "on_stale",
+        "on_unavailable"
+      ],
+      "type": "object"
+    },
+    "grain": {
+      "maxLength": 512,
+      "minLength": 1,
+      "type": "string"
+    },
+    "guardrails": {
+      "items": {
+        "maxLength": 1024,
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "insufficiency_conditions": {
+      "items": {
+        "maxLength": 1024,
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "metric_id": {
+      "pattern": "^AIGC-METRIC-[A-Z0-9-]{2,48}$",
+      "type": "string"
+    },
+    "minimum_sample_size": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "numerator": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "maxLength": 1024,
+          "minLength": 1,
+          "type": "string"
+        },
+        "eligibility": {
+          "maxLength": 1024,
+          "minLength": 1,
+          "type": "string"
+        },
+        "expression": {
+          "maxLength": 512,
+          "minLength": 1,
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "expression",
+        "eligibility"
+      ],
+      "type": "object"
+    },
+    "outcome_claim_allowed": {
+      "const": false
+    },
+    "privacy_classification": {
+      "enum": [
+        "PUBLIC_AGGREGATE",
+        "INTERNAL_METADATA_ONLY",
+        "CONFIDENTIAL_AGGREGATE"
+      ]
+    },
+    "purpose": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "type": "string"
+    },
+    "reporting_window": {
+      "additionalProperties": false,
+      "properties": {
+        "duration_seconds": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "kind": {
+          "enum": [
+            "POINT_IN_TIME",
+            "ROLLING",
+            "FIXED_PERIOD",
+            "LIFECYCLE"
+          ]
+        },
+        "timezone": {
+          "const": "UTC"
+        }
+      },
+      "required": [
+        "kind",
+        "duration_seconds",
+        "timezone"
+      ],
+      "type": "object"
+    },
+    "required_source_types": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "source_precedence": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "title": {
+      "maxLength": 160,
+      "minLength": 1,
+      "type": "string"
+    },
+    "unit": {
+      "enum": [
+        "PERCENT",
+        "COUNT",
+        "SECONDS",
+        "RATIO",
+        "BASIS_POINTS"
+      ]
+    },
+    "version": {
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "metric_id",
+    "version",
+    "title",
+    "purpose",
+    "accountable_owner_role",
+    "grain",
+    "reporting_window",
+    "numerator",
+    "denominator",
+    "formula",
+    "source_precedence",
+    "required_source_types",
+    "freshness_expectation",
+    "eligibility_criteria",
+    "exclusions",
+    "insufficiency_conditions",
+    "guardrails",
+    "allowed_dimensions",
+    "unit",
+    "deterministic_computation",
+    "privacy_classification",
+    "evidence_requirements",
+    "binding",
+    "activation_state",
+    "minimum_sample_size",
+    "autonomous_behavior_change_allowed",
+    "outcome_claim_allowed"
+  ],
+  "title": "AIGC Analytics Metric Definition",
+  "type": "object"
+}
