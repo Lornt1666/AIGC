@@ -25,6 +25,80 @@ CERTIFICATION_CHECKS = (
 )
 
 
+SURFACE_EVIDENCE_EFFECTS = {
+    "exact-head CI": "local_or_hosted_validation",
+    "immutable image digest": "registry_write",
+    "authenticated health/readiness": "deployed_read",
+    "bounded load/security/recovery": "deployed_mutation_and_traffic",
+    "deployed URL": "deployed_mutation_and_traffic",
+    "accessibility test": "public_origin_probe",
+    "browser compatibility matrix": "public_origin_probe",
+    "security headers": "public_origin_probe",
+    "observability": "deployed_mutation_and_traffic",
+    "MCP initialize": "local_or_hosted_validation",
+    "tool list": "local_or_hosted_validation",
+    "read-only workflow": "local_or_hosted_validation",
+    "confirmed-write workflow": "local_or_hosted_validation",
+    "host validation": "external_host_validation",
+    "allowlisted tool list": "local_or_hosted_validation",
+    "trust=false configuration": "local_or_hosted_validation",
+    "client validation": "local_or_hosted_validation",
+    "supported Xcode build": "local_or_hosted_validation",
+    "simulator tests": "local_or_hosted_validation",
+    "physical-device tests": "local_or_hosted_validation",
+    "privacy manifest": "local_or_hosted_validation",
+    "signing and TestFlight receipts": "app_store_submission",
+    "reproducible Android build": "local_or_hosted_validation",
+    "emulator matrix": "local_or_hosted_validation",
+    "data safety declaration": "local_or_hosted_validation",
+    "signed internal-track receipt": "play_store_submission",
+    "chain-specific threat model": "local_or_hosted_validation",
+    "independent contract audit": "local_or_hosted_validation",
+    "key custody design": "local_or_hosted_validation",
+    "legal review": "local_or_hosted_validation",
+    "testnet receipts": "local_or_hosted_validation",
+    "treasury and rollback plan": "local_or_hosted_validation",
+    "integrated commercial lineage": "local_or_hosted_validation",
+    "jurisdiction decision": "local_or_hosted_validation",
+    "versioned agreement": "external_communication",
+    "sandbox settlement": "local_or_hosted_validation",
+    "payment reconciliation": "local_or_hosted_validation",
+    "production billing authority": "financial_and_production_authority",
+}
+
+
+EFFECT_AUTHORITIES = {
+    "local_or_hosted_validation": (),
+    "registry_write": ("cloud_mutation_authorized",),
+    "deployed_read": ("public_traffic_authorized",),
+    "deployed_mutation_and_traffic": (
+        "cloud_mutation_authorized",
+        "public_traffic_authorized",
+    ),
+    "public_origin_probe": ("public_traffic_authorized",),
+    "external_host_validation": (
+        "cloud_mutation_authorized",
+        "public_traffic_authorized",
+    ),
+    "app_store_submission": ("app_store_submission_authorized",),
+    "play_store_submission": ("play_store_submission_authorized",),
+    "external_communication": ("external_communication_authorized",),
+    "financial_and_production_authority": (
+        "financial_action_authorized",
+        "production_activation_authorized",
+    ),
+}
+
+
+def _surface_required_authority(requirement: str) -> list[str]:
+    """Return the minimum authority for one classified evidence action."""
+    try:
+        effect = SURFACE_EVIDENCE_EFFECTS[requirement]
+        return list(EFFECT_AUTHORITIES[effect])
+    except KeyError as exc:
+        raise ValueError(f"Unclassified authority requirements: {requirement}") from exc
+
+
 def _slug(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "_", value.lower()).strip("_")
 
@@ -287,9 +361,7 @@ def build_evidence_program(registry: Mapping[str, Any], root: Path) -> tuple[dic
                 category="surface", subject_id=surface["id"], requirement=requirement,
                 required_for_v1=surface["required_for_v1"], status=status, receipt_ref=ref,
                 blockers=list(surface["blockers"]),
-                authority=["cloud_mutation_authorized", "public_traffic_authorized"]
-                if surface["kind"] in {"linux_server", "web", "chatgpt_mcp", "gemini_mcp"}
-                else [],
+                authority=_surface_required_authority(requirement),
                 narrative=f"{surface['kind']} evidence requirement; implementation status is {surface['status']}.",
             )
 

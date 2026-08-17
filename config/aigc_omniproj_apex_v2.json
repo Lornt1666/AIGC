@@ -1,0 +1,900 @@
+{
+  "schema_version": "aigc.omniproject-apex-infinity.v2",
+  "project": {
+    "id": "PROJECT_AIGC",
+    "name": "Artificial Intelligence Gladiator Coliseum (AIGC)",
+    "domain": "governed provider-neutral AI work operating system and certified universal website operator",
+    "owner": "Justice Gray Maciocha",
+    "primary_objective": "Help a person discover, obtain, learn, perform, verify, and sustain lawful digitally performable work through one governed interface without treating capability, memory, or evidence as authority.",
+    "target_state": "CONTROLLED_PRODUCTION",
+    "current_state": "LOCAL_RECONSTRUCTION_VALIDATED",
+    "system_boundary": "Repository-local Nexus core, policy, memory, evidence, connector passports, portable AI interfaces, and separately authorized provider or employer integrations; excludes unapproved external accounts, sites, employers, billing, communications, deployments, and physical work.",
+    "evidence_base_revision": "281908ce55de56fd8e128cd0cdd4f3de830c190c",
+    "external_actions_authorized": false
+  },
+  "sources": [
+    {
+      "id": "SOURCE_REPOSITORY",
+      "kind": "REPOSITORY",
+      "location": "/workspace/aigc-repair at evidence_base_revision",
+      "classification": "CURRENT_PRIMARY_EVIDENCE",
+      "authority_granted": false
+    },
+    {
+      "id": "SOURCE_AGENTS",
+      "kind": "REPOSITORY_DOCUMENT",
+      "location": "AGENTS.md",
+      "classification": "CURRENT_PRIMARY_EVIDENCE",
+      "authority_granted": false
+    },
+    {
+      "id": "SOURCE_READINESS",
+      "kind": "REPOSITORY_DOCUMENT",
+      "location": "docs/release/AIGC_MERGE_READINESS_PACKET_V1.md",
+      "classification": "CURRENT_SECONDARY_EVIDENCE",
+      "authority_granted": false
+    },
+    {
+      "id": "SOURCE_TESTS",
+      "kind": "TEST",
+      "location": "tests/ (fresh execution required after every material change)",
+      "classification": "CURRENT_PRIMARY_EVIDENCE",
+      "authority_granted": false
+    },
+    {
+      "id": "SOURCE_CHAT_REQUIREMENTS",
+      "kind": "CHAT_HISTORY",
+      "location": "user-provided AIGC product, employment, connector, submission, and OMNIPROJECT requirements",
+      "classification": "HISTORICAL_REQUIREMENT_NOT_CURRENT_EVIDENCE",
+      "authority_granted": false
+    },
+    {
+      "id": "SOURCE_CONNECTOR_RESEARCH",
+      "kind": "OFFICIAL_EXTERNAL_DOCUMENTATION",
+      "location": "official provider documentation cited in the research record; revalidate immediately before integration",
+      "classification": "REQUIRES_REVALIDATION",
+      "authority_granted": false
+    },
+    {
+      "id": "SOURCE_RESEARCH_STANDARDS",
+      "kind": "OFFICIAL_EXTERNAL_DOCUMENTATION",
+      "location": "O*NET Web Services 2.0, ESCO v1.2.1, NOC 2021 Version 1.0, and OpenAI Deep Research official documentation reviewed 2026-08-12; revalidate before provider execution",
+      "classification": "REQUIRES_REVALIDATION",
+      "authority_granted": false
+    }
+  ],
+  "entities": [
+    {
+      "id": "OWNER_JUSTICE",
+      "class": "Owner",
+      "name": "Justice Gray Maciocha",
+      "description": "Product owner and human authority source for repository-local product direction; not a substitute for provider, employer, site, legal, billing, or deployment authority.",
+      "owner": "self",
+      "authoritative_source": "SOURCE_CHAT_REQUIREMENTS"
+    },
+    {
+      "id": "SYSTEM_AIGC_NEXUS",
+      "class": "System",
+      "name": "AIGC Nexus",
+      "description": "Governed core that separates reasoning, verification, authority, execution, evidence, and memory.",
+      "owner": "OWNER_JUSTICE",
+      "authoritative_source": "SOURCE_REPOSITORY"
+    },
+    {
+      "id": "OBJECTIVE_GOVERNED_WORK",
+      "class": "Objective",
+      "name": "Governed end-to-end work lifecycle",
+      "description": "Support discovery through long-term work while remaining lawful, permissioned, occupation-qualified, and evidence-backed.",
+      "owner": "OWNER_JUSTICE",
+      "authoritative_source": "SOURCE_CHAT_REQUIREMENTS"
+    },
+    {
+      "id": "REQUIREMENT_SEPARATE_AUTHORITY",
+      "class": "Requirement",
+      "name": "Separate capability, evidence, memory, and authority",
+      "description": "No model output, connector result, test, receipt, or memory record can mint execution authority.",
+      "owner": "SYSTEM_AIGC_NEXUS",
+      "authoritative_source": "SOURCE_AGENTS"
+    },
+    {
+      "id": "REQUIREMENT_EMPLOYMENT_LIFECYCLE",
+      "class": "Requirement",
+      "name": "Durable employment lifecycle",
+      "description": "Represent opportunity, application, communication, hiring, onboarding, training, daily work, evaluation, payment evidence, and offboarding as explicit states.",
+      "owner": "SYSTEM_AIGC_NEXUS",
+      "authoritative_source": "SOURCE_CHAT_REQUIREMENTS"
+    },
+    {
+      "id": "REQUIREMENT_CONNECTOR_CERTIFICATION",
+      "class": "Requirement",
+      "name": "Per-site connector certification",
+      "description": "Each site, account, operation, destination, and terms version requires an exact capability passport before live use.",
+      "owner": "SYSTEM_AIGC_NEXUS",
+      "authoritative_source": "SOURCE_CHAT_REQUIREMENTS"
+    },
+    {
+      "id": "REQUIREMENT_OCCUPATION_GATE",
+      "class": "Requirement",
+      "name": "Occupation-specific competence and authority",
+      "description": "AIGC may perform only digitally feasible, lawful, contractually authorized tasks that pass an occupation-specific capability and supervision gate.",
+      "owner": "SYSTEM_AIGC_NEXUS",
+      "authoritative_source": "SOURCE_CHAT_REQUIREMENTS"
+    },
+    {
+      "id": "ACCEPTANCE_AUTHORITY_SEPARATION",
+      "class": "AcceptanceCriterion",
+      "name": "Authority separation is enforced",
+      "description": "Every consequential execution path rejects absent, expired, mismatched, reused, or caller-fabricated authority before credential access or dispatch.",
+      "owner": "COMPONENT_VERIFIER",
+      "authoritative_source": "SOURCE_AGENTS"
+    },
+    {
+      "id": "TEST_AUTHORITY_SEPARATION",
+      "class": "Test",
+      "name": "Authority and autonomy adversarial suite",
+      "description": "Repository tests for default deny, exact permit binding, emergency stop, and no authority from evidence or memory.",
+      "owner": "COMPONENT_VERIFIER",
+      "authoritative_source": "SOURCE_TESTS"
+    },
+    {
+      "id": "EVIDENCE_AUTHORITY_LOCAL",
+      "class": "Evidence",
+      "name": "Local authority-boundary test result",
+      "description": "Fresh local test output supports only the exact reconstruction and becomes stale after a material change.",
+      "owner": "COMPONENT_VERIFIER",
+      "authoritative_source": "SOURCE_TESTS"
+    },
+    {
+      "id": "ACCEPTANCE_LIFECYCLE_DURABLE",
+      "class": "AcceptanceCriterion",
+      "name": "Employment lifecycle resumes durably",
+      "description": "A years-long opportunity-to-offboarding workflow survives interruption without duplicate mutation and preserves tenant-isolated history.",
+      "owner": "SYSTEM_AIGC_NEXUS",
+      "authoritative_source": "SOURCE_CHAT_REQUIREMENTS"
+    },
+    {
+      "id": "TEST_LIFECYCLE_RECOVERY",
+      "class": "Test",
+      "name": "Durable employment lifecycle recovery test",
+      "description": "Planned crash, replay, idempotency, reconciliation, and offboarding test suite.",
+      "owner": "COMPONENT_VERIFIER",
+      "authoritative_source": "SOURCE_CHAT_REQUIREMENTS"
+    },
+    {
+      "id": "EVIDENCE_LIFECYCLE_GAP",
+      "class": "Evidence",
+      "name": "Durable lifecycle implementation gap",
+      "description": "The current reconstruction contains no complete opportunity-to-offboarding durable workflow implementation.",
+      "owner": "COMPONENT_VERIFIER",
+      "authoritative_source": "SOURCE_REPOSITORY"
+    },
+    {
+      "id": "ACCEPTANCE_CONNECTOR_CERTIFIED",
+      "class": "AcceptanceCriterion",
+      "name": "Every enabled live connector operation is certified",
+      "description": "Tool catalog, exact identity, terms, scopes, side effects, retries, reconciliation, and expiry match a current passport.",
+      "owner": "COMPONENT_CONNECTOR_REGISTRY",
+      "authoritative_source": "SOURCE_CHAT_REQUIREMENTS"
+    },
+    {
+      "id": "TEST_CONNECTOR_PASSPORT",
+      "class": "Test",
+      "name": "Connector passport semantic validator",
+      "description": "Rejects live mutations for blocked, expired, revoked, handoff-only, draft-only, read-only, or unimplemented connector capabilities.",
+      "owner": "COMPONENT_VERIFIER",
+      "authoritative_source": "SOURCE_TESTS"
+    },
+    {
+      "id": "EVIDENCE_CONNECTORS_BLOCKED",
+      "class": "Evidence",
+      "name": "Connector enablement truth",
+      "description": "The machine-readable registry records zero currently certified live mutation capabilities.",
+      "owner": "COMPONENT_CONNECTOR_REGISTRY",
+      "authoritative_source": "SOURCE_REPOSITORY"
+    },
+    {
+      "id": "ACCEPTANCE_OCCUPATION_COMPETENT",
+      "class": "AcceptanceCriterion",
+      "name": "Occupation capability is independently demonstrated",
+      "description": "A qualified employer or evaluator accepts measured task quality within an explicit scope, autonomy tier, jurisdiction, and validity period.",
+      "owner": "qualified employer or evaluator",
+      "authoritative_source": "SOURCE_CHAT_REQUIREMENTS"
+    },
+    {
+      "id": "TEST_OCCUPATION_EVALUATION",
+      "class": "Test",
+      "name": "Occupation-specific independent evaluation",
+      "description": "Planned shadow and supervised evaluation with quality, correction, timeliness, safety, privacy, and revocation gates.",
+      "owner": "qualified employer or evaluator",
+      "authoritative_source": "SOURCE_CHAT_REQUIREMENTS"
+    },
+    {
+      "id": "EVIDENCE_OCCUPATION_GAP",
+      "class": "Evidence",
+      "name": "Occupation certification gap",
+      "description": "No current employer-issued or evaluator-issued occupation credential exists in this reconstruction.",
+      "owner": "COMPONENT_VERIFIER",
+      "authoritative_source": "SOURCE_REPOSITORY"
+    },
+    {
+      "id": "COMPONENT_TOOLBROKER",
+      "class": "Component",
+      "name": "Epistemic Tool Broker",
+      "description": "Default-deny policy admission boundary that does not itself dispatch or authorize actions.",
+      "owner": "SYSTEM_AIGC_NEXUS",
+      "authoritative_source": "SOURCE_REPOSITORY"
+    },
+    {
+      "id": "COMPONENT_VERIFIER",
+      "class": "Component",
+      "name": "Deterministic Verifier",
+      "description": "Read-only verifier of claims and artifacts; verification does not grant authority.",
+      "owner": "SYSTEM_AIGC_NEXUS",
+      "authoritative_source": "SOURCE_REPOSITORY"
+    },
+    {
+      "id": "COMPONENT_MEMORY",
+      "class": "Component",
+      "name": "Governed occupational memory",
+      "description": "Tenant-isolated facts, procedures, episodic history, and competency evidence subject to provenance, retention, revocation, and admission controls.",
+      "owner": "SYSTEM_AIGC_NEXUS",
+      "authoritative_source": "SOURCE_REPOSITORY"
+    },
+    {
+      "id": "COMPONENT_CONNECTOR_REGISTRY",
+      "class": "Component",
+      "name": "Employment connector registry",
+      "description": "Machine-readable truth surface for Gmail, Indeed, generic websites, employer systems, and future portable AI ports.",
+      "owner": "SYSTEM_AIGC_NEXUS",
+      "authoritative_source": "SOURCE_REPOSITORY"
+    },
+    {
+      "id": "INTERFACE_MCP_A2A",
+      "class": "Interface",
+      "name": "Portable MCP and A2A integration fabric",
+      "description": "A local tool-only MCP facade exposes governed status, action assessment, dry-run, Deep Research planning, and employer-sandbox tools; A2A and hosted authenticated transport remain future work.",
+      "owner": "SYSTEM_AIGC_NEXUS",
+      "authoritative_source": "SOURCE_REPOSITORY"
+    },
+    {
+      "id": "CONNECTOR_GMAIL",
+      "class": "Interface",
+      "name": "Gmail connector",
+      "description": "Target per-user OAuth connector for bounded search, selected-thread read, draft, and later separately governed send.",
+      "owner": "third-party:Google",
+      "authoritative_source": "SOURCE_CONNECTOR_RESEARCH"
+    },
+    {
+      "id": "CONNECTOR_INDEED",
+      "class": "Interface",
+      "name": "Indeed connector",
+      "description": "Partner-permission-gated job discovery, application handoff, and communication surface.",
+      "owner": "third-party:Indeed",
+      "authoritative_source": "SOURCE_CONNECTOR_RESEARCH"
+    },
+    {
+      "id": "CONNECTOR_GENERIC_WEB",
+      "class": "Interface",
+      "name": "Certified universal website operator",
+      "description": "Target manifest-driven browser/API operator; every domain and operation remains human handoff until separately certified.",
+      "owner": "site-specific-third-party",
+      "authoritative_source": "SOURCE_CHAT_REQUIREMENTS"
+    },
+    {
+      "id": "COMPONENT_RESEARCH_PROCUREMENT",
+      "class": "Component",
+      "name": "Governed Deep Research procurement",
+      "description": "Decision-bound, provenance-first research planning boundary that requires primary sources, disconfirming evidence, secret screening, and independent verification without granting authority.",
+      "owner": "SYSTEM_AIGC_NEXUS",
+      "authoritative_source": "SOURCE_REPOSITORY"
+    },
+    {
+      "id": "REQUIREMENT_RESEARCH_PROVENANCE",
+      "class": "Requirement",
+      "name": "Research claims require current provenance and challenge",
+      "description": "Every material research claim must resolve to admitted source metadata, confidence, temporal validity, and disconfirming analysis before decision use.",
+      "owner": "COMPONENT_RESEARCH_PROCUREMENT",
+      "authoritative_source": "SOURCE_RESEARCH_STANDARDS"
+    },
+    {
+      "id": "ACCEPTANCE_RESEARCH_TRACEABLE",
+      "class": "AcceptanceCriterion",
+      "name": "Research packet is traceable and decision-ready",
+      "description": "All material claims have source provenance, zero unsupported claims, required primary-source diversity, explicit conflicts, and no credential material.",
+      "owner": "COMPONENT_VERIFIER",
+      "authoritative_source": "SOURCE_RESEARCH_STANDARDS"
+    },
+    {
+      "id": "TEST_RESEARCH_PROCUREMENT",
+      "class": "Test",
+      "name": "Deep Research procurement contract suite",
+      "description": "Deterministic tests verify canonical stages, source gates, zero provider calls, secret rejection, no caller authority, and blocked external dispatch.",
+      "owner": "COMPONENT_VERIFIER",
+      "authoritative_source": "SOURCE_TESTS"
+    },
+    {
+      "id": "EVIDENCE_RESEARCH_LOCAL",
+      "class": "Evidence",
+      "name": "Local Deep Research procurement verification",
+      "description": "Fresh schema, unit, adversarial, MCP contract, and zero-egress results support only the local planning boundary.",
+      "owner": "COMPONENT_VERIFIER",
+      "authoritative_source": "SOURCE_TESTS"
+    }
+  ],
+  "relationships": [
+    {"id": "REL_OWNER_OWNS_PROJECT", "subject": "OWNER_JUSTICE", "predicate": "owns", "object": "SYSTEM_AIGC_NEXUS", "evidence_source": "SOURCE_CHAT_REQUIREMENTS"},
+    {"id": "REL_SYSTEM_OPTIMIZES_OBJECTIVE", "subject": "SYSTEM_AIGC_NEXUS", "predicate": "optimizes", "object": "OBJECTIVE_GOVERNED_WORK", "evidence_source": "SOURCE_CHAT_REQUIREMENTS"},
+    {"id": "REL_OBJECTIVE_REQUIRES_AUTHORITY", "subject": "OBJECTIVE_GOVERNED_WORK", "predicate": "requires", "object": "REQUIREMENT_SEPARATE_AUTHORITY", "evidence_source": "SOURCE_AGENTS"},
+    {"id": "REL_OBJECTIVE_REQUIRES_LIFECYCLE", "subject": "OBJECTIVE_GOVERNED_WORK", "predicate": "requires", "object": "REQUIREMENT_EMPLOYMENT_LIFECYCLE", "evidence_source": "SOURCE_CHAT_REQUIREMENTS"},
+    {"id": "REL_OBJECTIVE_REQUIRES_CONNECTORS", "subject": "OBJECTIVE_GOVERNED_WORK", "predicate": "requires", "object": "REQUIREMENT_CONNECTOR_CERTIFICATION", "evidence_source": "SOURCE_CHAT_REQUIREMENTS"},
+    {"id": "REL_OBJECTIVE_REQUIRES_OCCUPATION", "subject": "OBJECTIVE_GOVERNED_WORK", "predicate": "requires", "object": "REQUIREMENT_OCCUPATION_GATE", "evidence_source": "SOURCE_CHAT_REQUIREMENTS"},
+    {"id": "REL_REQUIREMENT_AUTHORITY_ACCEPTANCE", "subject": "REQUIREMENT_SEPARATE_AUTHORITY", "predicate": "requires", "object": "ACCEPTANCE_AUTHORITY_SEPARATION", "evidence_source": "SOURCE_AGENTS"},
+    {"id": "REL_TEST_AUTHORITY_TESTS_ACCEPTANCE", "subject": "TEST_AUTHORITY_SEPARATION", "predicate": "tests", "object": "ACCEPTANCE_AUTHORITY_SEPARATION", "evidence_source": "SOURCE_TESTS"},
+    {"id": "REL_EVIDENCE_AUTHORITY_SUPPORTS_ACCEPTANCE", "subject": "EVIDENCE_AUTHORITY_LOCAL", "predicate": "supports", "object": "ACCEPTANCE_AUTHORITY_SEPARATION", "evidence_source": "SOURCE_TESTS"},
+    {"id": "REL_REQUIREMENT_LIFECYCLE_ACCEPTANCE", "subject": "REQUIREMENT_EMPLOYMENT_LIFECYCLE", "predicate": "requires", "object": "ACCEPTANCE_LIFECYCLE_DURABLE", "evidence_source": "SOURCE_CHAT_REQUIREMENTS"},
+    {"id": "REL_TEST_LIFECYCLE_TESTS_ACCEPTANCE", "subject": "TEST_LIFECYCLE_RECOVERY", "predicate": "tests", "object": "ACCEPTANCE_LIFECYCLE_DURABLE", "evidence_source": "SOURCE_CHAT_REQUIREMENTS"},
+    {"id": "REL_EVIDENCE_LIFECYCLE_CONTRADICTS_ACCEPTANCE", "subject": "EVIDENCE_LIFECYCLE_GAP", "predicate": "contradicts", "object": "ACCEPTANCE_LIFECYCLE_DURABLE", "evidence_source": "SOURCE_REPOSITORY"},
+    {"id": "REL_REQUIREMENT_CONNECTOR_ACCEPTANCE", "subject": "REQUIREMENT_CONNECTOR_CERTIFICATION", "predicate": "requires", "object": "ACCEPTANCE_CONNECTOR_CERTIFIED", "evidence_source": "SOURCE_CHAT_REQUIREMENTS"},
+    {"id": "REL_TEST_CONNECTOR_TESTS_ACCEPTANCE", "subject": "TEST_CONNECTOR_PASSPORT", "predicate": "tests", "object": "ACCEPTANCE_CONNECTOR_CERTIFIED", "evidence_source": "SOURCE_TESTS"},
+    {"id": "REL_EVIDENCE_CONNECTOR_SUPPORTS_BLOCK", "subject": "EVIDENCE_CONNECTORS_BLOCKED", "predicate": "supports", "object": "ACCEPTANCE_CONNECTOR_CERTIFIED", "evidence_source": "SOURCE_REPOSITORY"},
+    {"id": "REL_REQUIREMENT_OCCUPATION_ACCEPTANCE", "subject": "REQUIREMENT_OCCUPATION_GATE", "predicate": "requires", "object": "ACCEPTANCE_OCCUPATION_COMPETENT", "evidence_source": "SOURCE_CHAT_REQUIREMENTS"},
+    {"id": "REL_TEST_OCCUPATION_TESTS_ACCEPTANCE", "subject": "TEST_OCCUPATION_EVALUATION", "predicate": "tests", "object": "ACCEPTANCE_OCCUPATION_COMPETENT", "evidence_source": "SOURCE_CHAT_REQUIREMENTS"},
+    {"id": "REL_EVIDENCE_OCCUPATION_CONTRADICTS_ACCEPTANCE", "subject": "EVIDENCE_OCCUPATION_GAP", "predicate": "contradicts", "object": "ACCEPTANCE_OCCUPATION_COMPETENT", "evidence_source": "SOURCE_REPOSITORY"},
+    {"id": "REL_TOOLBROKER_CONTROLS_CONNECTORS", "subject": "COMPONENT_TOOLBROKER", "predicate": "controls", "object": "COMPONENT_CONNECTOR_REGISTRY", "evidence_source": "SOURCE_REPOSITORY"},
+    {"id": "REL_VERIFIER_TESTS_SYSTEM", "subject": "COMPONENT_VERIFIER", "predicate": "tests", "object": "SYSTEM_AIGC_NEXUS", "evidence_source": "SOURCE_REPOSITORY"},
+    {"id": "REL_MEMORY_SUPPORTS_OBJECTIVE", "subject": "COMPONENT_MEMORY", "predicate": "supports", "object": "OBJECTIVE_GOVERNED_WORK", "evidence_source": "SOURCE_REPOSITORY"},
+    {"id": "REL_REGISTRY_CONTAINS_GMAIL", "subject": "COMPONENT_CONNECTOR_REGISTRY", "predicate": "contains", "object": "CONNECTOR_GMAIL", "evidence_source": "SOURCE_REPOSITORY"},
+    {"id": "REL_REGISTRY_CONTAINS_INDEED", "subject": "COMPONENT_CONNECTOR_REGISTRY", "predicate": "contains", "object": "CONNECTOR_INDEED", "evidence_source": "SOURCE_REPOSITORY"},
+    {"id": "REL_REGISTRY_CONTAINS_WEB", "subject": "COMPONENT_CONNECTOR_REGISTRY", "predicate": "contains", "object": "CONNECTOR_GENERIC_WEB", "evidence_source": "SOURCE_REPOSITORY"},
+    {"id": "REL_MCP_INTERFACES_SYSTEM", "subject": "INTERFACE_MCP_A2A", "predicate": "interfaces_with", "object": "SYSTEM_AIGC_NEXUS", "evidence_source": "SOURCE_CHAT_REQUIREMENTS"},
+    {"id": "REL_OBJECTIVE_REQUIRES_RESEARCH", "subject": "OBJECTIVE_GOVERNED_WORK", "predicate": "requires", "object": "REQUIREMENT_RESEARCH_PROVENANCE", "evidence_source": "SOURCE_CHAT_REQUIREMENTS"},
+    {"id": "REL_REQUIREMENT_RESEARCH_ACCEPTANCE", "subject": "REQUIREMENT_RESEARCH_PROVENANCE", "predicate": "requires", "object": "ACCEPTANCE_RESEARCH_TRACEABLE", "evidence_source": "SOURCE_RESEARCH_STANDARDS"},
+    {"id": "REL_TEST_RESEARCH_TESTS_ACCEPTANCE", "subject": "TEST_RESEARCH_PROCUREMENT", "predicate": "tests", "object": "ACCEPTANCE_RESEARCH_TRACEABLE", "evidence_source": "SOURCE_TESTS"},
+    {"id": "REL_EVIDENCE_RESEARCH_SUPPORTS_ACCEPTANCE", "subject": "EVIDENCE_RESEARCH_LOCAL", "predicate": "supports", "object": "ACCEPTANCE_RESEARCH_TRACEABLE", "evidence_source": "SOURCE_TESTS"},
+    {"id": "REL_RESEARCH_COMPONENT_SUPPORTS_REQUIREMENT", "subject": "COMPONENT_RESEARCH_PROCUREMENT", "predicate": "supports", "object": "REQUIREMENT_RESEARCH_PROVENANCE", "evidence_source": "SOURCE_REPOSITORY"}
+  ],
+  "states": [
+    {"id": "DISCOVERED", "description": "Project or opportunity is observed but not admitted.", "terminal": false},
+    {"id": "MODELED", "description": "Ontology, requirements, constraints, and evidence baseline are machine-readable.", "terminal": false},
+    {"id": "LOCAL_RECONSTRUCTION_VALIDATED", "description": "The reconstructed repository passes its local canonical test suite but has no live authority.", "terminal": false},
+    {"id": "SANDBOX_VALIDATED", "description": "An exact connector and occupation pack pass zero-egress simulation and adversarial verification.", "terminal": false},
+    {"id": "CONTROLLED_PRODUCTION", "description": "Exact connectors and occupation packs operate under current external permissions, identity, permits, monitoring, and rollback.", "terminal": false},
+    {"id": "BLOCKED_EXTERNAL", "description": "A required provider, employer, account, legal, billing, identity, or deployment dependency is absent.", "terminal": true},
+    {"id": "RECONCILIATION_REQUIRED", "description": "An external dispatch may have occurred but its outcome is unknown; mutation retry is prohibited.", "terminal": true},
+    {"id": "REVOKED", "description": "Authority, consent, certification, or connector access has been revoked.", "terminal": true}
+  ],
+  "transitions": [
+    {
+      "id": "TRANSITION_DISCOVER_LOCAL_VALIDATION",
+      "from": "DISCOVERED", "to": "LOCAL_RECONSTRUCTION_VALIDATED",
+      "preconditions": ["repository-local change authority exists", "missing dependency is localized", "repair scope is bounded"],
+      "postconditions": ["canonical local suite collects", "canonical local suite passes", "no live action is performed"],
+      "authority_required": false,
+      "verification": "fresh full local test execution and working-tree inspection"
+    },
+    {
+      "id": "TRANSITION_DISCOVER_MODEL",
+      "from": "DISCOVERED", "to": "MODELED",
+      "preconditions": ["significant terms extracted", "source classifications recorded"],
+      "postconditions": ["entities and relationships resolve", "constraints and unknowns are explicit"],
+      "authority_required": false,
+      "verification": "schema plus semantic ontology validation"
+    },
+    {
+      "id": "TRANSITION_LOCAL_MODEL",
+      "from": "LOCAL_RECONSTRUCTION_VALIDATED", "to": "MODELED",
+      "preconditions": ["repository baseline is known", "project requirements and historical claims are classified"],
+      "postconditions": ["ontology is schema-valid", "semantic invariants pass", "external blockers remain explicit"],
+      "authority_required": false,
+      "verification": "schema plus semantic ontology validation and adversarial tests"
+    },
+    {
+      "id": "TRANSITION_MODEL_SANDBOX",
+      "from": "MODELED", "to": "SANDBOX_VALIDATED",
+      "preconditions": ["bounded capability or occupation pack exists", "zero-egress fixtures exist", "acceptance thresholds are defined"],
+      "postconditions": ["sandbox scenarios pass", "adversarial scenarios pass", "no live authority is inferred"],
+      "authority_required": false,
+      "verification": "exact capability-pack tests and sanitized sandbox receipt"
+    },
+    {
+      "id": "TRANSITION_MODEL_BLOCKED_EXTERNAL",
+      "from": "MODELED", "to": "BLOCKED_EXTERNAL",
+      "preconditions": ["a mandatory external dependency is identified", "repository-local alternatives cannot establish it"],
+      "postconditions": ["owner and unlock evidence are recorded", "unsafe capability remains disabled"],
+      "authority_required": false,
+      "verification": "blocker register and connector passport validation"
+    },
+    {
+      "id": "TRANSITION_LOCAL_SANDBOX",
+      "from": "LOCAL_RECONSTRUCTION_VALIDATED", "to": "SANDBOX_VALIDATED",
+      "preconditions": ["exact connector passport exists", "occupation pack exists", "no-egress test environment exists"],
+      "postconditions": ["happy and adversarial scenarios pass", "receipts contain no secrets", "live mutations remain zero"],
+      "authority_required": false,
+      "verification": "fresh exact-tree tests and sandbox receipt"
+    },
+    {
+      "id": "TRANSITION_SANDBOX_PRODUCTION",
+      "from": "SANDBOX_VALIDATED", "to": "CONTROLLED_PRODUCTION",
+      "preconditions": ["provider and site permission current", "exact user or employer identity bound", "one-use action permit active", "budget and destination bound", "rollback and reconciliation tested"],
+      "postconditions": ["one authorized mutation", "immutable outcome receipt", "post-action verification complete"],
+      "authority_required": true,
+      "verification": "independent exact-resource readback and receipt validation"
+    },
+    {
+      "id": "TRANSITION_ANY_RECONCILIATION",
+      "from": "CONTROLLED_PRODUCTION", "to": "RECONCILIATION_REQUIRED",
+      "preconditions": ["dispatch attempted", "outcome cannot be proven"],
+      "postconditions": ["automatic retry disabled", "read-only reconciliation required"],
+      "authority_required": false,
+      "verification": "transport audit and operation-key reconciliation"
+    },
+    {
+      "id": "TRANSITION_ANY_REVOKED",
+      "from": "CONTROLLED_PRODUCTION", "to": "REVOKED",
+      "preconditions": ["user, employer, connector, occupation, or system stop asserted"],
+      "postconditions": ["new dispatch denied", "credentials revoked or expired", "offboarding and retention procedures started"],
+      "authority_required": true,
+      "verification": "revocation readback and denied-action canary"
+    }
+  ],
+  "construct_profile": [
+    {"dimension": "material", "current": "digital and informational", "target": "digital, social, and economic hybrid", "reason": "work changes external human and business systems", "benefits": ["captures social and commercial consequences"], "risks": ["digital controls may not capture legal or human harm"], "transition_requirements": ["stakeholder and data-flow maps", "jurisdiction-specific action classes"], "verification": "data-flow, side-effect, and stakeholder maps"},
+    {"dimension": "structure", "current": "modular layered monolith", "target": "provider-neutral core with plugin-based connectors and durable workflow boundaries", "reason": "one policy core should govern multiple AI and employment surfaces", "benefits": ["high cohesion", "portable policy enforcement"], "risks": ["plugin contract drift", "premature distribution"], "transition_requirements": ["versioned connector contract", "one authoritative registry"], "verification": "dependency and interface contract tests"},
+    {"dimension": "control", "current": "default-deny human-authorized", "target": "closed-loop bounded autonomy with human-on-the-loop and mandatory human gates for legal or high-impact decisions", "reason": "one-click usability must not imply universal authority", "benefits": ["bounded autonomy", "visible intervention points"], "risks": ["approval fatigue", "overbroad permits"], "transition_requirements": ["one-use permit service", "multi-level emergency stop"], "verification": "policy decision and permit consumption tests"},
+    {"dimension": "behavior", "current": "deterministic controls around probabilistic models", "target": "adaptive but policy-constrained and independently verified", "reason": "model variability must not alter mandatory controls", "benefits": ["learning within stable guardrails"], "risks": ["model drift", "false confidence"], "transition_requirements": ["continuous evaluation", "abstention and downgrade paths"], "verification": "continuous occupation-specific evaluation"},
+    {"dimension": "state", "current": "transactional plus append-only evidence", "target": "durable event history with tenant-isolated memory and create-only receipts", "reason": "employment can last years and must recover after outages", "benefits": ["crash recovery", "auditable history"], "risks": ["privacy retention", "replay errors"], "transition_requirements": ["retention and deletion policy", "idempotent workflow states"], "verification": "crash recovery, replay, and immutability tests"},
+    {"dimension": "agency", "current": "assisted and locally agentic", "target": "multi-agent collaboration only through bounded MCP/A2A capabilities", "reason": "portability without an unrestricted bot", "benefits": ["provider neutrality", "specialist delegation"], "risks": ["delegation amplification", "authority confusion"], "transition_requirements": ["explicit tool allowlists", "server-side permit validation"], "verification": "tool allowlist and delegation boundary tests"},
+    {"dimension": "criticality", "current": "prototype with business-critical ambitions", "target": "occupation-specific criticality classifications", "reason": "tax, legal, health, finance, and physical work require different professional gates", "benefits": ["risk-proportionate governance"], "risks": ["misclassification", "scope creep"], "transition_requirements": ["occupation risk taxonomy", "qualified evaluator acceptance"], "verification": "capability-pack admission decision"},
+    {"dimension": "environment", "current": "local reconstruction", "target": "sandbox then controlled production per connector", "reason": "repository tests cannot prove external integration", "benefits": ["progressive evidence", "limited blast radius"], "risks": ["sandbox-production divergence"], "transition_requirements": ["exact environment identity", "controlled canary and rollback"], "verification": "signed environment and connector receipts"},
+    {"dimension": "scale", "current": "single repository", "target": "ecosystem of user, employer, AI-provider, and site integrations", "reason": "the desired work OS spans organizational boundaries", "benefits": ["broad work portability"], "risks": ["tenant leakage", "dependency concentration"], "transition_requirements": ["tenant isolation", "capacity and dependency tests"], "verification": "tenant isolation, load, and governance tests"},
+    {"dimension": "reversibility", "current": "repository edits are reversible", "target": "external actions classified from reversible through legally irreversible", "reason": "applications, messages, contracts, payments, and filings have different consequences", "benefits": ["risk-matched approval and recovery"], "risks": ["incorrectly labeling irreversible actions reversible"], "transition_requirements": ["consequence classifier", "compensation and reconciliation procedures"], "verification": "action-intent classification and rollback/reconciliation evidence"}
+  ],
+  "methodology_stack": [
+    {
+      "id": "METHOD_DDD_C4",
+      "name": "Domain-Driven Design plus C4",
+      "problem": "Separate employment, connector, authority, evidence, memory, and occupation concepts without semantic collapse.",
+      "selection_rationale": "The project is a multi-boundary domain system whose failure modes often originate in ambiguous concepts and interfaces.",
+      "entry_criteria": ["bounded contexts identifiable", "material actors and data flows known"],
+      "required_inputs": ["canonical terms", "stakeholder map", "current component inventory"],
+      "artifacts": ["ontology", "context map", "interface contracts", "architecture decisions"],
+      "limitations": ["does not prove runtime correctness", "can become ceremonial without executable contracts"],
+      "rejected_alternatives": ["unstructured feature-first architecture", "premature microservices"],
+      "exit_criteria": ["core terms have unique meanings", "interfaces have owners and failure semantics"],
+      "evidence_produced": ["schema-validated ontology", "semantic reference tests"],
+      "fit_components": {"problem": 0.94, "domain": 0.94, "risk": 0.94, "maturity": 0.94, "evidence": 0.94, "regulatory": 0.94, "resource": 0.94, "stakeholder": 0.94},
+      "fit_score": 0.94
+    },
+    {
+      "id": "METHOD_DEVSECOPS_SRE",
+      "name": "DevSecOps plus Site Reliability Engineering",
+      "problem": "Build, release, operate, observe, stop, and recover a long-lived work platform.",
+      "selection_rationale": "The target requires exact artifacts, durable controls, SLOs, incident response, and rollback.",
+      "entry_criteria": ["versioned code exists", "deployment environments identified"],
+      "required_inputs": ["exact source identity", "runtime topology", "failure and recovery objectives"],
+      "artifacts": ["CI evidence", "SLOs", "runbooks", "rollback plan", "incident receipts"],
+      "limitations": ["cannot provide provider permission", "local CI cannot prove production health"],
+      "rejected_alternatives": ["manual unversioned deployment", "deployment without error budgets"],
+      "exit_criteria": ["exact-head verification passes", "controlled deployment and rollback are evidenced"],
+      "evidence_produced": ["exact-head CI receipt", "deployment and rollback receipts"],
+      "fit_components": {"problem": 0.93, "domain": 0.93, "risk": 0.93, "maturity": 0.93, "evidence": 0.93, "regulatory": 0.93, "resource": 0.93, "stakeholder": 0.93},
+      "fit_score": 0.93
+    },
+    {
+      "id": "METHOD_STRIDE_LINDDUN",
+      "name": "STRIDE plus LINDDUN threat and privacy modeling",
+      "problem": "Protect employment identity, messages, credentials, employer data, memory, and tool boundaries.",
+      "selection_rationale": "The platform combines high-value identities, private correspondence, third-party content, and external mutations.",
+      "entry_criteria": ["data flows mapped", "trust boundaries identified"],
+      "required_inputs": ["data classification", "identity flows", "external action inventory"],
+      "artifacts": ["threat model", "privacy impact record", "abuse cases", "control tests"],
+      "limitations": ["requires updating after each connector change"],
+      "rejected_alternatives": ["security checklist without threat paths", "privacy policy without data-flow verification"],
+      "exit_criteria": ["critical threats controlled or explicitly rejected", "retention and revocation verified"],
+      "evidence_produced": ["threat-control trace", "adversarial boundary tests"],
+      "fit_components": {"problem": 0.96, "domain": 0.96, "risk": 0.96, "maturity": 0.96, "evidence": 0.96, "regulatory": 0.96, "resource": 0.96, "stakeholder": 0.96},
+      "fit_score": 0.96
+    },
+    {
+      "id": "METHOD_STAGE_GATE_EVAL",
+      "name": "Stage-Gate plus continuous occupation evaluation",
+      "problem": "Expand toward many jobs without inferring competence from general model capability.",
+      "selection_rationale": "Each occupation and task needs shadow, supervised, evaluated, accepted, and recertified states.",
+      "entry_criteria": ["occupation scope defined", "training rights verified", "evaluation rubric exists"],
+      "required_inputs": ["task ontology", "employer procedures", "qualified evaluation rubric"],
+      "artifacts": ["capability pack", "training provenance", "evaluation set", "competency credential"],
+      "limitations": ["does not replace licensure or employer authorization"],
+      "rejected_alternatives": ["self-certified universal competence", "promotion based only on model benchmark scores"],
+      "exit_criteria": ["quality thresholds pass", "employer or qualified evaluator accepts scope", "recertification date set"],
+      "evidence_produced": ["scoped competency receipt", "re-evaluation schedule"],
+      "fit_components": {"problem": 0.97, "domain": 0.97, "risk": 0.97, "maturity": 0.97, "evidence": 0.97, "regulatory": 0.97, "resource": 0.97, "stakeholder": 0.97},
+      "fit_score": 0.97
+    },
+    {
+      "id": "METHOD_HCD_WCAG",
+      "name": "Human-centred design plus WCAG 2.2 AA evaluation",
+      "problem": "Deliver a one-click interface that remains understandable, accessible, and truthful about blocked states.",
+      "selection_rationale": "Ease of use must coexist with visible boundaries and recoverable human intervention.",
+      "entry_criteria": ["core user journeys defined", "connector states available"],
+      "required_inputs": ["user journeys", "accessibility needs", "connector truth states"],
+      "artifacts": ["task flows", "accessible control panel", "usability tests", "error copy"],
+      "limitations": ["a simple interface cannot simplify away authorization or terms"],
+      "rejected_alternatives": ["one-click interface that hides consequential gates", "client-specific UI as the only interface"],
+      "exit_criteria": ["critical tasks meet accessibility and usability targets", "blocked states are understandable"],
+      "evidence_produced": ["WCAG conformance record", "task-completion study"],
+      "fit_components": {"problem": 0.92, "domain": 0.92, "risk": 0.92, "maturity": 0.92, "evidence": 0.92, "regulatory": 0.92, "resource": 0.92, "stakeholder": 0.92},
+      "fit_score": 0.92
+    }
+  ],
+  "reasoning_uncertainty_register": [
+    {"id": "REASON_LOCAL_VALIDATION", "conclusion": "The reconstructed repository is locally testable and its current governed boundaries can be verified without external action.", "reasoning_modes": ["DEDUCTIVE", "EMPIRICAL", "TEMPORAL"], "evidence_sources": ["SOURCE_REPOSITORY", "SOURCE_TESTS"], "confidence": 0.98, "alternative_explanation": "The local environment may mask a dependency or platform difference that appears in hosted CI.", "disconfirming_test": "Run the exact tree in a clean supported hosted environment and observe a deterministic failure.", "uncertainty_type": "EPISTEMIC", "magnitude": "low for local behavior; high for remote release state", "decision_impact": "supports local development but not merge, deployment, or production claims", "reducibility": "high with a full trusted checkout and exact-head CI", "cost_of_reduction": "one clean hosted CI run plus repository reconstruction", "value_of_information": "high because it unlocks trustworthy release comparison", "treatment": "continue local verification and keep remote state blocked"},
+    {"id": "REASON_CONNECTOR_BLOCKS", "conclusion": "Gmail, Indeed, generic websites, and portable AI hosts are not live-certified in this reconstruction.", "reasoning_modes": ["DEDUCTIVE", "ADVERSARIAL", "TEMPORAL"], "evidence_sources": ["SOURCE_REPOSITORY", "SOURCE_CONNECTOR_RESEARCH"], "confidence": 0.97, "alternative_explanation": "External accounts or approvals may exist outside the repository but are not bound to this artifact.", "disconfirming_test": "Resolve current provider-generated OAuth, partnership, deployment, and connector certification receipts for the exact AIGC revision.", "uncertainty_type": "EPISTEMIC", "magnitude": "high for external operability", "decision_impact": "all external mutations remain disabled", "reducibility": "provider- and owner-dependent", "cost_of_reduction": "registration, review, sandbox testing, and possibly security assessment", "value_of_information": "high for one selected connector; low for broad simultaneous outreach", "treatment": "certify one connector and operation at a time"},
+    {"id": "REASON_UNIVERSAL_WORK", "conclusion": "AIGC can plausibly expand across many digital occupations only through scoped capability packs, not one universal competence claim.", "reasoning_modes": ["SYSTEMS", "ABDUCTIVE", "ANALOGICAL", "ADVERSARIAL"], "evidence_sources": ["SOURCE_CHAT_REQUIREMENTS", "SOURCE_REPOSITORY"], "confidence": 0.78, "alternative_explanation": "Some tasks may share enough structure for cross-occupation certification, while others may remain infeasible or regulated.", "disconfirming_test": "Independent occupation evaluations show persistent failure, excessive supervision, or non-transferability across the first three packs.", "uncertainty_type": "MODEL", "magnitude": "medium-high until employer evaluations exist", "decision_impact": "prevents universal-job marketing and requires staged promotion", "reducibility": "medium through shadow work and qualified evaluation", "cost_of_reduction": "employer time, curated test sets, and supervised trials", "value_of_information": "very high because it determines product scope and economics", "treatment": "build three packs and measure before expansion"},
+    {"id": "REASON_ONE_CLICK", "conclusion": "A one-click interface is compatible with governance only when the click starts a bounded plan rather than granting wildcard authority.", "reasoning_modes": ["FIRST_PRINCIPLES", "SYSTEMS", "COUNTERFACTUAL"], "evidence_sources": ["SOURCE_CHAT_REQUIREMENTS", "SOURCE_AGENTS"], "confidence": 0.95, "alternative_explanation": "A user might prefer fewer gates even for consequential actions.", "disconfirming_test": "Usability testing shows users cannot understand or complete the governed plan despite progressive disclosure and saved boundaries.", "uncertainty_type": "SCENARIO", "magnitude": "medium for user experience", "decision_impact": "drives control-panel and approval design", "reducibility": "high through prototype usability testing", "cost_of_reduction": "moderate design and participant-testing effort", "value_of_information": "high before interface stabilization", "treatment": "prototype progressive disclosure and measure task completion"}
+  ],
+  "assumptions": [
+    {"id": "ASSUMPTION_TESTS_DEFINE_REPAIR", "statement": "Existing tests and architecture documents define the intended narrow contracts for reconstructed missing modules.", "critical": true, "evidence_source": "SOURCE_TESTS", "confidence": 0.9, "falsification": "A trusted upstream source shows materially different public behavior.", "affected_decisions": ["DECISION_REPAIR_MISSING_MODULES"], "status": "SUPPORTED"},
+    {"id": "ASSUMPTION_PROVIDER_SURFACES_CHANGE", "statement": "External provider capabilities, terms, and scopes can change after this constitution is captured.", "critical": true, "evidence_source": "SOURCE_CONNECTOR_RESEARCH", "confidence": 0.99, "falsification": "Provider supplies a versioned immutable long-term contract covering the intended action.", "affected_decisions": ["DECISION_CONNECTOR_SEQUENCE"], "status": "SUPPORTED"},
+    {"id": "ASSUMPTION_FIRST_PACKS_DIGITAL", "statement": "Software-research, administrative-coordination, and data-analysis packs contain useful zero-egress tasks that can be evaluated locally.", "critical": false, "evidence_source": "SOURCE_CHAT_REQUIREMENTS", "confidence": 0.82, "falsification": "Task decomposition finds no representative work that avoids unavailable external systems.", "affected_decisions": ["DECISION_OCCUPATION_SEQUENCE"], "status": "UNVERIFIED"},
+    {"id": "ASSUMPTION_MCP_PORTABILITY", "statement": "A tool-first MCP facade can provide one useful core across supported ChatGPT and Gemini developer surfaces while leaving UI optional.", "critical": false, "evidence_source": "SOURCE_CONNECTOR_RESEARCH", "confidence": 0.86, "falsification": "Current host conformance testing shows required structured tools cannot operate across both supported surfaces.", "affected_decisions": ["DECISION_PORTABLE_INTERFACE"], "status": "UNVERIFIED"}
+  ],
+  "risks": [
+    {"id": "RISK_AUTHORITY_CONFUSION", "name": "Capability or evidence mistaken for authority", "class": "governance and security", "threat_or_hazard": "A caller treats model output, memory, connector status, or test evidence as permission to mutate an external system.", "affected_entities": ["SYSTEM_AIGC_NEXUS", "COMPONENT_TOOLBROKER", "COMPONENT_CONNECTOR_REGISTRY"], "likelihood": "MEDIUM", "impact": "CRITICAL", "controls": ["CONSTRAINT_AUTHORITY", "HEURISTIC_DEFAULT_DENY", "PARAM_UNAUTHORIZED_ACTIONS"], "owner": "SYSTEM_AIGC_NEXUS", "residual_status": "CONTROLLED", "verification": "negative permit and caller-fabricated-authority tests"},
+    {"id": "RISK_SECRET_EXPOSURE", "name": "Credential disclosure", "class": "security and privacy", "threat_or_hazard": "A raw credential enters prompts, logs, receipts, source, or artifacts.", "affected_entities": ["SYSTEM_AIGC_NEXUS", "CONNECTOR_GMAIL", "CONNECTOR_GENERIC_WEB"], "likelihood": "MEDIUM", "impact": "CRITICAL", "controls": ["CONSTRAINT_NO_SECRETS", "PARAM_SECRET_EXPOSURE"], "owner": "SYSTEM_AIGC_NEXUS", "residual_status": "CONTROLLED", "verification": "redaction, serialization, and repository secret scans"},
+    {"id": "RISK_DUPLICATE_MUTATION", "name": "Duplicate application, message, or transaction", "class": "reliability and external action", "threat_or_hazard": "A timeout after dispatch triggers an automatic retry and duplicates an irreversible or costly action.", "affected_entities": ["CONNECTOR_GMAIL", "CONNECTOR_INDEED", "CONNECTOR_GENERIC_WEB"], "likelihood": "MEDIUM", "impact": "HIGH", "controls": ["HEURISTIC_NO_BLIND_RETRY", "PARAM_AMBIGUOUS_RETRIES", "PARAM_EXTERNAL_BLAST_RADIUS"], "owner": "SYSTEM_AIGC_NEXUS", "residual_status": "CONTROLLED", "verification": "lost-ack and replay adversarial tests"},
+    {"id": "RISK_OCCUPATION_OVERREACH", "name": "Work performed beyond demonstrated competence or professional scope", "class": "quality legal and safety", "threat_or_hazard": "General model fluency is mistaken for occupational qualification, licensure, or employer authorization.", "affected_entities": ["REQUIREMENT_OCCUPATION_GATE", "COMPONENT_MEMORY", "OBJECTIVE_GOVERNED_WORK"], "likelihood": "HIGH", "impact": "CRITICAL", "controls": ["CONSTRAINT_REGULATED_WORK", "HEURISTIC_OCCUPATION_BY_OCCUPATION", "PARAM_TASK_SUCCESS", "PARAM_HUMAN_CORRECTION"], "owner": "qualified employer or evaluator", "residual_status": "BLOCKED", "verification": "independent capability-pack evaluation and scoped credential"},
+    {"id": "RISK_STALE_CONNECTOR", "name": "Provider contract or site behavior drift", "class": "interface and temporal", "threat_or_hazard": "A previously certified API, scope, terms version, or web flow changes.", "affected_entities": ["COMPONENT_CONNECTOR_REGISTRY", "CONNECTOR_GMAIL", "CONNECTOR_INDEED", "CONNECTOR_GENERIC_WEB"], "likelihood": "HIGH", "impact": "HIGH", "controls": ["PARAM_CONNECTOR_CERTIFICATION", "HEURISTIC_DEFAULT_DENY"], "owner": "connector owner", "residual_status": "BLOCKED", "verification": "expiry, terms-digest, contract, and live read-only health checks"}
+  ],
+  "decisions": [
+    {"id": "DECISION_REPAIR_MISSING_MODULES", "question": "How should the one-commit reconstruction recover missing imported security and connector modules?", "model": "EXPERIMENTAL_DECISION", "assumptions": ["ASSUMPTION_TESTS_DEFINE_REPAIR"], "scenarios": ["narrow reconstruction from tests", "leave suite uncollectable", "invent broad connector behavior"], "sensitivity": "high to hidden upstream API differences", "confidence": 0.9, "irreversible_consequences": ["none; repository-local patch remains reviewable and reversible"], "selected_option": "reconstruct only the narrow tested contracts", "fallback": "replace from trusted upstream source if later recovered", "reconsideration_trigger": "trusted remote history becomes available"},
+    {"id": "DECISION_CONNECTOR_SEQUENCE", "question": "Which external connector should be advanced first?", "model": "REAL_OPTIONS", "assumptions": ["ASSUMPTION_PROVIDER_SURFACES_CHANGE"], "scenarios": ["Gmail read and draft sandbox", "Indeed partnership", "generic site passport"], "sensitivity": "high to provider registration time and permission", "confidence": 0.88, "irreversible_consequences": ["provider review cost", "privacy and security assessment commitments"], "selected_option": "advance one supported read or draft sandbox while keeping send and submission blocked", "fallback": "standalone local preparation and human handoff", "reconsideration_trigger": "provider changes product availability or grants written permission"},
+    {"id": "DECISION_OCCUPATION_SEQUENCE", "question": "How should AIGC expand toward many kinds of work?", "model": "ROBUST_OPTIMIZATION", "assumptions": ["ASSUMPTION_FIRST_PACKS_DIGITAL"], "scenarios": ["three scoped starter packs", "one universal worker", "single occupation only"], "sensitivity": "high to employer acceptance and correction rate", "confidence": 0.84, "irreversible_consequences": ["reputational harm if competence is overstated"], "selected_option": "three scoped packs with supervised promotion", "fallback": "reduce to one pack with the strongest evaluation evidence", "reconsideration_trigger": "independent evaluation results or regulatory classification changes"},
+    {"id": "DECISION_PORTABLE_INTERFACE", "question": "How should AIGC connect to multiple AI hosts?", "model": "MINIMAX_REGRET", "assumptions": ["ASSUMPTION_MCP_PORTABILITY"], "scenarios": ["tool-first MCP plus optional UI", "host-specific duplicated plugins", "standalone application only"], "sensitivity": "medium to client protocol support", "confidence": 0.86, "irreversible_consequences": ["maintenance burden from host-specific forks"], "selected_option": "one tool-first MCP facade plus standalone application and optional host UI", "fallback": "standalone app backed by the same governed core", "reconsideration_trigger": "host conformance tests fail or official platform support changes"}
+  ],
+  "heuristics": [
+    {"id": "HEURISTIC_BLOCKERS_FIRST", "name": "Clear validated blockers before polish", "trigger": "A mandatory gate is failing", "rationale": "Downstream refinement cannot make an invalid prerequisite true.", "benefit": "Shortens the critical path", "failure_mode": "A mislabeled blocker can starve valuable discovery", "contraindications": ["blocker is unverified", "parallel reversible discovery has high information value"], "confidence": 0.94, "override_evidence": "Evidence that the blocker is noncritical or that a parallel experiment has higher expected decision value", "decisions_affected": ["DECISION_REPAIR_MISSING_MODULES", "DECISION_CONNECTOR_SEQUENCE"]},
+    {"id": "HEURISTIC_SMALLEST_REVERSIBLE", "name": "Prefer the smallest reversible decisive action", "trigger": "Several repairs or experiments could reduce uncertainty", "rationale": "Reversibility limits blast radius while producing evidence.", "benefit": "Safe, fast feedback", "failure_mode": "Local patches may preserve a flawed architecture", "contraindications": ["root cause is structural", "incremental change would create false assurance"], "confidence": 0.92, "override_evidence": "Threat model or dependency proof requiring a structural replacement", "decisions_affected": ["DECISION_REPAIR_MISSING_MODULES", "DECISION_CONNECTOR_SEQUENCE"]},
+    {"id": "HEURISTIC_DEFAULT_DENY", "name": "Deny external capability by default", "trigger": "Identity, permission, destination, terms, or outcome evidence is incomplete", "rationale": "Capability and user intent do not create third-party authorization.", "benefit": "Prevents unauthorized or ambiguous external actions", "failure_mode": "Excessive friction if certification evidence is not maintainable", "contraindications": ["pure local computation", "public zero-cost read explicitly allowed by policy"], "confidence": 0.99, "override_evidence": "Current certified connector, exact identity and destination, active one-use permit, and tested reconciliation", "decisions_affected": ["DECISION_CONNECTOR_SEQUENCE", "DECISION_PORTABLE_INTERFACE"]},
+    {"id": "HEURISTIC_MEMORY_NOT_AUTHORITY", "name": "Treat memory as context rather than authority", "trigger": "A prior instruction, employer procedure, or result is retrieved", "rationale": "Memories can be stale, poisoned, revoked, or belong to another tenant.", "benefit": "Prevents stored context from escalating privileges", "failure_mode": "Over-validation can slow routine work", "contraindications": ["none for consequential actions"], "confidence": 0.99, "override_evidence": "No override; current authority must always be resolved independently", "decisions_affected": ["DECISION_OCCUPATION_SEQUENCE"]},
+    {"id": "HEURISTIC_NO_BLIND_RETRY", "name": "Do not retry ambiguous mutations", "trigger": "A call was dispatched and its outcome is unknown", "rationale": "A retry can duplicate applications, messages, purchases, filings, or work artifacts.", "benefit": "Prevents duplicate side effects", "failure_mode": "Manual reconciliation may take longer", "contraindications": ["provider proves the original operation did not execute"], "confidence": 0.99, "override_evidence": "Authoritative readback proving no mutation, followed by fresh authority", "decisions_affected": ["DECISION_CONNECTOR_SEQUENCE"]},
+    {"id": "HEURISTIC_OCCUPATION_BY_OCCUPATION", "name": "Certify one occupation pack at a time", "trigger": "Expanding toward additional job classes", "rationale": "General model competence is not occupational qualification.", "benefit": "Measurable quality and bounded risk", "failure_mode": "Slower breadth expansion", "contraindications": ["tasks are demonstrably identical under the same legal and operational constraints"], "confidence": 0.93, "override_evidence": "Cross-occupation evaluation proving equivalence and qualified acceptance", "decisions_affected": ["DECISION_OCCUPATION_SEQUENCE"]}
+  ],
+  "cognitive_bias_controls": [
+    {"bias": "confirmation bias", "plausible_alternative": "AIGC may not achieve acceptable occupational performance or provider adoption.", "disconfirming_test": "Run independent first-three-pack evaluations and seek provider rejection criteria.", "change_evidence": "Repeated evaluation failure or explicit provider denial changes scope and sequencing.", "sunk_cost_check": "Prior investment does not justify live activation without current evidence.", "system_optimization_check": "Optimize verified user and employer outcomes, not feature count."},
+    {"bias": "automation bias", "plausible_alternative": "Human review or handoff may outperform autonomy for rare, legal, or ambiguous tasks.", "disconfirming_test": "Compare governed autonomous, assisted, and manual workflows on accuracy, time, and harm.", "change_evidence": "Higher correction or incident rates reduce the autonomy tier.", "sunk_cost_check": "Automation already built may still be disabled.", "system_optimization_check": "Minimize total risk-adjusted work cost rather than human interventions alone."},
+    {"bias": "optimism and planning fallacy", "plausible_alternative": "OAuth verification, partner review, security assessment, and employer evaluation take materially longer than development.", "disconfirming_test": "Collect actual lead times from the first connector and employer sandbox.", "change_evidence": "Observed lead time and cost replace estimates.", "sunk_cost_check": "Do not continue a connector solely because review has already consumed time.", "system_optimization_check": "Preserve a useful local product while external reviews proceed."},
+    {"bias": "Goodhart's law", "plausible_alternative": "Application volume, test count, or automation rate can rise while job quality, trust, or safety falls.", "disconfirming_test": "Audit paired outcome and guardrail metrics for divergence.", "change_evidence": "Metric improvement without employer acceptance or verified task success triggers redesign.", "sunk_cost_check": "Discard vanity metrics regardless of historical reporting.", "system_optimization_check": "Pair throughput with quality, correction, authorization, and harm metrics."}
+  ],
+  "parameters": [
+    {"id": "PARAM_UNAUTHORIZED_ACTIONS", "name": "Unauthorized external actions", "definition": "External mutations performed without current exact authority", "domain": "governance and autonomous execution", "associated_requirement": "REQUIREMENT_SEPARATE_AUTHORITY", "variable_type": "GUARDRAIL", "symbol": "N_unauthorized", "unit": "count per release", "baseline": "0 observed in current local tests; no live execution measured", "target": "0", "minimum": "0", "maximum": "0", "nominal_value": "0", "tolerance": "0", "distribution": "discrete incident count; live distribution unknown", "confidence_uncertainty": "high confidence locally; external exposure unmeasured", "constraint_class": "HARD_CONSTRAINT", "measurement": "correlate every dispatch receipt with a current exact permit", "calibration_requirement": "test audit correlator against forged, expired, and missing permits", "sampling_frequency": "every proposed and dispatched action", "operating_environment": "all sandbox, staging, and production connectors", "data_source": "SOURCE_TESTS", "owner": "SYSTEM_AIGC_NEXUS", "alert_threshold": ">=1 attempted bypass", "failure_threshold": ">=1 dispatched mutation", "failure_response": "system emergency stop, revoke connector, preserve evidence, investigate", "verification_method": "negative permit tests plus immutable receipt audit", "decision_significance": "any failure blocks production and triggers incident response", "version_effective_date": "2026-08-12", "robustness": {"nominal": "zero", "worst_case": "one undetected mutation is unacceptable", "best_case": "all attempts denied before credentials", "sensitivity": "high to audit completeness and permit validation", "environmental_variation": "provider and connector semantics vary", "degradation": "certification or policy drift can weaken detection", "interactions": ["PARAM_CONNECTOR_CERTIFICATION", "PARAM_EXTERNAL_BLAST_RADIUS"], "margin": "zero-tolerance boundary; robustness comes from layered prevention"}, "anti_goodhart": {"gameable": true, "failure_mode": "missing telemetry can falsely report zero", "paired_guardrails": ["PARAM_VERIFICATION_COVERAGE", "PARAM_CONNECTOR_CERTIFICATION"]}},
+    {"id": "PARAM_SECRET_EXPOSURE", "name": "Secret exposure", "definition": "Raw credentials in prompts, code, logs, receipts, artifacts, or chat", "domain": "security and privacy", "associated_requirement": "REQUIREMENT_SEPARATE_AUTHORITY", "variable_type": "GUARDRAIL", "symbol": "N_secret_exposure", "unit": "confirmed exposures", "baseline": "0 in scoped repository tests", "target": "0", "minimum": "0", "maximum": "0", "nominal_value": "0", "tolerance": "0", "distribution": "discrete incident count", "confidence_uncertainty": "high for repository artifacts; external runtime unmeasured", "constraint_class": "HARD_CONSTRAINT", "measurement": "secret scanning plus adversarial serialization and log tests", "calibration_requirement": "known synthetic secret corpus must be detected without retaining raw real secrets", "sampling_frequency": "every commit, build, receipt, and runtime log stream", "operating_environment": "repository, CI, runtime, connector, and evidence planes", "data_source": "SOURCE_TESTS", "owner": "SYSTEM_AIGC_NEXUS", "alert_threshold": ">=1 suspected exposure", "failure_threshold": ">=1 confirmed exposure", "failure_response": "stop, revoke, rotate, contain, and document incident", "verification_method": "scanner, redactor, and no-secret schema tests", "decision_significance": "any confirmed exposure blocks release and requires credential response", "version_effective_date": "2026-08-12", "robustness": {"nominal": "no raw secret leaves the broker", "worst_case": "credential compromise and third-party account access", "best_case": "only opaque references enter AIGC", "sensitivity": "high to logging and exception paths", "environmental_variation": "provider credential formats change", "degradation": "scanner signatures become stale", "interactions": ["PARAM_UNAUTHORIZED_ACTIONS", "PARAM_VERIFICATION_COVERAGE"], "margin": "defense in depth; no numeric exposure margin is acceptable"}, "anti_goodhart": {"gameable": true, "failure_mode": "narrow pattern scanning can report zero while unknown secret formats leak", "paired_guardrails": ["PARAM_VERIFICATION_COVERAGE", "PARAM_UNAUTHORIZED_ACTIONS"]}},
+    {"id": "PARAM_AMBIGUOUS_RETRIES", "name": "Automatic retries after ambiguous dispatch", "definition": "Mutation retries issued before authoritative reconciliation", "domain": "reliability and external execution", "associated_requirement": "REQUIREMENT_CONNECTOR_CERTIFICATION", "variable_type": "GUARDRAIL", "symbol": "N_ambiguous_retry", "unit": "retries", "baseline": "0 in current governed runtime contracts", "target": "0", "minimum": "0", "maximum": "0", "nominal_value": "0", "tolerance": "0", "distribution": "discrete rare-event count", "confidence_uncertainty": "high for tested adapters; unmeasured for future connectors", "constraint_class": "HARD_CONSTRAINT", "measurement": "operation-key, dispatch, retry, and reconciliation audit", "calibration_requirement": "inject timeout and lost-ack faults", "sampling_frequency": "every external mutation", "operating_environment": "all external write connectors", "data_source": "SOURCE_TESTS", "owner": "SYSTEM_AIGC_NEXUS", "alert_threshold": ">=1 scheduled retry", "failure_threshold": ">=1 dispatched retry", "failure_response": "freeze connector and enter RECONCILIATION_REQUIRED", "verification_method": "lost-ack, timeout, replay, and duplicate-operation tests", "decision_significance": "prevents duplicate applications, messages, purchases, filings, and deliveries", "version_effective_date": "2026-08-12", "robustness": {"nominal": "one dispatch then read-only reconciliation", "worst_case": "duplicate irreversible action", "best_case": "provider idempotency and authoritative outcome receipt", "sensitivity": "high to transport ambiguity and provider idempotency", "environmental_variation": "connectors expose different readback capabilities", "degradation": "provider API behavior may change", "interactions": ["PARAM_EXTERNAL_BLAST_RADIUS", "PARAM_CONNECTOR_CERTIFICATION"], "margin": "no retry margin after unknown outcome"}, "anti_goodhart": {"gameable": false, "failure_mode": "manual duplicate action can bypass automated retry metric", "paired_guardrails": ["PARAM_UNAUTHORIZED_ACTIONS", "PARAM_EXTERNAL_BLAST_RADIUS"]}},
+    {"id": "PARAM_CONNECTOR_CERTIFICATION", "name": "Connector certification coverage", "definition": "Fraction of enabled live operations with a current exact connector passport", "domain": "interfaces and provider governance", "associated_requirement": "REQUIREMENT_CONNECTOR_CERTIFICATION", "variable_type": "LEADING", "symbol": "C_connector", "unit": "ratio", "baseline": "0 live operations enabled", "target": "1.0 before any live operation", "minimum": "0.0", "maximum": "1.0", "nominal_value": "1.0 for enabled operations", "tolerance": "0 missing or expired certifications", "distribution": "derived ratio over tool catalog", "confidence_uncertainty": "high when registry and catalog are exact-version bound", "constraint_class": "HARD_CONSTRAINT", "measurement": "registry-to-tool-catalog comparison with expiry and terms digest", "calibration_requirement": "mutation tests with missing, stale, revoked, and mismatched passports", "sampling_frequency": "startup, configuration change, and immediately before action", "operating_environment": "all connector hosts", "data_source": "SOURCE_REPOSITORY", "owner": "COMPONENT_CONNECTOR_REGISTRY", "alert_threshold": "<1.0", "failure_threshold": "<1.0 with any live tool enabled", "failure_response": "disable unmatched tool", "verification_method": "closed registry schema and negative capability tests", "decision_significance": "determines whether a connector may reach the separate authority gate", "version_effective_date": "2026-08-12", "robustness": {"nominal": "all enabled tools exactly certified", "worst_case": "stale certificate enables changed provider behavior", "best_case": "no wildcard tools and automatic expiry", "sensitivity": "high to clock, terms, and version identity", "environmental_variation": "provider tools and policies change", "degradation": "certification ages immediately", "interactions": ["PARAM_UNAUTHORIZED_ACTIONS", "PARAM_VERIFICATION_COVERAGE"], "margin": "certification must be current; no missing coverage allowed"}, "anti_goodhart": {"gameable": true, "failure_mode": "certifying overly broad operations can inflate coverage", "paired_guardrails": ["PARAM_EXTERNAL_BLAST_RADIUS", "PARAM_UNAUTHORIZED_ACTIONS"]}},
+    {"id": "PARAM_VERIFICATION_COVERAGE", "name": "Mandatory requirement verification coverage", "definition": "Fraction of mandatory requirements connected to current exact-artifact evidence", "domain": "quality and evidence", "associated_requirement": "REQUIREMENT_SEPARATE_AUTHORITY", "variable_type": "LEADING", "symbol": "C_verify", "unit": "ratio", "baseline": "local reconstruction tests pass; external requirements remain blocked", "target": "1.0 for each release claim", "minimum": "0.0", "maximum": "1.0", "nominal_value": "1.0 for a claimed scope", "tolerance": "0 unverified mandatory claims", "distribution": "derived traceability ratio", "confidence_uncertainty": "dependent on accurate requirement classification and current evidence", "constraint_class": "HARD_CONSTRAINT", "measurement": "requirements-to-acceptance-to-test-to-evidence trace", "calibration_requirement": "adversarially remove one trace link and require rejection", "sampling_frequency": "every material change and release decision", "operating_environment": "repository, CI, deployment, and operations", "data_source": "SOURCE_TESTS", "owner": "COMPONENT_VERIFIER", "alert_threshold": "<1.0", "failure_threshold": "<1.0 for a claimed release state", "failure_response": "downgrade claim and block release", "verification_method": "semantic constitution validator plus exact-artifact tests", "decision_significance": "controls the maximum truthful completion claim", "version_effective_date": "2026-08-12", "robustness": {"nominal": "complete current trace", "worst_case": "stale evidence falsely supports a release", "best_case": "automatic invalidation after every material change", "sensitivity": "high to artifact identity and temporal validity", "environmental_variation": "hosted environments differ from local", "degradation": "all evidence becomes stale after non-equivalent change", "interactions": ["PARAM_CONNECTOR_CERTIFICATION", "PARAM_TASK_SUCCESS"], "margin": "zero missing mandatory links"}, "anti_goodhart": {"gameable": true, "failure_mode": "many shallow tests can increase apparent coverage", "paired_guardrails": ["PARAM_TASK_SUCCESS", "PARAM_HUMAN_CORRECTION"]}},
+    {"id": "PARAM_TASK_SUCCESS", "name": "Verified occupation task success", "definition": "Tasks meeting employer-accepted correctness, timeliness, safety, and scope criteria", "domain": "occupation quality", "associated_requirement": "REQUIREMENT_OCCUPATION_GATE", "variable_type": "LAGGING", "symbol": "R_task_success", "unit": "ratio", "baseline": "unknown; no occupation pack is certified in this reconstruction", "target": "derived per occupation before certification", "minimum": "0.0", "maximum": "1.0", "nominal_value": "not established", "tolerance": "defined by task criticality and employer acceptance", "distribution": "binomial by representative task stratum", "confidence_uncertainty": "high uncertainty until representative evaluation sample exists", "constraint_class": "SOFT_OBJECTIVE", "measurement": "blind or independently scored occupation evaluation", "calibration_requirement": "inter-rater agreement and rubric calibration", "sampling_frequency": "each evaluation cycle and sampled production work", "operating_environment": "occupation-specific sandbox and controlled production", "data_source": "SOURCE_TESTS", "owner": "qualified employer or evaluator", "alert_threshold": "occupation-specific lower confidence bound", "failure_threshold": "occupation-specific safety or quality floor", "failure_response": "return to supervised mode and retrain or revoke capability", "verification_method": "independent scoring with confidence interval and error taxonomy", "decision_significance": "governs promotion, continued work, and recertification", "version_effective_date": "2026-08-12", "robustness": {"nominal": "unknown", "worst_case": "unsafe or unusable work", "best_case": "high acceptance with low correction across representative tasks", "sensitivity": "high to task mix and evaluator quality", "environmental_variation": "employer procedures and tools differ", "degradation": "procedures and models drift", "interactions": ["PARAM_HUMAN_CORRECTION", "PARAM_COST_PER_ACTION"], "margin": "must be derived per occupation; not yet calculable"}, "anti_goodhart": {"gameable": true, "failure_mode": "easy task selection inflates success", "paired_guardrails": ["PARAM_HUMAN_CORRECTION", "PARAM_VERIFICATION_COVERAGE"]}},
+    {"id": "PARAM_HUMAN_CORRECTION", "name": "Human correction rate", "definition": "Fraction of delivered work requiring material correction", "domain": "human factors and occupation quality", "associated_requirement": "REQUIREMENT_OCCUPATION_GATE", "variable_type": "LAGGING", "symbol": "R_correction", "unit": "ratio", "baseline": "unknown", "target": "derived from occupation and employer risk tolerance", "minimum": "0.0", "maximum": "1.0", "nominal_value": "not established", "tolerance": "paired with task success, severity, and reporting guardrails", "distribution": "binomial plus correction-severity distribution", "confidence_uncertainty": "unknown until employer feedback is collected", "constraint_class": "SOFT_OBJECTIVE", "measurement": "employer feedback linked to exact work receipt", "calibration_requirement": "shared definition of material correction and severity", "sampling_frequency": "every delivered task during supervised phase, then risk-based sample", "operating_environment": "employer-specific work context", "data_source": "SOURCE_CHAT_REQUIREMENTS", "owner": "qualified employer or evaluator", "alert_threshold": "occupation-specific", "failure_threshold": "occupation-specific or any critical correction", "failure_response": "reduce autonomy tier and analyze errors", "verification_method": "receipt-linked review and independent sample audit", "decision_significance": "governs autonomy tier and training priorities", "version_effective_date": "2026-08-12", "robustness": {"nominal": "unknown", "worst_case": "corrections hidden or underreported", "best_case": "low correction with candid reporting", "sensitivity": "high to reviewer incentives and task complexity", "environmental_variation": "employer expectations differ", "degradation": "review quality can decline over time", "interactions": ["PARAM_TASK_SUCCESS", "PARAM_COST_PER_ACTION"], "margin": "must be established by employer risk tolerance"}, "anti_goodhart": {"gameable": true, "failure_mode": "discouraging reports falsely lowers correction rate", "paired_guardrails": ["PARAM_TASK_SUCCESS", "PARAM_VERIFICATION_COVERAGE"]}},
+    {"id": "PARAM_EXTERNAL_BLAST_RADIUS", "name": "External action blast radius", "definition": "Maximum accounts, destinations, resources, and mutations authorized by one permit", "domain": "external execution safety", "associated_requirement": "REQUIREMENT_CONNECTOR_CERTIFICATION", "variable_type": "CONTROL", "symbol": "B_external", "unit": "bounded dimensions per permit", "baseline": "no live permit", "target": "one account, one exact destination, one operation, one mutation", "minimum": "one fully resolved action", "maximum": "one unless an independently reviewed batch contract exists", "nominal_value": "one", "tolerance": "no wildcard or unresolved dimension", "distribution": "deterministic permit cardinality", "confidence_uncertainty": "high when semantic validation resolves authoritative resources", "constraint_class": "HARD_CONSTRAINT", "measurement": "permit semantic validation and authoritative resource resolution", "calibration_requirement": "wildcard, alias, cross-account, and changed-payload adversarial cases", "sampling_frequency": "every consequential action", "operating_environment": "all external connectors", "data_source": "SOURCE_REPOSITORY", "owner": "SYSTEM_AIGC_NEXUS", "alert_threshold": ">1 unbound dimension", "failure_threshold": "wildcard or unresolved destination", "failure_response": "reject permit before credential access", "verification_method": "server-side request binding and exact destination readback", "decision_significance": "limits maximum harm of a compromised or mistaken action", "version_effective_date": "2026-08-12", "robustness": {"nominal": "one exact mutation", "worst_case": "wildcard account or destination authority", "best_case": "no credentials resolved until all bindings match", "sensitivity": "high to alias resolution and provider resource semantics", "environmental_variation": "providers model accounts and resources differently", "degradation": "resource aliases can drift", "interactions": ["PARAM_UNAUTHORIZED_ACTIONS", "PARAM_AMBIGUOUS_RETRIES"], "margin": "one exact action; no unresolved margin"}, "anti_goodhart": {"gameable": true, "failure_mode": "one nominal action can still contain an oversized payload or recipient set", "paired_guardrails": ["PARAM_COST_PER_ACTION", "PARAM_UNAUTHORIZED_ACTIONS"]}},
+    {"id": "PARAM_COST_PER_ACTION", "name": "Cost per successful task", "definition": "Known provider and infrastructure cost divided by independently verified successful tasks", "domain": "business and runtime economics", "associated_requirement": "REQUIREMENT_EMPLOYMENT_LIFECYCLE", "variable_type": "OBJECTIVE", "symbol": "C_task", "unit": "CAD per verified task", "baseline": "unknown for live operations", "target": "Pareto-minimize subject to quality, safety, privacy, reliability, and signed ceilings", "minimum": "0 CAD where provider-free execution is valid", "maximum": "exact signed action ceiling", "nominal_value": "not established", "tolerance": "never exceed signed ceiling", "distribution": "right-skewed usage and infrastructure cost", "confidence_uncertainty": "unknown until provider and infrastructure billing is reconciled", "constraint_class": "SOFT_OBJECTIVE", "measurement": "provider usage and infrastructure billing divided by verified task outcomes", "calibration_requirement": "billing currency, token, and task-success reconciliation", "sampling_frequency": "every billed action and monthly portfolio review", "operating_environment": "provider and cloud runtime", "data_source": "SOURCE_CHAT_REQUIREMENTS", "owner": "OWNER_JUSTICE", "alert_threshold": "80 percent of signed ceiling", "failure_threshold": "greater than signed ceiling or unknown after dispatch", "failure_response": "stop new calls and reconcile", "verification_method": "provider receipt, cloud billing record, and task-evidence correlation", "decision_significance": "governs model routing, pricing, sustainability, and commercial viability", "version_effective_date": "2026-08-12", "robustness": {"nominal": "unknown", "worst_case": "unbounded spend with failed tasks", "best_case": "provider-free or low-cost high-quality completion", "sensitivity": "high to model price, retries, and task success", "environmental_variation": "provider prices and exchange rates change", "degradation": "cost rises as context and workload grow", "interactions": ["PARAM_TASK_SUCCESS", "PARAM_HUMAN_CORRECTION"], "margin": "permit ceiling minus worst-case authorized request cost; must remain nonnegative"}, "anti_goodhart": {"gameable": true, "failure_mode": "cutting model quality can lower cost while increasing rework", "paired_guardrails": ["PARAM_TASK_SUCCESS", "PARAM_HUMAN_CORRECTION"]}}
+  ],
+  "constraints": [
+    {"id": "CONSTRAINT_AUTHORITY", "class": "authorization", "statement": "Consequential external actions require current exact authority at the point of action.", "source": "SOURCE_AGENTS", "scope": "all external communications, submissions, spending, deployment, traffic, contracts, and work delivery", "validity_period": "permanent constitutional invariant unless superseded by a stricter signed policy", "mandatory": true, "negotiability": "NON_NEGOTIABLE", "affected_actions": ["ACT_GMAIL_CERTIFICATION", "ACT_INDEED_PARTNERSHIP", "ACT_GENERIC_SITE_CERTIFICATION", "ACT_CONTROLLED_DEPLOYMENT"], "verification": "permit and identity validation before credential access", "violation_consequence": "deny action and preserve a sanitized denial receipt", "mitigation": "resolve exact principal, destination, payload, resource, cost, expiry, and one-use permit"},
+    {"id": "CONSTRAINT_NO_SECRETS", "class": "security", "statement": "Secrets may flow only through the governed Secret Broker route and never through prompts, code, logs, or receipts.", "source": "SOURCE_AGENTS", "scope": "all AIGC source, runtime, memory, evidence, connector, and operator surfaces", "validity_period": "permanent", "mandatory": true, "negotiability": "NON_NEGOTIABLE", "affected_actions": ["ACT_GMAIL_CERTIFICATION", "ACT_CONTROLLED_DEPLOYMENT"], "verification": "secret scanner and serialization tests", "violation_consequence": "stop, revoke, rotate, and investigate", "mitigation": "use opaque secret references, workload identity, short-lived injection, and redaction"},
+    {"id": "CONSTRAINT_INDEED_PERMISSION", "class": "contractual and provider-imposed", "statement": "Indeed application automation and messaging remain disabled without an official supported vendor route and express permission.", "source": "SOURCE_CONNECTOR_RESEARCH", "scope": "Indeed discovery, application, messaging, and account access by AIGC", "validity_period": "until current written permission and provisioned service are independently verified; recheck terms before every certification", "mandatory": true, "negotiability": "PROVIDER_CONTROLLED", "affected_actions": ["ACT_INDEED_PARTNERSHIP"], "verification": "current written approval, provisioned API product, scopes, terms digest, and sandbox evidence", "violation_consequence": "human handoff only; no browser automation", "mitigation": "prepare truthful materials locally and use the official human interface while requesting partnership review"},
+    {"id": "CONSTRAINT_GMAIL_OAUTH", "class": "privacy and provider-imposed", "statement": "Gmail features require per-user OAuth, mailbox identity binding, current scopes, prompt-injection screening, and a separate send authority.", "source": "SOURCE_CONNECTOR_RESEARCH", "scope": "every Gmail mailbox, thread, draft, label, and send operation", "validity_period": "per OAuth grant, scope set, connector version, and provider terms validity", "mandatory": true, "negotiability": "PROVIDER_CONTROLLED", "affected_actions": ["ACT_GMAIL_CERTIFICATION"], "verification": "OAuth grant introspection, users.getProfile binding, tool allowlist, and test-mailbox canary", "violation_consequence": "connector remains visibly blocked", "mitigation": "start with a disposable test mailbox and read/draft-only tool firewall"},
+    {"id": "CONSTRAINT_GENERIC_TERMS", "class": "contractual and interface", "statement": "No universal browser write is enabled for a domain until its terms, identity, selectors or API contract, rate limits, idempotency, and reconciliation are certified.", "source": "SOURCE_CHAT_REQUIREMENTS", "scope": "each exact domain, account, operation, and destination", "validity_period": "per passport expiry or until any terms, interface, identity, or behavior change", "mandatory": true, "negotiability": "PROVIDER_CONTROLLED", "affected_actions": ["ACT_GENERIC_SITE_CERTIFICATION"], "verification": "per-domain passport plus sandbox and owner approval", "violation_consequence": "handoff-only state", "mitigation": "prefer official APIs, employer-owned sandboxes, and one certified operation at a time"},
+    {"id": "CONSTRAINT_REGULATED_WORK", "class": "legal and professional", "statement": "Tax, legal, medical, financial, insurance, licensed engineering, signing, and filing actions require jurisdiction-specific professional authority and human approval.", "source": "SOURCE_CHAT_REQUIREMENTS", "scope": "all regulated or licensed occupations and legally consequential deliverables", "validity_period": "per jurisdiction, engagement, professional licence, and employer scope", "mandatory": true, "negotiability": "NON_NEGOTIABLE", "affected_actions": ["ACT_OCCUPATION_PACKS"], "verification": "jurisdiction, licensure, employer scope, and reviewer credential validation", "violation_consequence": "draft or educational assistance only", "mitigation": "use qualified professional supervision, explicit review, and prohibit autonomous filing or signature"},
+    {"id": "CONSTRAINT_RECONSTRUCTION_SCOPE", "class": "knowledge and supply-chain", "statement": "This checkout is a one-commit reconstruction with no remote; it cannot prove live GitHub branch, cloud, Devpost, or deployed state.", "source": "SOURCE_REPOSITORY", "scope": "all claims about upstream history, PR status, merge, CI, cloud, publication, and production", "validity_period": "until a trusted complete repository and external receipts are resolved", "mandatory": true, "negotiability": "NON_NEGOTIABLE", "affected_actions": ["ACT_CONTROLLED_DEPLOYMENT"], "verification": "git history and remote inspection", "violation_consequence": "do not claim merged, deployed, submitted, or production-ready", "mitigation": "reconstruct from the trusted remote and compare exact tree and receipt identities"}
+  ],
+  "functional_properties": [
+    {"id": "PROPERTY_CORRECTNESS", "name": "correctness", "ontological_definition": "Conformance of behavior and outcomes to exact requirements and authoritative facts.", "why_it_matters": "Incorrect applications, messages, work, or receipts can harm users and employers.", "affected_entities": ["SYSTEM_AIGC_NEXUS", "COMPONENT_VERIFIER"], "current_state": "local governed contracts pass their current tests", "target_state": "every enabled occupation and connector meets exact acceptance criteria", "methodologies": ["METHOD_STAGE_GATE_EVAL", "METHOD_DEVSECOPS_SRE"], "heuristics": ["HEURISTIC_SMALLEST_REVERSIBLE"], "parameters": ["PARAM_TASK_SUCCESS", "PARAM_VERIFICATION_COVERAGE"], "constraints": ["CONSTRAINT_AUTHORITY"], "process_requirements": ["requirements trace", "independent verification"], "procedures_required": ["test exact behavior", "compare authoritative readback"], "tests": ["full local suite", "occupation evaluation"], "evidence": ["SOURCE_TESTS"], "residual_risk": "external provider behavior and incomplete evaluation", "status": "PARTIAL"},
+    {"id": "PROPERTY_COMPLETENESS", "name": "completeness", "ontological_definition": "Coverage of all mandatory entities, states, requirements, controls, and evidence for a claimed scope.", "why_it_matters": "A partial workflow can strand users between application, hiring, and delivery.", "affected_entities": ["OBJECTIVE_GOVERNED_WORK", "REQUIREMENT_EMPLOYMENT_LIFECYCLE"], "current_state": "ontology is populated but live lifecycle is incomplete", "target_state": "all mandatory lifecycle gates and evidence are implemented", "methodologies": ["METHOD_DDD_C4", "METHOD_STAGE_GATE_EVAL"], "heuristics": ["HEURISTIC_BLOCKERS_FIRST"], "parameters": ["PARAM_VERIFICATION_COVERAGE"], "constraints": ["CONSTRAINT_RECONSTRUCTION_SCOPE"], "process_requirements": ["requirement-to-evidence trace"], "procedures_required": ["run semantic completeness validator"], "tests": ["ontology competency questions"], "evidence": ["SOURCE_REPOSITORY"], "residual_risk": "unknown external requirements", "status": "PARTIAL"},
+    {"id": "PROPERTY_RELIABILITY", "name": "reliability", "ontological_definition": "Probability that AIGC performs or safely declines the intended function across time and disturbances.", "why_it_matters": "Employment workflows can last years and external failures cannot create duplicates.", "affected_entities": ["SYSTEM_AIGC_NEXUS", "COMPONENT_CONNECTOR_REGISTRY"], "current_state": "deterministic local paths and reconciliation semantics exist", "target_state": "durable workflows recover without duplicate effects", "methodologies": ["METHOD_DEVSECOPS_SRE"], "heuristics": ["HEURISTIC_NO_BLIND_RETRY"], "parameters": ["PARAM_AMBIGUOUS_RETRIES"], "constraints": ["CONSTRAINT_AUTHORITY"], "process_requirements": ["idempotency", "read-only reconciliation"], "procedures_required": ["fault injection", "lost-ack recovery"], "tests": ["timeout and replay tests"], "evidence": ["SOURCE_TESTS"], "residual_risk": "future connector-specific failure modes", "status": "PARTIAL"},
+    {"id": "PROPERTY_SECURITY", "name": "security", "ontological_definition": "Protection of identity, authority, credentials, data, code, and actions against misuse.", "why_it_matters": "A work system holds valuable accounts and can affect third parties.", "affected_entities": ["SYSTEM_AIGC_NEXUS", "COMPONENT_TOOLBROKER"], "current_state": "default deny, redaction, and no-secret contracts are locally tested", "target_state": "least-privilege workload identity and attack-path-tested connectors", "methodologies": ["METHOD_STRIDE_LINDDUN"], "heuristics": ["HEURISTIC_DEFAULT_DENY"], "parameters": ["PARAM_SECRET_EXPOSURE", "PARAM_UNAUTHORIZED_ACTIONS"], "constraints": ["CONSTRAINT_NO_SECRETS", "CONSTRAINT_AUTHORITY"], "process_requirements": ["authenticate then authorize", "separate duties"], "procedures_required": ["threat model", "secret scan", "permit validation"], "tests": ["adversarial authority and redaction tests"], "evidence": ["SOURCE_TESTS"], "residual_risk": "unverified cloud and provider boundaries", "status": "PARTIAL"},
+    {"id": "PROPERTY_SAFETY", "name": "safety", "ontological_definition": "Freedom from unacceptable harm caused by action, omission, or misleading output.", "why_it_matters": "Work can affect finances, legal rights, health, infrastructure, and livelihoods.", "affected_entities": ["OBJECTIVE_GOVERNED_WORK", "REQUIREMENT_OCCUPATION_GATE"], "current_state": "high-impact work is blocked or requires human authority", "target_state": "occupation-specific hazard controls and tested emergency stops", "methodologies": ["METHOD_STAGE_GATE_EVAL", "METHOD_STRIDE_LINDDUN"], "heuristics": ["HEURISTIC_OCCUPATION_BY_OCCUPATION", "HEURISTIC_DEFAULT_DENY"], "parameters": ["PARAM_TASK_SUCCESS", "PARAM_UNAUTHORIZED_ACTIONS"], "constraints": ["CONSTRAINT_REGULATED_WORK"], "process_requirements": ["hazard classification", "autonomy downgrade"], "procedures_required": ["safety case", "stop and recovery test"], "tests": ["occupation hazard scenarios"], "evidence": ["EVIDENCE_OCCUPATION_GAP"], "residual_risk": "no occupation safety cases yet", "status": "BLOCKED_EXTERNAL"},
+    {"id": "PROPERTY_PRIVACY", "name": "privacy", "ontological_definition": "Purpose-limited and consent-bound handling of candidate, employer, message, and memory data.", "why_it_matters": "Employment data is sensitive and crosses organizations.", "affected_entities": ["COMPONENT_MEMORY", "CONNECTOR_GMAIL"], "current_state": "no live mailbox or employer data is connected", "target_state": "tenant isolation, minimization, retention, deletion, and revocation are verified", "methodologies": ["METHOD_STRIDE_LINDDUN"], "heuristics": ["HEURISTIC_DEFAULT_DENY", "HEURISTIC_MEMORY_NOT_AUTHORITY"], "parameters": ["PARAM_SECRET_EXPOSURE"], "constraints": ["CONSTRAINT_GMAIL_OAUTH", "CONSTRAINT_NO_SECRETS"], "process_requirements": ["consent", "data minimization", "deletion"], "procedures_required": ["privacy impact assessment", "revocation test"], "tests": ["cross-tenant and deletion tests"], "evidence": ["SOURCE_REPOSITORY"], "residual_risk": "provider retention and future external data flows", "status": "PARTIAL"},
+    {"id": "PROPERTY_PERFORMANCE", "name": "performance", "ontological_definition": "Timely and resource-bounded completion of admitted tasks.", "why_it_matters": "Slow systems miss application, communication, and work deadlines.", "affected_entities": ["SYSTEM_AIGC_NEXUS"], "current_state": "local tests are fast but not representative of production", "target_state": "occupation-specific latency and throughput SLOs", "methodologies": ["METHOD_DEVSECOPS_SRE"], "heuristics": ["HEURISTIC_SMALLEST_REVERSIBLE"], "parameters": ["PARAM_COST_PER_ACTION"], "constraints": ["CONSTRAINT_RECONSTRUCTION_SCOPE"], "process_requirements": ["measure end-to-end latency and queueing"], "procedures_required": ["load and deadline tests"], "tests": ["future workload benchmarks"], "evidence": ["SOURCE_TESTS"], "residual_risk": "no production workload baseline", "status": "NOT_IMPLEMENTED"},
+    {"id": "PROPERTY_SCALABILITY", "name": "scalability", "ontological_definition": "Ability to increase tenants, connectors, occupations, and workload without violating mandatory properties.", "why_it_matters": "Breadth is a product goal but unsafe scaling amplifies errors.", "affected_entities": ["SYSTEM_AIGC_NEXUS", "COMPONENT_CONNECTOR_REGISTRY"], "current_state": "single reconstructed repository", "target_state": "tenant-isolated ecosystem with measured capacity", "methodologies": ["METHOD_DEVSECOPS_SRE", "METHOD_DDD_C4"], "heuristics": ["HEURISTIC_OCCUPATION_BY_OCCUPATION"], "parameters": ["PARAM_CONNECTOR_CERTIFICATION", "PARAM_TASK_SUCCESS"], "constraints": ["CONSTRAINT_AUTHORITY"], "process_requirements": ["capacity model", "tenant isolation"], "procedures_required": ["load test", "dependency-failure test"], "tests": ["10x scale scenario"], "evidence": ["SOURCE_REPOSITORY"], "residual_risk": "unmeasured multi-tenant demand", "status": "NOT_IMPLEMENTED"},
+    {"id": "PROPERTY_USABILITY", "name": "usability", "ontological_definition": "Effectiveness, efficiency, and confidence with which users control AIGC.", "why_it_matters": "One-click simplicity fails if users cannot understand boundaries or recover errors.", "affected_entities": ["SYSTEM_AIGC_NEXUS", "COMPONENT_CONNECTOR_REGISTRY"], "current_state": "dashboard exposes connector states", "target_state": "tested one-click plan with progressive disclosure", "methodologies": ["METHOD_HCD_WCAG"], "heuristics": ["HEURISTIC_SMALLEST_REVERSIBLE"], "parameters": ["PARAM_HUMAN_CORRECTION"], "constraints": ["CONSTRAINT_AUTHORITY"], "process_requirements": ["visible current state", "clear intervention"], "procedures_required": ["task-based usability study"], "tests": ["critical journey completion"], "evidence": ["SOURCE_REPOSITORY"], "residual_risk": "no representative user study", "status": "PARTIAL"},
+    {"id": "PROPERTY_ACCESSIBILITY", "name": "accessibility", "ontological_definition": "Equivalent operability for users with diverse sensory, motor, cognitive, and device needs.", "why_it_matters": "The interface must work on mobile and assistive technologies.", "affected_entities": ["SYSTEM_AIGC_NEXUS"], "current_state": "basic Streamlit presentation only", "target_state": "WCAG 2.2 AA across standalone and optional host UI", "methodologies": ["METHOD_HCD_WCAG"], "heuristics": ["HEURISTIC_SMALLEST_REVERSIBLE"], "parameters": ["PARAM_VERIFICATION_COVERAGE"], "constraints": ["CONSTRAINT_RECONSTRUCTION_SCOPE"], "process_requirements": ["keyboard, screen-reader, contrast, reflow, understandable error support"], "procedures_required": ["automated and human accessibility audit"], "tests": ["WCAG conformance suite"], "evidence": ["SOURCE_REPOSITORY"], "residual_risk": "host UI differences and no human audit", "status": "NOT_IMPLEMENTED"},
+    {"id": "PROPERTY_INTEROPERABILITY", "name": "interoperability", "ontological_definition": "Correct exchange of structured meaning across AI hosts, connectors, workflows, and evidence systems.", "why_it_matters": "Provider neutrality depends on stable tool and evidence contracts.", "affected_entities": ["INTERFACE_MCP_A2A", "SYSTEM_AIGC_NEXUS"], "current_state": "local stdio and Streamable HTTP MCP tool plane implemented and contract-tested", "target_state": "host-tested authenticated MCP plus A2A and standalone adapters", "methodologies": ["METHOD_DDD_C4", "METHOD_DEVSECOPS_SRE"], "heuristics": ["HEURISTIC_DEFAULT_DENY"], "parameters": ["PARAM_CONNECTOR_CERTIFICATION"], "constraints": ["CONSTRAINT_AUTHORITY"], "process_requirements": ["versioned protocol and schema"], "procedures_required": ["client conformance test"], "tests": ["MCP initialization and tool contract tests"], "evidence": ["SOURCE_TESTS"], "residual_risk": "host support, authentication, and protocol drift", "status": "PARTIAL"},
+    {"id": "PROPERTY_MAINTAINABILITY", "name": "maintainability", "ontological_definition": "Ease and safety of understanding, changing, testing, and operating the system.", "why_it_matters": "Long-lived employment workflows outlast individual implementations and maintainers.", "affected_entities": ["SYSTEM_AIGC_NEXUS"], "current_state": "modular core with tests and explicit contracts", "target_state": "owned interfaces, migration rules, and low change-failure rate", "methodologies": ["METHOD_DDD_C4", "METHOD_DEVSECOPS_SRE"], "heuristics": ["HEURISTIC_SMALLEST_REVERSIBLE"], "parameters": ["PARAM_VERIFICATION_COVERAGE"], "constraints": ["CONSTRAINT_RECONSTRUCTION_SCOPE"], "process_requirements": ["configuration control", "backward compatibility"], "procedures_required": ["diff review", "migration test"], "tests": ["full regression suite"], "evidence": ["SOURCE_TESTS"], "residual_risk": "reconstruction differs from upstream", "status": "VERIFIED_LOCAL"},
+    {"id": "PROPERTY_RESILIENCE", "name": "resilience", "ontological_definition": "Ability to preserve safe service or degrade safely under dependency failure and change.", "why_it_matters": "Providers, sites, networks, and models will fail or change.", "affected_entities": ["SYSTEM_AIGC_NEXUS", "COMPONENT_CONNECTOR_REGISTRY"], "current_state": "blocked and reconciliation states are explicit", "target_state": "tested degraded modes and dependency substitution", "methodologies": ["METHOD_DEVSECOPS_SRE"], "heuristics": ["HEURISTIC_NO_BLIND_RETRY", "HEURISTIC_DEFAULT_DENY"], "parameters": ["PARAM_AMBIGUOUS_RETRIES", "PARAM_CONNECTOR_CERTIFICATION"], "constraints": ["CONSTRAINT_GENERIC_TERMS"], "process_requirements": ["graceful degradation", "dependency health"], "procedures_required": ["chaos and provider-loss tests"], "tests": ["dependency disappearance scenarios"], "evidence": ["SOURCE_TESTS"], "residual_risk": "unimplemented live dependency paths", "status": "PARTIAL"},
+    {"id": "PROPERTY_RECOVERABILITY", "name": "recoverability", "ontological_definition": "Ability to restore a known safe state and reconcile effects after failure.", "why_it_matters": "External mutations and multi-year workflows cannot always be rolled back.", "affected_entities": ["SYSTEM_AIGC_NEXUS"], "current_state": "reconciliation semantics exist locally", "target_state": "workflow resume, rollback, and compensation are proven", "methodologies": ["METHOD_DEVSECOPS_SRE"], "heuristics": ["HEURISTIC_NO_BLIND_RETRY"], "parameters": ["PARAM_AMBIGUOUS_RETRIES"], "constraints": ["CONSTRAINT_AUTHORITY"], "process_requirements": ["checkpoint", "readback", "compensation"], "procedures_required": ["lost-ack reconciliation", "rollback drill"], "tests": ["crash and restore tests"], "evidence": ["SOURCE_TESTS"], "residual_risk": "legally irreversible actions", "status": "PARTIAL"},
+    {"id": "PROPERTY_OBSERVABILITY", "name": "observability", "ontological_definition": "Ability to infer internal and external action state from safe, correlated signals.", "why_it_matters": "Silent failure or unknown outcome prevents safe autonomy.", "affected_entities": ["SYSTEM_AIGC_NEXUS", "COMPONENT_VERIFIER"], "current_state": "local receipts and health projections exist", "target_state": "correlated traces, metrics, events, costs, and external readback", "methodologies": ["METHOD_DEVSECOPS_SRE"], "heuristics": ["HEURISTIC_BLOCKERS_FIRST"], "parameters": ["PARAM_VERIFICATION_COVERAGE", "PARAM_COST_PER_ACTION"], "constraints": ["CONSTRAINT_NO_SECRETS"], "process_requirements": ["safe telemetry", "operation correlation"], "procedures_required": ["signal validation", "alert test"], "tests": ["no-secret and missing-signal tests"], "evidence": ["SOURCE_REPOSITORY"], "residual_risk": "missing provider telemetry", "status": "PARTIAL"},
+    {"id": "PROPERTY_AUDITABILITY", "name": "auditability", "ontological_definition": "Ability to reconstruct who requested, authorized, executed, verified, and reconciled each material action.", "why_it_matters": "Employment and external actions require accountability and dispute evidence.", "affected_entities": ["COMPONENT_VERIFIER", "COMPONENT_MEMORY"], "current_state": "canonical contracts and create-only intent exist", "target_state": "immutable cross-system evidence ledger", "methodologies": ["METHOD_DEVSECOPS_SRE", "METHOD_STRIDE_LINDDUN"], "heuristics": ["HEURISTIC_MEMORY_NOT_AUTHORITY"], "parameters": ["PARAM_VERIFICATION_COVERAGE"], "constraints": ["CONSTRAINT_NO_SECRETS"], "process_requirements": ["provenance", "separation of duties"], "procedures_required": ["receipt correlation audit"], "tests": ["tamper and missing-receipt tests"], "evidence": ["SOURCE_REPOSITORY"], "residual_risk": "external evidence may be unavailable", "status": "PARTIAL"},
+    {"id": "PROPERTY_TRACEABILITY", "name": "traceability", "ontological_definition": "Bidirectional linkage from objective through requirements, action, test, evidence, artifact, and outcome.", "why_it_matters": "Without traceability, completion claims become narrative rather than proof.", "affected_entities": ["OBJECTIVE_GOVERNED_WORK", "COMPONENT_VERIFIER"], "current_state": "core ontology trace is machine-validated", "target_state": "every mandatory requirement and deployment has current exact evidence", "methodologies": ["METHOD_DDD_C4", "METHOD_DEVSECOPS_SRE"], "heuristics": ["HEURISTIC_BLOCKERS_FIRST"], "parameters": ["PARAM_VERIFICATION_COVERAGE"], "constraints": ["CONSTRAINT_RECONSTRUCTION_SCOPE"], "process_requirements": ["unique identity", "temporal validity"], "procedures_required": ["semantic reference validation"], "tests": ["broken-reference adversarial tests"], "evidence": ["SOURCE_TESTS"], "residual_risk": "external trace links absent", "status": "VERIFIED_LOCAL"},
+    {"id": "PROPERTY_DEPLOYABILITY", "name": "deployability", "ontological_definition": "Ability to promote an exact verified artifact through controlled environments without semantic or authority drift.", "why_it_matters": "Local correctness does not prove a deployable or correct runtime.", "affected_entities": ["SYSTEM_AIGC_NEXUS", "INTERFACE_MCP_A2A"], "current_state": "deployment scripts exist but authority and complete repository evidence are absent", "target_state": "exact digest deployment with rollback and no-traffic validation", "methodologies": ["METHOD_DEVSECOPS_SRE", "METHOD_STRIDE_LINDDUN"], "heuristics": ["HEURISTIC_DEFAULT_DENY"], "parameters": ["PARAM_VERIFICATION_COVERAGE", "PARAM_COST_PER_ACTION"], "constraints": ["CONSTRAINT_AUTHORITY", "CONSTRAINT_RECONSTRUCTION_SCOPE"], "process_requirements": ["exact artifact identity", "controlled promotion"], "procedures_required": ["signed admission", "deploy", "readback", "rollback"], "tests": ["deployment and rollback canary"], "evidence": ["EVIDENCE_LIFECYCLE_GAP"], "residual_risk": "no trusted deployment broker or permit", "status": "BLOCKED_EXTERNAL"},
+    {"id": "PROPERTY_OPERABILITY", "name": "operability", "ontological_definition": "Ability for authorized operators to understand, control, stop, recover, and support the running system.", "why_it_matters": "Autonomy without operational control becomes brittle and unsafe.", "affected_entities": ["OWNER_JUSTICE", "SYSTEM_AIGC_NEXUS"], "current_state": "local dashboard and runbooks exist", "target_state": "tested alerts, stops, support, incident, and offboarding procedures", "methodologies": ["METHOD_DEVSECOPS_SRE", "METHOD_HCD_WCAG"], "heuristics": ["HEURISTIC_BLOCKERS_FIRST"], "parameters": ["PARAM_UNAUTHORIZED_ACTIONS", "PARAM_AMBIGUOUS_RETRIES"], "constraints": ["CONSTRAINT_AUTHORITY"], "process_requirements": ["emergency stop", "incident command"], "procedures_required": ["operator drill", "offboarding drill"], "tests": ["stop and recovery tests"], "evidence": ["SOURCE_REPOSITORY"], "residual_risk": "no live operator surface", "status": "PARTIAL"},
+    {"id": "PROPERTY_COST_EFFICIENCY", "name": "cost efficiency", "ontological_definition": "Minimum sustainable cost for each independently verified useful outcome.", "why_it_matters": "Compute and support costs must not exceed lawful revenue and user value.", "affected_entities": ["OBJECTIVE_GOVERNED_WORK", "SYSTEM_AIGC_NEXUS"], "current_state": "live baseline unknown", "target_state": "Pareto-efficient routing with hard spend ceilings", "methodologies": ["METHOD_DEVSECOPS_SRE", "METHOD_STAGE_GATE_EVAL"], "heuristics": ["HEURISTIC_SMALLEST_REVERSIBLE"], "parameters": ["PARAM_COST_PER_ACTION", "PARAM_TASK_SUCCESS", "PARAM_HUMAN_CORRECTION"], "constraints": ["CONSTRAINT_AUTHORITY"], "process_requirements": ["reserve worst-case cost", "reconcile actual cost"], "procedures_required": ["pricing review", "billing audit"], "tests": ["cost ceiling and unknown-cost tests"], "evidence": ["SOURCE_CHAT_REQUIREMENTS"], "residual_risk": "prices, currency, and workload change", "status": "NOT_IMPLEMENTED"},
+    {"id": "PROPERTY_SUSTAINABILITY", "name": "sustainability", "ontological_definition": "Ability to deliver durable value without unacceptable financial, operational, environmental, or human burden.", "why_it_matters": "A years-long worker platform must remain supportable and responsible.", "affected_entities": ["OBJECTIVE_GOVERNED_WORK"], "current_state": "no measured production footprint or unit economics", "target_state": "measured energy, cost, support, retention, and repairability", "methodologies": ["METHOD_DEVSECOPS_SRE", "METHOD_STAGE_GATE_EVAL"], "heuristics": ["HEURISTIC_OCCUPATION_BY_OCCUPATION"], "parameters": ["PARAM_COST_PER_ACTION", "PARAM_HUMAN_CORRECTION"], "constraints": ["CONSTRAINT_RECONSTRUCTION_SCOPE"], "process_requirements": ["lifecycle and footprint measurement"], "procedures_required": ["quarterly sustainability review"], "tests": ["cost and capacity scenarios"], "evidence": ["SOURCE_CHAT_REQUIREMENTS"], "residual_risk": "no production measurements", "status": "NOT_IMPLEMENTED"},
+    {"id": "PROPERTY_ADAPTABILITY", "name": "adaptability", "ontological_definition": "Ability to change models, procedures, connectors, and task strategies while preserving mandatory invariants.", "why_it_matters": "Providers, employers, and occupations evolve.", "affected_entities": ["COMPONENT_MEMORY", "COMPONENT_CONNECTOR_REGISTRY"], "current_state": "versioned contracts support local change", "target_state": "evaluated migration, drift detection, and recertification", "methodologies": ["METHOD_DDD_C4", "METHOD_STAGE_GATE_EVAL"], "heuristics": ["HEURISTIC_MEMORY_NOT_AUTHORITY", "HEURISTIC_OCCUPATION_BY_OCCUPATION"], "parameters": ["PARAM_CONNECTOR_CERTIFICATION", "PARAM_TASK_SUCCESS"], "constraints": ["CONSTRAINT_GENERIC_TERMS"], "process_requirements": ["change detection", "recertification"], "procedures_required": ["shadow evaluation", "migration review"], "tests": ["model and connector drift tests"], "evidence": ["SOURCE_REPOSITORY"], "residual_risk": "unobserved external change", "status": "PARTIAL"},
+    {"id": "PROPERTY_AUTONOMY", "name": "autonomy", "ontological_definition": "Capacity to plan and act within a precisely bounded, current, evidence-supported authority envelope.", "why_it_matters": "The product promise depends on useful action without unrestricted power.", "affected_entities": ["SYSTEM_AIGC_NEXUS", "COMPONENT_TOOLBROKER"], "current_state": "local policy paths exist; live mutations are zero", "target_state": "evidence-scaled autonomy per reversible action and occupation", "methodologies": ["METHOD_STAGE_GATE_EVAL", "METHOD_STRIDE_LINDDUN"], "heuristics": ["HEURISTIC_DEFAULT_DENY", "HEURISTIC_NO_BLIND_RETRY"], "parameters": ["PARAM_UNAUTHORIZED_ACTIONS", "PARAM_EXTERNAL_BLAST_RADIUS"], "constraints": ["CONSTRAINT_AUTHORITY", "CONSTRAINT_REGULATED_WORK"], "process_requirements": ["classify consequence", "validate permit", "verify outcome"], "procedures_required": ["sandbox", "promotion", "downgrade", "revoke"], "tests": ["autonomy policy adversarial suite"], "evidence": ["SOURCE_TESTS"], "residual_risk": "future permits or classifications may be overbroad", "status": "PARTIAL"},
+    {"id": "PROPERTY_GOVERNANCE", "name": "governance", "ontological_definition": "Assignment and enforcement of ownership, authority, approval, verification, escalation, and revocation.", "why_it_matters": "No technical capability can legitimately decide its own authority.", "affected_entities": ["OWNER_JUSTICE", "SYSTEM_AIGC_NEXUS", "COMPONENT_VERIFIER"], "current_state": "authority separation and connector default deny are machine-enforced locally", "target_state": "complete policy-as-code with independent external authority evidence", "methodologies": ["METHOD_DDD_C4", "METHOD_STRIDE_LINDDUN", "METHOD_DEVSECOPS_SRE"], "heuristics": ["HEURISTIC_DEFAULT_DENY", "HEURISTIC_MEMORY_NOT_AUTHORITY"], "parameters": ["PARAM_UNAUTHORIZED_ACTIONS", "PARAM_VERIFICATION_COVERAGE"], "constraints": ["CONSTRAINT_AUTHORITY"], "process_requirements": ["separation of duties", "risk acceptance", "revocation"], "procedures_required": ["approval matrix", "audit", "incident escalation"], "tests": ["fabricated authority and revocation tests"], "evidence": ["SOURCE_TESTS"], "residual_risk": "external actors and permissions remain unresolved", "status": "VERIFIED_LOCAL"}
+  ],
+  "tradeoff_analysis": {
+    "maximize": ["verified user value", "employer acceptance", "quality", "reliability", "safety", "accessibility", "information gain"],
+    "minimize": ["unauthorized action risk", "human correction", "cost", "latency", "privacy exposure", "complexity", "uncertainty"],
+    "mandatory_constraints": ["CONSTRAINT_AUTHORITY", "CONSTRAINT_NO_SECRETS", "CONSTRAINT_INDEED_PERMISSION", "CONSTRAINT_GMAIL_OAUTH", "CONSTRAINT_GENERIC_TERMS", "CONSTRAINT_REGULATED_WORK", "CONSTRAINT_RECONSTRUCTION_SCOPE"],
+    "dominated_options": ["unrestricted universal browser bot", "documentation-only governance", "self-certified universal occupation agent", "production deployment from the one-commit reconstruction"],
+    "pareto_efficient_options": ["provider-neutral governed core with per-operation connectors", "three supervised occupation packs", "standalone interface plus tool-first MCP", "durable event history with create-only evidence"],
+    "selected_balance": "deliver all four Pareto-efficient options incrementally while keeping every external mutation disabled until separately certified and permitted",
+    "selection_rationale": "This preserves the product's autonomy and portability goals without trading away legality, authorization, privacy, safety, or verifiability."
+  },
+  "connectors": [
+    {
+      "id": "PASSPORT_GMAIL",
+      "name": "Gmail per-user communication",
+      "owner": "Google and the connected mailbox user",
+      "certification_status": "BLOCKED_PERMISSION",
+      "identity_binding": "No transferable AIGC OAuth grant or verified mailbox identity exists in this reconstruction.",
+      "terms_binding": "Official Google Workspace and OAuth policies must be revalidated at integration time.",
+      "capabilities": [
+        {"action": "search_threads", "stage": "OBSERVE", "status": "BLOCKED_PERMISSION", "reason": "real per-user OAuth and Developer Preview or supported API registration absent", "live_mutation_allowed": false},
+        {"action": "get_selected_thread", "stage": "OBSERVE", "status": "BLOCKED_PERMISSION", "reason": "real OAuth, exact mailbox, and selected-thread authority absent", "live_mutation_allowed": false},
+        {"action": "create_draft", "stage": "DRAFT", "status": "BLOCKED_PERMISSION", "reason": "compose scope and recipient-bound draft permit absent", "live_mutation_allowed": false},
+        {"action": "send_message", "stage": "EXECUTE", "status": "BLOCKED_PERMISSION", "reason": "separate send worker, exact human-approved MIME digest, and Phase-5 permit absent", "live_mutation_allowed": false},
+        {"action": "reconcile_draft_or_send", "stage": "RECONCILE", "status": "NOT_IMPLEMENTED", "reason": "no live operation boundary exists", "live_mutation_allowed": false}
+      ]
+    },
+    {
+      "id": "PASSPORT_INDEED",
+      "name": "Indeed employment platform",
+      "owner": "Indeed",
+      "certification_status": "BLOCKED_PERMISSION",
+      "identity_binding": "No AIGC Indeed partner application, user OAuth grant, or provisioned service exists.",
+      "terms_binding": "Official partner or Permitted AI Connector approval required; browser automation is prohibited.",
+      "capabilities": [
+        {"action": "discover_jobs", "stage": "OBSERVE", "status": "BLOCKED_PERMISSION", "reason": "documented connector access is not provisioned for this product", "live_mutation_allowed": false},
+        {"action": "prepare_application", "stage": "DRAFT", "status": "HUMAN_HANDOFF", "reason": "AIGC may prepare truthful materials from user-provided job data but may not claim Indeed submission authority", "live_mutation_allowed": false},
+        {"action": "submit_application", "stage": "EXECUTE", "status": "BLOCKED_PERMISSION", "reason": "no official job-seeker auto-apply vendor route or written permission", "live_mutation_allowed": false},
+        {"action": "send_candidate_message", "stage": "EXECUTE", "status": "BLOCKED_PERMISSION", "reason": "no approved candidate messaging mutation surface", "live_mutation_allowed": false},
+        {"action": "verify_application", "stage": "VERIFY", "status": "HUMAN_HANDOFF", "reason": "user verifies through the official Indeed interface", "live_mutation_allowed": false}
+      ]
+    },
+    {
+      "id": "PASSPORT_GENERIC_WEB",
+      "name": "Generic employer and work websites",
+      "owner": "each individual site owner",
+      "certification_status": "HUMAN_HANDOFF",
+      "identity_binding": "No wildcard identity is permitted; each account must be bound separately.",
+      "terms_binding": "No universal terms grant exists; each domain and operation requires a current passport.",
+      "capabilities": [
+        {"action": "inspect_public_page", "stage": "OBSERVE", "status": "HUMAN_HANDOFF", "reason": "no site passport or certified browser boundary in this reconstruction", "live_mutation_allowed": false},
+        {"action": "draft_form_values", "stage": "DRAFT", "status": "HUMAN_HANDOFF", "reason": "truthful local preparation is allowed but site interaction is not certified", "live_mutation_allowed": false},
+        {"action": "simulate_site_flow", "stage": "SIMULATE", "status": "NOT_IMPLEMENTED", "reason": "no site-owned sandbox fixture is present", "live_mutation_allowed": false},
+        {"action": "submit_or_message", "stage": "EXECUTE", "status": "BLOCKED_PERMISSION", "reason": "exact domain, account, destination, terms, and one-use permit absent", "live_mutation_allowed": false},
+        {"action": "verify_or_reconcile", "stage": "RECONCILE", "status": "NOT_IMPLEMENTED", "reason": "no authoritative site readback adapter exists", "live_mutation_allowed": false}
+      ]
+    },
+    {
+      "id": "PASSPORT_PORTABLE_AI",
+      "name": "ChatGPT, Gemini developer surfaces, and other AI clients",
+      "owner": "AIGC plus each AI platform",
+      "certification_status": "READ_ONLY",
+      "identity_binding": "The local aigc-nexus MCP facade is loopback or stdio only and exposes no authenticated external identity or write authority.",
+      "terms_binding": "Only officially documented client surfaces may be claimed; consumer Gemini web plugin support is not assumed.",
+      "capabilities": [
+        {"action": "read_status", "stage": "OBSERVE", "status": "READ_ONLY", "reason": "local MCP tool returns sanitized connector and occupation truth", "live_mutation_allowed": false},
+        {"action": "assess_action", "stage": "SIMULATE", "status": "READ_ONLY", "reason": "pure consequence classification omits caller-asserted authority inputs", "live_mutation_allowed": false},
+        {"action": "run_local_dry_run", "stage": "SIMULATE", "status": "READ_ONLY", "reason": "deterministic workflow simulation stops before execute", "live_mutation_allowed": false},
+        {"action": "run_employer_sandbox", "stage": "SIMULATE", "status": "READ_ONLY", "reason": "thirteen draft occupation packs can be exercised against zero-egress fixtures", "live_mutation_allowed": false},
+        {"action": "delegate_external_work", "stage": "EXECUTE", "status": "BLOCKED_PERMISSION", "reason": "server-side execution permit and deployed connector boundary absent", "live_mutation_allowed": false}
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "id": "ACT_REPAIR_RECONSTRUCTION",
+      "objective": "OBJECTIVE_GOVERNED_WORK",
+      "description": "Restore the missing deterministic redaction and read-only GitHub adapter boundaries required for test collection.",
+      "ontology_objects_touched": ["COMPONENT_TOOLBROKER", "SYSTEM_AIGC_NEXUS"],
+      "relationships_changed": ["restored governed repository read dependency"],
+      "methodology": ["METHOD_DEVSECOPS_SRE", "METHOD_STRIDE_LINDDUN"],
+      "methods_applied": ["deterministic failure reproduction", "narrow interface reconstruction", "unit and adversarial testing"],
+      "heuristics": ["HEURISTIC_BLOCKERS_FIRST", "HEURISTIC_SMALLEST_REVERSIBLE"],
+      "parameters": ["PARAM_SECRET_EXPOSURE", "PARAM_UNAUTHORIZED_ACTIONS"],
+      "constraints": ["CONSTRAINT_NO_SECRETS", "CONSTRAINT_RECONSTRUCTION_SCOPE"],
+      "tradeoffs_created": ["A narrow reconstruction preserves testability and least privilege but may differ from unavailable upstream implementation details."],
+      "assumptions": ["existing tests and architecture documents define the intended narrow contracts"],
+      "uncertainties_reduced": ["whether the reconstructed suite can collect and run"],
+      "failure_modes": ["overbroad adapter", "secret leakage", "mutation exposure"],
+      "from_state": "DISCOVERED", "to_state": "LOCAL_RECONSTRUCTION_VALIDATED",
+      "authority": "REPOSITORY_LOCAL_USER_DIRECTIVE", "status": "VERIFIED_LOCAL",
+      "verification": "full local pytest suite after repair",
+      "provenance_receipt": "working-tree diff plus fresh test output"
+    },
+    {
+      "id": "ACT_INSTANTIATE_OMNIPROJECT",
+      "objective": "OBJECTIVE_GOVERNED_WORK",
+      "description": "Instantiate OMNIPROJECT APEX Infinity V2 as a closed schema, AIGC constitution, semantic validator, tests, and operator report.",
+      "ontology_objects_touched": ["SYSTEM_AIGC_NEXUS", "COMPONENT_CONNECTOR_REGISTRY", "OBJECTIVE_GOVERNED_WORK"],
+      "relationships_changed": ["made project semantics and connector truth machine-readable"],
+      "methodology": ["METHOD_DDD_C4", "METHOD_STAGE_GATE_EVAL"],
+      "methods_applied": ["ontology modeling", "JSON Schema validation", "reference-integrity and adversarial mutation testing"],
+      "heuristics": ["HEURISTIC_DEFAULT_DENY", "HEURISTIC_MEMORY_NOT_AUTHORITY"],
+      "parameters": ["PARAM_VERIFICATION_COVERAGE", "PARAM_CONNECTOR_CERTIFICATION"],
+      "constraints": ["CONSTRAINT_AUTHORITY", "CONSTRAINT_RECONSTRUCTION_SCOPE"],
+      "tradeoffs_created": ["The larger machine-readable contract increases maintenance cost while reducing semantic ambiguity and false completion claims."],
+      "assumptions": ["the provided OMNIPROJECT expansion is an authorized project requirement"],
+      "uncertainties_reduced": ["canonical meanings", "connector enablement truth", "critical path"],
+      "failure_modes": ["schema-only theatre", "stale evidence", "unresolved references"],
+      "from_state": "LOCAL_RECONSTRUCTION_VALIDATED", "to_state": "MODELED",
+      "authority": "REPOSITORY_LOCAL_USER_DIRECTIVE", "status": "EXECUTED_LOCAL",
+      "verification": "Draft 2020-12 schema validation plus semantic invariant and adversarial tests",
+      "provenance_receipt": "config/aigc_omniproj_apex_v2.json and validation report"
+    },
+    {
+      "id": "ACT_BUILD_MCP_FACADE",
+      "objective": "OBJECTIVE_GOVERNED_WORK",
+      "description": "Build and verify the local tool-only aigc-nexus MCP facade, thirteen non-self-certifying occupation packs, and a zero-egress Deep Research planning tool.",
+      "ontology_objects_touched": ["SYSTEM_AIGC_NEXUS", "INTERFACE_MCP_A2A", "REQUIREMENT_OCCUPATION_GATE", "COMPONENT_CONNECTOR_REGISTRY"],
+      "relationships_changed": ["portable AI clients can inspect and simulate governed work without external authority"],
+      "methodology": ["METHOD_DDD_C4", "METHOD_DEVSECOPS_SRE", "METHOD_STAGE_GATE_EVAL"],
+      "methods_applied": ["tool-contract design", "closed schema validation", "zero-egress scenario testing", "MCP metadata inspection"],
+      "heuristics": ["HEURISTIC_DEFAULT_DENY", "HEURISTIC_SMALLEST_REVERSIBLE", "HEURISTIC_OCCUPATION_BY_OCCUPATION"],
+      "parameters": ["PARAM_UNAUTHORIZED_ACTIONS", "PARAM_CONNECTOR_CERTIFICATION", "PARAM_VERIFICATION_COVERAGE"],
+      "constraints": ["CONSTRAINT_AUTHORITY", "CONSTRAINT_NO_SECRETS", "CONSTRAINT_RECONSTRUCTION_SCOPE"],
+      "tradeoffs_created": ["A tool-only facade postpones the polished embedded UI while maximizing portability and keeping protocol validation independent of presentation."],
+      "assumptions": ["supported clients can consume standard MCP tool content and structuredContent"],
+      "uncertainties_reduced": ["portable tool schema", "client-visible connector truth", "occupation-pack admission shape", "research procurement boundary"],
+      "failure_modes": ["caller-asserted authority", "secret-bearing output", "self-certified competence", "external egress from simulation"],
+      "from_state": "MODELED", "to_state": "SANDBOX_VALIDATED",
+      "authority": "REPOSITORY_LOCAL_USER_DIRECTIVE", "status": "VERIFIED_LOCAL",
+      "verification": "occupation schema and model validation, adversarial tool tests, MCP metadata inspection, and local Streamable HTTP initialization",
+      "provenance_receipt": "src/integrations/mcp, config/occupation_packs, schema validators, and fresh test output"
+    },
+    {
+      "id": "ACT_OCCUPATION_PACKS",
+      "objective": "OBJECTIVE_GOVERNED_WORK",
+      "description": "Build and locally validate thirteen draft occupation packs spanning research, software, administration, data, quality, support, project work, bookkeeping workpapers, defensive security, procurement research, executive operations, and editorial work.",
+      "ontology_objects_touched": ["REQUIREMENT_OCCUPATION_GATE", "COMPONENT_MEMORY"],
+      "relationships_changed": ["future competency evidence supports bounded work authority but never creates it"],
+      "methodology": ["METHOD_STAGE_GATE_EVAL", "METHOD_HCD_WCAG"],
+      "methods_applied": ["occupational classification mapping", "capability decomposition", "closed schema validation", "zero-egress adversarial scenario testing"],
+      "heuristics": ["HEURISTIC_OCCUPATION_BY_OCCUPATION", "HEURISTIC_MEMORY_NOT_AUTHORITY"],
+      "parameters": ["PARAM_TASK_SUCCESS", "PARAM_HUMAN_CORRECTION"],
+      "constraints": ["CONSTRAINT_REGULATED_WORK"],
+      "tradeoffs_created": ["Occupation-by-occupation certification slows breadth expansion in exchange for stronger competence evidence and safer autonomy."],
+      "assumptions": ["initial packs are digitally performable and can be evaluated without external mutation"],
+      "uncertainties_reduced": ["occupation catalogue breadth", "classification claim strength", "pack autonomy ceiling", "machine-readable evaluation gates"],
+      "failure_modes": ["generalization beyond evaluated scope", "tenant memory leakage", "stale employer procedure"],
+      "from_state": "MODELED", "to_state": "SANDBOX_VALIDATED",
+      "authority": "REPOSITORY_LOCAL_USER_DIRECTIVE", "status": "VERIFIED_LOCAL",
+      "verification": "closed schema, semantic invariants, catalogue coverage, classification mapping, and zero-egress sandbox tests; employer competence evaluation remains external",
+      "provenance_receipt": "config/occupation_packs, schemas/aigc_occupation_pack.schema.json, validator output, and fresh tests"
+    },
+    {
+      "id": "ACT_DEEP_RESEARCH_PROCUREMENT",
+      "objective": "OBJECTIVE_GOVERNED_WORK",
+      "description": "Instantiate a deterministic Deep Research procurement policy and MCP planning tool that stops before source retrieval or provider dispatch.",
+      "ontology_objects_touched": ["COMPONENT_RESEARCH_PROCUREMENT", "REQUIREMENT_RESEARCH_PROVENANCE", "ACCEPTANCE_RESEARCH_TRACEABLE", "INTERFACE_MCP_A2A"],
+      "relationships_changed": ["portable clients can procure a decision-bound research plan without manufacturing evidence or authority"],
+      "methodology": ["METHOD_DDD_C4", "METHOD_STAGE_GATE_EVAL", "METHOD_STRIDE_LINDDUN"],
+      "methods_applied": ["source-ladder design", "claim-provenance gate design", "disconfirming-search requirement", "secret-pattern rejection", "deterministic contract testing"],
+      "heuristics": ["HEURISTIC_DEFAULT_DENY", "HEURISTIC_SMALLEST_REVERSIBLE"],
+      "parameters": ["PARAM_VERIFICATION_COVERAGE", "PARAM_UNAUTHORIZED_ACTIONS", "PARAM_COST_PER_ACTION"],
+      "constraints": ["CONSTRAINT_AUTHORITY", "CONSTRAINT_NO_SECRETS", "CONSTRAINT_RECONSTRUCTION_SCOPE"],
+      "tradeoffs_created": ["Provider-neutral local planning is immediately portable but postpones live source retrieval and provider synthesis until exact model, source, billing, and permit controls exist."],
+      "assumptions": ["a decision-bound source plan is useful before an external research provider is selected"],
+      "uncertainties_reduced": ["research stage order", "source admission policy", "citation coverage target", "provider dispatch boundary"],
+      "failure_modes": ["invented citations", "search snippet treated as evidence", "prompt injection from sources", "credential leakage", "research evidence treated as action authority", "unbounded provider cost"],
+      "from_state": "MODELED", "to_state": "SANDBOX_VALIDATED",
+      "authority": "REPOSITORY_LOCAL_USER_DIRECTIVE", "status": "VERIFIED_LOCAL",
+      "verification": "closed policy schema, Pydantic contract, deterministic zero-egress plan tests, adversarial secret and caller-authority tests, and MCP tool discovery",
+      "provenance_receipt": "config/aigc_deep_research_policy.v1.json, src/core/nexus/research_procurement.py, schema, tests, and fresh verification output"
+    },
+    {
+      "id": "ACT_GMAIL_CERTIFICATION",
+      "objective": "OBJECTIVE_GOVERNED_WORK",
+      "description": "Provision and certify per-user Gmail search, selected-thread read, and recipient-bound draft capabilities; retain manual send until separately admitted.",
+      "ontology_objects_touched": ["CONNECTOR_GMAIL", "REQUIREMENT_CONNECTOR_CERTIFICATION"],
+      "relationships_changed": ["future user authorizes exact mailbox capabilities"],
+      "methodology": ["METHOD_STRIDE_LINDDUN", "METHOD_STAGE_GATE_EVAL"],
+      "methods_applied": ["OAuth scope analysis", "mailbox and recipient binding", "controlled draft canary"],
+      "heuristics": ["HEURISTIC_DEFAULT_DENY", "HEURISTIC_NO_BLIND_RETRY"],
+      "parameters": ["PARAM_CONNECTOR_CERTIFICATION", "PARAM_EXTERNAL_BLAST_RADIUS", "PARAM_SECRET_EXPOSURE"],
+      "constraints": ["CONSTRAINT_AUTHORITY", "CONSTRAINT_NO_SECRETS", "CONSTRAINT_GMAIL_OAUTH"],
+      "tradeoffs_created": ["Draft-first operation limits immediate send autonomy while materially reducing recipient and irreversible-communication risk."],
+      "assumptions": ["Google continues to expose an applicable supported API or MCP surface"],
+      "uncertainties_reduced": ["actual granted scopes", "mailbox identity", "draft idempotency"],
+      "failure_modes": ["wrong recipient", "prompt injection", "cross-mailbox access", "ambiguous duplicate draft"],
+      "from_state": "SANDBOX_VALIDATED", "to_state": "CONTROLLED_PRODUCTION",
+      "authority": "EXTERNAL_PROVIDER_APPROVAL_REQUIRED", "status": "BLOCKED_EXTERNAL",
+      "verification": "test-mailbox OAuth and controlled draft canary with no sent message",
+      "provenance_receipt": "future OAuth, connector certification, and canary receipts"
+    },
+    {
+      "id": "ACT_INDEED_PARTNERSHIP",
+      "objective": "OBJECTIVE_GOVERNED_WORK",
+      "description": "Request official Indeed partner or Permitted AI Connector review and obtain written capability-specific approval before any automation.",
+      "ontology_objects_touched": ["CONNECTOR_INDEED", "REQUIREMENT_CONNECTOR_CERTIFICATION"],
+      "relationships_changed": ["future Indeed authorizes explicitly enumerated AIGC capabilities"],
+      "methodology": ["METHOD_STAGE_GATE_EVAL", "METHOD_STRIDE_LINDDUN"],
+      "methods_applied": ["primary-source terms review", "partner capability request", "provider-approved sandbox validation"],
+      "heuristics": ["HEURISTIC_DEFAULT_DENY", "HEURISTIC_SMALLEST_REVERSIBLE"],
+      "parameters": ["PARAM_CONNECTOR_CERTIFICATION", "PARAM_UNAUTHORIZED_ACTIONS"],
+      "constraints": ["CONSTRAINT_AUTHORITY", "CONSTRAINT_INDEED_PERMISSION"],
+      "tradeoffs_created": ["Human handoff and visible blocking preserve provider compliance while delaying autonomous Indeed discovery, messaging, and application submission."],
+      "assumptions": ["Indeed may elect to review a partnership request but is not obligated to approve it"],
+      "uncertainties_reduced": ["allowed discovery", "application boundary", "messaging boundary", "sandbox availability"],
+      "failure_modes": ["mistaking employer APIs for job-seeker authority", "terms breach", "unapproved browser automation"],
+      "from_state": "MODELED", "to_state": "BLOCKED_EXTERNAL",
+      "authority": "EXTERNAL_PROVIDER_APPROVAL_REQUIRED", "status": "BLOCKED_EXTERNAL",
+      "verification": "current written permission and provisioned test application",
+      "provenance_receipt": "future partner-console and agreement records"
+    },
+    {
+      "id": "ACT_GENERIC_SITE_CERTIFICATION",
+      "objective": "OBJECTIVE_GOVERNED_WORK",
+      "description": "Create one exact domain/account/operation passport, sandbox it, and certify it before exposing any generic browser or API write.",
+      "ontology_objects_touched": ["CONNECTOR_GENERIC_WEB", "REQUIREMENT_CONNECTOR_CERTIFICATION"],
+      "relationships_changed": ["future site-specific authority enables one bounded operation"],
+      "methodology": ["METHOD_STRIDE_LINDDUN", "METHOD_STAGE_GATE_EVAL", "METHOD_DEVSECOPS_SRE"],
+      "methods_applied": ["interface-control definition", "site-owner-approved sandboxing", "timeout and lost-ack fault injection"],
+      "heuristics": ["HEURISTIC_DEFAULT_DENY", "HEURISTIC_NO_BLIND_RETRY", "HEURISTIC_SMALLEST_REVERSIBLE"],
+      "parameters": ["PARAM_EXTERNAL_BLAST_RADIUS", "PARAM_CONNECTOR_CERTIFICATION", "PARAM_AMBIGUOUS_RETRIES"],
+      "constraints": ["CONSTRAINT_GENERIC_TERMS", "CONSTRAINT_AUTHORITY"],
+      "tradeoffs_created": ["Per-domain certification is slower than a universal browser bot but avoids terms bypass and confines identity and mutation risk."],
+      "assumptions": ["a selected site has a lawful supported integration or grants permission"],
+      "uncertainties_reduced": ["site contract", "identity binding", "selector or API stability", "reconciliation method"],
+      "failure_modes": ["wrong site or account", "layout drift", "CAPTCHA or anti-bot bypass", "duplicate submission"],
+      "from_state": "MODELED", "to_state": "SANDBOX_VALIDATED",
+      "authority": "EXTERNAL_PROVIDER_APPROVAL_REQUIRED", "status": "BLOCKED_EXTERNAL",
+      "verification": "site-owner-approved sandbox test and signed connector passport",
+      "provenance_receipt": "future per-site passport and test receipt"
+    },
+    {
+      "id": "ACT_CONTROLLED_DEPLOYMENT",
+      "objective": "OBJECTIVE_GOVERNED_WORK",
+      "description": "Deploy the exact verified artifact to a controlled no-traffic environment, then enable only separately admitted capabilities.",
+      "ontology_objects_touched": ["SYSTEM_AIGC_NEXUS", "INTERFACE_MCP_A2A"],
+      "relationships_changed": ["future exact artifact deployed_to controlled environment"],
+      "methodology": ["METHOD_DEVSECOPS_SRE", "METHOD_STRIDE_LINDDUN"],
+      "methods_applied": ["exact-artifact admission", "no-traffic canary deployment", "rollback drill"],
+      "heuristics": ["HEURISTIC_DEFAULT_DENY", "HEURISTIC_NO_BLIND_RETRY"],
+      "parameters": ["PARAM_VERIFICATION_COVERAGE", "PARAM_UNAUTHORIZED_ACTIONS", "PARAM_COST_PER_ACTION"],
+      "constraints": ["CONSTRAINT_AUTHORITY", "CONSTRAINT_NO_SECRETS", "CONSTRAINT_RECONSTRUCTION_SCOPE"],
+      "tradeoffs_created": ["Progressive deployment adds time and operational evidence work while limiting blast radius and preserving rollback."],
+      "assumptions": ["a trusted deployment surface and exact-head CI evidence will be supplied"],
+      "uncertainties_reduced": ["deployed artifact identity", "health", "rollback", "cost"],
+      "failure_modes": ["wrong artifact", "privilege escalation", "unbounded cost", "false readiness", "rollback failure"],
+      "from_state": "SANDBOX_VALIDATED", "to_state": "CONTROLLED_PRODUCTION",
+      "authority": "PHASE5_PERMIT_REQUIRED", "status": "BLOCKED_EXTERNAL",
+      "verification": "exact artifact readback, health checks, security checks, rollback drill, and immutable deployment receipt",
+      "provenance_receipt": "future signed CI admission, action permit, and deployment receipts"
+    }
+  ],
+  "meta_methodology_review": {
+    "framing_correct": true,
+    "ontology_granularity": "Appropriate for repository, governance, connector, occupation, and evidence boundaries; each future connector and occupation pack requires a versioned subordinate ontology.",
+    "methodology_value": "The selected stack produces concrete schemas, threat boundaries, evaluation gates, usability requirements, and deployment evidence rather than ceremonial labels.",
+    "maturity_change": "The reconstruction has advanced from locally testable code to a machine-validated project constitution, but remains pre-integration and pre-production.",
+    "process_drag": "Avoid adding methods that do not create a required artifact, reduce a named uncertainty, or control a validated risk.",
+    "heuristics_as_facts": "All heuristics remain explicitly bounded and none substitutes for current provider authority or occupational evidence.",
+    "metrics_measure_value": "Guardrails pair coverage and throughput measures with verified task success, correction, authority, blast radius, and cost.",
+    "gameable_metrics": ["application volume", "test count", "automation rate", "connector certification coverage without narrow scope"],
+    "uncertainty_actionability": "Repository-local uncertainty is low enough for MCP facade and occupation-schema work; live connector uncertainty remains too high for execution.",
+    "experiment_opportunity": "Use small zero-egress connector and occupation experiments before requesting live mutation authority.",
+    "formal_verification_need": "Reserve formal verification for permit, authority, state-transition, and evidence invariants.",
+    "governance_change_needed": "Yes: production requires separate connector, permit, verifier, and employer/evaluator authorities with revocation and emergency-stop paths.",
+    "critical_path_current": true,
+    "next_review_trigger": "Reassess after one Deep Research evidence packet and one selected occupation pack complete independent zero-egress evaluation with employer-reviewed acceptance criteria."
+  },
+  "external_blockers": [
+    {"id": "BLOCKER_FULL_REMOTE_HISTORY", "description": "The checkout has one reconstructed commit and no configured remote, so live PR, main-branch, and release state cannot be established.", "owner": "repository owner or trusted GitHub connector", "unlock_evidence": "exact remote repository, branch, commit, tree, and CI receipts resolved through a read-only trusted surface", "affected_actions": ["ACT_CONTROLLED_DEPLOYMENT"]},
+    {"id": "BLOCKER_GMAIL_OAUTH", "description": "No real AIGC Gmail OAuth application, test user grant, verified mailbox identity, or supported connector registration is present.", "owner": "Google Cloud project owner and mailbox user", "unlock_evidence": "current OAuth configuration, exact granted scopes, mailbox profile binding, and controlled test receipt", "affected_actions": ["ACT_GMAIL_CERTIFICATION"]},
+    {"id": "BLOCKER_INDEED_PERMISSION", "description": "No Indeed partner agreement, Permitted AI Connector approval, product provisioning, or supported job-seeker mutation route exists.", "owner": "Indeed", "unlock_evidence": "written capability-specific approval and provisioned test application", "affected_actions": ["ACT_INDEED_PARTNERSHIP"]},
+    {"id": "BLOCKER_SITE_PASSPORTS", "description": "No employer or generic website has an exact certified domain/account/operation passport.", "owner": "each site owner plus AIGC operator", "unlock_evidence": "per-site permission, terms digest, identity binding, sandbox verification, and reconciliation test", "affected_actions": ["ACT_GENERIC_SITE_CERTIFICATION"]},
+    {"id": "BLOCKER_OCCUPATION_EVALS", "description": "No occupation pack in this reconstruction has current employer-accepted evaluation or competency evidence.", "owner": "qualified employer or evaluator", "unlock_evidence": "training provenance, supervised evaluation, acceptance, scope, expiry, and recertification receipt", "affected_actions": ["ACT_OCCUPATION_PACKS"]},
+    {"id": "BLOCKER_DEPLOY_AUTHORITY", "description": "No exact Phase-5 deployment permit, trusted deployment broker, current billing ceiling, or no-traffic target receipt is available.", "owner": "project owner and infrastructure authority", "unlock_evidence": "one unexpired exact-artifact permit plus trusted broker and immutable outcome receipt", "affected_actions": ["ACT_CONTROLLED_DEPLOYMENT"]}
+  ],
+  "completion": {
+    "ontology_completeness": 92,
+    "ontology_consistency": "PASS",
+    "methodology_fitness": 94,
+    "parametric_coverage": 94,
+    "verified_target_state": false,
+    "critical_gate_verdict": "BLOCKED",
+    "next_exact_action": "Choose one of the thirteen draft packs, supply an employer-owned synthetic work order and scoring rubric, run its zero-egress evaluation, and separately issue a source-bound permit before any live Deep Research provider call."
+  }
+}

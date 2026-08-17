@@ -1,0 +1,13 @@
+schema_version: regenexcalibur.diagnostic-scenario.v1
+scenario_id: build_dep_conflict
+detection_code: BUILD_DEP_CONFLICT_POST
+classification: BUILD_DEPENDENCY_CONFLICT
+remediation_mode: AUTO_LOCAL
+expected_blocker: null
+observed_at: 2026-08-14T00:01:00Z
+injection:
+  dependency_state: incompatible_fixture_versions
+remediation_plan:
+  - compute a fixture-only compatible constraint set
+  - verify the lock plan without downloading packages
+  - emit an audit entry

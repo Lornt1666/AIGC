@@ -1,7 +1,7 @@
 {
   "authority_granted": false,
   "bundle_id": "AIGC-EVIDENCE-REQUESTS-V1",
-  "bundle_sha256": "8a6599c6eb296d787bd7d36446d8d4551f25991f732790ca553fe77b581d5995",
+  "bundle_sha256": "73827d3e01ef4719a1ffe11aa9b4b464b9a66792048c9d6814466906f3ed31a1",
   "external_action_performed": false,
   "purpose": "Exact receipt requests for every unresolved required and optional registry gate.",
   "requests": [
@@ -101,7 +101,7 @@
       ],
       "gate_id": "surface.nexus_linux_server.exact_head_ci",
       "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
-      "request_packet_id": "EREQ-7974A5EF4C8E0E27FCCBEBF7",
+      "request_packet_id": "EREQ-DA66E23345E8FEC8C965FAD2",
       "requested_receipt_fields": [
         "schema_version",
         "receipt_id",
@@ -121,10 +121,7 @@
         "cost",
         "external_actions_performed"
       ],
-      "required_authority": [
-        "cloud_mutation_authorized",
-        "public_traffic_authorized"
-      ],
+      "required_authority": [],
       "required_for_v1": true,
       "requirement": "exact-head CI",
       "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
@@ -146,7 +143,7 @@
       ],
       "gate_id": "surface.nexus_linux_server.immutable_image_digest",
       "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
-      "request_packet_id": "EREQ-49FA806DAC9ADEBABDD0CE8E",
+      "request_packet_id": "EREQ-C9F0FEF6BED5B8993EA320AE",
       "requested_receipt_fields": [
         "schema_version",
         "receipt_id",
@@ -167,8 +164,7 @@
         "external_actions_performed"
       ],
       "required_authority": [
-        "cloud_mutation_authorized",
-        "public_traffic_authorized"
+        "cloud_mutation_authorized"
       ],
       "required_for_v1": true,
       "requirement": "immutable image digest",
@@ -191,7 +187,7 @@
       ],
       "gate_id": "surface.nexus_linux_server.authenticated_health_readiness",
       "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
-      "request_packet_id": "EREQ-D27406B3C974A049B04AFF2F",
+      "request_packet_id": "EREQ-2BE6964D35E8C6CCF278FA02",
       "requested_receipt_fields": [
         "schema_version",
         "receipt_id",
@@ -212,7 +208,6 @@
         "external_actions_performed"
       ],
       "required_authority": [
-        "cloud_mutation_authorized",
         "public_traffic_authorized"
       ],
       "required_for_v1": true,
@@ -324,7 +319,7 @@
       ],
       "gate_id": "surface.nexus_web.accessibility_test",
       "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
-      "request_packet_id": "EREQ-949AF840180C4C6D8B38F522",
+      "request_packet_id": "EREQ-003ABF6AB759680AFB179136",
       "requested_receipt_fields": [
         "schema_version",
         "receipt_id",
@@ -345,7 +340,6 @@
         "external_actions_performed"
       ],
       "required_authority": [
-        "cloud_mutation_authorized",
         "public_traffic_authorized"
       ],
       "required_for_v1": true,
@@ -368,7 +362,7 @@
       ],
       "gate_id": "surface.nexus_web.browser_compatibility_matrix",
       "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
-      "request_packet_id": "EREQ-5BABB8A48D78143BAB185B40",
+      "request_packet_id": "EREQ-3D6028C86DFE522AB4C10E0E",
       "requested_receipt_fields": [
         "schema_version",
         "receipt_id",
@@ -389,7 +383,6 @@
         "external_actions_performed"
       ],
       "required_authority": [
-        "cloud_mutation_authorized",
         "public_traffic_authorized"
       ],
       "required_for_v1": true,
@@ -412,7 +405,7 @@
       ],
       "gate_id": "surface.nexus_web.security_headers",
       "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
-      "request_packet_id": "EREQ-AAAB104CEB03C7B184D55481",
+      "request_packet_id": "EREQ-A9A253C1238AE83762B6C82C",
       "requested_receipt_fields": [
         "schema_version",
         "receipt_id",
@@ -433,7 +426,6 @@
         "external_actions_performed"
       ],
       "required_authority": [
-        "cloud_mutation_authorized",
         "public_traffic_authorized"
       ],
       "required_for_v1": true,
@@ -501,7 +493,7 @@
       ],
       "gate_id": "surface.chatgpt_mcp.confirmed_write_workflow",
       "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
-      "request_packet_id": "EREQ-1515545A18A0D57264A3522D",
+      "request_packet_id": "EREQ-A9BC43DD1864F93639DC61B9",
       "requested_receipt_fields": [
         "schema_version",
         "receipt_id",
@@ -521,10 +513,7 @@
         "cost",
         "external_actions_performed"
       ],
-      "required_authority": [
-        "cloud_mutation_authorized",
-        "public_traffic_authorized"
-      ],
+      "required_authority": [],
       "required_for_v1": true,
       "requirement": "confirmed-write workflow",
       "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
@@ -590,7 +579,7 @@
       ],
       "gate_id": "surface.gemini_mcp.mcp_initialize",
       "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
-      "request_packet_id": "EREQ-82D45C2C0672452D93E0E7C0",
+      "request_packet_id": "EREQ-007CEFB89BF61CBD224A9F7A",
       "requested_receipt_fields": [
         "schema_version",
         "receipt_id",
@@ -610,10 +599,7 @@
         "cost",
         "external_actions_performed"
       ],
-      "required_authority": [
-        "cloud_mutation_authorized",
-        "public_traffic_authorized"
-      ],
+      "required_authority": [],
       "required_for_v1": false,
       "requirement": "MCP initialize",
       "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
@@ -634,7 +620,7 @@
       ],
       "gate_id": "surface.gemini_mcp.allowlisted_tool_list",
       "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
-      "request_packet_id": "EREQ-3A3E7F62151534E34FFD602F",
+      "request_packet_id": "EREQ-D7757FF6C3FFEAE4853FF4EF",
       "requested_receipt_fields": [
         "schema_version",
         "receipt_id",
@@ -654,10 +640,7 @@
         "cost",
         "external_actions_performed"
       ],
-      "required_authority": [
-        "cloud_mutation_authorized",
-        "public_traffic_authorized"
-      ],
+      "required_authority": [],
       "required_for_v1": false,
       "requirement": "allowlisted tool list",
       "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
@@ -678,7 +661,7 @@
       ],
       "gate_id": "surface.gemini_mcp.trust_false_configuration",
       "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
-      "request_packet_id": "EREQ-ABF107FF86A4624A15F5FB4A",
+      "request_packet_id": "EREQ-EC300D13E147B0184F0E2D76",
       "requested_receipt_fields": [
         "schema_version",
         "receipt_id",
@@ -698,10 +681,7 @@
         "cost",
         "external_actions_performed"
       ],
-      "required_authority": [
-        "cloud_mutation_authorized",
-        "public_traffic_authorized"
-      ],
+      "required_authority": [],
       "required_for_v1": false,
       "requirement": "trust=false configuration",
       "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
@@ -722,7 +702,7 @@
       ],
       "gate_id": "surface.gemini_mcp.client_validation",
       "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
-      "request_packet_id": "EREQ-6C30F8FC473558B3F2D45CE0",
+      "request_packet_id": "EREQ-400A6AE91336ABD2BCC01FD4",
       "requested_receipt_fields": [
         "schema_version",
         "receipt_id",
@@ -742,10 +722,7 @@
         "cost",
         "external_actions_performed"
       ],
-      "required_authority": [
-        "cloud_mutation_authorized",
-        "public_traffic_authorized"
-      ],
+      "required_authority": [],
       "required_for_v1": false,
       "requirement": "client validation",
       "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
@@ -930,7 +907,7 @@
       ],
       "gate_id": "surface.ios_client.signing_and_testflight_receipts",
       "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
-      "request_packet_id": "EREQ-4440CB983FC51DC1ACA703BE",
+      "request_packet_id": "EREQ-E62DB936889C61D5BFD794D0",
       "requested_receipt_fields": [
         "schema_version",
         "receipt_id",
@@ -950,7 +927,9 @@
         "cost",
         "external_actions_performed"
       ],
-      "required_authority": [],
+      "required_authority": [
+        "app_store_submission_authorized"
+      ],
       "required_for_v1": false,
       "requirement": "signing and TestFlight receipts",
       "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
@@ -1135,7 +1114,7 @@
       ],
       "gate_id": "surface.android_client.signed_internal_track_receipt",
       "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
-      "request_packet_id": "EREQ-71B4FA99E4E22D79EFAF3BC8",
+      "request_packet_id": "EREQ-A065B84649B9575A7CC48409",
       "requested_receipt_fields": [
         "schema_version",
         "receipt_id",
@@ -1155,7 +1134,9 @@
         "cost",
         "external_actions_performed"
       ],
-      "required_authority": [],
+      "required_authority": [
+        "play_store_submission_authorized"
+      ],
       "required_for_v1": false,
       "requirement": "signed internal-track receipt",
       "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
@@ -1498,7 +1479,7 @@
       ],
       "gate_id": "surface.revenue_omega.versioned_agreement",
       "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
-      "request_packet_id": "EREQ-91D7C74ED394C396E6AD1583",
+      "request_packet_id": "EREQ-A63B7B37C7CC7FEB2B923FA9",
       "requested_receipt_fields": [
         "schema_version",
         "receipt_id",
@@ -1518,7 +1499,9 @@
         "cost",
         "external_actions_performed"
       ],
-      "required_authority": [],
+      "required_authority": [
+        "external_communication_authorized"
+      ],
       "required_for_v1": false,
       "requirement": "versioned agreement",
       "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",
@@ -1621,7 +1604,7 @@
       ],
       "gate_id": "surface.revenue_omega.production_billing_authority",
       "idempotency_rule": "Reuse only when subject, release, parameters, authority, and environment are exact matches.",
-      "request_packet_id": "EREQ-0FB9BDC095649C99B51093E1",
+      "request_packet_id": "EREQ-E2FE4D420A4AAB829F751E90",
       "requested_receipt_fields": [
         "schema_version",
         "receipt_id",
@@ -1641,7 +1624,10 @@
         "cost",
         "external_actions_performed"
       ],
-      "required_authority": [],
+      "required_authority": [
+        "financial_action_authorized",
+        "production_activation_authorized"
+      ],
       "required_for_v1": false,
       "requirement": "production billing authority",
       "retry_rule": "Do not retry an indeterminate consequential action; reconcile first.",

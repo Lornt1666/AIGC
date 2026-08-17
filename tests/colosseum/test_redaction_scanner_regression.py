@@ -20,3 +20,11 @@ def test_real_provider_key_prefix_remains_rejected_and_redacted() -> None:
     assert findings
     assert any("sk-" in finding.pattern for finding in findings)
     assert all(key_like_value not in finding.redacted_preview for finding in findings)
+
+
+def test_basic_prose_is_not_misclassified_as_authorization_credential() -> None:
+    findings = RedactionScanner().scan_text(
+        "current state provides basic Streamlit presentation only",
+        path="architecture.json",
+    )
+    assert findings == []

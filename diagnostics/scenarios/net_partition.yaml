@@ -1,0 +1,13 @@
+schema_version: regenexcalibur.diagnostic-scenario.v1
+scenario_id: net_partition
+detection_code: NET_PARTITION_IN_RETRY
+classification: TRANSIENT_NETWORK_PARTITION
+remediation_mode: AUTO_LOCAL
+expected_blocker: null
+observed_at: 2026-08-14T00:03:00Z
+injection:
+  network_state: deterministic_partition_fixture
+remediation_plan:
+  - classify the operation as not started in the isolated fixture
+  - compute bounded retry timing
+  - prohibit retry when outcome is indeterminate

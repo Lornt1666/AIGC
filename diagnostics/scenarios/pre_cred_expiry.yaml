@@ -1,0 +1,13 @@
+schema_version: regenexcalibur.diagnostic-scenario.v1
+scenario_id: pre_cred_expiry
+detection_code: PRE_CRED_EXPIRY
+classification: AUTH_EXPIRED
+remediation_mode: ESCALATE
+expected_blocker: OPERATOR_OAUTH_REAUTHORIZATION_REQUIRED
+observed_at: 2026-08-14T00:00:00Z
+injection:
+  credential_state: expired
+remediation_plan:
+  - stop before third-party access
+  - request operator-controlled OAuth reauthorization
+  - require a new consent artifact and one-use permit

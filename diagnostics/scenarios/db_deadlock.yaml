@@ -1,0 +1,13 @@
+schema_version: regenexcalibur.diagnostic-scenario.v1
+scenario_id: db_deadlock
+detection_code: DB_DEADLOCK_IN_CONCURRENCY
+classification: TRANSIENT_DATABASE_DEADLOCK
+remediation_mode: AUTO_LOCAL
+expected_blocker: null
+observed_at: 2026-08-14T00:02:00Z
+injection:
+  database_state: deterministic_deadlock_fixture
+remediation_plan:
+  - cancel the isolated fixture transaction
+  - apply bounded deterministic backoff in simulation
+  - verify idempotency before retry eligibility
