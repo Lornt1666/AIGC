@@ -1,0 +1,34 @@
+{
+  "schema": "regenexcalibur.agent-skill/v1",
+  "name": "opera-bridge-mobile-ai-operator",
+  "display_name": "RegenExcalibur Opera Bridge Ω3 Mobile AI Operator",
+  "version": "0.3.0",
+  "business_identity": "RegenExcalibur",
+  "originator": "Justice Gray Maciocha",
+  "attribution": "1JGM",
+  "maturity": "LOCALLY_VALIDATED_REFERENCE_NOT_PRODUCTION",
+  "connector_type": "capability-aware authenticated MCP",
+  "default_deny": true,
+  "mobile_model": "user-initiated share/companion handoff",
+  "required_tools": [
+    "opera_devices",
+    "opera_prepare_navigation",
+    "opera_command_status",
+    "opera_revoke_device"
+  ],
+  "optional_tools": [
+    "opera_list_contexts",
+    "opera_read_context"
+  ],
+  "forbidden_data": [
+    "passwords",
+    "cookies",
+    "authorization_headers",
+    "browser_databases",
+    "browser_storage",
+    "payment_data",
+    "private_keys",
+    "secret_values"
+  ],
+  "rights_notice": "No source-code rights, assignment, exclusivity, license, or warranty is granted by this package."
+}
