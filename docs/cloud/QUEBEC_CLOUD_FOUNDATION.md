@@ -142,7 +142,7 @@ NO-LIVE-MODEL-CALL
 EXPIRES <ISO-8601-TIMESTAMP>
 ```
 
-The validator uses an equivalent single-line byte-exact phrase. This approval authorizes only the exact staging packet. It does not authorize production, public access, a Gemini call, judge publication, Devpost submission, Gmail sending, or merge.
+The validator uses an equivalent single-line byte-exact phrase. This approval authorizes only the exact staging packet. It does not authorize production, public access, a Gemini call, judge publication, Gmail sending, or merge.
 
 ### Rollback
 
