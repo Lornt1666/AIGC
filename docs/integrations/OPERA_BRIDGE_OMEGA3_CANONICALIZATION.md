@@ -9,7 +9,9 @@
 
 ## Purpose
 
-This change places the locally validated Opera Bridge Ω3 reference implementation and its capability-safe AI operator skill under canonical, reviewable version control. It does not deploy a service, connect a browser, create an OAuth issuer, send a push notification, register a mobile binary, or execute a browser action.
+This draft imports the capability-safe Opera Bridge Ω3 operator skill, authoritative architecture record, threat model, and production gate into canonical, reviewable version control. It also binds the locally verified source package by digest and manifest. Complete source-tree import remains a separate controlled gate and is not falsely represented as completed here.
+
+This action does not deploy a service, connect a browser, create an OAuth issuer, send a push notification, register a mobile binary, or execute a browser action.
 
 ## Preserved authority boundaries
 
@@ -49,6 +51,6 @@ The retained Ω1/Ω2 components are historical/prototype layers and are not evid
 
 ## Change-control decision
 
-This is opened as a **draft pull request**. Merge, deployment, public exposure, OAuth configuration, mobile signing, secrets provisioning, billing, and live browser navigation are expressly excluded from this action.
+This is opened as a **draft pull request**. Merge, deployment, public exposure, OAuth configuration, mobile signing, secrets provisioning, billing, complete source-tree import, and live browser navigation are expressly excluded from this action.
 
 No source-code assignment, licence, exclusivity, warranty, or ownership transfer is created by canonicalizing these files.
