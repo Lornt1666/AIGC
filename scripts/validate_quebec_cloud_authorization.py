@@ -74,7 +74,6 @@ FALSE_AUTHORITIES = (
     "public_access_authorized",
     "live_model_call_authorized",
     "judge_publication_authorized",
-    "devpost_submission_authorized",
     "gmail_send_authorized",
     "external_business_action_authorized",
     "financial_action_authorized",
