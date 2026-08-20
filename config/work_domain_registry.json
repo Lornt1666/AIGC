@@ -8,18 +8,8 @@
       "base_url": "https://www.usajobs.gov",
       "source_mode": "approved_api_or_manual_review",
       "priority": 80,
-      "allowed_actions": [
-        "search",
-        "read",
-        "rank",
-        "draft_application_packet"
-      ],
-      "blocked_actions": [
-        "auto_apply",
-        "auto_submit",
-        "credential_use",
-        "impersonation"
-      ],
+      "allowed_actions": ["search", "read", "rank", "draft_application_packet"],
+      "blocked_actions": ["auto_apply", "auto_submit", "credential_use", "impersonation"],
       "terms_review_required": true
     },
     {
@@ -28,18 +18,8 @@
       "base_url": "https://boards.greenhouse.io",
       "source_mode": "public_board_read_only",
       "priority": 88,
-      "allowed_actions": [
-        "search",
-        "read",
-        "rank",
-        "draft_application_packet"
-      ],
-      "blocked_actions": [
-        "auto_apply",
-        "auto_submit",
-        "form_automation",
-        "credential_use"
-      ],
+      "allowed_actions": ["search", "read", "rank", "draft_application_packet"],
+      "blocked_actions": ["auto_apply", "auto_submit", "form_automation", "credential_use"],
       "terms_review_required": true
     },
     {
@@ -48,18 +28,8 @@
       "base_url": "https://jobs.lever.co",
       "source_mode": "public_board_read_only",
       "priority": 86,
-      "allowed_actions": [
-        "search",
-        "read",
-        "rank",
-        "draft_application_packet"
-      ],
-      "blocked_actions": [
-        "auto_apply",
-        "auto_submit",
-        "form_automation",
-        "credential_use"
-      ],
+      "allowed_actions": ["search", "read", "rank", "draft_application_packet"],
+      "blocked_actions": ["auto_apply", "auto_submit", "form_automation", "credential_use"],
       "terms_review_required": true
     },
     {
@@ -68,18 +38,8 @@
       "base_url": "https://jobs.ashbyhq.com",
       "source_mode": "public_board_read_only",
       "priority": 86,
-      "allowed_actions": [
-        "search",
-        "read",
-        "rank",
-        "draft_application_packet"
-      ],
-      "blocked_actions": [
-        "auto_apply",
-        "auto_submit",
-        "form_automation",
-        "credential_use"
-      ],
+      "allowed_actions": ["search", "read", "rank", "draft_application_packet"],
+      "blocked_actions": ["auto_apply", "auto_submit", "form_automation", "credential_use"],
       "terms_review_required": true
     },
     {
@@ -88,17 +48,8 @@
       "base_url": "https://remoteok.com",
       "source_mode": "approved_api_or_public_read_only",
       "priority": 84,
-      "allowed_actions": [
-        "search",
-        "read",
-        "rank",
-        "draft_application_packet"
-      ],
-      "blocked_actions": [
-        "auto_apply",
-        "auto_submit",
-        "credential_use"
-      ],
+      "allowed_actions": ["search", "read", "rank", "draft_application_packet"],
+      "blocked_actions": ["auto_apply", "auto_submit", "credential_use"],
       "terms_review_required": true
     },
     {
@@ -107,17 +58,8 @@
       "base_url": "https://remotive.com",
       "source_mode": "approved_api_or_public_read_only",
       "priority": 84,
-      "allowed_actions": [
-        "search",
-        "read",
-        "rank",
-        "draft_application_packet"
-      ],
-      "blocked_actions": [
-        "auto_apply",
-        "auto_submit",
-        "credential_use"
-      ],
+      "allowed_actions": ["search", "read", "rank", "draft_application_packet"],
+      "blocked_actions": ["auto_apply", "auto_submit", "credential_use"],
       "terms_review_required": true
     },
     {
@@ -126,17 +68,8 @@
       "base_url": "https://weworkremotely.com",
       "source_mode": "rss_or_public_read_only",
       "priority": 82,
-      "allowed_actions": [
-        "search",
-        "read",
-        "rank",
-        "draft_application_packet"
-      ],
-      "blocked_actions": [
-        "auto_apply",
-        "auto_submit",
-        "credential_use"
-      ],
+      "allowed_actions": ["search", "read", "rank", "draft_application_packet"],
+      "blocked_actions": ["auto_apply", "auto_submit", "credential_use"],
       "terms_review_required": true
     },
     {
@@ -145,17 +78,8 @@
       "base_url": "https://www.adzuna.com",
       "source_mode": "approved_api_required",
       "priority": 78,
-      "allowed_actions": [
-        "search",
-        "read",
-        "rank",
-        "draft_application_packet"
-      ],
-      "blocked_actions": [
-        "auto_apply",
-        "auto_submit",
-        "credential_use_without_secret_broker"
-      ],
+      "allowed_actions": ["search", "read", "rank", "draft_application_packet"],
+      "blocked_actions": ["auto_apply", "auto_submit", "credential_use_without_secret_broker"],
       "terms_review_required": true
     },
     {
@@ -164,17 +88,8 @@
       "base_url": "https://www.themuse.com",
       "source_mode": "approved_api_or_manual_review",
       "priority": 72,
-      "allowed_actions": [
-        "search",
-        "read",
-        "rank",
-        "draft_application_packet"
-      ],
-      "blocked_actions": [
-        "auto_apply",
-        "auto_submit",
-        "credential_use"
-      ],
+      "allowed_actions": ["search", "read", "rank", "draft_application_packet"],
+      "blocked_actions": ["auto_apply", "auto_submit", "credential_use"],
       "terms_review_required": true
     },
     {
@@ -183,17 +98,8 @@
       "base_url": "https://www.arbeitnow.com",
       "source_mode": "approved_api_or_public_read_only",
       "priority": 72,
-      "allowed_actions": [
-        "search",
-        "read",
-        "rank",
-        "draft_application_packet"
-      ],
-      "blocked_actions": [
-        "auto_apply",
-        "auto_submit",
-        "credential_use"
-      ],
+      "allowed_actions": ["search", "read", "rank", "draft_application_packet"],
+      "blocked_actions": ["auto_apply", "auto_submit", "credential_use"],
       "terms_review_required": true
     },
     {
@@ -202,17 +108,8 @@
       "base_url": "https://jobicy.com",
       "source_mode": "approved_api_or_public_read_only",
       "priority": 72,
-      "allowed_actions": [
-        "search",
-        "read",
-        "rank",
-        "draft_application_packet"
-      ],
-      "blocked_actions": [
-        "auto_apply",
-        "auto_submit",
-        "credential_use"
-      ],
+      "allowed_actions": ["search", "read", "rank", "draft_application_packet"],
+      "blocked_actions": ["auto_apply", "auto_submit", "credential_use"],
       "terms_review_required": true
     },
     {
@@ -221,19 +118,8 @@
       "base_url": "https://www.upwork.com",
       "source_mode": "manual_operator_review_or_official_integration_only",
       "priority": 90,
-      "allowed_actions": [
-        "operator_supplied_lead_review",
-        "rank",
-        "draft_proposal_packet",
-        "open_platform_link"
-      ],
-      "blocked_actions": [
-        "auto_apply",
-        "auto_submit",
-        "auto_bid",
-        "credential_use",
-        "platform_bypass"
-      ],
+      "allowed_actions": ["operator_supplied_lead_review", "rank", "draft_proposal_packet", "open_platform_link"],
+      "blocked_actions": ["auto_apply", "auto_submit", "auto_bid", "credential_use", "platform_bypass"],
       "terms_review_required": true
     },
     {
@@ -242,19 +128,8 @@
       "base_url": "https://www.freelancer.com",
       "source_mode": "manual_operator_review_or_official_integration_only",
       "priority": 74,
-      "allowed_actions": [
-        "operator_supplied_lead_review",
-        "rank",
-        "draft_proposal_packet",
-        "open_platform_link"
-      ],
-      "blocked_actions": [
-        "auto_apply",
-        "auto_submit",
-        "auto_bid",
-        "credential_use",
-        "platform_bypass"
-      ],
+      "allowed_actions": ["operator_supplied_lead_review", "rank", "draft_proposal_packet", "open_platform_link"],
+      "blocked_actions": ["auto_apply", "auto_submit", "auto_bid", "credential_use", "platform_bypass"],
       "terms_review_required": true
     }
   ],
