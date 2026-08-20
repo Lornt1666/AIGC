@@ -1,0 +1,62 @@
+{
+  "schema_version": "regenexcalibur.opera_bridge_omega3.canonicalization_receipt.v1",
+  "generated_at_utc": "2026-08-19T00:00:00Z",
+  "business_identity": "RegenExcalibur",
+  "originator": "Justice Gray Maciocha",
+  "attribution": "1JGM",
+  "repository": "Lornt1666/AIGC",
+  "base_branch": "main",
+  "base_sha": "60297f4c6ac1c0feecb5ab913991cf3220247f27",
+  "base_tree_sha": "b06a421de654b2fde99cf1fffa993b70ef8f5cfb",
+  "branch": "feat/opera-bridge-omega3-mobile-ai-connector-v1",
+  "artifacts": {
+    "source_package": {
+      "name": "opera-bridge-omega3.zip",
+      "file_count": 50,
+      "sha256": "722c84b559e6cfdf5d34d85620b90947c06c2012486dca9ff56045262943663c",
+      "canonical_source_tree_imported": false
+    },
+    "operator_skill_package": {
+      "name": "RegenExcalibur_Opera_Bridge_Omega3_Mobile_AI_Skill_v0.3.0.zip",
+      "file_count": 17,
+      "sha256": "0f5aafc54aa8c841fcb40d000654c59df577c45254bf755c08a5fb4f2bfb85cf",
+      "canonical_skill_core_imported": true
+    },
+    "validated_release": {
+      "name": "RegenExcalibur_Opera_Bridge_Omega3_Validated_Release_v0.3.0.zip",
+      "sha256": "4779c05c11e551a2f47004203db39e35b6e81a884bed855e2ed96de0d8443e1f"
+    }
+  },
+  "checks": {
+    "python_compile": "PASS",
+    "pytest": "17 passed, 0 failed",
+    "deterministic_validator": "PASS; 10 validator-selected tests passed",
+    "node_syntax": "PASS",
+    "json_parse": "PASS; 7 files",
+    "credential_pattern_scan": "PASS; 0 candidate credentials",
+    "opera_connector_live_state": "BLOCKED_BROWSER_NOT_CONNECTED"
+  },
+  "authority": {
+    "external_actions_performed_by_local_validation": 0,
+    "provider_calls_performed": 0,
+    "deployment_performed": false,
+    "browser_navigation_performed": false,
+    "oauth_configuration_performed": false,
+    "mobile_binary_signed": false,
+    "merge_performed": false
+  },
+  "maturity": "LOCAL_REFERENCE_VALIDATED_NOT_PRODUCTION_READY",
+  "known_integration_gaps": [
+    "complete source-tree import into canonical repository",
+    "real OAuth issuer interoperability",
+    "public TLS/WSS deployment",
+    "complete Omega3 device relay and auth-epoch enforcement",
+    "iOS Xcode packaging and device test",
+    "Android Gradle packaging and device test",
+    "APNs/FCM transmission",
+    "live Opera desktop integration",
+    "independent security review",
+    "Internet-facing load and abuse testing"
+  ],
+  "rights_notice": "No source-code rights, assignment, exclusivity, license, warranty, deployment authority, or ownership transfer is created by this receipt."
+}
