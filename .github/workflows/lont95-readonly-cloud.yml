@@ -1,0 +1,92 @@
+name: Lont95 Read-Only Cloud Gate
+
+on:
+  push:
+    branches:
+      - lont95-readonly-cloud-run
+    paths:
+      - "tools/lont95_cloud_gate.py"
+      - ".github/workflows/lont95-readonly-cloud.yml"
+  workflow_dispatch:
+    inputs:
+      mines:
+        description: "Number of mines"
+        required: false
+        default: "1"
+      reveals:
+        description: "Hypothetical reveals"
+        required: false
+        default: "1"
+      wager:
+        description: "Hypothetical wager used only for EV math"
+        required: false
+        default: "10.0"
+      rtp:
+        description: "RTP model"
+        required: false
+        default: "0.99"
+      external_value:
+        description: "Verified external value"
+        required: false
+        default: "0.0"
+      costs:
+        description: "Transaction/friction costs"
+        required: false
+        default: "0.0"
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout isolated branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Enforce read-only source boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -Eqi 'requests\.|urllib|selenium|playwright|stake\.com|deposit|withdraw|autobet|click\(' tools/lont95_cloud_gate.py
+
+      - name: Run Lont95 Advantage Gate
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_MINES: ${{ inputs.mines }}
+          INPUT_REVEALS: ${{ inputs.reveals }}
+          INPUT_WAGER: ${{ inputs.wager }}
+          INPUT_RTP: ${{ inputs.rtp }}
+          INPUT_EXTERNAL_VALUE: ${{ inputs.external_value }}
+          INPUT_COSTS: ${{ inputs.costs }}
+        run: |
+          set -euo pipefail
+          MINES="${INPUT_MINES:-1}"
+          REVEALS="${INPUT_REVEALS:-1}"
+          WAGER="${INPUT_WAGER:-10.0}"
+          RTP="${INPUT_RTP:-0.99}"
+          EXTERNAL_VALUE="${INPUT_EXTERNAL_VALUE:-0.0}"
+          COSTS="${INPUT_COSTS:-0.0}"
+          python tools/lont95_cloud_gate.py \
+            --mines "$MINES" \
+            --reveals "$REVEALS" \
+            --wager "$WAGER" \
+            --rtp "$RTP" \
+            --external-value "$EXTERNAL_VALUE" \
+            --costs "$COSTS"
+
+      - name: Cloud execution receipt
+        run: |
+          echo "mode=READ_ONLY_DRY_RUN"
+          echo "runner=${RUNNER_OS}"
+          echo "repository=${GITHUB_REPOSITORY}"
+          echo "sha=${GITHUB_SHA}"
+          echo "branch=${GITHUB_REF_NAME}"
+          echo "boundary=NO_BETTING_OR_STAKE_CONNECTIVITY"
