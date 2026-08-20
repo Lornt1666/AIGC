@@ -5,6 +5,8 @@ No login, network calls, deposits, withdrawals, wagers, tile selection, autoplay
 or attempt to predict unrevealed game outcomes.
 """
 
+# Cloud trigger revision: workflow already exists before this push.
+
 import argparse
 import json
 import math
