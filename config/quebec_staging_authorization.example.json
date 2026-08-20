@@ -84,7 +84,6 @@
     "public_access_authorized": false,
     "live_model_call_authorized": false,
     "judge_publication_authorized": false,
-    "devpost_submission_authorized": false,
     "gmail_send_authorized": false,
     "external_business_action_authorized": false,
     "financial_action_authorized": false,

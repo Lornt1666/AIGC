@@ -1,6 +1,6 @@
 # Procurement Checklist for Gemini-governed Opportunity Workflow
 
-This checklist collects the exact artifacts and validation commands required to complete a governed Gemini staging deployment and produce the receipts needed for Devpost/XPRIZE claims. **Do NOT commit any filled authorization, secret manifests, or numeric secret versions to the repository.** Store completed artifacts in a secure out-of-repo location and record path/URIs in your deployment receipts.
+This checklist collects the exact artifacts and validation commands required to complete a governed Gemini staging deployment and produce retained deployment and release receipts. **Do NOT commit any filled authorization, secret manifests, or numeric secret versions to the repository.** Store completed artifacts in a secure out-of-repo location and record path/URIs in your deployment receipts.
 
 ## Quick summary
 - Release SHA: `git rev-parse HEAD` at time of artifact creation.
@@ -61,9 +61,9 @@ PY`
 - Template: `config/gemini_judge_media_manifest.example.json`
 - Acceptance: redaction_review true, reviewed_by and reviewed_at populated, media hashes recorded.
 
-11) Devpost / PR Claim Conditions
+11) Release / PR Claim Conditions
 - Merge PR only after required receipts exist and are embedded or linked in the PR.
-- Devpost claim paragraph: update with exact runtime receipt fields (do not infer values).
+- Release claims must use exact runtime receipt fields; do not infer values.
 
 ## Useful commands
 - Release SHA: `git rev-parse HEAD`

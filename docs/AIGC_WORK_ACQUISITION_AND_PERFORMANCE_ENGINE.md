@@ -47,7 +47,6 @@ Initial domain families:
 - Jobicy
 - Upwork
 - Freelancer.com
-- Devpost
 
 Each domain defines:
 

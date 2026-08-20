@@ -131,16 +131,6 @@
       "allowed_actions": ["operator_supplied_lead_review", "rank", "draft_proposal_packet", "open_platform_link"],
       "blocked_actions": ["auto_apply", "auto_submit", "auto_bid", "credential_use", "platform_bypass"],
       "terms_review_required": true
-    },
-    {
-      "domain_id": "devpost",
-      "name": "Devpost",
-      "base_url": "https://devpost.com",
-      "source_mode": "manual_operator_review_or_public_read_only",
-      "priority": 68,
-      "allowed_actions": ["search", "read", "rank", "draft_project_packet"],
-      "blocked_actions": ["auto_submit", "credential_use", "platform_bypass"],
-      "terms_review_required": true
     }
   ],
   "global_constraints": {

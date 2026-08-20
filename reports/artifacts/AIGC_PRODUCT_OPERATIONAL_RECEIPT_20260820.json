@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0.0",
+  "receipt_type": "aigc_product_operational_check",
+  "created_at": "2026-08-20T14:16:52Z",
+  "workspace_kind": "recovered_snapshot_without_valid_git_checkout",
+  "product": {
+    "name": "AIGC NEXUS V1",
+    "production_ready": false,
+    "readiness_passed": 12,
+    "readiness_total": 34,
+    "readiness_ratio": 0.352941
+  },
+  "remote_change": {
+    "repository": "Lornt1666/AIGC",
+    "pull_request": 234,
+    "pull_request_url": "https://github.com/Lornt1666/AIGC/pull/234",
+    "branch": "codex/remove-expired-contest",
+    "base_sha": "a5148855321770940afe7d13a9e4d14e3de0c77f",
+    "base_tree": "1ad6bea6cf4c1b728d557aed7299b5fdc8aba20c",
+    "draft": true,
+    "mergeable": true
+  },
+  "verification": {
+    "focused_tests": {
+      "command": ".venv/bin/python -m pytest -q tests/test_aigc_plugin_bridge.py tests/test_employer_sandbox.py",
+      "passed": 16,
+      "failed": 0
+    },
+    "affected_tests": {
+      "command": ".venv/bin/python -m pytest -q tests/test_aigc_plugin_bridge.py tests/test_employer_sandbox.py tests/test_nexus_mcp_http.py tests/test_quebec_cloud_authorization.py tests/test_quebec_cloud_foundation_static.py",
+      "passed": 44,
+      "failed": 0
+    },
+    "full_regression": {
+      "command": ".venv/bin/python -m pytest -q",
+      "passed": 501,
+      "skipped": 4,
+      "failed": 0
+    },
+    "employer_sandbox": {
+      "terminal_status": "PASS",
+      "receipt_id": "SBX-4F88AB73D87044790709ABBF",
+      "receipt_sha256": "4f88ab73d87044790709abbfe25f4dd62455a21bd6e53ab713316697a041369e",
+      "external_actions_performed": 0,
+      "provider_calls_performed": 0,
+      "zero_egress": true,
+      "disposition": "LOCAL_DRAFT_REQUIRES_HUMAN_REVIEW"
+    },
+    "mcp_http": {
+      "transport": "streamable-http",
+      "bind": "127.0.0.1:8000",
+      "path": "/mcp",
+      "protocol_version": "2025-06-18",
+      "server_name": "aigc-nexus",
+      "server_version": "1.29.0",
+      "tool_count": 11,
+      "all_tools_advertised_read_only": true,
+      "required_tools_present": true
+    }
+  },
+  "remaining_blockers": [
+    "valid exact-head Git checkout unavailable in this recovered workspace",
+    "release evidence incomplete",
+    "authenticated public host validation not performed",
+    "durable production state not configured",
+    "web surface incomplete",
+    "connector certification incomplete",
+    "cloud mutation, production activation, and public traffic not authorized"
+  ],
+  "next_action": "Acquire an authorized valid checkout of PR 234, run exact-head verification, then implement authenticated development hosting for /mcp with durable state and a retained host-validation receipt.",
+  "external_actions_performed": 0,
+  "provider_calls_performed": 0,
+  "terminal_status": "BLOCKED"
+}
