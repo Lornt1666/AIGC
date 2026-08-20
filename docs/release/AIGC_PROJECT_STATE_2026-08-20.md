@@ -18,6 +18,10 @@ available.
   [`#232`](https://github.com/Lornt1666/AIGC/pull/232), head commit
   `fb2f984accbedd8127d9bd06cb30bfd09255af66`; it is an Opera bridge slice
   against `main`, not a replacement for the integrated release chain.
+- **Expired-contest cleanup:** draft PR
+  [`#234`](https://github.com/Lornt1666/AIGC/pull/234), based exactly on PR
+  #231 head, removes the expired contest from active product scope and adds
+  this operational handoff plus its machine-readable receipt.
 - **First unmet release gate:** G4, exact-head hosted CI for PR #231.
 - **Product readiness:** `12/34` checks pass (`35.2941%`); the local core is
   healthy, but release evidence, authenticated hosting, durable state, web
@@ -116,15 +120,15 @@ mutation and production decision.
 
 ## Exact next action
 
-The next useful remote action is **not** a code push from this recovered
-snapshot. Obtain a valid checkout of exact PR #231 head
-`a5148855321770940afe7d13a9e4d14e3de0c77f`, verify its tree hash, and create a
-new product-operations branch from it. The first implementation slice on that
-branch is authenticated development hosting for `/mcp`, backed by durable
-state and a retained host-validation receipt. After that slice passes local
-and hosted CI, stage it behind zero public traffic. Provider calls, public
-traffic, billing changes, and employer actions remain separately authorized
-operations.
+The cleanup branch and PR now exist. The next useful action is **not** a code
+push from this recovered snapshot. Obtain an authorized valid checkout of PR
+#234, verify that its base is exact PR #231 head
+`a5148855321770940afe7d13a9e4d14e3de0c77f`, and run its complete suite. The
+first implementation slice after that verification is authenticated
+development hosting for `/mcp`, backed by durable state and a retained
+host-validation receipt. After that slice passes local and hosted CI, stage it
+behind zero public traffic. Provider calls, public traffic, billing changes,
+and employer actions remain separately authorized operations.
 
 ## Constitutional invariants
 
