@@ -3,12 +3,19 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import uuid
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timedelta, timezone
 from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+from src.core.phase2_to5_cycle_policy import (
+    authorized_native_cycle_provenance,
+    load_phase2_to5_cycle_policy,
+    require_phase2_to5_generation_authorized,
+)
 
 
 class ActionClass(str, Enum):
@@ -92,6 +99,7 @@ class AuthorizationPacket:
     approval_request: str
     decision: str = ApprovalDecision.PENDING.value
     audit_event_ids: List[str] = field(default_factory=list)
+    generation_provenance: Dict[str, str] = field(default_factory=dict)
 
 
 class Phase5AuditLedger:
@@ -279,6 +287,7 @@ class Phase5ApprovalGate:
         self.classifier = ActionClassifier()
         self.safety = SafetyChecklist()
         self.coherence = CoherenceChecklist()
+        self.generation_provenance: Dict[str, str] = {}
 
     def run_from_config(self, config_path: Path) -> List[AuthorizationPacket]:
         config = load_json_dict(config_path)
@@ -301,6 +310,12 @@ class Phase5ApprovalGate:
         output_path: Optional[Path] = None,
         eligible_readiness: Optional[set[str]] = None,
     ) -> List[AuthorizationPacket]:
+        require_phase2_to5_generation_authorized(self.project_root, "Phase 5")
+        policy = load_phase2_to5_cycle_policy(self.project_root)
+        self.generation_provenance = authorized_native_cycle_provenance(
+            policy,
+            os.environ,
+        )
         eligible = eligible_readiness or {"ready_for_phase_5", "strong_minor_review"}
         self.ledger.record(
             "phase5_run_start",
@@ -388,6 +403,7 @@ class Phase5ApprovalGate:
                 external_action_performed=False,
             ),
             approval_request="",
+            generation_provenance=dict(self.generation_provenance),
         )
         if classification.action_class == ActionClass.BLOCKED_BY_SAFETY.value:
             packet.decision = ApprovalDecision.BLOCKED_BY_SAFETY.value

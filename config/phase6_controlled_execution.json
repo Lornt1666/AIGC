@@ -2,6 +2,12 @@
   "phase": "Phase 6 - Controlled Execution Engine",
   "operating_mode": "exact_action_only_execution",
   "default_execution_mode": "manual_handoff",
+  "manual_handoff_lock": {
+    "enabled": true,
+    "required_mode": "manual_handoff",
+    "requires_phase5_exact_acceptance": true,
+    "requires_unexpired_packet": true
+  },
   "live_execution_allowed": false,
   "batch_execution_allowed": false,
   "external_actions_allowed_only_if_phase5_approved": true,
@@ -14,11 +20,9 @@
     "phase5_authorizations": "data/phase5_authorizations/aigc_phase5_authorization_packets.json"
   },
   "output_file": "data/phase6_execution/aigc_phase6_execution_receipts.json",
+  "manual_confirmation_file": "data/phase6_execution/aigc_phase6_manual_handoff_confirmations.jsonl",
   "allowed_execution_modes": [
-    "dry_run",
-    "manual_handoff",
-    "approved_api",
-    "approved_platform_ui"
+    "manual_handoff"
   ],
   "allowed_action_types": [
     "send_proposal",

@@ -25,6 +25,16 @@ from src.core.operator_cockpit import (  # noqa: E402
     run_command,
     summarize_authorizations,
 )
+from src.core.aigc_master_curriculum import (  # noqa: E402
+    AIGCMasterCurriculumError,
+    load_aigc_master_curriculum,
+    summarize_aigc_master_curriculum,
+)
+from src.core.phase2_to5_cycle_policy import (  # noqa: E402
+    Phase2To5CyclePolicyError,
+    active_hold_directive,
+    load_phase2_to5_cycle_policy,
+)
 from src.core.work_order import run_work_order  # noqa: E402
 from src.dashboard.paycheque_workflow_panel import render_paycheque_workflow_tab  # noqa: E402
 
@@ -46,6 +56,13 @@ def main() -> int:
     st.sidebar.warning(
         "No external action is performed by this cockpit. Accept only records scoped approval for Phase 6 eligibility."
     )
+    active_hold, hold_error = load_active_hold(root)
+    if active_hold:
+        st.sidebar.error(
+            "Active Phase 4/5 read-only hold: regeneration and approval controls are disabled."
+        )
+    elif hold_error:
+        st.sidebar.error(f"Cycle policy could not be loaded; generation is disabled: {hold_error}")
 
     tab_run, tab_work_order, tab_paycheque, tab_review, tab_audit = st.tabs([
         "Run",
@@ -62,7 +79,10 @@ def main() -> int:
         render_work_order_tab(st, root)
 
     with tab_paycheque:
-        render_paycheque_workflow_tab(st, root)
+        if active_hold or hold_error:
+            render_active_hold_notice(st, hold_error)
+        else:
+            render_paycheque_workflow_tab(st, root)
 
     with tab_review:
         render_review_tab(st, root)
@@ -74,6 +94,31 @@ def main() -> int:
 
 
 def render_run_tab(st, root: Path) -> None:
+    active_hold, hold_error = load_active_hold(root)
+    if active_hold or hold_error:
+        st.header("Active Phase 4/5 Read-Only Review")
+        if hold_error:
+            st.error(f"Cycle policy could not be validated. Generation remains disabled: {hold_error}")
+            return
+        policy = load_phase2_to5_cycle_policy(root)
+        directive = active_hold_directive(policy)
+        st.error(
+            "Phase 2–5 generation, packet acceptance, workflow dispatch, connector activation, "
+            "and production activity are disabled in the cockpit."
+        )
+        st.subheader("Permitted current cycle")
+        st.json(directive)
+        st.markdown(
+            "- Review existing Phase 4 inputs and archived expired Phase 5 packets.\n"
+            "- Prepare exactly one internal-only, non-mutating improvement proposal.\n"
+            "- Keep Phase 6 as manual handoff and production locked."
+        )
+        st.info(
+            "A separately authorized native Phase 2–5 review workflow is required before "
+            "any future fresh packet can be considered."
+        )
+        return
+
     st.header("Run Governed Enterprise Cycle")
     st.write(
         "The run button executes the internal readiness chain: preflight, connector governance, secret-vault fake test, "
@@ -129,6 +174,11 @@ def render_run_tab(st, root: Path) -> None:
 
 
 def render_work_order_tab(st, root: Path) -> None:
+    active_hold, hold_error = load_active_hold(root)
+    if active_hold or hold_error:
+        render_active_hold_notice(st, hold_error)
+        return
+
     st.header("New Governed Work Order")
     st.write(
         "This panel creates a dry-run work-order packet, classifies the work, generates reviewable artifacts, "
@@ -206,6 +256,10 @@ def render_work_order_tab(st, root: Path) -> None:
 
 def render_review_tab(st, root: Path) -> None:
     st.header("Human Reviewable Contents")
+    active_hold, hold_error = load_active_hold(root)
+    if hold_error:
+        st.error(f"Cycle policy could not be validated. Approval controls are disabled: {hold_error}")
+        return
     packets = load_authorization_packets(root)
     work_orders = load_work_order_governance_records(root)
     reviews = summarize_authorizations(packets, work_orders)
@@ -240,7 +294,10 @@ def render_review_tab(st, root: Path) -> None:
             use_container_width=True,
         )
     else:
-        st.info("No authorization packets found. Use Run first to generate reviewable packets.")
+        st.info(
+            "No active authorization packets found. Archived expired packets remain "
+            "unavailable for acceptance or handoff."
+        )
         return
 
     selectable = pending_reviews or [review for review in reviews if review.decision == "pending"] or reviews
@@ -255,9 +312,22 @@ def render_review_tab(st, root: Path) -> None:
     with st.expander("Full structured review JSON", expanded=False):
         st.json(reviews_to_dicts([selected])[0])
 
+    if active_hold:
+        st.warning(
+            "Read-only hold is active. Do not accept, deny, revise, regenerate, or hand off "
+            "these packets from the cockpit."
+        )
+        st.info(
+            "The sole permitted output is one scoped internal improvement proposal; its "
+            "implementation requires separate approval."
+        )
+        return
+
     st.subheader("Decision")
     if selected.expired:
-        st.error("This packet is expired. Regenerate Phase 5 packets before acceptance.")
+        st.error(
+            "This packet is expired and archived. It cannot be accepted or handed off."
+        )
     if selected.external_action_performed:
         st.error("This packet reports external_action_performed=true and cannot be accepted from the cockpit.")
     if selected.decision != "pending":
@@ -329,6 +399,17 @@ def render_audit_tab(st, root: Path) -> None:
     for item in SAFETY_BOUNDARY:
         st.markdown(f"- {item}")
 
+    st.subheader("Master Curriculum")
+    try:
+        curriculum = load_aigc_master_curriculum(root)
+        st.json(summarize_aigc_master_curriculum(curriculum))
+        st.caption(
+            "The curriculum is an internal reference only; it does not authorize external "
+            "actions, connectors, production deployment, or cyber-physical control."
+        )
+    except (AIGCMasterCurriculumError, ValueError) as exc:
+        st.error(f"Master curriculum is invalid: {exc}")
+
     st.subheader("Primary Artifacts")
     artifacts = [
         "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
@@ -381,6 +462,31 @@ def render_decision_result(st, result) -> None:
         st.code(result.stdout.strip()[-4000:], language="text")
     if result.stderr:
         st.code(result.stderr.strip()[-4000:], language="text")
+
+
+def load_active_hold(root: Path) -> tuple[bool, str]:
+    try:
+        policy = load_phase2_to5_cycle_policy(root)
+    except (Phase2To5CyclePolicyError, ValueError) as exc:
+        return True, str(exc)
+    if not policy:
+        return True, "The durable Phase 2–5 cycle policy is missing."
+    return bool(policy.get("active_hold", {}).get("enabled", False)), ""
+
+
+def render_active_hold_notice(st, policy_error: str = "") -> None:
+    st.header("Read-Only Hold Active")
+    if policy_error:
+        st.error(f"Generation is disabled because the cycle policy is unavailable: {policy_error}")
+    else:
+        st.warning(
+            "This surface is disabled while the current Phase 4/5 read-only hold is active. "
+            "Do not regenerate artifacts, accept packets, run a workflow, or initiate external work."
+        )
+    st.info(
+        "Review existing Phase 4 inputs and archived Phase 5 packets only; retain one "
+        "scoped internal improvement proposal for separate approval."
+    )
 
 
 def format_action_label(action_id: str, reviews: list[AuthorizationReview]) -> str:

@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Master Curriculum",
+  "type": "object",
+  "required": [
+    "curriculum_id",
+    "version",
+    "status",
+    "operating_mode",
+    "purpose",
+    "governance_boundary",
+    "classes",
+    "external_action_performed"
+  ],
+  "properties": {
+    "curriculum_id": {"type": "string"},
+    "version": {"type": "string"},
+    "status": {"type": "string"},
+    "operating_mode": {"type": "string"},
+    "purpose": {"type": "string"},
+    "governance_boundary": {
+      "type": "object",
+      "required": [
+        "external_actions_authorized",
+        "production_activation_authorized",
+        "connector_activation_authorized",
+        "hardware_or_cyber_physical_control_authorized",
+        "behavior_changing_patch_requires_justice_approval",
+        "phase5_approval_required",
+        "phase6_manual_handoff_only",
+        "raw_secret_storage_allowed"
+      ],
+      "properties": {
+        "external_actions_authorized": {"type": "boolean"},
+        "production_activation_authorized": {"type": "boolean"},
+        "connector_activation_authorized": {"type": "boolean"},
+        "hardware_or_cyber_physical_control_authorized": {"type": "boolean"},
+        "behavior_changing_patch_requires_justice_approval": {"type": "boolean"},
+        "phase5_approval_required": {"type": "boolean"},
+        "phase6_manual_handoff_only": {"type": "boolean"},
+        "raw_secret_storage_allowed": {"type": "boolean"}
+      }
+    },
+    "classes": {
+      "type": "array",
+      "minItems": 15,
+      "items": {
+        "type": "object",
+        "required": [
+          "class_id",
+          "title",
+          "academic_focus",
+          "occupational_application",
+          "disciplinary_coordination"
+        ],
+        "properties": {
+          "class_id": {"type": "integer"},
+          "title": {"type": "string"},
+          "academic_focus": {"type": "string"},
+          "occupational_application": {"type": "string"},
+          "disciplinary_coordination": {"type": "string"}
+        }
+      }
+    },
+    "external_action_performed": {"type": "boolean"}
+  }
+}

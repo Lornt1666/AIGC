@@ -9,6 +9,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 
+from src.core.phase2_to5_cycle_policy import require_phase2_to5_generation_authorized
+
 
 class Phase3Decision(str, Enum):
     PROCEED_TO_PHASE_4 = "proceed_to_phase_4"
@@ -710,6 +712,7 @@ class Phase3Runner:
         output_path: Optional[Path] = None,
         max_records: int = 100,
     ) -> List[OpportunityAssessmentDossier]:
+        require_phase2_to5_generation_authorized(self.project_root, "Phase 3")
         self.ledger.record(
             "phase3_run_start",
             {

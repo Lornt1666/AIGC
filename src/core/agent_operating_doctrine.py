@@ -23,6 +23,9 @@ REQUIRED_HARD_BLOCKS = {
     "unverified_observer_access",
     "unreviewed_external_delivery",
     "live_external_execution_without_future_connector_pr",
+    "unapproved_native_workflow_or_packet_regeneration",
+    "expired_packet_acceptance_or_handoff",
+    "unapproved_external_contact",
 }
 
 REQUIRED_AGENT_ROLES = {"researcher", "communicator", "reasoner", "sentinel", "operator_cockpit"}

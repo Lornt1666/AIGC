@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIGC Phase 2 to 5 Cycle Policy",
+  "type": "object",
+  "required": [
+    "contract_id",
+    "contract_version",
+    "status",
+    "active_hold",
+    "authorized_native_cycle",
+    "phase6",
+    "connector_and_production_boundary",
+    "next_cycle_strategy",
+    "scoped_internal_improvement_proposal",
+    "external_action_performed"
+  ],
+  "properties": {
+    "contract_id": {"type": "string"},
+    "contract_version": {"type": "string"},
+    "status": {"type": "string"},
+    "active_hold": {
+      "type": "object",
+      "required": [
+        "enabled",
+        "phase4_input_review_mode",
+        "phase5_input_review_mode",
+        "automatic_regeneration_allowed",
+        "maximum_scoped_internal_improvement_proposals",
+        "external_contact_allowed",
+        "production_locked"
+      ],
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "phase4_input_review_mode": {"type": "string"},
+        "phase5_input_review_mode": {"type": "string"},
+        "automatic_regeneration_allowed": {"type": "boolean"},
+        "maximum_scoped_internal_improvement_proposals": {"type": "integer"},
+        "external_contact_allowed": {"type": "boolean"},
+        "production_locked": {"type": "boolean"}
+      }
+    },
+    "authorized_native_cycle": {
+      "type": "object",
+      "required": [
+        "workflow_file",
+        "event_name",
+        "operator_authorization_phrase",
+        "review_only",
+        "requires_accountable_operator_review",
+        "run_receipts_immutable",
+        "repository_write_authority"
+      ],
+      "properties": {
+        "workflow_file": {"type": "string"},
+        "event_name": {"type": "string"},
+        "operator_authorization_phrase": {"type": "string"},
+        "review_only": {"type": "boolean"},
+        "requires_accountable_operator_review": {"type": "boolean"},
+        "run_receipts_immutable": {"type": "boolean"},
+        "repository_write_authority": {"type": "boolean"}
+      }
+    },
+    "phase6": {
+      "type": "object",
+      "required": [
+        "execution_mode",
+        "fresh_exact_unexpired_acceptance_required",
+        "manual_confirmation_required_before_phase7"
+      ],
+      "properties": {
+        "execution_mode": {"type": "string"},
+        "fresh_exact_unexpired_acceptance_required": {"type": "boolean"},
+        "manual_confirmation_required_before_phase7": {"type": "boolean"}
+      }
+    },
+    "connector_and_production_boundary": {
+      "type": "object",
+      "required": [
+        "connectors_enabled",
+        "production_deployment_authorized",
+        "secret_access_authorized"
+      ],
+      "properties": {
+        "connectors_enabled": {"type": "boolean"},
+        "production_deployment_authorized": {"type": "boolean"},
+        "secret_access_authorized": {"type": "boolean"}
+      }
+    },
+    "next_cycle_strategy": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string"}
+    },
+    "scoped_internal_improvement_proposal": {
+      "type": "object",
+      "required": [
+        "proposal_id",
+        "status",
+        "scope",
+        "apply_authorized",
+        "external_action_performed"
+      ],
+      "properties": {
+        "proposal_id": {"type": "string"},
+        "status": {"type": "string"},
+        "scope": {"type": "string"},
+        "apply_authorized": {"type": "boolean"},
+        "external_action_performed": {"type": "boolean"}
+      }
+    },
+    "external_action_performed": {"type": "boolean"}
+  }
+}

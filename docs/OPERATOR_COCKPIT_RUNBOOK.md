@@ -6,10 +6,11 @@ Copyright (c) 2026 Justice Gray Maciocha. All Rights Reserved.
 
 The Operator Cockpit is a local, human-governed control plane for AIGC.
 
-It provides two primary controls:
+During the current Phase 4/5 read-only hold, it provides a read-only review
+surface:
 
-1. **Run governed cycle** — prepares, validates, audits, and refreshes internal work artifacts.
-2. **Accept selected action** — records one scoped human approval decision for one visible review packet.
+1. **Review existing Phase 4/5 evidence** — inspect existing inputs and archived packet state.
+2. **Audit / Transparency** — inspect the durable policy and governance-bound curriculum.
 
 The cockpit does not submit, message, bid, apply, request payment, use credentials, automate external platforms, or hide uncertainty.
 
@@ -46,44 +47,38 @@ $env:AIGC_INSTALL_DEPENDENCIES = "1"
 The cockpit follows these operating controls:
 
 - **Least privilege** — it reads and writes local governed artifacts only.
-- **Separation of duties** — Run prepares; Review evaluates; Accept records scoped consent; manual handoff remains separate.
+- **Separation of duties** — authorized native workflow prepares; local review evaluates; exact acceptance records scoped consent; manual handoff remains separate.
 - **Explicit scope** — every review packet displays recipient, platform, action, artifact preview, risk, expiry, and hash.
 - **Auditability** — decisions are routed through `src/aigc.py` and recorded in the existing state store and audit files.
 - **No hidden execution** — acceptance does not perform a platform action and preserves `external_action_performed=false`.
 - **Emergency stop** — the cockpit can enable the runtime stop flag before further approvals or phase execution.
 - **Deny and revise path** — human review can deny or request revision instead of accepting.
 - **Secret isolation** — secret values remain out of the repo; Phase 11 fake-test validates the scaffold without logging live values.
-- **Contract validation** — the governed cycle ends with schema validation.
+- **Contract validation** — an authorized native review workflow validates artifacts before uploading its receipt.
 
-## What the Run button does
+## Current hold behavior
 
-The Run button executes this internal sequence:
+The authoritative active policy is `config/phase2_to5_cycle_policy.json`. While
+it is active, the cockpit disables:
 
-1. Runtime preflight.
-2. Connector governance.
-3. Secret-vault fake test.
-4. Opportunity radar.
-5. Ology assessment.
-6. Proposal drafting.
-7. Human approval packet generation.
-8. Finance and contract ledger.
-9. Compliance and legal review.
-10. Sub-agent planning.
-11. Fidelity forge.
-12. Customer satisfaction continuum.
-13. Quality-state kernel.
-14. Ascended work-order governor.
-15. Productization readiness.
-16. Observability refresh.
-17. Contract validation.
+- Phase 2–5 artifact regeneration;
+- work-order and paycheque run controls;
+- packet accept, deny, and revise controls;
+- workflow initiation, connector activation, and production operations.
 
-The sequence can stop on the first failed governance step. Each command output is visible in the cockpit and can be downloaded as a run receipt.
+The permitted current action is read-only review of existing Phase 4 inputs and
+archived expired Phase 5 packets, followed by at most one non-mutating internal
+improvement proposal. Its implementation requires separate approval.
 
-## What the Accept button does
+## Future authorized review cycle
 
-The Accept button only records the visible, selected packet as approved for Phase 6 eligibility. It calls the existing exact-phrase approval gate only after you manually type the exact required phrase in the UI.
+Phase 2–5 artifacts may be generated only after separate explicit operator
+authorization of `.github/workflows/aigc_phase2_to5_review.yml`. It is a
+manual-dispatch-only, review-only workflow that uploads exact-revision digest
+receipts and never commits or pushes generated artifacts.
 
-Accept does not:
+After a fresh, unexpired packet from that workflow is visibly reviewed, its
+exact Phase 5 phrase may be recorded through the CLI. Acceptance does not:
 
 - send or submit anything;
 - message a customer, employer, platform, or public issue;
@@ -94,11 +89,13 @@ Accept does not:
 - bypass compliance or expiry checks;
 - hide risk, blockers, or uncertainty.
 
-Expired packets must be regenerated before acceptance.
+Expired packets remain archived and cannot be accepted. A separate authorized
+native review cycle is required to produce a fresh candidate packet.
 
 ## Manual handoff remains separate
 
-After acceptance, Phase 6 may create a manual handoff or dry-run receipt. The default project posture remains governed and non-autonomous for external actions.
+After acceptance, Phase 6 creates only a manual handoff. The default project
+posture remains governed and non-autonomous for external actions.
 
 Recommended commands after one accepted packet:
 
@@ -108,6 +105,12 @@ python .\src\aigc.py close-loop --execution-mode manual_handoff
 ```
 
 The resulting handoff instructs the operator to manually verify the recipient, platform, artifact hash, and scope before any external submission.
+
+After a human operator completes the handoff, record an exact manual
+confirmation before generating a Phase 7 audit draft. The confirmation must
+identify one execution ID, use the exact operator phrase, and contain only a
+sanitized receipt reference. It records that the operator—not AIGC—performed
+the external action and prevents reuse of the authorization.
 
 ## Procurement procedure
 

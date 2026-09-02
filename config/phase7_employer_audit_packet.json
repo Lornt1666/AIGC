@@ -6,7 +6,8 @@
   "input_files": {
     "phase4_proposals": "data/phase4_proposals/aigc_phase4_proposal_packages.json",
     "phase5_authorizations": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
-    "phase6_receipts": "data/phase6_execution/aigc_phase6_execution_receipts.json"
+    "phase6_receipts": "data/phase6_execution/aigc_phase6_execution_receipts.json",
+    "manual_handoff_confirmations": "data/phase6_execution/aigc_phase6_manual_handoff_confirmations.jsonl"
   },
   "output_file": "data/phase7_audit_packets/aigc_phase7_employer_audit_packets.json",
   "markdown_output_dir": "data/phase7_audit_packets",

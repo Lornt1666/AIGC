@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pytest
@@ -156,6 +157,8 @@ def test_cli_approve_updates_temp_authorization_only(tmp_path: Path) -> None:
             "proposal_id": "phase4_test",
             "opportunity_id": "opp_test",
             "operator": "Justice Gray Maciocha",
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "expires_at": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat(),
             "proposed_external_action": "Internal test approval only.",
             "recipient": "Test Recipient",
             "platform": "Test Platform",
@@ -182,6 +185,13 @@ def test_cli_approve_updates_temp_authorization_only(tmp_path: Path) -> None:
             "phase6_status": {
                 "authorized_for_phase6": False,
                 "external_action_performed": False
+            },
+            "generation_provenance": {
+                "generation_context": "authorized_native_phase2_to5_review_workflow",
+                "workflow_file": ".github/workflows/aigc_phase2_to5_review.yml",
+                "event_name": "workflow_dispatch",
+                "github_run_id": "test-run-1",
+                "github_workflow_ref": "Lornt1666/AIGC/.github/workflows/aigc_phase2_to5_review.yml@refs/heads/main"
             },
             "decision": "pending"
         }

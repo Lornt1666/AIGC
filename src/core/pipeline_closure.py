@@ -35,7 +35,8 @@ class PipelineClosureRunner:
 
     It does not approve actions, contact recipients, use credentials, or perform
     external execution. It only processes already-approved Phase 5 packets
-    through Phase 6 handoff/dry-run and Phase 7 internal audit drafts.
+    through Phase 6 manual handoff. Phase 7 audit drafts require a separately
+    recorded manual-handoff confirmation.
     """
 
     def __init__(self, project_root: Path, store: AIGCStateStore | None = None):
@@ -43,8 +44,8 @@ class PipelineClosureRunner:
         self.store = store
 
     def run(self, execution_mode: str = ExecutionMode.MANUAL_HANDOFF.value) -> PipelineClosureResult:
-        if execution_mode not in {ExecutionMode.DRY_RUN.value, ExecutionMode.MANUAL_HANDOFF.value}:
-            raise ValueError("Milestone C closure allows only dry_run or manual_handoff.")
+        if execution_mode != ExecutionMode.MANUAL_HANDOFF.value:
+            raise ValueError("Milestone C closure allows only manual_handoff.")
 
         phase6_config = self.project_root / "config" / "phase6_controlled_execution.json"
         phase7_config = self.project_root / "config" / "phase7_employer_audit_packet.json"
@@ -165,7 +166,7 @@ def closure_status(
         return "blocked"
     if phase7_packets:
         return "phase7_internal_drafts_ready"
-    return "phase6_receipts_ready"
+    return "manual_confirmation_required"
 
 
 def write_outputs(project_root: Path, result: PipelineClosureResult) -> None:
@@ -225,7 +226,7 @@ External Action Performed: No
 
 ## Next Recommended Action
 
-Approve, deny, revise, or refresh expired Phase 5 packets before expecting Phase 6 manual handoffs or Phase 7 employer audit drafts.
+After the operator completes a valid Phase 6 manual handoff, record one exact confirmation before expecting a Phase 7 employer audit draft. Expired packets remain archived and cannot be reused.
 """
 
 
@@ -252,4 +253,3 @@ def _load_json_list(path: Path) -> List[Dict[str, Any]]:
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
-

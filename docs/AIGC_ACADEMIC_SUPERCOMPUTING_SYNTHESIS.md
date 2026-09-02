@@ -96,6 +96,14 @@ The system should be maximally autonomous inside the permitted workspace and str
 
 The academic version of AIGC is an internal council of disciplines, each represented as a bounded reasoning lens:
 
+The schema-validated 15-class Master Curriculum is maintained in
+`config/aigc_master_curriculum.json`. It provides an internal instructional
+reference for autonomous automation and auto-engineering analysis. The
+curriculum does not expand authority: every application remains subject to
+Phase 5 approval, Phase 6 manual handoff, safety/privacy controls, disabled
+connectors, production release gates, and Justice Gray Maciocha approval for
+behavior-changing patches.
+
 | Discipline | System Function | Output |
 |---|---|---|
 | Computer science | algorithms, data structures, software contracts | implementation plan |

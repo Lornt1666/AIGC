@@ -11,6 +11,11 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from src.phase6_controlled_execution import (
+    load_manual_handoff_confirmations,
+    manual_confirmation_matches_handoff,
+)
+
 
 class PacketStatus(str, Enum):
     INTERNAL_DRAFT_ONLY = "internal_draft_only"
@@ -378,18 +383,59 @@ class EmployerAuditPacketBuilder:
         receipts = load_json_list_if_exists(resolve_project_path(self.project_root, inputs.get("phase6_receipts", "")))
         authorizations = load_json_list_if_exists(resolve_project_path(self.project_root, inputs.get("phase5_authorizations", "")))
         proposals = load_json_list_if_exists(resolve_project_path(self.project_root, inputs.get("phase4_proposals", "")))
+        confirmations = load_manual_handoff_confirmations(
+            resolve_project_path(
+                self.project_root,
+                inputs.get(
+                    "manual_handoff_confirmations",
+                    "data/phase6_execution/aigc_phase6_manual_handoff_confirmations.jsonl",
+                ),
+            )
+        )
         auth_by_id = {item.get("authorization_id", ""): item for item in authorizations}
         proposals_by_id = {item.get("proposal_id", ""): item for item in proposals}
+        confirmations_by_execution_id: Dict[str, List[Dict[str, Any]]] = {}
+        for confirmation in confirmations:
+            execution_id = str(confirmation.get("execution_id", ""))
+            if execution_id:
+                confirmations_by_execution_id.setdefault(execution_id, []).append(
+                    confirmation
+                )
         packets: List[EmployerAuditPacket] = []
         for receipt in receipts:
-            status = receipt.get("status", "")
-            if status in {"blocked", "failed"}:
-                continue
             authorization = auth_by_id.get(receipt.get("authorization_id", ""), {})
+            matching_confirmations = confirmations_by_execution_id.get(
+                str(receipt.get("execution_id", "")),
+                [],
+            )
+            confirmation = (
+                matching_confirmations[0]
+                if len(matching_confirmations) == 1
+                else {}
+            )
+            if not manual_confirmation_matches_handoff(confirmation, receipt, authorization):
+                self.ledger.record(
+                    "phase7_audit_packet_blocked_pending_manual_confirmation",
+                    {
+                        "execution_id": receipt.get("execution_id", ""),
+                        "authorization_id": receipt.get("authorization_id", ""),
+                        "action_id": receipt.get("action_id", ""),
+                        "external_sharing_performed": False,
+                    },
+                )
+                continue
             proposal = proposals_by_id.get(receipt.get("proposal_id", ""), {})
             final_content = proposal.get("employer_facing_message", "")
+            confirmed_receipt = {
+                **receipt,
+                "confirmation_id": confirmation.get("confirmation_id", ""),
+                "executed_at": confirmation.get("confirmed_at", ""),
+                "phase7_handoff_ready": True,
+                "external_action_performed": True,
+                "external_action_actor": "human_operator",
+            }
             packet = self.build_packet(
-                phase6_receipt=receipt,
+                phase6_receipt=confirmed_receipt,
                 phase5_authorization=authorization,
                 phase4_proposal=proposal,
                 final_deliverable_content=final_content,
@@ -407,7 +453,10 @@ class EmployerAuditPacketBuilder:
         self.ledger.record("phase7_packets_exported", {"path": str(output_path), "records": len(packets)})
         report_path = self.project_root / "data" / "reports" / "phase7_signature_update.md"
         report_path.parent.mkdir(parents=True, exist_ok=True)
-        report_path.write_text(self.signature_update(packets, receipts), encoding="utf-8")
+        report_path.write_text(
+            self.signature_update(packets, receipts, confirmations),
+            encoding="utf-8",
+        )
         return packets
 
     def _build_deliverables(
@@ -543,8 +592,14 @@ Prepared by:
         ])
         return "AIGC-PACKET-" + hashlib.sha256(raw.encode("utf-8")).hexdigest()[:18].upper()
 
-    def signature_update(self, packets: List[EmployerAuditPacket], receipts: Optional[List[Dict[str, Any]]] = None) -> str:
+    def signature_update(
+        self,
+        packets: List[EmployerAuditPacket],
+        receipts: Optional[List[Dict[str, Any]]] = None,
+        confirmations: Optional[List[Dict[str, Any]]] = None,
+    ) -> str:
         receipts = receipts or []
+        confirmations = confirmations or []
         ready = [packet for packet in packets if packet.status == PacketStatus.READY_FOR_OPERATOR_REVIEW.value]
         caution = [packet for packet in packets if packet.status == PacketStatus.READY_WITH_CAUTION.value]
         revise = [packet for packet in packets if packet.status == PacketStatus.REVISE_BEFORE_DELIVERY.value]
@@ -565,6 +620,7 @@ Prepared by:
             "No raw internal logs exposed.",
             "Secret-like patterns redacted.",
             f"Phase 6 Receipts Read: {len(receipts)}",
+            f"Valid Manual Confirmations Read: {len(confirmations)}",
             f"Packets Created: {len(packets)}",
             f"Ready for Operator Review: {len(ready)}",
             f"Ready with Caution: {len(caution)}",
@@ -637,7 +693,19 @@ def main() -> int:
     packets = builder.run_from_config(args.config)
     receipts_path = args.project_root / "data" / "phase6_execution" / "aigc_phase6_execution_receipts.json"
     receipts = load_json_list_if_exists(receipts_path)
-    print(builder.signature_update(packets, receipts))
+    confirmations_path = (
+        args.project_root
+        / "data"
+        / "phase6_execution"
+        / "aigc_phase6_manual_handoff_confirmations.jsonl"
+    )
+    print(
+        builder.signature_update(
+            packets,
+            receipts,
+            load_manual_handoff_confirmations(confirmations_path),
+        )
+    )
     print(f"\nPackets exported: {args.project_root / 'data' / 'phase7_audit_packets' / 'aigc_phase7_employer_audit_packets.json'}")
     print(f"Report exported: {args.project_root / 'data' / 'reports' / 'phase7_signature_update.md'}")
     return 0

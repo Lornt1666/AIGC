@@ -10,6 +10,11 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from src.core.phase2_to5_cycle_policy import (
+    Phase2To5CyclePolicyError,
+    load_phase2_to5_cycle_policy,
+)
+
 
 class OutcomeStatus(str, Enum):
     DISCOVERED_ONLY = "discovered_only"
@@ -549,6 +554,12 @@ class AIGCPhase8EvolutionLoop:
         return report
 
     def run_from_config(self, config_path: Path) -> EvolutionCycleReport:
+        cycle_policy = load_phase2_to5_cycle_policy(self.project_root)
+        if cycle_policy.get("active_hold", {}).get("enabled", False):
+            raise Phase2To5CyclePolicyError(
+                "Phase 8 evolution generation is blocked by the active read-only Phase 4/5 hold. "
+                "The durable next-cycle policy is in config/phase2_to5_cycle_policy.json."
+            )
         config = load_json_dict(config_path)
         inputs = config.get("input_files", {})
         phase2 = load_json_list_if_exists(resolve_project_path(self.project_root, inputs.get("phase2_queue", "")))

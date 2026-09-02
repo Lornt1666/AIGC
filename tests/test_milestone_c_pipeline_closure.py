@@ -6,6 +6,8 @@ import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+import pytest
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
@@ -13,25 +15,76 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from src.core.pipeline_closure import PipelineClosureRunner
 from src.core.state_store import AIGCStateStore
-from src.phase6_controlled_execution import HashTools
+from src.phase6_controlled_execution import (
+    ControlledExecutionEngine,
+    HashTools,
+    ManualHandoffConfirmationError,
+    record_manual_handoff_confirmation,
+    sanitize_manual_completion_reference,
+)
+from src.phase7_employer_audit_packet import EmployerAuditPacketBuilder
 
 
-def test_pipeline_closure_creates_internal_receipt_and_audit_packet(tmp_path: Path) -> None:
+def test_pipeline_closure_creates_manual_handoff_and_waits_for_confirmation(tmp_path: Path) -> None:
     create_closure_fixture(tmp_path)
     store = AIGCStateStore(tmp_path / "memory" / "state.sqlite")
-    result = PipelineClosureRunner(tmp_path, store).run(execution_mode="dry_run")
+    result = PipelineClosureRunner(tmp_path, store).run(execution_mode="manual_handoff")
 
     receipts = json.loads((tmp_path / "data" / "phase6_execution" / "aigc_phase6_execution_receipts.json").read_text(encoding="utf-8"))
     packets = json.loads((tmp_path / "data" / "phase7_audit_packets" / "aigc_phase7_employer_audit_packets.json").read_text(encoding="utf-8"))
     summary = store.get_status_summary()
 
-    assert result.status == "phase7_internal_drafts_ready"
+    assert result.status == "manual_confirmation_required"
     assert result.external_action_performed is False
     assert result.phase6_receipts_created == 1
-    assert result.phase7_packets_created == 1
-    assert receipts[0]["status"] == "dry_run_complete"
-    assert packets[0]["linked_records"]["phase6_execution_id"] == receipts[0]["execution_id"]
+    assert result.phase7_packets_created == 0
+    assert receipts[0]["status"] == "requires_manual_completion"
+    assert receipts[0]["execution_mode"] == "manual_handoff"
+    assert packets == []
     assert summary["runtime_events"] == 1
+
+
+def test_pipeline_closure_rejects_dry_run_mode(tmp_path: Path) -> None:
+    create_closure_fixture(tmp_path)
+
+    with pytest.raises(ValueError, match="only manual_handoff"):
+        PipelineClosureRunner(tmp_path).run(execution_mode="dry_run")
+
+
+def test_manual_confirmation_consumes_handoff_and_enables_phase7(tmp_path: Path) -> None:
+    create_closure_fixture(tmp_path)
+    config_path = tmp_path / "config" / "phase6_controlled_execution.json"
+    results = ControlledExecutionEngine(tmp_path).run_from_config(config_path)
+    assert len(results) == 1
+    receipt = results[0]
+
+    confirmation = record_manual_handoff_confirmation(
+        project_root=tmp_path,
+        execution_id=receipt.execution_id,
+        confirmation_phrase=(
+            f"I, Justice Gray Maciocha, confirm manual handoff {receipt.execution_id}."
+        ),
+        completion_reference="https://example.invalid/receipt/123?view=complete",
+        config_path=config_path,
+    )
+
+    assert confirmation["confirmed_by"] == "human_operator"
+    assert confirmation["aigc_performed_external_action"] is False
+    assert confirmation["external_action_performed"] is True
+    assert confirmation["confirmation_reference"] == "https://example.invalid/receipt/123"
+    assert ControlledExecutionEngine(tmp_path).run_from_config(config_path) == []
+
+    packets = EmployerAuditPacketBuilder(tmp_path).run_from_config(
+        tmp_path / "config" / "phase7_employer_audit_packet.json"
+    )
+    assert len(packets) == 1
+    assert packets[0].execution_summary.confirmation_id == confirmation["confirmation_id"]
+    assert packets[0].linked_records.phase6_execution_id == receipt.execution_id
+
+
+def test_manual_confirmation_reference_rejects_secret_like_text() -> None:
+    with pytest.raises(ManualHandoffConfirmationError, match="secret"):
+        sanitize_manual_completion_reference("token=example-value")
 
 
 def test_cli_revise_updates_temp_authorization_only(tmp_path: Path) -> None:
@@ -159,6 +212,7 @@ def create_closure_fixture(root: Path) -> None:
             **authorization["approval"],
             "approved": True,
             "approved_at": datetime.now(timezone.utc).isoformat(),
+            "received_phrase": f"I, Justice Gray Maciocha, accept action AIGC-ACT-TEST-CLOSE.",
         },
         "phase6_status": {
             "authorized_for_phase6": True,
@@ -237,4 +291,3 @@ def minimal_authorization_packet(action_id: str) -> dict:
         },
         "decision": "pending",
     }
-

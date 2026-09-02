@@ -1,0 +1,125 @@
+{
+  "curriculum_id": "AIGC-MASTER-CURRICULUM-001",
+  "version": "1.0.0",
+  "status": "INTERNAL_REFERENCE_ACTIVE",
+  "operating_mode": "internal_reference_only",
+  "purpose": "Interdisciplinary framework for evaluating autonomous automation and auto-engineering work without authorizing autonomous external action.",
+  "governance_boundary": {
+    "external_actions_authorized": false,
+    "production_activation_authorized": false,
+    "connector_activation_authorized": false,
+    "hardware_or_cyber_physical_control_authorized": false,
+    "behavior_changing_patch_requires_justice_approval": true,
+    "phase5_approval_required": true,
+    "phase6_manual_handoff_only": true,
+    "raw_secret_storage_allowed": false
+  },
+  "classes": [
+    {
+      "class_id": 1,
+      "title": "Foundations of Autonomous Automation Architectures",
+      "academic_focus": "Formal definition of autonomous systems, event-driven architecture theory, state machine modeling, and feedback control loops including PID controllers and decentralized consensus algorithms.",
+      "occupational_application": "Designing enterprise-grade self-healing microservices and unattended operational pipelines.",
+      "disciplinary_coordination": "Bridges computer science control theory with industrial systems engineering."
+    },
+    {
+      "class_id": 2,
+      "title": "Auto-Engineering Systems & Cyber-Physical Integration",
+      "academic_focus": "Mechatronic kinematics, embedded real-time operating systems, and hardware-in-the-loop simulation models.",
+      "occupational_application": "Developing physical-digital twin systems for smart manufacturing and robotics.",
+      "disciplinary_coordination": "Synthesizes mechanical engineering, electrical systems, and software engineering."
+    },
+    {
+      "class_id": 3,
+      "title": "Generative Auto-Design & Topological Optimization",
+      "academic_focus": "Algorithmic spatial generation, finite element analysis automation, evolutionary algorithms, and generative adversarial networks for physical and digital form factors.",
+      "occupational_application": "Automated CAD model generation, structural weight reduction, and architectural layout synthesis.",
+      "disciplinary_coordination": "Combines computational geometry, material science, and industrial design."
+    },
+    {
+      "class_id": 4,
+      "title": "Auto-Computational Software & Runtime Synthesis",
+      "academic_focus": "Program synthesis, metamorphic testing, automated refactoring, and just-in-time compiler optimization theory.",
+      "occupational_application": "Writing, testing, and deploying production codebases through autonomous agentic loops.",
+      "disciplinary_coordination": "Merges compiler design, software verification, and automated reasoning."
+    },
+    {
+      "class_id": 5,
+      "title": "Advanced Computer Science for Autonomous Systems",
+      "academic_focus": "Distributed consensus protocols, graph theory for network topology, asynchronous concurrency, and memory-safe systems programming.",
+      "occupational_application": "Scaling fault-tolerant, high-throughput distributed architectures that operate without human intervention.",
+      "disciplinary_coordination": "Pure and applied computer science."
+    },
+    {
+      "class_id": 6,
+      "title": "Algorithmic Prompt Engineering & Meta-Cognitive Prompting",
+      "academic_focus": "Zero-shot and few-shot token optimization, chain-of-thought formalization, semantic constraint parsing, and programmatic prompt generation frameworks.",
+      "occupational_application": "Structuring deterministic, programmatic interfaces for large language models to reliably execute complex multi-step workflows.",
+      "disciplinary_coordination": "Intersections of artificial intelligence, cognitive science, and computer science."
+    },
+    {
+      "class_id": 7,
+      "title": "Predictive Data Analytics & Real-Time Telemetry",
+      "academic_focus": "Time-series forecasting, anomaly detection via unsupervised learning, streaming data pipelines, and statistical process control.",
+      "occupational_application": "Predicting system failures before they occur and dynamically scaling resources based on real-time ingestion metrics.",
+      "disciplinary_coordination": "Data science, statistics, and systems operations."
+    },
+    {
+      "class_id": 8,
+      "title": "Computational Linguistics & Syntax-Driven Parsing",
+      "academic_focus": "Formal grammars, Chomsky hierarchy, dependency parsing, tokenization algorithms, and transformer attention mechanism mathematics.",
+      "occupational_application": "Building robust natural language parsers that translate human intent into executable code scripts or system commands.",
+      "disciplinary_coordination": "Linguistics and natural language processing."
+    },
+    {
+      "class_id": 9,
+      "title": "Language Arts, Semantics, and Pragmatic Intent Modeling",
+      "academic_focus": "Pragmatics, discourse analysis, semiotics, stylistic tone matching, and rhetorical structures in machine-generated communication.",
+      "occupational_application": "Ensuring autonomous agents communicate with human stakeholders with exact context, clarity, and situational appropriateness.",
+      "disciplinary_coordination": "Humanities, philosophy of language, and human-computer interaction."
+    },
+    {
+      "class_id": 10,
+      "title": "Cross-Disciplinary Coordination & Systems Interoperability",
+      "academic_focus": "Ontological modeling, semantic web standards, API schema translation, and universal middleware protocols.",
+      "occupational_application": "Unifying disparate enterprise software stacks into a single, cohesive autonomous ecosystem.",
+      "disciplinary_coordination": "Systems engineering, enterprise architecture, and information science."
+    },
+    {
+      "class_id": 11,
+      "title": "Occupational Integration & Enterprise Workflow Automation",
+      "academic_focus": "Business process management automation, robotic process automation scalability, and organizational change management frameworks.",
+      "occupational_application": "Replacing legacy manual workflows with autonomous digital labor pipelines across corporate departments.",
+      "disciplinary_coordination": "Operations research, business administration, and workflow engineering."
+    },
+    {
+      "class_id": 12,
+      "title": "Academic Rigor, Formal Verification, and Theoretical Proofs",
+      "academic_focus": "Hoare logic, model checking, theorem proving, and mathematical guarantees of system correctness under all possible states.",
+      "occupational_application": "Certifying safety-critical autonomous systems against catastrophic failure.",
+      "disciplinary_coordination": "Mathematical logic and formal software verification."
+    },
+    {
+      "class_id": 13,
+      "title": "Autonomous Governance, Safety, and Ethics",
+      "academic_focus": "Algorithmic bias mitigation, alignment theory, fail-safe tripwires, regulatory compliance, and audit trail immutability.",
+      "occupational_application": "Implementing guardrails and transparent oversight mechanisms for fully autonomous enterprise environments.",
+      "disciplinary_coordination": "Applied ethics, law, and cybersecurity."
+    },
+    {
+      "class_id": 14,
+      "title": "Self-Optimizing Feedback Loops & Machine Learning Integration",
+      "academic_focus": "Reinforcement learning from human and AI feedback, online learning algorithms, hyperparameter auto-tuning, and neural architecture search.",
+      "occupational_application": "Creating software and systems that continuously improve performance, speed, and accuracy over operational lifecycles.",
+      "disciplinary_coordination": "Machine learning research and adaptive control theory."
+    },
+    {
+      "class_id": 15,
+      "title": "Capstone: End-to-End Autonomous Ecosystem Deployment",
+      "academic_focus": "System integration synthesis, holistic vulnerability assessment, disaster recovery simulation, and autonomous lifecycle management.",
+      "occupational_application": "Architecting, deploying, and maintaining a fully self-sustaining, multi-domain autonomous project from raw data ingestion to production execution.",
+      "disciplinary_coordination": "Grand synthesis of all preceding fourteen computational, engineering, analytical, and linguistic domains."
+    }
+  ],
+  "external_action_performed": false
+}

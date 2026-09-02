@@ -1,0 +1,11 @@
+{
+  "archive_id": "AIGC-PHASE5-EXPIRED-PACKETS-20260902",
+  "archived_at": "2026-09-02T17:45:13.358+00:00",
+  "source_path": "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+  "archive_file": "data/phase5_authorizations/archive/aigc_phase5_authorization_packets_2026-09-02_expired.json",
+  "packet_count": 25,
+  "status": "archived_expired_do_not_accept_or_handoff",
+  "active_queue_cleared": true,
+  "regeneration_performed": false,
+  "external_action_performed": false
+}
