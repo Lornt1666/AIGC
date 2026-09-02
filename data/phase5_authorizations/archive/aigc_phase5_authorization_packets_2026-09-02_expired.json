@@ -1,0 +1,1302 @@
+[
+  {
+    "authorization_id": "AIGC-AUTH-8357d5016ba0a35ba7",
+    "action_id": "AIGC-ACT-20260701-0001",
+    "proposal_id": "phase4_129ed5d3aa518bb047452f79",
+    "opportunity_id": "eda6a258a34d417ac4895a99",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.242679+00:00",
+    "expires_at": "2026-07-02T14:09:13.242679+00:00",
+    "proposed_external_action": "Send proposal/message to cognee for: [integrations] Env-var reference doc",
+    "recipient": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3561",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for [integrations] Env-var reference doc",
+      "artifact_hash": "45263b6f9e07af6179fd6472ac5ce9c952f12860302b497f58888c23664c51ef",
+      "artifact_preview": "Hi cognee maintainers,\nI reviewed your request for [integrations] Env-var reference doc, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull request, or is a PR welcom"
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 100,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0001.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0001.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0001: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to cognee for: [integrations] Env-var reference doc",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-8357d5016ba0a35ba7\nAction ID:\nAIGC-ACT-20260701-0001\nProposal ID:\nphase4_129ed5d3aa518bb047452f79\nOpportunity ID:\neda6a258a34d417ac4895a99\nEmployer / Recipient:\ncognee\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to cognee for: [integrations] Env-var reference doc\nArtifact Type:\nproposal\nArtifact Hash:\n45263b6f9e07af6179fd6472ac5ce9c952f12860302b497f58888c23664c51ef\nArtifact Preview:\nHi cognee maintainers,\nI reviewed your request for [integrations] Env-var reference doc, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull request, or is a PR welcom\nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n100/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0001.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0001.\nRevise:\nRevise action AIGC-ACT-20260701-0001: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "62d6f0b2-11f8-432c-b2aa-02cfe8e42982"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-70c8a1454548cba8e1",
+    "action_id": "AIGC-ACT-20260701-0002",
+    "proposal_id": "phase4_82bb62946d8a47ce81bcca6d",
+    "opportunity_id": "48ff2350d71e32d32183dc30",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.244684+00:00",
+    "expires_at": "2026-07-02T14:09:13.244684+00:00",
+    "proposed_external_action": "Send proposal/message to Toptal for: AI Engineers",
+    "recipient": "Toptal",
+    "platform": "We Work Remotely",
+    "source_url": "https://weworkremotely.com/remote-jobs/toptal-ai-engineers",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for AI Engineers",
+      "artifact_hash": "e27422906da9a843ab516f9507157a54536243731fd981970e7e18e7f569491e",
+      "artifact_preview": "Hello Toptal,\nI reviewed your request for AI Engineers, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Automation Workflow Plan: A clear description of the proposed automation process and required inputs/outputs.\n- Implementation Artifact: A script, prototype, configuration, or implementation draft if approved within scope.\n\nEstimated timeline:\nTo be confirmed after technical requirements, inputs, and constraints are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Are there platform, API, authentication, rate-limit, o"
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0002.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0002.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0002: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to Toptal for: AI Engineers",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-70c8a1454548cba8e1\nAction ID:\nAIGC-ACT-20260701-0002\nProposal ID:\nphase4_82bb62946d8a47ce81bcca6d\nOpportunity ID:\n48ff2350d71e32d32183dc30\nEmployer / Recipient:\nToptal\nPlatform:\nWe Work Remotely\nProposed External Action:\nSend proposal/message to Toptal for: AI Engineers\nArtifact Type:\nproposal\nArtifact Hash:\ne27422906da9a843ab516f9507157a54536243731fd981970e7e18e7f569491e\nArtifact Preview:\nHello Toptal,\nI reviewed your request for AI Engineers, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Automation Workflow Plan: A clear description of the proposed automation process and required inputs/outputs.\n- Implementation Artifact: A script, prototype, configuration, or implementation draft if approved within scope.\n\nEstimated timeline:\nTo be confirmed after technical requirements, inputs, and constraints are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Are there platform, API, authentication, rate-limit, o\nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0002.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0002.\nRevise:\nRevise action AIGC-ACT-20260701-0002: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "12f2c8e4-34e7-477c-81e4-48c8d63757c0"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-e6f33c3ef4f78a44d5",
+    "action_id": "AIGC-ACT-20260701-0003",
+    "proposal_id": "phase4_59cde5610aa64d7391c89898",
+    "opportunity_id": "fd1c0de42c4f53acba40f34b",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.245681+00:00",
+    "expires_at": "2026-07-02T14:09:13.245681+00:00",
+    "proposed_external_action": "Send proposal/message to cognee for: [integrations] Troubleshooting guide",
+    "recipient": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3562",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for [integrations] Troubleshooting guide",
+      "artifact_hash": "e1dd008f15fe3d8076b364af69ccdf6cc1568a22d9a3b7e9a979eefc6c7e9101",
+      "artifact_preview": "Hi cognee maintainers,\nI reviewed your request for [integrations] Troubleshooting guide, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull request, or is a PR welcom"
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0003.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0003.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0003: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to cognee for: [integrations] Troubleshooting guide",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-e6f33c3ef4f78a44d5\nAction ID:\nAIGC-ACT-20260701-0003\nProposal ID:\nphase4_59cde5610aa64d7391c89898\nOpportunity ID:\nfd1c0de42c4f53acba40f34b\nEmployer / Recipient:\ncognee\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to cognee for: [integrations] Troubleshooting guide\nArtifact Type:\nproposal\nArtifact Hash:\ne1dd008f15fe3d8076b364af69ccdf6cc1568a22d9a3b7e9a979eefc6c7e9101\nArtifact Preview:\nHi cognee maintainers,\nI reviewed your request for [integrations] Troubleshooting guide, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull request, or is a PR welcom\nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0003.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0003.\nRevise:\nRevise action AIGC-ACT-20260701-0003: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "51d70b9d-e09b-488c-95c6-5d6cc2a3c1a2"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-5ea02454ff109c1959",
+    "action_id": "AIGC-ACT-20260701-0004",
+    "proposal_id": "phase4_c4a28db5c40631315048704b",
+    "opportunity_id": "b62bc7f1caf7a27c588a6d6a",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.246683+00:00",
+    "expires_at": "2026-07-02T14:09:13.246683+00:00",
+    "proposed_external_action": "Send proposal/message to cognee for: [integrations] Consistent \"three modes\" README section across integrations",
+    "recipient": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3550",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for [integrations] Consistent \"three modes\" README section across integrations",
+      "artifact_hash": "74cad5c01ccbafecb11961cc8245db14dc29c8c594cfc92c96b2034503f7445a",
+      "artifact_preview": "Hi cognee maintainers,\nI reviewed your request for [integrations] Consistent \"three modes\" README section across integrations, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before draf"
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0004.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0004.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0004: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to cognee for: [integrations] Consistent \"three modes\" README section across integrations",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-5ea02454ff109c1959\nAction ID:\nAIGC-ACT-20260701-0004\nProposal ID:\nphase4_c4a28db5c40631315048704b\nOpportunity ID:\nb62bc7f1caf7a27c588a6d6a\nEmployer / Recipient:\ncognee\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to cognee for: [integrations] Consistent \"three modes\" README section across integrations\nArtifact Type:\nproposal\nArtifact Hash:\n74cad5c01ccbafecb11961cc8245db14dc29c8c594cfc92c96b2034503f7445a\nArtifact Preview:\nHi cognee maintainers,\nI reviewed your request for [integrations] Consistent \"three modes\" README section across integrations, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before draf\nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0004.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0004.\nRevise:\nRevise action AIGC-ACT-20260701-0004: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "e296ae4b-1722-498f-be49-5756796e3c65"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-b013216e3c55fb47a5",
+    "action_id": "AIGC-ACT-20260701-0005",
+    "proposal_id": "phase4_6bf8f3b4f446d9bb6e635d18",
+    "opportunity_id": "9d7bb4d37968940e7f9738d5",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.247715+00:00",
+    "expires_at": "2026-07-02T14:09:13.247715+00:00",
+    "proposed_external_action": "Send proposal/message to cognee for: [integrations] Add COGNEE_REMEMBER_TIMEOUT / COGNEE_REGISTER_TIMEOUT env vars",
+    "recipient": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3543",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for [integrations] Add COGNEE_REMEMBER_TIMEOUT / COGNEE_REGISTER_TIMEOUT env vars",
+      "artifact_hash": "9db771c40c77f11724e65d68e3f84b1653b64acab2d5a56baf609f595995eb7f",
+      "artifact_preview": "Hi cognee maintainers,\nI reviewed your request for [integrations] Add COGNEE_REMEMBER_TIMEOUT / COGNEE_REGISTER_TIMEOUT env vars, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before d"
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0005.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0005.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0005: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to cognee for: [integrations] Add COGNEE_REMEMBER_TIMEOUT / COGNEE_REGISTER_TIMEOUT env vars",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-b013216e3c55fb47a5\nAction ID:\nAIGC-ACT-20260701-0005\nProposal ID:\nphase4_6bf8f3b4f446d9bb6e635d18\nOpportunity ID:\n9d7bb4d37968940e7f9738d5\nEmployer / Recipient:\ncognee\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to cognee for: [integrations] Add COGNEE_REMEMBER_TIMEOUT / COGNEE_REGISTER_TIMEOUT env vars\nArtifact Type:\nproposal\nArtifact Hash:\n9db771c40c77f11724e65d68e3f84b1653b64acab2d5a56baf609f595995eb7f\nArtifact Preview:\nHi cognee maintainers,\nI reviewed your request for [integrations] Add COGNEE_REMEMBER_TIMEOUT / COGNEE_REGISTER_TIMEOUT env vars, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before d\nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0005.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0005.\nRevise:\nRevise action AIGC-ACT-20260701-0005: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "219ef420-9819-44ad-8637-b0baa044eb05"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-c5dfb1152dd6b59f02",
+    "action_id": "AIGC-ACT-20260701-0006",
+    "proposal_id": "phase4_817f9a8ede8b80d3aeefbb12",
+    "opportunity_id": "c8c4ba85f90c5b86890d806d",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.248716+00:00",
+    "expires_at": "2026-07-02T14:09:13.248716+00:00",
+    "proposed_external_action": "Send proposal/message to cognee for: [integrations] Cloud cold-start warmup ping for plugin sessions",
+    "recipient": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3541",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for [integrations] Cloud cold-start warmup ping for plugin sessions",
+      "artifact_hash": "03003a362df49857e1dd4dbbbdfe81f6d4dc0abae9ae3bd2b630463cb5d81991",
+      "artifact_preview": "Hi cognee maintainers,\nI reviewed your request for [integrations] Cloud cold-start warmup ping for plugin sessions, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull"
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0006.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0006.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0006: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to cognee for: [integrations] Cloud cold-start warmup ping for plugin sessions",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-c5dfb1152dd6b59f02\nAction ID:\nAIGC-ACT-20260701-0006\nProposal ID:\nphase4_817f9a8ede8b80d3aeefbb12\nOpportunity ID:\nc8c4ba85f90c5b86890d806d\nEmployer / Recipient:\ncognee\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to cognee for: [integrations] Cloud cold-start warmup ping for plugin sessions\nArtifact Type:\nproposal\nArtifact Hash:\n03003a362df49857e1dd4dbbbdfe81f6d4dc0abae9ae3bd2b630463cb5d81991\nArtifact Preview:\nHi cognee maintainers,\nI reviewed your request for [integrations] Cloud cold-start warmup ping for plugin sessions, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull\nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0006.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0006.\nRevise:\nRevise action AIGC-ACT-20260701-0006: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "5ff31fcf-529a-4d8b-92a2-afe14d713c7c"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-5b146e3bc90d53962f",
+    "action_id": "AIGC-ACT-20260701-0007",
+    "proposal_id": "phase4_2ff3d6fd1a91ab8f7167254d",
+    "opportunity_id": "3795782df71592e3c47e76b7",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.249678+00:00",
+    "expires_at": "2026-07-02T14:09:13.249678+00:00",
+    "proposed_external_action": "Send proposal/message to Olsson for: Federal BIM Design Associate",
+    "recipient": "Olsson",
+    "platform": "We Work Remotely",
+    "source_url": "https://weworkremotely.com/remote-jobs/olsson-federal-bim-design-associate",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for Federal BIM Design Associate",
+      "artifact_hash": "c5893acfe7964375ab11c84f1e6551627674fb967c01531c492ccd25f46a80b6",
+      "artifact_preview": "Hello Olsson,\nI reviewed your request for Federal BIM Design Associate, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Automation Workflow Plan: A clear description of the proposed automation process and required inputs/outputs.\n- Implementation Artifact: A script, prototype, configuration, or implementation draft if approved within scope.\n\nEstimated timeline:\nTo be confirmed after technical requirements, inputs, and constraints are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Are there platform, API, authenticatio"
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0007.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0007.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0007: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to Olsson for: Federal BIM Design Associate",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-5b146e3bc90d53962f\nAction ID:\nAIGC-ACT-20260701-0007\nProposal ID:\nphase4_2ff3d6fd1a91ab8f7167254d\nOpportunity ID:\n3795782df71592e3c47e76b7\nEmployer / Recipient:\nOlsson\nPlatform:\nWe Work Remotely\nProposed External Action:\nSend proposal/message to Olsson for: Federal BIM Design Associate\nArtifact Type:\nproposal\nArtifact Hash:\nc5893acfe7964375ab11c84f1e6551627674fb967c01531c492ccd25f46a80b6\nArtifact Preview:\nHello Olsson,\nI reviewed your request for Federal BIM Design Associate, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Automation Workflow Plan: A clear description of the proposed automation process and required inputs/outputs.\n- Implementation Artifact: A script, prototype, configuration, or implementation draft if approved within scope.\n\nEstimated timeline:\nTo be confirmed after technical requirements, inputs, and constraints are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Are there platform, API, authenticatio\nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0007.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0007.\nRevise:\nRevise action AIGC-ACT-20260701-0007: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "4a0364fe-55fb-4348-88a5-3f9517b04782"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-1fe7f97c06d8899721",
+    "action_id": "AIGC-ACT-20260701-0008",
+    "proposal_id": "phase4_a0c0eb6104cbdcc1c08d2f49",
+    "opportunity_id": "f17580421d45bc56fbb3323d",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.250679+00:00",
+    "expires_at": "2026-07-02T14:09:13.250679+00:00",
+    "proposed_external_action": "Send proposal/message to cognee for: [integrations] Config-precedence tests (env > config > defaults)",
+    "recipient": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3559",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for [integrations] Config-precedence tests (env > config > defaults)",
+      "artifact_hash": "427a936e782ed3dfb15416f994e629ad9f9de104096b1fdfa5072ddb67b97d1c",
+      "artifact_preview": "Hi cognee maintainers,\nI reviewed your request for [integrations] Config-precedence tests (env > config > defaults), and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pul"
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0008.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0008.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0008: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to cognee for: [integrations] Config-precedence tests (env > config > defaults)",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-1fe7f97c06d8899721\nAction ID:\nAIGC-ACT-20260701-0008\nProposal ID:\nphase4_a0c0eb6104cbdcc1c08d2f49\nOpportunity ID:\nf17580421d45bc56fbb3323d\nEmployer / Recipient:\ncognee\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to cognee for: [integrations] Config-precedence tests (env > config > defaults)\nArtifact Type:\nproposal\nArtifact Hash:\n427a936e782ed3dfb15416f994e629ad9f9de104096b1fdfa5072ddb67b97d1c\nArtifact Preview:\nHi cognee maintainers,\nI reviewed your request for [integrations] Config-precedence tests (env > config > defaults), and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pul\nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0008.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0008.\nRevise:\nRevise action AIGC-ACT-20260701-0008: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "48131be9-ae69-493f-8e1a-f6c2a6558999"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-3ffa779bf10d8ff763",
+    "action_id": "AIGC-ACT-20260701-0009",
+    "proposal_id": "phase4_298d569fd92600e3865c3ab4",
+    "opportunity_id": "315f658a9364057a86cabcbe",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.251715+00:00",
+    "expires_at": "2026-07-02T14:09:13.251715+00:00",
+    "proposed_external_action": "Send proposal/message to cognee for: [integrations] n8n: expose remember/recall verbs",
+    "recipient": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3560",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for [integrations] n8n: expose remember/recall verbs",
+      "artifact_hash": "dbc555c3693ba1e882ddbdd085a5e15972bff0f090a9ab435f5818a5d401d436",
+      "artifact_preview": "Hi cognee maintainers,\nI reviewed your request for [integrations] n8n: expose remember/recall verbs, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull request, or is"
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0009.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0009.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0009: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to cognee for: [integrations] n8n: expose remember/recall verbs",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-3ffa779bf10d8ff763\nAction ID:\nAIGC-ACT-20260701-0009\nProposal ID:\nphase4_298d569fd92600e3865c3ab4\nOpportunity ID:\n315f658a9364057a86cabcbe\nEmployer / Recipient:\ncognee\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to cognee for: [integrations] n8n: expose remember/recall verbs\nArtifact Type:\nproposal\nArtifact Hash:\ndbc555c3693ba1e882ddbdd085a5e15972bff0f090a9ab435f5818a5d401d436\nArtifact Preview:\nHi cognee maintainers,\nI reviewed your request for [integrations] n8n: expose remember/recall verbs, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull request, or is\nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0009.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0009.\nRevise:\nRevise action AIGC-ACT-20260701-0009: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "79441683-8bc0-4cb8-802d-17696e44f033"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-75e0dc157d306b6dc7",
+    "action_id": "AIGC-ACT-20260701-0010",
+    "proposal_id": "phase4_ad3173750b0c97f03fa3eed3",
+    "opportunity_id": "bbc2efb9c274d0221aa447b8",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.252715+00:00",
+    "expires_at": "2026-07-02T14:09:13.252715+00:00",
+    "proposed_external_action": "Send proposal/message to cognee for: Productionize the Helm chart (deployment/helm)",
+    "recipient": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3602",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for Productionize the Helm chart (deployment/helm)",
+      "artifact_hash": "dbbc465f8f0276ff158ffb50fd2c49db0c04f58d8e8c293ee45ae22bad2b8fbd",
+      "artifact_preview": "Hi cognee maintainers,\nI reviewed your request for Productionize the Helm chart (deployment/helm), and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull request, or is a"
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0010.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0010.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0010: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to cognee for: Productionize the Helm chart (deployment/helm)",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-75e0dc157d306b6dc7\nAction ID:\nAIGC-ACT-20260701-0010\nProposal ID:\nphase4_ad3173750b0c97f03fa3eed3\nOpportunity ID:\nbbc2efb9c274d0221aa447b8\nEmployer / Recipient:\ncognee\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to cognee for: Productionize the Helm chart (deployment/helm)\nArtifact Type:\nproposal\nArtifact Hash:\ndbbc465f8f0276ff158ffb50fd2c49db0c04f58d8e8c293ee45ae22bad2b8fbd\nArtifact Preview:\nHi cognee maintainers,\nI reviewed your request for Productionize the Helm chart (deployment/helm), and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull request, or is a\nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0010.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0010.\nRevise:\nRevise action AIGC-ACT-20260701-0010: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "64fcf6df-06ef-4c5c-9b29-505e9f372236"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-b549b7e88976609380",
+    "action_id": "AIGC-ACT-20260701-0011",
+    "proposal_id": "phase4_c36264be20bfb858ee9bcd7c",
+    "opportunity_id": "5cf46914d492ec92f9c9d72d",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.253680+00:00",
+    "expires_at": "2026-07-02T14:09:13.253680+00:00",
+    "proposed_external_action": "Send proposal/message to cognee for: [integrations] OpenClaw: cold-start warmup + first-recall retry in the TS client",
+    "recipient": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3546",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for [integrations] OpenClaw: cold-start warmup + first-recall retry in the TS client",
+      "artifact_hash": "91a502f0cb14327f5033942b5c42cec91835acfa38a29995462ed365203bb207",
+      "artifact_preview": "Hi cognee maintainers,\nI reviewed your request for [integrations] OpenClaw: cold-start warmup + first-recall retry in the TS client, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment befor"
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0011.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0011.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0011: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to cognee for: [integrations] OpenClaw: cold-start warmup + first-recall retry in the TS client",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-b549b7e88976609380\nAction ID:\nAIGC-ACT-20260701-0011\nProposal ID:\nphase4_c36264be20bfb858ee9bcd7c\nOpportunity ID:\n5cf46914d492ec92f9c9d72d\nEmployer / Recipient:\ncognee\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to cognee for: [integrations] OpenClaw: cold-start warmup + first-recall retry in the TS client\nArtifact Type:\nproposal\nArtifact Hash:\n91a502f0cb14327f5033942b5c42cec91835acfa38a29995462ed365203bb207\nArtifact Preview:\nHi cognee maintainers,\nI reviewed your request for [integrations] OpenClaw: cold-start warmup + first-recall retry in the TS client, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment befor\nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0011.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0011.\nRevise:\nRevise action AIGC-ACT-20260701-0011: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "3f2fdabb-b146-48a2-a543-6437d21ee2fb"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-3f265e09b4890df0f5",
+    "action_id": "AIGC-ACT-20260701-0012",
+    "proposal_id": "phase4_8e810fe9f8a35f40e3846269",
+    "opportunity_id": "1a3aad74c4db7e62c8704d92",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.254701+00:00",
+    "expires_at": "2026-07-02T14:09:13.254701+00:00",
+    "proposed_external_action": "Send proposal/message to cognee for: [integrations] OpenClaw: circuit breaker + per-op timeouts in the TS client",
+    "recipient": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3545",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for [integrations] OpenClaw: circuit breaker + per-op timeouts in the TS client",
+      "artifact_hash": "4c8b689cd30eb209b2e4097cd82d25a563a19e4526973a4f10ede10db6c2676c",
+      "artifact_preview": "Hi cognee maintainers,\nI reviewed your request for [integrations] OpenClaw: circuit breaker + per-op timeouts in the TS client, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before dra"
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0012.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0012.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0012: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to cognee for: [integrations] OpenClaw: circuit breaker + per-op timeouts in the TS client",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-3f265e09b4890df0f5\nAction ID:\nAIGC-ACT-20260701-0012\nProposal ID:\nphase4_8e810fe9f8a35f40e3846269\nOpportunity ID:\n1a3aad74c4db7e62c8704d92\nEmployer / Recipient:\ncognee\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to cognee for: [integrations] OpenClaw: circuit breaker + per-op timeouts in the TS client\nArtifact Type:\nproposal\nArtifact Hash:\n4c8b689cd30eb209b2e4097cd82d25a563a19e4526973a4f10ede10db6c2676c\nArtifact Preview:\nHi cognee maintainers,\nI reviewed your request for [integrations] OpenClaw: circuit breaker + per-op timeouts in the TS client, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before dra\nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0012.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0012.\nRevise:\nRevise action AIGC-ACT-20260701-0012: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "f7261616-9a41-41aa-8b04-1773c36f5b2a"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-6bae261cc8c7d167c4",
+    "action_id": "AIGC-ACT-20260701-0013",
+    "proposal_id": "phase4_e6f0729949d9a3867cc46ca7",
+    "opportunity_id": "a368e5083373c9ab1e57e991",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.255679+00:00",
+    "expires_at": "2026-07-02T14:09:13.255679+00:00",
+    "proposed_external_action": "Send proposal/message to pip-audit for: Feature: new environment variable PIP_AUDIT_IGNORE_VULN",
+    "recipient": "pip-audit",
+    "platform": "GitHub",
+    "source_url": "https://github.com/pypa/pip-audit/issues/948",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for Feature: new environment variable PIP_AUDIT_IGNORE_VULN",
+      "artifact_hash": "dd6ded2dd704e09db0b097020727236e9282e535c8d70051ff9dccf814e80b52",
+      "artifact_preview": "Hi pip-audit maintainers,\nI reviewed your request for Feature: new environment variable PIP_AUDIT_IGNORE_VULN, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull requ"
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0013.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0013.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0013: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to pip-audit for: Feature: new environment variable PIP_AUDIT_IGNORE_VULN",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-6bae261cc8c7d167c4\nAction ID:\nAIGC-ACT-20260701-0013\nProposal ID:\nphase4_e6f0729949d9a3867cc46ca7\nOpportunity ID:\na368e5083373c9ab1e57e991\nEmployer / Recipient:\npip-audit\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to pip-audit for: Feature: new environment variable PIP_AUDIT_IGNORE_VULN\nArtifact Type:\nproposal\nArtifact Hash:\ndd6ded2dd704e09db0b097020727236e9282e535c8d70051ff9dccf814e80b52\nArtifact Preview:\nHi pip-audit maintainers,\nI reviewed your request for Feature: new environment variable PIP_AUDIT_IGNORE_VULN, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull requ\nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0013.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0013.\nRevise:\nRevise action AIGC-ACT-20260701-0013: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "4c570a39-2104-44e9-bc5e-59d4a105df8b"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-a5b73451017d8bc2b6",
+    "action_id": "AIGC-ACT-20260701-0014",
+    "proposal_id": "phase4_ed034ea44d3dbd45def8837f",
+    "opportunity_id": "2987871ab0bc70b14c25741e",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.256683+00:00",
+    "expires_at": "2026-07-02T14:09:13.256683+00:00",
+    "proposed_external_action": "Send proposal/message to cognee for: [integrations] Surface cognify lag instead of silent empty recall",
+    "recipient": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3553",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for [integrations] Surface cognify lag instead of silent empty recall",
+      "artifact_hash": "0f9e232cf88a9eee60e70f22b1b66947670c4698241bed3c28775c1a0e89a303",
+      "artifact_preview": "Hi cognee maintainers,\nI reviewed your request for [integrations] Surface cognify lag instead of silent empty recall, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pu"
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0014.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0014.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0014: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to cognee for: [integrations] Surface cognify lag instead of silent empty recall",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-a5b73451017d8bc2b6\nAction ID:\nAIGC-ACT-20260701-0014\nProposal ID:\nphase4_ed034ea44d3dbd45def8837f\nOpportunity ID:\n2987871ab0bc70b14c25741e\nEmployer / Recipient:\ncognee\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to cognee for: [integrations] Surface cognify lag instead of silent empty recall\nArtifact Type:\nproposal\nArtifact Hash:\n0f9e232cf88a9eee60e70f22b1b66947670c4698241bed3c28775c1a0e89a303\nArtifact Preview:\nHi cognee maintainers,\nI reviewed your request for [integrations] Surface cognify lag instead of silent empty recall, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pu\nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0014.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0014.\nRevise:\nRevise action AIGC-ACT-20260701-0014: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "6b792b62-bac4-4b4a-92c0-4e28709a9984"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-525570beec57bc6412",
+    "action_id": "AIGC-ACT-20260701-0015",
+    "proposal_id": "phase4_e69e7924b59871538b1d8593",
+    "opportunity_id": "0cb519bbb35b8e0ddc832b34",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.257680+00:00",
+    "expires_at": "2026-07-02T14:09:13.257680+00:00",
+    "proposed_external_action": "Send proposal/message to cognee for: [integrations] E2E: session registers and appears via /agents/connections/me",
+    "recipient": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3558",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for [integrations] E2E: session registers and appears via /agents/connections/me",
+      "artifact_hash": "93c5d7465626eb78b3beb942626655b8e17a4e54e8ebda74b35d0e6ea328f3a5",
+      "artifact_preview": "Hi cognee maintainers,\nI reviewed your request for [integrations] E2E: session registers and appears via /agents/connections/me, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before dr"
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0015.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0015.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0015: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to cognee for: [integrations] E2E: session registers and appears via /agents/connections/me",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-525570beec57bc6412\nAction ID:\nAIGC-ACT-20260701-0015\nProposal ID:\nphase4_e69e7924b59871538b1d8593\nOpportunity ID:\n0cb519bbb35b8e0ddc832b34\nEmployer / Recipient:\ncognee\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to cognee for: [integrations] E2E: session registers and appears via /agents/connections/me\nArtifact Type:\nproposal\nArtifact Hash:\n93c5d7465626eb78b3beb942626655b8e17a4e54e8ebda74b35d0e6ea328f3a5\nArtifact Preview:\nHi cognee maintainers,\nI reviewed your request for [integrations] E2E: session registers and appears via /agents/connections/me, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before dr\nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0015.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0015.\nRevise:\nRevise action AIGC-ACT-20260701-0015: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "996b7ae8-cfc5-42d7-9499-1ea86bf9f06c"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-130dcb5e8b85aa00fa",
+    "action_id": "AIGC-ACT-20260701-0016",
+    "proposal_id": "phase4_85ce43bf406da7ca7e72ccca",
+    "opportunity_id": "f57143f07e5ab9e64974239d",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.258680+00:00",
+    "expires_at": "2026-07-02T14:09:13.258680+00:00",
+    "proposed_external_action": "Send proposal/message to cognee for: [integrations] cognee-plugin status one-liner",
+    "recipient": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3552",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for [integrations] cognee-plugin status one-liner",
+      "artifact_hash": "b1ef6bf90b58b58a6d59c595d2895ec213b8d4280711aba0825169dccf126342",
+      "artifact_preview": "Hi cognee maintainers,\nI reviewed your request for [integrations] cognee-plugin status one-liner, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull request, or is a "
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0016.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0016.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0016: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to cognee for: [integrations] cognee-plugin status one-liner",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-130dcb5e8b85aa00fa\nAction ID:\nAIGC-ACT-20260701-0016\nProposal ID:\nphase4_85ce43bf406da7ca7e72ccca\nOpportunity ID:\nf57143f07e5ab9e64974239d\nEmployer / Recipient:\ncognee\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to cognee for: [integrations] cognee-plugin status one-liner\nArtifact Type:\nproposal\nArtifact Hash:\nb1ef6bf90b58b58a6d59c595d2895ec213b8d4280711aba0825169dccf126342\nArtifact Preview:\nHi cognee maintainers,\nI reviewed your request for [integrations] cognee-plugin status one-liner, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull request, or is a \nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0016.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0016.\nRevise:\nRevise action AIGC-ACT-20260701-0016: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "376a7423-79d0-4545-b80a-a2f487e12690"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-9bc909c4af614d5d60",
+    "action_id": "AIGC-ACT-20260701-0017",
+    "proposal_id": "phase4_58c805c1b3dda1f6aa25ba29",
+    "opportunity_id": "80dbe8c9e366e4b8e63f8c65",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.259679+00:00",
+    "expires_at": "2026-07-02T14:09:13.259679+00:00",
+    "proposed_external_action": "Send proposal/message to cognee for: [integrations] Embedding-dimension mismatch: clear error instead of silent empty recall",
+    "recipient": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3547",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for [integrations] Embedding-dimension mismatch: clear error instead of silent empty recall",
+      "artifact_hash": "ba65b2b822dab17e5acf0cc6bc542e1bc3c663a5cd4bc40e0de0f33b5d63cfe5",
+      "artifact_preview": "Hi cognee maintainers,\nI reviewed your request for [integrations] Embedding-dimension mismatch: clear error instead of silent empty recall, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I commen"
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0017.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0017.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0017: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to cognee for: [integrations] Embedding-dimension mismatch: clear error instead of silent empty recall",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-9bc909c4af614d5d60\nAction ID:\nAIGC-ACT-20260701-0017\nProposal ID:\nphase4_58c805c1b3dda1f6aa25ba29\nOpportunity ID:\n80dbe8c9e366e4b8e63f8c65\nEmployer / Recipient:\ncognee\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to cognee for: [integrations] Embedding-dimension mismatch: clear error instead of silent empty recall\nArtifact Type:\nproposal\nArtifact Hash:\nba65b2b822dab17e5acf0cc6bc542e1bc3c663a5cd4bc40e0de0f33b5d63cfe5\nArtifact Preview:\nHi cognee maintainers,\nI reviewed your request for [integrations] Embedding-dimension mismatch: clear error instead of silent empty recall, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I commen\nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0017.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0017.\nRevise:\nRevise action AIGC-ACT-20260701-0017: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "e6960652-c4ea-49b9-9dd7-7695e9594cde"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-29d3e4cdd639b2d9bc",
+    "action_id": "AIGC-ACT-20260701-0018",
+    "proposal_id": "phase4_82fce1f8f3fe899e64abff5d",
+    "opportunity_id": "533db66d2318bf2bc0dd4abd",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.259679+00:00",
+    "expires_at": "2026-07-02T14:09:13.259679+00:00",
+    "proposed_external_action": "Send proposal/message to cognee for: [integrations] Dataset-name sanitization parity across integrations",
+    "recipient": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3549",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for [integrations] Dataset-name sanitization parity across integrations",
+      "artifact_hash": "51474914e262d3859dbb99c686f4f0c188e3e63526eceed72cf0b4e8c2e571e5",
+      "artifact_preview": "Hi cognee maintainers,\nI reviewed your request for [integrations] Dataset-name sanitization parity across integrations, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a "
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0018.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0018.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0018: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to cognee for: [integrations] Dataset-name sanitization parity across integrations",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-29d3e4cdd639b2d9bc\nAction ID:\nAIGC-ACT-20260701-0018\nProposal ID:\nphase4_82fce1f8f3fe899e64abff5d\nOpportunity ID:\n533db66d2318bf2bc0dd4abd\nEmployer / Recipient:\ncognee\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to cognee for: [integrations] Dataset-name sanitization parity across integrations\nArtifact Type:\nproposal\nArtifact Hash:\n51474914e262d3859dbb99c686f4f0c188e3e63526eceed72cf0b4e8c2e571e5\nArtifact Preview:\nHi cognee maintainers,\nI reviewed your request for [integrations] Dataset-name sanitization parity across integrations, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a \nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0018.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0018.\nRevise:\nRevise action AIGC-ACT-20260701-0018: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "cd449f7a-9bdb-4a13-b98e-03c25de5943c"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-788f17b9ccdbd493ab",
+    "action_id": "AIGC-ACT-20260701-0019",
+    "proposal_id": "phase4_2cc717f1098738dc3eeae2fc",
+    "opportunity_id": "0e36363038add3b5915f1b84",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.261681+00:00",
+    "expires_at": "2026-07-02T14:09:13.261681+00:00",
+    "proposed_external_action": "Send proposal/message to cognee for: [integrations] Live add→cognify→search smoke test",
+    "recipient": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3557",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for [integrations] Live add→cognify→search smoke test",
+      "artifact_hash": "6c782b3e846be2625fd7d5ca0aa74f65352b2d327a94a08d5f6d70c70cc1d64f",
+      "artifact_preview": "Hi cognee maintainers,\nI reviewed your request for [integrations] Live add→cognify→search smoke test, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull request, or i"
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0019.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0019.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0019: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to cognee for: [integrations] Live add→cognify→search smoke test",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-788f17b9ccdbd493ab\nAction ID:\nAIGC-ACT-20260701-0019\nProposal ID:\nphase4_2cc717f1098738dc3eeae2fc\nOpportunity ID:\n0e36363038add3b5915f1b84\nEmployer / Recipient:\ncognee\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to cognee for: [integrations] Live add→cognify→search smoke test\nArtifact Type:\nproposal\nArtifact Hash:\n6c782b3e846be2625fd7d5ca0aa74f65352b2d327a94a08d5f6d70c70cc1d64f\nArtifact Preview:\nHi cognee maintainers,\nI reviewed your request for [integrations] Live add→cognify→search smoke test, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull request, or i\nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0019.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0019.\nRevise:\nRevise action AIGC-ACT-20260701-0019: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "e11a3e7e-a0d8-466a-b31b-8454f81dfab7"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-361e77ad9f77b7bc94",
+    "action_id": "AIGC-ACT-20260701-0020",
+    "proposal_id": "phase4_2f5eeee5f967b51e0c3f27fa",
+    "opportunity_id": "ab4ac8a8d497c0cf8adb58c4",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.261681+00:00",
+    "expires_at": "2026-07-02T14:09:13.261681+00:00",
+    "proposed_external_action": "Send proposal/message to cognee for: [integrations] OpenClaw tests for scope routing + cogneeSessionId",
+    "recipient": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3555",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for [integrations] OpenClaw tests for scope routing + cogneeSessionId",
+      "artifact_hash": "852b71c7dcd057978f069fc7fbcd10c1f70c7b8c6f96a7ac59f8514a2f043f3b",
+      "artifact_preview": "Hi cognee maintainers,\nI reviewed your request for [integrations] OpenClaw tests for scope routing + cogneeSessionId, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pu"
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0020.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0020.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0020: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to cognee for: [integrations] OpenClaw tests for scope routing + cogneeSessionId",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-361e77ad9f77b7bc94\nAction ID:\nAIGC-ACT-20260701-0020\nProposal ID:\nphase4_2f5eeee5f967b51e0c3f27fa\nOpportunity ID:\nab4ac8a8d497c0cf8adb58c4\nEmployer / Recipient:\ncognee\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to cognee for: [integrations] OpenClaw tests for scope routing + cogneeSessionId\nArtifact Type:\nproposal\nArtifact Hash:\n852b71c7dcd057978f069fc7fbcd10c1f70c7b8c6f96a7ac59f8514a2f043f3b\nArtifact Preview:\nHi cognee maintainers,\nI reviewed your request for [integrations] OpenClaw tests for scope routing + cogneeSessionId, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pu\nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0020.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0020.\nRevise:\nRevise action AIGC-ACT-20260701-0020: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "c5fba865-97b0-413a-8dd2-f2f06d596a19"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-cf172f93401841e536",
+    "action_id": "AIGC-ACT-20260701-0021",
+    "proposal_id": "phase4_13f9f7ffe445c278d57f9f6a",
+    "opportunity_id": "bd706e8c410ea414b213cd01",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.262681+00:00",
+    "expires_at": "2026-07-02T14:09:13.262681+00:00",
+    "proposed_external_action": "Send proposal/message to cognee for: [integrations] Port the claude-code test suite to Codex",
+    "recipient": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3554",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for [integrations] Port the claude-code test suite to Codex",
+      "artifact_hash": "86cd6283c4f048cad854738e098d23ebd59161a3b2dbd6ddae87b75d4e69d4a9",
+      "artifact_preview": "Hi cognee maintainers,\nI reviewed your request for [integrations] Port the claude-code test suite to Codex, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull request"
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0021.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0021.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0021: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to cognee for: [integrations] Port the claude-code test suite to Codex",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-cf172f93401841e536\nAction ID:\nAIGC-ACT-20260701-0021\nProposal ID:\nphase4_13f9f7ffe445c278d57f9f6a\nOpportunity ID:\nbd706e8c410ea414b213cd01\nEmployer / Recipient:\ncognee\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to cognee for: [integrations] Port the claude-code test suite to Codex\nArtifact Type:\nproposal\nArtifact Hash:\n86cd6283c4f048cad854738e098d23ebd59161a3b2dbd6ddae87b75d4e69d4a9\nArtifact Preview:\nHi cognee maintainers,\nI reviewed your request for [integrations] Port the claude-code test suite to Codex, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull request\nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0021.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0021.\nRevise:\nRevise action AIGC-ACT-20260701-0021: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "d9053e16-7e6d-460f-b048-530458662260"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-358ead099c2775bb82",
+    "action_id": "AIGC-ACT-20260701-0022",
+    "proposal_id": "phase4_a690460fc33e1ded08f7ae61",
+    "opportunity_id": "67ed35084445d65a8241e5bf",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.263679+00:00",
+    "expires_at": "2026-07-02T14:09:13.263679+00:00",
+    "proposed_external_action": "Send proposal/message to cognee for: [integrations] cognee-plugin doctor command",
+    "recipient": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3551",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for [integrations] cognee-plugin doctor command",
+      "artifact_hash": "a7c8be6ae4d755f9cf1542172de93b0dcf9b56d38a195819737e759fde613b64",
+      "artifact_preview": "Hi cognee maintainers,\nI reviewed your request for [integrations] cognee-plugin doctor command, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull request, or is a PR"
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0022.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0022.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0022: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to cognee for: [integrations] cognee-plugin doctor command",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-358ead099c2775bb82\nAction ID:\nAIGC-ACT-20260701-0022\nProposal ID:\nphase4_a690460fc33e1ded08f7ae61\nOpportunity ID:\n67ed35084445d65a8241e5bf\nEmployer / Recipient:\ncognee\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to cognee for: [integrations] cognee-plugin doctor command\nArtifact Type:\nproposal\nArtifact Hash:\na7c8be6ae4d755f9cf1542172de93b0dcf9b56d38a195819737e759fde613b64\nArtifact Preview:\nHi cognee maintainers,\nI reviewed your request for [integrations] cognee-plugin doctor command, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull request, or is a PR\nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0022.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0022.\nRevise:\nRevise action AIGC-ACT-20260701-0022: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "446072b6-608d-415b-ad3d-2a12420c543d"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-39d2858df03f1de116",
+    "action_id": "AIGC-ACT-20260701-0023",
+    "proposal_id": "phase4_ad020f580bc22642c8caf9b5",
+    "opportunity_id": "b79351d868e5311a2ed7db55",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.264682+00:00",
+    "expires_at": "2026-07-02T14:09:13.264682+00:00",
+    "proposed_external_action": "Send proposal/message to cognee for: [integrations] Shared session-id sanitization conformance test",
+    "recipient": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3548",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for [integrations] Shared session-id sanitization conformance test",
+      "artifact_hash": "8b6db9ca34d5563df7fc9897cbedd609f66f3d1c9c44df50f25359d42fd0f5f3",
+      "artifact_preview": "Hi cognee maintainers,\nI reviewed your request for [integrations] Shared session-id sanitization conformance test, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull "
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0023.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0023.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0023: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to cognee for: [integrations] Shared session-id sanitization conformance test",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-39d2858df03f1de116\nAction ID:\nAIGC-ACT-20260701-0023\nProposal ID:\nphase4_ad020f580bc22642c8caf9b5\nOpportunity ID:\nb79351d868e5311a2ed7db55\nEmployer / Recipient:\ncognee\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to cognee for: [integrations] Shared session-id sanitization conformance test\nArtifact Type:\nproposal\nArtifact Hash:\n8b6db9ca34d5563df7fc9897cbedd609f66f3d1c9c44df50f25359d42fd0f5f3\nArtifact Preview:\nHi cognee maintainers,\nI reviewed your request for [integrations] Shared session-id sanitization conformance test, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull \nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0023.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0023.\nRevise:\nRevise action AIGC-ACT-20260701-0023: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "921f6c60-49a7-4e20-9982-19e660d25376"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-11110c7f38dc614a91",
+    "action_id": "AIGC-ACT-20260701-0024",
+    "proposal_id": "phase4_25fd062345700a1e3a08d0d2",
+    "opportunity_id": "e86bbd3a4c9c7c08eb27da18",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.265680+00:00",
+    "expires_at": "2026-07-02T14:09:13.265680+00:00",
+    "proposed_external_action": "Send proposal/message to cognee for: [integrations] Re-register agent session on mid-session mode change",
+    "recipient": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3544",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for [integrations] Re-register agent session on mid-session mode change",
+      "artifact_hash": "f34374feb7d4c894e7beb303ae30eb149f61573f3b729d7814d1f315177fa1da",
+      "artifact_preview": "Hi cognee maintainers,\nI reviewed your request for [integrations] Re-register agent session on mid-session mode change, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a "
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0024.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0024.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0024: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to cognee for: [integrations] Re-register agent session on mid-session mode change",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-11110c7f38dc614a91\nAction ID:\nAIGC-ACT-20260701-0024\nProposal ID:\nphase4_25fd062345700a1e3a08d0d2\nOpportunity ID:\ne86bbd3a4c9c7c08eb27da18\nEmployer / Recipient:\ncognee\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to cognee for: [integrations] Re-register agent session on mid-session mode change\nArtifact Type:\nproposal\nArtifact Hash:\nf34374feb7d4c894e7beb303ae30eb149f61573f3b729d7814d1f315177fa1da\nArtifact Preview:\nHi cognee maintainers,\nI reviewed your request for [integrations] Re-register agent session on mid-session mode change, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a \nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0024.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0024.\nRevise:\nRevise action AIGC-ACT-20260701-0024: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "a6e79ef9-9a3c-45b9-9f61-00f014272c55"
+    ]
+  },
+  {
+    "authorization_id": "AIGC-AUTH-0309292be2f5e4e505",
+    "action_id": "AIGC-ACT-20260701-0025",
+    "proposal_id": "phase4_c473c8af591b5b81ccf4d486",
+    "opportunity_id": "7f44a2bfe1bde725327f8e99",
+    "operator": "Justice Gray Maciocha",
+    "created_at": "2026-07-01T14:09:13.266680+00:00",
+    "expires_at": "2026-07-02T14:09:13.266680+00:00",
+    "proposed_external_action": "Send proposal/message to cognee for: [integrations] Retry first recall on cold-start timeout",
+    "recipient": "cognee",
+    "platform": "GitHub",
+    "source_url": "https://github.com/topoteretes/cognee/issues/3542",
+    "artifact": {
+      "artifact_type": "proposal",
+      "artifact_summary": "Employer-facing proposal for [integrations] Retry first recall on cold-start timeout",
+      "artifact_hash": "3b4944436206a1838115bc27c92ead7b623423057439cf2d27191fd87efde83d",
+      "artifact_preview": "Hi cognee maintainers,\nI reviewed your request for [integrations] Retry first recall on cold-start timeout, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull request"
+    },
+    "classification": {
+      "action_class": "approval_required",
+      "risk_class": "medium",
+      "safety_status": "caution"
+    },
+    "checks": {
+      "safety_check_score": 15,
+      "coherence_check_score": 10,
+      "proposal_readiness_score": 96,
+      "ai_disclosure_status": "required"
+    },
+    "approval": {
+      "required": true,
+      "required_phrase": "I, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0025.",
+      "denial_phrase": "I, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0025.",
+      "revision_phrase_template": "Revise action AIGC-ACT-20260701-0025: [revision instructions]",
+      "received_phrase": "",
+      "approved": false,
+      "denied": false,
+      "revision_required": false,
+      "approved_at": "",
+      "decision_notes": ""
+    },
+    "phase6_status": {
+      "authorized_for_phase6": false,
+      "execution_scope": "Send proposal/message to cognee for: [integrations] Retry first recall on cold-start timeout",
+      "external_action_performed": false
+    },
+    "approval_request": "AIGC PHASE 5 APPROVAL REQUEST\nOperator:\nJustice Gray Maciocha\nAuthorization ID:\nAIGC-AUTH-0309292be2f5e4e505\nAction ID:\nAIGC-ACT-20260701-0025\nProposal ID:\nphase4_c473c8af591b5b81ccf4d486\nOpportunity ID:\n7f44a2bfe1bde725327f8e99\nEmployer / Recipient:\ncognee\nPlatform:\nGitHub\nProposed External Action:\nSend proposal/message to cognee for: [integrations] Retry first recall on cold-start timeout\nArtifact Type:\nproposal\nArtifact Hash:\n3b4944436206a1838115bc27c92ead7b623423057439cf2d27191fd87efde83d\nArtifact Preview:\nHi cognee maintainers,\nI reviewed your request for [integrations] Retry first recall on cold-start timeout, and I can help by preparing a clear, structured, reviewable deliverable aligned with your requirements.\n\nMy proposed approach is:\n1. Confirm the exact requirements, final format, and success criteria.\n2. Prepare the work product using a structured workflow.\n3. Review the output for clarity, completeness, accuracy, and alignment with your instructions.\n4. Deliver the final result in the requested format, with notes or revision support if needed.\n\nProposed deliverables:\n- Documentation or Contribution Draft: A structured draft or issue-specific contribution aligned with the source request.\n- Review Notes: Concise notes explaining assumptions, changes, and unresolved questions.\n\nEstimated timeline:\nTo be confirmed after scope and length are clarified.\n\nA few clarifying questions before finalizing the scope:\n1. What exact final format would you prefer for the deliverable?\n2. Are there any specific requirements, examples, templates, tools, or style guidelines I should follow?\n3. What deadline or turnaround time are you aiming for?\n4. Should I comment before drafting a pull request\nRisk Class:\nmedium\nSafety Status:\ncaution\nAction Class:\napproval_required\nSafety Checklist Score:\n15/15\nCoherence Checklist Score:\n10/10\nProposal Readiness Score:\n96/100\nAI Disclosure:\nrequired\nWhat Will Happen If Approved:\nAIGC will be authorized to move this specific action into Phase 6 execution.\nWhat Will Not Happen:\nAIGC will not perform any other external action beyond this scoped action.\nAccept:\nI, Justice Gray Maciocha, accept action AIGC-ACT-20260701-0025.\nDeny:\nI, Justice Gray Maciocha, deny action AIGC-ACT-20260701-0025.\nRevise:\nRevise action AIGC-ACT-20260701-0025: [revision instructions]\nCurrent Decision:\npending",
+    "decision": "pending",
+    "audit_event_ids": [
+      "127950e3-4f44-4de8-a7ff-1dc1e242cc1e"
+    ]
+  }
+]

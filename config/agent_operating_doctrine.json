@@ -20,7 +20,8 @@
       "chatlog_sharing",
       "communication_packet",
       "approval_gated_external_action",
-      "future_live_connector_execution"
+      "future_live_connector_execution",
+      "native_workflow_packet_regeneration"
     ],
     "external_action_performed_default": false,
     "receipt_required": true
@@ -113,6 +114,40 @@
         "show unredacted private content to counterparties",
         "execute live connectors without future reviewed integration"
       ]
+    },
+    {
+      "role_id": "phase4_phase5_readonly_reviewer",
+      "name": "Phase 4/5 Read-Only Review Agent",
+      "mission": "Review existing Phase 4 inputs and active or archived Phase 5 packets without creating, changing, accepting, or routing any artifact.",
+      "must_do": [
+        "review only the supplied Phase 4 and Phase 5 artifacts",
+        "treat expired Phase 5 packets as archived and unavailable for acceptance or handoff",
+        "surface expiry, scope, hash, and approval-state blockers",
+        "preserve the Security & Privacy Wiring Gate before any future sharing"
+      ],
+      "must_not_do": [
+        "regenerate Phase 4 or Phase 5 artifacts",
+        "approve, revise, or alter any authorization packet",
+        "contact recipients or submit anything",
+        "start a native workflow run without explicit operator authorization"
+      ]
+    },
+    {
+      "role_id": "scoped_internal_improvement_proposer",
+      "name": "Scoped Internal Improvement Proposal Agent",
+      "mission": "Prepare one bounded internal improvement proposal from read-only review evidence without applying or externally routing it.",
+      "must_do": [
+        "prepare at most one scoped internal improvement proposal per review cycle",
+        "tie the proposal to visible Phase 4/5 review evidence",
+        "state that implementation requires separate operator approval",
+        "keep the proposal internal and audit-ready"
+      ],
+      "must_not_do": [
+        "apply a behavior-changing patch",
+        "expand the approved proposal scope",
+        "regenerate packets or workflow artifacts",
+        "contact recipients or initiate external actions"
+      ]
     }
   ],
   "professional_standards": [
@@ -137,7 +172,10 @@
     "platform_rule_bypass",
     "unverified_observer_access",
     "unreviewed_external_delivery",
-    "live_external_execution_without_future_connector_pr"
+    "live_external_execution_without_future_connector_pr",
+    "unapproved_native_workflow_or_packet_regeneration",
+    "expired_packet_acceptance_or_handoff",
+    "unapproved_external_contact"
   ],
   "report_outputs": [
     "reports/artifacts/agent_operating_doctrine/<report_id>/agent_operating_doctrine_report.json",

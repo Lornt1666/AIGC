@@ -321,7 +321,7 @@ class ControlledExecutionEngine:
         auth_path = resolve_project_path(self.project_root, inputs.get("phase5_authorizations", ""))
         proposal_path = resolve_project_path(self.project_root, inputs.get("phase4_proposals", ""))
         output_path = resolve_project_path(self.project_root, config.get("output_file", "data/phase6_execution/aigc_phase6_execution_receipts.json"))
-        mode = execution_mode_override or str(config.get("default_execution_mode", ExecutionMode.MANUAL_HANDOFF.value))
+        mode = resolve_execution_mode(config, execution_mode_override)
         if mode == ExecutionMode.APPROVED_API.value and not config.get("live_execution_allowed", False):
             mode = ExecutionMode.MANUAL_HANDOFF.value
         authorizations = load_json_list(auth_path) if auth_path.exists() else []
@@ -488,6 +488,36 @@ def parse_datetime(value: str) -> Optional[datetime]:
     if parsed.tzinfo is None:
         parsed = parsed.replace(tzinfo=timezone.utc)
     return parsed.astimezone(timezone.utc)
+
+
+def resolve_execution_mode(
+    config: Dict[str, Any],
+    execution_mode_override: str | None = None,
+) -> str:
+    mode = execution_mode_override or str(
+        config.get("default_execution_mode", ExecutionMode.MANUAL_HANDOFF.value)
+    )
+    manual_handoff_lock = config.get("manual_handoff_lock", {}) or {}
+    if manual_handoff_lock.get("enabled", False):
+        required_mode = str(
+            manual_handoff_lock.get(
+                "required_mode",
+                ExecutionMode.MANUAL_HANDOFF.value,
+            )
+        )
+        if required_mode != ExecutionMode.MANUAL_HANDOFF.value:
+            raise ValueError("Phase 6 manual handoff lock must require manual_handoff.")
+        if mode != required_mode:
+            raise ValueError(
+                "Phase 6 is locked to manual_handoff; other execution modes are not allowed."
+            )
+
+    allowed_modes = {
+        str(item) for item in config.get("allowed_execution_modes", []) if str(item)
+    }
+    if allowed_modes and mode not in allowed_modes:
+        raise ValueError(f"Execution mode is not permitted by configuration: {mode}")
+    return mode
 
 
 def load_json_dict(path: Path) -> Dict[str, Any]:

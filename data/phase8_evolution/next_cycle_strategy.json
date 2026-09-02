@@ -4,10 +4,31 @@
   "cycle_score": 83,
   "cycle_quality": "good",
   "next_cycle_strategy": [
-    "Review pending Phase 5 authorization packets and accept, deny, or revise one action ID.",
-    "Keep Phase 6 in manual_handoff mode until a connector is explicitly approved.",
-    "Do not optimize employer-response scoring until at least one external outcome is captured.",
-    "Restart at Phase 2 after approval decisions or new source criteria are available."
+    "Perform a read-only review of existing Phase 4 proposal inputs and archived Phase 5 authorization packets; do not regenerate, revise, or accept a packet.",
+    "Prepare exactly one scoped internal improvement proposal limited to a non-mutating Phase 4/5 packet-review summary; do not apply it or expand its scope.",
+    "Keep Phase 6 in manual_handoff mode and keep production locked.",
+    "Do not contact anyone, submit anything, or initiate a new native workflow run without explicit operator authorization.",
+    "After a separately authorized native workflow run, require a freshly generated, unexpired Phase 5 packet and its exact acceptance before any Phase 6 manual handoff."
   ],
-  "pending_patch_ids": []
+  "pending_patch_ids": [],
+  "manual_handoff_directive": {
+    "status": "active",
+    "phase4_input_review_mode": "read_only",
+    "phase5_input_review_mode": "read_only_archived_expired_packets",
+    "packet_regeneration_allowed": false,
+    "maximum_scoped_internal_improvement_proposals": 1,
+    "phase6_execution_mode": "manual_handoff",
+    "production_locked": true,
+    "external_contact_allowed": false,
+    "native_workflow_run_requires_explicit_operator_authorization": true,
+    "fresh_exact_unexpired_acceptance_required_for_phase6": true,
+    "external_action_performed": false
+  },
+  "scoped_internal_improvement_proposal": {
+    "proposal_id": "AIGC-NEXT-CYCLE-IMPROVEMENT-001",
+    "status": "proposed_internal_only",
+    "scope": "Produce a non-mutating summary of Phase 4 inputs and archived Phase 5 packet expiry states.",
+    "apply_authorized": false,
+    "external_action_performed": false
+  }
 }

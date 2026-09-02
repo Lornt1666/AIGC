@@ -3,6 +3,10 @@ name: AIGC Narration Trigger
 on:
   workflow_dispatch:
     inputs:
+      operator_authorization:
+        description: "Exact phrase required to authorize a native workflow run: AUTHORIZE AIGC NATIVE WORKFLOW RUN"
+        required: true
+        type: string
       narration:
         description: "Narration text that should contain the AIGC trigger phrase."
         required: true
@@ -23,9 +27,6 @@ on:
         description: "Exact approval phrase for proceed or deny. Leave blank for review_only."
         required: false
         default: ""
-  issue_comment:
-    types: [created]
-
 permissions:
   contents: read
   issues: read
@@ -35,8 +36,8 @@ jobs:
   constellation-fabric:
     name: AIGC pipeline
     if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, 'AIGC'))
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.operator_authorization == 'AUTHORIZE AIGC NATIVE WORKFLOW RUN'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -50,7 +51,7 @@ jobs:
       - name: Resolve AIGC trigger parameters
         run: |
           cat > aigc_trigger.env <<'EOF'
-          AIGC_TRIGGER_TEXT=${{ github.event.inputs.narration || github.event.comment.body || 'AIGC manual trigger' }}
+          AIGC_TRIGGER_TEXT=${{ github.event.inputs.narration }}
           AIGC_PROJECT_PROFILE=${{ github.event.inputs.project_profile || 'auto' }}
           AIGC_RUN_MODE=${{ github.event.inputs.run_mode || 'artifact_generation' }}
           AIGC_SUBMISSION_DECISION=${{ github.event.inputs.submission_decision || 'review_only' }}

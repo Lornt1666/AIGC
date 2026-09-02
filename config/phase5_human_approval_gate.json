@@ -58,5 +58,13 @@
   "approval_expiration_hours": 24,
   "artifact_change_invalidates_approval": true,
   "blanket_approval_allowed": false,
-  "blocked_action_override_allowed": false
+  "blocked_action_override_allowed": false,
+  "expired_packet_archive": {
+    "active_queue_excludes_expired_packets": true,
+    "archive_directory": "data/phase5_authorizations/archive",
+    "archive_manifest": "data/phase5_authorizations/archive/aigc_phase5_expired_packet_archive_2026-09-02.json",
+    "automatic_regeneration_allowed": false,
+    "new_native_workflow_run_requires_explicit_operator_authorization": true,
+    "fresh_exact_unexpired_acceptance_required_before_phase6": true
+  }
 }
