@@ -31,6 +31,8 @@ def test_agent_doctrine_generates_report(tmp_path: Path) -> None:
         "reasoner",
         "sentinel",
         "operator_cockpit",
+        "phase4_phase5_readonly_reviewer",
+        "scoped_internal_improvement_proposer",
     }
 
     result = run_agent_operating_doctrine(PROJECT_ROOT, artifact_root=tmp_path)
@@ -55,3 +57,20 @@ def test_agent_doctrine_rejects_missing_hard_block() -> None:
 
     with pytest.raises(AgentOperatingDoctrineError):
         validate_doctrine(payload)
+
+
+def test_agent_doctrine_preserves_manual_handoff_review_boundaries() -> None:
+    doctrine = load_doctrine(PROJECT_ROOT / "config" / "agent_operating_doctrine.json")
+    roles = {item["role_id"]: item for item in doctrine["agent_roles"]}
+
+    assert "regenerate Phase 4 or Phase 5 artifacts" in roles[
+        "phase4_phase5_readonly_reviewer"
+    ]["must_not_do"]
+    assert "apply a behavior-changing patch" in roles[
+        "scoped_internal_improvement_proposer"
+    ]["must_not_do"]
+    assert {
+        "unapproved_native_workflow_or_packet_regeneration",
+        "expired_packet_acceptance_or_handoff",
+        "unapproved_external_contact",
+    }.issubset(doctrine["hard_blocks"])
