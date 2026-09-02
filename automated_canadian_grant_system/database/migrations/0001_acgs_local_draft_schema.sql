@@ -16,6 +16,17 @@ CREATE TABLE IF NOT EXISTS grant_audit_events (
     payload_digest TEXT NOT NULL
 );
 
+CREATE TRIGGER IF NOT EXISTS grant_audit_events_no_replace
+BEFORE INSERT ON grant_audit_events
+WHEN EXISTS (
+    SELECT 1
+    FROM grant_audit_events
+    WHERE event_id = NEW.event_id
+)
+BEGIN
+    SELECT RAISE(ABORT, 'grant audit events are append-only');
+END;
+
 CREATE TRIGGER IF NOT EXISTS grant_audit_events_no_update
 BEFORE UPDATE ON grant_audit_events
 BEGIN

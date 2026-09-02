@@ -119,3 +119,25 @@ def test_local_migration_preserves_append_only_audit_events() -> None:
             "UPDATE grant_audit_events SET event_type = 'changed' "
             "WHERE event_id = 'event_test'"
         )
+
+    with pytest.raises(sqlite3.DatabaseError, match="append-only"):
+        connection.execute(
+            """
+            INSERT OR REPLACE INTO grant_audit_events (
+                event_id, application_id, created_at, event_type, payload_digest
+            ) VALUES (?, ?, ?, ?, ?)
+            """,
+            (
+                "event_test",
+                "acgs_test",
+                "2026-01-01T00:00:00Z",
+                "replaced",
+                "1" * 64,
+            ),
+        )
+
+    event_type = connection.execute(
+        "SELECT event_type FROM grant_audit_events WHERE event_id = ?",
+        ("event_test",),
+    ).fetchone()[0]
+    assert event_type == "application.audited"
