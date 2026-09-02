@@ -214,6 +214,7 @@ def financial_findings_for_values(
 def validate_operator_review(
     policy: ConstitutionalPolicy,
     catalog: GrantPortalCatalog,
+    identity: BusinessIdentity,
     package: dict[str, Any],
     review: OperatorReviewRequest,
     *,
@@ -301,8 +302,16 @@ def validate_operator_review(
         float(financial.get("matching_contribution_cad", 0)),
         criteria,
     )
+    reviewed_eligibility_mismatches = _eligibility_mismatches(
+        identity,
+        criteria,
+    )
     if review.decision == "approve_local_export":
-        _validate_local_export_approval(package, reviewed_findings)
+        _validate_local_export_approval(
+            package,
+            reviewed_findings,
+            reviewed_eligibility_mismatches,
+        )
     return reviewed_findings
 
 
@@ -350,7 +359,14 @@ def submission_boundary(policy: ConstitutionalPolicy) -> dict[str, Any]:
 def _validate_local_export_approval(
     package: dict[str, Any],
     reviewed_financial_findings: list[dict[str, str]],
+    reviewed_eligibility_mismatches: list[str],
 ) -> None:
+    if reviewed_eligibility_mismatches:
+        raise ACGSGuardrailError(
+            "Local export cannot be approved because the working profile does "
+            "not match operator-attested eligibility criteria: "
+            + ", ".join(sorted(reviewed_eligibility_mismatches))
+        )
     research = package.get("research")
     if isinstance(research, dict) and (
         research.get("eligibility_determination")
@@ -403,12 +419,66 @@ def _validate_portal_url(
     official_portal_url: str,
     label: str,
 ) -> None:
+    _reject_secret_like_text(label, [value])
     parsed = _parse_safe_https_url(value, label)
     expected = _parse_safe_https_url(official_portal_url, "Catalog portal URL")
     if parsed.netloc.lower() != expected.netloc.lower():
         raise ACGSGuardrailError(
             f"{label} must use the registered official portal host."
         )
+
+
+def _eligibility_mismatches(
+    identity: BusinessIdentity,
+    criteria: GrantCriteriaFields,
+) -> list[str]:
+    mismatches: list[str] = []
+    profile_regions = (
+        f"{identity.headquarters} {identity.operational_region}".lower()
+    )
+    if criteria.eligible_regions and not any(
+        region.lower() in profile_regions
+        for region in criteria.eligible_regions
+    ):
+        mismatches.append("eligible_region")
+
+    trl_match = re.search(
+        r"\bTRL\s*([1-9])\b",
+        identity.technology_readiness_level,
+        re.IGNORECASE,
+    )
+    trl = int(trl_match.group(1)) if trl_match else None
+    if criteria.min_trl is not None and (
+        trl is None or trl < criteria.min_trl
+    ):
+        mismatches.append("minimum_trl")
+    if criteria.max_trl is not None and (
+        trl is None or trl > criteria.max_trl
+    ):
+        mismatches.append("maximum_trl")
+    if (
+        criteria.min_headcount is not None
+        and identity.headcount < criteria.min_headcount
+    ):
+        mismatches.append("minimum_headcount")
+    if (
+        criteria.max_headcount is not None
+        and identity.headcount > criteria.max_headcount
+    ):
+        mismatches.append("maximum_headcount")
+    if (
+        criteria.requires_ccpc is not None
+        and identity.canadian_controlled_private_corporation
+        != criteria.requires_ccpc
+    ):
+        mismatches.append("ccpc_status")
+    if (
+        criteria.minimum_annual_rd_spend_cad is not None
+        and identity.annual_rd_spend_cad
+        < criteria.minimum_annual_rd_spend_cad
+    ):
+        mismatches.append("minimum_annual_rd_spend_cad")
+    return mismatches
 
 
 def _validate_evidence_references(

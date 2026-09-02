@@ -35,6 +35,10 @@ class GrantApplicationStateError(GrantApplicationStorageError):
     """Raised when a local review transition is not allowed."""
 
 
+class GrantApplicationIntegrityError(GrantApplicationStorageError):
+    """Raised when a persisted local export fails integrity verification."""
+
+
 class LocalGrantApplicationStore:
     """SQLite-backed draft and review records with append-only audit evidence."""
 
@@ -235,11 +239,31 @@ class LocalGrantApplicationStore:
                 "current_program_confirmation_required": True,
             }
             package["source_attribution"] = source
-            package["operator_review"] = review_receipt
             package["status"] = state
             lifecycle = list(package.get("lifecycle", []))
             lifecycle.append(state)
             package["lifecycle"] = lifecycle
+            approved_artifact: dict[str, Any] | None = None
+            approved_artifact_digest: str | None = None
+            if state == "LOCAL_EXPORT_APPROVED":
+                artifact_core = _local_export_artifact(
+                    application_id=application_id,
+                    revision=next_revision,
+                    created_at=row["created_at"],
+                    lifecycle_state=state,
+                    package=package,
+                    review=review_receipt,
+                )
+                approved_artifact_digest = _sha256(_canonical(artifact_core))
+                review_receipt["approved_artifact_digest"] = (
+                    approved_artifact_digest
+                )
+                approved_artifact = {
+                    **artifact_core,
+                    "operator_review": dict(review_receipt),
+                    "artifact_digest": approved_artifact_digest,
+                }
+            package["operator_review"] = review_receipt
             package_json = _canonical(package)
             review_json = _canonical(review_receipt)
             review_digest = _sha256(review_json)
@@ -276,8 +300,9 @@ class LocalGrantApplicationStore:
                     created_at,
                     decision,
                     review_digest,
-                    review_json
-                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                    review_json,
+                    approved_artifact_digest
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     review_id,
@@ -287,8 +312,32 @@ class LocalGrantApplicationStore:
                     decision.upper(),
                     review_digest,
                     review_json,
+                    approved_artifact_digest,
                 ),
             )
+            if approved_artifact is not None:
+                connection.execute(
+                    """
+                    INSERT INTO grant_local_export_artifacts(
+                        export_id,
+                        application_id,
+                        application_revision,
+                        approved_review_id,
+                        created_at,
+                        artifact_digest,
+                        artifact_json
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        f"acgs_export_{uuid4().hex}",
+                        application_id,
+                        next_revision,
+                        review_id,
+                        created_at,
+                        approved_artifact_digest,
+                        _canonical(approved_artifact),
+                    ),
+                )
             self._append_audit_event(
                 connection,
                 application_id=application_id,
@@ -302,37 +351,86 @@ class LocalGrantApplicationStore:
         return self.get_application(application_id)
 
     def local_export(self, application_id: str) -> dict[str, Any]:
-        record = self.get_application(application_id)
-        if record["lifecycle_state"] != "LOCAL_EXPORT_APPROVED":
+        self._ensure_migrated()
+        with self.factory.connect() as connection:
+            application = connection.execute(
+                """
+                SELECT application_id, lifecycle_state, revision
+                FROM grant_applications
+                WHERE application_id = ?
+                """,
+                (application_id,),
+            ).fetchone()
+            if application is None:
+                raise GrantApplicationNotFound(application_id)
+            artifact_row = connection.execute(
+                """
+                SELECT
+                    application_revision,
+                    approved_review_id,
+                    artifact_digest,
+                    artifact_json
+                FROM grant_local_export_artifacts
+                WHERE application_id = ?
+                  AND application_revision = ?
+                """,
+                (application_id, application["revision"]),
+            ).fetchone()
+            if artifact_row is None:
+                raise GrantApplicationStateError(
+                    "Local export requires an approved local operator review."
+                )
+            review_row = connection.execute(
+                """
+                SELECT
+                    review_id,
+                    application_id,
+                    application_revision,
+                    review_digest,
+                    review_json,
+                    approved_artifact_digest
+                FROM grant_operator_reviews
+                WHERE review_id = ?
+                """,
+                (artifact_row["approved_review_id"],),
+            ).fetchone()
+
+        if application["lifecycle_state"] != "LOCAL_EXPORT_APPROVED":
             raise GrantApplicationStateError(
                 "Local export requires an approved local operator review."
             )
-        package = record["package"]
-        review = package.get("operator_review")
-        if not isinstance(review, dict) or not review.get("local_export_approved"):
-            raise GrantApplicationStateError(
-                "Local export requires a complete approval receipt."
+        if review_row is None:
+            raise GrantApplicationIntegrityError(
+                "Local export approval receipt is missing."
             )
-        return {
-            "export_type": "ACGS_LOCAL_REVIEW_ARTIFACT",
-            "application_id": record["application_id"],
-            "revision": record["revision"],
-            "created_at": record["created_at"],
-            "exported_from_state": record["lifecycle_state"],
-            "source_attribution": package.get("source_attribution", {}),
-            "operator_review": review,
-            "draft": package.get("draft", {}),
-            "financial_review": package.get("financial_review", {}),
-            "red_team_audit": package.get("red_team_audit", {}),
-            "submission": package.get("submission", {}),
-            "manual_handoff_notice": (
-                "This is a local review artifact. It does not authorize or "
-                "perform an external portal submission."
-            ),
-            "external_submission_performed": False,
-            "credential_use_performed": False,
-            "external_action_performed": False,
-        }
+        artifact = _json_object(
+            artifact_row["artifact_json"],
+            "local export artifact",
+        )
+        review = _json_object(review_row["review_json"], "operator review")
+        artifact_review = artifact.get("operator_review")
+        artifact_digest = artifact_row["artifact_digest"]
+        if (
+            review_row["application_id"] != application_id
+            or int(review_row["application_revision"])
+            != int(artifact_row["application_revision"])
+            or int(artifact_row["application_revision"])
+            != int(application["revision"])
+            or artifact.get("application_id") != application_id
+            or artifact.get("revision") != int(artifact_row["application_revision"])
+            or not isinstance(artifact_review, dict)
+            or artifact_review != review
+            or artifact.get("artifact_digest") != artifact_digest
+            or review.get("approved_artifact_digest") != artifact_digest
+            or review_row["approved_artifact_digest"] != artifact_digest
+            or _sha256(_canonical(review)) != review_row["review_digest"]
+            or _sha256(_canonical(_export_integrity_payload(artifact)))
+            != artifact_digest
+        ):
+            raise GrantApplicationIntegrityError(
+                "Local export artifact failed immutable approval verification."
+            )
+        return artifact
 
     def _ensure_migrated(self) -> None:
         if self._migrated:
@@ -431,6 +529,56 @@ def _audit_metadata(
         ),
         "external_action_performed": False,
     }
+
+
+def _local_export_artifact(
+    *,
+    application_id: str,
+    revision: int,
+    created_at: str,
+    lifecycle_state: str,
+    package: Mapping[str, Any],
+    review: Mapping[str, Any],
+) -> dict[str, Any]:
+    return {
+        "export_type": "ACGS_LOCAL_REVIEW_ARTIFACT",
+        "application_id": application_id,
+        "revision": revision,
+        "created_at": created_at,
+        "exported_from_state": lifecycle_state,
+        "source_attribution": _mapping_value(
+            package.get("source_attribution")
+        ),
+        "operator_review": dict(review),
+        "draft": _mapping_value(package.get("draft")),
+        "financial_review": _mapping_value(package.get("financial_review")),
+        "red_team_audit": _mapping_value(package.get("red_team_audit")),
+        "submission": _mapping_value(package.get("submission")),
+        "manual_handoff_notice": (
+            "This is a local review artifact. It does not authorize or "
+            "perform an external portal submission."
+        ),
+        "external_submission_performed": False,
+        "credential_use_performed": False,
+        "external_action_performed": False,
+    }
+
+
+def _export_integrity_payload(
+    artifact: Mapping[str, Any],
+) -> dict[str, Any]:
+    payload = dict(artifact)
+    payload.pop("artifact_digest", None)
+    review = payload.get("operator_review")
+    if isinstance(review, Mapping):
+        review_value = dict(review)
+        review_value.pop("approved_artifact_digest", None)
+        payload["operator_review"] = review_value
+    return payload
+
+
+def _mapping_value(value: Any) -> dict[str, Any]:
+    return dict(value) if isinstance(value, Mapping) else {}
 
 
 def _canonical(value: Mapping[str, Any]) -> str:

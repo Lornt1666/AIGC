@@ -47,7 +47,7 @@ The review requires a current official-source URL on the registered portal host,
 GET /api/applications/{application_id}/export
 ```
 
-The returned artifact is read-only and keeps `external_submission_performed: false`. It is not a Phase 5 approval, eligibility determination, connector activation, credential authorization, or submission permit.
+Approval stores an immutable, digest-verified local artifact bound to the append-only operator-review receipt. The returned artifact is read-only and keeps `external_submission_performed: false`. It is not a Phase 5 approval, eligibility determination, connector activation, credential authorization, or submission permit.
 
 ## Tests
 

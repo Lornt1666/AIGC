@@ -29,6 +29,7 @@ from automated_canadian_grant_system.core.orchestrator import (  # noqa: E402
 )
 from automated_canadian_grant_system.database.storage import (  # noqa: E402
     GrantApplicationConflict,
+    GrantApplicationIntegrityError,
     GrantApplicationNotFound,
     GrantApplicationStateError,
 )
@@ -181,7 +182,7 @@ def create_app(
                     "external_action_performed": False,
                 },
             ) from exc
-        except GrantApplicationStateError as exc:
+        except (GrantApplicationIntegrityError, GrantApplicationStateError) as exc:
             raise HTTPException(
                 status_code=409,
                 detail={

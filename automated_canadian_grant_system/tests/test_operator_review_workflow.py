@@ -80,6 +80,9 @@ def test_operator_review_approves_only_a_local_export(tmp_path) -> None:
     assert exported["draft"]["ai_use_disclosure"]
     assert exported["submission"]["external_submission_performed"] is False
     assert exported["external_action_performed"] is False
+    assert exported["artifact_digest"] == exported["operator_review"][
+        "approved_artifact_digest"
+    ]
 
 
 def test_return_for_revision_blocks_export_and_additional_review(tmp_path) -> None:
@@ -134,6 +137,24 @@ def test_stale_source_and_unsupported_claims_block_local_export(tmp_path) -> Non
         )
 
 
+def test_reviewed_criteria_mismatch_blocks_local_export(tmp_path) -> None:
+    service = build_service(tmp_path)
+    generated = create_application(service)
+    review_payload = operator_review_payload()
+    criteria = dict(review_payload["operator_attested_criteria"])
+    criteria["min_trl"] = 7
+    review_payload["operator_attested_criteria"] = criteria
+
+    with pytest.raises(
+        ACGSGuardrailError,
+        match="does not match operator-attested eligibility criteria: minimum_trl",
+    ):
+        service.review_application(
+            generated["application_id"],
+            OperatorReviewRequest.model_validate(review_payload),
+        )
+
+
 def test_missing_review_attestation_or_budget_evidence_is_rejected() -> None:
     unverified = operator_review_payload(operator_attests_current_source=False)
     with pytest.raises(ValidationError):
@@ -144,6 +165,13 @@ def test_missing_review_attestation_or_budget_evidence_is_rejected() -> None:
     )
     with pytest.raises(ValidationError):
         OperatorReviewRequest.model_validate(incomplete_budget)
+
+    blank_region = operator_review_payload()
+    reviewed_criteria = dict(blank_region["operator_attested_criteria"])
+    reviewed_criteria["eligible_regions"] = [""]
+    blank_region["operator_attested_criteria"] = reviewed_criteria
+    with pytest.raises(ValidationError, match="eligible regions cannot be blank"):
+        OperatorReviewRequest.model_validate(blank_region)
 
 
 def test_unregistered_source_host_and_secret_like_input_are_blocked(
@@ -156,6 +184,31 @@ def test_unregistered_source_host_and_secret_like_input_are_blocked(
     hostile_payload["grant"] = grant
     with pytest.raises(ACGSGuardrailError, match="registered official portal"):
         service.generate(GrantApplicationRequest.model_validate(hostile_payload))
+
+    secret_url_payload = application_payload()
+    secret_url_grant = dict(secret_url_payload["grant"])
+    secret_url_grant["guideline_url"] = (
+        "https://albertainnovates.ca/sk-abcdefghijk"
+    )
+    secret_url_payload["grant"] = secret_url_grant
+    with pytest.raises(ACGSGuardrailError, match="secret-like"):
+        service.generate(
+            GrantApplicationRequest.model_validate(secret_url_payload)
+        )
+
+    generated = create_application(service)
+    review_url_payload = operator_review_payload()
+    review_url = "https://albertainnovates.ca/sk-abcdefghijk"
+    review_url_payload["source_guideline_url"] = review_url
+    review_url_payload["source_evidence_references"] = [
+        review_url,
+        "operator-record://alberta-source-review-2026-09",
+    ]
+    with pytest.raises(ACGSGuardrailError, match="secret-like"):
+        service.review_application(
+            generated["application_id"],
+            OperatorReviewRequest.model_validate(review_url_payload),
+        )
 
     secret_like_payload = application_payload()
     project = dict(secret_like_payload["project"])
@@ -214,3 +267,42 @@ def test_operator_review_records_are_append_only(tmp_path) -> None:
             )
     finally:
         connection.close()
+
+
+def test_approved_export_uses_an_immutable_snapshot(tmp_path) -> None:
+    database_path = tmp_path / "acgs-local.sqlite3"
+    service = GrantOrchestrator(database_path=database_path)
+    generated = create_application(service)
+    service.review_application(
+        generated["application_id"],
+        OperatorReviewRequest.model_validate(operator_review_payload()),
+    )
+    exported = service.local_export(generated["application_id"])
+
+    connection = sqlite3.connect(database_path)
+    try:
+        with pytest.raises(
+            sqlite3.DatabaseError,
+            match="approved grant applications are immutable",
+        ):
+            connection.execute(
+                """
+                UPDATE grant_applications
+                SET payload_json = '{"draft":{"executive_summary":"tampered"}}'
+                WHERE application_id = ?
+                """,
+                (generated["application_id"],),
+            )
+        with pytest.raises(sqlite3.DatabaseError, match="append-only"):
+            connection.execute(
+                """
+                UPDATE grant_local_export_artifacts
+                SET artifact_json = '{}'
+                WHERE application_id = ?
+                """,
+                (generated["application_id"],),
+            )
+    finally:
+        connection.close()
+
+    assert service.local_export(generated["application_id"]) == exported

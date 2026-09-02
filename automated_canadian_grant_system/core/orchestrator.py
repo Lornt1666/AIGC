@@ -203,6 +203,7 @@ class GrantOrchestrator:
         reviewed_financial_findings = validate_operator_review(
             self.policy,
             self.catalog,
+            self.identity,
             record["package"],
             review,
         )

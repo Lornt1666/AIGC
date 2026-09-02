@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import date
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class StrictModel(BaseModel):
@@ -143,6 +143,24 @@ class OperatorAttestedGrantCriteria(GrantCriteriaFields):
         "operator_attested_reviewed"
     )
 
+    @field_validator(
+        "eligibility_criteria_summary",
+        "financial_criteria_summary",
+    )
+    @classmethod
+    def require_non_blank_summary(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("Reviewed criteria summaries cannot be blank.")
+        return value
+
+    @field_validator("eligible_regions")
+    @classmethod
+    def require_named_regions(cls, value: list[str]) -> list[str]:
+        regions = [region.strip() for region in value]
+        if any(not region for region in regions):
+            raise ValueError("Reviewed eligible regions cannot be blank.")
+        return regions
+
 
 class OperatorReviewRequest(StrictModel):
     expected_revision: int = Field(ge=1)
@@ -159,6 +177,13 @@ class OperatorReviewRequest(StrictModel):
     operator_attests_current_source: Literal[True]
     operator_attests_evidence_complete: Literal[True]
     ai_use_disclosure_acknowledged: Literal[True]
+
+    @field_validator("program_name", "source_version")
+    @classmethod
+    def require_non_blank_value(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("Required review values cannot be blank.")
+        return value
 
 
 class ProjectDetails(StrictModel):
