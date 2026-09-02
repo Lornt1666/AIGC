@@ -92,3 +92,24 @@ def test_pipeline_flags_a_funding_ceiling_and_matching_shortfall() -> None:
     assert "FUNDING_CEILING_EXCEEDED" in findings
     assert "MATCHING_CONTRIBUTION_INSUFFICIENT" in findings
     assert package["submission"]["external_submission_performed"] is False
+
+
+def test_alberta_innovates_local_draft_payload_is_source_attributed() -> None:
+    payload = GrantOrchestrator().load_draft_payload("alberta_innovates")
+
+    assert payload["portal_id"] == "alberta_innovates"
+    assert payload["grant"]["portal_id"] == "alberta_innovates"
+    assert payload["source_attribution"]["source_status"] == "not_fetched_or_verified"
+    assert payload["source_attribution"]["current_program_confirmation_required"]
+    assert payload["local_draft_only"] is True
+    assert payload["external_action_performed"] is False
+
+
+def test_nrc_irap_local_draft_payload_is_source_attributed() -> None:
+    payload = GrantOrchestrator().load_draft_payload("nrc_irap")
+
+    assert payload["portal_id"] == "nrc_irap"
+    assert payload["grant"]["portal_id"] == "nrc_irap"
+    assert payload["source_attribution"]["source_status"] == "not_fetched_or_verified"
+    assert payload["local_draft_only"] is True
+    assert payload["external_action_performed"] is False

@@ -1,5 +1,8 @@
 const result = document.querySelector("#result");
 const portalSelect = document.querySelector("#portal-id");
+const grantName = document.querySelector("#grant-name");
+const templateStatus = document.querySelector("#template-status");
+let selectedDraftTemplate = null;
 
 function appendDefinition(target, label, value) {
   const term = document.createElement("dt");
@@ -32,36 +35,56 @@ async function loadPortal() {
   const portalsTarget = document.querySelector("#portals");
   for (const portal of portalData.portals) {
     const item = document.createElement("li");
-    item.textContent = `${portal.organization}: ${portal.ingestion_mode}`;
+    item.textContent =
+      `${portal.organization}: local template ${portal.local_draft_template_available ? "available" : "unavailable"}; ` +
+      `live ingestion ${portalData.live_ingestion_enabled ? "enabled" : "disabled"}.`;
     portalsTarget.append(item);
     const option = document.createElement("option");
     option.value = portal.portal_id;
-    option.textContent = portal.organization;
+    option.textContent = `${portal.organization} (${portal.local_draft_template_available ? "template available" : "template unavailable"})`;
+    option.disabled = !portal.local_draft_template_available;
     portalSelect.append(option);
   }
+  await loadDraftTemplate(portalSelect.value);
+}
+
+async function loadDraftTemplate(portalId) {
+  selectedDraftTemplate = null;
+  templateStatus.textContent = "Loading local draft template…";
+  const response = await fetch(`/api/draft-payloads/${encodeURIComponent(portalId)}`);
+  const payload = await response.json();
+  if (!response.ok) {
+    throw new Error(payload.detail?.message || "Local draft template is unavailable.");
+  }
+  selectedDraftTemplate = payload;
+  grantName.value = payload.grant.grant_name;
+  templateStatus.textContent =
+    `${payload.template_id}: local template only. The official source was not fetched or verified; ` +
+    `${payload.required_operator_inputs.length} operator inputs remain required.`;
 }
 
 document.querySelector("#draft-form").addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (!selectedDraftTemplate) {
+    result.textContent = "Select an available local draft template before generating a draft.";
+    return;
+  }
   const form = new FormData(event.currentTarget);
   const numberOrNull = (name) => {
     const value = form.get(name);
     return value === "" ? null : Number(value);
   };
+  const grant = {
+    ...selectedDraftTemplate.grant,
+    grant_name: form.get("grant_name"),
+    eligibility: {
+      ...selectedDraftTemplate.grant.eligibility,
+      funding_ceiling_cad: numberOrNull("funding_ceiling_cad"),
+      required_matching_ratio: numberOrNull("required_matching_ratio")
+    }
+  };
   const payload = {
-    grant: {
-      grant_id: `manual_${Date.now()}`,
-      portal_id: form.get("portal_id"),
-      grant_name: form.get("grant_name"),
-      guideline_url: "https://operator-supplied.local/review-required",
-      summary: "Operator-supplied program information requires official guideline review.",
-      eligibility: {
-        eligible_regions: ["Alberta"],
-        funding_ceiling_cad: numberOrNull("funding_ceiling_cad"),
-        required_matching_ratio: numberOrNull("required_matching_ratio"),
-        source_verification_status: "operator_review_required"
-      }
-    },
+    grant,
     project: {
       project_title: form.get("project_title"),
       project_summary: form.get("project_summary"),
@@ -78,6 +101,13 @@ document.querySelector("#draft-form").addEventListener("submit", async (event) =
   });
   const body = await response.json();
   result.textContent = JSON.stringify(body, null, 2);
+});
+
+portalSelect.addEventListener("change", () => {
+  loadDraftTemplate(portalSelect.value).catch((error) => {
+    templateStatus.textContent = `Unable to load local template: ${error.message}`;
+    result.textContent = templateStatus.textContent;
+  });
 });
 
 loadPortal().catch((error) => {

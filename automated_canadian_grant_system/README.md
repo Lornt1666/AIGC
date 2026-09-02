@@ -20,6 +20,17 @@ python frontend/app.py
 
 Open `http://127.0.0.1:8000`. The portal only generates internal drafts and always returns a blocked manual-handoff state for submission.
 
+## Local draft templates
+
+Read-only templates are available at:
+
+```text
+GET /api/draft-payloads/alberta_innovates
+GET /api/draft-payloads/nrc_irap
+```
+
+They are local source-attribution templates, not fetched program data. Each template identifies its official portal, declares that the source was not fetched or verified, and requires an operator to supply current program-specific information. NRC IRAP is a federal reference; its presence does not configure a live connector or determine eligibility.
+
 ## Tests
 
 ```bash

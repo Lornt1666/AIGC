@@ -80,6 +80,20 @@ def create_app(project_root: Path | None = None) -> FastAPI:
     def get_portals() -> dict[str, Any]:
         return service.portal_payload()
 
+    @api.get("/api/draft-payloads/{portal_id}")
+    def get_draft_payload(portal_id: str) -> dict[str, Any]:
+        try:
+            return service.load_draft_payload(portal_id)
+        except ACGSGuardrailError as exc:
+            raise HTTPException(
+                status_code=404,
+                detail={
+                    "code": "ACGS_DRAFT_PAYLOAD_UNAVAILABLE",
+                    "message": str(exc),
+                    "external_action_performed": False,
+                },
+            ) from exc
+
     @api.post("/api/generate_application")
     def generate_application(
         payload: GrantApplicationRequest,

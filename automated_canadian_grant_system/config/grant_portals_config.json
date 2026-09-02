@@ -13,6 +13,7 @@
       "connector_status": "not_configured",
       "ingestion_mode": "disabled_pending_phase5_approval",
       "terms_review_status": "not_reviewed",
+      "local_draft_template_available": true,
       "notes": "Configure only after an accountable operator has reviewed the official source, terms, rate limits, data-use conditions, and a scoped Phase 5 approval."
     },
     {
@@ -22,6 +23,7 @@
       "connector_status": "not_configured",
       "ingestion_mode": "disabled_pending_phase5_approval",
       "terms_review_status": "not_reviewed",
+      "local_draft_template_available": true,
       "notes": "No NRC IRAP content is fetched or represented as current by this local baseline."
     },
     {
@@ -31,6 +33,7 @@
       "connector_status": "not_configured",
       "ingestion_mode": "disabled_pending_phase5_approval",
       "terms_review_status": "not_reviewed",
+      "local_draft_template_available": false,
       "notes": "No PrairiesCan content is fetched or represented as current by this local baseline."
     },
     {
@@ -40,6 +43,7 @@
       "connector_status": "not_configured",
       "ingestion_mode": "disabled_pending_phase5_approval",
       "terms_review_status": "not_reviewed",
+      "local_draft_template_available": false,
       "notes": "No NSERC content is fetched or represented as current by this local baseline."
     }
   ]

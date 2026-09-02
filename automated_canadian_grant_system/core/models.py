@@ -32,6 +32,7 @@ class GrantPortal(StrictModel):
     connector_status: Literal["not_configured"]
     ingestion_mode: Literal["disabled_pending_phase5_approval"]
     terms_review_status: Literal["not_reviewed"]
+    local_draft_template_available: bool
     notes: str = Field(min_length=1, max_length=2000)
 
 
@@ -111,6 +112,22 @@ class GrantOpportunity(StrictModel):
     guideline_url: str = Field(pattern=r"^https://", max_length=2000)
     summary: str = Field(min_length=1, max_length=10_000)
     eligibility: GrantEligibilityCriteria
+
+
+class SourceAttribution(StrictModel):
+    official_portal_url: str = Field(pattern=r"^https://", max_length=2000)
+    source_status: Literal["not_fetched_or_verified"]
+    current_program_confirmation_required: Literal[True]
+
+
+class GrantDraftPayloadTemplate(StrictModel):
+    template_id: str = Field(min_length=1, max_length=160)
+    portal_id: str = Field(pattern=r"^[a-z][a-z0-9_]{2,79}$")
+    grant: GrantOpportunity
+    source_attribution: SourceAttribution
+    required_operator_inputs: list[str] = Field(min_length=1, max_length=30)
+    local_draft_only: Literal[True]
+    external_action_performed: Literal[False]
 
 
 class ProjectDetails(StrictModel):

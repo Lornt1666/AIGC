@@ -17,8 +17,10 @@ from automated_canadian_grant_system.agents.agent_rhetorical_writer import (
     RhetoricalWriter,
 )
 from automated_canadian_grant_system.core.constitutional_guardrails import (
+    ACGSGuardrailError,
     load_business_identity,
     load_constitutional_policy,
+    load_draft_payload_template,
     load_portal_catalog,
     load_prompt_module_ids,
     require_live_ingestion_blocked,
@@ -32,6 +34,10 @@ from automated_canadian_grant_system.core.vector_retrieval import (
 
 
 PACKAGE_ROOT = Path(__file__).resolve().parents[1]
+DRAFT_TEMPLATE_FILENAMES = {
+    "alberta_innovates": "alberta_innovates.json",
+    "nrc_irap": "nrc_irap.json",
+}
 
 
 class GrantOrchestrator:
@@ -69,6 +75,46 @@ class GrantOrchestrator:
             ],
             "external_action_performed": False,
         }
+
+    def load_draft_payload(self, portal_id: str) -> dict[str, Any]:
+        portal = next(
+            (
+                candidate
+                for candidate in self.catalog.portals
+                if candidate.portal_id == portal_id
+            ),
+            None,
+        )
+        if portal is None:
+            raise ACGSGuardrailError("Unknown grant portal.")
+        if not portal.local_draft_template_available:
+            raise ACGSGuardrailError(
+                "No local draft payload template is available for this portal."
+            )
+        filename = DRAFT_TEMPLATE_FILENAMES.get(portal_id)
+        if filename is None:
+            raise ACGSGuardrailError(
+                "The configured local draft payload template is unavailable."
+            )
+        template = load_draft_payload_template(
+            self.project_root / "config" / "draft_payloads" / filename
+        )
+        if (
+            template.portal_id != portal_id
+            or template.grant.portal_id != portal_id
+        ):
+            raise ACGSGuardrailError(
+                "Local draft payload portal identity does not match its catalog entry."
+            )
+        if (
+            template.source_attribution.official_portal_url
+            != portal.official_portal_url
+            or template.grant.guideline_url != portal.official_portal_url
+        ):
+            raise ACGSGuardrailError(
+                "Local draft payload source attribution does not match its catalog entry."
+            )
+        return template.model_dump()
 
     def generate(
         self,

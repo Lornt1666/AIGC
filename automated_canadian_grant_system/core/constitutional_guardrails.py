@@ -10,6 +10,7 @@ from automated_canadian_grant_system.core.models import (
     BusinessIdentity,
     ConstitutionalPolicy,
     GrantApplicationRequest,
+    GrantDraftPayloadTemplate,
     GrantPortalCatalog,
 )
 
@@ -73,6 +74,10 @@ def load_portal_catalog(path: Path) -> GrantPortalCatalog:
             "Grant portal catalog must not enable or claim external actions."
         )
     return catalog
+
+
+def load_draft_payload_template(path: Path) -> GrantDraftPayloadTemplate:
+    return _load_model(path, GrantDraftPayloadTemplate)
 
 
 def load_prompt_module_ids(path: Path) -> list[str]:

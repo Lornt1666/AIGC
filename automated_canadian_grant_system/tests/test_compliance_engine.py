@@ -63,6 +63,18 @@ def test_api_exposes_drafts_and_blocks_ingestion_and_submission() -> None:
     root = client.get("/")
     assert root.status_code == 200
     assert "Grant application draft workspace" in root.text
+    alberta_template = client.get("/api/draft-payloads/alberta_innovates")
+    assert alberta_template.status_code == 200, alberta_template.text
+    assert alberta_template.json()["local_draft_only"] is True
+    nrc_template = client.get("/api/draft-payloads/nrc_irap")
+    assert nrc_template.status_code == 200, nrc_template.text
+    assert nrc_template.json()["grant"]["portal_id"] == "nrc_irap"
+    unavailable_template = client.get("/api/draft-payloads/prairiescan")
+    assert unavailable_template.status_code == 404
+    assert (
+        unavailable_template.json()["detail"]["external_action_performed"]
+        is False
+    )
     generated = client.post(
         "/api/generate_application",
         json=application_payload(),
