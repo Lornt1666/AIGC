@@ -1,0 +1,209 @@
+name: AIGC Phase 2–5 Review Cycle
+
+on:
+  workflow_dispatch:
+    inputs:
+      operator_authorization:
+        description: "Exact authorization: AUTHORIZE AIGC PHASE 2 TO 5 REVIEW CYCLE"
+        required: true
+        type: string
+      review_only:
+        description: "Must remain true; this workflow only prepares review artifacts."
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aigc-phase2-to5-review-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  generate-review-artifacts:
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      inputs.operator_authorization == 'AUTHORIZE AIGC PHASE 2 TO 5 REVIEW CYCLE' &&
+      inputs.review_only == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      REQUESTED_REVISION: ${{ github.sha }}
+      AIGC_PHASE2_TO5_OPERATOR_AUTHORIZATION: ${{ inputs.operator_authorization }}
+      AIGC_PHASE2_TO5_REVIEW_ONLY: ${{ inputs.review_only }}
+    steps:
+      - name: Checkout exact requested revision
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          ref: ${{ env.REQUESTED_REVISION }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify exact checkout and review-only policy
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$REQUESTED_REVISION"
+          test "${GITHUB_WORKFLOW_REF%%@*}" = "Lornt1666/AIGC/.github/workflows/aigc_phase2_to5_review.yml"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          policy = json.loads(Path("config/phase2_to5_cycle_policy.json").read_text(encoding="utf-8"))
+          native = policy["authorized_native_cycle"]
+          hold = policy["active_hold"]
+          boundary = policy["connector_and_production_boundary"]
+          assert hold["enabled"] is True
+          assert hold["automatic_regeneration_allowed"] is False
+          assert native["event_name"] == "workflow_dispatch"
+          assert native["review_only"] is True
+          assert native["repository_write_authority"] is False
+          assert os.environ["AIGC_PHASE2_TO5_OPERATOR_AUTHORIZATION"] == native["operator_authorization_phrase"]
+          assert os.environ["AIGC_PHASE2_TO5_REVIEW_ONLY"].lower() == "true"
+          assert boundary["connectors_enabled"] is False
+          assert boundary["production_deployment_authorized"] is False
+          PY
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+
+      - name: Generate Phase 2 read-only review inputs
+        env:
+          PYTHONPATH: .
+        run: python src/phase2_radar.py --project-root . --config config/phase2_sources.json
+
+      - name: Generate Phase 3 internal assessments
+        env:
+          PYTHONPATH: .
+        run: python src/phase3_ology_assessment.py --project-root . --config config/phase3_ology_assessment.json
+
+      - name: Generate Phase 4 internal proposal drafts
+        env:
+          PYTHONPATH: .
+        run: python src/phase4_proposal_drafting.py --project-root . --config config/phase4_proposal_drafting.json
+
+      - name: Generate Phase 5 review packets
+        env:
+          PYTHONPATH: .
+        run: python src/phase5_human_approval_gate.py --project-root . --config config/phase5_human_approval_gate.json
+
+      - name: Validate generated review artifacts
+        if: success()
+        env:
+          PYTHONPATH: .
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          from src.core.contract_validator import validate_file
+
+          for schema, path in (
+              ("opportunity_record", "data/phase2_processed/aigc_phase2_opportunity_queue.json"),
+              ("assessment_dossier", "data/phase3_processed/aigc_phase3_assessment_dossiers.json"),
+              ("proposal_package", "data/phase4_proposals/aigc_phase4_proposal_packages.json"),
+              ("authorization_packet", "data/phase5_authorizations/aigc_phase5_authorization_packets.json"),
+          ):
+              validate_file(schema, Path(path))
+          PY
+
+      - name: Scan generated review artifacts for secrets
+        if: success()
+        run: |
+          python src/security/redaction_scanner.py --paths \
+            data/phase2_processed/aigc_phase2_opportunity_queue.json \
+            data/phase3_processed/aigc_phase3_assessment_dossiers.json \
+            data/phase4_proposals/aigc_phase4_proposal_packages.json \
+            data/phase5_authorizations/aigc_phase5_authorization_packets.json \
+            data/audit/aigc_phase2_audit.jsonl \
+            data/audit/aigc_phase3_audit.jsonl \
+            data/audit/aigc_phase4_audit.jsonl \
+            data/audit/aigc_phase5_audit.jsonl
+
+      - name: Build immutable run receipt
+        if: always()
+        env:
+          JOB_STATUS: ${{ job.status }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          export REVIEW_RECEIPT_DIR="$RUNNER_TEMP/aigc-phase2-to5-review"
+          mkdir -p "$REVIEW_RECEIPT_DIR"
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import subprocess
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          root = Path(".")
+          outputs = [
+              "data/phase2_processed/aigc_phase2_opportunity_queue.json",
+              "data/phase3_processed/aigc_phase3_assessment_dossiers.json",
+              "data/phase4_proposals/aigc_phase4_proposal_packages.json",
+              "data/phase5_authorizations/aigc_phase5_authorization_packets.json",
+              "data/audit/aigc_phase2_audit.jsonl",
+              "data/audit/aigc_phase3_audit.jsonl",
+              "data/audit/aigc_phase4_audit.jsonl",
+              "data/audit/aigc_phase5_audit.jsonl",
+          ]
+          artifacts = []
+          for relative_path in outputs:
+              path = root / relative_path
+              if path.is_file():
+                  artifacts.append(
+                      {
+                          "path": relative_path,
+                          "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                          "bytes": path.stat().st_size,
+                      }
+                  )
+          receipt = {
+              "receipt_id": f"AIGC-PHASE2-TO5-REVIEW-{os.environ['GITHUB_RUN_ID']}",
+              "workflow_file": ".github/workflows/aigc_phase2_to5_review.yml",
+              "workflow_ref": os.environ["GITHUB_WORKFLOW_REF"],
+              "workflow_run_id": os.environ["GITHUB_RUN_ID"],
+              "workflow_run_number": os.environ["GITHUB_RUN_NUMBER"],
+              "repository": os.environ["GITHUB_REPOSITORY"],
+              "requested_revision": os.environ["REQUESTED_REVISION"],
+              "observed_revision": subprocess.check_output(
+                  ["git", "rev-parse", "HEAD"], text=True
+              ).strip(),
+              "tree_sha": subprocess.check_output(
+                  ["git", "rev-parse", "HEAD^{tree}"], text=True
+              ).strip(),
+              "job_status": os.environ["JOB_STATUS"],
+              "review_only": True,
+              "repository_write_authority": False,
+              "connector_activation_authorized": False,
+              "production_deployment_authorized": False,
+              "external_action_performed": False,
+              "artifacts": artifacts,
+              "captured_at": datetime.now(timezone.utc).isoformat(),
+          }
+          Path(os.environ["REVIEW_RECEIPT_DIR"], "phase2_to5_review_run_receipt.json").write_text(
+              json.dumps(receipt, sort_keys=True, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Upload review artifacts and immutable receipt
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: aigc-phase2-to5-review-${{ github.run_id }}
+          if-no-files-found: error
+          path: |
+            ${{ runner.temp }}/aigc-phase2-to5-review/phase2_to5_review_run_receipt.json
+            data/phase2_processed/aigc_phase2_opportunity_queue.json
+            data/phase3_processed/aigc_phase3_assessment_dossiers.json
+            data/phase4_proposals/aigc_phase4_proposal_packages.json
+            data/phase5_authorizations/aigc_phase5_authorization_packets.json
+            data/audit/aigc_phase2_audit.jsonl
+            data/audit/aigc_phase3_audit.jsonl
+            data/audit/aigc_phase4_audit.jsonl
+            data/audit/aigc_phase5_audit.jsonl

@@ -15,6 +15,8 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
+from src.core.phase2_to5_cycle_policy import require_phase2_to5_generation_authorized
+
 
 class RadarDecision(str, Enum):
     QUEUE_FOR_PHASE_3 = "queue_for_phase_3"
@@ -938,6 +940,7 @@ class AIGCPhase2Radar:
         return self.run(connectors)
 
     def run(self, connectors: List[BaseConnector]) -> List[OpportunityRecord]:
+        require_phase2_to5_generation_authorized(self.project_root, "Phase 2")
         self.ledger.record(
             "phase2_run_start",
             {

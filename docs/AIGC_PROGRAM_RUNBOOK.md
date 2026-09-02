@@ -6,6 +6,24 @@ This runbook describes the local runnable AIGC operator program layer.
 
 The local program gives the operator a practical path to run AIGC from a Windows computer while preserving governance controls.
 
+## Active Phase 4/5 Hold
+
+`config/phase2_to5_cycle_policy.json` is authoritative for the current cycle.
+It permits only read-only review of existing Phase 4 inputs and archived,
+expired Phase 5 packets plus one scoped internal improvement proposal. It
+blocks local Phase 2–5 regeneration, packet acceptance, new workflow dispatch,
+external contact, connector activation, and production activity.
+
+Use the following read-only status commands:
+
+```powershell
+python .\src\aigc.py cycle-policy
+python .\src\aigc.py curriculum
+```
+
+The Operator Cockpit reflects this hold by disabling its generation and packet
+decision controls. Do not use another local surface to bypass it.
+
 ## Primary Launch Commands
 
 ```powershell
@@ -107,6 +125,33 @@ The local program does not:
 - retrieve secrets;
 - bypass platform rules;
 - approve itself.
+
+## Manual Phase 6 / Phase 7 lifecycle
+
+After a separately authorized native Phase 2–5 review workflow creates a fresh
+packet, the operator may record its exact Phase 5 acceptance. Phase 6 then
+creates a manual handoff only; the operator remains the external actor.
+
+After the operator completes that handoff, record one exact confirmation with a
+sanitized reference:
+
+```powershell
+python .\src\aigc.py confirm-manual-handoff `
+  --execution-id AIGC-EXEC-... `
+  --phrase "I, Justice Gray Maciocha, confirm manual handoff AIGC-EXEC-...." `
+  --completion-reference "platform receipt reference"
+```
+
+This creates a Phase 6 confirmation record without storing secrets, marks the
+authorization consumed for future handoff attempts, and unlocks only the
+internal Phase 7 audit draft. It does not cause AIGC to contact or submit to
+anyone.
+
+## Production and connector boundary
+
+Production remains locked. Do not activate a connector or deployment path until
+the separate staging evidence, exact-revision release gate, required receipts,
+and fresh candidate-bound operator approval are complete.
 
 ## Merge Readiness
 

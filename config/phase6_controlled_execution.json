@@ -20,6 +20,7 @@
     "phase5_authorizations": "data/phase5_authorizations/aigc_phase5_authorization_packets.json"
   },
   "output_file": "data/phase6_execution/aigc_phase6_execution_receipts.json",
+  "manual_confirmation_file": "data/phase6_execution/aigc_phase6_manual_handoff_confirmations.jsonl",
   "allowed_execution_modes": [
     "manual_handoff"
   ],

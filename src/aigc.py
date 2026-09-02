@@ -20,8 +20,20 @@ from src.core.contract_validator import (  # noqa: E402
     validate_file,
     validate_jsonl_file,
 )
+from src.core.aigc_master_curriculum import (  # noqa: E402
+    AIGCMasterCurriculumError,
+    load_aigc_master_curriculum,
+    summarize_aigc_master_curriculum,
+)
 from src.core.paycheque_workflow import run_paycheque_workflow  # noqa: E402
 from src.core.phase_registry import build_phase_registry  # noqa: E402
+from src.core.phase2_to5_cycle_policy import (  # noqa: E402
+    Phase2To5CyclePolicyError,
+    load_phase2_to5_cycle_policy,
+    next_cycle_policy_snapshot,
+    packet_was_generated_by_authorized_native_cycle,
+    require_phase2_to5_generation_authorized,
+)
 from src.core.pipeline_closure import PipelineClosureRunner  # noqa: E402
 from src.core.program_health import run_program_health, write_health_report  # noqa: E402
 from src.core.production_readiness_ledger import run_production_readiness_ledger  # noqa: E402
@@ -29,6 +41,10 @@ from src.core.state_store import AIGCStateStore, DEFAULT_DB_PATH  # noqa: E402
 from src.core.work_acquisition import run_work_acquisition  # noqa: E402
 from src.core.work_order import run_cockpit_smoke, run_governance_smoke, run_work_order  # noqa: E402
 from src.phase17_incident_response import Phase17IncidentResponse  # noqa: E402
+from src.phase6_controlled_execution import (  # noqa: E402
+    ManualHandoffConfirmationError,
+    record_manual_handoff_confirmation,
+)
 from src.security.approval_tokens import ApprovalTokenStore  # noqa: E402
 
 
@@ -94,6 +110,22 @@ def main(argv: List[str] | None = None) -> int:
         if args.require_production_ready and not report["production_ready"]:
             return 3
         return 0
+    if args.command == "cycle-policy":
+        try:
+            policy = load_phase2_to5_cycle_policy(root)
+            print(json.dumps(next_cycle_policy_snapshot(policy), indent=2))
+            return 0
+        except Phase2To5CyclePolicyError as exc:
+            print(f"Phase 2–5 cycle policy is invalid: {exc}")
+            return 2
+    if args.command == "curriculum":
+        try:
+            curriculum = load_aigc_master_curriculum(root)
+            print(json.dumps(summarize_aigc_master_curriculum(curriculum), indent=2))
+            return 0
+        except AIGCMasterCurriculumError as exc:
+            print(f"Master curriculum is invalid: {exc}")
+            return 2
     if args.command == "validate":
         return command_validate(args, root, store)
     if args.command == "run":
@@ -104,6 +136,8 @@ def main(argv: List[str] | None = None) -> int:
         return command_authorization_decision(args, root, store, "deny")
     if args.command == "revise":
         return command_authorization_decision(args, root, store, "revise")
+    if args.command == "confirm-manual-handoff":
+        return command_manual_handoff_confirmation(args, root, store)
     if args.command == "close-loop":
         runner = PipelineClosureRunner(root, store)
         result = runner.run(execution_mode=args.execution_mode)
@@ -195,6 +229,8 @@ def command_validate(args: argparse.Namespace, root: Path, store: AIGCStateStore
             ("secret_manifest", root / "config" / "secret_manifest.json"),
             ("work_order_packet", root / "config" / "example_work_order.json"),
             ("paycheque_workflow_config", root / "config" / "paycheque_workflow.json"),
+            ("phase2_to5_cycle_policy", root / "config" / "phase2_to5_cycle_policy.json"),
+            ("aigc_master_curriculum", root / "config" / "aigc_master_curriculum.json"),
             (registry["phase2"].schema_name, root / registry["phase2"].output_path),
             (registry["phase3"].schema_name, root / registry["phase3"].output_path),
             (registry["phase4"].schema_name, root / registry["phase4"].output_path),
@@ -218,6 +254,10 @@ def command_validate(args: argparse.Namespace, root: Path, store: AIGCStateStore
             ("outcome_record", root / "data" / "phase8_evolution" / "outcome_records.jsonl"),
             ("evolution_patch", root / "data" / "phase8_evolution" / "evolution_patches.jsonl"),
             ("incident_report", root / "data" / "phase17_incidents" / "incident_reports.jsonl"),
+            (
+                "manual_handoff_confirmation",
+                root / "data" / "phase6_execution" / "aigc_phase6_manual_handoff_confirmations.jsonl",
+            ),
         ]
 
     for schema_name, path in jsonl_targets:
@@ -261,6 +301,20 @@ def command_run(args: argparse.Namespace, root: Path, store: AIGCStateStore) -> 
             summary=f"Blocked attempted run of {phase}.",
         )
         return 2
+    if phase in {"phase2", "phase3", "phase4", "phase5"}:
+        try:
+            require_phase2_to5_generation_authorized(root, phase.replace("phase", "Phase "))
+        except Phase2To5CyclePolicyError as exc:
+            print(str(exc))
+            store.insert_event(
+                event_type="phase_run_blocked_by_cycle_policy",
+                phase=phase,
+                status="blocked",
+                summary=f"Blocked attempted {phase} generation under the active read-only hold.",
+                data={"reason": str(exc)},
+                external_action_performed=False,
+            )
+            return 2
 
     if phase == "work-order":
         result = run_work_order(root, args.input or root / "config" / "example_work_order.json", args.artifact_root)
@@ -538,6 +592,32 @@ def command_authorization_decision(
         )
         print("Authorization expired. Return to Phase 5 for a fresh approval packet.")
         return 2
+    if decision == "approve":
+        try:
+            cycle_policy = load_phase2_to5_cycle_policy(root)
+        except Phase2To5CyclePolicyError as exc:
+            print(f"Cannot evaluate Phase 2–5 cycle policy: {exc}")
+            return 2
+        if (
+            cycle_policy.get("active_hold", {}).get("enabled", False)
+            and not packet_was_generated_by_authorized_native_cycle(cycle_policy, target)
+        ):
+            store.insert_event(
+                event_type="authorization_approval_blocked_by_cycle_policy",
+                phase="phase5_human_approval_gate",
+                status="blocked",
+                summary=(
+                    f"Blocked approval for action {args.action_id}; it was not generated "
+                    "by the authorized native review workflow."
+                ),
+                external_action_performed=False,
+            )
+            print(
+                "Approval is blocked by the active read-only hold. Only a fresh packet "
+                "generated by the separately authorized native Phase 2–5 review workflow "
+                "can be accepted."
+            )
+            return 2
     approval["received_phrase"] = args.phrase.strip()
     if decision == "approve":
         approval["approved"] = True
@@ -594,6 +674,58 @@ def command_authorization_decision(
         "event_id": event.event_id,
         "external_action_performed": False,
     }, indent=2))
+    return 0
+
+
+def command_manual_handoff_confirmation(
+    args: argparse.Namespace,
+    root: Path,
+    store: AIGCStateStore,
+) -> int:
+    try:
+        confirmation = record_manual_handoff_confirmation(
+            project_root=root,
+            execution_id=args.execution_id,
+            confirmation_phrase=args.phrase,
+            completion_reference=args.completion_reference,
+            config_path=root / args.phase6_config,
+        )
+    except (ManualHandoffConfirmationError, FileNotFoundError, ValueError) as exc:
+        print(f"Manual handoff confirmation was not recorded: {exc}")
+        return 2
+    event = store.insert_event(
+        event_type="phase6_manual_handoff_confirmation_recorded",
+        phase="phase6_controlled_execution",
+        status="recorded",
+        summary=(
+            f"Recorded operator confirmation for manual handoff {confirmation['execution_id']}; "
+            "AIGC did not perform the external action."
+        ),
+        data={
+            "confirmation_id": confirmation["confirmation_id"],
+            "execution_id": confirmation["execution_id"],
+            "authorization_id": confirmation["authorization_id"],
+            "action_id": confirmation["action_id"],
+            "confirmed_by": "human_operator",
+            "aigc_performed_external_action": False,
+            "operator_reported_external_action": True,
+        },
+        external_action_performed=False,
+    )
+    print(
+        json.dumps(
+            {
+                "confirmation_id": confirmation["confirmation_id"],
+                "execution_id": confirmation["execution_id"],
+                "authorization_id": confirmation["authorization_id"],
+                "state_event_id": event.event_id,
+                "aigc_performed_external_action": False,
+                "operator_reported_external_action": True,
+                "phase7_handoff_ready": True,
+            },
+            indent=2,
+        )
+    )
     return 0
 
 
@@ -702,6 +834,14 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
 
     subparsers.add_parser("status", help="Show AIGC runtime state summary.")
     subparsers.add_parser("init-db", help="Initialize the AIGC SQLite state database.")
+    subparsers.add_parser(
+        "cycle-policy",
+        help="Show the durable read-only Phase 2–5 cycle policy.",
+    )
+    subparsers.add_parser(
+        "curriculum",
+        help="Show the governance-bound AIGC master curriculum summary.",
+    )
     health_parser = subparsers.add_parser("health", help="Run local program health checks.")
     health_parser.add_argument("--write", action="store_true", help="Write latest health report under reports/artifacts/program_health.")
 
@@ -767,7 +907,7 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     subparsers.add_parser("report", help="Refresh the Phase 12 observability report.")
 
     close_loop_parser = subparsers.add_parser("close-loop", help="Run internal Phase 5 to Phase 7 closure without external execution.")
-    close_loop_parser.add_argument("--execution-mode", choices=["dry_run", "manual_handoff"], default="manual_handoff")
+    close_loop_parser.add_argument("--execution-mode", choices=["manual_handoff"], default="manual_handoff")
 
     incident_parser = subparsers.add_parser("create-incident", help="Create an internal Phase 17 incident report.")
     incident_parser.add_argument("--incident-type", required=True)
@@ -797,6 +937,18 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     revise_parser.add_argument("--action-id", required=True)
     revise_parser.add_argument("--phrase", required=True)
     revise_parser.add_argument("--authorizations-path", default="data/phase5_authorizations/aigc_phase5_authorization_packets.json")
+
+    confirm_parser = subparsers.add_parser(
+        "confirm-manual-handoff",
+        help="Record a human operator's completed, exact Phase 6 manual handoff.",
+    )
+    confirm_parser.add_argument("--execution-id", required=True)
+    confirm_parser.add_argument("--phrase", required=True)
+    confirm_parser.add_argument("--completion-reference", required=True)
+    confirm_parser.add_argument(
+        "--phase6-config",
+        default="config/phase6_controlled_execution.json",
+    )
     return parser.parse_args(argv)
 
 

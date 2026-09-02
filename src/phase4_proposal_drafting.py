@@ -9,6 +9,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 
+from src.core.phase2_to5_cycle_policy import require_phase2_to5_generation_authorized
+
 
 class ProposalType(str, Enum):
     JOB_APPLICATION = "job_application"
@@ -772,6 +774,7 @@ class Phase4Runner:
         accepted_decisions: Optional[set[str]] = None,
         max_records: int = 25,
     ) -> List[ProposalPackage]:
+        require_phase2_to5_generation_authorized(self.project_root, "Phase 4")
         accepted = accepted_decisions or {"proceed_to_phase_4", "proceed_to_phase_4_with_caution"}
         self.ledger.record(
             "phase4_run_start",

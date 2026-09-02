@@ -1,0 +1,48 @@
+{
+  "contract_id": "AIGC-PHASE2-TO5-CYCLE-POLICY-001",
+  "contract_version": "1.0.0",
+  "status": "ACTIVE_READ_ONLY_HOLD",
+  "active_hold": {
+    "enabled": true,
+    "phase4_input_review_mode": "read_only",
+    "phase5_input_review_mode": "read_only_archived_expired_packets",
+    "automatic_regeneration_allowed": false,
+    "maximum_scoped_internal_improvement_proposals": 1,
+    "external_contact_allowed": false,
+    "production_locked": true
+  },
+  "authorized_native_cycle": {
+    "workflow_file": ".github/workflows/aigc_phase2_to5_review.yml",
+    "event_name": "workflow_dispatch",
+    "operator_authorization_phrase": "AUTHORIZE AIGC PHASE 2 TO 5 REVIEW CYCLE",
+    "review_only": true,
+    "requires_accountable_operator_review": true,
+    "run_receipts_immutable": true,
+    "repository_write_authority": false
+  },
+  "phase6": {
+    "execution_mode": "manual_handoff",
+    "fresh_exact_unexpired_acceptance_required": true,
+    "manual_confirmation_required_before_phase7": true
+  },
+  "connector_and_production_boundary": {
+    "connectors_enabled": false,
+    "production_deployment_authorized": false,
+    "secret_access_authorized": false
+  },
+  "next_cycle_strategy": [
+    "Perform a read-only review of existing Phase 4 proposal inputs and archived Phase 5 authorization packets; do not regenerate, revise, or accept a packet.",
+    "Prepare exactly one scoped internal improvement proposal limited to a non-mutating Phase 4/5 packet-review summary; do not apply it or expand its scope.",
+    "Keep Phase 6 in manual_handoff mode and keep production locked.",
+    "Do not contact anyone, submit anything, or initiate a new native workflow run without explicit operator authorization.",
+    "After a separately authorized native workflow run, require a freshly generated, unexpired Phase 5 packet and its exact acceptance before any Phase 6 manual handoff."
+  ],
+  "scoped_internal_improvement_proposal": {
+    "proposal_id": "AIGC-NEXT-CYCLE-IMPROVEMENT-001",
+    "status": "proposed_internal_only",
+    "scope": "Produce a non-mutating summary of Phase 4 inputs and archived Phase 5 packet expiry states.",
+    "apply_authorized": false,
+    "external_action_performed": false
+  },
+  "external_action_performed": false
+}
