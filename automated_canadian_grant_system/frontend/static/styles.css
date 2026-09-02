@@ -55,10 +55,23 @@ form {
   gap: 1rem;
 }
 
+fieldset {
+  border: 1px solid #9eaea4;
+  border-radius: 0.4rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
 label {
   display: grid;
   font-weight: 600;
   gap: 0.4rem;
+}
+
+.checkbox-label {
+  align-items: center;
+  display: flex;
+  font-weight: 400;
 }
 
 input,

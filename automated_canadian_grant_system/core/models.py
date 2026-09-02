@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import date
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -53,6 +54,7 @@ class TruthfulnessPolicy(StrictModel):
     operator_attestation_required_for_business_identity: Literal[True]
     program_eligibility_requires_official_guideline_review: Literal[True]
     winning_historical_corpus_requires_rights_review: Literal[True]
+    source_review_max_age_days: int = Field(ge=1, le=365)
 
 
 class ExternalActionPolicy(StrictModel):
@@ -86,7 +88,7 @@ class ConstitutionalPolicy(StrictModel):
     external_action_performed: Literal[False]
 
 
-class GrantEligibilityCriteria(StrictModel):
+class GrantCriteriaFields(StrictModel):
     eligible_regions: list[str] = Field(default_factory=list, max_length=30)
     min_trl: int | None = Field(default=None, ge=1, le=9)
     max_trl: int | None = Field(default=None, ge=1, le=9)
@@ -100,6 +102,9 @@ class GrantEligibilityCriteria(StrictModel):
         ge=0,
         le=1,
     )
+
+
+class GrantEligibilityCriteria(GrantCriteriaFields):
     source_verification_status: Literal["operator_review_required"] = (
         "operator_review_required"
     )
@@ -128,6 +133,32 @@ class GrantDraftPayloadTemplate(StrictModel):
     required_operator_inputs: list[str] = Field(min_length=1, max_length=30)
     local_draft_only: Literal[True]
     external_action_performed: Literal[False]
+
+
+class OperatorAttestedGrantCriteria(GrantCriteriaFields):
+    eligibility_criteria_summary: str = Field(min_length=1, max_length=10_000)
+    financial_criteria_summary: str = Field(min_length=1, max_length=10_000)
+    eligible_regions: list[str] = Field(min_length=1, max_length=30)
+    source_verification_status: Literal["operator_attested_reviewed"] = (
+        "operator_attested_reviewed"
+    )
+
+
+class OperatorReviewRequest(StrictModel):
+    expected_revision: int = Field(ge=1)
+    decision: Literal["approve_local_export", "return_for_revision"]
+    operator_role: Literal["ACCOUNTABLE_OPERATOR"]
+    program_name: str = Field(min_length=1, max_length=500)
+    source_guideline_url: str = Field(pattern=r"^https://", max_length=2000)
+    source_version: str = Field(min_length=1, max_length=500)
+    source_reviewed_at: date
+    operator_attested_criteria: OperatorAttestedGrantCriteria
+    source_evidence_references: list[str] = Field(min_length=1, max_length=50)
+    budget_evidence_references: list[str] = Field(min_length=1, max_length=50)
+    review_notes: str = Field(default="", max_length=10_000)
+    operator_attests_current_source: Literal[True]
+    operator_attests_evidence_complete: Literal[True]
+    ai_use_disclosure_acknowledged: Literal[True]
 
 
 class ProjectDetails(StrictModel):

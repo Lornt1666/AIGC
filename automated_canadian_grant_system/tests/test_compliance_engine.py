@@ -22,6 +22,7 @@ from automated_canadian_grant_system.core.vector_retrieval import (
 from automated_canadian_grant_system.frontend.app import create_app
 from automated_canadian_grant_system.tests.test_grant_pipeline import (
     application_payload,
+    operator_review_payload,
 )
 
 
@@ -57,8 +58,10 @@ def test_unreviewed_retrieval_material_is_not_indexed() -> None:
         )
 
 
-def test_api_exposes_drafts_and_blocks_ingestion_and_submission() -> None:
-    client = TestClient(create_app())
+def test_api_exposes_drafts_and_blocks_ingestion_and_submission(tmp_path) -> None:
+    client = TestClient(
+        create_app(database_path=tmp_path / "acgs-local.sqlite3")
+    )
 
     root = client.get("/")
     assert root.status_code == 200
@@ -82,6 +85,28 @@ def test_api_exposes_drafts_and_blocks_ingestion_and_submission() -> None:
     assert generated.status_code == 200, generated.text
     generated_body = generated.json()
     assert generated_body["external_action_performed"] is False
+    application_id = generated_body["application_id"]
+    persisted = client.get(f"/api/applications/{application_id}")
+    assert persisted.status_code == 200, persisted.text
+    assert persisted.json()["revision"] == 1
+
+    blocked_export = client.get(f"/api/applications/{application_id}/export")
+    assert blocked_export.status_code == 409
+
+    review = client.post(
+        f"/api/applications/{application_id}/review",
+        json=operator_review_payload(),
+    )
+    assert review.status_code == 200, review.text
+    assert review.json()["lifecycle_state"] == "LOCAL_EXPORT_APPROVED"
+
+    export = client.get(f"/api/applications/{application_id}/export")
+    assert export.status_code == 200, export.text
+    assert export.json()["export_type"] == "ACGS_LOCAL_REVIEW_ARTIFACT"
+    assert (
+        export.json()["submission"]["status"]
+        == "BLOCKED_PENDING_PHASE5_APPROVAL"
+    )
 
     ingestion = client.post("/api/ingestion/alberta_innovates")
     assert ingestion.status_code == 409
@@ -89,7 +114,7 @@ def test_api_exposes_drafts_and_blocks_ingestion_and_submission() -> None:
 
     submission = client.post(
         "/api/submit_application",
-        json={"application_id": generated_body["application_id"]},
+        json={"application_id": application_id},
     )
     assert submission.status_code == 409
     assert (

@@ -25,11 +25,18 @@ from automated_canadian_grant_system.core.constitutional_guardrails import (
     load_prompt_module_ids,
     require_live_ingestion_blocked,
     submission_boundary,
+    validate_operator_review,
     validate_request,
 )
-from automated_canadian_grant_system.core.models import GrantApplicationRequest
+from automated_canadian_grant_system.core.models import (
+    GrantApplicationRequest,
+    OperatorReviewRequest,
+)
 from automated_canadian_grant_system.core.vector_retrieval import (
     LocalGrantRetriever,
+)
+from automated_canadian_grant_system.database.storage import (
+    LocalGrantApplicationStore,
 )
 
 
@@ -43,7 +50,11 @@ DRAFT_TEMPLATE_FILENAMES = {
 class GrantOrchestrator:
     """Coordinates local draft agents while keeping all external paths blocked."""
 
-    def __init__(self, project_root: Path | None = None) -> None:
+    def __init__(
+        self,
+        project_root: Path | None = None,
+        database_path: Path | None = None,
+    ) -> None:
         self.project_root = (project_root or PACKAGE_ROOT).resolve()
         config = self.project_root / "config"
         self.identity = load_business_identity(config / "business_identity.json")
@@ -59,6 +70,10 @@ class GrantOrchestrator:
         self.writer = RhetoricalWriter()
         self.financial_auditor = FinancialAuditor()
         self.red_team = RedTeamVerifier()
+        self.store = LocalGrantApplicationStore(
+            database_path
+            or self.project_root / "database" / "acgs_local.sqlite3"
+        )
 
     def identity_payload(self) -> dict[str, Any]:
         return self.identity.model_dump()
@@ -135,7 +150,12 @@ class GrantOrchestrator:
             financial,
             draft,
         )
-        return {
+        portal = next(
+            portal
+            for portal in self.catalog.portals
+            if portal.portal_id == request.grant.portal_id
+        )
+        package = {
             "application_id": f"acgs_{uuid4().hex}",
             "status": "AUDITED_REVIEW_REQUIRED",
             "lifecycle": [
@@ -150,9 +170,51 @@ class GrantOrchestrator:
             "draft": draft,
             "financial_review": financial,
             "red_team_audit": audit,
+            "source_attribution": {
+                "portal_id": portal.portal_id,
+                "portal_organization": portal.organization,
+                "official_portal_url": portal.official_portal_url,
+                "provided_guideline_url": request.grant.guideline_url,
+                "source_verification_status": (
+                    request.grant.eligibility.source_verification_status
+                ),
+                "source_fetched_by_acgs": False,
+                "current_program_confirmation_required": True,
+            },
+            "ai_use_disclosure": draft["ai_use_disclosure"],
             "submission": submission_boundary(self.policy),
             "external_action_performed": False,
         }
+        record = self.store.create_application(package)
+        return {
+            **package,
+            "persistence": self._record_summary(record),
+        }
+
+    def get_application(self, application_id: str) -> dict[str, Any]:
+        return self.store.get_application(application_id)
+
+    def review_application(
+        self,
+        application_id: str,
+        review: OperatorReviewRequest,
+    ) -> dict[str, Any]:
+        record = self.store.get_application(application_id)
+        reviewed_financial_findings = validate_operator_review(
+            self.policy,
+            self.catalog,
+            record["package"],
+            review,
+        )
+        return self.store.record_operator_review(
+            application_id,
+            expected_revision=review.expected_revision,
+            review=review.model_dump(mode="json"),
+            reviewed_financial_findings=reviewed_financial_findings,
+        )
+
+    def local_export(self, application_id: str) -> dict[str, Any]:
+        return self.store.local_export(application_id)
 
     def request_live_ingestion(self, portal_id: str) -> None:
         require_live_ingestion_blocked(
@@ -160,3 +222,17 @@ class GrantOrchestrator:
             self.catalog,
             portal_id,
         )
+
+    @staticmethod
+    def _record_summary(record: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "application_id": record["application_id"],
+            "lifecycle_state": record["lifecycle_state"],
+            "revision": record["revision"],
+            "created_at": record["created_at"],
+            "updated_at": record["updated_at"],
+            "external_submission_performed": (
+                record["external_submission_performed"]
+            ),
+            "external_action_performed": False,
+        }

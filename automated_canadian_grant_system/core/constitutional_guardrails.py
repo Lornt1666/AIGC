@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import json
+import re
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 from pydantic import ValidationError
 
@@ -10,9 +13,12 @@ from automated_canadian_grant_system.core.models import (
     BusinessIdentity,
     ConstitutionalPolicy,
     GrantApplicationRequest,
+    GrantCriteriaFields,
     GrantDraftPayloadTemplate,
     GrantPortalCatalog,
+    OperatorReviewRequest,
 )
+from src.security.redactor import Redactor
 
 
 REQUIRED_PROMPT_MODULE_IDS = {
@@ -107,12 +113,26 @@ def validate_request(
     request: GrantApplicationRequest,
     catalog: GrantPortalCatalog,
 ) -> None:
-    if request.grant.portal_id not in {
-        portal.portal_id for portal in catalog.portals
-    }:
+    portal = _portal_for_id(catalog, request.grant.portal_id)
+    if portal is None:
         raise ACGSGuardrailError(
             "The selected grant portal is not registered in the local catalog."
         )
+    _validate_portal_url(
+        request.grant.guideline_url,
+        portal.official_portal_url,
+        "Grant guideline URL",
+    )
+    _reject_secret_like_text(
+        "grant and project input",
+        [
+            request.grant.grant_name,
+            request.grant.summary,
+            request.project.project_title,
+            request.project.project_summary,
+            *request.project.evidence_references,
+        ],
+    )
     criteria = request.grant.eligibility
     if (
         criteria.min_trl is not None
@@ -130,9 +150,22 @@ def validate_request(
         )
 
 
-def financial_findings(request: GrantApplicationRequest) -> list[dict[str, str]]:
-    criteria = request.grant.eligibility
-    project = request.project
+def financial_findings(
+    request: GrantApplicationRequest,
+    criteria: GrantCriteriaFields | None = None,
+) -> list[dict[str, str]]:
+    return financial_findings_for_values(
+        request.project.requested_funding_cad,
+        request.project.matching_contribution_cad,
+        criteria or request.grant.eligibility,
+    )
+
+
+def financial_findings_for_values(
+    requested_funding_cad: float,
+    matching_contribution_cad: float,
+    criteria: GrantCriteriaFields,
+) -> list[dict[str, str]]:
     findings: list[dict[str, str]] = []
     if criteria.funding_ceiling_cad is None:
         findings.append(
@@ -142,7 +175,7 @@ def financial_findings(request: GrantApplicationRequest) -> list[dict[str, str]]
                 "No funding ceiling was supplied from an official guideline.",
             )
         )
-    elif project.requested_funding_cad > criteria.funding_ceiling_cad:
+    elif requested_funding_cad > criteria.funding_ceiling_cad:
         findings.append(
             _finding(
                 "FUNDING_CEILING_EXCEEDED",
@@ -159,10 +192,8 @@ def financial_findings(request: GrantApplicationRequest) -> list[dict[str, str]]
             )
         )
     else:
-        required = (
-            project.requested_funding_cad * criteria.required_matching_ratio
-        )
-        if project.matching_contribution_cad + 1e-9 < required:
+        required = requested_funding_cad * criteria.required_matching_ratio
+        if matching_contribution_cad + 1e-9 < required:
             findings.append(
                 _finding(
                     "MATCHING_CONTRIBUTION_INSUFFICIENT",
@@ -178,6 +209,101 @@ def financial_findings(request: GrantApplicationRequest) -> list[dict[str, str]]
         )
     )
     return findings
+
+
+def validate_operator_review(
+    policy: ConstitutionalPolicy,
+    catalog: GrantPortalCatalog,
+    package: dict[str, Any],
+    review: OperatorReviewRequest,
+    *,
+    now: datetime | None = None,
+) -> list[dict[str, str]]:
+    source = package.get("source_attribution")
+    financial = package.get("financial_review")
+    draft = package.get("draft")
+    audit = package.get("red_team_audit")
+    if not isinstance(source, dict) or not isinstance(financial, dict):
+        raise ACGSGuardrailError(
+            "Persisted application package is missing source or financial data."
+        )
+    if not isinstance(draft, dict) or not isinstance(audit, dict):
+        raise ACGSGuardrailError(
+            "Persisted application package is missing required review artifacts."
+        )
+    criteria = review.operator_attested_criteria
+    if (
+        criteria.min_trl is not None
+        and criteria.max_trl is not None
+        and criteria.min_trl > criteria.max_trl
+    ):
+        raise ACGSGuardrailError("Reviewed minimum TRL cannot exceed maximum TRL.")
+    if (
+        criteria.min_headcount is not None
+        and criteria.max_headcount is not None
+        and criteria.min_headcount > criteria.max_headcount
+    ):
+        raise ACGSGuardrailError(
+            "Reviewed minimum headcount cannot exceed maximum headcount."
+        )
+    portal_id = str(source.get("portal_id", ""))
+    portal = _portal_for_id(catalog, portal_id)
+    if portal is None:
+        raise ACGSGuardrailError(
+            "Persisted application package references an unknown grant portal."
+        )
+    _validate_portal_url(
+        review.source_guideline_url,
+        portal.official_portal_url,
+        "Reviewed source guideline URL",
+    )
+    _reject_secret_like_text(
+        "operator review",
+        [
+            review.program_name,
+            review.source_version,
+            review.operator_attested_criteria.eligibility_criteria_summary,
+            review.operator_attested_criteria.financial_criteria_summary,
+            review.review_notes,
+            *review.source_evidence_references,
+            *review.budget_evidence_references,
+        ],
+    )
+    current_date = (now or datetime.now(timezone.utc)).date()
+    if review.source_reviewed_at > current_date:
+        raise ACGSGuardrailError(
+            "Reviewed source date cannot be in the future."
+        )
+    age_days = (current_date - review.source_reviewed_at).days
+    if age_days > policy.truthfulness.source_review_max_age_days:
+        raise ACGSGuardrailError(
+            "Reviewed source is stale and must be reviewed again before local export."
+        )
+    _validate_evidence_references(
+        review.source_evidence_references,
+        "source evidence reference",
+    )
+    _validate_evidence_references(
+        review.budget_evidence_references,
+        "budget evidence reference",
+    )
+    if review.source_guideline_url not in review.source_evidence_references:
+        raise ACGSGuardrailError(
+            "Source evidence must include the reviewed source guideline URL."
+        )
+    if not str(draft.get("ai_use_disclosure", "")).strip():
+        raise ACGSGuardrailError(
+            "Local export requires the AI-use disclosure in the draft package."
+        )
+
+    reviewed_findings = financial_findings_for_values(
+        float(financial.get("requested_funding_cad", 0)),
+        float(financial.get("matching_contribution_cad", 0)),
+        criteria,
+    )
+    if review.decision == "approve_local_export":
+        _validate_local_export_approval(package, reviewed_findings)
+    return reviewed_findings
 
 
 def require_live_ingestion_blocked(
@@ -219,6 +345,113 @@ def submission_boundary(policy: ConstitutionalPolicy) -> dict[str, Any]:
         "external_submission_performed": False,
         "credential_use_performed": False,
     }
+
+
+def _validate_local_export_approval(
+    package: dict[str, Any],
+    reviewed_financial_findings: list[dict[str, str]],
+) -> None:
+    research = package.get("research")
+    if isinstance(research, dict) and (
+        research.get("eligibility_determination")
+        == "INELIGIBLE_BY_SUPPLIED_CRITERIA"
+    ):
+        raise ACGSGuardrailError(
+            "Local export cannot be approved while supplied eligibility criteria mismatch."
+        )
+    red_team = package.get("red_team_audit")
+    if isinstance(red_team, dict):
+        unsupported_claims = [
+            str(finding.get("code", ""))
+            for finding in red_team.get("findings", [])
+            if isinstance(finding, dict)
+            and str(finding.get("code", "")).startswith("UNSUPPORTED_")
+        ]
+        if unsupported_claims:
+            raise ACGSGuardrailError(
+                "Local export cannot be approved with unsupported claims: "
+                + ", ".join(sorted(unsupported_claims))
+            )
+    blockers = [
+        str(finding.get("code", ""))
+        for finding in reviewed_financial_findings
+        if finding.get("severity") == "blocking"
+    ]
+    if blockers:
+        raise ACGSGuardrailError(
+            "Local export cannot be approved with blocking financial findings: "
+            + ", ".join(sorted(blockers))
+        )
+
+
+def _portal_for_id(
+    catalog: GrantPortalCatalog,
+    portal_id: str,
+) -> Any | None:
+    return next(
+        (
+            portal
+            for portal in catalog.portals
+            if portal.portal_id == portal_id
+        ),
+        None,
+    )
+
+
+def _validate_portal_url(
+    value: str,
+    official_portal_url: str,
+    label: str,
+) -> None:
+    parsed = _parse_safe_https_url(value, label)
+    expected = _parse_safe_https_url(official_portal_url, "Catalog portal URL")
+    if parsed.netloc.lower() != expected.netloc.lower():
+        raise ACGSGuardrailError(
+            f"{label} must use the registered official portal host."
+        )
+
+
+def _validate_evidence_references(
+    references: list[str],
+    label: str,
+) -> None:
+    for reference in references:
+        _reject_secret_like_text(label, [reference])
+        if reference.startswith("https://"):
+            _parse_safe_https_url(reference, label)
+        elif reference.startswith("operator-record://"):
+            identifier = reference.removeprefix("operator-record://")
+            if not re.fullmatch(r"[A-Za-z0-9._/-]{1,300}", identifier):
+                raise ACGSGuardrailError(
+                    f"{label} has an invalid operator-record identifier."
+                )
+        elif not re.fullmatch(r"sha256:[a-f0-9]{64}", reference):
+            raise ACGSGuardrailError(
+                f"{label} must be an HTTPS URL, operator-record reference, or SHA-256 digest."
+            )
+
+
+def _parse_safe_https_url(value: str, label: str) -> Any:
+    parsed = urlsplit(value)
+    if (
+        parsed.scheme != "https"
+        or not parsed.netloc
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.query
+    ):
+        raise ACGSGuardrailError(
+            f"{label} must be an HTTPS URL without credentials or query parameters."
+        )
+    return parsed
+
+
+def _reject_secret_like_text(label: str, values: list[str]) -> None:
+    scanner = Redactor()
+    if any(scanner.scan_for_secret_like_content(value) for value in values):
+        raise ACGSGuardrailError(
+            f"{label} contains secret-like material and cannot be stored."
+        )
 
 
 def _load_model(path: Path, model_type: type[Any]) -> Any:

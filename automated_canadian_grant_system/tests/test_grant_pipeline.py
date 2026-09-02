@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import date
+
 from automated_canadian_grant_system.core.models import (
     GrantApplicationRequest,
 )
@@ -46,8 +48,57 @@ def application_payload(**overrides: object) -> dict:
     return payload
 
 
-def test_pipeline_generates_a_reviewable_local_draft() -> None:
-    orchestrator = GrantOrchestrator()
+def operator_review_payload(
+    expected_revision: int = 1,
+    **overrides: object,
+) -> dict:
+    source_url = "https://albertainnovates.ca/funding/reviewed-program"
+    payload: dict[str, object] = {
+        "expected_revision": expected_revision,
+        "decision": "approve_local_export",
+        "operator_role": "ACCOUNTABLE_OPERATOR",
+        "program_name": "Operator-reviewed Alberta funding opportunity",
+        "source_guideline_url": source_url,
+        "source_version": "operator-record-2026-09",
+        "source_reviewed_at": date.today().isoformat(),
+        "operator_attested_criteria": {
+            "eligibility_criteria_summary": (
+                "Operator reviewed the applicable official eligibility criteria."
+            ),
+            "financial_criteria_summary": (
+                "Operator reviewed the applicable funding and matching criteria."
+            ),
+            "eligible_regions": ["Alberta"],
+            "min_trl": 6,
+            "max_trl": 7,
+            "min_headcount": 1,
+            "max_headcount": 10,
+            "requires_ccpc": True,
+            "minimum_annual_rd_spend_cad": 100000,
+            "funding_ceiling_cad": 100000,
+            "required_matching_ratio": 0.5,
+            "source_verification_status": "operator_attested_reviewed",
+        },
+        "source_evidence_references": [
+            source_url,
+            "operator-record://alberta-source-review-2026-09",
+        ],
+        "budget_evidence_references": [
+            "operator-record://budget-2026-09",
+            "sha256:" + "a" * 64,
+        ],
+        "operator_attests_current_source": True,
+        "operator_attests_evidence_complete": True,
+        "ai_use_disclosure_acknowledged": True,
+    }
+    payload.update(overrides)
+    return payload
+
+
+def test_pipeline_generates_a_reviewable_local_draft(tmp_path) -> None:
+    orchestrator = GrantOrchestrator(
+        database_path=tmp_path / "acgs-local.sqlite3"
+    )
     package = orchestrator.generate(
         GrantApplicationRequest.model_validate(application_payload())
     )
@@ -74,15 +125,19 @@ def test_pipeline_generates_a_reviewable_local_draft() -> None:
         == "BLOCKED_PENDING_PHASE5_APPROVAL"
     )
     assert package["external_action_performed"] is False
+    assert package["persistence"]["revision"] == 1
+    assert package["persistence"]["lifecycle_state"] == "AUDITED_REVIEW_REQUIRED"
 
 
-def test_pipeline_flags_a_funding_ceiling_and_matching_shortfall() -> None:
+def test_pipeline_flags_a_funding_ceiling_and_matching_shortfall(tmp_path) -> None:
     payload = application_payload()
     project = dict(payload["project"])
     project["requested_funding_cad"] = 100001
     project["matching_contribution_cad"] = 0
     payload["project"] = project
-    package = GrantOrchestrator().generate(
+    package = GrantOrchestrator(
+        database_path=tmp_path / "acgs-local.sqlite3"
+    ).generate(
         GrantApplicationRequest.model_validate(payload)
     )
 

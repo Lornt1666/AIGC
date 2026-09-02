@@ -31,6 +31,24 @@ GET /api/draft-payloads/nrc_irap
 
 They are local source-attribution templates, not fetched program data. Each template identifies its official portal, declares that the source was not fetched or verified, and requires an operator to supply current program-specific information. NRC IRAP is a federal reference; its presence does not configure a live connector or determine eligibility.
 
+## Local review and export
+
+Generated drafts are persisted in local SQLite with a digest-only, append-only audit trail. Each audit event records source-attribution metadata and whether the AI-use disclosure is present; it does not copy draft text or evidence-reference contents into the audit record.
+
+An accountable operator can record a local review at:
+
+```text
+POST /api/applications/{application_id}/review
+```
+
+The review requires a current official-source URL on the registered portal host, source version, review date (no more than 30 days old), operator-attested criteria, source references, budget references, and AI-use-disclosure acknowledgement. `approve_local_export` permits only:
+
+```text
+GET /api/applications/{application_id}/export
+```
+
+The returned artifact is read-only and keeps `external_submission_performed: false`. It is not a Phase 5 approval, eligibility determination, connector activation, credential authorization, or submission permit.
+
 ## Tests
 
 ```bash

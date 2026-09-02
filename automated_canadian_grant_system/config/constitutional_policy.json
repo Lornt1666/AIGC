@@ -6,7 +6,8 @@
     "unsupported_financial_claims_blocked": true,
     "operator_attestation_required_for_business_identity": true,
     "program_eligibility_requires_official_guideline_review": true,
-    "winning_historical_corpus_requires_rights_review": true
+    "winning_historical_corpus_requires_rights_review": true,
+    "source_review_max_age_days": 30
   },
   "external_actions": {
     "live_portal_ingestion_enabled": false,

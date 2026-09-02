@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -22,9 +22,15 @@ from automated_canadian_grant_system.core.constitutional_guardrails import (  # 
 )
 from automated_canadian_grant_system.core.models import (  # noqa: E402
     GrantApplicationRequest,
+    OperatorReviewRequest,
 )
 from automated_canadian_grant_system.core.orchestrator import (  # noqa: E402
     GrantOrchestrator,
+)
+from automated_canadian_grant_system.database.storage import (  # noqa: E402
+    GrantApplicationConflict,
+    GrantApplicationNotFound,
+    GrantApplicationStateError,
 )
 
 
@@ -37,9 +43,12 @@ class SubmissionRequest(BaseModel):
     )
 
 
-def create_app(project_root: Path | None = None) -> FastAPI:
+def create_app(
+    project_root: Path | None = None,
+    database_path: Path | None = None,
+) -> FastAPI:
     root = (project_root or PACKAGE_ROOT).resolve()
-    service = GrantOrchestrator(root)
+    service = GrantOrchestrator(root, database_path)
     api = FastAPI(
         title="Automated Canadian Grant System (ACGS)",
         version="1.0.0-local",
@@ -109,6 +118,86 @@ def create_app(project_root: Path | None = None) -> FastAPI:
                     "external_action_performed": False,
                 },
             ) from exc
+
+    @api.get("/api/applications/{application_id}")
+    def get_application(application_id: str) -> dict[str, Any]:
+        try:
+            return service.get_application(application_id)
+        except GrantApplicationNotFound as exc:
+            raise HTTPException(
+                status_code=404,
+                detail={
+                    "code": "ACGS_APPLICATION_NOT_FOUND",
+                    "message": "Local application was not found.",
+                    "external_action_performed": False,
+                },
+            ) from exc
+
+    @api.post("/api/applications/{application_id}/review")
+    def review_application(
+        application_id: str,
+        payload: OperatorReviewRequest,
+    ) -> dict[str, Any]:
+        try:
+            return service.review_application(application_id, payload)
+        except GrantApplicationNotFound as exc:
+            raise HTTPException(
+                status_code=404,
+                detail={
+                    "code": "ACGS_APPLICATION_NOT_FOUND",
+                    "message": "Local application was not found.",
+                    "external_action_performed": False,
+                },
+            ) from exc
+        except (GrantApplicationConflict, GrantApplicationStateError) as exc:
+            raise HTTPException(
+                status_code=409,
+                detail={
+                    "code": "ACGS_REVIEW_STATE_CONFLICT",
+                    "message": str(exc),
+                    "external_action_performed": False,
+                },
+            ) from exc
+        except ACGSGuardrailError as exc:
+            raise HTTPException(
+                status_code=400,
+                detail={
+                    "code": "ACGS_REVIEW_GUARDRAIL_BLOCKED",
+                    "message": str(exc),
+                    "external_action_performed": False,
+                },
+            ) from exc
+
+    @api.get("/api/applications/{application_id}/export")
+    def local_export(application_id: str) -> JSONResponse:
+        try:
+            artifact = service.local_export(application_id)
+        except GrantApplicationNotFound as exc:
+            raise HTTPException(
+                status_code=404,
+                detail={
+                    "code": "ACGS_APPLICATION_NOT_FOUND",
+                    "message": "Local application was not found.",
+                    "external_action_performed": False,
+                },
+            ) from exc
+        except GrantApplicationStateError as exc:
+            raise HTTPException(
+                status_code=409,
+                detail={
+                    "code": "ACGS_LOCAL_EXPORT_BLOCKED",
+                    "message": str(exc),
+                    "external_action_performed": False,
+                },
+            ) from exc
+        return JSONResponse(
+            content=artifact,
+            headers={
+                "Content-Disposition": (
+                    f'inline; filename="{application_id}-local-review.json"'
+                )
+            },
+        )
 
     @api.post("/api/ingestion/{portal_id}")
     def request_ingestion(portal_id: str) -> dict[str, Any]:
