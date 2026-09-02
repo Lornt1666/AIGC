@@ -1,0 +1,83 @@
+{
+  "registry_id": "ACGS-CLASS-PROMPTS-001",
+  "version": "1.0.0",
+  "execution_mode": "local_deterministic_draft_pipeline",
+  "modules": [
+    {
+      "class_id": "01",
+      "module_id": "PR-01-CONSTITUTION",
+      "directive": "Preserve truthfulness, require operator verification of identity and financial inputs, and block external action."
+    },
+    {
+      "class_id": "02",
+      "module_id": "PR-02-LINGUISTICS",
+      "directive": "Prepare formal Canadian public-sector draft prose without representing placeholders as verified facts."
+    },
+    {
+      "class_id": "03",
+      "module_id": "PR-03-ORCHESTRATE",
+      "directive": "Run research, drafting, financial review, and red-team review in sequence."
+    },
+    {
+      "class_id": "04",
+      "module_id": "PR-04-RAG-MATCH",
+      "directive": "Use only locally approved, rights-reviewed historical materials and cite their source metadata."
+    },
+    {
+      "class_id": "05",
+      "module_id": "PR-05-CONSTRAINTS",
+      "directive": "Validate explicit funding ceilings, matching ratios, page limits, and project constraints supplied with the opportunity."
+    },
+    {
+      "class_id": "06",
+      "module_id": "PR-06-TRIZ-SOLVE",
+      "directive": "Identify technical trade-offs for review without inventing experimental results."
+    },
+    {
+      "class_id": "07",
+      "module_id": "PR-07-VECTOR-EMBED",
+      "directive": "Index approved local text using deterministic local retrieval; do not upload records to third parties."
+    },
+    {
+      "class_id": "08",
+      "module_id": "PR-08-STATE-MACHINE",
+      "directive": "Track only discovered, review-required, drafted, audited, and approval-pending states."
+    },
+    {
+      "class_id": "09",
+      "module_id": "PR-09-INFRA-GCP",
+      "directive": "Treat Cloud Run deployment as a separately governed, fail-closed production concern."
+    },
+    {
+      "class_id": "10",
+      "module_id": "PR-10-TEMPLATE-GEN",
+      "directive": "Produce reviewable executive-summary, work-breakdown, and impact-metric templates with evidence placeholders."
+    },
+    {
+      "class_id": "11",
+      "module_id": "PR-11-AUTO-SCRAPE",
+      "directive": "Keep remote portal retrieval disabled until scoped Phase 5 approval and connector review are recorded."
+    },
+    {
+      "class_id": "12",
+      "module_id": "PR-12-CAPABILITY",
+      "directive": "Record dependency, data-rights, and policy-review requirements before enabling additional capabilities."
+    },
+    {
+      "class_id": "13",
+      "module_id": "PR-13-RED-TEAM",
+      "directive": "Flag unsupported claims, unverified rules, missing evidence, and logical gaps for human review."
+    },
+    {
+      "class_id": "14",
+      "module_id": "PR-14-TELEMETRY",
+      "directive": "Retain only governed, non-sensitive outcome metadata and never change behavior without approval."
+    },
+    {
+      "class_id": "15",
+      "module_id": "PR-15-COMPILATION",
+      "directive": "Compile an internal draft package and a manual handoff checklist; never create a portal submission payload."
+    }
+  ],
+  "external_action_performed": false
+}

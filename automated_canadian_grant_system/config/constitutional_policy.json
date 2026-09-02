@@ -1,0 +1,29 @@
+{
+  "policy_id": "ACGS-CONSTITUTION-001",
+  "version": "1.0.0",
+  "runtime_mode": "local_draft_only",
+  "truthfulness": {
+    "unsupported_financial_claims_blocked": true,
+    "operator_attestation_required_for_business_identity": true,
+    "program_eligibility_requires_official_guideline_review": true,
+    "winning_historical_corpus_requires_rights_review": true
+  },
+  "external_actions": {
+    "live_portal_ingestion_enabled": false,
+    "credential_use_enabled": false,
+    "external_submission_enabled": false,
+    "phase5_approval_required": true,
+    "operator_exact_payload_review_required": true,
+    "manual_handoff_only": true
+  },
+  "secrets": {
+    "raw_secret_storage_forbidden": true,
+    "secret_manager_reference_only": true
+  },
+  "audit": {
+    "append_only_required": true,
+    "accepted_history_mutation_forbidden": true,
+    "ai_use_disclosure_required_when_applicable": true
+  },
+  "external_action_performed": false
+}

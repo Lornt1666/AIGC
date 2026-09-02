@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ACGS — Local Draft Portal</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Automated Canadian Grant System</p>
+        <h1>Grant application draft workspace</h1>
+        <p id="mode">Loading governed local mode…</p>
+      </header>
+
+      <section aria-labelledby="identity-heading">
+        <h2 id="identity-heading">Working business profile</h2>
+        <dl id="identity"></dl>
+      </section>
+
+      <section aria-labelledby="portal-heading">
+        <h2 id="portal-heading">Configured grant portals</h2>
+        <p id="portal-recommendation"></p>
+        <ul id="portals"></ul>
+      </section>
+
+      <section aria-labelledby="draft-heading">
+        <h2 id="draft-heading">Generate an internal draft</h2>
+        <p>All portal retrieval and submission are disabled. Enter only information you are authorized to use.</p>
+        <form id="draft-form">
+          <label>Portal
+            <select id="portal-id" name="portal_id" required></select>
+          </label>
+          <label>Grant or program name
+            <input id="grant-name" name="grant_name" maxlength="240" required>
+          </label>
+          <label>Project title
+            <input id="project-title" name="project_title" maxlength="240" required>
+          </label>
+          <label>Project summary
+            <textarea id="project-summary" name="project_summary" maxlength="5000" required></textarea>
+          </label>
+          <label>Requested funding (CAD)
+            <input id="requested-funding" name="requested_funding_cad" type="number" min="1" step="0.01" required>
+          </label>
+          <label>Applicant matching contribution (CAD)
+            <input id="matching-contribution" name="matching_contribution_cad" type="number" min="0" step="0.01" value="0">
+          </label>
+          <label>Funding ceiling from reviewed guideline (optional)
+            <input id="funding-ceiling" name="funding_ceiling_cad" type="number" min="1" step="0.01">
+          </label>
+          <label>Required matching ratio from reviewed guideline (optional)
+            <input id="matching-ratio" name="required_matching_ratio" type="number" min="0" max="1" step="0.01">
+          </label>
+          <button type="submit">Generate internal draft</button>
+        </form>
+      </section>
+
+      <section aria-labelledby="result-heading">
+        <h2 id="result-heading">Draft review</h2>
+        <pre id="result" aria-live="polite">No draft generated.</pre>
+      </section>
+    </main>
+    <script src="/static/app.js"></script>
+  </body>
+</html>
