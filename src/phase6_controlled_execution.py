@@ -17,6 +17,7 @@ from src.core.phase2_to5_cycle_policy import (
     load_phase2_to5_cycle_policy,
     packet_was_generated_by_authorized_native_cycle,
 )
+from src.security.redaction_scanner import RedactionScanner
 
 
 DEFAULT_MANUAL_CONFIRMATIONS_PATH = Path(
@@ -755,6 +756,10 @@ def sanitize_manual_completion_reference(value: str) -> str:
         raise ManualHandoffConfirmationError(
             "Manual completion reference must not contain a secret or credential."
         )
+    if RedactionScanner().scan_text(reference, "<manual_completion_reference>"):
+        raise ManualHandoffConfirmationError(
+            "Manual completion reference must not contain secret-like content."
+        )
     parsed = urlsplit(reference)
     if parsed.scheme and parsed.netloc:
         reference = urlunsplit((parsed.scheme, parsed.netloc, parsed.path, "", ""))
@@ -778,6 +783,9 @@ def manual_confirmation_matches_handoff(
         and confirmation.get("phase5_exact_acceptance_verified") is True
         and confirmation.get("authorization_was_unexpired_at_confirmation") is True
         and confirmation.get("phase7_handoff_ready") is True
+        and receipt.get("execution_mode") == ExecutionMode.MANUAL_HANDOFF.value
+        and receipt.get("status")
+        == ExecutionStatus.REQUIRES_MANUAL_COMPLETION.value
         and confirmation.get("execution_id") == receipt.get("execution_id")
         and confirmation.get("authorization_id") == authorization.get("authorization_id")
         and confirmation.get("action_id") == receipt.get("action_id") == authorization.get("action_id")

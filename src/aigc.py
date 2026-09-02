@@ -558,6 +558,21 @@ def command_authorization_decision(
     if target is None:
         print(f"Action ID not found: {args.action_id}")
         return 2
+    if target.get("decision") != "pending":
+        store.insert_event(
+            event_type="authorization_decision_rejected",
+            phase="phase5_human_approval_gate",
+            status="blocked",
+            summary=(
+                f"Rejected {decision} for action {args.action_id}; "
+                "authorization is no longer pending."
+            ),
+        )
+        print(
+            "Authorization is no longer pending. Existing approval history and "
+            "consumption state cannot be replaced."
+        )
+        return 2
     approval = target.setdefault("approval", {})
     if decision == "revise":
         expected_prefix = f"Revise action {args.action_id}:"
@@ -816,7 +831,7 @@ def utc_now() -> str:
 def authorization_expired(packet: Dict[str, Any]) -> bool:
     value = packet.get("expires_at", "")
     if not value:
-        return False
+        return True
     try:
         expires_at = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
     except ValueError:

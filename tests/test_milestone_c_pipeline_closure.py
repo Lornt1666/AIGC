@@ -18,7 +18,9 @@ from src.core.state_store import AIGCStateStore
 from src.phase6_controlled_execution import (
     ControlledExecutionEngine,
     HashTools,
+    ManualHandoffConfirmationError,
     record_manual_handoff_confirmation,
+    sanitize_manual_completion_reference,
 )
 from src.phase7_employer_audit_packet import EmployerAuditPacketBuilder
 
@@ -78,6 +80,11 @@ def test_manual_confirmation_consumes_handoff_and_enables_phase7(tmp_path: Path)
     assert len(packets) == 1
     assert packets[0].execution_summary.confirmation_id == confirmation["confirmation_id"]
     assert packets[0].linked_records.phase6_execution_id == receipt.execution_id
+
+
+def test_manual_confirmation_reference_rejects_secret_like_text() -> None:
+    with pytest.raises(ManualHandoffConfirmationError, match="secret"):
+        sanitize_manual_completion_reference("token=example-value")
 
 
 def test_cli_revise_updates_temp_authorization_only(tmp_path: Path) -> None:

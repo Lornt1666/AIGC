@@ -37,6 +37,11 @@ def test_active_cycle_policy_blocks_direct_phase2_to5_generation() -> None:
         require_phase2_to5_generation_authorized(ROOT, "Phase 4", environ={})
 
 
+def test_missing_cycle_policy_fails_closed_for_generation(tmp_path: Path) -> None:
+    with pytest.raises(Phase2To5CyclePolicyError, match="cycle policy is missing"):
+        require_phase2_to5_generation_authorized(tmp_path, "Phase 2", environ={})
+
+
 def test_native_review_context_is_the_only_generation_exception() -> None:
     policy = load_phase2_to5_cycle_policy(ROOT)
     environment = {

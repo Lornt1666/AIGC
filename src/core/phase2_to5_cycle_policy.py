@@ -120,7 +120,11 @@ def require_phase2_to5_generation_authorized(
     environ: Mapping[str, str] | None = None,
 ) -> None:
     policy = load_phase2_to5_cycle_policy(project_root)
-    if not policy or not _mapping(policy, "active_hold").get("enabled", False):
+    if not policy:
+        raise Phase2To5CyclePolicyError(
+            "Phase 2–5 generation is blocked because the durable cycle policy is missing."
+        )
+    if not _mapping(policy, "active_hold").get("enabled", False):
         return
     environment = environ if environ is not None else os.environ
     if native_cycle_is_authorized(policy, environment):
