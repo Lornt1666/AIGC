@@ -54,10 +54,10 @@ def test_stale_evidence_is_excluded():
         ("stale", "fresh"),
         evidence_reference="payment/1",
         expected_kind="payment",
-        observed_after="2090-01-01T00:00:00Z",
+        observed_after="2025-01-01T00:00:00Z",
     )
-    assert result.status == "ESCALATE"
-    assert result.selected_connector is None
+    assert result.status == "ACCEPT"
+    assert result.selected_connector == "fresh"
 
 
 def test_wrong_kind_is_excluded():
