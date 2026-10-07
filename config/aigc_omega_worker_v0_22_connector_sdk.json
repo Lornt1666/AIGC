@@ -1,0 +1,11 @@
+{
+  "version":"AIGC-OMEGA-CONNECTOR-SDK-0.22",
+  "adapter_mode":"READ_ONLY_EVIDENCE",
+  "capability_manifest_required":true,
+  "conformance_required":true,
+  "explicit_reference_required":true,
+  "provenance_required":true,
+  "external_writes":false,
+  "authority_expansion":false,
+  "synthetic_connector_only_for_v0_22":true
+}
