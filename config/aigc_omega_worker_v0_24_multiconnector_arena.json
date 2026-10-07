@@ -1,0 +1,11 @@
+{
+  "version":"AIGC-OMEGA-MULTI-CONNECTOR-ARENA-0.24",
+  "mode":"SYNTHETIC_ONLY",
+  "conflict_policy":"ESCALATE",
+  "stale_evidence_policy":"EXCLUDE",
+  "wrong_kind_policy":"EXCLUDE",
+  "tie_breaking":"lexicographic_only_after_consensus",
+  "truth_inference":false,
+  "external_writes":false,
+  "financial_authority":false
+}
