@@ -1,0 +1,30 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"1jgm://aigc-omega-worker/v0.1/trigger-iteration",
+  "title":"AIGC Omega Worker Trigger Iteration Contract",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["version","triggers","dispositions"],
+  "properties":{
+    "version":{"const":"AIGC-OMEGA-TRIGGER-0.1"},
+    "triggers":{
+      "type":"array",
+      "items":{
+        "type":"object",
+        "additionalProperties":false,
+        "required":["trigger","class","disposition","bounded"],
+        "properties":{
+          "trigger":{"type":"string","pattern":"^INT:[A-Z0-9_]+$"},
+          "class":{"enum":["control","reasoning","evidence","resource","quality","governance"]},
+          "disposition":{"enum":["CONTINUE","RECHECK","ABORT","WAIT","ESCALATE","BLOCK","OWNER_GATE","RECOVER","ROLLBACK","CANCEL","COMPLETE"]},
+          "bounded":{"const":true},
+          "state_machine_events":{"type":"array","items":{"type":"string"}}
+        }
+      }
+    },
+    "dispositions":{
+      "type":"array",
+      "items":{"enum":["CONTINUE","RECHECK","ABORT","WAIT","ESCALATE","BLOCK","OWNER_GATE","RECOVER","ROLLBACK","CANCEL","COMPLETE"]}
+    }
+  }
+}
