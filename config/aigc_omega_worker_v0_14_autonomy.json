@@ -1,0 +1,18 @@
+{
+  "version": "AIGC-OMEGA-AUTONOMY-0.14",
+  "enabled": true,
+  "emergency_stop": false,
+  "require_verification": true,
+  "max_actions": 10,
+  "allowed_actions": ["deliver"],
+  "authority_boundary": {
+    "requires_execution_permit": true,
+    "requires_explicit_contract_binding": true,
+    "no_credential_discovery": true,
+    "no_target_discovery": true,
+    "no_recipient_inference": true,
+    "no_permission_inference": true,
+    "no_financial_authority_inference": true,
+    "no_policy_bypass": true
+  }
+}
