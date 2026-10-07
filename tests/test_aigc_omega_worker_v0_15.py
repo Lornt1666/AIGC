@@ -16,9 +16,7 @@ from src.core.omega_worker_execution_orchestrator import (
 
 def strategy():
     return GladiatorStrategyContract(
-        contract_version="AIGC-OMEGA-STRATEGY-0.10",
         strategy_id="strategy-1",
-        task_id="task-1",
         opportunity_id="opp-1",
         gladiator_id="g-1",
         objective="deliver a permitted artifact",
@@ -31,18 +29,13 @@ def strategy():
 
 
 def metrics():
-    return StrategyProposalMetrics(
-        evidence_quality=90,
-        value_score=90,
-        risk_score=10,
-        cost_score=10,
-    )
+    return StrategyProposalMetrics(90, 90, 10, 10)
 
 
-def permit():
+def permit(contract_id="contract-1"):
     return ExecutionPermit(
         permit_id="permit-1",
-        contract_id="task-1",
+        contract_id=contract_id,
         authorized_action="deliver",
         approved_by="owner",
         policy_reference="policy-1",
@@ -56,14 +49,27 @@ def executor():
     )
 
 
-def verification():
+def verification(check=lambda: True):
     return {
         "verification_evidence": "delivery verified",
         "postcondition": Postcondition(
-            "condition-1", "task-1", "delivery is verified"
+            "condition-1", "contract-1", "delivery is verified"
         ),
-        "verification_check": lambda: True,
+        "verification_check": check,
     }
+
+
+def run(orchestrator, **kwargs):
+    return orchestrator.run(
+        strategy(),
+        metrics(),
+        owner_gate=True,
+        contract_id="contract-1",
+        action="deliver",
+        action_fn=lambda: None,
+        permit=permit(),
+        **kwargs,
+    )
 
 
 def test_end_to_end_owner_accepted_selection_executes_and_verifies():
@@ -74,12 +80,12 @@ def test_end_to_end_owner_accepted_selection_executes_and_verifies():
         strategy(),
         metrics(),
         owner_gate=True,
+        contract_id="contract-1",
         permit=permit(),
         action="deliver",
         action_fn=lambda: seen.append("ran"),
         **verification(),
     )
-
     assert seen == ["ran"]
     assert result.selection_status == "OWNER_ACCEPTED_SELECTION"
     assert result.execution_status == "VERIFIED"
@@ -95,12 +101,12 @@ def test_without_owner_gate_selection_does_not_execute():
         strategy(),
         metrics(),
         owner_gate=False,
+        contract_id="contract-1",
         permit=permit(),
         action="deliver",
         action_fn=lambda: seen.append("ran"),
         **verification(),
     )
-
     assert seen == []
     assert result.selection_status == "AWAITING_OWNER_GATE"
     assert result.execution_status == "NOT_EXECUTED"
@@ -115,6 +121,7 @@ def test_owner_accepted_selection_still_requires_permit():
             strategy(),
             metrics(),
             owner_gate=True,
+            contract_id="contract-1",
             permit=None,
             action="deliver",
             action_fn=lambda: None,
@@ -123,14 +130,6 @@ def test_owner_accepted_selection_still_requires_permit():
 
 
 def test_contract_binding_is_preserved():
-    bad_permit = ExecutionPermit(
-        permit_id="permit-1",
-        contract_id="wrong-task",
-        authorized_action="deliver",
-        approved_by="owner",
-        policy_reference="policy-1",
-        active=True,
-    )
     with pytest.raises(ExecutionOrchestrationDenied):
         GovernedExecutionOrchestrator(
             autonomous_executor=executor()
@@ -138,7 +137,8 @@ def test_contract_binding_is_preserved():
             strategy(),
             metrics(),
             owner_gate=True,
-            permit=bad_permit,
+            contract_id="contract-1",
+            permit=permit("wrong-contract"),
             action="deliver",
             action_fn=lambda: None,
             **verification(),
@@ -154,26 +154,36 @@ def test_failed_postcondition_blocks_completion():
             strategy(),
             metrics(),
             owner_gate=True,
+            contract_id="contract-1",
             permit=permit(),
             action="deliver",
             action_fn=lambda: seen.append("ran"),
-            verification_evidence="delivery checked",
-            postcondition=Postcondition(
-                "condition-1", "task-1", "delivery is verified"
-            ),
-            verification_check=lambda: False,
+            **verification(lambda: False),
         )
     assert seen == ["ran"]
 
 
 def test_no_autonomous_executor_means_no_execution_authority():
-    with pytest.raises(
-        ExecutionOrchestrationDenied, match="autonomous executor"
-    ):
+    with pytest.raises(ExecutionOrchestrationDenied, match="autonomous executor"):
         GovernedExecutionOrchestrator().run(
             strategy(),
             metrics(),
             owner_gate=True,
+            contract_id="contract-1",
+            permit=permit(),
+            action="deliver",
+            action_fn=lambda: None,
+            **verification(),
+        )
+
+
+def test_missing_contract_id_is_denied_before_selection():
+    with pytest.raises(ExecutionOrchestrationDenied, match="contract ID"):
+        GovernedExecutionOrchestrator(autonomous_executor=executor()).run(
+            strategy(),
+            metrics(),
+            owner_gate=True,
+            contract_id="",
             permit=permit(),
             action="deliver",
             action_fn=lambda: None,
