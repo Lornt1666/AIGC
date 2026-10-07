@@ -128,3 +128,68 @@ jobs:
           name: aigc-colosseum-orchestration-exact-head-${{ env.REQUESTED_REVISION }}
           path: ${{ runner.temp }}/aigc-ci-stage-results
           if-no-files-found: error
+  revalidate_locked_releases:
+    if: github.event_name == 'pull_request'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: v0-12
+            target_sha: 4af438408894c348ec766bfccc730b3a62a8f69d
+          - label: v0-13
+            target_sha: 119625b87bec93fb895d176023d47265eed8b9b9
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout locked target
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          ref: ${{ matrix.target_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify locked target identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          observed_head_sha="$(git rev-parse HEAD)"
+          if [ "$observed_head_sha" != "${{ matrix.target_sha }}" ]; then
+            echo "Locked-target admission failed." >&2
+            exit 1
+          fi
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e
+        with:
+          terraform_version: "1.10.5"
+          terraform_wrapper: false
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Run canonical validation against locked target
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/aigc-locked-${{ matrix.label }}"
+          tree_sha="$(git rev-parse 'HEAD^{tree}')"
+          python scripts/run_exact_sha_ci_contract.py \
+            --contract config/exact_sha_ci_validation_contract.json \
+            --project-root . \
+            --results-dir "$RUNNER_TEMP/aigc-locked-${{ matrix.label }}" \
+            --repository-revision "${{ matrix.target_sha }}" \
+            --tested-tree-sha "$tree_sha" \
+            --broker-revision "${{ matrix.target_sha }}" \
+            --run-number "$GITHUB_RUN_NUMBER" \
+            --run-id "$GITHUB_RUN_ID"
+
+      - name: Upload locked-target evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: aigc-locked-validation-${{ matrix.label }}-${{ matrix.target_sha }}
+          path: ${{ runner.temp }}/aigc-locked-${{ matrix.label }}
+          if-no-files-found: error
