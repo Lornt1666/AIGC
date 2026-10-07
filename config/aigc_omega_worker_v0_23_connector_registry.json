@@ -1,0 +1,12 @@
+{
+  "version":"AIGC-OMEGA-CONNECTOR-REGISTRY-0.23",
+  "admission":"explicit",
+  "routing":"read_only",
+  "duplicate_ids":"reject",
+  "unknown_connectors":"reject",
+  "evidence_reference":"required",
+  "provenance_ledger":"required",
+  "external_writes":false,
+  "authority_expansion":false,
+  "synthetic_only":true
+}
