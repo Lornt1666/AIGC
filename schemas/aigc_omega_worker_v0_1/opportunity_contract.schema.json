@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "1jgm://aigc-omega-worker/v0.1/opportunity-contract",
+  "title": "AIGC Omega Worker OpportunityContract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_version","opportunity_id","source","title","classification","commercial","fit","risk","decision"],
+  "properties": {
+    "contract_version":{"const":"AIGC-OMEGA-OPPORTUNITY-0.1"},
+    "opportunity_id":{"type":"string","minLength":1},
+    "source":{"type":"object","additionalProperties":false,"required":["kind","locator"],"properties":{"kind":{"type":"string"},"locator":{"type":"string"}}},
+    "title":{"type":"string","minLength":1},
+    "classification":{"type":"object","additionalProperties":false,"required":["domain","engagement_type","duration"],"properties":{"domain":{"type":"string"},"engagement_type":{"type":"string"},"duration":{"type":"string"}}},
+    "commercial":{"type":"object","additionalProperties":false,"required":["pay_structure","amount","currency"],"properties":{"pay_structure":{"type":"string"},"amount":{"type":["number","null"],"minimum":0},"currency":{"type":["string","null"]},"recurring_potential":{"type":"boolean"}}},
+    "fit":{"type":"object","additionalProperties":false,"required":["capability_score","strategic_score"],"properties":{"capability_score":{"type":"number","minimum":0,"maximum":100},"strategic_score":{"type":"number","minimum":0,"maximum":100},"evidence":{"type":"array","items":{"type":"string"}}}},
+    "risk":{"type":"object","additionalProperties":false,"required":["level","factors"],"properties":{"level":{"enum":["low","medium","high","critical"]},"factors":{"type":"array","items":{"type":"string"}}}},
+    "decision":{"type":"string","enum":["PENDING","TARGET","REJECT","ESCALATE"]}
+  }
+}
