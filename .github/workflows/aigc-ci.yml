@@ -37,12 +37,14 @@ jobs:
         run: |
           set -euo pipefail
           observed_head_sha="$(git rev-parse HEAD)"
-          requested_head_sha="$REQUESTED_REVISION"
-          if [ "$observed_head_sha" != "$requested_head_sha" ]; then
-            echo "Exact-head admission failed: requested and observed revisions differ." >&2
+          requested_revision="$REQUESTED_REVISION"
+          # Dispatch may receive a branch/tag; compare immutable SHA after checkout.
+          if [[ "$requested_revision" =~ ^[0-9a-fA-F]{40}$ ]] && [ "$observed_head_sha" != "$requested_revision" ]; then
+            echo "Exact-head admission failed: requested SHA and observed revision differ." >&2
             exit 1
           fi
-          echo "requested_head_sha=$requested_head_sha" >> "$GITHUB_OUTPUT"
+          echo "requested_revision=$requested_revision" >> "$GITHUB_OUTPUT"
+          echo "requested_head_sha=$observed_head_sha" >> "$GITHUB_OUTPUT"
           echo "observed_head_sha=$observed_head_sha" >> "$GITHUB_OUTPUT"
 
       - name: Set up Python
@@ -92,6 +94,7 @@ jobs:
               "repository": os.environ["GITHUB_REPOSITORY"],
               "pr_number": int(os.environ.get("PR_NUMBER", "0")),
               "workflow_event": os.environ["GITHUB_EVENT_NAME"],
+              "requested_revision": os.environ.get("REQUESTED_REVISION", ""),
               "requested_head_sha": os.environ.get("REQUESTED_HEAD_SHA", ""),
               "observed_head_sha": os.environ.get("OBSERVED_HEAD_SHA", ""),
               "tested_tree_sha": os.environ.get("TESTED_TREE_SHA", ""),
@@ -114,18 +117,19 @@ jobs:
           PY
         env:
           PR_NUMBER: ${{ github.event.pull_request.number || 0 }}
+          REQUESTED_REVISION: ${{ env.REQUESTED_REVISION }}
           REQUESTED_HEAD_SHA: ${{ steps.identity.outputs.requested_head_sha }}
           OBSERVED_HEAD_SHA: ${{ steps.identity.outputs.observed_head_sha }}
           TESTED_TREE_SHA: ${{ steps.tested.outputs.tree_sha }}
           BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
           WORKFLOW_REVISION: ${{ github.workflow_sha || github.sha }}
-          ARTIFACT_NAME: aigc-colosseum-orchestration-exact-head-${{ env.REQUESTED_REVISION }}
+          ARTIFACT_NAME: aigc-colosseum-orchestration-exact-head-${{ steps.identity.outputs.observed_head_sha }}
 
       - name: Upload canonical validation evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: aigc-colosseum-orchestration-exact-head-${{ env.REQUESTED_REVISION }}
+          name: aigc-colosseum-orchestration-exact-head-${{ steps.identity.outputs.observed_head_sha }}
           path: ${{ runner.temp }}/aigc-ci-stage-results
           if-no-files-found: error
   revalidate_locked_releases:
