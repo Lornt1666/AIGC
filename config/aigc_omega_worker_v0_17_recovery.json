@@ -1,0 +1,24 @@
+{
+  "version": "AIGC-OMEGA-RECOVERY-0.17",
+  "max_total_attempts": 3,
+  "retry_requires_idempotency": true,
+  "rollback_requires_explicit_authorization": true,
+  "irreversible_actions_are_non_retryable": true,
+  "emergency_stop": true,
+  "budget_exhaustion_disposition": "BLOCKED",
+  "escalation_requires": [
+    "contract_id",
+    "failure_reason",
+    "attempted_actions",
+    "remaining_budget",
+    "recommended_disposition"
+  ],
+  "authority_boundary": {
+    "no_credential_discovery": true,
+    "no_target_discovery": true,
+    "no_recipient_inference": true,
+    "no_permission_inference": true,
+    "no_financial_authority_inference": true,
+    "no_policy_bypass": true
+  }
+}
