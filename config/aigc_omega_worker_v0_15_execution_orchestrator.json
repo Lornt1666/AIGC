@@ -1,0 +1,17 @@
+{
+  "version": "AIGC-OMEGA-EXECUTION-ORCHESTRATOR-0.15",
+  "mode": "deterministic",
+  "requires_owner_accepted_selection": true,
+  "requires_execution_permit": true,
+  "requires_contract_binding": true,
+  "requires_bounded_autonomy_policy": true,
+  "requires_postcondition_verification": true,
+  "external_authority": {
+    "credential_discovery": false,
+    "target_discovery": false,
+    "recipient_inference": false,
+    "permission_inference": false,
+    "financial_authority_inference": false,
+    "policy_bypass": false
+  }
+}
