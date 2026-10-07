@@ -1,0 +1,16 @@
+{
+  "version":"AIGC-OMEGA-DELIVERY-REVENUE-0.20",
+  "states":["DELIVERED","PAYMENT_PENDING","PAID","LEARNED"],
+  "payment_is_evidence_gated":true,
+  "payment_must_never_be_inferred":true,
+  "learning_requires_explicit_outcome":true,
+  "authority_boundary":{
+    "no_payment_inference":true,
+    "no_financial_authority":true,
+    "no_credential_discovery":true,
+    "no_target_discovery":true,
+    "no_recipient_inference":true,
+    "no_permission_inference":true,
+    "no_policy_bypass":true
+  }
+}
