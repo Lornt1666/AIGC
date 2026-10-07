@@ -6,6 +6,7 @@ from src.core.omega_worker_autonomy import (
     BoundedAutonomousExecutor,
 )
 from src.core.omega_worker_execution import ExecutionPermit
+from src.core.omega_worker_verification import Postcondition
 
 
 def permit(action="deliver"):
@@ -29,6 +30,8 @@ def test_bounded_autonomy_executes_allowlisted_permitted_action():
         action="deliver",
         action_fn=lambda: seen.append("ran"),
         verification_evidence="verified delivery",
+        postcondition=Postcondition("condition-1", "contract-1", "delivery verified"),
+        verification_check=lambda: True,
     )
     assert seen == ["ran"]
     assert result.executed is True
@@ -50,7 +53,7 @@ def test_allowlist_is_enforced():
 
 def test_budget_is_enforced():
     executor = BoundedAutonomousExecutor(AutonomousExecutionPolicy("p", ("deliver",), 1))
-    executor.execute(permit(), contract_id="contract-1", action="deliver", action_fn=lambda: None, verification_evidence="e")
+    executor.execute(permit(), contract_id="contract-1", action="deliver", action_fn=lambda: None, verification_evidence="e", postcondition=Postcondition("c", "contract-1", "ok"), verification_check=lambda: True)
     with pytest.raises(AutonomyDenied):
         executor.execute(permit("deliver"), contract_id="contract-1", action="deliver", action_fn=lambda: None, verification_evidence="e")
 
