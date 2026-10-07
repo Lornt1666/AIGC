@@ -1,0 +1,25 @@
+{
+  "version":"AIGC-OMEGA-SYNTHETIC-COLISEUM-0.19",
+  "external_side_effects":false,
+  "purpose":"end-to-end integration validation only",
+  "required_invariants":[
+    "state transitions remain bounded",
+    "owner gate is enforced",
+    "task contract action scope is enforced",
+    "retry requires idempotency",
+    "irreversible actions do not retry",
+    "verification failure enters recovery",
+    "evidence is ledgered",
+    "ledger integrity remains valid",
+    "no external I/O"
+  ],
+  "authority_boundary":{
+    "no_execution_against_external_targets":true,
+    "no_credentials":true,
+    "no_target_discovery":true,
+    "no_recipient_inference":true,
+    "no_permission_inference":true,
+    "no_financial_authority":true,
+    "no_policy_bypass":true
+  }
+}
