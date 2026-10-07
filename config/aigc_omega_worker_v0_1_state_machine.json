@@ -1,0 +1,30 @@
+{
+  "version":"AIGC-OMEGA-STATE-0.1",
+  "initial_state":"DISCOVERED",
+  "terminal_states":["PAID","LEARNED","REJECTED","CANCELLED","ROLLED_BACK"],
+  "states":["DISCOVERED","EVALUATING","APPROVED","APPLYING","ENGAGED","EXECUTING","VERIFYING","DELIVERED","PAID","LEARNED","REJECTED","BLOCKED","ESCALATED","FAILED","ROLLED_BACK","CANCELLED"],
+  "transitions":[
+    {"from":"DISCOVERED","event":"evaluate","to":"EVALUATING","guard":"opportunity_contract_valid"},
+    {"from":"EVALUATING","event":"target","to":"APPROVED","guard":"aer_allows_target"},
+    {"from":"EVALUATING","event":"reject","to":"REJECTED","guard":"aer_rejects"},
+    {"from":"EVALUATING","event":"escalate","to":"ESCALATED","guard":"uncertainty_or_risk_requires_review"},
+    {"from":"APPROVED","event":"prepare_application","to":"APPLYING","guard":"application_is_permitted"},
+    {"from":"APPROVED","event":"block","to":"BLOCKED","guard":"policy_or_resource_block"},
+    {"from":"APPLYING","event":"engagement_confirmed","to":"ENGAGED","guard":"employer_confirmation_evidenced"},
+    {"from":"APPLYING","event":"fail","to":"FAILED","guard":"application_failed_without_external_side_effect_claim"},
+    {"from":"ENGAGED","event":"start_work","to":"EXECUTING","guard":"task_contract_valid_and_scope_authorized"},
+    {"from":"EXECUTING","event":"verify","to":"VERIFYING","guard":"deliverable_candidate_exists"},
+    {"from":"EXECUTING","event":"fail","to":"FAILED","guard":"execution_failure_recorded"},
+    {"from":"VERIFYING","event":"deliver","to":"DELIVERED","guard":"acceptance_criteria_verified"},
+    {"from":"VERIFYING","event":"rollback","to":"ROLLED_BACK","guard":"material_defect_or_invalid_state"},
+    {"from":"DELIVERED","event":"payment_confirmed","to":"PAID","guard":"payment_evidence_recorded"},
+    {"from":"DELIVERED","event":"dispute","to":"ESCALATED","guard":"commercial_or_scope_dispute_detected"},
+    {"from":"PAID","event":"learn","to":"LEARNED","guard":"outcome_record_complete"},
+    {"from":"FAILED","event":"recover","to":"EXECUTING","guard":"recovery_plan_valid_and_authorized"},
+    {"from":"FAILED","event":"rollback","to":"ROLLED_BACK","guard":"rollback_safe"},
+    {"from":"BLOCKED","event":"resolve","to":"EVALUATING","guard":"blocking_condition_removed"},
+    {"from":"ESCALATED","event":"resolve","to":"EVALUATING","guard":"review_decision_recorded"},
+    {"from":"ESCALATED","event":"cancel","to":"CANCELLED","guard":"cancellation_authorized"},
+    {"from":"*","event":"emergency_stop","to":"BLOCKED","guard":"runtime_emergency_stop_active"}
+  ]
+}
