@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Callable, Any
 
 from .omega_worker_execution import ControlledExecutor, ExecutionDenied, ExecutionPermit
-from .omega_worker_verification import PostconditionVerifier
+from .omega_worker_verification import Postcondition, PostconditionVerifier
 
 
 class AutonomyDenied(PermissionError):
@@ -63,6 +63,8 @@ class BoundedAutonomousExecutor:
         action: str,
         action_fn: Callable[[], Any],
         verification_evidence: str,
+        postcondition: Postcondition,
+        verification_check: Callable[[], bool],
     ) -> AutonomousExecutionResult:
         if not self.policy.enabled or self.policy.emergency_stop:
             raise AutonomyDenied("Autonomous execution is disabled or emergency-stopped.")
@@ -86,18 +88,18 @@ class BoundedAutonomousExecutor:
             raise
 
         self._action_count += 1
-        verified = self.verifier.verify(
-            contract_id=contract_id,
-            action=action,
+        verification = self.verifier.verify(
+            postcondition,
             evidence=verification_evidence,
+            check=verification_check,
         )
-        if not verified:
+        if verification.status != "VERIFIED":
             raise AutonomyDenied("Postcondition verification failed.")
 
         return AutonomousExecutionResult(
             permit_id=result.permit_id,
             action=result.action,
             executed=result.executed,
-            verified=verified,
+            verified=True,
             action_count=self._action_count,
         )
