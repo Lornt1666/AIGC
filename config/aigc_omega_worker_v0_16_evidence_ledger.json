@@ -1,0 +1,18 @@
+{
+  "version": "AIGC-OMEGA-EVIDENCE-LEDGER-0.16",
+  "format": "canonical-jsonl",
+  "integrity": "sha256-hash-chain",
+  "genesis": "GENESIS",
+  "append_only": true,
+  "external_persistence": false,
+  "authority_boundary": {
+    "evidence_only": true,
+    "no_execution_authority": true,
+    "no_credential_discovery": true,
+    "no_target_discovery": true,
+    "no_recipient_inference": true,
+    "no_permission_inference": true,
+    "no_financial_authority_inference": true,
+    "no_policy_bypass": true
+  }
+}
