@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "1jgm://aigc-omega-worker/v0.10/gladiator-strategy-contract",
+  "title": "AIGC Omega Worker Gladiator Strategy Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_version","strategy_id","task_id","opportunity_id","gladiator_id","objective","plan","resource_budget","evidence_requirements","termination_conditions","self_challenge_questions"],
+  "properties": {
+    "contract_version": {"const": "AIGC-OMEGA-GLADIATOR-STRATEGY-0.1"},
+    "strategy_id": {"type": "string", "minLength": 1},
+    "task_id": {"type": "string", "minLength": 1},
+    "opportunity_id": {"type": "string", "minLength": 1},
+    "gladiator_id": {"type": "string", "minLength": 1},
+    "objective": {"type": "string", "minLength": 1},
+    "plan": {"type": "string", "minLength": 1},
+    "resource_budget": {"type": "number", "exclusiveMinimum": 0},
+    "evidence_requirements": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "termination_conditions": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "self_challenge_questions": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+  }
+}
