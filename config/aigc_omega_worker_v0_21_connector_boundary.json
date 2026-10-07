@@ -1,0 +1,13 @@
+{
+  "version":"AIGC-OMEGA-CONNECTOR-0.21",
+  "mode":"READ_ONLY_EVIDENCE_INGESTION",
+  "external_writes":false,
+  "credential_discovery":false,
+  "target_discovery":false,
+  "recipient_inference":false,
+  "permission_inference":false,
+  "financial_authority":false,
+  "connector_allowlist_required":true,
+  "explicit_evidence_reference_required":true,
+  "provenance_ledger_required":true
+}
