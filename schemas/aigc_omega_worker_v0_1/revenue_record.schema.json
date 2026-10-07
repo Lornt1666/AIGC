@@ -1,0 +1,18 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"1jgm://aigc-omega-worker/v0.1/revenue-record",
+  "title":"AIGC Omega Worker RevenueRecord",
+  "type":"object","additionalProperties":false,
+  "required":["record_version","revenue_id","opportunity_id","status","amount","currency","effort_hours","risk_level"],
+  "properties":{
+    "record_version":{"const":"AIGC-OMEGA-REVENUE-0.1"},
+    "revenue_id":{"type":"string","minLength":1},
+    "opportunity_id":{"type":"string","minLength":1},
+    "status":{"enum":["EXPECTED","CONTRACTED","EARNED","RECEIVED","CANCELLED","DISPUTED"]},
+    "amount":{"type":"number","minimum":0},
+    "currency":{"type":"string","minLength":1},
+    "effort_hours":{"type":"number","minimum":0},
+    "risk_level":{"enum":["low","medium","high","critical"]},
+    "notes":{"type":"array","items":{"type":"string"}}
+  }
+}
