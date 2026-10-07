@@ -1,0 +1,16 @@
+{
+  "version":"AIGC-OMEGA-TRIGGER-0.1",
+  "dispositions":["CONTINUE","RECHECK","ABORT","WAIT","ESCALATE","BLOCK","OWNER_GATE","RECOVER","ROLLBACK","CANCEL","COMPLETE"],
+  "triggers":[
+    {"trigger":"INT:GOAL_REEVALUATE","class":"reasoning","disposition":"RECHECK","bounded":true,"state_machine_events":[]},
+    {"trigger":"INT:PLAN_RECOMPUTE","class":"reasoning","disposition":"RECHECK","bounded":true,"state_machine_events":[]},
+    {"trigger":"INT:ASSUMPTION_CHALLENGE","class":"reasoning","disposition":"RECHECK","bounded":true,"state_machine_events":[]},
+    {"trigger":"INT:EVIDENCE_GAP","class":"evidence","disposition":"WAIT","bounded":true,"state_machine_events":[]},
+    {"trigger":"INT:CONFLICT_DETECTED","class":"governance","disposition":"ESCALATE","bounded":true,"state_machine_events":["escalate"]},
+    {"trigger":"INT:DRIFT_DETECTED","class":"quality","disposition":"RECHECK","bounded":true,"state_machine_events":[]},
+    {"trigger":"INT:RESOURCE_THRESHOLD","class":"resource","disposition":"BLOCK","bounded":true,"state_machine_events":["block"]},
+    {"trigger":"INT:TIME_BUDGET_WARNING","class":"resource","disposition":"OWNER_GATE","bounded":true,"state_machine_events":[]},
+    {"trigger":"INT:QUALITY_GATE","class":"quality","disposition":"RECHECK","bounded":true,"state_machine_events":[]},
+    {"trigger":"INT:OWNER_GATE_REQUIRED","class":"governance","disposition":"OWNER_GATE","bounded":true,"state_machine_events":[]}
+  ]
+}

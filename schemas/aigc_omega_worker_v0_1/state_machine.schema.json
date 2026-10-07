@@ -1,0 +1,14 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"1jgm://aigc-omega-worker/v0.1/state-machine",
+  "title":"AIGC Omega Worker State Machine",
+  "type":"object","additionalProperties":false,
+  "required":["version","initial_state","terminal_states","states","transitions"],
+  "properties":{
+    "version":{"const":"AIGC-OMEGA-STATE-0.1"},
+    "initial_state":{"const":"DISCOVERED"},
+    "terminal_states":{"type":"array","items":{"enum":["PAID","LEARNED","REJECTED","CANCELLED","ROLLED_BACK"]}},
+    "states":{"type":"array","items":{"type":"string","enum":["DISCOVERED","EVALUATING","APPROVED","APPLYING","ENGAGED","EXECUTING","VERIFYING","DELIVERED","PAID","LEARNED","REJECTED","BLOCKED","ESCALATED","FAILED","ROLLED_BACK","CANCELLED"]}},
+    "transitions":{"type":"array","items":{"type":"object","additionalProperties":false,"required":["from","event","to","guard"],"properties":{"from":{"type":"string"},"event":{"type":"string"},"to":{"type":"string"},"guard":{"type":"string"}}}}
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"1jgm://aigc-omega-worker/v0.1/evidence-record",
+  "title":"AIGC Omega Worker EvidenceRecord",
+  "type":"object","additionalProperties":false,
+  "required":["record_version","evidence_id","timestamp","event","subject","claims","artifacts","verification"],
+  "properties":{
+    "record_version":{"const":"AIGC-OMEGA-EVIDENCE-0.1"},
+    "evidence_id":{"type":"string","minLength":1},
+    "timestamp":{"type":"string","format":"date-time"},
+    "event":{"type":"string","minLength":1},
+    "subject":{"type":"string","minLength":1},
+    "claims":{"type":"array","items":{"type":"string"}},
+    "artifacts":{"type":"array","items":{"type":"string"}},
+    "verification":{"type":"object","additionalProperties":false,"required":["status","method"],"properties":{"status":{"enum":["UNVERIFIED","VERIFIED","FAILED"]},"method":{"type":"array","items":{"type":"string"}}}},
+    "external_action_performed":{"type":"boolean","default":false}
+  }
+}
