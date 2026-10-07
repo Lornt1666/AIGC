@@ -1,0 +1,21 @@
+{
+  "version":"AIGC-OMEGA-CONNECTOR-TRUST-0.25",
+  "purpose":"evidence quality assessment only",
+  "weights":{
+    "conformance":0.35,
+    "freshness":0.25,
+    "provenance":0.25,
+    "disagreement_inverse":0.15
+  },
+  "thresholds":{
+    "trusted_for_evidence":80,
+    "degraded_evidence":60,
+    "escalate_below":60
+  },
+  "authority_granted_by_score":false,
+  "execution_authority":false,
+  "financial_authority":false,
+  "external_writes":false,
+  "credential_discovery":false,
+  "target_discovery":false
+}
