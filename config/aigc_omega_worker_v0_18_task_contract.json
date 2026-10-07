@@ -1,0 +1,13 @@
+{
+  "version": "AIGC-OMEGA-TASK-CONTRACT-0.18",
+  "authoritative_execution_envelope": true,
+  "requires": ["objective","authorized_scope","resource_budget","permitted_actions","evidence_requirements","postconditions","termination_conditions","retry_policy","rollback_policy","escalation_policy","owner","policy_reference","expiration"],
+  "authority_boundary": {
+    "no_credential_discovery": true,
+    "no_target_discovery": true,
+    "no_recipient_inference": true,
+    "no_permission_inference": true,
+    "no_financial_authority_inference": true,
+    "no_policy_bypass": true
+  }
+}
