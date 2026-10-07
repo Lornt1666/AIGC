@@ -3,17 +3,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Callable
 
-from .omega_worker_autonomy import (
-    AutonomousExecutionPolicy,
-    AutonomousExecutionResult,
-    BoundedAutonomousExecutor,
-)
+from .omega_worker_autonomy import AutonomousExecutionResult, BoundedAutonomousExecutor
 from .omega_worker_coliseum import ColiseumResult
 from .omega_worker_execution import ExecutionPermit
-from .omega_worker_strategy_coliseum import (
-    StrategyColiseumAdapter,
-    StrategyProposalMetrics,
-)
+from .omega_worker_strategy_coliseum import StrategyColiseumAdapter, StrategyProposalMetrics
 from .omega_worker_gladiator_strategy import GladiatorStrategyContract
 from .omega_worker_verification import Postcondition
 
@@ -35,8 +28,8 @@ class ExecutionOrchestrationResult:
 class GovernedExecutionOrchestrator:
     """Connects strategy selection to bounded execution without adding authority.
 
-    The orchestrator only executes an owner-accepted Coliseum selection and delegates
-    authorization, bounded execution, and verification to existing governed layers.
+    Execution authority is bound to an explicitly supplied contract identifier;
+    the orchestrator never infers that identifier from strategy content.
     """
 
     def __init__(
@@ -54,6 +47,7 @@ class GovernedExecutionOrchestrator:
         metrics: StrategyProposalMetrics,
         *,
         owner_gate: bool,
+        contract_id: str,
         permit: ExecutionPermit | None,
         action: str,
         action_fn: Callable[[], Any],
@@ -61,6 +55,11 @@ class GovernedExecutionOrchestrator:
         postcondition: Postcondition,
         verification_check: Callable[[], bool],
     ) -> ExecutionOrchestrationResult:
+        if not contract_id:
+            raise ExecutionOrchestrationDenied(
+                "An explicit execution contract ID is required."
+            )
+
         selection: ColiseumResult = self.strategy_coliseum.run(
             strategy,
             metrics,
@@ -89,7 +88,7 @@ class GovernedExecutionOrchestrator:
         try:
             execution = self.autonomous_executor.execute(
                 permit,
-                contract_id=strategy.task_id,
+                contract_id=contract_id,
                 action=action,
                 action_fn=action_fn,
                 verification_evidence=verification_evidence,
