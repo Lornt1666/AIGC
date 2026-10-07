@@ -5,7 +5,7 @@ from src.core.omega_worker_autonomy import (
     AutonomyDenied,
     BoundedAutonomousExecutor,
 )
-from src.core.omega_worker_execution import ExecutionPermit
+from src.core.omega_worker_execution import ExecutionDenied, ExecutionPermit
 from src.core.omega_worker_verification import Postcondition
 
 
@@ -108,7 +108,7 @@ def test_disabled_policy_blocks():
 
 def test_permit_is_still_mandatory():
     executor = BoundedAutonomousExecutor(AutonomousExecutionPolicy("p", ("deliver",), 1))
-    with pytest.raises(ExecutionError):
+    with pytest.raises(ExecutionDenied):
         executor.execute(
             ExecutionPermit("permit-1", "other-contract", "deliver", "owner", "policy-1", True),
             contract_id="contract-1",
@@ -116,7 +116,3 @@ def test_permit_is_still_mandatory():
             action_fn=lambda: None,
             **verification_inputs(),
         )
-
-
-class ExecutionError(PermissionError):
-    pass
