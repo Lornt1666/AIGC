@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "1jgm://aigc-omega-worker/v0.1/task-contract",
+  "title": "AIGC Omega Worker TaskContract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_version","task_id","objective","inputs","outputs","constraints","permissions","quality","governance","state"],
+  "properties": {
+    "contract_version": {"const": "AIGC-OMEGA-TASK-0.1"},
+    "task_id": {"type":"string","minLength":1},
+    "employer": {"type":"object","additionalProperties":false,"properties":{"name":{"type":"string"},"reference":{"type":"string"}}},
+    "objective": {"type":"string","minLength":1},
+    "inputs": {"type":"array","items":{"type":"object","additionalProperties":false,"required":["name","type"],"properties":{"name":{"type":"string"},"type":{"type":"string"},"source":{"type":"string"}}}},
+    "outputs": {"type":"array","items":{"type":"object","additionalProperties":false,"required":["name","acceptance_criteria"],"properties":{"name":{"type":"string"},"format":{"type":"string"},"acceptance_criteria":{"type":"array","items":{"type":"string"}}}}},
+    "constraints": {"type":"object","additionalProperties":false,"required":["legal","platform","technical","privacy"],"properties":{"legal":{"type":"array","items":{"type":"string"}},"platform":{"type":"array","items":{"type":"string"}},"technical":{"type":"array","items":{"type":"string"}},"privacy":{"type":"array","items":{"type":"string"}}}},
+    "permissions": {"type":"object","additionalProperties":false,"required":["read","write","external_actions"],"properties":{"read":{"type":"array","items":{"type":"string"}},"write":{"type":"array","items":{"type":"string"}},"external_actions":{"type":"array","items":{"type":"string"}}}},
+    "quality": {"type":"object","additionalProperties":false,"required":["acceptance_criteria","verification_method"],"properties":{"acceptance_criteria":{"type":"array","items":{"type":"string"}},"verification_method":{"type":"array","items":{"type":"string"}}}},
+    "governance": {"type":"object","additionalProperties":false,"required":["risk_level","human_approval_required"],"properties":{"risk_level":{"enum":["low","medium","high","critical"]},"human_approval_required":{"type":"boolean"},"policy_references":{"type":"array","items":{"type":"string"}}}},
+    "state": {"type":"string","enum":["DISCOVERED","EVALUATING","APPROVED","APPLYING","ENGAGED","EXECUTING","VERIFYING","DELIVERED","PAID","LEARNED","REJECTED","BLOCKED","ESCALATED","FAILED","ROLLED_BACK","CANCELLED"]}
+  }
+}
