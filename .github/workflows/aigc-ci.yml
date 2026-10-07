@@ -7,6 +7,13 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      requested_revision:
+        description: "Exact commit SHA, branch, or tag to validate"
+        required: true
+        default: "main"
+        type: string
 
 permissions:
   contents: read
@@ -15,7 +22,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     env:
-      REQUESTED_REVISION: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+      REQUESTED_REVISION: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.event_name == 'workflow_dispatch' && inputs.requested_revision || github.sha }}
     steps:
       - name: Checkout exact requested revision
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
