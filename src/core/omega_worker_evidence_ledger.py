@@ -97,8 +97,12 @@ class EvidenceLedger:
     def export_jsonl(self) -> str:
         if not self.verify():
             raise EvidenceLedgerError("Cannot export an invalid evidence ledger.")
-        return "
-".join(
-            json.dumps(entry.to_record(), sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+        return "\n".join(
+            json.dumps(
+                entry.to_record(),
+                sort_keys=True,
+                separators=(",", ":"),
+                ensure_ascii=False,
+            )
             for entry in self._entries
         )
