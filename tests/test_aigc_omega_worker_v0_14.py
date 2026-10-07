@@ -20,6 +20,14 @@ def permit(action="deliver"):
     )
 
 
+def verification_inputs():
+    return {
+        "verification_evidence": "evidence",
+        "postcondition": Postcondition("condition-1", "contract-1", "verified"),
+        "verification_check": lambda: True,
+    }
+
+
 def test_bounded_autonomy_executes_allowlisted_permitted_action():
     policy = AutonomousExecutionPolicy("policy-1", ("deliver",), 2)
     executor = BoundedAutonomousExecutor(policy)
@@ -47,36 +55,68 @@ def test_allowlist_is_enforced():
             contract_id="contract-1",
             action="delete",
             action_fn=lambda: None,
-            verification_evidence="evidence",
+            **verification_inputs(),
         )
 
 
 def test_budget_is_enforced():
     executor = BoundedAutonomousExecutor(AutonomousExecutionPolicy("p", ("deliver",), 1))
-    executor.execute(permit(), contract_id="contract-1", action="deliver", action_fn=lambda: None, verification_evidence="e", postcondition=Postcondition("c", "contract-1", "ok"), verification_check=lambda: True)
+    executor.execute(
+        permit(),
+        contract_id="contract-1",
+        action="deliver",
+        action_fn=lambda: None,
+        **verification_inputs(),
+    )
     with pytest.raises(AutonomyDenied):
-        executor.execute(permit("deliver"), contract_id="contract-1", action="deliver", action_fn=lambda: None, verification_evidence="e")
+        executor.execute(
+            permit("deliver"),
+            contract_id="contract-1",
+            action="deliver",
+            action_fn=lambda: None,
+            **verification_inputs(),
+        )
 
 
 def test_emergency_stop_blocks():
-    executor = BoundedAutonomousExecutor(AutonomousExecutionPolicy("p", ("deliver",), 1, emergency_stop=True))
+    executor = BoundedAutonomousExecutor(
+        AutonomousExecutionPolicy("p", ("deliver",), 1, emergency_stop=True)
+    )
     with pytest.raises(AutonomyDenied):
-        executor.execute(permit(), contract_id="contract-1", action="deliver", action_fn=lambda: None, verification_evidence="e")
+        executor.execute(
+            permit(),
+            contract_id="contract-1",
+            action="deliver",
+            action_fn=lambda: None,
+            **verification_inputs(),
+        )
 
 
 def test_disabled_policy_blocks():
-    executor = BoundedAutonomousExecutor(AutonomousExecutionPolicy("p", ("deliver",), 1, enabled=False))
+    executor = BoundedAutonomousExecutor(
+        AutonomousExecutionPolicy("p", ("deliver",), 1, enabled=False)
+    )
     with pytest.raises(AutonomyDenied):
-        executor.execute(permit(), contract_id="contract-1", action="deliver", action_fn=lambda: None, verification_evidence="e")
+        executor.execute(
+            permit(),
+            contract_id="contract-1",
+            action="deliver",
+            action_fn=lambda: None,
+            **verification_inputs(),
+        )
 
 
 def test_permit_is_still_mandatory():
     executor = BoundedAutonomousExecutor(AutonomousExecutionPolicy("p", ("deliver",), 1))
-    with pytest.raises(Exception):
+    with pytest.raises(ExecutionError):
         executor.execute(
             ExecutionPermit("permit-1", "other-contract", "deliver", "owner", "policy-1", True),
             contract_id="contract-1",
             action="deliver",
             action_fn=lambda: None,
-            verification_evidence="e",
+            **verification_inputs(),
         )
+
+
+class ExecutionError(PermissionError):
+    pass
