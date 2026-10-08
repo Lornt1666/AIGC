@@ -1,6 +1,6 @@
 import pytest
 
-from src.core.omega_worker_connector_admission import ReadOnlyAdmissionPolicy
+from src.core.omega_worker_connector_admission import ConnectorAdmissionError, ReadOnlyAdmissionPolicy
 from src.core.omega_worker_connector_admission_ledger import ConnectorAdmissionAuditLedger
 from src.core.omega_worker_sandbox_connector import SandboxConnector, SandboxConnectorError, SandboxCredential
 
@@ -79,7 +79,7 @@ def test_fixture_provenance_is_required() -> None:
 
 def test_audit_cannot_be_bypassed_by_missing_identity() -> None:
     audit = ConnectorAdmissionAuditLedger()
-    with pytest.raises(SandboxConnectorError):
+    with pytest.raises(ConnectorAdmissionError):
         make_connector().admit(
             ReadOnlyAdmissionPolicy(policy_id="policy-v0-31", connector_id="other"),
             evidence_reference="sandbox://fixture/001",
