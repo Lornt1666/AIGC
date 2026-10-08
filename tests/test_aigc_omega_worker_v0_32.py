@@ -135,4 +135,21 @@ def test_audit_receipts_are_bound_to_each_connector():
     assert all(audit.verify_receipt(receipt) for receipt in result.admission_receipts)
     assert audit.verify_chain()
 
-# v0.32 canonical reconciliation coverage remains sandbox-only and audit-bound.
+
+def test_trust_identity_mismatch_is_rejected_before_audit_writes():
+    connectors, policies, credentials = setup()
+    audit = ConnectorAdmissionAuditLedger()
+    orchestrator = SandboxReconciliationOrchestrator(connectors, audit=audit)
+    with pytest.raises(SandboxReconciliationError, match="Trust observation identity mismatch"):
+        orchestrator.run(
+            evidence_reference="sandbox://fixture/032",
+            policies=policies,
+            credentials=credentials,
+            trust_observations={
+                "sandbox-a": obs("sandbox-b"),
+                "sandbox-b": obs("sandbox-b"),
+            },
+            expected_kind="sandbox",
+            receipt_prefix="v0-32-mismatched-trust",
+        )
+    assert audit.ledger.entries == []
