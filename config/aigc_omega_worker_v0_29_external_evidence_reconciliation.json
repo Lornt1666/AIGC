@@ -1,0 +1,17 @@
+{
+  "version": "AIGC-OMEGA-EXTERNAL-EVIDENCE-RECONCILIATION-0.29",
+  "mode": "READ_ONLY_EVIDENCE_RECONCILIATION",
+  "requires_admitted_connectors": true,
+  "requires_trust_observations": true,
+  "consensus_policy": "accept_only_when_valid_evidence_agrees",
+  "conflict_policy": "escalate",
+  "low_trust_policy": "escalate",
+  "truth_inference": false,
+  "execution_authority": false,
+  "external_writes": false,
+  "financial_authority": false,
+  "credential_discovery": false,
+  "target_discovery": false,
+  "permission_inference": false,
+  "canonical_revalidation": "required"
+}
