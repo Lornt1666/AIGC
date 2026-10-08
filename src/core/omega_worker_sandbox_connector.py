@@ -43,6 +43,11 @@ class SandboxConnector:
             raise SandboxConnectorError("Connector identity and fixtures are required.")
         self.connector_id = connector_id
         self._fixtures = dict(fixtures)
+        for reference, fixture in self._fixtures.items():
+            if not reference or not isinstance(fixture, Mapping):
+                raise SandboxConnectorError("Sandbox fixture identity is incomplete.")
+            if not fixture.get("evidence_id") or not fixture.get("observed_at") or not isinstance(fixture.get("payload"), Mapping):
+                raise SandboxConnectorError("Sandbox fixture provenance is incomplete.")
 
     def read(
         self,
