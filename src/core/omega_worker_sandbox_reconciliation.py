@@ -89,6 +89,11 @@ class SandboxReconciliationOrchestrator:
         observed_after: str | None = None,
     ) -> SandboxReconciliationResult:
         connector_ids = tuple(sorted(self.connectors))
+        if not evidence_reference or not expected_kind or not receipt_prefix:
+            raise SandboxReconciliationError(
+                "Evidence reference, expected kind, and receipt prefix are required."
+            )
+
         missing = [
             cid for cid in connector_ids
             if cid not in policies or cid not in credentials
@@ -98,12 +103,32 @@ class SandboxReconciliationOrchestrator:
                 f"Explicit policy and credential are required for every connector: {tuple(missing)}"
             )
 
-        receipts: list[AdmissionAuditReceipt] = []
-        admitted: dict[str, ConnectorReadResult] = {}
+        missing_observations = [
+            cid for cid in connector_ids if cid not in trust_observations
+        ]
+        if missing_observations:
+            raise SandboxReconciliationError(
+                f"Trust observations are required for every connector: {tuple(missing_observations)}"
+            )
+        mismatched_observations = [
+            cid for cid in connector_ids
+            if trust_observations[cid].connector_id != cid
+        ]
+        if mismatched_observations:
+            raise SandboxReconciliationError(
+                f"Trust observation identity mismatch for connectors: {tuple(mismatched_observations)}"
+            )
+
         for connector_id in connector_ids:
             policy = policies[connector_id]
             if policy.connector_id != connector_id:
                 raise SandboxReconciliationError("Policy connector identity mismatch.")
+
+        # Validate all caller-supplied identities before writing any admission receipts.
+        receipts: list[AdmissionAuditReceipt] = []
+        admitted: dict[str, ConnectorReadResult] = {}
+        for connector_id in connector_ids:
+            policy = policies[connector_id]
             evidence, _, audit_receipt = self.connectors[connector_id].admit(
                 policy,
                 evidence_reference=evidence_reference,
