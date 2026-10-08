@@ -1,0 +1,15 @@
+{
+  "version":"AIGC-OMEGA-ADMISSION-EVIDENCE-LEDGER-0.30",
+  "mode":"TAMPER_EVIDENT_ADMISSION_AUDIT",
+  "receipt_identity_required":true,
+  "policy_fingerprint":"sha256",
+  "evidence_fingerprint":"sha256",
+  "ledger_integrity":"sha256_hash_chain",
+  "external_persistence":false,
+  "execution_authority":false,
+  "external_writes":false,
+  "financial_authority":false,
+  "credential_discovery":false,
+  "target_discovery":false,
+  "permission_inference":false
+}
