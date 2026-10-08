@@ -1,0 +1,23 @@
+{
+  "version": "AIGC-OMEGA-SANDBOX-RECONCILIATION-0.32",
+  "mode": "SANDBOX_ONLY_EVIDENCE_RECONCILIATION",
+  "pipeline": [
+    "explicit_credentials",
+    "fixed_reference_admission",
+    "admission_audit_receipt",
+    "trust_assessment",
+    "multi_connector_reconciliation",
+    "escalate_on_conflict_or_low_trust"
+  ],
+  "external_writes": false,
+  "network_access": false,
+  "production_targets": false,
+  "execution_authority": false,
+  "financial_authority": false,
+  "credential_discovery": false,
+  "target_discovery": false,
+  "permission_inference": false,
+  "autonomous_target_selection": false,
+  "truth_inference_from_trust_score": false,
+  "purpose": "prove sandbox evidence can traverse the complete governed reconciliation path"
+}
