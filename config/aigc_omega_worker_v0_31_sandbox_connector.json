@@ -1,0 +1,19 @@
+{
+  "version": "AIGC-OMEGA-SANDBOX-CONNECTOR-0.31",
+  "mode": "CONTROLLED_SANDBOX_READ_ONLY",
+  "connector_type": "deterministic_fixture_adapter",
+  "credential_injection": "explicit",
+  "credential_class": "sandbox_only",
+  "reference_policy": "fixed_fixture_allowlist",
+  "admission_receipt_required": true,
+  "audit_ledger_required": true,
+  "external_writes": false,
+  "production_targets": false,
+  "credential_discovery": false,
+  "target_discovery": false,
+  "permission_inference": false,
+  "financial_authority": false,
+  "autonomous_target_selection": false,
+  "network_access": false,
+  "purpose": "prove the complete connector admission and evidence path before any real external integration"
+}
