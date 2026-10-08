@@ -39,10 +39,15 @@ def setup_registry() -> ConnectorRegistry:
     return registry
 
 
-def trust(connector_id: str, *, disagreement_rate: int = 0) -> ConnectorTrustObservation:
+def trust(
+    connector_id: str,
+    *,
+    disagreement_rate: int = 0,
+    conformance_score: int = 95,
+) -> ConnectorTrustObservation:
     return ConnectorTrustObservation(
         connector_id=connector_id,
-        conformance_score=95,
+        conformance_score=conformance_score,
         freshness_score=95,
         provenance_score=95,
         disagreement_rate=disagreement_rate,
@@ -87,7 +92,7 @@ def test_low_trust_escalates_before_selection() -> None:
         expected_kind="status",
         observations={
             "connector-a": trust("connector-a"),
-            "connector-b": trust("connector-b", disagreement_rate=100),
+            "connector-b": trust("connector-b", conformance_score=20),
         },
     )
     assert result.status == "ESCALATE"
