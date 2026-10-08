@@ -9,6 +9,7 @@ from .omega_worker_connector_admission_ledger import (
     ConnectorAdmissionAuditLedger,
 )
 from .omega_worker_connector_arena import SyntheticMultiConnectorArena
+from .omega_worker_connector_registry import ConnectorRegistry
 from .omega_worker_connector_sdk import ConnectorCapabilities, ConnectorReadResult
 from .omega_worker_connector_trust import (
     ConnectorTrustAssessment,
@@ -71,10 +72,7 @@ class SandboxReconciliationOrchestrator:
                     )
                 return self._result
 
-        registry = __import__(
-            "src.core.omega_worker_connector_registry",
-            fromlist=["ConnectorRegistry"],
-        ).ConnectorRegistry()
+        registry = ConnectorRegistry()
         for result in admitted.values():
             registry.register(Adapter(result))
         return SyntheticMultiConnectorArena(registry)
