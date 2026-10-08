@@ -134,3 +134,5 @@ def test_audit_receipts_are_bound_to_each_connector():
     assert len(result.admission_receipts) == 2
     assert all(audit.verify_receipt(receipt) for receipt in result.admission_receipts)
     assert audit.verify_chain()
+
+# v0.32 canonical reconciliation coverage remains sandbox-only and audit-bound.
