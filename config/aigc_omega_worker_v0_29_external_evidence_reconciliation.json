@@ -12,5 +12,6 @@
   "financial_authority": false,
   "credential_discovery": false,
   "target_discovery": false,
-  "permission_inference": false
+  "permission_inference": false,
+  "canonical_revalidation": "required"
 }
