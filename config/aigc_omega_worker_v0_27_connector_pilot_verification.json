@@ -1,0 +1,33 @@
+{
+  "version": "AIGC-OMEGA-CONNECTOR-PILOT-VERIFICATION-0.27",
+  "mode": "SYNTHETIC_ADVERSARIAL_VERIFICATION",
+  "cases": [
+    "revoked_or_missing_credentials",
+    "unauthorized_references",
+    "provenance_substitution",
+    "stale_evidence",
+    "malformed_payloads",
+    "malformed_timestamps",
+    "connector_identity_swaps",
+    "simulated_outage",
+    "replay"
+  ],
+  "expected_controls": {
+    "credential_discovery": false,
+    "target_discovery": false,
+    "external_writes": false,
+    "financial_authority": false,
+    "permission_inference": false,
+    "autonomous_target_selection": false
+  },
+  "evidence_policy": {
+    "explicit_reference": true,
+    "connector_provenance": true,
+    "non_empty_payload": true,
+    "timestamp_required": true,
+    "stale_evidence_rejected": true
+  },
+  "external_side_effects": false,
+  "real_credentials": false,
+  "real_external_targets": false
+}
