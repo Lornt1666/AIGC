@@ -8,7 +8,10 @@ from .omega_worker_connector_admission_ledger import (
     AdmissionAuditReceipt,
     ConnectorAdmissionAuditLedger,
 )
-from .omega_worker_connector_sdk import ConnectorCapabilities, ConnectorReadResult\nfrom .omega_worker_connector_registry import ConnectorRegistry\nfrom .omega_worker_connector_arena import SyntheticMultiConnectorArena\nfrom .omega_worker_connector_trust import (
+from .omega_worker_connector_sdk import ConnectorCapabilities, ConnectorReadResult
+from .omega_worker_connector_registry import ConnectorRegistry
+from .omega_worker_connector_arena import SyntheticMultiConnectorArena
+from .omega_worker_connector_trust import (
     ConnectorTrustAssessment,
     ConnectorTrustObservation,
     ConnectorTrustScorer,
@@ -50,10 +53,6 @@ class SandboxReconciliationOrchestrator:
         self.connectors = dict(connectors)
         self.audit = audit or ConnectorAdmissionAuditLedger()
         self.trust_scorer = trust_scorer or ConnectorTrustScorer()
-        self.reconciler = ExternalEvidenceReconciler(
-            self._build_arena(),
-            trust_scorer=self.trust_scorer,
-        )
 
     def _build_arena(self, admitted: Mapping[str, ConnectorReadResult]) -> SyntheticMultiConnectorArena:
         class Adapter:
