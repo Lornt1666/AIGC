@@ -1,0 +1,14 @@
+{
+  "version":"AIGC-OMEGA-READONLY-PILOT-0.26",
+  "mode":"EXPLICIT_READ_ONLY_PILOT",
+  "synthetic_or_sandbox_target_required":true,
+  "credential_injection":"explicit",
+  "reference_allowlist":"fixed",
+  "external_writes":false,
+  "financial_authority":false,
+  "autonomous_target_selection":false,
+  "credential_discovery":false,
+  "target_discovery":false,
+  "permission_inference":false,
+  "purpose":"validate connector boundary before any real-world admission"
+}
