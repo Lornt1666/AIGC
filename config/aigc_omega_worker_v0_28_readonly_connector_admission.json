@@ -1,0 +1,16 @@
+{
+  "version": "AIGC-OMEGA-READONLY-CONNECTOR-ADMISSION-0.28",
+  "mode": "SANDBOX_READ_ONLY",
+  "connector_count": 1,
+  "credential_injection": "explicit",
+  "reference_allowlist": "fixed",
+  "evidence_only": true,
+  "external_writes": false,
+  "financial_authority": false,
+  "credential_discovery": false,
+  "target_discovery": false,
+  "permission_inference": false,
+  "autonomous_target_selection": false,
+  "production_targets": false,
+  "purpose": "admit one explicitly configured connector boundary before any production integration"
+}
