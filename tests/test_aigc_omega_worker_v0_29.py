@@ -92,7 +92,7 @@ def test_low_trust_escalates_before_selection() -> None:
         expected_kind="status",
         observations={
             "connector-a": trust("connector-a"),
-            "connector-b": trust("connector-b", conformance_score=20),
+            "connector-b": trust("connector-b", disagreement_rate=100, conformance_score=20),
         },
     )
     assert result.status == "ESCALATE"
