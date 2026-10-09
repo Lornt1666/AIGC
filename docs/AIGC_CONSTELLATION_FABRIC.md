@@ -105,7 +105,7 @@ Approved ingress surfaces:
 
 1. Local CLI with `--force-local`.
 2. GitHub Actions `workflow_dispatch` narration input.
-3. GitHub issue or pull request comments containing `AIGC`.
+3. GitHub issue or pull request comments beginning with `AIGC:` (for example, `AIGC: run constellation fabric classification.`).
 4. A future approved chat-log bridge that sends narration text to GitHub Actions.
 
 Important boundary:
@@ -159,11 +159,13 @@ Manual cloud trigger:
 gh workflow run aigc_constellation_trigger.yml -f narration="AIGC: run constellation fabric classification."
 ```
 
-GitHub issue or PR comment trigger:
+GitHub issue or PR comment trigger (the comment must begin with this prefix):
 
 ```text
 AIGC: run constellation fabric classification.
 ```
+
+Narration is passed to the workflow as an environment value, not inserted into a shell script or sourced as shell code. Multiline comments that do not begin with `AIGC:` do not trigger the workflow.
 
 The workflow uploads the Phase 25 manifest, Phase 26 refactor plan, reports, and audit ledgers as GitHub Actions artifacts. It does not commit generated output back into the repo.
 
