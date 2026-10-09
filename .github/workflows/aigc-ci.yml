@@ -18,9 +18,14 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: aigc-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     env:
       REQUESTED_REVISION: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.event_name == 'workflow_dispatch' && inputs.requested_revision || github.sha }}
     steps:
