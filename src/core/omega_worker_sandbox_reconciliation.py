@@ -9,6 +9,7 @@ from .omega_worker_connector_admission_ledger import (
     ConnectorAdmissionAuditLedger,
 )
 from .omega_worker_connector_arena import SyntheticMultiConnectorArena
+from .omega_worker_connector_registry import ConnectorRegistry
 from .omega_worker_connector_sdk import ConnectorCapabilities, ConnectorReadResult
 from .omega_worker_connector_trust import (
     ConnectorTrustAssessment,
@@ -58,6 +59,8 @@ class SandboxReconciliationOrchestrator:
     ) -> SyntheticMultiConnectorArena:
         class Adapter:
             def __init__(self, result: ConnectorReadResult):
+                # Keep the adapter's identity explicit as well as its declared capabilities.
+                self.connector_id = result.connector_id
                 self.capabilities = ConnectorCapabilities(
                     connector_id=result.connector_id,
                     version="0.32-sandbox",
@@ -71,10 +74,7 @@ class SandboxReconciliationOrchestrator:
                     )
                 return self._result
 
-        registry = __import__(
-            "src.core.omega_worker_connector_registry",
-            fromlist=["ConnectorRegistry"],
-        ).ConnectorRegistry()
+        registry = ConnectorRegistry()
         for result in admitted.values():
             registry.register(Adapter(result))
         return SyntheticMultiConnectorArena(registry)
@@ -91,6 +91,11 @@ class SandboxReconciliationOrchestrator:
         observed_after: str | None = None,
     ) -> SandboxReconciliationResult:
         connector_ids = tuple(sorted(self.connectors))
+        if not evidence_reference or not expected_kind or not receipt_prefix:
+            raise SandboxReconciliationError(
+                "Evidence reference, expected kind, and receipt prefix are required."
+            )
+
         missing = [
             cid for cid in connector_ids
             if cid not in policies or cid not in credentials
@@ -100,12 +105,70 @@ class SandboxReconciliationOrchestrator:
                 f"Explicit policy and credential are required for every connector: {tuple(missing)}"
             )
 
+        missing_observations = [
+            cid for cid in connector_ids if cid not in trust_observations
+        ]
+        if missing_observations:
+            raise SandboxReconciliationError(
+                f"Trust observations are required for every connector: {tuple(missing_observations)}"
+            )
+        invalid_observations = [
+            cid for cid in connector_ids
+            if not isinstance(trust_observations[cid], ConnectorTrustObservation)
+        ]
+        if invalid_observations:
+            raise SandboxReconciliationError(
+                f"Explicit trust observations are required for every connector: {tuple(invalid_observations)}"
+            )
+        mismatched_observations = [
+            cid for cid in connector_ids
+            if trust_observations[cid].connector_id != cid
+        ]
+        if mismatched_observations:
+            raise SandboxReconciliationError(
+                f"Trust observation identity mismatch for connectors: {tuple(mismatched_observations)}"
+            )
+
+        invalid_policies = [
+            cid for cid in connector_ids
+            if not isinstance(policies[cid], ReadOnlyAdmissionPolicy)
+        ]
+        if invalid_policies:
+            raise SandboxReconciliationError(
+                f"An explicit read-only admission policy is required: {tuple(invalid_policies)}"
+            )
+        mismatched_policies = [
+            cid for cid in connector_ids
+            if policies[cid].connector_id != cid
+        ]
+        if mismatched_policies:
+            raise SandboxReconciliationError(
+                f"Policy connector identity mismatch for connectors: {tuple(mismatched_policies)}"
+            )
+
+        # Preflight every connector read before the first audit write. This prevents a
+        # later connector's invalid credential, policy, or fixture reference from leaving
+        # a partially committed admission-audit sequence.
+        for connector_id in connector_ids:
+            policy = policies[connector_id]
+            credential = credentials[connector_id]
+            connector = self.connectors[connector_id]
+            if not isinstance(credential, SandboxCredential):
+                raise SandboxReconciliationError(
+                    f"An explicit sandbox credential is required: {connector_id}"
+                )
+            try:
+                connector.read(evidence_reference, credential)
+            except (PermissionError, ValueError, KeyError) as exc:
+                raise SandboxReconciliationError(
+                    f"Sandbox connector preflight failed: {connector_id}"
+                ) from exc
+
+        # Validate all caller-supplied identities and reads before writing receipts.
         receipts: list[AdmissionAuditReceipt] = []
         admitted: dict[str, ConnectorReadResult] = {}
         for connector_id in connector_ids:
             policy = policies[connector_id]
-            if policy.connector_id != connector_id:
-                raise SandboxReconciliationError("Policy connector identity mismatch.")
             evidence, _, audit_receipt = self.connectors[connector_id].admit(
                 policy,
                 evidence_reference=evidence_reference,
