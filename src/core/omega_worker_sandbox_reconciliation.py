@@ -59,6 +59,8 @@ class SandboxReconciliationOrchestrator:
     ) -> SyntheticMultiConnectorArena:
         class Adapter:
             def __init__(self, result: ConnectorReadResult):
+                # Keep the adapter's identity explicit as well as its declared capabilities.
+                self.connector_id = result.connector_id
                 self.capabilities = ConnectorCapabilities(
                     connector_id=result.connector_id,
                     version="0.32-sandbox",
