@@ -152,7 +152,7 @@ def test_malformed_policy_is_rejected_before_audit_writes():
             receipt_prefix="v0-32-malformed-policy",
         )
 
-    assert audit.ledger.entries == []
+    assert audit.ledger.entries == ()
 
 
 def test_malformed_trust_observation_is_rejected_before_audit_writes():
@@ -172,7 +172,7 @@ def test_malformed_trust_observation_is_rejected_before_audit_writes():
             receipt_prefix="v0-32-malformed-trust",
         )
 
-    assert audit.ledger.entries == []
+    assert audit.ledger.entries == ()
 
 
 def test_invalid_later_connector_credential_is_rejected_before_audit_writes():
@@ -191,7 +191,7 @@ def test_invalid_later_connector_credential_is_rejected_before_audit_writes():
             receipt_prefix="v0-32-invalid-credential",
         )
 
-    assert audit.ledger.entries == []
+    assert audit.ledger.entries == ()
 
 
 def test_trust_identity_mismatch_is_rejected_before_audit_writes():
@@ -210,4 +210,4 @@ def test_trust_identity_mismatch_is_rejected_before_audit_writes():
             expected_kind="sandbox",
             receipt_prefix="v0-32-mismatched-trust",
         )
-    assert audit.ledger.entries == []
+    assert audit.ledger.entries == ()
