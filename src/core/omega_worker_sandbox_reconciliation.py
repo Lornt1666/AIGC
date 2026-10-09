@@ -126,7 +126,29 @@ class SandboxReconciliationOrchestrator:
             if policy.connector_id != connector_id:
                 raise SandboxReconciliationError("Policy connector identity mismatch.")
 
-        # Validate all caller-supplied identities before writing any admission receipts.
+        # Preflight every connector read before the first audit write. This prevents a
+        # later connector's invalid credential, policy, or fixture reference from leaving
+        # a partially committed admission-audit sequence.
+        for connector_id in connector_ids:
+            policy = policies[connector_id]
+            credential = credentials[connector_id]
+            connector = self.connectors[connector_id]
+            if not isinstance(policy, ReadOnlyAdmissionPolicy):
+                raise SandboxReconciliationError(
+                    f"An explicit read-only admission policy is required: {connector_id}"
+                )
+            if not isinstance(credential, SandboxCredential):
+                raise SandboxReconciliationError(
+                    f"An explicit sandbox credential is required: {connector_id}"
+                )
+            try:
+                connector.read(evidence_reference, credential)
+            except (PermissionError, ValueError, KeyError) as exc:
+                raise SandboxReconciliationError(
+                    f"Sandbox connector preflight failed: {connector_id}"
+                ) from exc
+
+        # Validate all caller-supplied identities and reads before writing receipts.
         receipts: list[AdmissionAuditReceipt] = []
         admitted: dict[str, ConnectorReadResult] = {}
         for connector_id in connector_ids:
