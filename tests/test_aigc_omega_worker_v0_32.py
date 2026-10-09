@@ -136,6 +136,25 @@ def test_audit_receipts_are_bound_to_each_connector():
     assert audit.verify_chain()
 
 
+def test_invalid_later_connector_credential_is_rejected_before_audit_writes():
+    connectors, policies, credentials = setup()
+    credentials["sandbox-b"] = object()
+    audit = ConnectorAdmissionAuditLedger()
+    orchestrator = SandboxReconciliationOrchestrator(connectors, audit=audit)
+
+    with pytest.raises(SandboxReconciliationError, match="explicit sandbox credential"):
+        orchestrator.run(
+            evidence_reference="sandbox://fixture/032",
+            policies=policies,
+            credentials=credentials,
+            trust_observations={cid: obs(cid) for cid in connectors},
+            expected_kind="sandbox",
+            receipt_prefix="v0-32-invalid-credential",
+        )
+
+    assert audit.ledger.entries == []
+
+
 def test_trust_identity_mismatch_is_rejected_before_audit_writes():
     connectors, policies, credentials = setup()
     audit = ConnectorAdmissionAuditLedger()
