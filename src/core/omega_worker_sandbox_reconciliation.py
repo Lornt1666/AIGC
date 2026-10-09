@@ -112,6 +112,14 @@ class SandboxReconciliationOrchestrator:
             raise SandboxReconciliationError(
                 f"Trust observations are required for every connector: {tuple(missing_observations)}"
             )
+        invalid_observations = [
+            cid for cid in connector_ids
+            if not isinstance(trust_observations[cid], ConnectorTrustObservation)
+        ]
+        if invalid_observations:
+            raise SandboxReconciliationError(
+                f"Explicit trust observations are required for every connector: {tuple(invalid_observations)}"
+            )
         mismatched_observations = [
             cid for cid in connector_ids
             if trust_observations[cid].connector_id != cid
@@ -121,10 +129,22 @@ class SandboxReconciliationOrchestrator:
                 f"Trust observation identity mismatch for connectors: {tuple(mismatched_observations)}"
             )
 
-        for connector_id in connector_ids:
-            policy = policies[connector_id]
-            if policy.connector_id != connector_id:
-                raise SandboxReconciliationError("Policy connector identity mismatch.")
+        invalid_policies = [
+            cid for cid in connector_ids
+            if not isinstance(policies[cid], ReadOnlyAdmissionPolicy)
+        ]
+        if invalid_policies:
+            raise SandboxReconciliationError(
+                f"An explicit read-only admission policy is required: {tuple(invalid_policies)}"
+            )
+        mismatched_policies = [
+            cid for cid in connector_ids
+            if policies[cid].connector_id != cid
+        ]
+        if mismatched_policies:
+            raise SandboxReconciliationError(
+                f"Policy connector identity mismatch for connectors: {tuple(mismatched_policies)}"
+            )
 
         # Preflight every connector read before the first audit write. This prevents a
         # later connector's invalid credential, policy, or fixture reference from leaving
@@ -133,10 +153,6 @@ class SandboxReconciliationOrchestrator:
             policy = policies[connector_id]
             credential = credentials[connector_id]
             connector = self.connectors[connector_id]
-            if not isinstance(policy, ReadOnlyAdmissionPolicy):
-                raise SandboxReconciliationError(
-                    f"An explicit read-only admission policy is required: {connector_id}"
-                )
             if not isinstance(credential, SandboxCredential):
                 raise SandboxReconciliationError(
                     f"An explicit sandbox credential is required: {connector_id}"
