@@ -136,6 +136,45 @@ def test_audit_receipts_are_bound_to_each_connector():
     assert audit.verify_chain()
 
 
+def test_malformed_policy_is_rejected_before_audit_writes():
+    connectors, policies, credentials = setup()
+    policies["sandbox-b"] = object()
+    audit = ConnectorAdmissionAuditLedger()
+    orchestrator = SandboxReconciliationOrchestrator(connectors, audit=audit)
+
+    with pytest.raises(SandboxReconciliationError, match="explicit read-only admission policy"):
+        orchestrator.run(
+            evidence_reference="sandbox://fixture/032",
+            policies=policies,
+            credentials=credentials,
+            trust_observations={cid: obs(cid) for cid in connectors},
+            expected_kind="sandbox",
+            receipt_prefix="v0-32-malformed-policy",
+        )
+
+    assert audit.ledger.entries == []
+
+
+def test_malformed_trust_observation_is_rejected_before_audit_writes():
+    connectors, policies, credentials = setup()
+    observations = {cid: obs(cid) for cid in connectors}
+    observations["sandbox-b"] = object()
+    audit = ConnectorAdmissionAuditLedger()
+    orchestrator = SandboxReconciliationOrchestrator(connectors, audit=audit)
+
+    with pytest.raises(SandboxReconciliationError, match="Explicit trust observations"):
+        orchestrator.run(
+            evidence_reference="sandbox://fixture/032",
+            policies=policies,
+            credentials=credentials,
+            trust_observations=observations,
+            expected_kind="sandbox",
+            receipt_prefix="v0-32-malformed-trust",
+        )
+
+    assert audit.ledger.entries == []
+
+
 def test_invalid_later_connector_credential_is_rejected_before_audit_writes():
     connectors, policies, credentials = setup()
     credentials["sandbox-b"] = object()
