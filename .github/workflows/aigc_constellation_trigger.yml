@@ -36,8 +36,15 @@ jobs:
     name: AIGC pipeline
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, 'AIGC'))
+      (github.event_name == 'issue_comment' && startsWith(github.event.comment.body, 'AIGC:'))
     runs-on: ubuntu-latest
+    env:
+      # Pass untrusted narration as data, never interpolate it into a shell script.
+      AIGC_TRIGGER_TEXT: ${{ github.event.inputs.narration || github.event.comment.body || 'AIGC manual trigger' }}
+      AIGC_PROJECT_PROFILE: ${{ github.event.inputs.project_profile || 'auto' }}
+      AIGC_RUN_MODE: ${{ github.event.inputs.run_mode || 'artifact_generation' }}
+      AIGC_SUBMISSION_DECISION: ${{ github.event.inputs.submission_decision || 'review_only' }}
+      AIGC_SUBMISSION_PHRASE: ${{ github.event.inputs.submission_phrase || '' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -47,21 +54,8 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Resolve AIGC trigger parameters
-        run: |
-          cat > aigc_trigger.env <<'EOF'
-          AIGC_TRIGGER_TEXT=${{ github.event.inputs.narration || github.event.comment.body || 'AIGC manual trigger' }}
-          AIGC_PROJECT_PROFILE=${{ github.event.inputs.project_profile || 'auto' }}
-          AIGC_RUN_MODE=${{ github.event.inputs.run_mode || 'artifact_generation' }}
-          AIGC_SUBMISSION_DECISION=${{ github.event.inputs.submission_decision || 'review_only' }}
-          AIGC_SUBMISSION_PHRASE=${{ github.event.inputs.submission_phrase || '' }}
-          EOF
-
       - name: Run Phase 1 router
         run: |
-          set -a
-          . ./aigc_trigger.env
-          set +a
           python src/phase1_cognitive_phase_router.py --project-root . --config config/aigc_cognitive_phase_router.json --trigger-text "$AIGC_TRIGGER_TEXT" --project-profile "$AIGC_PROJECT_PROFILE" --run-mode "$AIGC_RUN_MODE"
 
       - name: Run Phase 2-24 bridge
@@ -102,9 +96,6 @@ jobs:
 
       - name: Run Phase 25 classifier
         run: |
-          set -a
-          . ./aigc_trigger.env
-          set +a
           python src/phase25_constellation_fabric.py --project-root . --config config/phase25_constellation_fabric.json --trigger-text "$AIGC_TRIGGER_TEXT"
 
       - name: Run Phase 26 planner
@@ -117,9 +108,6 @@ jobs:
 
       - name: Run submission approval cockpit
         run: |
-          set -a
-          . ./aigc_trigger.env
-          set +a
           python src/submission_approval_cockpit.py --project-root . --config config/aigc_submission_approval_cockpit.json --decision "$AIGC_SUBMISSION_DECISION" --phrase "$AIGC_SUBMISSION_PHRASE"
 
       - name: Upload artifacts
