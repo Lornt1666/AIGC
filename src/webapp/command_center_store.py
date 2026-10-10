@@ -227,6 +227,99 @@ class MemoryCommandCenterStore:
     def recover_stale_runs(self) -> int:
         return 0
 
+    def claim_review(self, *, action_id: str, decision_type: str, actor_id: str,
+                     idempotency_key: str, request_digest: str):
+        if decision_type not in {"accept", "deny", "revise"}:
+            raise ValueError("invalid review decision type")
+        _check_digest(request_digest)
+        key_hash = _hash(idempotency_key)
+        with self.lock:
+            prior = self.reviews.get(action_id)
+            if prior:
+                if (prior["actor_id"] == actor_id and prior["key_hash"] == key_hash
+                    and prior["request_digest"] == request_digest and prior["state"] == "completed"):
+                    return {**deepcopy(prior), "replayed": True}
+                if prior["state"] in {"claimed", "unknown"}:
+                    raise ReviewOutcomeUnknown("A prior decision may have executed; reconcile before retrying")
+                raise ReviewAlreadyDecided("A decision is already recorded for this action")
+            if (actor_id, key_hash) in self.review_keys:
+                raise IdempotencyConflict("Idempotency key is already bound to another review")
+            value = {"action_id": action_id, "actor_id": actor_id, "key_hash": key_hash,
+                     "request_digest": request_digest, "decision_type": decision_type,
+                     "state": "claimed", "result": None, "replayed": False}
+            self.reviews[action_id] = value
+            self.review_keys[(actor_id, key_hash)] = action_id
+            return deepcopy(value)
+
+    def complete_review(self, *, action_id: str, result: dict[str, Any]):
+        with self.lock:
+            value = self.reviews.get(action_id)
+            if not value or value["state"] != "claimed":
+                raise ReviewOutcomeUnknown("Review claim is missing or no longer pending")
+            value.update(state="completed", result=deepcopy(result))
+
+    def mark_review_unknown(self, *, action_id: str):
+        with self.lock:
+            value = self.reviews.get(action_id)
+            if value and value["state"] == "claimed":
+                value["state"] = "unknown"
+
+    def get_review_decision(self, action_id: str):
+        with self.lock:
+            value = self.reviews.get(action_id)
+            if not value:
+                return None
+            return {"action_id": action_id, "decision_type": value["decision_type"],
+                    "state": value["state"], "result": deepcopy(value["result"])}
+
+
+class PostgresCommandCenterStore:
+    """Shared PostgreSQL store. Migrations are applied by a separate controlled step."""
+
+    durable = True
+
+    def __init__(self, dsn: str, *, sslmode: str = "verify-full") -> None:
+        if not isinstance(dsn, str) or not dsn.strip():
+            raise CommandCenterStoreUnavailable("Command-center database configuration is missing")
+        self._pool = None
+        try:
+            self._pool = ConnectionPool(
+                conninfo=make_conninfo(dsn, sslmode=sslmode),
+                min_size=1, max_size=5, timeout=5,
+                kwargs={"connect_timeout": 5, "application_name": "aigc-command-center", "row_factory": dict_row},
+                open=False, name="aigc-command-center",
+            )
+            self._pool.open(wait=True)
+            if not self.healthcheck()["ok"]:
+                raise CommandCenterStoreUnavailable("Command-center database schema is not ready")
+            self.recover_stale_runs()
+        except CommandCenterStoreError:
+            if self._pool:
+                self._pool.close()
+            raise
+        except Exception as exc:
+            if self._pool:
+                self._pool.close()
+            raise CommandCenterStoreUnavailable("Command-center database could not be opened safely") from exc
+
+    def close(self):
+        self._pool.close()
+
+    def healthcheck(self):
+        try:
+            with self._pool.connection(timeout=5) as conn:
+                row = conn.execute(
+                    "SELECT to_regclass('public.command_center_runs') AS runs, "
+                    "to_regclass('public.command_center_review_decisions') AS reviews, "
+                    "to_regclass('public.command_center_control_state') AS controls, "
+                    "to_regclass('public.command_center_control_events') AS control_events, "
+                    "to_regclass('public.command_center_run_reconciliations') AS reconciliations"
+                ).fetchone()
+                ready = bool(row and all(row[name] for name in ("runs","reviews","controls","control_events","reconciliations")))
+                return {"ok": ready, "durable": True, "backend": "postgresql"}
+        except Exception as exc:
+            raise CommandCenterStoreUnavailable("Command-center database health check failed") from exc
+
     def get_emergency_state(self):
         try:
             with self._pool.connection(timeout=5) as conn:
@@ -320,99 +413,6 @@ class MemoryCommandCenterStore:
             raise
         except Exception as exc:
             raise CommandCenterStoreUnavailable("Emergency stop could not be cleared") from exc
-
-    def claim_review(self, *, action_id: str, decision_type: str, actor_id: str,
-                     idempotency_key: str, request_digest: str):
-        if decision_type not in {"accept", "deny", "revise"}:
-            raise ValueError("invalid review decision type")
-        _check_digest(request_digest)
-        key_hash = _hash(idempotency_key)
-        with self.lock:
-            prior = self.reviews.get(action_id)
-            if prior:
-                if (prior["actor_id"] == actor_id and prior["key_hash"] == key_hash
-                    and prior["request_digest"] == request_digest and prior["state"] == "completed"):
-                    return {**deepcopy(prior), "replayed": True}
-                if prior["state"] in {"claimed", "unknown"}:
-                    raise ReviewOutcomeUnknown("A prior decision may have executed; reconcile before retrying")
-                raise ReviewAlreadyDecided("A decision is already recorded for this action")
-            if (actor_id, key_hash) in self.review_keys:
-                raise IdempotencyConflict("Idempotency key is already bound to another review")
-            value = {"action_id": action_id, "actor_id": actor_id, "key_hash": key_hash,
-                     "request_digest": request_digest, "decision_type": decision_type,
-                     "state": "claimed", "result": None, "replayed": False}
-            self.reviews[action_id] = value
-            self.review_keys[(actor_id, key_hash)] = action_id
-            return deepcopy(value)
-
-    def complete_review(self, *, action_id: str, result: dict[str, Any]):
-        with self.lock:
-            value = self.reviews.get(action_id)
-            if not value or value["state"] != "claimed":
-                raise ReviewOutcomeUnknown("Review claim is missing or no longer pending")
-            value.update(state="completed", result=deepcopy(result))
-
-    def mark_review_unknown(self, *, action_id: str):
-        with self.lock:
-            value = self.reviews.get(action_id)
-            if value and value["state"] == "claimed":
-                value["state"] = "unknown"
-
-    def get_review_decision(self, action_id: str):
-        with self.lock:
-            value = self.reviews.get(action_id)
-            if not value:
-                return None
-            return {"action_id": action_id, "decision_type": value["decision_type"],
-                    "state": value["state"], "result": deepcopy(value["result"])}
-
-
-class PostgresCommandCenterStore:
-    """Shared PostgreSQL store. Migrations are applied by a separate controlled step."""
-
-    durable = True
-
-    def __init__(self, dsn: str, *, sslmode: str = "verify-full") -> None:
-        if not isinstance(dsn, str) or not dsn.strip():
-            raise CommandCenterStoreUnavailable("Command-center database configuration is missing")
-        self._pool = None
-        try:
-            self._pool = ConnectionPool(
-                conninfo=make_conninfo(dsn, sslmode=sslmode),
-                min_size=1, max_size=5, timeout=5,
-                kwargs={"connect_timeout": 5, "application_name": "aigc-command-center", "row_factory": dict_row},
-                open=False, name="aigc-command-center",
-            )
-            self._pool.open(wait=True)
-            if not self.healthcheck()["ok"]:
-                raise CommandCenterStoreUnavailable("Command-center database schema is not ready")
-            self.recover_stale_runs()
-        except CommandCenterStoreError:
-            if self._pool:
-                self._pool.close()
-            raise
-        except Exception as exc:
-            if self._pool:
-                self._pool.close()
-            raise CommandCenterStoreUnavailable("Command-center database could not be opened safely") from exc
-
-    def close(self):
-        self._pool.close()
-
-    def healthcheck(self):
-        try:
-            with self._pool.connection(timeout=5) as conn:
-                row = conn.execute(
-                    "SELECT to_regclass('public.command_center_runs') AS runs, "
-                    "to_regclass('public.command_center_review_decisions') AS reviews, "
-                    "to_regclass('public.command_center_control_state') AS controls, "
-                    "to_regclass('public.command_center_control_events') AS control_events, "
-                    "to_regclass('public.command_center_run_reconciliations') AS reconciliations"
-                ).fetchone()
-                ready = bool(row and all(row[name] for name in ("runs","reviews","controls","control_events","reconciliations")))
-                return {"ok": ready, "durable": True, "backend": "postgresql"}
-        except Exception as exc:
-            raise CommandCenterStoreUnavailable("Command-center database health check failed") from exc
 
     def recover_stale_runs(self):
         try:
