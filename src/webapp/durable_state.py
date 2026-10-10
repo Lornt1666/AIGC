@@ -465,8 +465,8 @@ class PostgresCommandCenterStore:
 def _cached_store(environment: str, dsn: str, max_concurrent_runs: int):
     if dsn:
         if environment == "production":
-            verified_mode = re.search(r"(?:^|[?&\\s])sslmode=verify-full(?:[&\\s]|$)", dsn, re.IGNORECASE)
-            root_certificate = re.search(r"(?:[?&\\s])sslrootcert=[^&\\s]+", dsn, re.IGNORECASE)
+            verified_mode = re.search(r"(?:^|[?&\s])sslmode=verify-full(?:[&\s]|$)", dsn, re.IGNORECASE)
+            root_certificate = re.search(r"(?:[?&\s])sslrootcert=[^&\s]+", dsn, re.IGNORECASE)
             if not verified_mode or not root_certificate:
                 raise StateStoreNotConfiguredError(
                     "Production DSN must require sslmode=verify-full and an explicit sslrootcert"
