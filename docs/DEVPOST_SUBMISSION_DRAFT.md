@@ -2,11 +2,7 @@
 
 ## Evidence boundary
 
-The first section below is ready to paste while only repository evidence is
-available. It intentionally does not claim a successful GitHub Actions run,
-Google Cloud deployment, live Gemini call, judge publication, merge, or Devpost
-submission. Add the receipt-gated paragraph only after every named value has
-been verified against the exact release receipt.
+The repository integration candidate passed exact-head GitHub Actions run `38083714333` at pre-documentation-refresh head `42d1950684ab8f147151390bdc96dd7ed001feb0`; a fresh run is required after the current documentation changes. This is repository/CI evidence only: it does not prove a merge, Google Cloud deployment, live Gemini call, judge publication, customer activity, or Devpost submission. Add receipt-gated claims only after each named value is verified against the corresponding exact release receipt.
 
 ## Paste-ready repository-evidence version
 
@@ -29,7 +25,7 @@ evidence, and make deployment and publication explicit human decisions.
 
 ### What it does
 
-The repository implements a dedicated Gemini opportunity-assessment path. It
+The current integration candidate implements a dedicated Gemini opportunity-assessment path; it remains draft and is not yet merged or deployed. It
 validates and sanitizes an operator-supplied intake, rejects recognized
 secret-like material, requests a strict structured assessment, validates the
 model's input-evidence pointers, and applies deterministic policy. Every

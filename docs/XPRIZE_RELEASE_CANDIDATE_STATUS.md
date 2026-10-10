@@ -2,7 +2,7 @@
 
 ## Status and precedence
 
-**DRAFT RELEASE CANDIDATE — NOT MERGED — NOT DEPLOYED — NOT SUBMITTED**
+**INTEGRATION CANDIDATE — EXACT-HEAD CI PASSED ON PRE-DOC REVISION — NOT MERGED — NOT DEPLOYED — NOT SUBMITTED**
 
 This document is the current release-specific truth record for the Build with
 Gemini XPRIZE candidate. Its branch, pull-request, CI, Devpost, and authority
@@ -14,12 +14,16 @@ procedure sources; they are not evidence that a named external gate completed.
 
 - Repository: `Lornt1666/AIGC`
 - Base branch: `main`
-- Exact base commit: `6b5d944c5d29e99bfff6e60577f5ce96a94a54d5`
-- Exact base tree: `56d8eb2a34631ac3b2ca03c7b352f23c20dd6d7b`
-- Source implementation: PR `#145`
-- Exact source head: `fcf943a50806e8fd07c2c60ae3afb2d8978ef958`
-- Release branch: `release/xprize-gemini-2026`
-- Draft release pull request: `#170`
+- Exact current-main base commit before this documentation refresh: `42d1950684ab8f147151390bdc96dd7ed001feb0`'s parent `a96833daaf9b0c7ed7bb39b0f4af9000f2b11b1d`
+- Current-main base tree: `64384176a6a885300cd08ff6c6781964d62d6975`
+- Source implementation: draft PR `#170`, branch `release/xprize-gemini-2026`
+- Source head reviewed: `cc1c77e473b4ef383310782d333a727b59ddf052`
+- Reconciled integration candidate: draft PR `#284`, branch `integration/gemini-governed-mainline-2026-10-10`
+- Pre-documentation-refresh candidate head: `42d1950684ab8f147151390bdc96dd7ed001feb0`
+- Exact-head hosted CI run: `38083714333` — passed all 3 jobs, including canonical validation, focused Gemini tests, secret scanning, offline smoke, and locked v0.12/v0.13 revalidation.
+- Retained artifacts: `aigc-colosseum-orchestration-exact-head-42d1950684ab8f147151390bdc96dd7ed001feb0`, plus both locked-release validation artifacts.
+
+The previous CI receipt applies only to the exact head shown above. This documentation refresh creates a new candidate revision and must receive its own exact-head CI before admission or merge.
 
 The exact release commit and tree are the current PR head and the tested tree
 recorded by the successful exact-head CI artifact. Do not copy a prior head SHA
@@ -68,6 +72,14 @@ The pull-request-triggered `AIGC CI` workflow must:
 A queued run, zero-step job, synthetic-merge checkout, missing artifact,
 skipped critical test, warning-only critical gate, SHA/tree mismatch, failed,
 cancelled, or timed-out run is not an admission receipt.
+
+## Hosting topology decision
+
+- The existing AIGC command-center deployment target remains AWS ECS Fargate behind an HTTPS Application Load Balancer, as documented in `docs/deployment/AWS_ECS_FARGATE.md`.
+- This isolated Gemini service remains a separate Google Cloud Run surface because its current provider, runtime, evidence, and secret-broker contracts explicitly depend on Vertex AI, Cloud SQL/PostgreSQL, Cloud Storage, numeric Secret Manager versions, and Cloud Run revision identity.
+- This is an intentional multi-cloud design boundary, not a completed integration: no cross-cloud IAM federation, network route, cloud project, database, bucket, secret, or service has been provisioned or verified.
+- Do not deploy the Gemini service on AWS using the GCP-specific deployment helper. Do not infer that AWS authorization grants Google Cloud authority.
+- AWS command-center public traffic remains blocked by #275 and #282. Gemini staging/live activation remains blocked by its exact-target authorization and runtime-receipt gates.
 
 ## Devpost state
 
@@ -127,7 +139,7 @@ separate, explicit, exact-target authorization and a retained receipt.
 ## Next governed sequence
 
 ```text
-exact-head CI
+fresh exact-head CI for the documentation-refreshed candidate
 → governed code and residual-risk review
 → separately authorized Canadian staging preparation
 → immutable no-traffic deployment

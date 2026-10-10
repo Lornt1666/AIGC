@@ -8,14 +8,20 @@ is not evidence of a live deployment or live Gemini call.
 ## Current boundary
 
 - Repository: `Lornt1666/AIGC`
-- Working branch: `codex/gemini-governed-opportunity-workflow-v1`
-- Pull request: `#145` (draft)
+- Source branch: `release/xprize-gemini-2026` / PR `#170` (stale, draft, non-mergeable)
+- Reconciled candidate: `integration/gemini-governed-mainline-2026-10-10` / PR `#284` (draft)
+- Previous exact candidate head: `42d1950684ab8f147151390bdc96dd7ed001feb0`
+- Previous exact-head CI run `38083714333`: success; all 3 jobs and all critical validation steps passed. This receipt predates the current documentation refresh; rerun CI on the resulting new exact head before merge.
 - Production and staging authorization remain default-deny.
 - Runtime controls, isolated surfaces, governed secret access, readiness,
   container allowlisting, and generation-bound evidence are repository
   implementations; they are not yet staging-operation receipts.
 - No Cloud resource creation, deployment, live Gemini assessment, merge, judge
   publication, or Devpost submission is authorized merely by this runbook.
+
+## Hosting topology decision
+
+The existing AIGC command center targets AWS ECS Fargate behind an HTTPS Application Load Balancer. The isolated Gemini assessment service remains a separate Google Cloud Run surface because its current implementation depends on Vertex AI, Cloud SQL/PostgreSQL, Cloud Storage evidence, exact-version Secret Manager references, and Cloud Run revision identity. This is an intentional multi-cloud boundary, not a claim that either cloud is provisioned or connected. Do not run the GCP deployment helper against AWS resources or infer cross-cloud permissions. AWS public exposure remains blocked by #275 and #282; Gemini staging/live execution remains blocked by its own target-specific authorization and evidence gates.
 
 ## Completion sequence
 
@@ -32,10 +38,7 @@ is not evidence of a live deployment or live Gemini call.
 
 ## CI recovery procedure
 
-The observed GitHub Actions failures created a job but allocated no runner:
-there were zero steps, no logs and no artifacts. Independent checkout-only and
-shell-only probes failed the same way. This must be resolved in GitHub account
-or repository settings before code can earn a CI receipt.
+Historical context: earlier Actions runs did create jobs without allocating a runner, leaving zero steps, logs, or artifacts. That is no longer the current observed state: exact-head run `38083714333` on candidate `42d1950684ab8f147151390bdc96dd7ed001feb0` completed successfully with real validation steps and retained artifacts. Because this run predates the documentation refresh in this candidate, it does not certify the new head; require a fresh exact-head run before merge. If a future run again has zero steps, no logs, or no artifacts, treat it as a runner/account-capacity blocker rather than a code pass.
 
 1. In GitHub, inspect the failed job annotation and repository
    **Settings → Actions → General**.
