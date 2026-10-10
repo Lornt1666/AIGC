@@ -66,7 +66,12 @@ _COMMAND_CENTER_STORE_LOCK = threading.Lock()
 
 
 def _production_mode() -> bool:
-    return os.environ.get("AIGC_ENV", os.environ.get("ENVIRONMENT", "development")).strip().lower() in {"production", "prod"}
+    """Treat either environment variable as authoritative production intent."""
+    environments = (
+        os.environ.get("AIGC_ENV", "").strip().lower(),
+        os.environ.get("ENVIRONMENT", "").strip().lower(),
+    )
+    return any(value in {"production", "prod"} for value in environments)
 
 
 def _command_center_store():
