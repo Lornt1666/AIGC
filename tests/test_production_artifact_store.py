@@ -84,8 +84,8 @@ def setup_store():
     return store, pool, s3
 
 
-def put(store, content=b"packet", op="op-1", expected=None):
-    return store.put(key="authorizations/A1", content=content,
+def put(store, content=b"packet", op="op-1", expected=None, key="authorizations/A1"):
+    return store.put(key=key, content=content,
                      media_type="application/json", schema_version="1",
                      provenance="phase5:test", operation_id=op,
                      expected_current_version_id=expected)
@@ -148,3 +148,11 @@ def test_tampered_bytes_are_rejected():
     s3.objects[(object_key, ref.version_id)] = b"tampered"
     with pytest.raises(ArtifactIntegrityError):
         store.get(ref)
+
+
+
+def test_operation_id_cannot_be_reused_for_another_logical_key():
+    store, _, _ = setup_store()
+    put(store, op="globally-unique-op")
+    with pytest.raises(ArtifactConflict):
+        put(store, op="globally-unique-op", key="work-orders/W1")
