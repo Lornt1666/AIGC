@@ -284,10 +284,27 @@ def reconcile_run(run_id: str, request: RunReconciliationRequest) -> Dict[str, A
     return record
 
 
+def _load_review_source_records():
+    """Load review packets only where the source of authority is safe for this mode.
+
+    The filesystem-backed packet/work-order loaders are development-only. Until the
+    shared durable artifact store is integrated and verified, production review reads
+    and decisions must fail closed rather than treating task-local files as authority.
+    """
+    if _production_mode():
+        raise HTTPException(
+            status_code=503,
+            detail="Durable authorization/evidence storage is not integrated; review operations are disabled in production.",
+        )
+    return (
+        load_authorization_packets(PROJECT_ROOT),
+        load_work_order_governance_records(PROJECT_ROOT),
+    )
+
+
 @app.get("/api/reviews", dependencies=[Depends(require_operator_auth)])
 def reviews() -> Dict[str, Any]:
-    packets = load_authorization_packets(PROJECT_ROOT)
-    work_orders = load_work_order_governance_records(PROJECT_ROOT)
+    packets, work_orders = _load_review_source_records()
     review_items = summarize_authorizations(packets, work_orders)
     try:
         store = _command_center_store()
@@ -434,8 +451,7 @@ def _require_pending_review(review) -> None:
 
 
 def _find_review(action_id: str):
-    packets = load_authorization_packets(PROJECT_ROOT)
-    work_orders = load_work_order_governance_records(PROJECT_ROOT)
+    packets, work_orders = _load_review_source_records()
     for item in summarize_authorizations(packets, work_orders):
         if item.action_id == action_id:
             return item
