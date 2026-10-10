@@ -280,6 +280,13 @@ def _run_cycle_worker(run_id: str) -> None:
             RUNS[run_id]["status"] = "completed"
             RUNS[run_id]["complete"] = True
             RUNS[run_id]["current"] = ""
+    except Exception:
+        # Do not leave a permanently "running" record after an unexpected worker error.
+        with RUN_LOCK:
+            if run_id in RUNS:
+                RUNS[run_id]["status"] = "failed"
+                RUNS[run_id]["complete"] = True
+                RUNS[run_id]["current"] = ""
     finally:
         RUN_CAPACITY.release()
 
