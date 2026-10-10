@@ -60,6 +60,7 @@ class ArtifactStore(Protocol):
         schema_version: str,
         provenance: str,
         operation_id: str,
+        expected_current_version_id: str | None = None,
     ) -> ArtifactRef:
         """Persist bytes, returning the same reference for an identical retry."""
 
@@ -81,8 +82,10 @@ class LocalArtifactStore:
         self.root = Path(root)
         self.blobs = self.root / "blobs"
         self.operations = self.root / "operations"
+        self.current = self.root / "current"
         self.blobs.mkdir(parents=True, exist_ok=True)
         self.operations.mkdir(parents=True, exist_ok=True)
+        self.current.mkdir(parents=True, exist_ok=True)
 
     def put(
         self,
@@ -93,6 +96,7 @@ class LocalArtifactStore:
         schema_version: str,
         provenance: str,
         operation_id: str,
+        expected_current_version_id: str | None = None,
     ) -> ArtifactRef:
         fields = {
             "key": key.strip(),
@@ -121,12 +125,21 @@ class LocalArtifactStore:
             self._verify_blob(blob_path, digest)
             return ArtifactRef(**existing)
 
+        current_path = self.current / (hashlib.sha256(fields["key"].encode("utf-8")).hexdigest() + ".json")
+        current_receipt = None
+        if current_path.exists():
+            current_receipt = json.loads(current_path.read_text(encoding="utf-8"))
+        current_version = current_receipt.get("version_id") if current_receipt else None
+        if current_version != expected_current_version_id:
+            raise ArtifactConflict("stale artifact write: expected current version does not match")
+
         self._write_blob_if_absent(blob_path, content, digest)
         self._write_receipt_if_absent(operation_path, receipt)
         # A concurrent conflicting writer may win the receipt race; always verify it.
         existing = json.loads(operation_path.read_text(encoding="utf-8"))
         if existing != receipt:
             raise ArtifactConflict("operation_id was concurrently committed with different artifact data")
+        self._atomic_replace(current_path, (json.dumps(existing, sort_keys=True, separators=(",", ":")) + "\\n").encode("utf-8"))
         return ArtifactRef(**existing)
 
     def get(self, ref: ArtifactRef) -> bytes:
@@ -171,6 +184,23 @@ class LocalArtifactStore:
     def _write_receipt_if_absent(path: Path, receipt: dict[str, str]) -> None:
         encoded = (json.dumps(receipt, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
         LocalArtifactStore._atomic_create(path, encoded)
+
+    @staticmethod
+    def _atomic_replace(path: Path, content: bytes) -> None:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        fd, temp_name = tempfile.mkstemp(prefix=".artifact-tmp-", dir=path.parent)
+        temp_path = Path(temp_name)
+        try:
+            with os.fdopen(fd, "wb") as handle:
+                handle.write(content)
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temp_path, path)
+        finally:
+            try:
+                temp_path.unlink()
+            except FileNotFoundError:
+                pass
 
     @staticmethod
     def _atomic_create(path: Path, content: bytes) -> None:
