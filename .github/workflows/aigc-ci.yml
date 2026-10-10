@@ -63,8 +63,14 @@ jobs:
           terraform_version: "1.10.5"
           terraform_wrapper: false
 
-      - name: Install dependencies
-        run: python -m pip install -r requirements.txt
+      - name: Install and verify dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/aigc-ci-stage-results"
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt -r requirements-gemini.txt
+          python -m pip check | tee "$RUNNER_TEMP/aigc-ci-stage-results/pip-check.log"
 
       - name: Resolve tested tree
         id: tested
@@ -83,6 +89,52 @@ jobs:
             --broker-revision "${{ steps.identity.outputs.observed_head_sha }}" \
             --run-number "$GITHUB_RUN_NUMBER" \
             --run-id "$GITHUB_RUN_ID"
+
+      - name: Compile governed Gemini release
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m compileall -q \
+            src/gemini_workflow \
+            src/webapp/gemini_app.py \
+            src/webapp/gemini_ui.py \
+            scripts/deploy_gemini_staging.py \
+            scripts/publish_gemini_judge_receipt.py \
+            scripts/run_controlled_gemini_canary.py \
+            scripts/run_gemini_workflow_smoke.py \
+            scripts/validate_gemini_staging_authorization.py \
+            scripts/run_focused_gemini_ci.py
+
+      - name: Scan release-only paths for secret-like content
+        shell: bash
+        run: |
+          set -euo pipefail
+          python src/security/redaction_scanner.py --paths \
+            .gcloudignore.gemini Dockerfile.gemini cloudbuild.gemini.yaml \
+            requirements-gemini.txt migrations/002_gemini_runtime_controls.sql \
+            "product evidence" src/gemini_workflow src/webapp/gemini_app.py \
+            src/webapp/gemini_ui.py scripts/deploy_gemini_staging.py \
+            scripts/publish_gemini_judge_receipt.py scripts/run_controlled_gemini_canary.py \
+            scripts/run_gemini_workflow_smoke.py scripts/validate_gemini_staging_authorization.py \
+            scripts/run_focused_gemini_ci.py config/gemini_canary_intake.example.json \
+            config/gemini_ci_receipt.example.json config/gemini_deployment_permit.example.json \
+            config/gemini_judge_media_manifest.example.json config/gemini_live_assessment_permit.example.json \
+            config/gemini_runtime_limits.json config/gemini_runtime_receipt.example.json \
+            config/gemini_secret_access_manifest.json config/gemini_staging_authorization.example.json \
+            docs/DEVPOST_GEMINI_WORKFLOW.md docs/DEVPOST_SUBMISSION_DRAFT.md \
+            docs/GEMINI_COMPLETION_RUNBOOK.md docs/GEMINI_REQUIREMENTS_EVIDENCE_MATRIX.md
+
+      - name: Run focused Gemini controls with warnings as errors
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/run_focused_gemini_ci.py | tee "$RUNNER_TEMP/aigc-ci-stage-results/focused-gemini-pytest.log"
+
+      - name: Run governed Gemini workflow offline smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/run_gemini_workflow_smoke.py --output-dir "$RUNNER_TEMP/aigc-ci-stage-results/gemini_workflow_smoke"
 
       - name: Emit exact-head admission receipt
         if: always()

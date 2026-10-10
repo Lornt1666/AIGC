@@ -1,0 +1,14 @@
+{
+  "title": "Synthetic Canadian clean-energy opportunity assessment",
+  "description": "Evaluate a fictional, non-customer opportunity to prepare an internal concept note for a Canadian clean-energy data platform. The exercise uses no personal, confidential, credential, payment, or customer data and authorizes no contact, application, purchase, commitment, or other external business action.",
+  "source_url": "https://example.com/regenexcalibur-controlled-canary",
+  "constraints": [
+    "Use only the fields supplied in this synthetic fixture.",
+    "Identify assumptions instead of presenting them as verified facts.",
+    "Require accountable human review before any internal use.",
+    "Do not contact, apply, purchase, submit, or perform any external business action.",
+    "Disclose that Gemini assisted with the assessment."
+  ],
+  "ai_assistance_permitted": true,
+  "ai_disclosure_required": true
+}

@@ -1,0 +1,43 @@
+FROM python:3.12-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV PIP_NO_CACHE_DIR=1
+ENV PORT=8080
+ENV AIGC_ENV=production
+ENV AIGC_GEMINI_RUNTIME_LIMITS_PATH=/app/config/gemini_runtime_limits.json
+
+WORKDIR /app
+
+RUN groupadd --system aigc \
+    && useradd --system --gid aigc --no-create-home aigc
+
+COPY requirements-gemini.txt /app/requirements-gemini.txt
+RUN python -m pip install --no-cache-dir -r /app/requirements-gemini.txt
+
+COPY --chown=aigc:aigc src/gemini_workflow/__init__.py /app/src/gemini_workflow/__init__.py
+COPY --chown=aigc:aigc src/gemini_workflow/api.py /app/src/gemini_workflow/api.py
+COPY --chown=aigc:aigc src/gemini_workflow/auth.py /app/src/gemini_workflow/auth.py
+COPY --chown=aigc:aigc src/gemini_workflow/control_store.py /app/src/gemini_workflow/control_store.py
+COPY --chown=aigc:aigc src/gemini_workflow/evidence.py /app/src/gemini_workflow/evidence.py
+COPY --chown=aigc:aigc src/gemini_workflow/judge_receipts.py /app/src/gemini_workflow/judge_receipts.py
+COPY --chown=aigc:aigc src/gemini_workflow/judge_store.py /app/src/gemini_workflow/judge_store.py
+COPY --chown=aigc:aigc src/gemini_workflow/models.py /app/src/gemini_workflow/models.py
+COPY --chown=aigc:aigc src/gemini_workflow/policy.py /app/src/gemini_workflow/policy.py
+COPY --chown=aigc:aigc src/gemini_workflow/provider.py /app/src/gemini_workflow/provider.py
+COPY --chown=aigc:aigc src/gemini_workflow/readiness.py /app/src/gemini_workflow/readiness.py
+COPY --chown=aigc:aigc src/gemini_workflow/redaction.py /app/src/gemini_workflow/redaction.py
+COPY --chown=aigc:aigc src/gemini_workflow/runtime_limits.py /app/src/gemini_workflow/runtime_limits.py
+COPY --chown=aigc:aigc src/gemini_workflow/secret_broker.py /app/src/gemini_workflow/secret_broker.py
+COPY --chown=aigc:aigc src/gemini_workflow/service.py /app/src/gemini_workflow/service.py
+COPY --chown=aigc:aigc src/gemini_workflow/settings.py /app/src/gemini_workflow/settings.py
+COPY --chown=aigc:aigc src/webapp/gemini_app.py /app/src/webapp/gemini_app.py
+COPY --chown=aigc:aigc src/webapp/gemini_ui.py /app/src/webapp/gemini_ui.py
+COPY --chown=aigc:aigc config/gemini_runtime_limits.json /app/config/gemini_runtime_limits.json
+COPY --chown=aigc:aigc config/gemini_secret_access_manifest.json /app/config/gemini_secret_access_manifest.json
+
+EXPOSE 8080
+
+USER aigc
+
+CMD ["sh", "-c", "exec uvicorn src.webapp.gemini_app:app --host 0.0.0.0 --port ${PORT} --workers 1 --limit-concurrency 8 --timeout-keep-alive 5"]

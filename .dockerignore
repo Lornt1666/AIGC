@@ -11,3 +11,12 @@ venv
 memory/*.sqlite
 memory/*.sqlite-*
 data/**/*.jsonl
+
+*.log
+.env
+.env.*
+*.key
+*.pem
+*credentials*.json
+*service-account*.json
+reports/artifacts
