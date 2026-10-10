@@ -206,3 +206,27 @@ def test_production_passes_verified_ca_bundle_to_postgres_store(monkeypatch, tmp
     result = store_module.command_center_store_from_env()
     assert result["sslmode"] == "verify-full"
     assert result["sslrootcert"] == str(ca_bundle)
+
+
+def test_postgres_same_idempotency_key_replays_while_run_is_active(postgres_stores) -> None:
+    first, second, _dsn = postgres_stores
+    key = f"key-{uuid.uuid4()}"
+    request_digest = digest("cycle-v1")
+    first_record, created = first.create_run(
+        run_id=f"RUN-{uuid.uuid4()}", actor_id="operator",
+        idempotency_key=key, request_digest=request_digest,
+    )
+    replay, replay_created = second.create_run(
+        run_id=f"RUN-{uuid.uuid4()}", actor_id="operator",
+        idempotency_key=key, request_digest=request_digest,
+    )
+    assert created is True
+    assert replay_created is False
+    assert replay["replayed"] is True
+    assert replay["run_id"] == first_record["run_id"]
+    assert replay["status"] == "queued"
+    with pytest.raises(IdempotencyConflict):
+        second.create_run(
+            run_id=f"RUN-{uuid.uuid4()}", actor_id="operator",
+            idempotency_key=key, request_digest=digest("different-cycle"),
+        )

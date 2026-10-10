@@ -277,6 +277,18 @@ class PostgresCommandCenterStore:
         try:
             with self._pool.connection(timeout=5) as conn:
                 with conn.transaction():
+                    # Check the idempotency record before INSERT. A different active run
+                    # can violate the global active-run index before ON CONFLICT handles
+                    # the idempotency constraint; preflight preserves replay semantics.
+                    prior = conn.execute(
+                        """SELECT run_id,status,steps,current_step,complete,created_at,updated_at,version,request_sha256
+                           FROM command_center_runs WHERE actor_id=%s AND idempotency_key_sha256=%s""",
+                        (actor_id, key_hash),
+                    ).fetchone()
+                    if prior:
+                        if prior["request_sha256"] != request_digest:
+                            raise IdempotencyConflict("Idempotency key is bound to another request")
+                        return {**_pg_run(prior), "replayed": True}, False
                     row = conn.execute(
                         """INSERT INTO command_center_runs
                            (run_id,actor_id,idempotency_key_sha256,request_sha256,status,lease_until)
