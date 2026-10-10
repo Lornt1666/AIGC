@@ -215,13 +215,17 @@ class PostgresCommandCenterStore:
 
     durable = True
 
-    def __init__(self, dsn: str, *, sslmode: str = "verify-full") -> None:
+    def __init__(self, dsn: str, *, sslmode: str = "verify-full",
+                 sslrootcert: str | None = None) -> None:
         if not isinstance(dsn, str) or not dsn.strip():
             raise CommandCenterStoreUnavailable("Command-center database configuration is missing")
         self._pool = None
         try:
+            conninfo_options = {"sslmode": sslmode}
+            if sslrootcert:
+                conninfo_options["sslrootcert"] = sslrootcert
             self._pool = ConnectionPool(
-                conninfo=make_conninfo(dsn, sslmode=sslmode),
+                conninfo=make_conninfo(dsn, **conninfo_options),
                 min_size=1, max_size=5, timeout=5,
                 kwargs={"connect_timeout": 5, "application_name": "aigc-command-center", "row_factory": dict_row},
                 open=False, name="aigc-command-center",
@@ -461,13 +465,22 @@ def _pg_review(row: dict[str, Any], *, replayed: bool) -> dict[str, Any]:
 
 def command_center_store_from_env():
     env = os.environ.get("AIGC_ENV", os.environ.get("ENVIRONMENT", "development")).strip().lower()
+    production = env in {"production", "prod"}
     dsn = os.environ.get("AIGC_COMMAND_CENTER_DATABASE_URL", "").strip()
-    if env in {"production", "prod"} and not dsn:
+    if production and not dsn:
         raise CommandCenterStoreUnavailable(
             "AIGC_COMMAND_CENTER_DATABASE_URL is required in production; process-local state is disabled"
         )
-    if dsn:
-        return PostgresCommandCenterStore(
-            dsn, sslmode=os.environ.get("AIGC_COMMAND_CENTER_DB_SSLMODE", "verify-full").strip()
+    sslmode = os.environ.get("AIGC_COMMAND_CENTER_DB_SSLMODE", "verify-full").strip().lower()
+    sslrootcert = os.environ.get("AIGC_COMMAND_CENTER_DB_SSLROOTCERT", "").strip()
+    if production and sslmode != "verify-full":
+        raise CommandCenterStoreUnavailable(
+            "Production PostgreSQL must use AIGC_COMMAND_CENTER_DB_SSLMODE=verify-full"
         )
+    if production and (not sslrootcert or not os.path.isfile(sslrootcert)):
+        raise CommandCenterStoreUnavailable(
+            "Production PostgreSQL requires AIGC_COMMAND_CENTER_DB_SSLROOTCERT pointing to a mounted CA bundle"
+        )
+    if dsn:
+        return PostgresCommandCenterStore(dsn, sslmode=sslmode, sslrootcert=sslrootcert or None)
     return MemoryCommandCenterStore()
