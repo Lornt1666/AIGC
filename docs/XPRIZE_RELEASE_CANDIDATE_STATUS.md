@@ -2,7 +2,7 @@
 
 ## Status and precedence
 
-**INTEGRATION CANDIDATE — EXACT-HEAD CI PASSED ON PRE-DOC REVISION — NOT MERGED — NOT DEPLOYED — NOT SUBMITTED**
+**INTEGRATION CANDIDATE — LAST VERIFIED HEAD PASSED EXACT-HEAD CI — NOT MERGED — NOT DEPLOYED — NOT SUBMITTED**
 
 This document is the current release-specific truth record for the Build with
 Gemini XPRIZE candidate. Its branch, pull-request, CI, Devpost, and authority
@@ -14,20 +14,16 @@ procedure sources; they are not evidence that a named external gate completed.
 
 - Repository: `Lornt1666/AIGC`
 - Base branch: `main`
-- Exact current-main base commit before this documentation refresh: `42d1950684ab8f147151390bdc96dd7ed001feb0`'s parent `a96833daaf9b0c7ed7bb39b0f4af9000f2b11b1d`
+- Exact current-main base commit: `a96833daaf9b0c7ed7bb39b0f4af9000f2b11b1d`
 - Current-main base tree: `64384176a6a885300cd08ff6c6781964d62d6975`
 - Source implementation: draft PR `#170`, branch `release/xprize-gemini-2026`
 - Source head reviewed: `cc1c77e473b4ef383310782d333a727b59ddf052`
 - Reconciled integration candidate: draft PR `#284`, branch `integration/gemini-governed-mainline-2026-10-10`
-- Pre-documentation-refresh candidate head: `42d1950684ab8f147151390bdc96dd7ed001feb0`
-- Exact-head hosted CI run: `38083714333` — passed all 3 jobs, including canonical validation, focused Gemini tests, secret scanning, offline smoke, and locked v0.12/v0.13 revalidation.
-- Retained artifacts: `aigc-colosseum-orchestration-exact-head-42d1950684ab8f147151390bdc96dd7ed001feb0`, plus both locked-release validation artifacts.
+- Last verified candidate head: `a9cf471590f69b2589872417616b1b049df00a22`
+- Exact-head hosted CI run: `38083903246` — passed all 3 jobs, including canonical validation, focused Gemini tests, secret scanning, offline smoke, and locked v0.12/v0.13 revalidation.
+- Retained artifacts: `aigc-colosseum-orchestration-exact-head-a9cf471590f69b2589872417616b1b049df00a22`, plus both locked-release validation artifacts.
 
-The previous CI receipt applies only to the exact head shown above. This documentation refresh creates a new candidate revision and must receive its own exact-head CI before admission or merge.
-
-The exact release commit and tree are the current PR head and the tested tree
-recorded by the successful exact-head CI artifact. Do not copy a prior head SHA
-from prose after the branch advances.
+These receipts prove only the exact head named above. Before merge or admission, compare the current PR head with the successful run's SHA and require all checks and artifacts for that exact SHA. Every later commit needs fresh exact-head CI.
 
 ## Bounded release scope
 
@@ -139,7 +135,7 @@ separate, explicit, exact-target authorization and a retained receipt.
 ## Next governed sequence
 
 ```text
-fresh exact-head CI for the documentation-refreshed candidate
+verify exact-head CI and retained artifacts for the current PR revision
 → governed code and residual-risk review
 → separately authorized Canadian staging preparation
 → immutable no-traffic deployment

@@ -10,8 +10,8 @@ is not evidence of a live deployment or live Gemini call.
 - Repository: `Lornt1666/AIGC`
 - Source branch: `release/xprize-gemini-2026` / PR `#170` (stale, draft, non-mergeable)
 - Reconciled candidate: `integration/gemini-governed-mainline-2026-10-10` / PR `#284` (draft)
-- Previous exact candidate head: `42d1950684ab8f147151390bdc96dd7ed001feb0`
-- Previous exact-head CI run `38083714333`: success; all 3 jobs and all critical validation steps passed. This receipt predates the current documentation refresh; rerun CI on the resulting new exact head before merge.
+- Recorded verified candidate head: `a9cf471590f69b2589872417616b1b049df00a22`
+- Exact-head CI run `38083903246`: success; all 3 jobs and all critical validation steps passed, with the canonical and both locked-release artifacts retained. Before merge, verify that the current PR head has its own successful run; any later commit requires a new exact-head receipt.
 - Production and staging authorization remain default-deny.
 - Runtime controls, isolated surfaces, governed secret access, readiness,
   container allowlisting, and generation-bound evidence are repository
@@ -27,7 +27,7 @@ The existing AIGC command center targets AWS ECS Fargate behind an HTTPS Applica
 
 | Gate | Action | Required receipt | Stop condition |
 |---|---|---|---|
-| CI-1 | Restore GitHub-hosted runner admission and run the exact PR head | Actions URL with allocated steps, complete logs, passing conclusion, head SHA and artifacts | A zero-step job is not a code failure and is not a passing receipt |
+| CI-1 | Run the current PR head through AIGC CI and inspect all required jobs | Actions URL with allocated steps, complete logs, passing conclusion, head SHA and artifacts | A zero-step job is not a code failure and is not a passing receipt |
 | CTRL-1 | Validate emergency stop, idempotency, rate/token limits, surface isolation, SecretBroker, readiness, image allowlist and GCS receipts | Passing unit/integration logs bound to the release SHA | Any failing or skipped critical test |
 | GCP-1 | Review exact staging project, Canadian region, IAM, service accounts, exact secret versions, buckets and CAD ceiling | Completed `gemini_staging_authorization.v1` with exact approval phrase and unexpired authorization | Blank identifier, broad IAM, mutable secret alias, missing ceiling or authorization false |
 | DEPLOY-1 | Build the allowlisted image and deploy by `sha256` digest with no traffic | Artifact Registry digest, Cloud Build ID, Cloud Run revision and inspected configuration | Mutable tag used for deployment or revision differs from authorized SHA |
@@ -38,7 +38,7 @@ The existing AIGC command center targets AWS ECS Fargate behind an HTTPS Applica
 
 ## CI recovery procedure
 
-Historical context: earlier Actions runs did create jobs without allocating a runner, leaving zero steps, logs, or artifacts. That is no longer the current observed state: exact-head run `38083714333` on candidate `42d1950684ab8f147151390bdc96dd7ed001feb0` completed successfully with real validation steps and retained artifacts. Because this run predates the documentation refresh in this candidate, it does not certify the new head; require a fresh exact-head run before merge. If a future run again has zero steps, no logs, or no artifacts, treat it as a runner/account-capacity blocker rather than a code pass.
+Historical context: earlier Actions runs did create jobs without allocating a runner, leaving zero steps, logs, or artifacts. The recorded run `38083903246` on candidate `a9cf471590f69b2589872417616b1b049df00a22` completed successfully with real validation steps and retained artifacts. Verify the current PR head has a matching passing run before merge; if a later run has zero steps, no logs, or no artifacts, treat it as a runner/account-capacity blocker rather than a code pass.
 
 1. In GitHub, inspect the failed job annotation and repository
    **Settings → Actions → General**.

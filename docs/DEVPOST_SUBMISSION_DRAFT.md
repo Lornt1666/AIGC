@@ -2,7 +2,7 @@
 
 ## Evidence boundary
 
-The repository integration candidate passed exact-head GitHub Actions run `38083714333` at pre-documentation-refresh head `42d1950684ab8f147151390bdc96dd7ed001feb0`; a fresh run is required after the current documentation changes. This is repository/CI evidence only: it does not prove a merge, Google Cloud deployment, live Gemini call, judge publication, customer activity, or Devpost submission. Add receipt-gated claims only after each named value is verified against the corresponding exact release receipt.
+The integration candidate revision `a9cf471590f69b2589872417616b1b049df00a22` passed exact-head GitHub Actions run `38083903246` with all three jobs and retained artifacts. Before reusing this draft after further changes, verify the current PR head and its own checks. This is repository/CI evidence only: it does not prove a merge, Google Cloud deployment, live Gemini call, judge publication, customer activity, or Devpost submission. Add receipt-gated claims only after each named value is verified against the corresponding exact release receipt.
 
 ## Paste-ready repository-evidence version
 
