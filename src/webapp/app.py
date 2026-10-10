@@ -56,7 +56,7 @@ def _safe_output(value: str, limit: int = MAX_OUTPUT_CHARS) -> str:
     import re
     patterns = [
         (r"(?i)(authorization\s*[:=]\s*(?:bearer\s+)?)[^\s,;]+", r"\1[REDACTED]"),
-        (r"(?i)((?:api[_-]?key|access[_-]?token|refresh[_-]?token|client[_-]?secret|password|secret)\s*[:=]\s*)[^\s,;]+", r"\1[REDACTED]"),
+        (r"""(?i)((?:"?(?:api[_-]?key|access[_-]?token|refresh[_-]?token|client[_-]?secret|password|secret)"?)\s*[:=]\s*["']?)[^\s,;"']+""", r"\1[REDACTED]"),
         (r"\b(?:AKIA|ASIA)[A-Z0-9]{16}\b", "[REDACTED_AWS_KEY]"),
     ]
     for pattern, replacement in patterns:
