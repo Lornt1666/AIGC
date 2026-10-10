@@ -7,6 +7,7 @@ import json
 import os
 import re
 import threading
+import uuid
 from typing import Any
 
 from psycopg.conninfo import make_conninfo
