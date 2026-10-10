@@ -118,18 +118,15 @@ def test_review_mutations_reject_stale_or_non_pending_packets() -> None:
 
 
 def test_run_capacity_is_bounded() -> None:
-    from src.webapp.app import MAX_CONCURRENT_RUNS, RUN_CAPACITY
+    from src.webapp.durable_state import InMemoryCommandCenterStore, RunBusyError, hash_request
 
-    assert MAX_CONCURRENT_RUNS >= 1
-    acquired = 0
-    try:
-        for _ in range(MAX_CONCURRENT_RUNS):
-            assert RUN_CAPACITY.acquire(blocking=False)
-            acquired += 1
-        assert RUN_CAPACITY.acquire(blocking=False) is False
-    finally:
-        for _ in range(acquired):
-            RUN_CAPACITY.release()
+    store = InMemoryCommandCenterStore(max_concurrent_runs=1)
+    request_sha = hash_request({"workflow": "capacity-test"})
+    store.create_run(run_id="AIGC-RUN-capacity-1", idempotency_key="capacity-test-key-0001",
+                     request_sha256=request_sha, max_concurrent=1, lease_seconds=60)
+    with pytest.raises(RunBusyError):
+        store.create_run(run_id="AIGC-RUN-capacity-2", idempotency_key="capacity-test-key-0002",
+                         request_sha256=request_sha, max_concurrent=1, lease_seconds=60)
 
 
 def test_governed_command_timeout_is_reported(monkeypatch, tmp_path) -> None:
@@ -183,3 +180,11 @@ def test_all_review_routes_reject_stale_or_decided_packets_before_command(
 
     assert response.status_code == 409
     assert expected_detail in response.json()["detail"]
+
+
+def test_production_readiness_fails_closed_without_durable_state(monkeypatch) -> None:
+    monkeypatch.setenv("AIGC_ENV", "production")
+    monkeypatch.delenv("AIGC_COMMAND_CENTER_STATE_DSN", raising=False)
+    client = TestClient(app)
+    assert client.get("/health").status_code == 200
+    assert client.get("/ready").status_code == 503
