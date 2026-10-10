@@ -3,6 +3,15 @@ import pytest
 import yaml
 from scripts.validate_aigc_multi_agent_runtime import DEFAULT_CONFIG, DEFAULT_SCHEMA, validate_runtime
 
+def test_invalid_schema_definition_is_rejected(tmp_path: Path):
+    schema = yaml.safe_load(DEFAULT_SCHEMA.read_text(encoding="utf-8"))
+    schema["type"] = "not-a-json-schema-type"
+    altered = tmp_path / "schema.json"
+    altered.write_text(__import__("json").dumps(schema), encoding="utf-8")
+    with pytest.raises(ValueError, match="Invalid JSON Schema definition"):
+        validate_runtime(DEFAULT_CONFIG, altered)
+
+
 def test_runtime_schema_and_graph_validate():
     result = validate_runtime()
     assert result["schema_validation"] == "PASS"
