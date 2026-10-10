@@ -41,7 +41,29 @@ app = FastAPI(
 
 RUNS: Dict[str, Dict[str, Any]] = {}
 RUN_LOCK = threading.Lock()
+# This process-local gate prevents thread floods in one worker. Multi-replica and
+# restart-safe execution still requires durable shared state and remains a deploy blocker.
+MAX_CONCURRENT_RUNS = max(1, int(os.environ.get("AIGC_MAX_CONCURRENT_RUNS", "1")))
+RUN_CAPACITY = threading.BoundedSemaphore(MAX_CONCURRENT_RUNS)
+STEP_TIMEOUT_SECONDS = max(5, int(os.environ.get("AIGC_STEP_TIMEOUT_SECONDS", "120")))
+EMERGENCY_STOP_TIMEOUT_SECONDS = max(5, int(os.environ.get("AIGC_EMERGENCY_STOP_TIMEOUT_SECONDS", "15")))
+MAX_OUTPUT_CHARS = 2000
 COMMAND_CENTER_TOKEN_ENV = "AIGC_COMMAND_CENTER_TOKEN"
+
+def _safe_output(value: str, limit: int = MAX_OUTPUT_CHARS) -> str:
+    """Bound and redact common secret-shaped output before returning it to a browser."""
+    value = value or ""
+    import re
+    patterns = [
+        (r"(?i)(authorization\s*[:=]\s*(?:bearer\s+)?)[^\s,;]+", r"\1[REDACTED]"),
+        (r"(?i)((?:api[_-]?key|access[_-]?token|refresh[_-]?token|client[_-]?secret|password|secret)\s*[:=]\s*)[^\s,;]+", r"\1[REDACTED]"),
+        (r"\b(?:AKIA|ASIA)[A-Z0-9]{16}\b", "[REDACTED_AWS_KEY]"),
+    ]
+    for pattern, replacement in patterns:
+        value = re.sub(pattern, replacement, value)
+    if len(value) > limit:
+        value = value[-limit:]
+    return value
 
 
 class DecisionRequest(BaseModel):
@@ -127,11 +149,19 @@ def pipeline() -> Dict[str, Any]:
 
 @app.post("/api/run", dependencies=[Depends(require_operator_auth)])
 def run_cycle() -> Dict[str, Any]:
+    if not RUN_CAPACITY.acquire(blocking=False):
+        raise HTTPException(status_code=429, detail="A governed run is already active; retry after it finishes.")
     run_id = f"AIGC-RUN-{uuid.uuid4()}"
     with RUN_LOCK:
         RUNS[run_id] = {"status": "queued", "steps": [], "current": "", "complete": False}
-    thread = threading.Thread(target=_run_cycle_worker, args=(run_id,), daemon=True)
-    thread.start()
+    try:
+        thread = threading.Thread(target=_run_cycle_worker, args=(run_id,), daemon=True)
+        thread.start()
+    except Exception:
+        with RUN_LOCK:
+            RUNS.pop(run_id, None)
+        RUN_CAPACITY.release()
+        raise HTTPException(status_code=503, detail="Could not start the governed run.")
     return {"run_id": run_id, "status_url": f"/api/run/{run_id}"}
 
 
@@ -170,6 +200,7 @@ def accept_review(action_id: str, request: DecisionRequest) -> Dict[str, Any]:
 @app.post("/api/reviews/{action_id}/deny", dependencies=[Depends(require_operator_auth)])
 def deny_review(action_id: str, request: DecisionRequest) -> Dict[str, Any]:
     review = _find_review(action_id)
+    _require_pending_review(review)
     result = run_command(
         build_deny_command(PROJECT_ROOT, review, DEFAULT_AUTHORIZATIONS_PATH),
         root=PROJECT_ROOT,
@@ -183,6 +214,7 @@ def revise_review(action_id: str, request: DecisionRequest) -> Dict[str, Any]:
     if not request.revision_instructions.strip():
         raise HTTPException(status_code=400, detail="revision_instructions is required")
     review = _find_review(action_id)
+    _require_pending_review(review)
     result = run_command(
         build_revise_command(PROJECT_ROOT, review, request.revision_instructions, DEFAULT_AUTHORIZATIONS_PATH),
         root=PROJECT_ROOT,
@@ -193,14 +225,15 @@ def revise_review(action_id: str, request: DecisionRequest) -> Dict[str, Any]:
 
 @app.post("/api/emergency-stop", dependencies=[Depends(require_operator_auth)])
 def emergency_stop() -> Dict[str, Any]:
-    result = subprocess.run(
-        [sys.executable, str(PROJECT_ROOT / "src" / "aigc.py"), "--root", str(PROJECT_ROOT), "emergency-stop"],
-        cwd=PROJECT_ROOT,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    return {"ok": result.returncode == 0, "stdout": result.stdout, "stderr": result.stderr}
+    try:
+        result = subprocess.run(
+            [sys.executable, str(PROJECT_ROOT / "src" / "aigc.py"), "--root", str(PROJECT_ROOT), "emergency-stop"],
+            cwd=PROJECT_ROOT, capture_output=True, text=True, check=False,
+            timeout=EMERGENCY_STOP_TIMEOUT_SECONDS,
+        )
+        return {"ok": result.returncode == 0, "stdout": _safe_output(result.stdout), "stderr": _safe_output(result.stderr)}
+    except subprocess.TimeoutExpired:
+        raise HTTPException(status_code=504, detail="Emergency-stop command timed out; verify the underlying stop state locally.")
 
 
 @app.get("/", response_class=HTMLResponse, dependencies=[Depends(require_operator_auth)])
@@ -209,31 +242,55 @@ def ui() -> str:
 
 
 def _run_cycle_worker(run_id: str) -> None:
-    with RUN_LOCK:
-        RUNS[run_id]["status"] = "running"
-    for name, command in BUSINESS_CYCLE:
+    try:
         with RUN_LOCK:
-            RUNS[run_id]["current"] = name
-        result = subprocess.run(command, cwd=PROJECT_ROOT, capture_output=True, text=True, check=False)
-        step_payload = {
-            "name": name,
-            "command": command,
-            "returncode": result.returncode,
-            "ok": result.returncode == 0,
-            "stdout_tail": result.stdout[-6000:],
-            "stderr_tail": result.stderr[-6000:],
-        }
-        with RUN_LOCK:
-            RUNS[run_id]["steps"].append(step_payload)
-        if result.returncode != 0:
+            RUNS[run_id]["status"] = "running"
+        for name, command in BUSINESS_CYCLE:
             with RUN_LOCK:
-                RUNS[run_id]["status"] = "failed"
-                RUNS[run_id]["complete"] = True
-            return
-    with RUN_LOCK:
-        RUNS[run_id]["status"] = "completed"
-        RUNS[run_id]["complete"] = True
-        RUNS[run_id]["current"] = ""
+                RUNS[run_id]["current"] = name
+            try:
+                result = subprocess.run(
+                    command, cwd=PROJECT_ROOT, capture_output=True, text=True,
+                    check=False, timeout=STEP_TIMEOUT_SECONDS,
+                )
+                returncode = result.returncode
+                stdout = result.stdout
+                stderr = result.stderr
+            except subprocess.TimeoutExpired as exc:
+                returncode = 124
+                stdout = exc.stdout.decode("utf-8", errors="replace") if isinstance(exc.stdout, bytes) else (exc.stdout or "")
+                stderr = (exc.stderr.decode("utf-8", errors="replace") if isinstance(exc.stderr, bytes) else (exc.stderr or ""))
+                stderr += f"\nTimed out after {STEP_TIMEOUT_SECONDS} seconds."
+            step_payload = {
+                "name": name,
+                "command": command,
+                "returncode": returncode,
+                "ok": returncode == 0,
+                "stdout_tail": _safe_output(stdout),
+                "stderr_tail": _safe_output(stderr),
+            }
+            with RUN_LOCK:
+                RUNS[run_id]["steps"].append(step_payload)
+            if returncode != 0:
+                with RUN_LOCK:
+                    RUNS[run_id]["status"] = "timed_out" if returncode == 124 else "failed"
+                    RUNS[run_id]["complete"] = True
+                return
+        with RUN_LOCK:
+            RUNS[run_id]["status"] = "completed"
+            RUNS[run_id]["complete"] = True
+            RUNS[run_id]["current"] = ""
+    finally:
+        RUN_CAPACITY.release()
+
+
+def _require_pending_review(review) -> None:
+    if review.expired:
+        raise HTTPException(status_code=409, detail="Review packet is expired")
+    if review.external_action_performed:
+        raise HTTPException(status_code=409, detail="Packet already records outward completion")
+    if review.decision != "pending":
+        raise HTTPException(status_code=409, detail="Packet is not pending")
 
 
 def _find_review(action_id: str):
@@ -250,8 +307,8 @@ def _command_payload(result) -> Dict[str, Any]:
         "ok": result.ok,
         "label": result.label,
         "returncode": result.returncode,
-        "stdout": result.stdout,
-        "stderr": result.stderr,
+        "stdout": _safe_output(result.stdout),
+        "stderr": _safe_output(result.stderr),
     }
 
 
