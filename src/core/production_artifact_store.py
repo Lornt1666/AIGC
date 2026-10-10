@@ -121,7 +121,9 @@ class S3PostgresArtifactStore:
                            WHERE logical_key = %s ORDER BY created_at DESC, id DESC LIMIT 1""",
                         (fields["key"],),
                     ).fetchone()
-                    current_version = current[0] if current else None
+                    current_version = (
+                        current["version_id"] if isinstance(current, Mapping) else current[0]
+                    ) if current else None
                     if current_version != expected_current_version_id:
                         raise ArtifactConflict("stale artifact write: expected current version does not match")
 
