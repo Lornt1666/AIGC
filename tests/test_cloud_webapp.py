@@ -122,3 +122,16 @@ def test_run_capacity_is_bounded() -> None:
         assert RUN_CAPACITY.acquire(blocking=False) is False
     finally:
         RUN_CAPACITY.release()
+
+
+def test_governed_command_timeout_is_reported(monkeypatch, tmp_path) -> None:
+    import subprocess
+    from src.core import operator_cockpit
+
+    def timed_out(*args, **kwargs):
+        raise subprocess.TimeoutExpired(args[0], timeout=kwargs.get("timeout", 1), output="partial", stderr="stalled")
+
+    monkeypatch.setattr(operator_cockpit.subprocess, "run", timed_out)
+    result = operator_cockpit.run_command(["example"], root=tmp_path, label="test-timeout", timeout_seconds=2)
+    assert result.returncode == 124
+    assert "Timed out after 2 seconds." in result.stderr
