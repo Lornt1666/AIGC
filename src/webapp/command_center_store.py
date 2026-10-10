@@ -179,6 +179,9 @@ class MemoryCommandCenterStore:
             value.update(status="failed", complete=True, current="")
             value["updated_at"] = datetime.now(timezone.utc).isoformat()
             value["version"] += 1
+            self.reconciliations.append({"run_id":run_id,"expected_version":expected_version,
+                "actor_id":actor_id,"confirmation_phrase_sha256":_hash(confirmation_phrase),
+                "disposition":"failed"})
 
     def get_emergency_state(self):
         with self.lock:
@@ -186,6 +189,9 @@ class MemoryCommandCenterStore:
                     "reason": self.stop_reason, "actor_id": self.stop_actor_id}
 
     def activate_emergency_stop(self, *, actor_id: str, reason: str):
+        reason = reason.strip()
+        if len(reason) < 10 or len(reason) > 2000:
+            raise ValueError("reason must contain 10..2000 characters")
         with self.lock:
             if not self.stop_active:
                 self.stop_epoch += 1
@@ -199,6 +205,9 @@ class MemoryCommandCenterStore:
     def clear_emergency_stop(self, *, actor_id: str, reason: str,
                              expected_epoch: int, exact_phrase: str):
         expected = f"CLEAR AIGC EMERGENCY STOP EPOCH {expected_epoch}"
+        reason = reason.strip()
+        if len(reason) < 10 or len(reason) > 2000:
+            raise ValueError("reason must contain 10..2000 characters")
         if exact_phrase != expected:
             raise ValueError("exact_phrase does not match the emergency-stop epoch")
         with self.lock:
@@ -442,7 +451,7 @@ class PostgresCommandCenterStore:
                     if row:
                         return {**_pg_run(row), "replayed": False}, True
                     prior = conn.execute(
-                        """SELECT run_id,status,steps,current_step,complete,created_at,updated_at,version,request_sha256
+                        """SELECT run_id,status,steps,current_step,complete,created_at,updated_at,version,request_sha256,stop_epoch
                            FROM command_center_runs WHERE actor_id=%s AND idempotency_key_sha256=%s""",
                         (actor_id, key_hash),
                     ).fetchone()
@@ -464,7 +473,7 @@ class PostgresCommandCenterStore:
         try:
             with self._pool.connection(timeout=5) as conn:
                 row = conn.execute(
-                    """SELECT run_id,status,steps,current_step,complete,created_at,updated_at,version
+                    """SELECT run_id,status,steps,current_step,complete,created_at,updated_at,version,stop_epoch
                        FROM command_center_runs WHERE run_id=%s""", (run_id,)
                 ).fetchone()
                 return _pg_run(row) if row else None

@@ -274,7 +274,7 @@ def run_status(run_id: str) -> Dict[str, Any]:
 
 
 @app.post("/api/run/{run_id}/reconcile", dependencies=[Depends(require_operator_auth)])
-def reconcile_run(run_id: str, request: RunReconciliationRequest) -> Dict[str, Any]:
+def reconcile_run(run_id: str, request: RunReconciliationRequest, http_request: Request) -> Dict[str, Any]:
     expected_phrase = f"RECONCILE AIGC RUN {run_id} AS FAILED VERSION {request.expected_version}"
     if request.confirmation_phrase != expected_phrase:
         raise HTTPException(status_code=400, detail="Exact reconciliation phrase does not match.")
@@ -282,7 +282,7 @@ def reconcile_run(run_id: str, request: RunReconciliationRequest) -> Dict[str, A
         store = _command_center_store()
         store.reconcile_unknown_run(
             run_id=run_id,
-            actor_id=_operator_actor_id(request),
+            actor_id=_operator_actor_id(http_request),
             expected_version=request.expected_version,
             confirmation_phrase=request.confirmation_phrase,
         )
@@ -414,6 +414,8 @@ def clear_emergency_stop(request: EmergencyStopClearRequest, http_request: Reque
     expected = f"CLEAR AIGC EMERGENCY STOP EPOCH {request.expected_epoch}"
     if request.confirmation_phrase != expected:
         raise HTTPException(status_code=400, detail="Exact emergency-stop clear phrase does not match.")
+    if len(request.reason.strip()) < 10 or len(request.reason.strip()) > 2000:
+        raise HTTPException(status_code=400, detail="Clear reason must contain 10..2000 characters.")
     try:
         store = _command_center_store()
         state = store.get_emergency_state()
