@@ -132,6 +132,19 @@ class LocalArtifactStore:
     def get(self, ref: ArtifactRef) -> bytes:
         if not _SHA256.fullmatch(ref.sha256) or ref.version_id != ref.sha256:
             raise ArtifactIntegrityError("artifact reference has an invalid digest or version")
+        if not ref.operation_id:
+            raise ArtifactIntegrityError("artifact reference is missing its operation ID")
+        operation_path = self.operations / (
+            hashlib.sha256(ref.operation_id.encode("utf-8")).hexdigest() + ".json"
+        )
+        try:
+            receipt = json.loads(operation_path.read_text(encoding="utf-8"))
+        except FileNotFoundError as exc:
+            raise ArtifactNotFound("artifact operation receipt is missing") from exc
+        except (OSError, json.JSONDecodeError) as exc:
+            raise ArtifactIntegrityError("artifact operation receipt is unreadable") from exc
+        if receipt != asdict(ref):
+            raise ArtifactIntegrityError("artifact reference metadata does not match its committed receipt")
         path = self.blobs / ref.sha256
         if not path.is_file():
             raise ArtifactNotFound("artifact blob is missing")
