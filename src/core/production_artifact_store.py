@@ -12,7 +12,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import hashlib
 import re
-from typing import Any, Protocol
+from typing import Any, Mapping, Protocol
 
 _SHA256 = re.compile(r"^[a-f0-9]{64}$")
 
@@ -166,15 +166,26 @@ class S3PostgresArtifactStore:
             raise ArtifactUnavailable("authoritative artifact metadata is unavailable") from exc
         if not row:
             raise ArtifactNotFound("artifact metadata is missing")
-        stored = ArtifactRef(key=row[0], version_id=row[1], sha256=row[3],
-                             media_type=row[4], schema_version=row[5],
-                             provenance=row[6], operation_id=row[7])
+        if isinstance(row, Mapping):
+            stored = ArtifactRef(
+                key=row["logical_key"], version_id=row["version_id"], sha256=row["sha256"],
+                media_type=row["media_type"], schema_version=row["schema_version"],
+                provenance=row["provenance"], operation_id=row["operation_id"],
+            )
+            object_key = row["object_key"]
+            stored_digest = row["sha256"]
+        else:
+            stored = ArtifactRef(key=row[0], version_id=row[1], sha256=row[3],
+                                 media_type=row[4], schema_version=row[5],
+                                 provenance=row[6], operation_id=row[7])
+            object_key = row[2]
+            stored_digest = row[3]
         if stored != ref:
             raise ArtifactIntegrityError("reference does not match authoritative metadata")
-        if row[3] != ref.sha256:
+        if stored_digest != ref.sha256:
             raise ArtifactIntegrityError("metadata digest mismatch")
         try:
-            response = self.s3.get_object(Bucket=self.bucket, Key=row[2], VersionId=ref.version_id)
+            response = self.s3.get_object(Bucket=self.bucket, Key=object_key, VersionId=ref.version_id)
             body = response["Body"].read()
         except Exception as exc:
             raise ArtifactUnavailable("versioned S3 object is denied or unavailable") from exc
@@ -186,6 +197,12 @@ class S3PostgresArtifactStore:
     def _row_to_ref(row: Any) -> ArtifactRef:
         # SELECT order: logical_key, version_id, sha256, media_type, schema_version,
         # provenance, operation_id.
+        if isinstance(row, Mapping):
+            return ArtifactRef(
+                key=row["logical_key"], version_id=row["version_id"], sha256=row["sha256"],
+                media_type=row["media_type"], schema_version=row["schema_version"],
+                provenance=row["provenance"], operation_id=row["operation_id"],
+            )
         return ArtifactRef(key=row[0], version_id=row[1], sha256=row[2],
                            media_type=row[3], schema_version=row[4],
                            provenance=row[5], operation_id=row[6])
