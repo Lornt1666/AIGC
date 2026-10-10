@@ -17,10 +17,14 @@ class FakeTransaction:
 
 
 class FakeConnection:
-    def __init__(self, state): self.state = state
+    def __init__(self, state, mapping_rows=False):
+        self.state = state
+        self.mapping_rows = mapping_rows
+        self.last_sql = ""
     def transaction(self): return FakeTransaction()
     def execute(self, sql, params=()):
         normalized = " ".join(sql.split())
+        self.last_sql = normalized
         if "pg_advisory_xact_lock" in normalized:
             return self
         if "WHERE operation_id = %s" in normalized:
@@ -46,16 +50,30 @@ class FakeConnection:
         else:
             raise AssertionError(f"Unexpected SQL: {normalized}")
         return self
-    def fetchone(self): return self.row
+    def fetchone(self):
+        if not self.mapping_rows or self.row is None:
+            return self.row
+        if "ORDER BY created_at DESC" in self.last_sql:
+            return {"version_id": self.row[0]}
+        if "object_key" in self.last_sql and "WHERE operation_id" in self.last_sql:
+            keys = ("logical_key", "version_id", "object_key", "sha256",
+                    "media_type", "schema_version", "provenance", "operation_id")
+            return dict(zip(keys, self.row))
+        if "WHERE operation_id" in self.last_sql:
+            keys = ("logical_key", "version_id", "sha256", "media_type",
+                    "schema_version", "provenance", "operation_id")
+            return dict(zip(keys, self.row))
+        return self.row
 
 
 class FakePool:
-    def __init__(self):
+    def __init__(self, mapping_rows=False):
+        self.mapping_rows = mapping_rows
         self.state = {"ops": {}, "keys": {}, "objects": {}, "object_by_version": {}}
     def connection(self):
         pool = self
         class Context:
-            def __enter__(self): return FakeConnection(pool.state)
+            def __enter__(self): return FakeConnection(pool.state, pool.mapping_rows)
             def __exit__(self, *_): return False
         return Context()
 
@@ -78,8 +96,8 @@ class FakeS3:
         return {"Body": io.BytesIO(self.objects[(kwargs["Key"], kwargs["VersionId"])])}
 
 
-def setup_store():
-    pool, s3 = FakePool(), FakeS3()
+def setup_store(mapping_rows=False):
+    pool, s3 = FakePool(mapping_rows=mapping_rows), FakeS3()
     store = S3PostgresArtifactStore(pool=pool, s3_client=s3, bucket="private-test-bucket")
     return store, pool, s3
 
@@ -180,3 +198,12 @@ def test_mapping_row_factory_is_supported():
         provenance="phase5:test",
         operation_id="op-7",
     )
+
+
+
+def test_mapping_row_factory_supports_full_round_trip():
+    store, _, _ = setup_store(mapping_rows=True)
+    ref = put(store)
+    assert store.get(ref) == b"packet"
+    second = put(store, content=b"next", op="op-2", expected=ref.version_id)
+    assert store.get(second) == b"next"
