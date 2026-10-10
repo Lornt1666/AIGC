@@ -24,7 +24,12 @@ class FakeConnection:
         if "pg_advisory_xact_lock" in normalized:
             return self
         if "WHERE operation_id = %s" in normalized:
-            self.row = self.state["ops"].get(params[0])
+            stored = self.state["ops"].get(params[0])
+            if stored and "object_key" in normalized:
+                self.row = (stored[0], stored[1], self.state["objects"][params[0]],
+                            stored[2], stored[3], stored[4], stored[5], stored[6])
+            else:
+                self.row = stored
         elif "ORDER BY created_at DESC" in normalized:
             versions = self.state["keys"].get(params[0], [])
             self.row = (versions[-1][1],) if versions else None
