@@ -21,6 +21,7 @@ from pydantic import BaseModel
 from src.webapp.command_center_store import (
     CommandCenterStoreError,
     CommandCenterStoreUnavailable,
+    EmergencyStopActive,
     IdempotencyConflict,
     ReviewAlreadyDecided,
     ReviewOutcomeUnknown,
@@ -101,6 +102,8 @@ def _idempotency_key(request: Request | None) -> str:
 
 
 def _durable_store_error(exc: CommandCenterStoreError) -> HTTPException:
+    if isinstance(exc, EmergencyStopActive):
+        return HTTPException(status_code=423, detail=str(exc))
     if isinstance(exc, RunAlreadyActive):
         return HTTPException(status_code=429, detail=str(exc))
     if isinstance(exc, (IdempotencyConflict, ReviewAlreadyDecided, ReviewOutcomeUnknown, RunNotFound)):
@@ -131,6 +134,12 @@ class DecisionRequest(BaseModel):
 class RunReconciliationRequest(BaseModel):
     expected_version: int
     confirmation_phrase: str
+
+
+class EmergencyStopClearRequest(BaseModel):
+    expected_epoch: int
+    confirmation_phrase: str
+    reason: str
 
 
 BUSINESS_CYCLE = [
@@ -273,6 +282,7 @@ def reconcile_run(run_id: str, request: RunReconciliationRequest) -> Dict[str, A
         store = _command_center_store()
         store.reconcile_unknown_run(
             run_id=run_id,
+            actor_id=_operator_actor_id(request),
             expected_version=request.expected_version,
             confirmation_phrase=request.confirmation_phrase,
         )
@@ -369,17 +379,66 @@ def revise_review(action_id: str, request: DecisionRequest, http_request: Reques
     return _apply_review_decision(action_id, "revise", request, http_request)
 
 
+@app.get("/api/emergency-stop", dependencies=[Depends(require_operator_auth)])
+def emergency_stop_state() -> Dict[str, Any]:
+    try:
+        return _command_center_store().get_emergency_state()
+    except CommandCenterStoreError as exc:
+        raise _durable_store_error(exc) from exc
+
+
 @app.post("/api/emergency-stop", dependencies=[Depends(require_operator_auth)])
-def emergency_stop() -> Dict[str, Any]:
+def emergency_stop(request: Request) -> Dict[str, Any]:
+    try:
+        state = _command_center_store().activate_emergency_stop(
+            actor_id=_operator_actor_id(request),
+            reason="Command center operator activated emergency stop",
+        )
+    except CommandCenterStoreError as exc:
+        raise _durable_store_error(exc) from exc
     try:
         result = subprocess.run(
             [sys.executable, str(PROJECT_ROOT / "src" / "aigc.py"), "--root", str(PROJECT_ROOT), "emergency-stop"],
             cwd=PROJECT_ROOT, capture_output=True, text=True, check=False,
             timeout=EMERGENCY_STOP_TIMEOUT_SECONDS,
         )
-        return {"ok": result.returncode == 0, "stdout": _safe_output(result.stdout), "stderr": _safe_output(result.stderr)}
-    except subprocess.TimeoutExpired:
-        raise HTTPException(status_code=504, detail="Emergency-stop command timed out; verify the underlying stop state locally.")
+        return {"ok": result.returncode == 0, "durable_stop_active": state["active"],
+                "stop_epoch": state["stop_epoch"], "stdout": _safe_output(result.stdout),
+                "stderr": _safe_output(result.stderr)}
+    except subprocess.TimeoutExpired as exc:
+        raise HTTPException(status_code=504, detail=f"Durable emergency stop remains active at epoch {state['stop_epoch']}; local command outcome is unknown.") from exc
+
+
+@app.post("/api/emergency-stop/clear", dependencies=[Depends(require_operator_auth)])
+def clear_emergency_stop(request: EmergencyStopClearRequest, http_request: Request) -> Dict[str, Any]:
+    expected = f"CLEAR AIGC EMERGENCY STOP EPOCH {request.expected_epoch}"
+    if request.confirmation_phrase != expected:
+        raise HTTPException(status_code=400, detail="Exact emergency-stop clear phrase does not match.")
+    try:
+        store = _command_center_store()
+        state = store.get_emergency_state()
+        if not state["active"] or state["stop_epoch"] != request.expected_epoch:
+            raise HTTPException(status_code=409, detail="Emergency-stop state or epoch changed; refresh before clearing.")
+        try:
+            result = subprocess.run(
+                [sys.executable, str(PROJECT_ROOT / "src" / "aigc.py"), "--root", str(PROJECT_ROOT), "clear-emergency-stop"],
+                cwd=PROJECT_ROOT, capture_output=True, text=True, check=False,
+                timeout=EMERGENCY_STOP_TIMEOUT_SECONDS,
+            )
+        except subprocess.TimeoutExpired as exc:
+            raise HTTPException(status_code=504, detail="Local clear outcome is unknown; durable stop remains active.") from exc
+        if result.returncode != 0:
+            raise HTTPException(status_code=503, detail="Local stop could not be cleared; durable stop remains active.")
+        return store.clear_emergency_stop(
+            actor_id=_operator_actor_id(http_request),
+            reason=request.reason,
+            expected_epoch=request.expected_epoch,
+            exact_phrase=request.confirmation_phrase,
+        )
+    except HTTPException:
+        raise
+    except CommandCenterStoreError as exc:
+        raise _durable_store_error(exc) from exc
 
 
 @app.get("/", response_class=HTMLResponse, dependencies=[Depends(require_operator_auth)])
@@ -410,6 +469,14 @@ def _run_cycle_worker(run_id: str) -> None:
                 store.finish_run(run_id, status="timed_out" if returncode == 124 else "failed")
                 return
         store.finish_run(run_id, status="completed")
+    except EmergencyStopActive:
+        try:
+            store = _command_center_store()
+            record = store.get_run(run_id)
+            if record and not record.get("complete"):
+                store.finish_run(run_id, status="stopped")
+        except Exception:
+            pass
     except Exception:
         # A worker exception can occur after a subprocess executed but before its receipt
         # was persisted. Preserve the ambiguity and block automatic reruns.
@@ -488,6 +555,7 @@ def render_ui() -> str:
   <div class="card">
     <h2>Emergency Control</h2>
     <button class="danger" onclick="stopNow()">Enable Emergency Stop</button>
+    <button onclick="clearStop()">Clear Emergency Stop (requires exact phrase)</button>
     <pre id="stop-output"></pre>
   </div>
 <script>
@@ -543,6 +611,22 @@ async function reviseItem(id) {{
 }}
 async function stopNow() {{
   const r = await fetch('/api/emergency-stop', {{method:'POST'}});
+  document.getElementById('stop-output').textContent = JSON.stringify(await r.json(), null, 2);
+}}
+async function clearStop() {{
+  const statusResponse = await fetch('/api/emergency-stop');
+  const state = await statusResponse.json();
+  if (!state.active) {{
+    document.getElementById('stop-output').textContent = JSON.stringify(state, null, 2);
+    return;
+  }}
+  const phrase = 'CLEAR AIGC EMERGENCY STOP EPOCH ' + state.stop_epoch;
+  const confirmation_phrase = prompt('Review the current stop, then type exactly: ' + phrase);
+  if (confirmation_phrase !== phrase) return;
+  const r = await fetch('/api/emergency-stop/clear', {{
+    method:'POST', headers:{{'Content-Type':'application/json'}},
+    body:JSON.stringify({{expected_epoch:state.stop_epoch,confirmation_phrase,reason:'Operator reviewed the stop and explicitly requested clearing.'}})
+  }});
   document.getElementById('stop-output').textContent = JSON.stringify(await r.json(), null, 2);
 }}
 function escapeHtml(value) {{
