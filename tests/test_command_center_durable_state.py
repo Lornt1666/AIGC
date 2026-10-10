@@ -143,3 +143,10 @@ def test_production_requires_durable_state_dsn(monkeypatch) -> None:
     monkeypatch.delenv("AIGC_COMMAND_CENTER_STATE_DSN", raising=False)
     with pytest.raises(StateStoreNotConfiguredError):
         get_command_center_store(max_concurrent_runs=1)
+
+
+def test_production_rejects_unverified_database_tls(monkeypatch) -> None:
+    monkeypatch.setenv("AIGC_ENV", "production")
+    monkeypatch.setenv("AIGC_COMMAND_CENTER_STATE_DSN", "postgresql://app:secret@db.example/aigc?sslmode=require")
+    with pytest.raises(StateStoreNotConfiguredError, match="sslmode=verify-full"):
+        get_command_center_store(max_concurrent_runs=1)

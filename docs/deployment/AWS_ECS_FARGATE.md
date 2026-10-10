@@ -4,7 +4,7 @@
 
 ## Release gate
 
-Do **not** route public traffic to the AIGC Command Center until the blockers in [issue #275](https://github.com/Lornt1666/AIGC/issues/275) are closed with test evidence. The current command center has process-local run state, subprocess calls without enforced timeouts, potentially unbounded run starts, inconsistent review-route state checks, a browser authentication integration that needs end-to-end verification, raw stdout/stderr responses, and a root/default container with unpinned dependency ranges. These are deployment blockers, not cosmetic tasks.
+Do **not** route public traffic to the AIGC Command Center until the blockers in [issue #275](https://github.com/Lornt1666/AIGC/issues/275) and the durable-state acceptance evidence in [issue #282](https://github.com/Lornt1666/AIGC/issues/282) are complete. The current candidate contains bounded run admission, subprocess timeouts, sanitized/truncated output, consistent pending-review guards, and PostgreSQL-backed state/idempotency/lease recovery. Those code controls do not themselves prove that RDS is provisioned, migrations are applied, TLS/IAM are configured, browser identity is correct, or an end-to-end deployed service works.
 
 ## Target topology
 
@@ -28,13 +28,13 @@ Do **not** route public traffic to the AIGC Command Center until the blockers in
 4. Do not put credentials, session tokens, account secrets, or private keys in this repository or in chat.
 
 ### Gate 1 — application blockers
-1. Close the security and reliability acceptance tests in issue #275.
-2. Move run/session/review/evidence state to durable storage with transactional state transitions, idempotency, and restart recovery.
-3. Add subprocess timeouts, output-size limits, cancellation handling, and bounded concurrency/admission control.
-4. Enforce the same expiry, pending-state, authorization, and race-safety rules in the canonical command layer for accept/deny/revise.
-5. Replace browser-visible shared-token auth with an approved identity/session boundary and test every protected route.
-6. Redact and structure command results before returning them to a browser.
-7. Run as a non-root user, pin dependencies through a reviewed lockfile/hash strategy, scan the image, and test filesystem/runtime restrictions.
+1. Close the browser identity/session and protected-route acceptance tests in issue #275.
+2. Provision private RDS PostgreSQL, apply migration 003 using a separate migration role, and inject `AIGC_COMMAND_CENTER_STATE_DSN` from Secrets Manager with `sslmode=verify-full` and an explicit mounted `sslrootcert`.
+3. Verify `/ready` reports durable PostgreSQL schema version 3; production must fail readiness without the DSN, verified TLS, or migration.
+4. Exercise idempotent run creation, cross-instance active-run admission, review-decision claims, lease expiry to explicit `unknown`, and restart recovery against the deployed service.
+5. Enforce the same expiry, pending-state, authorization, and race-safety rules in the canonical command layer for accept/deny/revise.
+6. Replace shared-token-only browser auth with an approved identity/session boundary and test every protected route.
+7. Run as non-root, pin dependencies through a reviewed lockfile/hash strategy, scan the image, and test filesystem/runtime restrictions.
 
 ### Gate 2 — CI and image provenance
 1. Run tests, schema/contract validation, redaction scanning, and dependency/security checks on the exact candidate commit.
@@ -57,6 +57,19 @@ Do **not** route public traffic to the AIGC Command Center until the blockers in
 4. Test restart recovery, durable evidence lineage, duplicate requests, run timeouts, cancellation, output redaction, and emergency-stop behavior.
 5. Capture a deployment receipt containing source SHA, image digest, AWS account/region, ECS service/task definition revision, endpoint identity, test results, timestamp, rollback target, and operator approval reference. Never include secret values.
 6. Do not enable public traffic or production promotion until all gates have explicit evidence and an authorized human approves the release.
+
+## Durable state configuration and migration
+
+Production must set `AIGC_ENV=production` and inject `AIGC_COMMAND_CENTER_STATE_DSN` from AWS Secrets Manager. The DSN must use `sslmode=verify-full` and an explicit `sslrootcert` path to the mounted AWS RDS CA bundle. The application fails readiness closed when durable storage is missing or migration 003 is absent. Do not let the application role create schemas; apply `migrations/003_command_center_state.sql` with a separate least-privilege migration identity before deployment. Restrict RDS to private subnets and the ECS task security group; enable encryption, backups/PITR, monitoring, and connection limits. The current pool allows up to eight connections per task, so size RDS and ECS task counts together.
+
+After deployment, send an `Idempotency-Key` header with each `POST /api/run` and review decision request. Reuse the same key only for a retry of the same request. If a lease expires, the run/review is recorded as `unknown`; do not retry it under a new key until an operator reconciles the packet/files and database record. Example read-only audit queries:
+
+```sql
+SELECT run_id, status, current_step, created_at, updated_at
+  FROM command_center_runs WHERE status = 'unknown' ORDER BY updated_at DESC;
+SELECT action_id, decision, state, created_at, updated_at
+  FROM command_center_review_decisions WHERE state = 'unknown' ORDER BY updated_at DESC;
+```
 
 ## Rollback criteria
 
