@@ -13,6 +13,7 @@ if str(PROJECT_ROOT) not in sys.path:
 os.chdir(PROJECT_ROOT)
 
 FOCUSED_GEMINI_TESTS = [
+    "tests/test_production_artifact_store.py",
     "tests/test_controlled_gemini_canary.py",
     "tests/test_gcs_evidence_receipts.py",
     "tests/test_gemini_controls.py",
