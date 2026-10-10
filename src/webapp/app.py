@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import html
 import base64
+import hashlib
 import hmac
 import json
 import os
@@ -16,6 +17,17 @@ from typing import Any, Dict, List
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
+
+from src.webapp.command_center_store import (
+    CommandCenterStoreError,
+    CommandCenterStoreUnavailable,
+    IdempotencyConflict,
+    ReviewAlreadyDecided,
+    ReviewOutcomeUnknown,
+    RunAlreadyActive,
+    RunNotFound,
+    command_center_store_from_env,
+)
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -39,8 +51,6 @@ app = FastAPI(
     description="Cloud launch surface for governed AIGC business cycles and human review.",
 )
 
-RUNS: Dict[str, Dict[str, Any]] = {}
-RUN_LOCK = threading.Lock()
 # Process-local serialization only; multi-replica safety requires a shared transactional store.
 REVIEW_DECISION_LOCK = threading.Lock()
 # This process-local gate prevents thread floods in one worker. Multi-replica and
@@ -51,6 +61,49 @@ STEP_TIMEOUT_SECONDS = max(5, int(os.environ.get("AIGC_STEP_TIMEOUT_SECONDS", "1
 EMERGENCY_STOP_TIMEOUT_SECONDS = max(5, int(os.environ.get("AIGC_EMERGENCY_STOP_TIMEOUT_SECONDS", "15")))
 MAX_OUTPUT_CHARS = 2000
 COMMAND_CENTER_TOKEN_ENV = "AIGC_COMMAND_CENTER_TOKEN"
+_COMMAND_CENTER_STORE: Any | None = None
+_COMMAND_CENTER_STORE_LOCK = threading.Lock()
+
+
+def _production_mode() -> bool:
+    return os.environ.get("AIGC_ENV", os.environ.get("ENVIRONMENT", "development")).strip().lower() in {"production", "prod"}
+
+
+def _command_center_store():
+    global _COMMAND_CENTER_STORE
+    dsn = os.environ.get("AIGC_COMMAND_CENTER_DATABASE_URL", "").strip()
+    if _production_mode() and not dsn:
+        raise CommandCenterStoreUnavailable("Durable command-center state is required in production.")
+    with _COMMAND_CENTER_STORE_LOCK:
+        if _COMMAND_CENTER_STORE is None:
+            _COMMAND_CENTER_STORE = command_center_store_from_env()
+        elif _production_mode() and not getattr(_COMMAND_CENTER_STORE, "durable", False):
+            raise CommandCenterStoreUnavailable("Process-local state is disabled in production.")
+        return _COMMAND_CENTER_STORE
+
+
+def _operator_actor_id(request: Request) -> str:
+    token = extract_operator_token(request)
+    return "token-sha256:" + hashlib.sha256(token.encode("utf-8")).hexdigest()[:24]
+
+
+def _idempotency_key(request: Request) -> str:
+    value = request.headers.get("idempotency-key", "").strip()
+    if not value and _production_mode():
+        raise HTTPException(status_code=400, detail="Idempotency-Key is required in production.")
+    if not value:
+        value = str(uuid.uuid4())
+    if len(value) < 8 or len(value) > 200:
+        raise HTTPException(status_code=400, detail="Idempotency-Key length must be 8..200 characters.")
+    return value
+
+
+def _durable_store_error(exc: CommandCenterStoreError) -> HTTPException:
+    if isinstance(exc, RunAlreadyActive):
+        return HTTPException(status_code=429, detail=str(exc))
+    if isinstance(exc, (IdempotencyConflict, ReviewAlreadyDecided, ReviewOutcomeUnknown, RunNotFound)):
+        return HTTPException(status_code=409, detail=str(exc))
+    return HTTPException(status_code=503, detail="Durable command-center state is unavailable.")
 
 def _safe_output(value: str, limit: int = MAX_OUTPUT_CHARS) -> str:
     """Bound and redact common secret-shaped output before returning it to a browser."""
@@ -139,6 +192,17 @@ def health() -> Dict[str, Any]:
     }
 
 
+@app.get("/readyz")
+def readyz() -> Dict[str, Any]:
+    try:
+        result = _command_center_store().healthcheck()
+    except CommandCenterStoreError as exc:
+        raise HTTPException(status_code=503, detail="Command-center dependencies are not ready.") from exc
+    if not result.get("ok") or (_production_mode() and not result.get("durable")):
+        raise HTTPException(status_code=503, detail="Command-center dependencies are not ready.")
+    return {"ok": True, "durable_state": result.get("durable", False), "backend": result.get("backend", "unknown")}
+
+
 @app.get("/api/pipeline", dependencies=[Depends(require_operator_auth)])
 def pipeline() -> Dict[str, Any]:
     return {
@@ -150,28 +214,47 @@ def pipeline() -> Dict[str, Any]:
 
 
 @app.post("/api/run", dependencies=[Depends(require_operator_auth)])
-def run_cycle() -> Dict[str, Any]:
-    if not RUN_CAPACITY.acquire(blocking=False):
-        raise HTTPException(status_code=429, detail="A governed run is already active; retry after it finishes.")
-    run_id = f"AIGC-RUN-{uuid.uuid4()}"
-    with RUN_LOCK:
-        RUNS[run_id] = {"status": "queued", "steps": [], "current": "", "complete": False}
+def run_cycle(request: Request) -> Dict[str, Any]:
     try:
-        thread = threading.Thread(target=_run_cycle_worker, args=(run_id,), daemon=True)
+        store = _command_center_store()
+        record, created = store.create_run(
+            run_id=f"AIGC-RUN-{uuid.uuid4()}",
+            actor_id=_operator_actor_id(request),
+            idempotency_key=_idempotency_key(request),
+            request_digest=hashlib.sha256(b"full-governed-business-cycle-v1").hexdigest(),
+        )
+    except HTTPException:
+        raise
+    except CommandCenterStoreError as exc:
+        raise _durable_store_error(exc) from exc
+    if not created:
+        return {"run_id": record["run_id"], "status": record["status"],
+                "status_url": f"/api/run/{record['run_id']}", "replayed": True}
+    if not RUN_CAPACITY.acquire(blocking=False):
+        store.finish_run(record["run_id"], status="failed")
+        raise HTTPException(status_code=429, detail="A governed run is already active; retry after it finishes.")
+    try:
+        thread = threading.Thread(target=_run_cycle_worker, args=(record["run_id"],), daemon=True)
         thread.start()
-    except Exception:
-        with RUN_LOCK:
-            RUNS.pop(run_id, None)
+    except Exception as exc:
+        try:
+            store.finish_run(record["run_id"], status="failed")
+        except CommandCenterStoreError:
+            pass
         RUN_CAPACITY.release()
-        raise HTTPException(status_code=503, detail="Could not start the governed run.")
-    return {"run_id": run_id, "status_url": f"/api/run/{run_id}"}
+        raise HTTPException(status_code=503, detail="Could not start the governed run; inspect its durable receipt.") from exc
+    return {"run_id": record["run_id"], "status_url": f"/api/run/{record['run_id']}", "replayed": False}
 
 
 @app.get("/api/run/{run_id}", dependencies=[Depends(require_operator_auth)])
 def run_status(run_id: str) -> Dict[str, Any]:
-    if run_id not in RUNS:
+    try:
+        record = _command_center_store().get_run(run_id)
+    except CommandCenterStoreError as exc:
+        raise _durable_store_error(exc) from exc
+    if record is None:
         raise HTTPException(status_code=404, detail="Run not found")
-    return RUNS[run_id]
+    return record
 
 
 @app.get("/api/reviews", dependencies=[Depends(require_operator_auth)])
@@ -179,51 +262,84 @@ def reviews() -> Dict[str, Any]:
     packets = load_authorization_packets(PROJECT_ROOT)
     work_orders = load_work_order_governance_records(PROJECT_ROOT)
     review_items = summarize_authorizations(packets, work_orders)
-    return {"reviews": [asdict(item) for item in review_items]}
+    try:
+        store = _command_center_store()
+        values = []
+        for item in review_items:
+            payload = asdict(item)
+            persisted = store.get_review_decision(item.action_id)
+            if persisted:
+                payload["durable_decision_state"] = persisted["state"]
+                payload["durable_decision_type"] = persisted["decision_type"]
+            values.append(payload)
+    except CommandCenterStoreError as exc:
+        raise _durable_store_error(exc) from exc
+    return {"reviews": values}
+
+
+def _apply_review_decision(action_id: str, decision_type: str,
+                           request: DecisionRequest, http_request: Request) -> Dict[str, Any]:
+    if decision_type == "revise" and not request.revision_instructions.strip():
+        raise HTTPException(status_code=400, detail="revision_instructions is required")
+    try:
+        store = _command_center_store()
+        key = _idempotency_key(http_request)
+        actor_id = _operator_actor_id(http_request)
+        request_material = json.dumps({
+            "action_id": action_id,
+            "decision_type": decision_type,
+            "phrase": request.phrase if decision_type == "accept" else "",
+            "revision_instructions": request.revision_instructions if decision_type == "revise" else "",
+        }, sort_keys=True, separators=(",", ":"))
+        request_digest = hashlib.sha256(request_material.encode("utf-8")).hexdigest()
+        with REVIEW_DECISION_LOCK:
+            review = _find_review(action_id)
+            _require_pending_review(review)
+            claim = store.claim_review(action_id=action_id, decision_type=decision_type,
+                actor_id=actor_id, idempotency_key=key, request_digest=request_digest)
+            if claim.get("replayed") and claim.get("state") == "completed":
+                return claim.get("result") or {"ok": True, "replayed": True}
+            try:
+                if decision_type == "accept":
+                    command = build_accept_command(PROJECT_ROOT, review, request.phrase, DEFAULT_AUTHORIZATIONS_PATH)
+                elif decision_type == "deny":
+                    command = build_deny_command(PROJECT_ROOT, review, DEFAULT_AUTHORIZATIONS_PATH)
+                else:
+                    command = build_revise_command(PROJECT_ROOT, review, request.revision_instructions, DEFAULT_AUTHORIZATIONS_PATH)
+                result = run_command(command, root=PROJECT_ROOT, label=f"{decision_type}:{action_id}")
+                payload = _command_payload(result)
+                if not result.ok:
+                    store.mark_review_unknown(action_id=action_id)
+                    raise HTTPException(status_code=503, detail="Review outcome is unknown; reconcile before retrying.")
+                store.complete_review(action_id=action_id, result=payload)
+                return payload
+            except HTTPException:
+                raise
+            except Exception as exc:
+                try:
+                    store.mark_review_unknown(action_id=action_id)
+                except CommandCenterStoreError:
+                    pass
+                raise HTTPException(status_code=503, detail="Review outcome is unknown; reconcile before retrying.") from exc
+    except HTTPException:
+        raise
+    except CommandCenterStoreError as exc:
+        raise _durable_store_error(exc) from exc
 
 
 @app.post("/api/reviews/{action_id}/accept", dependencies=[Depends(require_operator_auth)])
-def accept_review(action_id: str, request: DecisionRequest) -> Dict[str, Any]:
-    # Serialize decisions in this process so two requests cannot both pass the
-    # pending-state check before either command records its decision. A shared
-    # database transaction is still required for multi-replica deployments.
-    with REVIEW_DECISION_LOCK:
-        review = _find_review(action_id)
-        _require_pending_review(review)
-        result = run_command(
-            build_accept_command(PROJECT_ROOT, review, request.phrase, DEFAULT_AUTHORIZATIONS_PATH),
-            root=PROJECT_ROOT,
-            label=f"accept:{action_id}",
-        )
-        return _command_payload(result)
+def accept_review(action_id: str, request: DecisionRequest, http_request: Request) -> Dict[str, Any]:
+    return _apply_review_decision(action_id, "accept", request, http_request)
 
 
 @app.post("/api/reviews/{action_id}/deny", dependencies=[Depends(require_operator_auth)])
-def deny_review(action_id: str, request: DecisionRequest) -> Dict[str, Any]:
-    with REVIEW_DECISION_LOCK:
-        review = _find_review(action_id)
-        _require_pending_review(review)
-        result = run_command(
-            build_deny_command(PROJECT_ROOT, review, DEFAULT_AUTHORIZATIONS_PATH),
-            root=PROJECT_ROOT,
-            label=f"deny:{action_id}",
-        )
-        return _command_payload(result)
+def deny_review(action_id: str, request: DecisionRequest, http_request: Request) -> Dict[str, Any]:
+    return _apply_review_decision(action_id, "deny", request, http_request)
 
 
 @app.post("/api/reviews/{action_id}/revise", dependencies=[Depends(require_operator_auth)])
-def revise_review(action_id: str, request: DecisionRequest) -> Dict[str, Any]:
-    if not request.revision_instructions.strip():
-        raise HTTPException(status_code=400, detail="revision_instructions is required")
-    with REVIEW_DECISION_LOCK:
-        review = _find_review(action_id)
-        _require_pending_review(review)
-        result = run_command(
-            build_revise_command(PROJECT_ROOT, review, request.revision_instructions, DEFAULT_AUTHORIZATIONS_PATH),
-            root=PROJECT_ROOT,
-            label=f"revise:{action_id}",
-        )
-        return _command_payload(result)
+def revise_review(action_id: str, request: DecisionRequest, http_request: Request) -> Dict[str, Any]:
+    return _apply_review_decision(action_id, "revise", request, http_request)
 
 
 @app.post("/api/emergency-stop", dependencies=[Depends(require_operator_auth)])
@@ -246,50 +362,37 @@ def ui() -> str:
 
 def _run_cycle_worker(run_id: str) -> None:
     try:
-        with RUN_LOCK:
-            RUNS[run_id]["status"] = "running"
+        store = _command_center_store()
+        store.mark_running(run_id)
         for name, command in BUSINESS_CYCLE:
-            with RUN_LOCK:
-                RUNS[run_id]["current"] = name
+            store.set_current(run_id, name)
             try:
-                result = subprocess.run(
-                    command, cwd=PROJECT_ROOT, capture_output=True, text=True,
-                    check=False, timeout=STEP_TIMEOUT_SECONDS,
-                )
-                returncode = result.returncode
-                stdout = result.stdout
-                stderr = result.stderr
+                result = subprocess.run(command, cwd=PROJECT_ROOT, capture_output=True, text=True,
+                    check=False, timeout=STEP_TIMEOUT_SECONDS)
+                returncode, stdout, stderr = result.returncode, result.stdout, result.stderr
             except subprocess.TimeoutExpired as exc:
                 returncode = 124
                 stdout = exc.stdout.decode("utf-8", errors="replace") if isinstance(exc.stdout, bytes) else (exc.stdout or "")
-                stderr = (exc.stderr.decode("utf-8", errors="replace") if isinstance(exc.stderr, bytes) else (exc.stderr or ""))
+                stderr = exc.stderr.decode("utf-8", errors="replace") if isinstance(exc.stderr, bytes) else (exc.stderr or "")
                 stderr += f"\nTimed out after {STEP_TIMEOUT_SECONDS} seconds."
-            step_payload = {
-                "name": name,
-                "command": command,
-                "returncode": returncode,
-                "ok": returncode == 0,
-                "stdout_tail": _safe_output(stdout),
-                "stderr_tail": _safe_output(stderr),
-            }
-            with RUN_LOCK:
-                RUNS[run_id]["steps"].append(step_payload)
+            store.append_step(run_id, {
+                "name": name, "command": command, "returncode": returncode, "ok": returncode == 0,
+                "stdout_tail": _safe_output(stdout), "stderr_tail": _safe_output(stderr),
+            })
             if returncode != 0:
-                with RUN_LOCK:
-                    RUNS[run_id]["status"] = "timed_out" if returncode == 124 else "failed"
-                    RUNS[run_id]["complete"] = True
+                store.finish_run(run_id, status="timed_out" if returncode == 124 else "failed")
                 return
-        with RUN_LOCK:
-            RUNS[run_id]["status"] = "completed"
-            RUNS[run_id]["complete"] = True
-            RUNS[run_id]["current"] = ""
+        store.finish_run(run_id, status="completed")
     except Exception:
-        # Do not leave a permanently "running" record after an unexpected worker error.
-        with RUN_LOCK:
-            if run_id in RUNS:
-                RUNS[run_id]["status"] = "failed"
-                RUNS[run_id]["complete"] = True
-                RUNS[run_id]["current"] = ""
+        # If persistence is unavailable after a subprocess starts, the lease expires to unknown.
+        # Unknown outcomes are never automatically rerun.
+        try:
+            store = _command_center_store()
+            record = store.get_run(run_id)
+            if record and not record.get("complete"):
+                store.finish_run(run_id, status="failed")
+        except Exception:
+            pass
     finally:
         RUN_CAPACITY.release()
 
@@ -396,18 +499,18 @@ async function loadReviews() {{
 }}
 async function acceptItem(id) {{
   const phrase = document.getElementById('phrase-' + id).value;
-  const r = await fetch('/api/reviews/' + encodeURIComponent(id) + '/accept', {{method:'POST', headers:{{'Content-Type':'application/json'}}, body: JSON.stringify({{phrase}})}});
+  const r = await fetch('/api/reviews/' + encodeURIComponent(id) + '/accept', {{method:'POST', headers:{{'Content-Type':'application/json','Idempotency-Key':crypto.randomUUID()}}, body: JSON.stringify({{phrase}})}});
   alert(JSON.stringify(await r.json(), null, 2));
   loadReviews();
 }}
 async function denyItem(id) {{
-  const r = await fetch('/api/reviews/' + encodeURIComponent(id) + '/deny', {{method:'POST', headers:{{'Content-Type':'application/json'}}, body: JSON.stringify({{}})}});
+  const r = await fetch('/api/reviews/' + encodeURIComponent(id) + '/deny', {{method:'POST', headers:{{'Content-Type':'application/json','Idempotency-Key':crypto.randomUUID()}}, body: JSON.stringify({{}})}});
   alert(JSON.stringify(await r.json(), null, 2));
   loadReviews();
 }}
 async function reviseItem(id) {{
   const revision_instructions = document.getElementById('revise-' + id).value;
-  const r = await fetch('/api/reviews/' + encodeURIComponent(id) + '/revise', {{method:'POST', headers:{{'Content-Type':'application/json'}}, body: JSON.stringify({{revision_instructions}})}});
+  const r = await fetch('/api/reviews/' + encodeURIComponent(id) + '/revise', {{method:'POST', headers:{{'Content-Type':'application/json','Idempotency-Key':crypto.randomUUID()}}, body: JSON.stringify({{revision_instructions}})}});
   alert(JSON.stringify(await r.json(), null, 2));
   loadReviews();
 }}

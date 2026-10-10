@@ -26,7 +26,22 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    services:
+      postgres:
+        image: postgres:16.4-alpine
+        env:
+          POSTGRES_USER: aigc
+          POSTGRES_PASSWORD: aigc-test-only
+          POSTGRES_DB: aigc_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U aigc -d aigc_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     env:
+      AIGC_COMMAND_CENTER_TEST_DATABASE_URL: postgresql://aigc:aigc-test-only@localhost:5432/aigc_test?sslmode=disable
       REQUESTED_REVISION: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.event_name == 'workflow_dispatch' && inputs.requested_revision || github.sha }}
     steps:
       - name: Checkout exact requested revision
