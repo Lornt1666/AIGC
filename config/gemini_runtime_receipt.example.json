@@ -1,0 +1,39 @@
+{
+  "schema_version": "aigc.gemini-runtime-receipt.v1",
+  "environment": "staging",
+  "business_identity": "RegenExcalibur",
+  "repository": "Lornt1666/AIGC",
+  "release_revision": "",
+  "image_digest": "",
+  "cloud_run_revision": "",
+  "provider": "google_vertex_ai",
+  "model": "",
+  "location": "northamerica-northeast1",
+  "response_id_present": false,
+  "latency_ms": null,
+  "usage": {
+    "prompt_tokens": null,
+    "candidate_tokens": null,
+    "total_tokens": null
+  },
+  "workflow_run_id": "",
+  "input_sha256": "",
+  "assessment_sha256": "",
+  "policy_outcome": "",
+  "model_api_call_status": "not_attempted",
+  "model_api_call_performed": false,
+  "external_business_action_performed": false,
+  "idempotency_key_sha256": "",
+  "evidence": {
+    "object_uri": "",
+    "generation": null,
+    "record_sha256": ""
+  },
+  "ci": {
+    "run_url": "",
+    "run_id": "",
+    "conclusion": "",
+    "head_sha": ""
+  },
+  "captured_at": null
+}

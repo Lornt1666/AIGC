@@ -1,0 +1,76 @@
+{
+  "schema_version": "aigc.gemini-judge-media-manifest.v1",
+  "environment": "staging",
+  "business_identity": "RegenExcalibur",
+  "repository": "Lornt1666/AIGC",
+  "release_revision": "",
+  "image_digest": "",
+  "operator_cloud_run_revision": "",
+  "judge_cloud_run_revision": "",
+  "runtime_receipt_sha256": "",
+  "judge_receipt_id": "",
+  "judge_receipt_sha256": "",
+  "capture_scope": "one synthetic, receipt-backed Gemini walkthrough",
+  "capture_items": [
+    {
+      "id": "walkthrough-video",
+      "kind": "video",
+      "path_or_url": "",
+      "sha256": "",
+      "shows": [
+        "synthetic-input disclosure",
+        "non-generative readiness result",
+        "single assessment result",
+        "human-review boundary",
+        "sanitized judge receipt"
+      ],
+      "captured_at": null
+    },
+    {
+      "id": "operator-result-screenshot",
+      "kind": "image",
+      "path_or_url": "",
+      "sha256": "",
+      "shows": [
+        "recorded model name",
+        "policy outcome",
+        "human review required",
+        "external business action false"
+      ],
+      "captured_at": null
+    },
+    {
+      "id": "judge-receipt-screenshot",
+      "kind": "image",
+      "path_or_url": "",
+      "sha256": "",
+      "shows": [
+        "read-only judge surface",
+        "sanitized categorical claim",
+        "source revision",
+        "generation-bound evidence reference"
+      ],
+      "captured_at": null
+    }
+  ],
+  "redaction_review": {
+    "no_secret_or_auth_value_visible": false,
+    "no_identity_token_or_request_header_visible": false,
+    "no_service_account_email_visible": false,
+    "no_private_intake_or_model_output_visible": false,
+    "no_operator_identifier_visible": false,
+    "no_response_identifier_visible": false,
+    "no_unredacted_bucket_or_candidate_url_visible": false,
+    "synthetic_data_disclosed": false,
+    "ai_use_disclosed": false,
+    "external_business_action_not_performed_disclosed": false,
+    "reviewed_by": "",
+    "reviewed_at": null
+  },
+  "publication": {
+    "authorized": false,
+    "authorized_by": "",
+    "authorized_at": null,
+    "approval_phrase": ""
+  }
+}

@@ -1,0 +1,69 @@
+# Submit with:
+# gcloud builds submit --config cloudbuild.gemini.yaml \
+#   --ignore-file .gcloudignore.gemini \
+#   --substitutions _IMAGE_URI=<approved-artifact-registry-image-uri>
+steps:
+  - id: verify-gemini-build-context
+    name: gcr.io/cloud-builders/docker
+    entrypoint: bash
+    args:
+      - -ceu
+      - |
+        mapfile -t observed < <(
+          find . -type f -printf '%P\n' | sort
+        )
+        expected=(
+          .gcloudignore.gemini
+          Dockerfile.gemini
+          cloudbuild.gemini.yaml
+          config/gemini_runtime_limits.json
+          config/gemini_secret_access_manifest.json
+          requirements-gemini.txt
+          src/gemini_workflow/__init__.py
+          src/gemini_workflow/api.py
+          src/gemini_workflow/auth.py
+          src/gemini_workflow/control_store.py
+          src/gemini_workflow/evidence.py
+          src/gemini_workflow/judge_receipts.py
+          src/gemini_workflow/judge_store.py
+          src/gemini_workflow/models.py
+          src/gemini_workflow/policy.py
+          src/gemini_workflow/provider.py
+          src/gemini_workflow/readiness.py
+          src/gemini_workflow/redaction.py
+          src/gemini_workflow/runtime_limits.py
+          src/gemini_workflow/secret_broker.py
+          src/gemini_workflow/service.py
+          src/gemini_workflow/settings.py
+          src/webapp/gemini_app.py
+          src/webapp/gemini_ui.py
+        )
+        mapfile -t expected_sorted < <(printf '%s\n' "$${expected[@]}" | sort)
+        if ! diff -u \
+          <(printf '%s\n' "$${expected_sorted[@]}") \
+          <(printf '%s\n' "$${observed[@]}"); then
+          echo "Gemini build context is not the exact reviewed allowlist." >&2
+          exit 1
+        fi
+
+  - id: build-gemini-only-image
+    name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - --pull
+      - --file
+      - Dockerfile.gemini
+      - --tag
+      - ${_IMAGE_URI}
+      - .
+
+images:
+  - ${_IMAGE_URI}
+
+substitutions:
+  _IMAGE_URI: invalid.invalid/explicit-approved-image-uri-required/aigc-gemini:invalid
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+timeout: 1200s

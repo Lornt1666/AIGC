@@ -1,0 +1,87 @@
+{
+  "schema_version": "aigc.gemini-staging-authorization.v1",
+  "environment": "staging",
+  "business_identity": "RegenExcalibur",
+  "repository": "Lornt1666/AIGC",
+  "release_revision": "",
+  "gemini_model": "",
+  "cloud": {
+    "project_id": "",
+    "primary_region": "northamerica-northeast1",
+    "vertex_location": "northamerica-northeast1",
+    "vertex_model_location_table": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/resources/locations",
+    "vertex_model_availability_reviewed": false,
+    "artifact_registry_repository": "",
+    "cloud_sql_instance_connection_name": "",
+    "database_name": "",
+    "evidence_bucket": "",
+    "judge_receipt_bucket": "",
+    "operator_service_name": "aigc-gemini-operator-staging",
+    "judge_service_name": "aigc-gemini-judge-staging"
+  },
+  "service_accounts": {
+    "deployer": "",
+    "cloud_build": "",
+    "operator_runtime": "",
+    "judge_runtime": ""
+  },
+  "secret_manager_exact_version_refs": {
+    "runtime_control_dsn": "",
+    "operator_token": "",
+    "operator_binding_key": "",
+    "runtime_admin_token": "",
+    "runtime_admin_binding_key": "",
+    "judge_token": "",
+    "judge_binding_key": ""
+  },
+  "iam_review": {
+    "operator_runtime_roles": [],
+    "judge_runtime_roles": [],
+    "deployer_roles": [],
+    "cloud_build_roles": [],
+    "least_privilege_reviewed": false,
+    "no_primitive_or_admin_roles": false,
+    "secret_access_is_exact_secret_scoped": false,
+    "storage_access_is_bucket_or_prefix_scoped": false,
+    "cloud_run_invoker_bindings_reviewed": false,
+    "judge_has_no_vertex_permission": false,
+    "judge_has_no_control_store_write_permission": false,
+    "judge_has_sanitized_prefix_read_only": false
+  },
+  "evidence_controls": {
+    "uniform_bucket_level_access": false,
+    "public_access_prevention": false,
+    "versioning_enabled": false,
+    "retention_policy_reviewed": false,
+    "create_only_runtime_permission_reviewed": false,
+    "exact_readiness_sentinel_reviewed": false,
+    "gcs_generation_receipts_required": true
+  },
+  "spending_control": {
+    "currency": "CAD",
+    "proposed_monthly_ceiling": 50,
+    "authorized_monthly_ceiling": null,
+    "billing_budget_configured": false,
+    "billing_alert_thresholds_percent": [
+      50,
+      75,
+      90,
+      100
+    ],
+    "vertex_quota_reviewed": false,
+    "application_limits_reviewed": false,
+    "acknowledges_budget_is_not_a_hard_cap": false
+  },
+  "authorization": {
+    "configuration_reviewed": false,
+    "resource_creation_authorized": false,
+    "staging_deployment_authorized": false,
+    "one_live_gemini_call_authorized": false,
+    "judge_receipt_publication_authorized": false,
+    "authorized_by": "",
+    "authorized_at": null,
+    "expires_at": null,
+    "approval_phrase": ""
+  },
+  "required_approval_phrase_template": "AUTHORIZE AIGC GEMINI STAGING <PROJECT_ID> <REGION> <RELEASE_SHA> CEILING CAD <AMOUNT>"
+}

@@ -1,0 +1,20 @@
+{
+  "schema_version": "aigc.gemini-live-assessment-permit.v1",
+  "environment": "staging",
+  "project_id": "",
+  "region": "northamerica-northeast1",
+  "operator_service_name": "aigc-gemini-operator-staging",
+  "release_revision": "",
+  "image_digest": "",
+  "cloud_run_revision": "",
+  "input_fixture_sha256": "",
+  "maximum_model_calls": 1,
+  "maximum_reserved_tokens": 4096,
+  "model": "",
+  "authorized": false,
+  "authorized_by": "",
+  "authorized_at": null,
+  "expires_at": null,
+  "approval_phrase": "",
+  "required_approval_phrase_template": "AUTHORIZE ONE STAGING GEMINI ASSESSMENT <RELEASE_SHA> <IMAGE_DIGEST> <INPUT_SHA256>"
+}
