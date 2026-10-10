@@ -51,3 +51,15 @@ Reviewer must be independent of the author and assess:
 4. Obtain independent review of the contract and local adapter; do not use author comments or green CI as review.
 5. Keep this production implementation candidate as a separate draft until it can be cleanly rebased atop the reviewed contract and its integration tests pass.
 6. Merge neither PR without independent review and repository policy gates. PR #297 is explicitly excluded from merge actions.
+
+
+## Additional implementation in latest candidate
+- `src/core/artifact_store_factory.py` constructs the S3 client and psycopg pool from workload environment configuration. It requires a bucket, database URL, AWS region, `sslmode=verify-full`, and an existing CA bundle. It does not provision resources or accept credentials from the browser.
+- `src/core/durable_json_artifacts.py` provides version-bound JSON collection load/save helpers. Missing, malformed, or non-object collection payloads fail closed; writes require the exact expected artifact version.
+- `tests/test_artifact_store_factory.py` covers missing configuration and TLS/CA fail-closed behavior.
+- `tests/test_durable_json_artifacts.py` covers snapshot round trips, stale-version conflicts, missing authority, and malformed collection payloads.
+- The focused CI runner includes the adapter, factory, and JSON repository test files.
+- `src/webapp/app.py` now blocks production run/review workflows with HTTP 503 while shared artifact integration is incomplete. This is an interim safety barrier, not the final operational implementation.
+
+## Integration remains mandatory
+The JSON repository helpers are not yet the active source for `reviews()`, review-decision mutation, Phase 5 packet generation, work-order updates, or Phase 6/7 evidence. Do not remove the production guard until every reader/writer uses the durable repository and the end-to-end stale-approval/restart tests pass. The factory also needs private staging validation against the real S3 bucket policy, versioning, encryption/KMS, and RDS TLS setup.
