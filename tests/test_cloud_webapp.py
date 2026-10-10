@@ -73,6 +73,7 @@ def test_deployment_defaults_require_private_auth_boundary() -> None:
     webapp_source = Path("src/webapp/app.py").read_text(encoding="utf-8")
     local_launcher = Path("scripts/run_cloud_command_center.ps1").read_text(encoding="utf-8")
     batch_launcher = Path("RUN_AIGC_WEBAPP.bat").read_text(encoding="utf-8")
+    dockerfile = Path("Dockerfile").read_text(encoding="utf-8")
 
     assert "--allow-unauthenticated" not in deploy_script
     assert "--no-allow-unauthenticated" in deploy_script
@@ -83,6 +84,7 @@ def test_deployment_defaults_require_private_auth_boundary() -> None:
     assert '"127.0.0.1"' in webapp_source
     assert '"127.0.0.1"' in local_launcher
     assert "127.0.0.1" in batch_launcher
+    assert "USER aigc" in dockerfile
 
 
 def test_output_redaction_and_bounds() -> None:
