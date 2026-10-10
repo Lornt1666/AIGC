@@ -419,8 +419,10 @@ def clear_emergency_stop(request: EmergencyStopClearRequest, http_request: Reque
     try:
         store = _command_center_store()
         state = store.get_emergency_state()
-        if not state["active"] or state["stop_epoch"] != request.expected_epoch:
-            raise HTTPException(status_code=409, detail="Emergency-stop state or epoch changed; refresh before clearing.")
+        if state["stop_epoch"] != request.expected_epoch:
+            raise HTTPException(status_code=409, detail="Emergency-stop epoch changed; refresh before clearing.")
+        if not state["active"]:
+            return state
         try:
             result = subprocess.run(
                 [sys.executable, str(PROJECT_ROOT / "src" / "aigc.py"), "--root", str(PROJECT_ROOT), "clear-emergency-stop"],

@@ -197,6 +197,9 @@ def test_memory_emergency_stop_is_durable_in_store_and_requires_exact_clear_phra
     cleared = store.clear_emergency_stop(actor_id="operator", reason="Operator reviewed stop",
         expected_epoch=state["stop_epoch"], exact_phrase=phrase)
     assert cleared["active"] is False
+    replay = store.clear_emergency_stop(actor_id="operator", reason="Operator reviewed stop",
+        expected_epoch=state["stop_epoch"], exact_phrase=phrase)
+    assert replay["active"] is False
     assert len(store.control_events) == 2
 
 
