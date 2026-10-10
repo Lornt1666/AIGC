@@ -60,7 +60,7 @@ Do **not** route public traffic to the AIGC Command Center until the blockers in
 
 ## Durable state configuration and migration
 
-Production must set `AIGC_ENV=production` and inject `AIGC_COMMAND_CENTER_STATE_DSN` from AWS Secrets Manager. The DSN must use `sslmode=verify-full` and an explicit `sslrootcert` path to the mounted AWS RDS CA bundle. The application fails readiness closed when durable storage is missing or migration 003 is absent. Do not let the application role create schemas; apply `migrations/003_command_center_state.sql` with a separate least-privilege migration identity before deployment. Restrict RDS to private subnets and the ECS task security group; enable encryption, backups/PITR, monitoring, and connection limits. The current pool allows up to eight connections per task, so size RDS and ECS task counts together.
+Production must set `AIGC_ENV=production` and inject `AIGC_COMMAND_CENTER_STATE_DSN` from AWS Secrets Manager. The DSN must use `sslmode=verify-full` and an explicit `sslrootcert` path to the mounted AWS RDS CA bundle. The application fails readiness closed when durable storage is missing or migration 003 is absent. Apply `migrations/003_command_center_state.sql` with a separate least-privilege migration identity before deployment. Grant the runtime role only `SELECT` on `aigc_schema_migrations` and `SELECT`/`INSERT`/`UPDATE` on `command_center_runs` and `command_center_review_decisions`; do not grant schema creation or `TRUNCATE`. Restrict RDS to private subnets and the ECS task security group; enable encryption, backups/PITR, monitoring, and connection limits. The current pool allows up to eight connections per task, so size RDS and ECS task counts together.
 
 After deployment, send an `Idempotency-Key` header with each `POST /api/run` and review decision request. Reuse the same key only for a retry of the same request. If a lease expires, the run/review is recorded as `unknown`; do not retry it under a new key until an operator reconciles the packet/files and database record. Example read-only audit queries:
 
@@ -70,6 +70,10 @@ SELECT run_id, status, current_step, created_at, updated_at
 SELECT action_id, decision, state, created_at, updated_at
   FROM command_center_review_decisions WHERE state = 'unknown' ORDER BY updated_at DESC;
 ```
+
+## Remaining durability boundary — production still blocked
+
+Migration 003 persists the run/step ledger and review-decision claim/receipt ledger. It does **not** make the entire repository workspace durable or shared: the canonical authorization packets, generated proposal/finance artifacts, and phase outputs are still read/written by commands under `PROJECT_ROOT`. A database claim prevents a second instance from executing the same review decision, but a task-local packet can be stale and a file mutation can be lost when a task is replaced. Before multi-replica or public business-cycle execution, externalize canonical packets and evidence to a durable shared store (or a transactional database) with immutable/versioned references, and make command-layer writes idempotent against those references. Until then, keep business-cycle execution disabled and do not treat PR #285 alone as completing issue #282.
 
 ## Rollback criteria
 
