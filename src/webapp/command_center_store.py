@@ -476,8 +476,11 @@ def _pg_review(row: dict[str, Any], *, replayed: bool) -> dict[str, Any]:
 
 
 def command_center_store_from_env():
-    env = os.environ.get("AIGC_ENV", os.environ.get("ENVIRONMENT", "development")).strip().lower()
-    production = env in {"production", "prod"}
+    environments = (
+        os.environ.get("AIGC_ENV", "").strip().lower(),
+        os.environ.get("ENVIRONMENT", "").strip().lower(),
+    )
+    production = any(value in {"production", "prod"} for value in environments)
     dsn = os.environ.get("AIGC_COMMAND_CENTER_DATABASE_URL", "").strip()
     if production and not dsn:
         raise CommandCenterStoreUnavailable(
