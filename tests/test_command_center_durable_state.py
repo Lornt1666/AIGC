@@ -117,8 +117,8 @@ def test_postgres_review_claim_is_atomic_and_idempotent() -> None:
                 return ("conflict", None, store, key, token)
         with ThreadPoolExecutor(max_workers=2) as executor:
             results = list(executor.map(attempt, [
-                (first, "postgres-review-key-0001", "claim-token-one"),
-                (second, "postgres-review-key-0002", "claim-token-two"),
+                (first, "postgres-review-key-0001", "for-tests-claim-token-one"),
+                (second, "postgres-review-key-0002", "for-tests-claim-token-two"),
             ]))
         assert sum(row[0] == "claimed" for row in results) == 1
         winner = next(row for row in results if row[0] == "claimed")
@@ -127,12 +127,12 @@ def test_postgres_review_claim_is_atomic_and_idempotent() -> None:
         assert second.get_review_replay(action_id=action_id, idempotency_key=winner[3],
                                        request_sha256=request_sha) == outcome
         assert second.claim_review(action_id=action_id, decision="accept", idempotency_key=winner[3],
-                                   request_sha256=request_sha, claim_token="ignored-replay-token",
+                                   request_sha256=request_sha, claim_token="for-tests-ignored-replay-token",
                                    lease_seconds=60) == outcome
         with pytest.raises(ReviewDecisionConflictError):
             second.claim_review(action_id=action_id, decision="accept",
                                 idempotency_key="postgres-review-key-0003",
-                                request_sha256=request_sha, claim_token="new-token", lease_seconds=60)
+                                request_sha256=request_sha, claim_token="for-tests-new-token", lease_seconds=60)
     finally:
         first.close()
         second.close()
