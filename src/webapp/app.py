@@ -126,6 +126,11 @@ class DecisionRequest(BaseModel):
     revision_instructions: str = ""
 
 
+class RunReconciliationRequest(BaseModel):
+    expected_version: int
+    confirmation_phrase: str
+
+
 BUSINESS_CYCLE = [
     ("runtime_preflight", [sys.executable, str(PROJECT_ROOT / "src" / "aigc.py"), "--root", str(PROJECT_ROOT), "run", "phase14"]),
     ("opportunity_radar", [sys.executable, str(PROJECT_ROOT / "src" / "aigc.py"), "--root", str(PROJECT_ROOT), "run", "phase2"]),
@@ -250,6 +255,26 @@ def run_cycle(request: Request) -> Dict[str, Any]:
 def run_status(run_id: str) -> Dict[str, Any]:
     try:
         record = _command_center_store().get_run(run_id)
+    except CommandCenterStoreError as exc:
+        raise _durable_store_error(exc) from exc
+    if record is None:
+        raise HTTPException(status_code=404, detail="Run not found")
+    return record
+
+
+@app.post("/api/run/{run_id}/reconcile", dependencies=[Depends(require_operator_auth)])
+def reconcile_run(run_id: str, request: RunReconciliationRequest) -> Dict[str, Any]:
+    expected_phrase = f"RECONCILE AIGC RUN {run_id} AS FAILED VERSION {request.expected_version}"
+    if request.confirmation_phrase != expected_phrase:
+        raise HTTPException(status_code=400, detail="Exact reconciliation phrase does not match.")
+    try:
+        store = _command_center_store()
+        store.reconcile_unknown_run(
+            run_id=run_id,
+            expected_version=request.expected_version,
+            confirmation_phrase=request.confirmation_phrase,
+        )
+        record = store.get_run(run_id)
     except CommandCenterStoreError as exc:
         raise _durable_store_error(exc) from exc
     if record is None:
@@ -384,13 +409,13 @@ def _run_cycle_worker(run_id: str) -> None:
                 return
         store.finish_run(run_id, status="completed")
     except Exception:
-        # If persistence is unavailable after a subprocess starts, the lease expires to unknown.
-        # Unknown outcomes are never automatically rerun.
+        # A worker exception can occur after a subprocess executed but before its receipt
+        # was persisted. Preserve the ambiguity and block automatic reruns.
         try:
             store = _command_center_store()
             record = store.get_run(run_id)
             if record and not record.get("complete"):
-                store.finish_run(run_id, status="failed")
+                store.finish_run(run_id, status="unknown")
         except Exception:
             pass
     finally:

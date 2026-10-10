@@ -149,6 +149,18 @@ class MemoryCommandCenterStore:
             value["updated_at"] = datetime.now(timezone.utc).isoformat()
             value["version"] += 1
 
+    def reconcile_unknown_run(self, *, run_id: str, expected_version: int, confirmation_phrase: str):
+        expected = f"RECONCILE AIGC RUN {run_id} AS FAILED VERSION {expected_version}"
+        if confirmation_phrase != expected:
+            raise ValueError("exact reconciliation phrase does not match")
+        with self.lock:
+            value = self._require_run(run_id, {"unknown"})
+            if value["version"] != expected_version:
+                raise RunNotFound("Run version changed; reload the run before reconciling")
+            value.update(status="failed", complete=True, current="")
+            value["updated_at"] = datetime.now(timezone.utc).isoformat()
+            value["version"] += 1
+
     def recover_stale_runs(self) -> int:
         return 0
 
@@ -300,6 +312,17 @@ class PostgresCommandCenterStore:
                 return _pg_run(row) if row else None
         except Exception as exc:
             raise CommandCenterStoreUnavailable("Durable run status could not be read") from exc
+
+    def reconcile_unknown_run(self, *, run_id: str, expected_version: int, confirmation_phrase: str):
+        expected = f"RECONCILE AIGC RUN {run_id} AS FAILED VERSION {expected_version}"
+        if confirmation_phrase != expected:
+            raise ValueError("exact reconciliation phrase does not match")
+        self._update_run(
+            """UPDATE command_center_runs SET status='failed',complete=TRUE,current_step='',
+               lease_until=NULL,updated_at=now(),version=version+1
+               WHERE run_id=%s AND status='unknown' AND version=%s""",
+            (run_id, expected_version),
+        )
 
     def _update_run(self, sql: str, params: tuple[Any, ...]):
         try:

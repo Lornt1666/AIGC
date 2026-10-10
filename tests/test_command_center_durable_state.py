@@ -144,3 +144,27 @@ def test_postgres_constraint_failure_rolls_back(postgres_stores) -> None:
                     (run_id, digest(str(uuid.uuid4())), digest("invalid")))
         assert conn.execute("SELECT run_id FROM command_center_runs WHERE run_id=%s",
             (run_id,)).fetchone() is None
+
+
+def test_memory_unknown_run_requires_exact_versioned_reconciliation() -> None:
+    store = MemoryCommandCenterStore()
+    run, _ = store.create_run(run_id="RUN-RECONCILE", actor_id="operator",
+        idempotency_key="reconcile-key-1", request_digest=digest("cycle-v1"))
+    store.mark_running("RUN-RECONCILE")
+    store.finish_run("RUN-RECONCILE", status="unknown")
+    unknown = store.get_run("RUN-RECONCILE")
+    phrase = f"RECONCILE AIGC RUN RUN-RECONCILE AS FAILED VERSION {unknown['version']}"
+    with pytest.raises(ValueError):
+        store.reconcile_unknown_run(run_id="RUN-RECONCILE", expected_version=unknown["version"],
+            confirmation_phrase="wrong phrase")
+    store.reconcile_unknown_run(run_id="RUN-RECONCILE", expected_version=unknown["version"],
+        confirmation_phrase=phrase)
+    assert store.get_run("RUN-RECONCILE")["status"] == "failed"
+
+
+def test_production_mode_fails_closed_without_database(monkeypatch) -> None:
+    from src.webapp.command_center_store import CommandCenterStoreUnavailable, command_center_store_from_env
+    monkeypatch.setenv("AIGC_ENV", "production")
+    monkeypatch.delenv("AIGC_COMMAND_CENTER_DATABASE_URL", raising=False)
+    with pytest.raises(CommandCenterStoreUnavailable, match="required in production"):
+        command_center_store_from_env()
