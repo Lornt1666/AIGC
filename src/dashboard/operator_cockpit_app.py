@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -204,7 +205,18 @@ def render_work_order_tab(st, root: Path) -> None:
     st.json(result.artifact_manifest.__dict__)
 
 
+def _filesystem_review_allowed() -> bool:
+    """Filesystem-backed authorization is development-only, never production authority."""
+    environment = os.environ.get("AIGC_ENV", os.environ.get("ENVIRONMENT", "development"))
+    return environment.strip().lower() not in {"production", "prod"}
+
+
 def render_review_tab(st, root: Path) -> None:
+    if not _filesystem_review_allowed():
+        st.error("Review operations are disabled in production until shared durable authorization/evidence storage is integrated.")
+        st.info("No filesystem-backed packet will be loaded and no accept/deny/revise command is available from this panel.")
+        return
+
     st.header("Human Reviewable Contents")
     packets = load_authorization_packets(root)
     work_orders = load_work_order_governance_records(root)
