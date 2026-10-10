@@ -183,12 +183,7 @@ def reviews() -> Dict[str, Any]:
 @app.post("/api/reviews/{action_id}/accept", dependencies=[Depends(require_operator_auth)])
 def accept_review(action_id: str, request: DecisionRequest) -> Dict[str, Any]:
     review = _find_review(action_id)
-    if review.expired:
-        raise HTTPException(status_code=409, detail="Review packet is expired")
-    if review.external_action_performed:
-        raise HTTPException(status_code=409, detail="Packet already records outward completion")
-    if review.decision != "pending":
-        raise HTTPException(status_code=409, detail="Packet is not pending")
+    _require_pending_review(review)
     result = run_command(
         build_accept_command(PROJECT_ROOT, review, request.phrase, DEFAULT_AUTHORIZATIONS_PATH),
         root=PROJECT_ROOT,
