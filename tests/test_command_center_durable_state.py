@@ -56,10 +56,11 @@ def postgres_stores():
     if not dsn:
         pytest.skip("PostgreSQL integration service is not configured")
     import psycopg
-    migration = (Path(__file__).resolve().parents[1] / "migrations" /
-        "command_center_postgresql" / "0001_durable_command_center.sql").read_text(encoding="utf-8")
+    migration_dir = Path(__file__).resolve().parents[1] / "migrations" / "command_center_postgresql"
     with psycopg.connect(dsn) as conn:
-        conn.execute(migration, prepare=False)
+        for migration_path in sorted(migration_dir.glob("*.sql")):
+            conn.execute(migration_path.read_text(encoding="utf-8"), prepare=False)
+        conn.execute("UPDATE command_center_control_state SET emergency_stop_active=FALSE, reason='test fixture reset', actor_id=NULL WHERE singleton_id=1")
         conn.execute("DELETE FROM command_center_review_decisions")
         conn.execute("DELETE FROM command_center_runs")
     first = PostgresCommandCenterStore(dsn, sslmode="disable")
@@ -102,10 +103,21 @@ def test_postgres_global_admission_and_restart_recovery(postgres_stores) -> None
             (run_id,))
     restarted = PostgresCommandCenterStore(dsn, sslmode="disable")
     try:
-        assert restarted.get_run(run_id)["status"] == "unknown"
+        unknown = restarted.get_run(run_id)
+        assert unknown["status"] == "unknown"
         with pytest.raises(RunAlreadyActive):
             restarted.create_run(run_id=f"RUN-{uuid.uuid4()}", actor_id="operator",
                 idempotency_key=f"key-{uuid.uuid4()}", request_digest=digest("cycle-v1"))
+        phrase = f"RECONCILE AIGC RUN {run_id} AS FAILED VERSION {unknown['version']}"
+        restarted.reconcile_unknown_run(run_id=run_id, actor_id="operator",
+            expected_version=unknown["version"], confirmation_phrase=phrase)
+        assert restarted.get_run(run_id)["status"] == "failed"
+        with psycopg.connect(dsn) as conn:
+            audit = conn.execute(
+                "SELECT actor_id,disposition FROM command_center_run_reconciliations WHERE run_id=%s",
+                (run_id,),
+            ).fetchone()
+        assert audit and audit[0] == "operator" and audit[1] == "failed"
     finally:
         restarted.close()
 
@@ -155,9 +167,9 @@ def test_memory_unknown_run_requires_exact_versioned_reconciliation() -> None:
     unknown = store.get_run("RUN-RECONCILE")
     phrase = f"RECONCILE AIGC RUN RUN-RECONCILE AS FAILED VERSION {unknown['version']}"
     with pytest.raises(ValueError):
-        store.reconcile_unknown_run(run_id="RUN-RECONCILE", expected_version=unknown["version"],
+        store.reconcile_unknown_run(run_id="RUN-RECONCILE", actor_id="operator", expected_version=unknown["version"],
             confirmation_phrase="wrong phrase")
-    store.reconcile_unknown_run(run_id="RUN-RECONCILE", expected_version=unknown["version"],
+    store.reconcile_unknown_run(run_id="RUN-RECONCILE", actor_id="operator", expected_version=unknown["version"],
         confirmation_phrase=phrase)
     assert store.get_run("RUN-RECONCILE")["status"] == "failed"
 
@@ -168,3 +180,47 @@ def test_production_mode_fails_closed_without_database(monkeypatch) -> None:
     monkeypatch.delenv("AIGC_COMMAND_CENTER_DATABASE_URL", raising=False)
     with pytest.raises(CommandCenterStoreUnavailable, match="required in production"):
         command_center_store_from_env()
+
+
+def test_memory_emergency_stop_is_durable_in_store_and_requires_exact_clear_phrase() -> None:
+    from src.webapp.command_center_store import EmergencyStopActive
+    store = MemoryCommandCenterStore()
+    state = store.activate_emergency_stop(actor_id="operator", reason="Operator requested emergency stop")
+    assert state["active"] is True
+    with pytest.raises(EmergencyStopActive):
+        store.create_run(run_id="RUN-BLOCKED", actor_id="operator",
+            idempotency_key="blocked-key-1", request_digest=digest("cycle-v1"))
+    phrase = f"CLEAR AIGC EMERGENCY STOP EPOCH {state['stop_epoch']}"
+    with pytest.raises(ValueError):
+        store.clear_emergency_stop(actor_id="operator", reason="Operator reviewed stop",
+            expected_epoch=state["stop_epoch"], exact_phrase="wrong")
+    cleared = store.clear_emergency_stop(actor_id="operator", reason="Operator reviewed stop",
+        expected_epoch=state["stop_epoch"], exact_phrase=phrase)
+    assert cleared["active"] is False
+    replay = store.clear_emergency_stop(actor_id="operator", reason="Operator reviewed stop",
+        expected_epoch=state["stop_epoch"], exact_phrase=phrase)
+    assert replay["active"] is False
+    assert len(store.control_events) == 2
+
+
+def test_postgres_emergency_stop_is_shared_and_control_events_are_append_only(postgres_stores) -> None:
+    first, second, dsn = postgres_stores
+    state = first.activate_emergency_stop(actor_id="operator-1", reason="Operator requested stop")
+    assert second.get_emergency_state()["active"] is True
+    from src.webapp.command_center_store import EmergencyStopActive
+    with pytest.raises(EmergencyStopActive):
+        second.create_run(run_id=f"RUN-{uuid.uuid4()}", actor_id="operator-2",
+            idempotency_key=f"key-{uuid.uuid4()}", request_digest=digest("cycle-v1"))
+    phrase = f"CLEAR AIGC EMERGENCY STOP EPOCH {state['stop_epoch']}"
+    cleared = second.clear_emergency_stop(actor_id="operator-2", reason="Operator reviewed stop",
+        expected_epoch=state["stop_epoch"], exact_phrase=phrase)
+    assert cleared["active"] is False
+    import psycopg
+    with psycopg.connect(dsn) as conn:
+        event_id = conn.execute(
+            "SELECT event_id FROM command_center_control_events WHERE stop_epoch=%s ORDER BY created_at DESC LIMIT 1",
+            (state["stop_epoch"],),
+        ).fetchone()[0]
+        with pytest.raises(psycopg.errors.RaiseException):
+            with conn.transaction():
+                conn.execute("DELETE FROM command_center_control_events WHERE event_id=%s", (event_id,))
