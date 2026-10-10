@@ -206,9 +206,16 @@ def render_work_order_tab(st, root: Path) -> None:
 
 
 def _filesystem_review_allowed() -> bool:
-    """Filesystem-backed authorization is development-only, never production authority."""
-    environment = os.environ.get("AIGC_ENV", os.environ.get("ENVIRONMENT", "development"))
-    return environment.strip().lower() not in {"production", "prod"}
+    """Filesystem-backed authorization is development-only, never production authority.
+
+    Either environment variable can declare production. A development-valued
+    AIGC_ENV must not override an independently set production ENVIRONMENT.
+    """
+    environments = (
+        os.environ.get("AIGC_ENV", "").strip().lower(),
+        os.environ.get("ENVIRONMENT", "").strip().lower(),
+    )
+    return not any(value in {"production", "prod"} for value in environments)
 
 
 def render_review_tab(st, root: Path) -> None:
