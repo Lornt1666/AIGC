@@ -83,3 +83,42 @@ def test_deployment_defaults_require_private_auth_boundary() -> None:
     assert '"127.0.0.1"' in webapp_source
     assert '"127.0.0.1"' in local_launcher
     assert "127.0.0.1" in batch_launcher
+
+
+def test_output_redaction_and_bounds() -> None:
+    from src.webapp.app import _safe_output
+
+    result = _safe_output("api_key=abc123 Authorization: Bearer xyz789 " + "x" * 3000)
+    assert "abc123" not in result
+    assert "xyz789" not in result
+    assert len(result) <= 2000
+
+
+def test_review_mutations_reject_stale_or_non_pending_packets() -> None:
+    from types import SimpleNamespace
+    import pytest
+    from fastapi import HTTPException
+    from src.webapp.app import _require_pending_review
+
+    with pytest.raises(HTTPException) as expired:
+        _require_pending_review(SimpleNamespace(expired=True, external_action_performed=False, decision="pending"))
+    assert expired.value.status_code == 409
+
+    with pytest.raises(HTTPException) as completed:
+        _require_pending_review(SimpleNamespace(expired=False, external_action_performed=True, decision="pending"))
+    assert completed.value.status_code == 409
+
+    with pytest.raises(HTTPException) as decided:
+        _require_pending_review(SimpleNamespace(expired=False, external_action_performed=False, decision="accepted"))
+    assert decided.value.status_code == 409
+
+
+def test_run_capacity_is_bounded() -> None:
+    from src.webapp.app import MAX_CONCURRENT_RUNS, RUN_CAPACITY
+
+    assert MAX_CONCURRENT_RUNS >= 1
+    assert RUN_CAPACITY.acquire(blocking=False)
+    try:
+        assert RUN_CAPACITY.acquire(blocking=False) is False
+    finally:
+        RUN_CAPACITY.release()
