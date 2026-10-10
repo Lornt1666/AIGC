@@ -168,3 +168,65 @@ def test_production_mode_fails_closed_without_database(monkeypatch) -> None:
     monkeypatch.delenv("AIGC_COMMAND_CENTER_DATABASE_URL", raising=False)
     with pytest.raises(CommandCenterStoreUnavailable, match="required in production"):
         command_center_store_from_env()
+
+
+def test_production_database_requires_verified_tls_and_ca_bundle(monkeypatch, tmp_path) -> None:
+    import src.webapp.command_center_store as store_module
+    from src.webapp.command_center_store import CommandCenterStoreUnavailable
+
+    monkeypatch.setenv("AIGC_ENV", "production")
+    monkeypatch.setenv("AIGC_COMMAND_CENTER_DATABASE_URL", "postgresql://aigc@db.example/aigc")
+    ca_bundle = tmp_path / "rds-ca.pem"
+    ca_bundle.write_text("test-only-ca-fixture", encoding="utf-8")
+    monkeypatch.setenv("AIGC_COMMAND_CENTER_DB_SSLROOTCERT", str(ca_bundle))
+    monkeypatch.setenv("AIGC_COMMAND_CENTER_DB_SSLMODE", "require")
+    with pytest.raises(CommandCenterStoreUnavailable, match="verify-full"):
+        store_module.command_center_store_from_env()
+
+    monkeypatch.setenv("AIGC_COMMAND_CENTER_DB_SSLMODE", "verify-full")
+    monkeypatch.delenv("AIGC_COMMAND_CENTER_DB_SSLROOTCERT", raising=False)
+    with pytest.raises(CommandCenterStoreUnavailable, match="CA bundle"):
+        store_module.command_center_store_from_env()
+
+
+def test_production_passes_verified_ca_bundle_to_postgres_store(monkeypatch, tmp_path) -> None:
+    import src.webapp.command_center_store as store_module
+
+    monkeypatch.setenv("AIGC_ENV", "production")
+    monkeypatch.setenv("AIGC_COMMAND_CENTER_DATABASE_URL", "postgresql://aigc@db.example/aigc")
+    monkeypatch.setenv("AIGC_COMMAND_CENTER_DB_SSLMODE", "verify-full")
+    ca_bundle = tmp_path / "rds-ca.pem"
+    ca_bundle.write_text("test-only-ca-fixture", encoding="utf-8")
+    monkeypatch.setenv("AIGC_COMMAND_CENTER_DB_SSLROOTCERT", str(ca_bundle))
+    captured = {}
+    monkeypatch.setattr(
+        store_module, "PostgresCommandCenterStore",
+        lambda dsn, **kwargs: captured.update(dsn=dsn, **kwargs) or captured,
+    )
+    result = store_module.command_center_store_from_env()
+    assert result["sslmode"] == "verify-full"
+    assert result["sslrootcert"] == str(ca_bundle)
+
+
+def test_postgres_same_idempotency_key_replays_while_run_is_active(postgres_stores) -> None:
+    first, second, _dsn = postgres_stores
+    key = f"key-{uuid.uuid4()}"
+    request_digest = digest("cycle-v1")
+    first_record, created = first.create_run(
+        run_id=f"RUN-{uuid.uuid4()}", actor_id="operator",
+        idempotency_key=key, request_digest=request_digest,
+    )
+    replay, replay_created = second.create_run(
+        run_id=f"RUN-{uuid.uuid4()}", actor_id="operator",
+        idempotency_key=key, request_digest=request_digest,
+    )
+    assert created is True
+    assert replay_created is False
+    assert replay["replayed"] is True
+    assert replay["run_id"] == first_record["run_id"]
+    assert replay["status"] == "queued"
+    with pytest.raises(IdempotencyConflict):
+        second.create_run(
+            run_id=f"RUN-{uuid.uuid4()}", actor_id="operator",
+            idempotency_key=key, request_digest=digest("different-cycle"),
+        )
