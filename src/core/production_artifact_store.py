@@ -153,6 +153,31 @@ class S3PostgresArtifactStore:
         except Exception as exc:
             raise ArtifactUnavailable("PostgreSQL metadata transaction failed; do not authorize from uncommitted S3 objects") from exc
 
+    def get_current_ref(self, key: str) -> ArtifactRef | None:
+        """Return the authoritative latest reference for a logical key, if present."""
+        logical_key = key.strip()
+        if not logical_key:
+            raise ValueError("key is required")
+        try:
+            with self.pool.connection() as conn:
+                row = conn.execute(
+                    """SELECT logical_key, version_id, sha256, media_type, schema_version,
+                              provenance, operation_id
+                       FROM aigc_artifact_metadata
+                       WHERE logical_key = %s ORDER BY created_at DESC, id DESC LIMIT 1""",
+                    (logical_key,),
+                ).fetchone()
+        except Exception as exc:
+            raise ArtifactUnavailable("authoritative artifact metadata is unavailable") from exc
+        return self._row_to_ref(row) if row else None
+
+    def get_current(self, key: str) -> tuple[ArtifactRef, bytes] | None:
+        """Return the latest authoritative reference and verified bytes."""
+        ref = self.get_current_ref(key)
+        if ref is None:
+            return None
+        return ref, self.get(ref)
+
     def get(self, ref: ArtifactRef) -> bytes:
         if not _SHA256.fullmatch(ref.sha256) or not ref.version_id or ref.version_id == "null":
             raise ArtifactIntegrityError("invalid immutable artifact reference")
