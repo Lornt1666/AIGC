@@ -105,10 +105,6 @@ jobs:
             --run-number "$GITHUB_RUN_NUMBER" \
             --run-id "$GITHUB_RUN_ID"
 
-      - name: Diagnose command-center durable-state tests on failure
-        if: failure()
-        run: python -m pytest -vv --tb=short tests/test_command_center_durable_state.py
-
       - name: Compile governed Gemini release
         shell: bash
         run: |

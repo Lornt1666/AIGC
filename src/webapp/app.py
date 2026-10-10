@@ -18,6 +18,11 @@ from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
 
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 from src.webapp.command_center_store import (
     CommandCenterStoreError,
     CommandCenterStoreUnavailable,
@@ -29,11 +34,6 @@ from src.webapp.command_center_store import (
     RunNotFound,
     command_center_store_from_env,
 )
-
-
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.core.operator_cockpit import (  # noqa: E402
     DEFAULT_AUTHORIZATIONS_PATH,

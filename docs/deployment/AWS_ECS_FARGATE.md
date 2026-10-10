@@ -4,7 +4,7 @@
 
 ## Release gate
 
-Do **not** route public traffic to the AIGC Command Center until the blockers in [issue #275](https://github.com/Lornt1666/AIGC/issues/275) are closed with test evidence. The current command center has process-local run state, subprocess calls without enforced timeouts, potentially unbounded run starts, inconsistent review-route state checks, a browser authentication integration that needs end-to-end verification, raw stdout/stderr responses, and a root/default container with unpinned dependency ranges. These are deployment blockers, not cosmetic tasks.
+Do **not** route public traffic to the AIGC Command Center until the blockers in [issue #275](https://github.com/Lornt1666/AIGC/issues/275) are closed with test evidence. PostgreSQL-backed run/review state is merged on main (PR #286); durable emergency-stop state and append-only audit are under review in PR #287. The source authorization packets remain file-backed, browser identity/session behavior is not yet accepted end-to-end, and no authorized AWS database, image, service, or live endpoint has been provisioned or verified. These are deployment blockers, not cosmetic tasks.
 
 ## Target topology
 
@@ -29,7 +29,7 @@ Do **not** route public traffic to the AIGC Command Center until the blockers in
 
 ### Gate 1 — application blockers
 1. Close the security and reliability acceptance tests in issue #275.
-2. Move run/session/review/evidence state to durable storage with transactional state transitions, idempotency, and restart recovery.
+2. Use the merged PostgreSQL run/review store and, after PR #287 is accepted, the durable emergency-stop/audit schema. Move source authorization packets and work-order/evidence artifacts to a shared durable source of truth before enabling multiple tasks.
 3. Add subprocess timeouts, output-size limits, cancellation handling, and bounded concurrency/admission control.
 4. Enforce the same expiry, pending-state, authorization, and race-safety rules in the canonical command layer for accept/deny/revise.
 5. Replace browser-visible shared-token auth with an approved identity/session boundary and test every protected route.
@@ -51,7 +51,8 @@ Do **not** route public traffic to the AIGC Command Center until the blockers in
 6. Configure CloudWatch log groups, retention, alarms, health checks, and cost/budget alerts before service launch.
 
 ### Gate 4 — controlled deployment and evidence
-1. Deploy first to a non-production service with desired count and scaling limits explicitly bounded.
+1. Apply migrations 0001 and 0002 from migrations/command_center_postgresql only after an authorized private RDS instance, backups, least-privilege role, and migration receipts exist. Migration 0002 is required for durable emergency-stop state and append-only control/reconciliation audit; the app readiness check must remain failing until all required tables exist.
+2. Deploy first to a non-production service with desired count and scaling limits explicitly bounded.
 2. Keep business-cycle execution and all external write connectors disabled. A hosting deployment does not authorize business actions.
 3. Verify the service health/readiness behavior, HTTPS certificate/redirect, authentication, authorization on every protected route, and absence of direct task ingress.
 4. Test restart recovery, durable evidence lineage, duplicate requests, run timeouts, cancellation, output redaction, and emergency-stop behavior.
