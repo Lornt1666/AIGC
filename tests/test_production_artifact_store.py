@@ -156,3 +156,27 @@ def test_operation_id_cannot_be_reused_for_another_logical_key():
     put(store, op="globally-unique-op")
     with pytest.raises(ArtifactConflict):
         put(store, op="globally-unique-op", key="work-orders/W1")
+
+
+
+def test_mapping_row_factory_is_supported():
+    from src.core.production_artifact_store import ArtifactRef
+
+    row = {
+        "logical_key": "authorizations/A1",
+        "version_id": "v7",
+        "sha256": hashlib.sha256(b"packet").hexdigest(),
+        "media_type": "application/json",
+        "schema_version": "1",
+        "provenance": "phase5:test",
+        "operation_id": "op-7",
+    }
+    assert S3PostgresArtifactStore._row_to_ref(row) == ArtifactRef(
+        key="authorizations/A1",
+        version_id="v7",
+        sha256=hashlib.sha256(b"packet").hexdigest(),
+        media_type="application/json",
+        schema_version="1",
+        provenance="phase5:test",
+        operation_id="op-7",
+    )
