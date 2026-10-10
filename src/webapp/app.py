@@ -82,13 +82,15 @@ def _command_center_store():
         return _COMMAND_CENTER_STORE
 
 
-def _operator_actor_id(request: Request) -> str:
+def _operator_actor_id(request: Request | None) -> str:
+    if request is None:
+        return "local-test-operator"
     token = extract_operator_token(request)
     return "token-sha256:" + hashlib.sha256(token.encode("utf-8")).hexdigest()[:24]
 
 
-def _idempotency_key(request: Request) -> str:
-    value = request.headers.get("idempotency-key", "").strip()
+def _idempotency_key(request: Request | None) -> str:
+    value = request.headers.get("idempotency-key", "").strip() if request is not None else ""
     if not value and _production_mode():
         raise HTTPException(status_code=400, detail="Idempotency-Key is required in production.")
     if not value:
@@ -353,17 +355,17 @@ def _apply_review_decision(action_id: str, decision_type: str,
 
 
 @app.post("/api/reviews/{action_id}/accept", dependencies=[Depends(require_operator_auth)])
-def accept_review(action_id: str, request: DecisionRequest, http_request: Request) -> Dict[str, Any]:
+def accept_review(action_id: str, request: DecisionRequest, http_request: Request = None) -> Dict[str, Any]:
     return _apply_review_decision(action_id, "accept", request, http_request)
 
 
 @app.post("/api/reviews/{action_id}/deny", dependencies=[Depends(require_operator_auth)])
-def deny_review(action_id: str, request: DecisionRequest, http_request: Request) -> Dict[str, Any]:
+def deny_review(action_id: str, request: DecisionRequest, http_request: Request = None) -> Dict[str, Any]:
     return _apply_review_decision(action_id, "deny", request, http_request)
 
 
 @app.post("/api/reviews/{action_id}/revise", dependencies=[Depends(require_operator_auth)])
-def revise_review(action_id: str, request: DecisionRequest, http_request: Request) -> Dict[str, Any]:
+def revise_review(action_id: str, request: DecisionRequest, http_request: Request = None) -> Dict[str, Any]:
     return _apply_review_decision(action_id, "revise", request, http_request)
 
 
@@ -490,7 +492,7 @@ def render_ui() -> str:
   </div>
 <script>
 async function runCycle() {{
-  const r = await fetch('/api/run', {{method: 'POST'}});
+  const r = await fetch('/api/run', {{method: 'POST', headers:{{'Idempotency-Key':crypto.randomUUID()}}}});
   const data = await r.json();
   document.getElementById('run-status').textContent = 'Run started: ' + data.run_id;
   pollRun(data.run_id);
