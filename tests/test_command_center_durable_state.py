@@ -167,9 +167,9 @@ def test_memory_unknown_run_requires_exact_versioned_reconciliation() -> None:
     unknown = store.get_run("RUN-RECONCILE")
     phrase = f"RECONCILE AIGC RUN RUN-RECONCILE AS FAILED VERSION {unknown['version']}"
     with pytest.raises(ValueError):
-        store.reconcile_unknown_run(run_id="RUN-RECONCILE", expected_version=unknown["version"],
+        store.reconcile_unknown_run(run_id="RUN-RECONCILE", actor_id="operator", expected_version=unknown["version"],
             confirmation_phrase="wrong phrase")
-    store.reconcile_unknown_run(run_id="RUN-RECONCILE", expected_version=unknown["version"],
+    store.reconcile_unknown_run(run_id="RUN-RECONCILE", actor_id="operator", expected_version=unknown["version"],
         confirmation_phrase=phrase)
     assert store.get_run("RUN-RECONCILE")["status"] == "failed"
 
