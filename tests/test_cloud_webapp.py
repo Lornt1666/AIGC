@@ -117,11 +117,15 @@ def test_run_capacity_is_bounded() -> None:
     from src.webapp.app import MAX_CONCURRENT_RUNS, RUN_CAPACITY
 
     assert MAX_CONCURRENT_RUNS >= 1
-    assert RUN_CAPACITY.acquire(blocking=False)
+    acquired = 0
     try:
+        for _ in range(MAX_CONCURRENT_RUNS):
+            assert RUN_CAPACITY.acquire(blocking=False)
+            acquired += 1
         assert RUN_CAPACITY.acquire(blocking=False) is False
     finally:
-        RUN_CAPACITY.release()
+        for _ in range(acquired):
+            RUN_CAPACITY.release()
 
 
 def test_governed_command_timeout_is_reported(monkeypatch, tmp_path) -> None:
