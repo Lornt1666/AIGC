@@ -3,12 +3,17 @@ import argparse, json, sys
 from pathlib import Path
 import yaml
 from jsonschema import Draft202012Validator
+from jsonschema.exceptions import SchemaError
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CONFIG = ROOT / "config" / "aigc_multi_agent_runtime.yaml"
 DEFAULT_SCHEMA = ROOT / "schemas" / "aigc_multi_agent_runtime.schema.json"
 def validate_runtime(config_path: Path = DEFAULT_CONFIG, schema_path: Path = DEFAULT_SCHEMA) -> dict:
     config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    try:
+        Draft202012Validator.check_schema(schema)
+    except SchemaError as exc:
+        raise ValueError(f"Invalid JSON Schema definition: {exc.message}") from exc
     errors = sorted(Draft202012Validator(schema).iter_errors(config), key=lambda e: (list(map(str, e.absolute_path)), e.message))
     if errors:
         details = "; ".join(f"{'/'.join(map(str, e.absolute_path)) or '<root>'}: {e.message}" for e in errors)
