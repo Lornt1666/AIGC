@@ -34,6 +34,14 @@ class FakeConnection:
                             stored[2], stored[3], stored[4], stored[5], stored[6])
             else:
                 self.row = stored
+        elif "WHERE logical_key = %s" in normalized and "SELECT logical_key, version_id, sha256" in normalized:
+            versions = self.state["keys"].get(params[0], [])
+            if versions:
+                operation = self.state["ops"][versions[-1][2]]
+                self.row = (operation[0], operation[1], operation[2], operation[3],
+                            operation[4], operation[5], operation[6])
+            else:
+                self.row = None
         elif "ORDER BY created_at DESC" in normalized:
             versions = self.state["keys"].get(params[0], [])
             self.row = (versions[-1][1],) if versions else None
@@ -44,7 +52,7 @@ class FakeConnection:
             row = (key, version, digest, media_type, schema, provenance, op)
             self.state["ops"][op] = row
             self.state["objects"][op] = object_key
-            self.state["keys"].setdefault(key, []).append((key, version))
+            self.state["keys"].setdefault(key, []).append((key, version, op))
             self.state["object_by_version"][version] = object_key
             self.row = None
         else:
@@ -53,6 +61,10 @@ class FakeConnection:
     def fetchone(self):
         if not self.mapping_rows or self.row is None:
             return self.row
+        if "WHERE logical_key = %s" in self.last_sql and "SELECT logical_key, version_id, sha256" in self.last_sql:
+            keys = ("logical_key", "version_id", "sha256", "media_type",
+                    "schema_version", "provenance", "operation_id")
+            return dict(zip(keys, self.row))
         if "ORDER BY created_at DESC" in self.last_sql:
             return {"version_id": self.row[0]}
         if "object_key" in self.last_sql and "WHERE operation_id" in self.last_sql:
@@ -207,3 +219,16 @@ def test_mapping_row_factory_supports_full_round_trip():
     assert store.get(ref) == b"packet"
     second = put(store, content=b"next", op="op-2", expected=ref.version_id)
     assert store.get(second) == b"next"
+
+
+
+@pytest.mark.parametrize("mapping_rows", [False, True])
+def test_current_artifact_read_returns_latest_verified_version(mapping_rows):
+    store, _, _ = setup_store(mapping_rows=mapping_rows)
+    first = put(store)
+    second = put(store, content=b"newer", op="op-2", expected=first.version_id)
+
+    assert store.get_current_ref("authorizations/A1") == second
+    current = store.get_current("authorizations/A1")
+    assert current == (second, b"newer")
+    assert store.get_current_ref("missing/key") is None
