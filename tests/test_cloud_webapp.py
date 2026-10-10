@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+import pytest
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -142,3 +143,43 @@ def test_governed_command_timeout_is_reported(monkeypatch, tmp_path) -> None:
     result = operator_cockpit.run_command(["example"], root=tmp_path, label="test-timeout", timeout_seconds=2)
     assert result.returncode == 124
     assert "Timed out after 2 seconds." in result.stderr
+
+
+@pytest.mark.parametrize(
+    ("route", "payload"),
+    [
+        ("accept", {}),
+        ("deny", {}),
+        ("revise", {"revision_instructions": "Please clarify assumptions."}),
+    ],
+)
+@pytest.mark.parametrize(
+    ("review_state", "expected_detail"),
+    [
+        ({"expired": True, "external_action_performed": False, "decision": "pending"}, "expired"),
+        ({"expired": False, "external_action_performed": True, "decision": "pending"}, "outward completion"),
+        ({"expired": False, "external_action_performed": False, "decision": "accepted"}, "not pending"),
+    ],
+)
+def test_all_review_routes_reject_stale_or_decided_packets_before_command(
+    monkeypatch, route, payload, review_state, expected_detail
+) -> None:
+    from types import SimpleNamespace
+    import src.webapp.app as webapp
+
+    monkeypatch.setenv("AIGC_COMMAND_CENTER_TOKEN", "test-operator-token")
+    monkeypatch.setattr(webapp, "_find_review", lambda _action_id: SimpleNamespace(action_id="test-action", **review_state))
+
+    def unexpected_command(*args, **kwargs):
+        raise AssertionError("A stale or decided review must be rejected before command execution.")
+
+    monkeypatch.setattr(webapp, "run_command", unexpected_command)
+    client = TestClient(app)
+    response = client.post(
+        f"/api/reviews/test-action/{route}",
+        json=payload,
+        headers={"Authorization": "Bearer test-operator-token"},
+    )
+
+    assert response.status_code == 409
+    assert expected_detail in response.json()["detail"]
