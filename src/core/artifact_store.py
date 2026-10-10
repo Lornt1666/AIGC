@@ -139,7 +139,7 @@ class LocalArtifactStore:
         existing = json.loads(operation_path.read_text(encoding="utf-8"))
         if existing != receipt:
             raise ArtifactConflict("operation_id was concurrently committed with different artifact data")
-        self._atomic_replace(current_path, (json.dumps(existing, sort_keys=True, separators=(",", ":")) + "\\n").encode("utf-8"))
+        self._atomic_replace(current_path, (json.dumps(existing, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8"))
         return ArtifactRef(**existing)
 
     def get(self, ref: ArtifactRef) -> bytes:
