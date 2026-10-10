@@ -14,7 +14,7 @@ from src.core.artifact_store import (
 )
 
 
-def put(store, *, content=b"approved packet", operation_id="op-001"):
+def put(store, *, content=b"approved packet", operation_id="op-001", expected=None):
     return store.put(
         key="authorizations/AIGC-AUTH-1",
         content=content,
@@ -22,6 +22,7 @@ def put(store, *, content=b"approved packet", operation_id="op-001"):
         schema_version="1.0",
         provenance="phase5:test-fixture",
         operation_id=operation_id,
+        expected_current_version_id=expected,
     )
 
 
@@ -107,3 +108,19 @@ def test_empty_required_metadata_is_rejected(tmp_path):
             provenance="test",
             operation_id="op-empty",
         )
+
+
+
+def test_expected_current_version_prevents_stale_local_writes(tmp_path):
+    store = LocalArtifactStore(tmp_path)
+    first = put(store, content=b"first", operation_id="op-first")
+    second = put(store, content=b"second", operation_id="op-second", expected=first.version_id)
+    assert store.get(second) == b"second"
+    with pytest.raises(ArtifactConflict, match="stale artifact write"):
+        put(store, content=b"stale", operation_id="op-stale", expected=first.version_id)
+
+
+def test_initial_local_write_rejects_nonempty_expected_version(tmp_path):
+    store = LocalArtifactStore(tmp_path)
+    with pytest.raises(ArtifactConflict, match="stale artifact write"):
+        put(store, expected="version-does-not-exist")
