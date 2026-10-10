@@ -299,21 +299,38 @@ def build_revise_command(
     )
 
 
-def run_command(command: Sequence[str], root: Path, label: str = "") -> CommandResult:
-    result = subprocess.run(
-        list(command),
-        cwd=root,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    return CommandResult(
-        label=label or " ".join(command),
-        command=list(command),
-        returncode=result.returncode,
-        stdout=result.stdout,
-        stderr=result.stderr,
-    )
+def run_command(
+    command: Sequence[str],
+    root: Path,
+    label: str = "",
+    timeout_seconds: int = 120,
+) -> CommandResult:
+    try:
+        result = subprocess.run(
+            list(command),
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=max(1, timeout_seconds),
+        )
+        return CommandResult(
+            label=label or " ".join(command),
+            command=list(command),
+            returncode=result.returncode,
+            stdout=result.stdout,
+            stderr=result.stderr,
+        )
+    except subprocess.TimeoutExpired as exc:
+        stdout = exc.stdout.decode("utf-8", errors="replace") if isinstance(exc.stdout, bytes) else (exc.stdout or "")
+        stderr = exc.stderr.decode("utf-8", errors="replace") if isinstance(exc.stderr, bytes) else (exc.stderr or "")
+        return CommandResult(
+            label=label or " ".join(command),
+            command=list(command),
+            returncode=124,
+            stdout=stdout,
+            stderr=(stderr + f"\nTimed out after {max(1, timeout_seconds)} seconds.").strip(),
+        )
 
 
 def run_command_sequence(commands: Iterable[GovernedCommand], root: Path, stop_on_failure: bool = True) -> List[CommandResult]:
