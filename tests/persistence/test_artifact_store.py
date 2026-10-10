@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import replace
 import hashlib
 
 import pytest
@@ -73,6 +74,25 @@ def test_missing_blob_fails_closed(tmp_path):
     ref = put(store)
     (tmp_path / "blobs" / ref.sha256).unlink()
     with pytest.raises(ArtifactNotFound):
+        store.get(ref)
+
+
+def test_reference_metadata_must_match_committed_receipt(tmp_path):
+    store = LocalArtifactStore(tmp_path)
+    ref = put(store)
+    forged_ref = replace(ref, provenance="phase7:unverified")
+    with pytest.raises(ArtifactIntegrityError, match="metadata does not match"):
+        store.get(forged_ref)
+
+
+def test_missing_operation_receipt_fails_closed(tmp_path):
+    store = LocalArtifactStore(tmp_path)
+    ref = put(store)
+    receipt = tmp_path / "operations" / (
+        hashlib.sha256(ref.operation_id.encode("utf-8")).hexdigest() + ".json"
+    )
+    receipt.unlink()
+    with pytest.raises(ArtifactNotFound, match="operation receipt"):
         store.get(ref)
 
 
