@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 from dataclasses import asdict
@@ -30,6 +31,53 @@ from src.core.work_acquisition import run_work_acquisition  # noqa: E402
 from src.core.work_order import run_cockpit_smoke, run_governance_smoke, run_work_order  # noqa: E402
 from src.phase17_incident_response import Phase17IncidentResponse  # noqa: E402
 from src.security.approval_tokens import ApprovalTokenStore  # noqa: E402
+
+
+def _durable_emergency_stop_state() -> tuple[bool, str]:
+    """Read the shared stop immediately before phase execution; fail closed when configured/required."""
+    dsn = os.environ.get("AIGC_COMMAND_CENTER_DATABASE_URL", "").strip()
+    environment = os.environ.get("AIGC_ENV", os.environ.get("ENVIRONMENT", "development")).strip().lower()
+    production = environment in {"production", "prod"}
+    if not dsn:
+        return (True, "durable database configuration missing") if production else (False, "")
+    try:
+        import psycopg
+        from psycopg.conninfo import make_conninfo
+
+        conninfo = make_conninfo(
+            dsn,
+            sslmode=os.environ.get("AIGC_COMMAND_CENTER_DB_SSLMODE", "verify-full").strip(),
+            connect_timeout=5,
+        )
+        with psycopg.connect(conninfo) as connection:
+            row = connection.execute(
+                "SELECT emergency_stop_active, stop_epoch FROM command_center_control_state WHERE singleton_id=1"
+            ).fetchone()
+            if not row:
+                return True, "durable emergency-stop state is missing"
+            active = bool(row[0])
+            return active, (f"durable emergency stop active at epoch {row[1]}" if active else "")
+    except Exception:
+        return True, "durable emergency-stop state is unavailable"
+
+
+def _activate_durable_emergency_stop(*, actor_id: str, reason: str) -> dict[str, Any] | None:
+    dsn = os.environ.get("AIGC_COMMAND_CENTER_DATABASE_URL", "").strip()
+    environment = os.environ.get("AIGC_ENV", os.environ.get("ENVIRONMENT", "development")).strip().lower()
+    if not dsn:
+        if environment in {"production", "prod"}:
+            raise RuntimeError("Production emergency stop requires durable database configuration")
+        return None
+    from src.webapp.command_center_store import PostgresCommandCenterStore
+
+    durable_store = PostgresCommandCenterStore(
+        dsn,
+        sslmode=os.environ.get("AIGC_COMMAND_CENTER_DB_SSLMODE", "verify-full").strip(),
+    )
+    try:
+        return durable_store.activate_emergency_stop(actor_id=actor_id, reason=reason)
+    finally:
+        durable_store.close()
 
 
 def main(argv: List[str] | None = None) -> int:
@@ -135,7 +183,18 @@ def main(argv: List[str] | None = None) -> int:
             status="blocked",
             summary="Emergency stop enabled by operator command.",
         )
-        print("Emergency stop enabled. Runtime phase execution is blocked.")
+        try:
+            durable_state = _activate_durable_emergency_stop(
+                actor_id=os.environ.get("AIGC_OPERATOR_ID", "cli-operator"),
+                reason="AIGC CLI emergency stop activated",
+            )
+        except Exception:
+            print("Local emergency stop is active, but durable shared stop activation failed.")
+            return 3
+        if durable_state:
+            print(f"Emergency stop enabled across the command center at epoch {durable_state['stop_epoch']}.")
+        else:
+            print("Local emergency stop enabled. No shared production database is configured.")
         return 0
     if args.command == "clear-emergency-stop":
         store.set_flag("emergency_stop", "false")
@@ -252,8 +311,11 @@ def command_validate(args: argparse.Namespace, root: Path, store: AIGCStateStore
 
 def command_run(args: argparse.Namespace, root: Path, store: AIGCStateStore) -> int:
     phase = args.phase.lower()
-    if store.emergency_stop_active() and phase != "phase14":
-        print("Emergency stop is active. Phase execution is blocked until clear-emergency-stop is run.")
+    durable_stop_active, durable_stop_detail = _durable_emergency_stop_state()
+    if (store.emergency_stop_active() or durable_stop_active) and phase != "phase14":
+        print("Emergency stop is active. Phase execution is blocked until the authorized stop-clear procedure completes.")
+        if durable_stop_detail:
+            print(durable_stop_detail)
         store.insert_event(
             event_type="phase_run_blocked_by_emergency_stop",
             phase=phase,

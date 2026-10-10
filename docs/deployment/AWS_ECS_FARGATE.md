@@ -53,10 +53,10 @@ Do **not** route public traffic to the AIGC Command Center until the blockers in
 ### Gate 4 — controlled deployment and evidence
 1. Apply migrations 0001 and 0002 from migrations/command_center_postgresql only after an authorized private RDS instance, backups, least-privilege role, and migration receipts exist. Migration 0002 is required for durable emergency-stop state and append-only control/reconciliation audit; the app readiness check must remain failing until all required tables exist.
 2. Deploy first to a non-production service with desired count and scaling limits explicitly bounded.
-2. Keep business-cycle execution and all external write connectors disabled. A hosting deployment does not authorize business actions.
-3. Verify the service health/readiness behavior, HTTPS certificate/redirect, authentication, authorization on every protected route, and absence of direct task ingress.
-4. Test restart recovery, durable evidence lineage, duplicate requests, run timeouts, cancellation, output redaction, and emergency-stop behavior.
-5. Capture a deployment receipt containing source SHA, image digest, AWS account/region, ECS service/task definition revision, endpoint identity, test results, timestamp, rollback target, and operator approval reference. Never include secret values.
+3. Keep business-cycle execution and all external write connectors disabled. A hosting deployment does not authorize business actions.
+4. Verify the service health/readiness behavior, HTTPS certificate/redirect, authentication, authorization on every protected route, and absence of direct task ingress.
+5. Test restart recovery, durable evidence lineage, duplicate requests, run timeouts, cancellation, output redaction, and emergency-stop behavior.
+6. Capture a deployment receipt containing source SHA, image digest, AWS account/region, ECS service/task definition revision, endpoint identity, test results, timestamp, rollback target, and operator approval reference. Never include secret values.
 6. Do not enable public traffic or production promotion until all gates have explicit evidence and an authorized human approves the release.
 
 ## Rollback criteria

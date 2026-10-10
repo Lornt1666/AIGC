@@ -26,7 +26,7 @@ A worker or database failure can leave a run in status unknown. Unknown is a del
 
 1. Inspect the durable run receipt, recorded steps/evidence, relevant local CLI state, and external-side-effect boundaries.
 2. Only after an operator confirms the cycle must not be retried, submit POST /api/run/<run_id>/reconcile with the current expected_version and exact phrase: RECONCILE AIGC RUN <run_id> AS FAILED VERSION <version>.
-3. The API is authenticated. A successful reconciliation atomically transitions the unknown run to failed and appends an immutable receipt to command_center_run_reconciliations. The receipt stores the operator identity fingerprint and a hash of the confirmation phrase, not the phrase itself.
+3. The API is authenticated. A successful reconciliation atomically transitions the unknown run to failed and appends an immutable receipt to command_center_run_reconciliations. The receipt stores the operator credential fingerprint and a hash of the confirmation phrase, not the phrase itself. A shared-token fingerprint does not substitute for a real per-person identity/session boundary.
 4. If the version changed, reload the run and reassess. Do not force-update rows or delete audit evidence.
 
 ## Validation before production
