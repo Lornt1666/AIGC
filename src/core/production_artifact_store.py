@@ -9,9 +9,8 @@ Callers must supply a configured psycopg pool and S3-compatible client.
 """
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 import hashlib
-import json
 import re
 from typing import Any, Protocol
 
@@ -99,7 +98,9 @@ class S3PostgresArtifactStore:
             with self.pool.connection() as conn:
                 with conn.transaction():
                     # Serialize updates to the same logical artifact identity across workers.
-                    conn.execute("SELECT pg_advisory_xact_lock(hashtextextended(%s, 0))", (fields["key"],))
+                    # Lock operation IDs globally before logical keys to make cross-key retries race-safe.
+                    conn.execute("SELECT pg_advisory_xact_lock(hashtextextended(%s, 0))", ("operation:" + fields["operation_id"],))
+                    conn.execute("SELECT pg_advisory_xact_lock(hashtextextended(%s, 0))", ("artifact:" + fields["key"],))
                     prior = conn.execute(
                         """SELECT logical_key, version_id, sha256, media_type, schema_version,
                                   provenance, operation_id
