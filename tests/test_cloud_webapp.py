@@ -88,9 +88,10 @@ def test_deployment_defaults_require_private_auth_boundary() -> None:
 def test_output_redaction_and_bounds() -> None:
     from src.webapp.app import _safe_output
 
-    result = _safe_output("api_key=abc123 Authorization: Bearer xyz789 " + "x" * 3000)
+    result = _safe_output('api_key=abc123 Authorization: Bearer xyz789 {"client_secret": "json-secret"} ' + "x" * 3000)
     assert "abc123" not in result
     assert "xyz789" not in result
+    assert "json-secret" not in result
     assert len(result) <= 2000
 
 
