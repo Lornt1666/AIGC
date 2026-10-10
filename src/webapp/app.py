@@ -41,6 +41,8 @@ app = FastAPI(
 
 RUNS: Dict[str, Dict[str, Any]] = {}
 RUN_LOCK = threading.Lock()
+# Process-local serialization only; multi-replica safety requires a shared transactional store.
+REVIEW_DECISION_LOCK = threading.Lock()
 # This process-local gate prevents thread floods in one worker. Multi-replica and
 # restart-safe execution still requires durable shared state and remains a deploy blocker.
 MAX_CONCURRENT_RUNS = max(1, int(os.environ.get("AIGC_MAX_CONCURRENT_RUNS", "1")))
@@ -182,40 +184,46 @@ def reviews() -> Dict[str, Any]:
 
 @app.post("/api/reviews/{action_id}/accept", dependencies=[Depends(require_operator_auth)])
 def accept_review(action_id: str, request: DecisionRequest) -> Dict[str, Any]:
-    review = _find_review(action_id)
-    _require_pending_review(review)
-    result = run_command(
-        build_accept_command(PROJECT_ROOT, review, request.phrase, DEFAULT_AUTHORIZATIONS_PATH),
-        root=PROJECT_ROOT,
-        label=f"accept:{action_id}",
-    )
-    return _command_payload(result)
+    # Serialize decisions in this process so two requests cannot both pass the
+    # pending-state check before either command records its decision. A shared
+    # database transaction is still required for multi-replica deployments.
+    with REVIEW_DECISION_LOCK:
+        review = _find_review(action_id)
+        _require_pending_review(review)
+        result = run_command(
+            build_accept_command(PROJECT_ROOT, review, request.phrase, DEFAULT_AUTHORIZATIONS_PATH),
+            root=PROJECT_ROOT,
+            label=f"accept:{action_id}",
+        )
+        return _command_payload(result)
 
 
 @app.post("/api/reviews/{action_id}/deny", dependencies=[Depends(require_operator_auth)])
 def deny_review(action_id: str, request: DecisionRequest) -> Dict[str, Any]:
-    review = _find_review(action_id)
-    _require_pending_review(review)
-    result = run_command(
-        build_deny_command(PROJECT_ROOT, review, DEFAULT_AUTHORIZATIONS_PATH),
-        root=PROJECT_ROOT,
-        label=f"deny:{action_id}",
-    )
-    return _command_payload(result)
+    with REVIEW_DECISION_LOCK:
+        review = _find_review(action_id)
+        _require_pending_review(review)
+        result = run_command(
+            build_deny_command(PROJECT_ROOT, review, DEFAULT_AUTHORIZATIONS_PATH),
+            root=PROJECT_ROOT,
+            label=f"deny:{action_id}",
+        )
+        return _command_payload(result)
 
 
 @app.post("/api/reviews/{action_id}/revise", dependencies=[Depends(require_operator_auth)])
 def revise_review(action_id: str, request: DecisionRequest) -> Dict[str, Any]:
     if not request.revision_instructions.strip():
         raise HTTPException(status_code=400, detail="revision_instructions is required")
-    review = _find_review(action_id)
-    _require_pending_review(review)
-    result = run_command(
-        build_revise_command(PROJECT_ROOT, review, request.revision_instructions, DEFAULT_AUTHORIZATIONS_PATH),
-        root=PROJECT_ROOT,
-        label=f"revise:{action_id}",
-    )
-    return _command_payload(result)
+    with REVIEW_DECISION_LOCK:
+        review = _find_review(action_id)
+        _require_pending_review(review)
+        result = run_command(
+            build_revise_command(PROJECT_ROOT, review, request.revision_instructions, DEFAULT_AUTHORIZATIONS_PATH),
+            root=PROJECT_ROOT,
+            label=f"revise:{action_id}",
+        )
+        return _command_payload(result)
 
 
 @app.post("/api/emergency-stop", dependencies=[Depends(require_operator_auth)])
