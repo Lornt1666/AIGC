@@ -183,3 +183,44 @@ def test_all_review_routes_reject_stale_or_decided_packets_before_command(
 
     assert response.status_code == 409
     assert expected_detail in response.json()["detail"]
+
+
+@pytest.mark.parametrize(
+    ("aigc_env", "environment", "expected"),
+    [
+        ("development", "production", True),
+        ("prod", "development", True),
+        ("development", "development", False),
+        (None, "prod", True),
+        (None, None, False),
+    ],
+)
+def test_fastapi_production_detection_fails_closed_on_conflicting_environment(
+    monkeypatch, aigc_env, environment, expected
+) -> None:
+    from src.webapp.app import _production_mode
+
+    if aigc_env is None:
+        monkeypatch.delenv("AIGC_ENV", raising=False)
+    else:
+        monkeypatch.setenv("AIGC_ENV", aigc_env)
+    if environment is None:
+        monkeypatch.delenv("ENVIRONMENT", raising=False)
+    else:
+        monkeypatch.setenv("ENVIRONMENT", environment)
+
+    assert _production_mode() is expected
+
+
+def test_store_factory_does_not_allow_development_override_of_production(monkeypatch) -> None:
+    from src.webapp.command_center_store import (
+        CommandCenterStoreUnavailable,
+        command_center_store_from_env,
+    )
+
+    monkeypatch.setenv("AIGC_ENV", "development")
+    monkeypatch.setenv("ENVIRONMENT", "production")
+    monkeypatch.delenv("AIGC_COMMAND_CENTER_DATABASE_URL", raising=False)
+
+    with pytest.raises(CommandCenterStoreUnavailable, match="required in production"):
+        command_center_store_from_env()
