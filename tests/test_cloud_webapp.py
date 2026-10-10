@@ -183,3 +183,26 @@ def test_all_review_routes_reject_stale_or_decided_packets_before_command(
 
     assert response.status_code == 409
     assert expected_detail in response.json()["detail"]
+
+
+
+def test_production_workflows_fail_closed_until_shared_artifacts_are_integrated(monkeypatch) -> None:
+    monkeypatch.setenv("AIGC_ENV", "production")
+    monkeypatch.setenv("AIGC_COMMAND_CENTER_TOKEN", "correct-token")
+    client = TestClient(app)
+    headers = {"Authorization": "Bearer correct-token"}
+
+    assert client.get("/api/reviews", headers=headers).status_code == 503
+    assert client.post("/api/run", headers=headers, json={}).status_code == 503
+    assert client.post(
+        "/api/reviews/test-action/accept",
+        headers=headers,
+        json={"phrase": "anything"},
+    ).status_code == 503
+
+
+def test_shared_artifact_authority_guard_allows_development_mode(monkeypatch) -> None:
+    from src.webapp.app import _require_shared_artifact_authority
+
+    monkeypatch.setenv("AIGC_ENV", "development")
+    _require_shared_artifact_authority()
