@@ -218,3 +218,17 @@ def test_phase5_direct_packet_generation_fails_closed_in_production(monkeypatch,
         gate.run([], output_path=output_path)
 
     assert not output_path.exists()
+
+
+def test_phase5_direct_packet_generation_respects_conflicting_production_environment(monkeypatch, tmp_path) -> None:
+    from src.phase5_human_approval_gate import Phase5ApprovalGate
+
+    monkeypatch.setenv("AIGC_ENV", "development")
+    monkeypatch.setenv("ENVIRONMENT", "production")
+    gate = Phase5ApprovalGate(project_root=tmp_path)
+    output_path = tmp_path / "phase5_authorizations" / "packets.json"
+
+    with pytest.raises(RuntimeError, match="disabled in production"):
+        gate.run([], output_path=output_path)
+
+    assert not output_path.exists()
