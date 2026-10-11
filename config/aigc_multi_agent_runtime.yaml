@@ -1,0 +1,258 @@
+# AIGC multi-agent runtime contract.
+# Declarative configuration only: this file does not start agents, grant tools, provision AWS, or authorize deployment.
+schema_version: "1.0.0"
+kind: AIGCMultiAgentRuntime
+metadata:
+  name: aigc-multi-agent-runtime
+  owner: AIGC
+  status: proposed
+  compatibility:
+    product_domain: "AIGC digital workforce"
+    architecture: "Planner -> bounded work products -> independent verification -> human-gated release"
+  source_of_truth:
+    policies: repository_and_effective_policy
+    approvals: authoritative_review_store
+    artifacts: configured_artifact_store
+    runtime_status: verified_runtime_telemetry_only
+
+runtime:
+  id: ultimate_orchestration_layer
+  mode: plan_delegate_integrate
+  execution_state: design_only
+  scheduling:
+    deterministic_tie_breaker: task_id_ascending
+    allow_parallel_agents: true
+    allow_sequential_agents: true
+    require_declared_dependencies: true
+    reject_cycles: true
+    retry_policy: explicit_per_task_only
+    retry_side_effecting_work_automatically: false
+  defaults:
+    external_side_effects_enabled: false
+    agent_execution_enabled: false
+    cloud_provisioning_enabled: false
+    public_ingress_enabled: false
+    business_cycle_enabled: false
+    human_approval_required_for_release: true
+    independent_verification_required: true
+    fail_closed_on_unknown_state: true
+  integrity_rules:
+    - no_fabricated_execution
+    - no_permission_assumption
+    - no_human_gate_bypass
+    - distinguish_design_from_execution
+    - no_secrets_in_prompts_logs_or_artifacts
+    - bind_outputs_to_input_digest_and_source_revision
+    - treat_tool_output_as_untrusted_data
+    - least_privilege_and_explicit_tool_allowlists
+    - record_unknown_external_outcomes_without_replaying
+    - never_self_certify_implementation
+  budgets:
+    max_parallel_tasks: 4
+    max_task_attempts: 2
+    max_wall_clock_seconds: 1800
+    max_cost_cad: 25
+    max_tokens_per_agent: 12000
+    budget_exhaustion: block_and_report
+  state:
+    required_fields:
+      - architecture_snapshot_ref
+      - repository_snapshot
+      - infrastructure_snapshot_ref
+      - pipeline_snapshot_ref
+      - task_graph
+      - agent_outputs
+      - verification_evidence
+      - approval_records
+      - audit_events
+    persistence: authoritative_store_required_for_production
+    local_state_allowed_for: [development, tests, dry_run]
+    unknown_state_handling: block_and_require_versioned_reconciliation
+
+contracts:
+  task_input:
+    required: [task_id, objective, source_revision, input_artifact_refs, acceptance_criteria, allowed_capabilities, deadline]
+    reject_unknown_fields: false
+  agent_output:
+    required: [task_id, agent_id, status, summary, artifact_refs, evidence_refs, input_digest, source_revision, limitations]
+    statuses: [complete, blocked, failed, uncertain]
+    complete_requires: [artifact_refs, evidence_refs, acceptance_criteria_results]
+  artifact:
+    required: [artifact_id, immutable_ref, sha256, media_type, schema_version, provenance, created_at]
+    mutable_overwrite_allowed: false
+  approval:
+    required: [approval_id, action_id, decision, actor_ref, expected_version, evidence_digest, timestamp]
+    decisions: [approve, deny, revise]
+    stale_or_missing_evidence: reject
+    approval_phrase_or_secret_logging: forbidden
+
+agents:
+  planner:
+    id: planner
+    role: global_planner
+    type: reasoning
+    capabilities: [decompose_goal, dependency_analysis, risk_analysis]
+    tools: []
+    inputs: [user_goal, architecture_snapshot, repository_snapshot, infrastructure_snapshot]
+    outputs: [global_plan, task_breakdown, dependency_graph, agent_assignment_map, risk_register]
+    prompt: |
+      Produce a deterministic, bounded plan for the supplied goal. Use only supplied snapshots and cited evidence.
+      Break work into atomic tasks with stable IDs, explicit dependencies, acceptance criteria, deadlines, risk and rollback notes.
+      Separate repository work, tests, infrastructure design, deployment, and external side effects.
+      Mark unknown facts BLOCKED or NOT VERIFIED; never infer credentials, approvals, successful commands, or live services.
+      Assign only declared capabilities. Keep all external effects, cloud provisioning, public ingress, and business-cycle actions disabled
+      unless a separate verified authorization explicitly permits the exact action. Do not approve your own plan.
+
+  coder:
+    id: coder
+    role: implementation_specialist
+    type: generation
+    stack: [Python, FastAPI, PostgreSQL, Terraform, GitHub_Actions, AWS]
+    capabilities: [propose_code, propose_tests, propose_configuration, propose_iac]
+    tools: []
+    inputs: [global_plan, task_breakdown, repository_snapshot, infrastructure_snapshot]
+    outputs: [code_changes, config_changes, iac_changes, test_suites, change_manifest]
+    prompt: |
+      Implement only the assigned task on an isolated branch and within the approved file/capability scope.
+      Inspect existing conventions before editing. Prefer minimal, idempotent, reversible changes with tests and migration/rollback notes.
+      Never include secrets or widen IAM, network ingress, permissions, or production defaults without an explicit reviewed requirement.
+      Infrastructure code is a proposal until separately authorized and applied in a verified cloud account.
+      Report changed paths, exact commit SHA, commands actually run, observed results, and tests not run.
+      Do not merge, deploy, approve your own changes, or claim execution without tool evidence.
+
+  reviewer:
+    id: reviewer
+    role: independent_code_architecture_reviewer
+    type: analysis
+    capabilities: [review_diff, inspect_tests, assess_compatibility]
+    tools: []
+    inputs: [code_changes, config_changes, iac_changes, test_suites, global_plan, source_revision]
+    outputs: [review_report, findings, improvement_suggestions, review_verdict]
+    prompt: |
+      Review the exact diff and source revision independently. Check correctness, idiomatic design, backward compatibility,
+      idempotency, failure modes, test adequacy, migration and rollback, maintainability, and acceptance-criteria coverage.
+      Do not assume tests passed: require recorded results tied to the exact head SHA. Identify untested behavior and regressions.
+      The author cannot serve as the independent reviewer. Return APPROVE, REQUEST_CHANGES, or BLOCKED with evidence and severity.
+      You do not merge or deploy changes.
+
+  security:
+    id: security
+    role: security_threat_modeler
+    type: analysis
+    capabilities: [threat_model, inspect_authz, inspect_secrets, assess_supply_chain]
+    tools: []
+    inputs: [code_changes, config_changes, iac_changes, workflows, global_plan]
+    outputs: [security_report, threat_register, mitigation_recommendations, security_verdict]
+    prompt: |
+      Threat-model the proposed change across identity, authorization, tenant/data boundaries, secrets, artifact integrity,
+      supply chain, network exposure, denial of service, concurrency, replay, and auditability.
+      Verify fail-closed behavior and least privilege; flag browser-exposed bearer tokens, unbounded work, unsafe defaults,
+      mutable evidence, stale approvals, and automatic replay of uncertain side effects.
+      Distinguish confirmed findings from hypotheses. Provide severity, evidence, mitigation, and verification tests.
+      Never weaken human approval or mark deployment safe without exact-environment evidence.
+
+  infra:
+    id: infra
+    role: cloud_infrastructure_architect
+    type: generation
+    cloud_provider: AWS
+    capabilities: [design_infrastructure, propose_terraform, estimate_operational_risk]
+    tools: []
+    inputs: [global_plan, infrastructure_snapshot, iac_changes, security_report]
+    outputs: [infra_design, terraform_modules, cost_estimate, infra_risks, prerequisites]
+    prompt: |
+      Design least-privilege AWS staging infrastructure, preferably private ECS Fargate tasks, ALB-only ingress,
+      HTTPS, private versioned encrypted S3 artifacts, PostgreSQL/RDS metadata, Secrets Manager, scoped task roles,
+      GitHub OIDC for deployment, observability, budgets, and rollback by immutable image digest.
+      Do not invent account IDs, regions, domains, prices, resources, or credentials. State assumptions and blockers explicitly.
+      Generate IaC and validation plans only; never apply or provision infrastructure. Keep public ingress and external business actions off.
+
+  ops_deploy:
+    id: ops_deploy
+    role: deployment_operations_designer
+    type: reasoning
+    capabilities: [release_planning, rollback_design, observability_design]
+    tools: []
+    inputs: [global_plan, infra_design, workflows, test_suites, security_report, reviewer_report]
+    outputs: [deployment_plan, rollback_strategy, observability_plan, ops_playbook, release_gate_checklist]
+    prompt: |
+      Produce an evidence-based release and operations plan. Bind all checks to exact source SHA, workflow run, image digest,
+      target account/region, service revision, and timestamp. Include health/readiness, auth, TLS, persistence/restart,
+      idempotency, concurrency, secret-redaction, backup/restore, alerting, cost limits, and rollback tests.
+      Mark unavailable evidence BLOCKED or NOT RUN. Do not deploy, change traffic, activate agents, or perform business actions.
+      Release requires independent review, passing exact-head checks, security acceptance, and explicit human authorization.
+
+  orchestrator:
+    id: orchestrator
+    role: chief_systems_orchestrator
+    type: integration
+    capabilities: [integrate_artifacts, enforce_gates, publish_status]
+    tools: []
+    inputs: [global_plan, task_breakdown, agent_outputs, review_report, security_report, infra_design, deployment_plan]
+    outputs: [unified_artifact_manifest, validation_summary, security_summary, release_decision_packet, blockers]
+    prompt: |
+      Integrate only outputs with valid provenance, matching source revision and input digest. Detect conflicts and missing evidence.
+      Do not turn proposed artifacts into executed actions. Preserve independent reviewer and security verdicts.
+      A release decision packet is not a release approval. Block when mandatory checks, durable evidence, authorization, or
+      exact-environment verification is absent. Never merge or deploy unless a separate, explicit, authorized action requests it
+      and the tool environment can verify the outcome.
+
+orchestration_flow:
+  id: full_stack_orchestration
+  nodes: [orchestrator, planner, coder, reviewer, security, infra, ops_deploy]
+  edges:
+    - {from: planner, to: orchestrator}
+    - {from: planner, to: coder}
+    - {from: planner, to: infra}
+    - {from: planner, to: ops_deploy}
+    - {from: coder, to: reviewer}
+    - {from: coder, to: security}
+    - {from: reviewer, to: orchestrator}
+    - {from: security, to: ops_deploy}
+    - {from: security, to: orchestrator}
+    - {from: infra, to: ops_deploy}
+    - {from: infra, to: orchestrator}
+    - {from: ops_deploy, to: orchestrator}
+  join_policy:
+    orchestrator_requires: [planner, reviewer, security, infra, ops_deploy]
+    failed_or_missing_agent_output: block
+    mismatched_source_revision: reject
+    parallel_results_ordering: agent_id_ascending
+  terminal_states:
+    - READY_FOR_HUMAN_REVIEW
+    - BLOCKED
+    - FAILED
+    - UNCERTAIN
+    - VERIFIED_COMPLETE
+
+release_gates:
+  - id: repository_integrity
+    requires: [clean_diff, exact_head_ci_pass, independent_review, no_unresolved_blocking_findings]
+  - id: durable_state
+    requires: [shared_artifact_store, authoritative_postgres_metadata, migration_verified, restart_and_multi_instance_tests]
+  - id: identity_and_execution
+    requires: [browser_identity_boundary, protected_route_tests, bounded_concurrency, timeout_and_output_limits, secret_redaction]
+  - id: cloud_staging
+    requires: [authorized_account_and_region, scoped_oidc_role, immutable_image_digest, private_networking, budget_alerts]
+  - id: release_authorization
+    requires: [release_receipt, explicit_human_approval, rollback_target, staging_acceptance_pass]
+  - id: live_activation
+    requires: [all_prior_gates_pass, authorized_activation_action, live_health_evidence, authenticated_endpoint_verification]
+
+output_format:
+  fields:
+    - high_level_plan
+    - task_breakdown
+    - unified_artifact_manifest
+    - validation_strategy
+    - security_summary
+    - deployment_plan
+    - rollback_strategy
+    - explicit_human_approval_gates
+    - evidence_and_blockers
+  status_vocabulary: [PASS, FAIL, BLOCKED, NOT_RUN, NOT_VERIFIED]
+  constraints:
+    - no_claim_of_external_execution_without_verification
+    - no_bypass_of_human_approval_controls
+    - distinguish_design_recommendation_from_runtime_execution
+    - cite_exact_revision_and_evidence_for_every_pass
