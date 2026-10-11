@@ -63,3 +63,9 @@ Reviewer must be independent of the author and assess:
 
 ## Integration remains mandatory
 The JSON repository helpers are not yet the active source for `reviews()`, review-decision mutation, Phase 5 packet generation, work-order updates, or Phase 6/7 evidence. Do not remove the production guard until every reader/writer uses the durable repository and the end-to-end stale-approval/restart tests pass. The factory also needs private staging validation against the real S3 bucket policy, versioning, encryption/KMS, and RDS TLS setup.
+
+
+## Contract relationship with PR #303
+- PR #303 defines the shared `ArtifactStore` interface and a `LocalArtifactStore` adapter for sequential, single-process development/tests only. Its local filesystem adapter does not provide atomic inter-process compare-and-set and must never be used as production authorization state.
+- PR #302 provides the separate PostgreSQL/S3 candidate intended to satisfy production durability. Before merging the pair, independently verify that its public method signatures and `ArtifactRef` semantics conform to the contract, then run cross-adapter contract tests.
+- Do not infer end-to-end readiness from both PRs passing unit CI: the factory/repository still need integration into web reviews, Phase 5/6/7 evidence, work orders, restart recovery, and real private staging tests. Keep the production fail-closed guards until these acceptance criteria pass.
