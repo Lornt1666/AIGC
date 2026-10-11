@@ -302,8 +302,11 @@ class Phase5ApprovalGate:
         output_path: Optional[Path] = None,
         eligible_readiness: Optional[set[str]] = None,
     ) -> List[AuthorizationPacket]:
-        environment = os.environ.get("AIGC_ENV", os.environ.get("ENVIRONMENT", "development")).strip().lower()
-        if environment in {"production", "prod"}:
+        environments = (
+            os.environ.get("AIGC_ENV", "").strip().lower(),
+            os.environ.get("ENVIRONMENT", "").strip().lower(),
+        )
+        if any(environment in {"production", "prod"} for environment in environments):
             raise RuntimeError(
                 "Phase 5 packet generation is disabled in production until authorization packets "
                 "are read and written through the shared durable artifact repository."
