@@ -206,3 +206,15 @@ def test_shared_artifact_authority_guard_allows_development_mode(monkeypatch) ->
 
     monkeypatch.setenv("AIGC_ENV", "development")
     _require_shared_artifact_authority()
+
+def test_phase5_direct_packet_generation_fails_closed_in_production(monkeypatch, tmp_path) -> None:
+    from src.phase5_human_approval_gate import Phase5ApprovalGate
+
+    monkeypatch.setenv("AIGC_ENV", "production")
+    gate = Phase5ApprovalGate(project_root=tmp_path)
+    output_path = tmp_path / "phase5_authorizations" / "packets.json"
+
+    with pytest.raises(RuntimeError, match="disabled in production"):
+        gate.run([], output_path=output_path)
+
+    assert not output_path.exists()
