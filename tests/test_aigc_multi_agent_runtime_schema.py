@@ -49,3 +49,12 @@ def test_tool_allowlist_cannot_be_enabled_without_followup_authorization(tmp_pat
     altered.write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")
     with pytest.raises(ValueError, match="tool allowlists"):
         validate_runtime(altered, DEFAULT_SCHEMA)
+
+
+def test_orchestration_cycle_is_rejected(tmp_path: Path):
+    config = yaml.safe_load(DEFAULT_CONFIG.read_text(encoding="utf-8"))
+    config["orchestration_flow"]["edges"].append({"from": "orchestrator", "to": "planner"})
+    altered = tmp_path / "runtime-cycle.yaml"
+    altered.write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")
+    with pytest.raises(ValueError, match="contains a cycle"):
+        validate_runtime(altered, DEFAULT_SCHEMA)
