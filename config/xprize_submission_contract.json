@@ -1,0 +1,126 @@
+{
+  "schema_version": "aigc.xprize-submission-contract.v1",
+  "challenge": "Build with Gemini XPRIZE",
+  "challenge_slug": "xprize",
+  "requirements_fetched_at": "2026-08-09T15:25:10Z",
+  "submission_deadline_utc": "2026-08-17T20:00:00Z",
+  "host_time_zone": "Pacific Time (US & Canada)",
+  "project": {
+    "id": 1289277,
+    "slug": "facade-excalibur",
+    "name": "AIGC — Governed Gemini Opportunity Assessment",
+    "public_page_state": "PUBLISHED",
+    "video_present": false,
+    "canonical_repository_pr_in_public_copy": 170,
+    "canonical_repository_pr_current": 181,
+    "public_copy_alignment": "STALE"
+  },
+  "judging_criteria": [
+    "Business Viability",
+    "AI-Native Operations",
+    "Category Impact"
+  ],
+  "eligibility": {
+    "new_project_after_submission_start": {
+      "status": "PARTIAL",
+      "submission_period_start": "2026-05-19T10:00:00-07:00",
+      "earliest_observed_aigc_repository_baseline": "2026-07-02T15:02:58Z",
+      "competition_specific_pr": 145,
+      "competition_specific_pr_created_at": "2026-07-27T03:56:03Z",
+      "evidence_note": "Dedicated governed Gemini workflow anchor paths were absent at PR #145 base 84d8fbe57e65eb9b93070646934b71863ac5a4db and present on the PR head. This strongly supports a post-start competition-specific build, but final entrant start-date declaration remains separately reviewable."
+    },
+    "pre_existing_work_disclosure": {
+      "status": "PARTIAL",
+      "evidence_document": "docs/devpost/AIGC_XPRIZE_PRE_EXISTING_RESOURCES_DISCLOSURE_V1.md",
+      "evidence_note": "AIGC governance/orchestration foundations are disclosed separately from the competition-specific Gemini opportunity-assessment vertical slice. RegenExcalibur business-identity timing remains unresolved pending official registration evidence."
+    },
+    "entrant_type_and_representative": {
+      "status": "PARTIAL",
+      "evidence_document": "docs/devpost/AIGC_XPRIZE_ENTRANT_IDENTITY_EVIDENCE_V1.md",
+      "evidence_note": "Authenticated records establish Justice Gray Maciocha as founder/operator of RegenExcalibur, but do not yet justify selecting Individual, Team or Organization or establishing conditional representative authority."
+    },
+    "geographic_eligibility": {
+      "status": "EVIDENCED",
+      "country": "Canada",
+      "province_context": "Alberta",
+      "evidence_document": "docs/devpost/AIGC_XPRIZE_ENTRANT_IDENTITY_EVIDENCE_V1.md"
+    },
+    "age_eligibility": {
+      "status": "UNRESOLVED"
+    },
+    "organization_size_if_entering_as_organization": {
+      "status": "UNRESOLVED"
+    },
+    "corporate_id_if_entering_as_organization": {
+      "status": "UNRESOLVED",
+      "evidence_note": "Registry replacement request exists; official registration document/identifier is not recovered."
+    },
+    "third_party_integration_rights": {
+      "status": "PARTIAL",
+      "direct_dependency_licenses": "EVIDENCED",
+      "evidence_document": "docs/devpost/AIGC_XPRIZE_THIRD_PARTY_RIGHTS_INVENTORY_V1.md",
+      "license_manifest": "config/xprize_direct_dependency_licenses.json",
+      "evidence_note": "All eight direct pinned Gemini dependencies are license-mapped with zero unknown direct licenses. Transitive dependency licenses, provider terms, content/media rights, notices and final redistribution configuration remain unresolved."
+    },
+    "original_work_and_ip_rights": {
+      "status": "UNVERIFIED"
+    },
+    "no_disqualifying_sponsor_or_administrator_support": {
+      "status": "UNVERIFIED"
+    }
+  },
+  "deliverables": {
+    "github_repo_shared_with_judges": "UNVERIFIED",
+    "video_under_three_minutes": "MISSING",
+    "submission_zip_file": "MISSING",
+    "ai_operations_narrative_500_1000_words": "PARTIAL",
+    "revenue_evidence": "UNVERIFIED",
+    "profit_and_loss_evidence": "UNVERIFIED",
+    "expense_and_marketing_evidence": "UNVERIFIED",
+    "product_runtime_evidence": "UNVERIFIED",
+    "customer_evidence": "UNVERIFIED",
+    "google_cloud_usage_evidence": "UNVERIFIED",
+    "live_gemini_api_call_evidence": "MISSING",
+    "project_running_upload": "MISSING",
+    "claim_evidence_matrix": "PARTIAL"
+  },
+  "required_fields": [
+    {"id": 27415, "key": "project_start_date", "status": "PARTIAL", "candidate_value": "07-26-26", "evidence_note": "PR #145 opened 2026-07-27T03:56:03Z, equivalent to 2026-07-26 21:56 in America/Edmonton. Use only if no earlier truthful dedicated-project start is evidenced."},
+    {"id": 27424, "key": "submitter_type", "status": "UNRESOLVED"},
+    {"id": 27425, "key": "country_of_residence", "status": "EVIDENCED", "candidate_value": ["Canada"]},
+    {"id": 27416, "key": "category", "status": "PARTIAL", "candidate_value": "Entrepreneurship & Job Creation", "evidence_document": "docs/devpost/AIGC_XPRIZE_CATEGORY_DECISION_V1.md"},
+    {"id": 27487, "key": "category_impact_explanation", "status": "PARTIAL"},
+    {"id": 28179, "key": "impact_measurement", "status": "PARTIAL", "evidence_document": "docs/devpost/AIGC_XPRIZE_CATEGORY_DECISION_V1.md"},
+    {"id": 27482, "key": "business_model", "status": "PARTIAL"},
+    {"id": 27483, "key": "future_sustainability", "status": "PARTIAL"},
+    {"id": 27427, "key": "ai_tools", "status": "PARTIAL"},
+    {"id": 27660, "key": "business_viability", "status": "PARTIAL"},
+    {"id": 27484, "key": "ai_native_operations", "status": "PARTIAL"},
+    {"id": 27488, "key": "live_ai_key_decisions", "status": "BLOCKED_RUNTIME_EVIDENCE"},
+    {"id": 27485, "key": "google_cloud_product", "status": "BLOCKED_RUNTIME_EVIDENCE"},
+    {"id": 27486, "key": "llm_and_gemini_usage", "status": "BLOCKED_RUNTIME_EVIDENCE"},
+    {"id": 27417, "key": "github_repo_url", "status": "PARTIAL"},
+    {"id": 28104, "key": "project_running_evidence_upload", "status": "BLOCKED_RUNTIME_EVIDENCE"},
+    {"id": 27459, "key": "shared_repo_confirmation", "status": "UNVERIFIED"},
+    {"id": 27797, "key": "pre_existing_resources", "status": "PARTIAL", "evidence_document": "docs/devpost/AIGC_XPRIZE_PRE_EXISTING_RESOURCES_DISCLOSURE_V1.md"},
+    {"id": 27418, "key": "total_revenue_usd", "status": "UNRESOLVED"},
+    {"id": 27419, "key": "revenue_by_month", "status": "UNRESOLVED"},
+    {"id": 27659, "key": "revenue_explanation", "status": "UNRESOLVED"},
+    {"id": 27423, "key": "related_party_revenue", "status": "UNRESOLVED"},
+    {"id": 27460, "key": "total_expenses_usd", "status": "UNRESOLVED", "evidence_document": "docs/devpost/AIGC_XPRIZE_FINANCIAL_EVIDENCE_INVENTORY_V1.md"},
+    {"id": 28180, "key": "expense_explanation", "status": "UNRESOLVED", "evidence_document": "docs/devpost/AIGC_XPRIZE_FINANCIAL_EVIDENCE_INVENTORY_V1.md"},
+    {"id": 27422, "key": "cogs_usd", "status": "UNRESOLVED"},
+    {"id": 28181, "key": "cogs_explanation", "status": "UNRESOLVED"},
+    {"id": 27421, "key": "marketing_customer_acquisition_usd", "status": "UNRESOLVED"},
+    {"id": 27463, "key": "marketing_customer_acquisition_explanation", "status": "UNRESOLVED"},
+    {"id": 27465, "key": "users_acquired", "status": "UNRESOLVED"},
+    {"id": 27466, "key": "paying_users", "status": "UNRESOLVED"},
+    {"id": 27428, "key": "learning_level", "status": "UNRESOLVED"},
+    {"id": 27672, "key": "profit_and_loss_upload", "status": "MISSING"}
+  ],
+  "authority": {
+    "public_project_update": false,
+    "final_submission_update": false,
+    "devpost_submission": false
+  }
+}

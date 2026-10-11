@@ -1,0 +1,76 @@
+{
+  "schema_version": "aigc.xprize-direct-dependency-licenses.v1",
+  "requirements_file": "requirements-gemini.txt",
+  "verification_scope": "DIRECT_PINNED_DEPENDENCIES_ONLY",
+  "dependencies": [
+    {
+      "requirement": "fastapi==0.140.0",
+      "package": "fastapi",
+      "version": "0.140.0",
+      "license_spdx": "MIT",
+      "license_status": "VERIFIED_UPSTREAM",
+      "source": "fastapi/fastapi LICENSE"
+    },
+    {
+      "requirement": "uvicorn[standard]==0.51.0",
+      "package": "uvicorn",
+      "version": "0.51.0",
+      "license_spdx": "BSD-3-Clause",
+      "license_status": "VERIFIED_PYPI_METADATA",
+      "source": "PyPI uvicorn verified package metadata"
+    },
+    {
+      "requirement": "pydantic==2.13.4",
+      "package": "pydantic",
+      "version": "2.13.4",
+      "license_spdx": "MIT",
+      "license_status": "VERIFIED_UPSTREAM",
+      "source": "pydantic/pydantic LICENSE"
+    },
+    {
+      "requirement": "google-genai==1.75.0",
+      "package": "google-genai",
+      "version": "1.75.0",
+      "license_spdx": "Apache-2.0",
+      "license_status": "VERIFIED_UPSTREAM",
+      "source": "googleapis/python-genai LICENSE"
+    },
+    {
+      "requirement": "google-cloud-storage==3.13.0",
+      "package": "google-cloud-storage",
+      "version": "3.13.0",
+      "license_spdx": "Apache-2.0",
+      "license_status": "VERIFIED_UPSTREAM",
+      "source": "googleapis/python-storage LICENSE"
+    },
+    {
+      "requirement": "google-cloud-secret-manager==2.30.0",
+      "package": "google-cloud-secret-manager",
+      "version": "2.30.0",
+      "license_spdx": "Apache-2.0",
+      "license_status": "VERIFIED_UPSTREAM_AND_PYPI_METADATA",
+      "source": "googleapis/google-cloud-python LICENSE + PyPI package metadata"
+    },
+    {
+      "requirement": "psycopg[binary]==3.3.4",
+      "package": "psycopg",
+      "version": "3.3.4",
+      "license_spdx": "LGPL-3.0-only",
+      "license_status": "VERIFIED_UPSTREAM_AND_PYPI_BINARY_METADATA",
+      "source": "psycopg/psycopg LICENSE.txt + PyPI psycopg-binary 3.3.4 metadata"
+    },
+    {
+      "requirement": "psycopg-pool==3.3.1",
+      "package": "psycopg-pool",
+      "version": "3.3.1",
+      "license_spdx": "LGPL-3.0-only",
+      "license_status": "VERIFIED_PYPI_METADATA",
+      "source": "PyPI psycopg-pool 3.3.1 verified metadata"
+    }
+  ],
+  "direct_dependency_inventory_complete": true,
+  "transitive_dependency_inventory_complete": false,
+  "provider_terms_review_complete": false,
+  "redistribution_notice_bundle_complete": false,
+  "legal_certification": false
+}
