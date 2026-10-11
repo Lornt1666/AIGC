@@ -133,7 +133,7 @@ class LocalArtifactStore:
             if current_version == expected_current_version_id:
                 self._atomic_replace(
                     current_path,
-                    (json.dumps(existing, sort_keys=True, separators=(",", ":")) + "\\n").encode("utf-8"),
+                    (json.dumps(existing, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8"),
                 )
             return ArtifactRef(**existing)
 
