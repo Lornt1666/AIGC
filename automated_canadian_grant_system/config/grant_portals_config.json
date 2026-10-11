@@ -1,0 +1,50 @@
+{
+  "catalog_id": "ACGS-CANADIAN-GRANT-PORTALS-001",
+  "mode": "local_draft_only",
+  "recommended_first_portal_id": "alberta_innovates",
+  "recommendation_basis": "The working profile is located in Alberta; this is a routing preference, not an eligibility determination or a claim that a program is open.",
+  "live_ingestion_enabled": false,
+  "external_action_performed": false,
+  "portals": [
+    {
+      "portal_id": "alberta_innovates",
+      "organization": "Alberta Innovates",
+      "official_portal_url": "https://albertainnovates.ca/funding/",
+      "connector_status": "not_configured",
+      "ingestion_mode": "disabled_pending_phase5_approval",
+      "terms_review_status": "not_reviewed",
+      "local_draft_template_available": true,
+      "notes": "Configure only after an accountable operator has reviewed the official source, terms, rate limits, data-use conditions, and a scoped Phase 5 approval."
+    },
+    {
+      "portal_id": "nrc_irap",
+      "organization": "National Research Council Canada Industrial Research Assistance Program",
+      "official_portal_url": "https://nrc.canada.ca/en/support-technology-innovation/industrial-research-assistance-program",
+      "connector_status": "not_configured",
+      "ingestion_mode": "disabled_pending_phase5_approval",
+      "terms_review_status": "not_reviewed",
+      "local_draft_template_available": true,
+      "notes": "No NRC IRAP content is fetched or represented as current by this local baseline."
+    },
+    {
+      "portal_id": "prairiescan",
+      "organization": "Prairies Economic Development Canada",
+      "official_portal_url": "https://www.prairiescan.gc.ca/",
+      "connector_status": "not_configured",
+      "ingestion_mode": "disabled_pending_phase5_approval",
+      "terms_review_status": "not_reviewed",
+      "local_draft_template_available": false,
+      "notes": "No PrairiesCan content is fetched or represented as current by this local baseline."
+    },
+    {
+      "portal_id": "nserc",
+      "organization": "Natural Sciences and Engineering Research Council of Canada",
+      "official_portal_url": "https://www.nserc-crsng.gc.ca/",
+      "connector_status": "not_configured",
+      "ingestion_mode": "disabled_pending_phase5_approval",
+      "terms_review_status": "not_reviewed",
+      "local_draft_template_available": false,
+      "notes": "No NSERC content is fetched or represented as current by this local baseline."
+    }
+  ]
+}

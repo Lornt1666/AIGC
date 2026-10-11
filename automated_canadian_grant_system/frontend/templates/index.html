@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ACGS — Local Draft Portal</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Automated Canadian Grant System</p>
+        <h1>Grant application draft workspace</h1>
+        <p id="mode">Loading governed local mode…</p>
+      </header>
+
+      <section aria-labelledby="identity-heading">
+        <h2 id="identity-heading">Working business profile</h2>
+        <dl id="identity"></dl>
+      </section>
+
+      <section aria-labelledby="portal-heading">
+        <h2 id="portal-heading">Configured grant portals</h2>
+        <p id="portal-recommendation"></p>
+        <ul id="portals"></ul>
+      </section>
+
+      <section aria-labelledby="draft-heading">
+        <h2 id="draft-heading">Generate an internal draft</h2>
+        <p>All portal retrieval and submission are disabled. Enter only information you are authorized to use.</p>
+        <p id="template-status" role="status">Select a local draft template.</p>
+        <form id="draft-form">
+          <label>Portal
+            <select id="portal-id" name="portal_id" required></select>
+          </label>
+          <label>Grant or program name
+            <input id="grant-name" name="grant_name" maxlength="240" required>
+          </label>
+          <label>Project title
+            <input id="project-title" name="project_title" maxlength="240" required>
+          </label>
+          <label>Project summary
+            <textarea id="project-summary" name="project_summary" maxlength="5000" required></textarea>
+          </label>
+          <label>Requested funding (CAD)
+            <input id="requested-funding" name="requested_funding_cad" type="number" min="1" step="0.01" required>
+          </label>
+          <label>Applicant matching contribution (CAD)
+            <input id="matching-contribution" name="matching_contribution_cad" type="number" min="0" step="0.01" value="0">
+          </label>
+          <label>Funding ceiling from reviewed guideline (optional)
+            <input id="funding-ceiling" name="funding_ceiling_cad" type="number" min="1" step="0.01">
+          </label>
+          <label>Required matching ratio from reviewed guideline (optional)
+            <input id="matching-ratio" name="required_matching_ratio" type="number" min="0" max="1" step="0.01">
+          </label>
+          <button type="submit">Generate internal draft</button>
+        </form>
+      </section>
+
+      <section aria-labelledby="result-heading">
+        <h2 id="result-heading">Draft review</h2>
+        <pre id="result" aria-live="polite">No draft generated.</pre>
+      </section>
+
+      <section id="operator-review-section" aria-labelledby="operator-review-heading" hidden>
+        <h2 id="operator-review-heading">Operator review for local export</h2>
+        <p>
+          This records an accountable operator’s local review only. It does not
+          determine eligibility, enable a connector, or authorize submission.
+        </p>
+        <form id="operator-review-form">
+          <label>Application ID
+            <input id="review-application-id" name="application_id" readonly required>
+          </label>
+          <label>Expected revision
+            <input id="review-expected-revision" name="expected_revision" type="number" readonly required>
+          </label>
+          <label>Review decision
+            <select id="review-decision" name="decision" required>
+              <option value="approve_local_export">Approve local export</option>
+              <option value="return_for_revision">Return for revision</option>
+            </select>
+          </label>
+          <label>Operator role
+            <select id="review-operator-role" name="operator_role" required>
+              <option value="ACCOUNTABLE_OPERATOR">ACCOUNTABLE_OPERATOR</option>
+            </select>
+          </label>
+          <label>Exact reviewed program name
+            <input id="review-program-name" name="program_name" maxlength="500" required>
+          </label>
+          <label>Reviewed official guideline URL
+            <input id="review-source-guideline-url" name="source_guideline_url" type="url" maxlength="2000" required>
+          </label>
+          <label>Reviewed source version or publication date
+            <input id="review-source-version" name="source_version" maxlength="500" required>
+          </label>
+          <label>Source reviewed on
+            <input id="review-source-reviewed-at" name="source_reviewed_at" type="date" required>
+          </label>
+          <label>Reviewed eligibility criteria summary
+            <textarea id="review-eligibility-summary" name="eligibility_criteria_summary" maxlength="10000" required></textarea>
+          </label>
+          <label>Eligible regions (one per line)
+            <textarea id="review-eligible-regions" name="eligible_regions" maxlength="2000" required></textarea>
+          </label>
+          <label>Minimum TRL (optional)
+            <input id="review-min-trl" name="min_trl" type="number" min="1" max="9">
+          </label>
+          <label>Maximum TRL (optional)
+            <input id="review-max-trl" name="max_trl" type="number" min="1" max="9">
+          </label>
+          <label>Minimum headcount (optional)
+            <input id="review-min-headcount" name="min_headcount" type="number" min="0">
+          </label>
+          <label>Maximum headcount (optional)
+            <input id="review-max-headcount" name="max_headcount" type="number" min="0">
+          </label>
+          <label>Funding ceiling (CAD, optional)
+            <input id="review-funding-ceiling" name="funding_ceiling_cad" type="number" min="0.01" step="0.01">
+          </label>
+          <label>Required matching ratio (optional)
+            <input id="review-matching-ratio" name="required_matching_ratio" type="number" min="0" max="1" step="0.01">
+          </label>
+          <label>Reviewed financial criteria summary
+            <textarea id="review-financial-summary" name="financial_criteria_summary" maxlength="10000" required></textarea>
+          </label>
+          <label>Source evidence references (one per line; include the reviewed guideline URL)
+            <textarea id="review-source-evidence" name="source_evidence_references" maxlength="10000" required></textarea>
+          </label>
+          <label>Budget evidence references (one per line)
+            <textarea id="review-budget-evidence" name="budget_evidence_references" maxlength="10000" required></textarea>
+          </label>
+          <label>Review notes (optional)
+            <textarea id="review-notes" name="review_notes" maxlength="10000"></textarea>
+          </label>
+          <fieldset>
+            <legend>Required operator attestations</legend>
+            <label class="checkbox-label">
+              <input id="review-current-source" name="operator_attests_current_source" type="checkbox" required>
+              I reviewed the current official source represented above.
+            </label>
+            <label class="checkbox-label">
+              <input id="review-evidence-complete" name="operator_attests_evidence_complete" type="checkbox" required>
+              I supplied the source and budget evidence references required for this local review.
+            </label>
+            <label class="checkbox-label">
+              <input id="review-ai-disclosure" name="ai_use_disclosure_acknowledged" type="checkbox" required>
+              I acknowledge the AI-use disclosure in the draft artifact.
+            </label>
+          </fieldset>
+          <button type="submit">Record local review</button>
+        </form>
+        <button id="local-export-button" type="button" disabled>View local export artifact</button>
+        <pre id="operator-review-result" aria-live="polite">No local review recorded.</pre>
+      </section>
+    </main>
+    <script src="/static/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "entity_name": "RegenExcalibur Technologies Inc.",
+  "legal_structure": "Alberta Incorporation (AB-INC)",
+  "headquarters": "Stony Plain, Alberta, Canada",
+  "operational_region": "Edmonton Metropolitan Region / Alberta",
+  "founding_year": 2025,
+  "headcount": 4,
+  "primary_sector": "Clean-Technology, Serverless AI Architecture, & Smart Building Infrastructure",
+  "technology_readiness_level": "TRL 6 (System/subsystem model or prototype demonstration in a relevant environment)",
+  "annual_rd_spend_cad": 150000,
+  "canadian_controlled_private_corporation": true,
+  "verification_status": "operator_attestation_required",
+  "verification_note": "This profile is an operator-supplied working profile. Legal, tax, ownership, and program-specific eligibility must be independently verified before an application is submitted.",
+  "external_action_performed": false
+}

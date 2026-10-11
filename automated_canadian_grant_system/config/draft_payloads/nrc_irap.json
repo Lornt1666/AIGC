@@ -1,0 +1,27 @@
+{
+  "template_id": "ACGS-TEMPLATE-NRC-IRAP-001",
+  "portal_id": "nrc_irap",
+  "grant": {
+    "grant_id": "nrc_irap_operator_draft",
+    "portal_id": "nrc_irap",
+    "grant_name": "NRC IRAP opportunity — operator review required",
+    "guideline_url": "https://nrc.canada.ca/en/support-technology-innovation/industrial-research-assistance-program",
+    "summary": "Local draft-input template only. It does not assert that a program is open, that any criteria apply, or that the working business profile qualifies. Review the applicable official program guidance before replacing placeholders.",
+    "eligibility": {
+      "source_verification_status": "operator_review_required"
+    }
+  },
+  "source_attribution": {
+    "official_portal_url": "https://nrc.canada.ca/en/support-technology-innovation/industrial-research-assistance-program",
+    "source_status": "not_fetched_or_verified",
+    "current_program_confirmation_required": true
+  },
+  "required_operator_inputs": [
+    "Exact program or engagement path and official guidance URL.",
+    "Current intake status, contact pathway, and guidance version.",
+    "Official eligibility criteria, funding structure, and matching requirements.",
+    "Verified business identity, ownership, financial, and technical evidence."
+  ],
+  "local_draft_only": true,
+  "external_action_performed": false
+}
