@@ -124,3 +124,16 @@ def test_initial_local_write_rejects_nonempty_expected_version(tmp_path):
     store = LocalArtifactStore(tmp_path)
     with pytest.raises(ArtifactConflict, match="stale artifact write"):
         put(store, expected="version-does-not-exist")
+
+
+def test_identical_retry_repairs_missing_current_pointer(tmp_path):
+    store = LocalArtifactStore(tmp_path)
+    ref = put(store, content=b"recoverable", operation_id="op-recover")
+    current_path = store.current / (
+        hashlib.sha256(ref.key.encode("utf-8")).hexdigest() + ".json"
+    )
+    current_path.unlink()
+
+    assert put(store, content=b"recoverable", operation_id="op-recover") == ref
+    current = __import__("json").loads(current_path.read_text(encoding="utf-8"))
+    assert current["version_id"] == ref.version_id
