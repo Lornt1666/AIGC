@@ -118,14 +118,25 @@ class LocalArtifactStore:
             "version_id": digest,
             "sha256": digest,
         }
+        current_path = self.current / (hashlib.sha256(fields["key"].encode("utf-8")).hexdigest() + ".json")
         if operation_path.exists():
             existing = json.loads(operation_path.read_text(encoding="utf-8"))
             if existing != receipt:
                 raise ArtifactConflict("operation_id was already committed with different artifact data")
             self._verify_blob(blob_path, digest)
+            current_receipt = None
+            if current_path.exists():
+                current_receipt = json.loads(current_path.read_text(encoding="utf-8"))
+            current_version = current_receipt.get("version_id") if current_receipt else None
+            # Recover a crash after the immutable operation receipt was written but
+            # before the current pointer was updated. Never roll back a newer pointer.
+            if current_version == expected_current_version_id:
+                self._atomic_replace(
+                    current_path,
+                    (json.dumps(existing, sort_keys=True, separators=(",", ":")) + "\\n").encode("utf-8"),
+                )
             return ArtifactRef(**existing)
 
-        current_path = self.current / (hashlib.sha256(fields["key"].encode("utf-8")).hexdigest() + ".json")
         current_receipt = None
         if current_path.exists():
             current_receipt = json.loads(current_path.read_text(encoding="utf-8"))
