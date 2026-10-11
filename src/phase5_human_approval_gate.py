@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import uuid
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timedelta, timezone
@@ -301,6 +302,12 @@ class Phase5ApprovalGate:
         output_path: Optional[Path] = None,
         eligible_readiness: Optional[set[str]] = None,
     ) -> List[AuthorizationPacket]:
+        environment = os.environ.get("AIGC_ENV", os.environ.get("ENVIRONMENT", "development")).strip().lower()
+        if environment in {"production", "prod"}:
+            raise RuntimeError(
+                "Phase 5 packet generation is disabled in production until authorization packets "
+                "are read and written through the shared durable artifact repository."
+            )
         eligible = eligible_readiness or {"ready_for_phase_5", "strong_minor_review"}
         self.ledger.record(
             "phase5_run_start",
