@@ -201,7 +201,7 @@ orchestration_flow:
   id: full_stack_orchestration
   nodes: [orchestrator, planner, coder, reviewer, security, infra, ops_deploy]
   edges:
-    - {from: orchestrator, to: planner}
+    - {from: planner, to: orchestrator}
     - {from: planner, to: coder}
     - {from: planner, to: infra}
     - {from: planner, to: ops_deploy}
