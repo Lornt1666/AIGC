@@ -1,0 +1,94 @@
+{
+  "schema_version": "aigc.revenue-omega-operational-maturity.v1",
+  "candidate_branch": "release/revenue-omega-v1",
+  "status": "IMPLEMENTATION_CONVERGED_PENDING_RELEASE_EXACT_HEAD_CI",
+  "dimensions": {
+    "schemas_persistence": {
+      "observed_level": "CI_VERIFIED",
+      "evidence_refs": ["PR197_CI2795", "PR200_CI2817"],
+      "blocker": "Revenue-Ω migration has not been applied/reconciled against a real staging PostgreSQL instance"
+    },
+    "compute_metering": {
+      "observed_level": "IMPLEMENTED",
+      "evidence_refs": ["release/revenue-omega-v1"],
+      "blocker": "provider/cloud usage receipts have not been ingested from a live workload"
+    },
+    "commission_engine": {
+      "observed_level": "CI_VERIFIED",
+      "evidence_refs": ["PR182_CI2769", "PR200_CI2817"],
+      "blocker": ""
+    },
+    "invoice_generation": {
+      "observed_level": "CI_VERIFIED",
+      "evidence_refs": ["PR201_CI2827"],
+      "blocker": ""
+    },
+    "email_delivery": {
+      "observed_level": "SANDBOX_VERIFIED",
+      "evidence_refs": ["PR202_CI2845"],
+      "blocker": "no real provider delivery receipt"
+    },
+    "payment_provider_adapter": {
+      "observed_level": "SANDBOX_VERIFIED",
+      "evidence_refs": ["PR202_CI2845"],
+      "blocker": "no real tokenized payment provider integration/receipt"
+    },
+    "payment_webhooks_reconciliation": {
+      "observed_level": "SANDBOX_VERIFIED",
+      "evidence_refs": ["PR202_CI2845"],
+      "blocker": "no real signed provider webhook/reconciliation receipt"
+    },
+    "accounting_ledger": {
+      "observed_level": "SANDBOX_VERIFIED",
+      "evidence_refs": ["PR201_CI2827", "PR202_CI2845", "PR203_CI2854"],
+      "blocker": ""
+    },
+    "tax_engine_interface": {
+      "observed_level": "IMPLEMENTED",
+      "evidence_refs": ["release/revenue-omega-v1"],
+      "blocker": "no current persisted production tax decision for the actual operating entity/customer transaction"
+    },
+    "anti_fraud": {
+      "observed_level": "IMPLEMENTED",
+      "evidence_refs": ["release/revenue-omega-v1"],
+      "blocker": "release exact-head CI required"
+    },
+    "idempotency_duplicate_prevention": {
+      "observed_level": "CI_VERIFIED",
+      "evidence_refs": ["PR197_CI2795", "PR200_CI2817"],
+      "blocker": "real PostgreSQL concurrent/restart proof absent"
+    },
+    "refunds_disputes": {
+      "observed_level": "CI_VERIFIED",
+      "evidence_refs": ["PR201_CI2827"],
+      "blocker": "refund provider effect has not been sandbox-integrated or runtime-verified"
+    },
+    "observability": {
+      "observed_level": "IMPLEMENTED",
+      "evidence_refs": ["release/revenue-omega-v1"],
+      "blocker": "no live telemetry stream/runtime receipt"
+    },
+    "security_secret_handling": {
+      "observed_level": "SANDBOX_VERIFIED",
+      "evidence_refs": ["PR202_CI2839_FAILURE_RETAINED", "PR202_CI2845_REPAIR_PASS"],
+      "blocker": "production secret-manager/payment-provider configuration absent"
+    },
+    "automated_tests": {
+      "observed_level": "IMPLEMENTED",
+      "evidence_refs": ["release/revenue-omega-v1"],
+      "blocker": "release exact-head CI required"
+    }
+  },
+  "authority": {
+    "employment_agency_activity": false,
+    "contract_acceptance": false,
+    "live_invoice_send": false,
+    "live_payment_request": false,
+    "live_payment_collection": false,
+    "payroll_deduction": false,
+    "refund_execution": false,
+    "tax_filing": false,
+    "owner_distribution": false,
+    "production_activation": false
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aigc:revenue-omega:invoice-transition:v1",
+  "title": "AIGC Revenue-Ω Invoice Transition Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "invoice_id",
+    "invoice_hash",
+    "from_state",
+    "to_state",
+    "prior_revision",
+    "resulting_revision",
+    "transition_hash",
+    "external_action_performed"
+  ],
+  "properties": {
+    "schema_version": {"const": "aigc.revenue-omega-invoice-transition.v1"},
+    "invoice_id": {"type": "string", "minLength": 1},
+    "invoice_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "from_state": {"$ref": "#/$defs/state"},
+    "to_state": {"$ref": "#/$defs/state"},
+    "prior_revision": {"type": "integer", "minimum": 1},
+    "resulting_revision": {"type": "integer", "minimum": 2},
+    "transition_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "external_action_performed": {"const": false}
+  },
+  "$defs": {
+    "state": {
+      "type": "string",
+      "enum": [
+        "DRAFT", "APPROVED", "ISSUED", "DELIVERED", "OPEN",
+        "PARTIALLY_PAID", "PAID", "SETTLED", "OVERDUE", "DISPUTED",
+        "VOID", "CANCELLED", "PARTIALLY_REFUNDED", "REFUNDED", "UNCOLLECTIBLE"
+      ]
+    }
+  }
+}

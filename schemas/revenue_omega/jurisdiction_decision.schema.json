@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aigc:revenue-omega:jurisdiction-decision:v1",
+  "title": "AIGC Revenue-Ω Jurisdiction Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "decision_id",
+    "jurisdiction",
+    "service_type",
+    "payer_model",
+    "allowed",
+    "conditions",
+    "reviewed_by",
+    "reviewed_at",
+    "expires_at",
+    "source_refs",
+    "decision_hash"
+  ],
+  "properties": {
+    "schema_version": {"const": "aigc.revenue-omega-jurisdiction.v1"},
+    "decision_id": {"type": "string", "minLength": 1},
+    "jurisdiction": {"type": "string", "minLength": 2},
+    "service_type": {"type": "string", "minLength": 1},
+    "payer_model": {
+      "type": "string",
+      "enum": ["EMPLOYER", "MARKETPLACE_CUSTOMER", "CONTRACT_DEFINED"]
+    },
+    "allowed": {"type": "boolean"},
+    "conditions": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "reviewed_by": {"type": "string", "minLength": 1},
+    "reviewed_at": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "source_refs": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "decision_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

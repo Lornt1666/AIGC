@@ -1,0 +1,30 @@
+{
+  "schema_version": "aigc.revenue-omega-jurisdiction.v1",
+  "template_only": true,
+  "decision_id": "JUR-CA-AB-EMPLOYMENT-PLACEMENT-V1",
+  "jurisdiction": "CA-AB",
+  "service_type": "EMPLOYMENT_PLACEMENT",
+  "payer_model": "EMPLOYER",
+  "allowed": false,
+  "conditions": [
+    "AIGC employment-agency licensing requirement reviewed and, if applicable, active licence verified",
+    "employer service agreement executed before placement work begins",
+    "job seeker is not charged a placement/recruiting fee",
+    "employer agreement prohibits recovery of AIGC placement fees from worker wages",
+    "PIPA/private-sector privacy handling reviewed for collected candidate and compensation information",
+    "GST/HST registration and collection status reviewed for the operating entity",
+    "billing email and employer identity verified",
+    "tax treatment for the specific service and customer location confirmed"
+  ],
+  "reviewed_by": "UNASSIGNED_QUALIFIED_REVIEWER",
+  "reviewed_at": null,
+  "expires_at": null,
+  "source_refs": [
+    "https://www.alberta.ca/employment-agency-licence",
+    "https://www.alberta.ca/work-in-alberta",
+    "https://www.alberta.ca/personal-information-protection-act",
+    "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/when-register-charge.html"
+  ],
+  "activation_state": "BLOCKED_PENDING_LICENSING_AND_ACCOUNTABLE_REVIEW",
+  "external_authority_granted": false
+}
