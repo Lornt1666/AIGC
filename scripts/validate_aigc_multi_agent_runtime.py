@@ -25,6 +25,23 @@ def validate_runtime(config_path: Path = DEFAULT_CONFIG, schema_path: Path = DEF
     if nodes != set(agents): raise ValueError("orchestration nodes must exactly match declared agents")
     for edge in flow["edges"]:
         if edge.get("from") not in nodes or edge.get("to") not in nodes: raise ValueError(f"orchestration edge references unknown node: {edge}")
+    adjacency = {node: [] for node in nodes}
+    for edge in flow["edges"]:
+        adjacency[edge["from"]].append(edge["to"])
+    visiting: set[str] = set()
+    visited: set[str] = set()
+    def visit(node: str) -> None:
+        if node in visiting:
+            raise ValueError(f"orchestration graph contains a cycle at node: {node}")
+        if node in visited:
+            return
+        visiting.add(node)
+        for child in adjacency[node]:
+            visit(child)
+        visiting.remove(node)
+        visited.add(node)
+    for node in sorted(nodes):
+        visit(node)
     if not set(flow["join_policy"]["orchestrator_requires"]).issubset(nodes): raise ValueError("join policy requires an undeclared agent")
     return {"schema_validation":"PASS","graph_validation":"PASS","agent_count":len(agents),"edge_count":len(flow["edges"]),"agent_execution_enabled":config["runtime"]["defaults"]["agent_execution_enabled"],"external_side_effects_enabled":config["runtime"]["defaults"]["external_side_effects_enabled"],"cloud_provisioning_enabled":config["runtime"]["defaults"]["cloud_provisioning_enabled"],"public_ingress_enabled":config["runtime"]["defaults"]["public_ingress_enabled"],"production_activation_authorized":False}
 def main() -> int:
