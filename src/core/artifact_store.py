@@ -49,7 +49,12 @@ class ArtifactRef:
 
 
 class ArtifactStore(Protocol):
-    """Storage contract; implementations must preserve immutability and idempotency."""
+    """Storage contract; production implementations must preserve atomic CAS.
+
+    LocalArtifactStore is a development/test exception: its filesystem pointer
+    check-and-replace is not an inter-process compare-and-set and must never be
+    used to authorize production actions or coordinate multiple workers.
+    """
 
     def put(
         self,
@@ -73,7 +78,14 @@ class LocalArtifactStore:
 
     It stores blobs by SHA-256 and operation receipts separately. It never overwrites
     an existing operation receipt, and rejects reuse of an operation ID with different
-    content or metadata. Do not use this adapter as production authorization state.
+    content or metadata. A retry can repair a missing current pointer after an interrupted
+    write. However, expected-version checking and pointer replacement are NOT an atomic
+    compare-and-set across threads or processes: concurrent writers can race, and an
+    interrupted or racing writer can leave pointer state requiring reconciliation.
+    Guarantees are limited to sequential single-process development/test use. This adapter
+    is not safe for multi-worker coordination and must never authorize production actions.
+    Production requires the PostgreSQL-backed implementation with transactional locking
+    and compare-and-set semantics.
     """
 
     durable = False
