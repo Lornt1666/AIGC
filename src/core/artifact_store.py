@@ -129,12 +129,15 @@ class LocalArtifactStore:
             **fields,
             "version_id": digest,
             "sha256": digest,
+            # Bind the original compare-and-set precondition to the idempotency key.
+            # A retry with a different precondition must not move the current pointer.
+            "expected_current_version_id": expected_current_version_id,
         }
         current_path = self.current / (hashlib.sha256(fields["key"].encode("utf-8")).hexdigest() + ".json")
         if operation_path.exists():
             existing = json.loads(operation_path.read_text(encoding="utf-8"))
             if existing != receipt:
-                raise ArtifactConflict("operation_id was already committed with different artifact data")
+                raise ArtifactConflict("operation_id was already committed with different artifact data or precondition")
             self._verify_blob(blob_path, digest)
             current_receipt = None
             if current_path.exists():
@@ -147,7 +150,7 @@ class LocalArtifactStore:
                     current_path,
                     (json.dumps(existing, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8"),
                 )
-            return ArtifactRef(**existing)
+            return ArtifactRef(**{k: v for k, v in existing.items() if k != "expected_current_version_id"})
 
         current_receipt = None
         if current_path.exists():
@@ -179,7 +182,10 @@ class LocalArtifactStore:
             raise ArtifactNotFound("artifact operation receipt is missing") from exc
         except (OSError, json.JSONDecodeError) as exc:
             raise ArtifactIntegrityError("artifact operation receipt is unreadable") from exc
-        if receipt != asdict(ref):
+        # The operation receipt also records the original write precondition, which is
+        # not part of the public immutable ArtifactRef.
+        artifact_fields = {k: v for k, v in receipt.items() if k != "expected_current_version_id"}
+        if artifact_fields != asdict(ref):
             raise ArtifactIntegrityError("artifact reference metadata does not match its committed receipt")
         path = self.blobs / ref.sha256
         if not path.is_file():
@@ -204,7 +210,7 @@ class LocalArtifactStore:
         LocalArtifactStore._atomic_create(path, content)
 
     @staticmethod
-    def _write_receipt_if_absent(path: Path, receipt: dict[str, str]) -> None:
+    def _write_receipt_if_absent(path: Path, receipt: dict[str, str | None]) -> None:
         encoded = (json.dumps(receipt, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
         LocalArtifactStore._atomic_create(path, encoded)
 
