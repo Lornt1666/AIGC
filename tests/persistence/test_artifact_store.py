@@ -137,3 +137,21 @@ def test_identical_retry_repairs_missing_current_pointer(tmp_path):
     assert put(store, content=b"recoverable", operation_id="op-recover") == ref
     current = __import__("json").loads(current_path.read_text(encoding="utf-8"))
     assert current["version_id"] == ref.version_id
+
+
+
+def test_retry_cannot_repoint_newer_artifact_to_older_operation(tmp_path):
+    store = LocalArtifactStore(tmp_path)
+    first = put(store, content=b"first", operation_id="op-first")
+    second = put(store, content=b"second", operation_id="op-second", expected=first.version_id)
+
+    # Reusing the first operation with a changed CAS precondition must be rejected,
+    # not treated as permission to move the current pointer backwards.
+    with pytest.raises(ArtifactConflict, match="precondition"):
+        put(store, content=b"first", operation_id="op-first", expected=second.version_id)
+
+    current_path = store.current / (
+        hashlib.sha256(first.key.encode("utf-8")).hexdigest() + ".json"
+    )
+    current = __import__("json").loads(current_path.read_text(encoding="utf-8"))
+    assert current["version_id"] == second.version_id
