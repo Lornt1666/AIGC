@@ -166,7 +166,7 @@ class LocalArtifactStore:
         if existing != receipt:
             raise ArtifactConflict("operation_id was concurrently committed with different artifact data")
         self._atomic_replace(current_path, (json.dumps(existing, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8"))
-        return ArtifactRef(**existing)
+        return ArtifactRef(**{k: v for k, v in existing.items() if k != "expected_current_version_id"})
 
     def get(self, ref: ArtifactRef) -> bytes:
         if not _SHA256.fullmatch(ref.sha256) or ref.version_id != ref.sha256:
