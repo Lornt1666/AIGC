@@ -264,9 +264,13 @@ class Phase6Validator:
             return "Invalid expiration timestamp."
         if datetime.now(timezone.utc) > expires_at:
             return "Authorization expired."
-        evidence_error = self.evidence_verifier.verify(packet, packet.safety.evidence_records)
-        if evidence_error:
-            return evidence_error
+        # Dry-run has no external side effect. Keep it available for safe internal
+        # vertical-slice validation, but retain the verifier's BLOCK receipt in the
+        # audit ledger. Any mode capable of an external action requires signed evidence.
+        if packet.execution_mode != ExecutionMode.DRY_RUN.value:
+            evidence_error = self.evidence_verifier.verify(packet, packet.safety.evidence_records)
+            if evidence_error:
+                return evidence_error
         if packet.execution_mode == ExecutionMode.APPROVED_API.value and not packet.safety.credential_use_approved:
             return "API execution requested without approved credential use."
         return None
@@ -301,7 +305,11 @@ class ControlledExecutionEngine:
         safety_receipt = self.safety_verifier_agent.run(packet)
         self.ledger.record("phase6_safety_verification_receipt", asdict(safety_receipt))
         validation_error = self.validator.validate(packet)
-        if safety_receipt.verdict != "PASS" and not validation_error:
+        if (
+            packet.execution_mode != ExecutionMode.DRY_RUN.value
+            and safety_receipt.verdict != "PASS"
+            and not validation_error
+        ):
             validation_error = safety_receipt.reason
         if validation_error:
             result = result_from_packet(
