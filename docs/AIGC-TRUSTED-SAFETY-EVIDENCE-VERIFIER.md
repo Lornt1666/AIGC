@@ -15,11 +15,17 @@ Required checks: `platform_policy`, `ai_disclosure`, and `privacy`. Duplicate ev
 
 ## Trust provisioning
 
-Set `AIGC_SAFETY_EVIDENCE_HMAC_KEYS_JSON` at runtime to a JSON object mapping explicitly provisioned issuer IDs to secrets of at least 32 bytes, for example:
+Set `AIGC_SAFETY_EVIDENCE_HMAC_KEYS_JSON` at runtime to a JSON object mapping three distinct, explicitly provisioned issuer IDs to secrets of at least 32 bytes, and set `AIGC_SAFETY_EVIDENCE_POLICY_VERSION` to the exact currently approved policy version. Example placeholders only:
 
 ```json
-{"policy-checker":"<inject-from-secret-manager-at-runtime>"}
+{
+  "policy-checker": "<inject-from-secret-manager-at-runtime>",
+  "disclosure-checker": "<inject-from-secret-manager-at-runtime>",
+  "privacy-checker": "<inject-from-secret-manager-at-runtime>"
+}
 ```
+
+The verifier requires the three required checks to be attested by distinct trusted issuers and rejects records whose policy version differs from the configured current version. This prevents one issuer or a stale policy receipt from satisfying all controls.
 
 Never commit a real key, embed it in work orders, or let the LLM choose or retrieve it. Provision secrets only to trusted checkers and the verifier through a secret manager. CI test keys are synthetic and must never be deployed.
 
