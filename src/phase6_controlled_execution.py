@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Protocol
 
 from src.safety_evidence_verifier import SafetyEvidenceVerifier
+from src.safety_evidence_verifier_agent import SafetyEvidenceVerifierAgent
 
 
 class ExecutionMode(str, Enum):
@@ -276,6 +277,10 @@ class ControlledExecutionEngine:
         self.project_root = project_root
         self.ledger = Phase6AuditLedger(project_root / "data" / "audit" / "aigc_phase6_audit.jsonl")
         self.validator = Phase6Validator()
+        self.safety_verifier_agent = SafetyEvidenceVerifierAgent(
+            self.validator.evidence_verifier,
+            self.project_root,
+        )
         self.adapters: Dict[str, ExecutionAdapter] = {
             ExecutionMode.DRY_RUN.value: DryRunAdapter(),
             ExecutionMode.MANUAL_HANDOFF.value: ManualHandoffAdapter(),
@@ -293,7 +298,11 @@ class ControlledExecutionEngine:
             "execution_mode": packet.execution_mode,
             "action_type": packet.action_type,
         })
+        safety_receipt = self.safety_verifier_agent.run(packet)
+        self.ledger.record("phase6_safety_verification_receipt", asdict(safety_receipt))
         validation_error = self.validator.validate(packet)
+        if safety_receipt.verdict != "PASS" and not validation_error:
+            validation_error = safety_receipt.reason
         if validation_error:
             result = result_from_packet(
                 packet=packet,
