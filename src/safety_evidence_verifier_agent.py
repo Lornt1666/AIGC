@@ -97,7 +97,7 @@ class SafetyEvidenceVerifierAgent:
         receipt = SafetyVerificationReceipt(**fields, receipt_sha256=receipt_digest)
         self.ledger_path.parent.mkdir(parents=True, exist_ok=True)
         with self.ledger_path.open("a", encoding="utf-8") as handle:
-            handle.write(json.dumps(asdict(receipt), ensure_ascii=False, sort_keys=True) + "\\n")
+            handle.write(json.dumps(asdict(receipt), ensure_ascii=False, sort_keys=True) + "\n")
             handle.flush()
         return receipt
 
