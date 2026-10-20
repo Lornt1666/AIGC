@@ -13,7 +13,11 @@ from src.phase6_controlled_execution import (
 from src.safety_evidence_verifier import SafetyEvidenceVerifier, REQUIRED_CHECKS
 
 
-SECRET = "test-only-secret-that-is-at-least-32-bytes"
+SECRETS = {
+    "policy-checker": "test-policy-secret-that-is-at-least-32-bytes",
+    "disclosure-checker": "test-disclosure-secret-at-least-32-bytes",
+    "privacy-checker": "test-privacy-secret-that-is-at-least-32-bytes",
+}
 NOW = datetime(2026, 10, 20, 21, 30, tzinfo=timezone.utc)
 
 
@@ -57,7 +61,11 @@ def make_records(packet, *, expires_at=None):
     for index, check_id in enumerate(sorted(REQUIRED_CHECKS)):
         payload = {
             "evidence_id": f"evidence-{index}",
-            "issuer_id": "policy-checker",
+            "issuer_id": {
+                "platform_policy": "policy-checker",
+                "ai_disclosure": "disclosure-checker",
+                "privacy": "privacy-checker",
+            }[check_id],
             "check_id": check_id,
             "result": True,
             "issued_at": (NOW - timedelta(minutes=1)).isoformat(),
@@ -74,13 +82,13 @@ def make_records(packet, *, expires_at=None):
         }
         records.append({
             "payload": payload,
-            "signature": SafetyEvidenceVerifier.sign_for_trusted_issuer(payload, SECRET),
+            "signature": SafetyEvidenceVerifier.sign_for_trusted_issuer(payload, SECRETS[payload["issuer_id"]]),
         })
     return records
 
 
 def verifier():
-    return SafetyEvidenceVerifier({"policy-checker": SECRET}, now=lambda: NOW)
+    return SafetyEvidenceVerifier(SECRETS, required_policy_version="policy-2026-10", now=lambda: NOW)
 
 
 def test_signed_evidence_for_all_required_checks_passes():
@@ -115,7 +123,7 @@ def test_evidence_bound_to_another_recipient_is_rejected():
     packet.safety.evidence_records = make_records(packet)
     payload = packet.safety.evidence_records[0]["payload"]
     payload["recipient"] = "attacker@example.invalid"
-    packet.safety.evidence_records[0]["signature"] = SafetyEvidenceVerifier.sign_for_trusted_issuer(payload, SECRET)
+    packet.safety.evidence_records[0]["signature"] = SafetyEvidenceVerifier.sign_for_trusted_issuer(payload, SECRETS["policy-checker"])
     assert verifier().verify(packet, packet.safety.evidence_records) == "Safety evidence binding mismatch: recipient."
 
 
@@ -131,7 +139,7 @@ def test_untrusted_issuer_is_rejected():
 def test_missing_trust_configuration_fails_closed():
     packet = make_packet()
     packet.safety.evidence_records = make_records(packet)
-    assert SafetyEvidenceVerifier({}).verify(packet, packet.safety.evidence_records) == (
+    assert SafetyEvidenceVerifier({}, required_policy_version="policy-2026-10").verify(packet, packet.safety.evidence_records) == (
         "Safety evidence trust configuration is missing or invalid."
     )
 
@@ -141,7 +149,7 @@ def test_duplicate_evidence_identifiers_are_rejected():
     packet.safety.evidence_records = make_records(packet)
     packet.safety.evidence_records[1]["payload"]["evidence_id"] = packet.safety.evidence_records[0]["payload"]["evidence_id"]
     packet.safety.evidence_records[1]["signature"] = SafetyEvidenceVerifier.sign_for_trusted_issuer(
-        packet.safety.evidence_records[1]["payload"], SECRET
+        packet.safety.evidence_records[1]["payload"], SECRETS[packet.safety.evidence_records[1]["payload"]["issuer_id"]]
     )
     assert verifier().verify(packet, packet.safety.evidence_records) == (
         "Safety evidence identifier is missing or duplicated."
