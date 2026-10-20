@@ -164,6 +164,13 @@ class ReleaseAssuranceAgent:
         stage_receipts = ci.get("stage_receipts")
         if not isinstance(stage_receipts, list):
             stage_receipts = []
+        # The signed provenance must refer to the exact canonical receipt bundle, not
+        # merely to a caller-supplied success flag or a detached list of stage claims.
+        receipt_bundle_sha256 = sha256(canonical(stage_receipts))
+        if ci.get("stage_receipts_sha256") != receipt_bundle_sha256:
+            reasons.append("canonical stage receipt bundle digest mismatch")
+        if ci.get("attested_receipt_bundle_sha256") != receipt_bundle_sha256:
+            reasons.append("signed provenance subject digest does not match canonical stage receipt bundle")
         by_stage: dict[str, dict] = {}
         for record in stage_receipts:
             if not isinstance(record, dict):
