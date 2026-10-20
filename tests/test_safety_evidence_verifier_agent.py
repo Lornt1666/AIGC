@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, timezone
 import json
+import subprocess
 from pathlib import Path
 
 from src.phase6_controlled_execution import (
@@ -86,9 +87,21 @@ def verifier():
     )
 
 
+def git_project(path: Path) -> Path:
+    path.mkdir(parents=True, exist_ok=True)
+    subprocess.run(["git", "init", str(path)], check=True, capture_output=True)
+    subprocess.run(["git", "-C", str(path), "config", "user.email", "test@example.invalid"], check=True)
+    subprocess.run(["git", "-C", str(path), "config", "user.name", "AIGC Test"], check=True)
+    (path / "tracked.txt").write_text("test fixture\\n", encoding="utf-8")
+    subprocess.run(["git", "-C", str(path), "add", "tracked.txt"], check=True)
+    subprocess.run(["git", "-C", str(path), "commit", "-m", "test fixture"], check=True, capture_output=True)
+    return path
+
+
 def test_agent_emits_durable_pass_receipt_bound_to_exact_packet(tmp_path: Path):
-    receipt_path = tmp_path / "audit" / "receipts.jsonl"
-    agent = SafetyEvidenceVerifierAgent(verifier(), tmp_path, receipt_path)
+    project = git_project(tmp_path / "project")
+    receipt_path = project / "audit" / "receipts.jsonl"
+    agent = SafetyEvidenceVerifierAgent(verifier(), project, receipt_path)
 
     receipt = agent.run(packet())
 
