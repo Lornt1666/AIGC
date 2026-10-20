@@ -110,8 +110,13 @@ def test_agent_emits_durable_pass_receipt_bound_to_exact_packet(tmp_path: Path):
     assert receipt.evidence_manifest_sha256
     assert receipt.receipt_sha256
     assert receipt.authorization_id == "auth-1"
-    persisted = json.loads(receipt_path.read_text(encoding="utf-8").splitlines()[0])
-    assert persisted["receipt_sha256"] == receipt.receipt_sha256
+    second_receipt = agent.run(packet())
+    assert second_receipt.verdict == "PASS"
+    lines = receipt_path.read_text(encoding="utf-8").splitlines()
+    assert len(lines) == 2, "each appended receipt must occupy one JSONL line"
+    persisted = [json.loads(line) for line in lines]
+    assert persisted[0]["receipt_sha256"] == receipt.receipt_sha256
+    assert persisted[1]["receipt_sha256"] == second_receipt.receipt_sha256
 
 
 def test_agent_emits_block_receipt_for_missing_evidence(tmp_path: Path):
