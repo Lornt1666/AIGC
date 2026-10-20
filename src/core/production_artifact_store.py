@@ -103,12 +103,21 @@ class S3PostgresArtifactStore:
                     conn.execute("SELECT pg_advisory_xact_lock(hashtextextended(%s, 0))", ("artifact:" + fields["key"],))
                     prior = conn.execute(
                         """SELECT logical_key, version_id, sha256, media_type, schema_version,
-                                  provenance, operation_id
+                                  provenance, operation_id, expected_current_version_id
                            FROM aigc_artifact_metadata WHERE operation_id = %s""",
                         (fields["operation_id"],),
                     ).fetchone()
                     if prior:
                         ref = self._row_to_ref(prior)
+                        prior_expected_version = (
+                            prior["expected_current_version_id"]
+                            if isinstance(prior, Mapping)
+                            else prior[7]
+                        )
+                        if prior_expected_version != expected_current_version_id:
+                            raise ArtifactConflict(
+                                "operation_id reused with conflicting expected-current-version precondition"
+                            )
                         expected = (fields["key"], digest, fields["media_type"],
                                     fields["schema_version"], fields["provenance"])
                         actual = (ref.key, ref.sha256, ref.media_type, ref.schema_version, ref.provenance)
@@ -142,10 +151,11 @@ class S3PostgresArtifactStore:
                     conn.execute(
                         """INSERT INTO aigc_artifact_metadata
                            (logical_key, version_id, object_key, sha256, media_type,
-                            schema_version, provenance, operation_id)
-                           VALUES (%s,%s,%s,%s,%s,%s,%s,%s)""",
+                            schema_version, provenance, operation_id, expected_current_version_id)
+                           VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
                         (ref.key, ref.version_id, object_key, ref.sha256, ref.media_type,
-                         ref.schema_version, ref.provenance, ref.operation_id),
+                         ref.schema_version, ref.provenance, ref.operation_id,
+                         expected_current_version_id),
                     )
                     return ref
         except (ArtifactConflict, ArtifactUnavailable):
