@@ -37,6 +37,6 @@ Missing, malformed, stale, untrusted, mismatched, duplicate or failing evidence 
 - Bind all evidence to exact commit, tree, artifact and release tier.
 - Reject non-success canonical CI, incomplete stages, stage tampering, stale policy, invalid signatures and issuer-role mismatch.
 - Produce a content-hash-addressed decision with deployment and merge explicitly false.
-- The cryptographic provenance-verifier adapter is an explicit mandatory dependency but is not yet implemented or wired to GitHub's attestation verification CLI/API. Until that adapter exists and is independently tested, the agent blocks and cannot open the operational release gate.
+- The cryptographic provenance-verifier adapter is an explicit mandatory dependency but is not yet implemented or wired to GitHub's attestation verification CLI/API. It must verify both the canonical receipt-bundle attestation and the build/artifact provenance against the exact repository, workflow identity, source commit/tree and artifact digest; verifying only one is insufficient. Until that adapter exists and is independently tested, the agent blocks and cannot open the operational release gate.
 - This agent does not yet integrate directly with GitHub Actions, attestations API, KMS, deployment environments, or live canary telemetry. End-to-end acceptance tests are required before it can open an operational production gate.
 - No evidence can be manufactured by this agent. No current AIGC release is approved by merely adding this code.
