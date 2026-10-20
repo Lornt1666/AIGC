@@ -15,7 +15,7 @@ Required checks: `platform_policy`, `ai_disclosure`, and `privacy`. Duplicate ev
 
 ## Trust provisioning
 
-Set `AIGC_SAFETY_EVIDENCE_HMAC_KEYS_JSON` at runtime to a JSON object mapping three distinct, explicitly provisioned issuer IDs to secrets of at least 32 bytes, and set `AIGC_SAFETY_EVIDENCE_POLICY_VERSION` to the exact currently approved policy version. Example placeholders only:
+Set `AIGC_SAFETY_EVIDENCE_HMAC_KEYS_JSON` at runtime to a JSON object mapping three distinct, explicitly provisioned issuer IDs to secrets of at least 32 bytes. Set `AIGC_SAFETY_EVIDENCE_POLICY_VERSION` to the exact currently approved policy version, and set `AIGC_SAFETY_EVIDENCE_ISSUER_BY_CHECK_JSON` to bind each check to its designated issuer. Example placeholders only:
 
 ```json
 {
@@ -25,7 +25,17 @@ Set `AIGC_SAFETY_EVIDENCE_HMAC_KEYS_JSON` at runtime to a JSON object mapping th
 }
 ```
 
-The verifier requires the three required checks to be attested by distinct trusted issuers and rejects records whose policy version differs from the configured current version. This prevents one issuer or a stale policy receipt from satisfying all controls.
+The verifier requires each check to be attested by its specifically configured issuer, requires all three issuers to be distinct, and rejects records whose policy version differs from the configured current version. Example issuer map:
+
+```json
+{
+  "platform_policy": "policy-checker",
+  "ai_disclosure": "disclosure-checker",
+  "privacy": "privacy-checker"
+}
+```
+
+This prevents an otherwise trusted issuer from asserting a control outside its assigned authority, and prevents one issuer or a stale policy receipt from satisfying all controls.
 
 Never commit a real key, embed it in work orders, or let the LLM choose or retrieve it. Provision secrets only to trusted checkers and the verifier through a secret manager. CI test keys are synthetic and must never be deployed.
 
