@@ -12,6 +12,7 @@ Status: implementation candidate on a feature branch; not production approved. N
 ## Current code in this slice
 - `src/core/production_artifact_store.py`: S3 + PostgreSQL adapter, idempotency by operation ID, advisory transaction lock per logical key, expected-current-version compare, exact-version read, SHA-256 verification, fail-closed exceptions.
 - `migrations/artifact_store/0001_artifact_metadata.sql`: authoritative metadata table and indexes.
+- `migrations/artifact_store/0002_artifact_operation_precondition.sql`: records the original expected-current-version precondition for each idempotent operation.
 - `tests/test_production_artifact_store.py`: fake-client unit tests for round trip, idempotency, conflicting operation IDs, stale writes, denied/unavailable S3, unversioned responses, and digest tampering.
 
 ## Important limitations before merge
@@ -38,7 +39,8 @@ Reviewer must be independent of the author and assess:
 - Two independent app instances can write/read the same artifact and see the same authoritative metadata.
 - Restart/replace a worker and read the exact committed version with the same digest.
 - Concurrent same-key writers with a stale expected version: exactly one accepted; stale writer receives conflict and cannot overwrite authority.
-- Identical operation retry returns the same reference; operation-ID reuse with different bytes/metadata is rejected.
+- Identical operation retry returns the same reference only when its original expected-current-version precondition is identical; operation-ID reuse with different bytes/metadata/precondition is rejected.
+- A retry of an older operation after a newer version is committed cannot move the current pointer backward.
 - Missing object, wrong digest, invalid/missing VersionId, S3 AccessDenied/timeout, PostgreSQL outage/rollback, and orphaned object all fail closed.
 - A previously approved packet becomes unusable when the authoritative version/approval binding changes; no implicit re-approval.
 - CI and integration evidence are tied to the exact candidate commit SHA; independent review and human release approval are recorded.
