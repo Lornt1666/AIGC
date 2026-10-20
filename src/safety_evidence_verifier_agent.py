@@ -49,6 +49,7 @@ class SafetyEvidenceVerifierAgent:
     def run(self, packet: Any) -> SafetyVerificationReceipt:
         evidence = packet.safety.evidence_records
         error = self.verifier.verify(packet, evidence)
+        evidence_items = evidence if isinstance(evidence, (list, tuple)) else [evidence]
         verdict = "PASS" if error is None else "BLOCK"
         auth = packet.authorization
         packet_payload = {
@@ -59,11 +60,14 @@ class SafetyEvidenceVerifierAgent:
         }
         evidence_manifest = [
             {
-                "evidence_id": (record.get("payload") or {}).get("evidence_id", "")
-                if isinstance(record, dict) else "",
+                "evidence_id": (
+                    record.get("payload", {}).get("evidence_id", "")
+                    if isinstance(record, dict) and isinstance(record.get("payload"), dict)
+                    else ""
+                ),
                 "record_sha256": hashlib.sha256(canonical_json(record)).hexdigest(),
             }
-            for record in evidence
+            for record in evidence_items
         ]
         revision, tree_sha = self._git_provenance()
         fields = {
