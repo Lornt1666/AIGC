@@ -100,7 +100,7 @@ def git_project(path: Path) -> Path:
 
 def test_agent_emits_durable_pass_receipt_bound_to_exact_packet(tmp_path: Path):
     project = git_project(tmp_path / "project")
-    receipt_path = project / "audit" / "receipts.jsonl"
+    receipt_path = tmp_path / "receipts.jsonl"
     agent = SafetyEvidenceVerifierAgent(verifier(), project, receipt_path)
 
     receipt = agent.run(packet())
