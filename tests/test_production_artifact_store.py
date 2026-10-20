@@ -46,10 +46,10 @@ class FakeConnection:
             versions = self.state["keys"].get(params[0], [])
             self.row = (versions[-1][1],) if versions else None
         elif "INSERT INTO aigc_artifact_metadata" in normalized:
-            key, version, object_key, digest, media_type, schema, provenance, op = params
+            key, version, object_key, digest, media_type, schema, provenance, op, expected_version = params
             if op in self.state["ops"]:
                 raise RuntimeError("unique operation collision")
-            row = (key, version, digest, media_type, schema, provenance, op)
+            row = (key, version, digest, media_type, schema, provenance, op, expected_version)
             self.state["ops"][op] = row
             self.state["objects"][op] = object_key
             self.state["keys"].setdefault(key, []).append((key, version, op))
@@ -74,6 +74,8 @@ class FakeConnection:
         if "WHERE operation_id" in self.last_sql:
             keys = ("logical_key", "version_id", "sha256", "media_type",
                     "schema_version", "provenance", "operation_id")
+            if "expected_current_version_id" in self.last_sql:
+                keys = (*keys, "expected_current_version_id")
             return dict(zip(keys, self.row))
         return self.row
 
@@ -138,6 +140,18 @@ def test_conflicting_operation_id_fails_closed():
     put(store)
     with pytest.raises(ArtifactConflict):
         put(store, content=b"other")
+
+
+def test_operation_retry_rejects_changed_expected_version_precondition():
+    store, _, _ = setup_store()
+    first = put(store, content=b"first", op="op-first")
+    second = put(store, content=b"second", op="op-second", expected=first.version_id)
+
+    with pytest.raises(ArtifactConflict, match="precondition"):
+        put(store, content=b"first", op="op-first", expected=second.version_id)
+
+    assert store.get_current_ref("authorizations/A1") == second
+    assert store.get_current("authorizations/A1") == (second, b"second")
 
 
 def test_stale_version_write_is_rejected():
