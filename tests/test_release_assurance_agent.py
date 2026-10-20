@@ -29,12 +29,16 @@ def stage(stage_id):
 
 
 def packet():
+    stage_receipts = [stage(item) for item in EXPECTED_STAGES]
+    receipt_digest = sha256(canonical(stage_receipts))
     ci = {
         "conclusion": "success", "repository": "Lornt1666/AIGC",
         "target_sha": COMMIT, "tested_tree_sha": TREE, "run_id": 123,
         "contract_id": "AIGC-CI-EXACT-SHA-V1", "contract_sha256": "d" * 64,
         "workflow_revision": "e" * 40, "expected_workflow_revision": "e" * 40,
-        "stage_receipts": [stage(item) for item in EXPECTED_STAGES],
+        "stage_receipts": stage_receipts,
+        "stage_receipts_sha256": receipt_digest,
+        "attested_receipt_bundle_sha256": receipt_digest,
     }
     result = {
         "subject": {"commit_sha": COMMIT, "tree_sha": TREE, "artifact_sha256": ARTIFACT},
@@ -144,3 +148,12 @@ def test_missing_cryptographic_provenance_verifier_blocks():
     decision = no_provenance.evaluate(value)
     assert decision["verdict"] == "BLOCK"
     assert any("provenance verifier is not configured" in reason for reason in decision["reasons"])
+
+
+
+def test_receipt_bundle_digest_mismatch_blocks():
+    value = packet()
+    value["canonical_ci"]["attested_receipt_bundle_sha256"] = "f" * 64
+    decision = agent().evaluate(value)
+    assert decision["verdict"] == "BLOCK"
+    assert any("subject digest" in reason for reason in decision["reasons"])
