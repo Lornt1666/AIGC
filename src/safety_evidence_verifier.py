@@ -50,7 +50,14 @@ class SafetyEvidenceVerifier:
     asymmetric signature adapter.
     """
 
-    def __init__(self, trusted_issuer_keys: Mapping[str, str], *, required_policy_version: Optional[str] = None, now=None):
+    def __init__(
+        self,
+        trusted_issuer_keys: Mapping[str, str],
+        *,
+        required_policy_version: Optional[str] = None,
+        required_issuers_by_check: Optional[Mapping[str, str]] = None,
+        now=None,
+    ):
         self._keys = {
             issuer: key.encode("utf-8")
             for issuer, key in trusted_issuer_keys.items()
@@ -58,6 +65,7 @@ class SafetyEvidenceVerifier:
             and isinstance(key, str) and len(key.encode("utf-8")) >= 32
         }
         self._required_policy_version = required_policy_version
+        self._required_issuers_by_check = dict(required_issuers_by_check or {})
         self._now = now or (lambda: datetime.now(timezone.utc))
 
     @classmethod
@@ -71,9 +79,16 @@ class SafetyEvidenceVerifier:
             return cls({})
         if not isinstance(value, dict):
             return cls({})
+        try:
+            issuer_map = json.loads(os.environ.get("AIGC_SAFETY_EVIDENCE_ISSUER_BY_CHECK_JSON", "{}"))
+        except json.JSONDecodeError:
+            issuer_map = {}
+        if not isinstance(issuer_map, dict):
+            issuer_map = {}
         return cls(
             value,
             required_policy_version=os.environ.get("AIGC_SAFETY_EVIDENCE_POLICY_VERSION"),
+            required_issuers_by_check=issuer_map,
         )
 
     @staticmethod
@@ -88,6 +103,8 @@ class SafetyEvidenceVerifier:
             return "Safety evidence trust configuration is missing or invalid."
         if not self._required_policy_version:
             return "Required safety policy version is not configured."
+        if set(self._required_issuers_by_check) != set(REQUIRED_CHECKS):
+            return "Required safety issuer-to-check policy is not configured."
         if not isinstance(evidence_records, (list, tuple)):
             return "Safety evidence records must be a list."
         auth = packet.authorization
@@ -132,6 +149,8 @@ class SafetyEvidenceVerifier:
                 return "Safety evidence policy version does not match the configured policy."
             if payload.get("verifier_version") in (None, ""):
                 return "Safety evidence is missing verifier version."
+            if self._required_issuers_by_check.get(check_id) != issuer:
+                return f"Safety evidence issuer is not authorized for check: {check_id}."
             if check_id in check_issuers:
                 return "Duplicate evidence supplied for a required safety check."
             check_issuers[check_id] = issuer
