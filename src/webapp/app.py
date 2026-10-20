@@ -69,6 +69,20 @@ def _production_mode() -> bool:
     return os.environ.get("AIGC_ENV", os.environ.get("ENVIRONMENT", "development")).strip().lower() in {"production", "prod"}
 
 
+def _require_shared_artifact_authority() -> None:
+    """Block production workflows until packets/work orders/evidence use shared durable storage.
+
+    The command-center PostgreSQL ledger does not make PROJECT_ROOT files shared or durable.
+    This guard prevents a production deployment from accidentally treating task-local files as
+    current authorization authority while artifact-store integration is incomplete.
+    """
+    if _production_mode():
+        raise HTTPException(
+            status_code=503,
+            detail="Production workflows are disabled until shared durable packet, work-order, and phase-evidence storage is integrated.",
+        )
+
+
 def _command_center_store():
     global _COMMAND_CENTER_STORE
     dsn = os.environ.get("AIGC_COMMAND_CENTER_DATABASE_URL", "").strip()
@@ -222,6 +236,7 @@ def pipeline() -> Dict[str, Any]:
 
 @app.post("/api/run", dependencies=[Depends(require_operator_auth)])
 def run_cycle(request: Request) -> Dict[str, Any]:
+    _require_shared_artifact_authority()
     try:
         store = _command_center_store()
         record, created = store.create_run(
@@ -286,6 +301,7 @@ def reconcile_run(run_id: str, request: RunReconciliationRequest) -> Dict[str, A
 
 @app.get("/api/reviews", dependencies=[Depends(require_operator_auth)])
 def reviews() -> Dict[str, Any]:
+    _require_shared_artifact_authority()
     packets = load_authorization_packets(PROJECT_ROOT)
     work_orders = load_work_order_governance_records(PROJECT_ROOT)
     review_items = summarize_authorizations(packets, work_orders)
@@ -306,6 +322,7 @@ def reviews() -> Dict[str, Any]:
 
 def _apply_review_decision(action_id: str, decision_type: str,
                            request: DecisionRequest, http_request: Request) -> Dict[str, Any]:
+    _require_shared_artifact_authority()
     if decision_type == "revise" and not request.revision_instructions.strip():
         raise HTTPException(status_code=400, detail="revision_instructions is required")
     try:
