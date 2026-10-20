@@ -25,6 +25,7 @@ def test_runtime_defaults_keep_execution_and_external_effects_disabled():
     for key in ("agent_execution_enabled", "external_side_effects_enabled", "cloud_provisioning_enabled", "public_ingress_enabled", "business_cycle_enabled"):
         assert defaults[key] is False
     assert defaults["human_approval_required_for_release"] is True
+    assert config["runtime"]["budgets"]["max_cost_cad"] == 0
 
 def test_unknown_graph_node_is_rejected(tmp_path: Path):
     config = yaml.safe_load(DEFAULT_CONFIG.read_text(encoding="utf-8"))
