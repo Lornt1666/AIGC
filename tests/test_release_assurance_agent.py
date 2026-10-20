@@ -56,7 +56,10 @@ def packet():
 
 
 def agent():
-    return ReleaseAssuranceAgent(KEYS, "policy-2026.10", ISSUER_MAP, now=lambda: NOW)
+    return ReleaseAssuranceAgent(
+        KEYS, "policy-2026.10", ISSUER_MAP, now=lambda: NOW,
+        provenance_verifier=lambda ci, subject: True,
+    )
 
 
 def test_complete_exact_head_evidence_approves_but_does_not_deploy():
@@ -132,3 +135,12 @@ def test_decision_is_bound_to_exact_subject():
     assert decision["commit_sha"] == COMMIT
     assert decision["tree_sha"] == TREE
     assert len(decision["decision_sha256"]) == 64
+
+
+
+def test_missing_cryptographic_provenance_verifier_blocks():
+    value = packet()
+    no_provenance = ReleaseAssuranceAgent(KEYS, "policy-2026.10", ISSUER_MAP, now=lambda: NOW)
+    decision = no_provenance.evaluate(value)
+    assert decision["verdict"] == "BLOCK"
+    assert any("provenance verifier is not configured" in reason for reason in decision["reasons"])
