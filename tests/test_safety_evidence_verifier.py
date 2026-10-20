@@ -86,7 +86,16 @@ def make_records(packet, *, expires_at=None):
 
 
 def verifier():
-    return SafetyEvidenceVerifier(SECRETS, required_policy_version="policy-2026-10", now=lambda: NOW)
+    return SafetyEvidenceVerifier(
+        SECRETS,
+        required_policy_version="policy-2026-10",
+        required_issuers_by_check={
+            "platform_policy": "policy-checker",
+            "ai_disclosure": "disclosure-checker",
+            "privacy": "privacy-checker",
+        },
+        now=lambda: NOW,
+    )
 
 
 def test_signed_evidence_for_all_required_checks_passes():
@@ -132,6 +141,22 @@ def test_untrusted_issuer_is_rejected():
     payload["issuer_id"] = "untrusted-model"
     packet.safety.evidence_records[0]["signature"] = SafetyEvidenceVerifier.sign_for_trusted_issuer(payload, SECRETS["policy-checker"])
     assert verifier().verify(packet, packet.safety.evidence_records) == "Safety evidence issuer is not trusted."
+
+
+def test_trusted_issuer_cannot_attest_another_check():
+    packet = make_packet()
+    packet.safety.evidence_records = make_records(packet)
+    record = next(
+        item for item in packet.safety.evidence_records
+        if item["payload"]["check_id"] == "privacy"
+    )
+    record["payload"]["issuer_id"] = "policy-checker"
+    record["signature"] = SafetyEvidenceVerifier.sign_for_trusted_issuer(
+        record["payload"], SECRETS["policy-checker"]
+    )
+    assert verifier().verify(packet, packet.safety.evidence_records) == (
+        "Safety evidence issuer is not authorized for check: privacy."
+    )
 
 
 def test_missing_trust_configuration_fails_closed():
