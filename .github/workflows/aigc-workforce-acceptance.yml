@@ -1,0 +1,72 @@
+name: AIGC Autonomous Workforce Acceptance
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      requested_revision:
+        description: "Exact commit SHA to validate"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aigc-workforce-acceptance-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  local-acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      REQUESTED_REVISION: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || inputs.requested_revision || github.sha }}
+    steps:
+      - name: Checkout exact requested revision
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          ref: ${{ env.REQUESTED_REVISION }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify exact requested checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          observed="$(git rev-parse HEAD)"
+          if [[ "$REQUESTED_REVISION" =~ ^[0-9a-fA-F]{40}$ ]] && [ "$observed" != "$REQUESTED_REVISION" ]; then
+            echo "Exact-head admission failed." >&2
+            exit 1
+          fi
+          echo "Verified revision: $observed"
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+
+      - name: Install project dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip check
+
+      - name: Validate AIGC CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          python src/aigc.py validate
+
+      - name: Run local autonomous-workforce acceptance tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pytest -q \
+            tests/test_aigc_functional_wiring.py \
+            tests/test_aigc_omega_worker_v0_1.py \
+            tests/test_milestone_c_pipeline_closure.py
