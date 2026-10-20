@@ -69,10 +69,13 @@ class SafetyEvidenceVerifierAgent:
             }
             for record in evidence_items
         ]
-        revision, tree_sha = self._git_provenance()
+        revision, tree_sha, clean_tree = self._git_provenance()
         if revision == "unavailable" or tree_sha == "unavailable":
             verdict = "BLOCK"
             error = error or "Source revision/tree provenance is unavailable."
+        elif not clean_tree:
+            verdict = "BLOCK"
+            error = error or "Source checkout has uncommitted or untracked files outside the runtime audit ledger."
         fields = {
             "receipt_id": str(uuid.uuid4()),
             "verdict": verdict,
@@ -98,7 +101,7 @@ class SafetyEvidenceVerifierAgent:
             handle.flush()
         return receipt
 
-    def _git_provenance(self) -> tuple[str, str]:
+    def _git_provenance(self) -> tuple[str, str, bool]:
         def resolve(expression: str) -> str:
             try:
                 return subprocess.run(
@@ -110,4 +113,17 @@ class SafetyEvidenceVerifierAgent:
 
         revision = resolve("HEAD")
         tree = resolve("HEAD^{tree}")
-        return revision, tree
+        try:
+            status = subprocess.run(
+                ["git", "-C", str(self.project_root), "status", "--porcelain", "--untracked-files=all"],
+                check=True, capture_output=True, text=True, timeout=3,
+            ).stdout.splitlines()
+            # Runtime receipts are intentionally append-only generated state, not source.
+            source_changes = [
+                line for line in status
+                if not line[3:].replace("\\\\", "/").startswith("data/audit/")
+            ]
+            clean = not source_changes
+        except (OSError, subprocess.SubprocessError):
+            clean = False
+        return revision, tree, clean
