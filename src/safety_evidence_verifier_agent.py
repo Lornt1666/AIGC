@@ -70,6 +70,9 @@ class SafetyEvidenceVerifierAgent:
             for record in evidence_items
         ]
         revision, tree_sha = self._git_provenance()
+        if revision == "unavailable" or tree_sha == "unavailable":
+            verdict = "BLOCK"
+            error = error or "Source revision/tree provenance is unavailable."
         fields = {
             "receipt_id": str(uuid.uuid4()),
             "verdict": verdict,
