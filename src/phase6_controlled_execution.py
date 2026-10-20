@@ -257,10 +257,12 @@ class Phase6Validator:
             return "Invalid expiration timestamp."
         if datetime.now(timezone.utc) > expires_at:
             return "Authorization expired."
+        if not packet.safety.platform_policy_checked:
+            return "Platform policy check was not confirmed by evidence."
         if not packet.safety.ai_disclosure_preserved:
-            return "AI disclosure preservation was not confirmed."
+            return "AI disclosure preservation was not confirmed by evidence."
         if not packet.safety.privacy_checked:
-            return "Privacy check was not confirmed."
+            return "Privacy check was not confirmed by evidence."
         if packet.execution_mode == ExecutionMode.APPROVED_API.value and not packet.safety.credential_use_approved:
             return "API execution requested without approved credential use."
         return None
@@ -422,16 +424,20 @@ def build_packet_from_phase5_authorization(
         ),
         action_type=infer_action_type(authorization_packet.get("proposed_external_action", "")),
         execution_mode=execution_mode,
+        # These are evidence-bearing assertions, not defaults. A packet assembled
+        # from Phase 5 authorization data alone cannot prove that these checks ran.
+        # Keep every safety assertion false until a trusted verifier supplies evidence.
         safety=ExecutionSafety(
-            platform_policy_checked=True,
-            ai_disclosure_preserved=True,
-            privacy_checked=True,
+            platform_policy_checked=False,
+            ai_disclosure_preserved=False,
+            privacy_checked=False,
             credential_use_approved=False,
             batch_action=False,
             forbidden_action_detected=False,
             notes=[
-                "Manual handoff and dry-run default.",
-                "Live API execution requires platform-specific approval and connector implementation.",
+                "Safety checks have not been verified by this packet builder.",
+                "Manual handoff and dry-run remain blocked until required safety evidence is supplied.",
+                "Live API execution requires a platform-specific approved connector, credential path, and policy review.",
             ],
         ),
     )
