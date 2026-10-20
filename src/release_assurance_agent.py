@@ -81,7 +81,7 @@ class ReleaseAssuranceAgent:
     VERSION = "aigc-release-assurance-agent/1.0"
 
     def __init__(self, keys: dict[str, str], policy_version: str,
-                 issuer_by_check: dict[str, str], now=None):
+                 issuer_by_check: dict[str, str], now=None, provenance_verifier=None):
         self.keys = {
             issuer: key.encode("utf-8")
             for issuer, key in keys.items()
@@ -91,6 +91,9 @@ class ReleaseAssuranceAgent:
         self.policy_version = policy_version
         self.issuer_by_check = dict(issuer_by_check)
         self.now = now or (lambda: datetime.now(timezone.utc))
+        # Must be injected by trusted bootstrap code and cryptographically verify the
+        # GitHub/Sigstore attestation for the canonical receipt bundle and expected workflow.
+        self.provenance_verifier = provenance_verifier
 
     @classmethod
     def from_environment(cls) -> "ReleaseAssuranceAgent":
@@ -104,6 +107,7 @@ class ReleaseAssuranceAgent:
             parse("AIGC_RELEASE_EVIDENCE_HMAC_KEYS_JSON"),
             os.environ.get("AIGC_RELEASE_POLICY_VERSION", ""),
             parse("AIGC_RELEASE_ISSUER_BY_CHECK_JSON"),
+            provenance_verifier=None,
         )
 
     @staticmethod
@@ -133,6 +137,15 @@ class ReleaseAssuranceAgent:
             reasons.append("subject tree SHA is not a full lowercase SHA")
 
         # Require a successful exact-head canonical run, not a branch-level green badge.
+        if self.provenance_verifier is None:
+            reasons.append("trusted cryptographic CI provenance verifier is not configured")
+        else:
+            try:
+                provenance_ok = self.provenance_verifier(ci, subject)
+            except Exception:
+                provenance_ok = False
+            if provenance_ok is not True:
+                reasons.append("canonical CI provenance attestation failed independent verification")
         if ci.get("conclusion") != "success":
             reasons.append("canonical workflow conclusion is not success")
         if ci.get("repository") != "Lornt1666/AIGC":
