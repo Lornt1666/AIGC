@@ -14,7 +14,12 @@
     "artifact_manifest_path",
     "validation_receipt_path",
     "external_action_performed",
-    "operator_next_action"
+    "operator_next_action",
+    "source_revision",
+    "source_tree_sha",
+    "work_order_sha256",
+    "artifact_manifest_sha256",
+    "validation_receipt_sha256"
   ],
   "properties": {
     "run_id": {"type": "string"},
@@ -30,6 +35,11 @@
     "artifact_manifest_path": {"type": "string"},
     "validation_receipt_path": {"type": "string"},
     "external_action_performed": {"type": "boolean"},
-    "operator_next_action": {"type": "string"}
+    "operator_next_action": {"type": "string"},
+    "source_revision": {"type": "string"},
+    "source_tree_sha": {"type": "string"},
+    "work_order_sha256": {"type": "string"},
+    "artifact_manifest_sha256": {"type": "string"},
+    "validation_receipt_sha256": {"type": "string"}
   }
 }
