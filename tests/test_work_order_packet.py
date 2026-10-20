@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -59,6 +60,24 @@ def test_run_work_order_writes_schema_valid_artifacts(tmp_path: Path) -> None:
     assert receipt.correlation_id
     assert receipt.status == "operator_review_required"
     assert "work_orders" in receipt.artifact_root
+    payload_digest = hashlib.sha256(
+        json.dumps(make_payload(), ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    assert receipt.work_order_sha256 == payload_digest
+    assert receipt.artifact_manifest_sha256 == hashlib.sha256(
+        (tmp_path / receipt.artifact_manifest_path).read_bytes()
+    ).hexdigest()
+    assert receipt.validation_receipt_sha256 == hashlib.sha256(
+        (tmp_path / receipt.validation_receipt_path).read_bytes()
+    ).hexdigest()
+    assert receipt.source_revision == "unavailable" or (
+        len(receipt.source_revision) in {40, 64}
+        and all(char in "0123456789abcdef" for char in receipt.source_revision)
+    )
+    assert receipt.source_tree_sha == "unavailable" or (
+        len(receipt.source_tree_sha) in {40, 64}
+        and all(char in "0123456789abcdef" for char in receipt.source_tree_sha)
+    )
 
     for relative_path, schema_name in [
         (receipt.work_order_packet_path, "work_order_packet"),
