@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
 import uuid
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
@@ -216,6 +217,11 @@ class AIGCRunReceipt:
     validation_receipt_path: str
     external_action_performed: bool
     operator_next_action: str
+    source_revision: str
+    source_tree_sha: str
+    work_order_sha256: str
+    artifact_manifest_sha256: str
+    validation_receipt_sha256: str
 
 
 @dataclass(frozen=True)
@@ -253,6 +259,10 @@ def run_work_order(
         artifact_root = resolve_project_path(project_root, artifact_root)
 
     input_payload = load_json_dict(input_path)
+    work_order_sha256 = hashlib.sha256(
+        json.dumps(input_payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    source_revision, source_tree_sha = git_provenance(project_root)
     validate_artifact(WORK_ORDER_SCHEMA, input_payload)
     work_order = work_order_from_payload(input_payload)
     validate_secret_references(work_order.secret_references)
@@ -337,6 +347,11 @@ def run_work_order(
         validation_receipt_path=relative_to_root(project_root, validation_path),
         external_action_performed=False,
         operator_next_action="Review the approval packet, then Accept, Revise, Deny, or Emergency Stop. No external action is performed by this run.",
+        source_revision=source_revision,
+        source_tree_sha=source_tree_sha,
+        work_order_sha256=work_order_sha256,
+        artifact_manifest_sha256=sha256_file(manifest_path),
+        validation_receipt_sha256=sha256_file(validation_path),
     )
     run_receipt_path = run_root / "aigc_run_receipt.json"
     write_json(run_receipt_path, serialize(run_receipt))
@@ -754,6 +769,32 @@ def safe_path_name(value: str) -> str:
 
 def sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def git_provenance(project_root: Path) -> tuple[str, str]:
+    """Return the checked-out source revision/tree without network access.
+
+    Non-git source distributions report `unavailable` instead of inventing provenance.
+    """
+    values: List[str] = []
+    for revision in ("HEAD", "HEAD^{tree}"):
+        try:
+            result = subprocess.run(
+                ["git", "-C", str(project_root), "rev-parse", revision],
+                capture_output=True,
+                text=True,
+                timeout=2,
+                check=False,
+            )
+        except (OSError, subprocess.TimeoutExpired):
+            values.append("unavailable")
+            continue
+        value = result.stdout.strip()
+        if result.returncode != 0 or len(value) not in {40, 64} or any(c not in "0123456789abcdef" for c in value.lower()):
+            values.append("unavailable")
+        else:
+            values.append(value.lower())
+    return values[0], values[1]
 
 
 def make_id(prefix: str, *parts: object) -> str:
