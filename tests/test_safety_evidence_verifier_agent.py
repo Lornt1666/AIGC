@@ -115,10 +115,11 @@ def test_agent_emits_durable_pass_receipt_bound_to_exact_packet(tmp_path: Path):
 
 
 def test_agent_emits_block_receipt_for_missing_evidence(tmp_path: Path):
+    project = git_project(tmp_path / "project")
     item = packet()
     item.safety.evidence_records = []
-    receipt_path = tmp_path / "audit" / "receipts.jsonl"
-    agent = SafetyEvidenceVerifierAgent(verifier(), tmp_path, receipt_path)
+    receipt_path = tmp_path / "receipts.jsonl"
+    agent = SafetyEvidenceVerifierAgent(verifier(), project, receipt_path)
 
     receipt = agent.run(item)
 
