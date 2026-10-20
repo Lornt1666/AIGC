@@ -10,6 +10,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Protocol
 
+from src.safety_evidence_verifier import SafetyEvidenceVerifier
+
 
 class ExecutionMode(str, Enum):
     DRY_RUN = "dry_run"
@@ -62,6 +64,7 @@ class ExecutionSafety:
     batch_action: bool = False
     forbidden_action_detected: bool = False
     notes: List[str] = field(default_factory=list)
+    evidence_records: List[Dict[str, Any]] = field(default_factory=list)
 
 
 @dataclass
@@ -222,6 +225,9 @@ Steps:
 
 
 class Phase6Validator:
+    def __init__(self, evidence_verifier: Optional[SafetyEvidenceVerifier] = None):
+        self.evidence_verifier = evidence_verifier or SafetyEvidenceVerifier.from_environment()
+
     ALLOWED_ACTION_TYPES = {
         "send_proposal",
         "apply",
@@ -257,12 +263,9 @@ class Phase6Validator:
             return "Invalid expiration timestamp."
         if datetime.now(timezone.utc) > expires_at:
             return "Authorization expired."
-        if not packet.safety.platform_policy_checked:
-            return "Platform policy check was not confirmed by evidence."
-        if not packet.safety.ai_disclosure_preserved:
-            return "AI disclosure preservation was not confirmed by evidence."
-        if not packet.safety.privacy_checked:
-            return "Privacy check was not confirmed by evidence."
+        evidence_error = self.evidence_verifier.verify(packet, packet.safety.evidence_records)
+        if evidence_error:
+            return evidence_error
         if packet.execution_mode == ExecutionMode.APPROVED_API.value and not packet.safety.credential_use_approved:
             return "API execution requested without approved credential use."
         return None
@@ -439,6 +442,7 @@ def build_packet_from_phase5_authorization(
                 "Manual handoff and dry-run remain blocked until required safety evidence is supplied.",
                 "Live API execution requires a platform-specific approved connector, credential path, and policy review.",
             ],
+            evidence_records=authorization_packet.get("safety_evidence", []) or [],
         ),
     )
 
