@@ -1,6 +1,4 @@
 from datetime import datetime, timedelta, timezone
-import copy
-
 from src.phase6_controlled_execution import (
     ExecutionArtifact,
     ExecutionAuthorization,
@@ -123,7 +121,7 @@ def test_evidence_bound_to_another_recipient_is_rejected():
     packet.safety.evidence_records = make_records(packet)
     payload = packet.safety.evidence_records[0]["payload"]
     payload["recipient"] = "attacker@example.invalid"
-    packet.safety.evidence_records[0]["signature"] = SafetyEvidenceVerifier.sign_for_trusted_issuer(payload, SECRETS["policy-checker"])
+    packet.safety.evidence_records[0]["signature"] = SafetyEvidenceVerifier.sign_for_trusted_issuer(payload, SECRETS[payload["issuer_id"]])
     assert verifier().verify(packet, packet.safety.evidence_records) == "Safety evidence binding mismatch: recipient."
 
 
@@ -132,7 +130,7 @@ def test_untrusted_issuer_is_rejected():
     packet.safety.evidence_records = make_records(packet)
     payload = packet.safety.evidence_records[0]["payload"]
     payload["issuer_id"] = "untrusted-model"
-    packet.safety.evidence_records[0]["signature"] = SafetyEvidenceVerifier.sign_for_trusted_issuer(payload, SECRET)
+    packet.safety.evidence_records[0]["signature"] = SafetyEvidenceVerifier.sign_for_trusted_issuer(payload, SECRETS["policy-checker"])
     assert verifier().verify(packet, packet.safety.evidence_records) == "Safety evidence issuer is not trusted."
 
 
