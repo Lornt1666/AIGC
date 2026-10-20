@@ -71,14 +71,14 @@ def test_phase5_packet_builder_does_not_fabricate_safety_assertions():
 
 def test_validator_blocks_when_platform_policy_evidence_is_missing():
     safety = ExecutionSafety(
-        platform_policy_checked=False,
+        platform_policy_checked=True,
         ai_disclosure_preserved=True,
         privacy_checked=True,
     )
 
     error = Phase6Validator().validate(_approved_packet(safety))
 
-    assert error == "Platform policy check was not confirmed by evidence."
+    assert error == "Safety evidence trust configuration is missing or invalid."
 
 
 def test_validator_blocks_when_disclosure_or_privacy_evidence_is_missing():
@@ -88,7 +88,7 @@ def test_validator_blocks_when_disclosure_or_privacy_evidence_is_missing():
         _approved_packet(
             ExecutionSafety(
                 platform_policy_checked=True,
-                ai_disclosure_preserved=False,
+                ai_disclosure_preserved=True,
                 privacy_checked=True,
             )
         )
@@ -98,10 +98,11 @@ def test_validator_blocks_when_disclosure_or_privacy_evidence_is_missing():
             ExecutionSafety(
                 platform_policy_checked=True,
                 ai_disclosure_preserved=True,
-                privacy_checked=False,
+                privacy_checked=True,
             )
         )
     )
 
-    assert disclosure_error == "AI disclosure preservation was not confirmed by evidence."
-    assert privacy_error == "Privacy check was not confirmed by evidence."
+    # Legacy booleans do not satisfy the evidence requirement.
+    assert disclosure_error == "Safety evidence trust configuration is missing or invalid."
+    assert privacy_error == "Safety evidence trust configuration is missing or invalid."
