@@ -9,10 +9,11 @@ The agent is intentionally not an LLM judge. Language models may summarize failu
 ## Required evidence
 
 1. A successful canonical GitHub Actions run for `Lornt1666/AIGC`, with the exact commit SHA, tested Git tree SHA, expected workflow revision, run ID, canonical contract identity/digest, and every required stage receipt.
-2. Valid per-stage canonical receipt digests; each stage must be successful, bound to the same commit/tree/run, and affirm no external action or release authority.
-3. Signed, current, action-specific release attestations from distinct trusted issuers for platform policy, AI disclosure, privacy, end-to-end behavior, PostgreSQL/S3 integration, recovery, canary health, rollback drill, and independent review.
-4. Exact artifact digest, policy version, checker version, freshness, issuer-to-check authority, and signatures for each attestation.
-5. For production, successful canary-health and rollback-drill evidence are mandatory; these checks do not replace the other gates.
+2. A cryptographically verified GitHub/Sigstore provenance attestation whose subject digest matches the canonical stage-receipt bundle digest. A hash inside unsigned JSON is not a signature and is not sufficient.
+3. Valid per-stage canonical receipt digests; each stage must be successful, bound to the same commit/tree/run, and affirm no external action or release authority.
+4. Signed, current, action-specific release attestations from distinct trusted issuers for platform policy, AI disclosure, privacy, end-to-end behavior, PostgreSQL/S3 integration, recovery, canary health, rollback drill, and independent review.
+5. Exact artifact digest, policy version, checker version, freshness, issuer-to-check authority, and signatures for each attestation.
+6. For production, successful canary-health and rollback-drill evidence are mandatory; these checks do not replace the other gates.
 
 ## Runtime configuration
 
