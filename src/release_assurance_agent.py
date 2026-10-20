@@ -135,6 +135,9 @@ class ReleaseAssuranceAgent:
             reasons.append("subject commit SHA is not a full lowercase SHA")
         if not isinstance(tree_sha, str) or not HEX40.fullmatch(tree_sha):
             reasons.append("subject tree SHA is not a full lowercase SHA")
+        artifact_sha = subject.get("artifact_sha256")
+        if not isinstance(artifact_sha, str) or not HEX64.fullmatch(artifact_sha):
+            reasons.append("release artifact digest is not a full lowercase SHA-256")
 
         # Require a successful exact-head canonical run, not a branch-level green badge.
         if self.provenance_verifier is None:
