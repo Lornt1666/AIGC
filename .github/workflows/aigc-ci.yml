@@ -127,6 +127,10 @@ jobs:
           python -m unittest discover -s tests -p 'test_security_agents.py' -v
           python -m unittest discover -s tests -p 'test_repository_admin_agent.py' -v
           python -m unittest discover -s tests -p 'test_team_agents.py' -v
+          python -m unittest discover -s tests -p 'test_archon_genesis.py' -v
+          python src/archon_genesis.py \
+            --input config/archon_genesis_aigc_brief.json \
+            --output-dir "$RUNNER_TEMP/aigc-stage-results/archon_genesis_aigc"
 
       - name: Scan release-only paths for secret-like content
         shell: bash
