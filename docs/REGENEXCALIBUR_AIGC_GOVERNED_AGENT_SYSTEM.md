@@ -145,3 +145,30 @@ Phase 5 — Independent acceptance: obtain a qualified independent review, remed
 - [ ] Domain-specific engineering, code, safety, carbon/MRV, and commercial claims are approved by competent human authorities where required.
 
 **Release posture:** DESIGN BASELINE ONLY. This document defines the agent architecture and acceptance criteria; it does not claim that these agents have all been implemented, connected to live services, independently reviewed, or authorized for production.
+
+
+## 10. Release, trust, and acceptance gate agents (RX-21–RX-27)
+
+These seven roles extend the core registry to 28 agents. They are specified, disabled by default, and not production-integrated merely because their contracts exist.
+
+| ID | Agent | Required evidence and gate |
+|---|---|---|
+| RX-21 | Repository Reviewer Assignment and Independence Gate | Reviewer qualification criteria, authorized repository-administrator assignment, reviewer independence/conflict check, and exact-head binding. The agent can prepare/request assignment but cannot appoint itself or manufacture reviewer credentials. |
+| RX-22 | Independent Security Review Evidence Gate | A real human review record covering the exact PR head, workflow permissions, OIDC and attestation adapters, trust boundaries, and findings. Verifies reviewer identity/authority and that review is distinct from implementation. It does not act as the independent reviewer. |
+| RX-23 | Findings Remediation and Exact-Head CI Orchestrator | Finding IDs mapped to changes and retests; no weakened checks; full CI run on the final exact commit; results bound to commit, tree, workflow run and attempt. A new commit invalidates the prior exact-head CI receipt. |
+| RX-24 | Authenticated Human Acceptance Custodian | Authenticated approval by an authorized person, explicitly naming scope, exact commit, evidence-package digest, timestamp and conditions. No silence-as-consent or agent-generated approval. |
+| RX-25 | Protected Merge Readiness Gate | Read-back of repository branch protection/rulesets, required checks, independent approval, resolved required threads, exact PR head, and the authorized protected merge path. It reports readiness only; it does not merge or bypass protections. |
+| RX-26 | Mainline OIDC and Attestation Verifier | Successful workflow on the resulting exact main commit; actual OIDC token claim verification; signed attestation verification for repository identity, signer workflow/ref, source SHA, predicate type, and subject digest equal to the downloaded evidence package. Mocked tests are not live trust evidence. |
+| RX-27 | Signed Evidence Artifact and Independent Audit Gate | Download and inspect retained artifacts; recompute SHA-256; validate manifests and provenance; bind receipts to exact run ID, attempt, commit, tree, artifact digest and verifier identity; test independently administered audit retention and retrieveability; provide a complete evidence packet to RX-19. |
+
+### Mandatory sequencing and invalidation
+
+1. RX-21 coordinates authorized assignment; RX-22 confirms a qualified independent human review against the exact head.
+2. RX-23 tracks findings to verified remediation and requires a complete passing CI run on the final commit. Any subsequent commit restarts exact-head validation.
+3. RX-24 validates authorized human acceptance for the exact commit and evidence digest. Review approval is not a substitute for acceptance.
+4. RX-25 checks protected-merge prerequisites. Only the authorized repository process/person may merge, and only through the configured protections.
+5. After merge, RX-26 verifies live OIDC claims and the cryptographic attestation from the resulting exact-main-commit workflow.
+6. RX-27 retrieves and inspects retained evidence, binds every receipt to the run/attempt/commit/digest, and independently checks audit-retention evidence.
+7. RX-19, the canonical AIGC Release Assurance Agent, evaluates the complete packet. Any missing, contradictory, stale, unauthenticated, or unreviewed evidence leaves the decision at BLOCK.
+
+These gates must not be collapsed into a single self-approving agent. Review, acceptance, merge, provenance verification, artifact custody, audit verification, and release authorization are separate control functions. A workflow status of success is necessary where policy requires it, but is not proof by itself that OIDC claims or attestations were cryptographically verified.
