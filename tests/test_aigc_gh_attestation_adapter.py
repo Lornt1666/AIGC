@@ -21,7 +21,7 @@ def verified_payload(digest):
     return [{
         "attestation": {"bundle": {"mediaType": "application/vnd.dev.sigstore.bundle.v0.3+json"}},
         "verificationResult": {
-            "signature": {"certificate": {"subjectAlternativeName": "https://github.com/Lornt1666/AIGC/.github/workflows/aigc-ci.yml@refs/heads/main"}},
+            "signature": {"certificate": {"subjectAlternativeName": "https://github.com/Lornt1666/AIGC/.github/workflows/aigc-ci.yml@refs/heads/main", "sourceRepositoryIdentifier": "1287333065"}},
             "verifiedTimestamps": [{"timestamp": "2026-10-21T00:00:00Z"}],
             "statement": {
                 "_type": "https://in-toto.io/Statement/v1",
@@ -94,6 +94,18 @@ class GitHubAttestationAdapterTests(unittest.TestCase):
                     signer_workflow="Lornt1666/AIGC/.github/workflows/aigc-ci.yml",
                     source_sha=SHA, runner=runner,
                 )
+
+    def test_wrong_certificate_repository_id_or_signer_identity_blocks(self):
+        digest = "b" * 64
+        payload = verified_payload(digest)
+        cert = payload[0]["verificationResult"]["signature"]["certificate"]
+        cert["sourceRepositoryIdentifier"] = "999999"
+        with self.assertRaisesRegex(AttestationVerificationError, "verified_source_repository_id_mismatch"):
+            validate_verification_output(payload, artifact_sha256=digest, expected_predicate=PREDICATE)
+        payload = verified_payload(digest)
+        payload[0]["verificationResult"]["signature"]["certificate"]["subjectAlternativeName"] = "https://attacker.invalid/workflow"
+        with self.assertRaisesRegex(AttestationVerificationError, "verified_signer_certificate_identity_mismatch"):
+            validate_verification_output(payload, artifact_sha256=digest, expected_predicate=PREDICATE)
 
     def test_missing_certificate_or_transparency_evidence_blocks(self):
         digest = "b" * 64
