@@ -126,6 +126,12 @@ jobs:
           set -euo pipefail
           python -m unittest discover -s tests -p 'test_aigc_governor.py' -v
 
+      - name: Run Governor integration milestone gate tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_aigc_governor_milestones.py' -v
+
       - name: Scan release-only paths for secret-like content
         shell: bash
         run: |
