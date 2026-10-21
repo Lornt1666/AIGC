@@ -343,6 +343,102 @@
       "authority_boundary": "Never fabricate consent; silence and CI success are not acceptance.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-21",
+      "name": "Repository Reviewer Assignment and Independence Gate",
+      "responsibility": "prepare reviewer qualification criteria, inspect repository reviewer/permissions metadata, and request assignment by an authorized repository administrator",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-17",
+        "RX-19"
+      ],
+      "authority_boundary": "Cannot appoint itself, fabricate reviewer credentials, request privileged access beyond policy, or treat its own review as independent.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-22",
+      "name": "Independent Security Review Evidence Gate",
+      "responsibility": "validate that a qualified human reviewer examined the exact PR head, workflow permissions, OIDC/Sigstore adapter, trust boundaries, findings, and remediation",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-21",
+        "RX-16"
+      ],
+      "authority_boundary": "Collects and validates evidence of a review; is not the independent reviewer and cannot approve its own implementation.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-23",
+      "name": "Findings Remediation and Exact-Head CI Orchestrator",
+      "responsibility": "track review findings to fixes, preserve required checks, run full CI on the final exact commit, and bind results to commit/tree/run/attempt",
+      "authority_tier": "R2",
+      "dependencies": [
+        "RX-22",
+        "RX-15",
+        "RX-16"
+      ],
+      "authority_boundary": "Cannot suppress or weaken checks, rewrite review findings as resolved without evidence, merge, or release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-24",
+      "name": "Authenticated Human Acceptance Custodian",
+      "responsibility": "validate authorized human acceptance bound to exact commit and evidence digest, including approver identity, scope, timestamp, and conditions",
+      "authority_tier": "R4",
+      "dependencies": [
+        "RX-22",
+        "RX-23",
+        "RX-16"
+      ],
+      "authority_boundary": "Never solicits consent through impersonation, fabricates acceptance, or treats CI/reviewer approval/silence as human acceptance.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-25",
+      "name": "Protected Merge Readiness Gate",
+      "responsibility": "verify branch rules, required checks, review approvals, conversation resolution, exact PR head, and authorized merge path before a human/authorized repository process merges",
+      "authority_tier": "R4",
+      "dependencies": [
+        "RX-22",
+        "RX-23",
+        "RX-24"
+      ],
+      "authority_boundary": "Readiness assessment only; cannot bypass branch protection or merge unilaterally.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-26",
+      "name": "Mainline OIDC and Attestation Verifier",
+      "responsibility": "inspect exact successful main-branch run and verify actual OIDC claims plus signed attestation repository identity, workflow identity, source SHA, predicate, and evidence subject digest",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-25",
+        "RX-16",
+        "RX-17"
+      ],
+      "authority_boundary": "Must use live verifier output and authenticated claims; mocks, hashes alone, feature-branch runs, or agent assertions do not satisfy trust verification.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-27",
+      "name": "Signed Evidence Artifact and Independent Audit Gate",
+      "responsibility": "download and inspect retained signed-evidence artifacts, recompute package digests, bind receipts to exact run/attempt/commit/digest, verify independent audit retention, and evaluate release-criteria completeness",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-26",
+        "RX-18",
+        "RX-14"
+      ],
+      "authority_boundary": "Cannot claim independent retention from a same-process/local log alone and cannot authorize release; hands evidence to RX-19 for final evaluation.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     }
   ],
   "mandatory_human_gates": [
