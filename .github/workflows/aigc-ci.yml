@@ -138,6 +138,7 @@ jobs:
           set -euo pipefail
           PYTHONPATH=src python -m unittest discover -s tests -p 'test_aigc_ci_validation_agent.py' -v
           PYTHONPATH=src python -m unittest discover -s tests -p 'test_aigc_ci_role_agents.py' -v
+          PYTHONPATH=src python -m unittest discover -s tests -p 'test_aigc_required_acceptance_gate_agent.py' -v
 
       - name: Run OIDC identity verifier tests
         shell: bash
