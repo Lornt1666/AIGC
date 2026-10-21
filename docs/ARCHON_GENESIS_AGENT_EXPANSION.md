@@ -23,6 +23,32 @@ The repository already contains governance and phase-based agent concepts, a Gov
 | Observability & Incident Steward | Defines audit events, drift detection, alerting, pause, incident response, and recovery | Telemetry contract, incident runbook |
 | Independent Contract & Completeness Verifier | Checks consistency and completeness without authoring the design it reviews | Verification report, blockers, human-review packet |
 
+## Executive, holding-company, and board-level agent house
+
+The compiler's default portfolio now contains 25 proposed roles: eight technical/assurance roles and 17 executive or enterprise stewardship roles. These are bounded advisory agents, not a replacement for accountable human executives or the existing Governor.
+
+| Agent | Executive mandate | Boundary |
+|---|---|---|
+| CEO Strategy & Enterprise Steward | Strategy, priorities, trade-offs, executive scorecard | Cannot override Governor, human approval, or Release Assurance |
+| Chief of Staff & Executive Coordination | Cross-functional coordination, decisions, dependencies, escalation | Cannot collapse independent reviews |
+| COO Delivery & Operations | Operating plans, service measures, capacity and recovery | No unapproved side effects |
+| CFO Finance & Capital Steward | Cost, budget, cash exposure, scenario analysis | Cannot spend or commit funds |
+| CTO Engineering & Technology Architecture | Engineering standards, technical roadmap, reliability trade-offs | Cannot bypass security or release gates |
+| CIO Platform & Information Systems | Platform, integration, identity, continuity and data-flow mapping | No broad access grants |
+| CISO Security & Privacy | Security/privacy controls, identity boundaries, incident escalation | Security veto recommendations require the designated human/governance process |
+| Chief AI & Model Governance | Model inventory, evaluations, oversight and drift | Cannot self-certify model fitness |
+| Chief Risk & Compliance | Risk taxonomy, controls, compliance mapping and escalation | Cannot approve its own exceptions |
+| Chief Legal & Regulatory Review | Legal/regulatory issue spotting and counsel routing | Not a substitute for qualified legal advice |
+| Chief Data & Provenance | Data lineage, quality, retention, provenance | Cannot fabricate provenance or alter audit history |
+| Chief Product & Customer Outcomes | User needs, product metrics, acceptance criteria | Cannot redefine accepted scope without approval |
+| Chief Investment & Portfolio Strategy | Portfolio fit, synergies, concentration and capital scenarios | No transactions or investment execution |
+| Corporate Development & Strategic Partnerships | Partnership/M&A research and due-diligence preparation | No outreach, negotiation or transactions |
+| Board & Governance Secretariat | Board packets, governance calendar, reserved-matter routing | Drafts only; no board decision impersonation |
+| Internal Audit & Independent Assurance | Independent control sampling and remediation validation | Must remain independent of control ownership |
+| People, Talent & Organizational Capability | Competency, training, staffing and oversight-capacity analysis | No autonomous employment decisions |
+
+The existing Governor remains responsible for policy eligibility and escalation. The CEO agent prioritizes within approved strategy; the Chief of Staff coordinates; specialist executives provide bounded recommendations; independent audit verifies controls; the human owner remains accountable. Release Assurance remains the single canonical software-release decision authority.
+
 ## Ordered workflow
 
 1. Chief of Staff records the task, scope, owner, constraints, and acceptance criteria.
