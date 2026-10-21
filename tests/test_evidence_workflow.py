@@ -26,12 +26,12 @@ def envelope():
     }
 
 
-def test_signer(payload):
+def synthetic_test_signer(payload):
     return {"signer_identity": "synthetic-test-signer",
             "signature_b64": base64.b64encode(hashlib.sha256(payload).digest()).decode("ascii")}
 
 
-def test_verifier(payload, auth):
+def synthetic_test_verifier(payload, auth):
     expected = base64.b64encode(hashlib.sha256(payload).digest()).decode("ascii")
     return {"verified": auth.get("signer_identity") == "synthetic-test-signer"
             and auth.get("signature_b64") == expected,
@@ -56,7 +56,7 @@ class EvidenceWorkflowTests(unittest.TestCase):
 
     def test_authenticated_version_bound_specialists_enable_green_but_not_release(self):
         with tempfile.TemporaryDirectory() as temp:
-            result = run_workflow(envelope(), {}, Path(temp), test_signer, test_verifier)
+            result = run_workflow(envelope(), {}, Path(temp), synthetic_test_signer, synthetic_test_verifier)
             self.assertTrue(result["authentication_configured"])
             self.assertIn("green-remediation", result["reports"])
             self.assertEqual(result["release_decision"], "BLOCK")
@@ -71,7 +71,7 @@ class EvidenceWorkflowTests(unittest.TestCase):
         def bad_verifier(_payload, _auth):
             return {"verified": False, "reason": "invalid"}
         with tempfile.TemporaryDirectory() as temp:
-            result = run_workflow(envelope(), {}, Path(temp), test_signer, bad_verifier)
+            result = run_workflow(envelope(), {}, Path(temp), synthetic_test_signer, bad_verifier)
             self.assertEqual(result["stages"][0]["trusted_for_handoff"], False)
             self.assertEqual(next(s for s in result["stages"] if s["stage_id"] == "green-remediation")["status"],
                              "BLOCKED_DEPENDENCY")
