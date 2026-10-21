@@ -190,3 +190,18 @@ RX-28 coordinates the operational gate from authorized repository-administrator 
 7. Deliver the evidence packet to RX-19 without exercising release authority itself.
 
 **Fail-closed invariant:** RX-28 preserves BLOCK whenever any mandatory gate is missing, pending, failed, stale, contradictory, unauthenticated, or bound to a different commit or evidence digest. RX-28 cannot override RX-19, grant human acceptance, merge, or authorize a release. Agent existence or a passing unit test is not operational evidence that these controls have executed.
+
+
+## 12. Operational gate contracts and RX-28 decision handoff
+
+The machine-readable registry defines seven explicit operational gate contracts bound to RX-21 through RX-27. Each contract defines required inputs, outputs, pass criteria, invalidation triggers, permitted side effects, and mandatory BLOCK disposition on failure. These are specifications, not proof that live integrations have executed.
+
+- Reviewer assignment must be attributable to an authorized repository administrator and independently qualify the reviewer.
+- Review findings must be stable-ID tracked to remediation commits and evidence-backed retests.
+- Exact-head CI receipts bind the final commit, tree, workflow runs and attempts; any new commit invalidates the receipt.
+- Human acceptance must be authenticated and bind the same exact commit and evidence-package SHA-256.
+- Protected-merge readiness uses live read-back of repository protections, eligible approvals, required checks and resolved conversations; it does not merge.
+- Post-merge trust verification inspects actual OIDC claim-verifier output and cryptographically verified signed attestations from the resulting main commit.
+- Artifact/audit verification inspects retained artifacts, recomputes digests, binds run/attempt/commit/tree/digest, and verifies independently administered retention and retrieval.
+
+RX-28 assembles the same-commit evidence packet and hands it to RX-19. RX-28 cannot decide release, override BLOCK, merge, or provide human acceptance. All agents remain disabled by default and production authorization remains NOT GRANTED.
