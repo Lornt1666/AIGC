@@ -1,0 +1,372 @@
+{
+  "schema_version": "regenexcalibur-aigc-agent-registry/1.0",
+  "project_id": "REGENEXCALIBUR",
+  "orchestration_platform": "AIGC",
+  "status": "DESIGN_BASELINE",
+  "default_disposition": "BLOCK",
+  "authority_tiers": {
+    "R0": "Read-only observation and evidence gathering",
+    "R1": "Drafting and analysis in isolated workspaces",
+    "R2": "Bounded sandbox testing; no production side effects",
+    "R3": "Explicit allowlisted controlled execution with expiry, idempotency, audit receipt and rollback",
+    "R4": "Human-reserved decisions; agent may assemble evidence but cannot impersonate approver"
+  },
+  "shared_contract": {
+    "required_input_fields": [
+      "contract_version",
+      "task_id",
+      "project_id",
+      "agent_id",
+      "agent_version",
+      "policy_version",
+      "objective",
+      "scope",
+      "exclusions",
+      "acceptance_criteria",
+      "risk_tier",
+      "input_refs",
+      "allowed_tools",
+      "permitted_side_effects",
+      "reviewer_role"
+    ],
+    "required_result_fields": [
+      "status",
+      "summary",
+      "assumptions",
+      "limitations",
+      "risks",
+      "open_questions",
+      "artifact_digests",
+      "evidence_refs",
+      "test_results",
+      "unresolved_findings",
+      "proposed_actions",
+      "side_effects_performed",
+      "audit_event_ids",
+      "approval_required",
+      "approval_status"
+    ],
+    "statuses": [
+      "SUCCEEDED",
+      "PARTIAL",
+      "BLOCKED",
+      "FAILED",
+      "UNKNOWN"
+    ],
+    "fail_closed_conditions": [
+      "missing_provenance",
+      "stale_evidence",
+      "unknown_schema",
+      "policy_mismatch",
+      "invalid_signature",
+      "contradictory_critical_evidence",
+      "unresolved_high_severity_finding"
+    ]
+  },
+  "agents": [
+    {
+      "id": "RX-00",
+      "name": "RegenExcalibur Program Governor",
+      "responsibility": "scope_milestones_risk_handoffs",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-01",
+        "RX-11",
+        "RX-15"
+      ],
+      "authority_boundary": "Coordinate only; cannot approve own outputs or bypass domain review.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-01",
+      "name": "Requirements and Traceability Architect",
+      "responsibility": "requirements_acceptance_traceability",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-00"
+      ],
+      "authority_boundary": "No requirement is verified without linked evidence.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-02",
+      "name": "Built-Environment Systems Architect",
+      "responsibility": "system_context_interfaces_design_alternatives",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-01",
+        "RX-11"
+      ],
+      "authority_boundary": "Design support only; regulated design requires qualified human approval.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-03",
+      "name": "Materials and Fabrication Engineer",
+      "responsibility": "materials_durability_manufacturing_test_plan",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-02",
+        "RX-07"
+      ],
+      "authority_boundary": "No fabrication-ready disposition without approved calculations, drawings, BOM, QA and tests.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-04",
+      "name": "Envelope and BIPV Integration Agent",
+      "responsibility": "façade_weather_thermal_moisture_fire_electrical_interfaces",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-02",
+        "RX-03",
+        "RX-06",
+        "RX-07"
+      ],
+      "authority_boundary": "Cannot certify code compliance, structural adequacy or electrical safety.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-05",
+      "name": "Carbon and MRV Assurance Agent",
+      "responsibility": "baseline_lifecycle_uncertainty_monitoring_verification",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-11",
+        "RX-08"
+      ],
+      "authority_boundary": "No public quantified carbon claim without reproducible calculations and independent verification.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-06",
+      "name": "Codes Permits and Regulatory Research Agent",
+      "responsibility": "jurisdiction_code_permit_standard_research",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-11"
+      ],
+      "authority_boundary": "Research only; does not issue legal, code or regulator approval.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-07",
+      "name": "Safety Hazard and Constructability Agent",
+      "responsibility": "hazard_register_failure_modes_constructability",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-02",
+        "RX-03"
+      ],
+      "authority_boundary": "Cannot waive hazards or replace competent safety review.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-08",
+      "name": "Lifecycle and Circularity Agent",
+      "responsibility": "repair_disassembly_reuse_recycling_end_of_life",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-03",
+        "RX-11"
+      ],
+      "authority_boundary": "Claims require source evidence and explicit assumptions.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-09",
+      "name": "Supply Chain and Procurement Analyst",
+      "responsibility": "vendor_certifications_lead_times_substitutions",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-11",
+        "RX-10"
+      ],
+      "authority_boundary": "No purchase orders, vendor onboarding or commitments.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-10",
+      "name": "Commercial and Finance Modeler",
+      "responsibility": "capex_opex_sensitivity_scenarios_unit_economics",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-09",
+        "RX-11"
+      ],
+      "authority_boundary": "Estimates are not quotes, financing commitments or guaranteed returns.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-11",
+      "name": "Research and Evidence Librarian",
+      "responsibility": "source_register_primary_sources_freshness_conflicts",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-00"
+      ],
+      "authority_boundary": "Uncited assertions and agent consensus are not proof.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-12",
+      "name": "Digital Twin and Data Contract Architect",
+      "responsibility": "asset_schemas_interfaces_bim_cad_telemetry_quality",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-01",
+        "RX-02"
+      ],
+      "authority_boundary": "No authoritative design mutation without approved change control.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-13",
+      "name": "Test Commissioning and Verification Planner",
+      "responsibility": "test_matrix_instrumentation_acceptance_retests",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-01",
+        "RX-02",
+        "RX-07"
+      ],
+      "authority_boundary": "Cannot certify tests not independently observed or validated.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-14",
+      "name": "Independent Design and Claims Reviewer",
+      "responsibility": "independent_challenge_safety_code_carbon_evidence",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-01",
+        "RX-03",
+        "RX-04",
+        "RX-05",
+        "RX-06",
+        "RX-07",
+        "RX-08",
+        "RX-13"
+      ],
+      "authority_boundary": "Must be independent of authoring and disclose conflicts; review is not release approval.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-15",
+      "name": "Change Control and Configuration Manager",
+      "responsibility": "baseline_revision_impact_supersession_rollback",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-01",
+        "RX-12",
+        "RX-14"
+      ],
+      "authority_boundary": "Cannot approve its own change or overwrite accepted baselines.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-16",
+      "name": "AIGC Evidence and Provenance Verifier",
+      "responsibility": "exact_commit_run_artifact_digest_signer_predicate",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-11",
+        "RX-15"
+      ],
+      "authority_boundary": "Evidence readiness only; cannot authorize release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-17",
+      "name": "Security Privacy and Tool Permission Agent",
+      "responsibility": "least_privilege_secret_handling_threat_model_tool_allowlist",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-00",
+        "RX-16"
+      ],
+      "authority_boundary": "Cannot grant itself permissions or disable controls.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-18",
+      "name": "Audit and Retention Custodian",
+      "responsibility": "attributable_events_independent_retention_restore",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-16",
+        "RX-17"
+      ],
+      "authority_boundary": "Local logs or hash chains alone do not establish independent immutable retention.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-19",
+      "name": "Canonical AIGC Release Assurance Agent",
+      "responsibility": "release_packet_policy_evaluation",
+      "authority_tier": "R4",
+      "dependencies": [
+        "RX-14",
+        "RX-16",
+        "RX-17",
+        "RX-18",
+        "RX-20"
+      ],
+      "authority_boundary": "Sole software release authority; blocks on missing or unverifiable evidence.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-20",
+      "name": "Human Decision and Acceptance Gate",
+      "responsibility": "authenticated_approver_scope_exact_digest_timestamp_conditions",
+      "authority_tier": "R4",
+      "dependencies": [
+        "RX-14",
+        "RX-15",
+        "RX-16"
+      ],
+      "authority_boundary": "Never fabricate consent; silence and CI success are not acceptance.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    }
+  ],
+  "mandatory_human_gates": [
+    "regulated_design_acceptance",
+    "fabrication_release",
+    "permit_or_legal_attestation",
+    "procurement_commitment",
+    "public_environmental_claim",
+    "production_deployment",
+    "software_release"
+  ],
+  "acceptance_policy": {
+    "independent_review_required": true,
+    "human_acceptance_required": true,
+    "bind_review_to_exact_artifact_digest": true,
+    "bind_acceptance_to_exact_artifact_digest": true,
+    "require_live_cryptographic_provenance": true,
+    "require_independently_administered_audit_retention": true,
+    "no_hash_only_provenance_fallback": true,
+    "no_agent_self_approval": true
+  }
+}
