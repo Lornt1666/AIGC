@@ -132,10 +132,9 @@ class OIDCIdentityVerifier:
         if self.policy.allowed_workflows and workflow not in self.policy.allowed_workflows:
             raise IdentityVerificationError("workflow_not_allowlisted")
 
-        token_actions = verified.get("actions")
-        if not isinstance(token_actions, list) or any(not isinstance(a, str) for a in token_actions):
-            raise IdentityVerificationError("token_actions_claim_invalid")
-        if not required_actions.issubset(set(token_actions)):
+        # Authorization is derived from deployment-controlled policy, not an
+        # arbitrary token claim. Bind requested actions to the configured allowlist.
+        if not self.policy.allowed_actions or not required_actions.issubset(self.policy.allowed_actions):
             raise IdentityVerificationError("required_action_not_authorized")
 
         if not self._consume_jti(jti, expires_at):
