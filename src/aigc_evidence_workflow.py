@@ -287,7 +287,8 @@ def run_workflow(envelope: dict[str, Any], inputs: dict[str, Any], output_dir: P
         "authentication_configured": bool(signer and verifier),
         "disclaimer": "Local specialist evaluators executed. Release remains BLOCK unless all required authenticated evidence, independent verification, and explicit human acceptance pass. The JSONL hash chain is not a remote immutable store or signature.",
     }
-    summary["summary_sha256"] = sha256_hex(canonical_json(\n        {k: v for k, v in summary.items() if k not in {"summary_sha256", "ledger_final_digest"}}))
+    summary["summary_sha256"] = sha256_hex(canonical_json(
+        {k: v for k, v in summary.items() if k not in {"summary_sha256", "ledger_final_digest"}}))
     (output_dir / "workflow_summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     ledger.append({"type": "workflow_summary", "summary_sha256": summary["summary_sha256"],
                    "status": summary["status"], "release_decision": summary["release_decision"]})
