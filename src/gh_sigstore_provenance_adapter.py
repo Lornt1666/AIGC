@@ -60,6 +60,7 @@ def verify_artifact(
     *,
     expected_sha256: str,
     expected_signer_workflow: str,
+    expected_certificate_identity: str,
     expected_source_sha: str,
     predicate_type: str = SLSA_PROVENANCE_V1,
 ) -> dict[str, Any]:
@@ -77,6 +78,8 @@ def verify_artifact(
         raise ProvenanceVerificationError("expected source commit SHA is malformed")
     if not expected_signer_workflow or not expected_signer_workflow.startswith(REPOSITORY + "/"):
         raise ProvenanceVerificationError("expected signer workflow must be an exact AIGC repository workflow path")
+    if not expected_certificate_identity.startswith("https://github.com/Lornt1666/AIGC/"):
+        raise ProvenanceVerificationError("expected certificate identity must be a full exact GitHub OIDC SAN")
 
     _version()
     actual_sha = hashlib.sha256(path.read_bytes()).hexdigest()
@@ -87,6 +90,7 @@ def verify_artifact(
         "gh", "attestation", "verify", str(path),
         "--repo", REPOSITORY,
         "--signer-workflow", expected_signer_workflow,
+        "--cert-identity", expected_certificate_identity,
         "--source-digest", expected_source_sha,
         "--predicate-type", predicate_type,
         "--format", "json",
@@ -116,7 +120,7 @@ def verify_artifact(
             continue
         # CLI enforces repository/workflow/signature; this exact identity check guards
         # against accidental broadening and does not accept a matching prefix.
-        if not _contains_exact(certificate, expected_signer_workflow):
+        if not _contains_exact(certificate, expected_certificate_identity):
             continue
         subjects = statement.get("subject")
         if not isinstance(subjects, list):
@@ -139,6 +143,7 @@ def verify_artifact(
         "verified": True,
         "repository": REPOSITORY,
         "signer_workflow": expected_signer_workflow,
+        "certificate_identity": expected_certificate_identity,
         "source_sha": expected_source_sha,
         "artifact_sha256": expected_sha256,
         "predicate_type": predicate_type,
