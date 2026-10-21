@@ -19,6 +19,7 @@ class IdentityVerificationError(Exception):
 class OIDCTrustPolicy:
     issuer: str
     audience: str
+    jwks_uri: str
     allowed_subjects: frozenset[str]
     allowed_repositories: frozenset[str] = frozenset()
     allowed_refs: frozenset[str] = frozenset()
@@ -32,6 +33,8 @@ class OIDCTrustPolicy:
             raise ValueError("issuer_must_be_https")
         if not self.audience.strip():
             raise ValueError("audience_required")
+        if not self.jwks_uri.startswith("https://"):
+            raise ValueError("jwks_uri_must_be_https")
         if not self.allowed_subjects:
             raise ValueError("explicit_subject_allowlist_required")
         if self.max_token_age_seconds <= 0 or self.leeway_seconds < 0:
@@ -72,7 +75,7 @@ class OIDCIdentityVerifier:
         self._jti_is_revoked = jti_is_revoked
         self._consume_jti = consume_jti
         self._jwks = jwks_client or jwt.PyJWKClient(
-            policy.issuer.rstrip("/") + "/.well-known/jwks.json",
+            policy.jwks_uri,
             cache_jwk_set=True,
             lifespan=300,
             timeout=5,
