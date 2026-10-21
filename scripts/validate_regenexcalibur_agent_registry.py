@@ -54,7 +54,7 @@ def validate_registry(data: Any) -> dict[str, Any]:
             raise RegistryError("implementation_status_overclaims_readiness")
         ids.append(agent["id"])
         by_id[agent["id"]] = agent
-    if len(by_id) != 21:
+    if len(by_id) != 28:
         raise RegistryError("unexpected_agent_count")
     for agent in data["agents"]:
         if agent["id"] in agent["dependencies"]:
@@ -85,6 +85,15 @@ def validate_registry(data: Any) -> dict[str, Any]:
     for agent in data["agents"]:
         if agent["id"] != "RX-19" and "release" in agent["responsibility"].lower() and agent["authority_tier"] == "R4":
             raise RegistryError("multiple_release_authorities")
+    required_gate_agents = {"RX-21", "RX-22", "RX-23", "RX-24", "RX-25", "RX-26", "RX-27"}
+    if not required_gate_agents.issubset(by_id):
+        raise RegistryError("release_gate_agent_missing")
+    if by_id["RX-21"]["authority_tier"] != "R0" or by_id["RX-22"]["authority_tier"] != "R0":
+        raise RegistryError("independent_review_gate_must_be_read_only")
+    if by_id["RX-24"]["authority_tier"] != "R4" or by_id["RX-25"]["authority_tier"] != "R4":
+        raise RegistryError("human_acceptance_and_merge_gates_must_be_human_reserved")
+    if by_id["RX-19"]["authority_tier"] != "R4":
+        raise RegistryError("canonical_release_authority_must_be_human_reserved")
     policy = data["acceptance_policy"]
     required_true = (
         "independent_review_required", "human_acceptance_required",
