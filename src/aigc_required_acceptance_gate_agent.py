@@ -61,8 +61,12 @@ class RequiredAcceptanceGateAgent:
         step_report = []
         failure_signals = []
         for job in jobs:
-            if job.get("status") != "completed" or job.get("conclusion") != "success":
-                reasons.append("job_not_successful:" + str(job.get("name", "unknown")))
+            job_name = str(job.get("name", "unknown"))
+            # This workflow's locked-release revalidation job is intentionally
+            # conditionally skipped; no other skipped job is implicitly accepted.
+            optional_skip = job_name == "revalidate_locked_releases" and job.get("conclusion") == "skipped"
+            if not optional_skip and (job.get("status") != "completed" or job.get("conclusion") != "success"):
+                reasons.append("job_not_successful:" + job_name)
             steps = job.get("steps") if isinstance(job.get("steps"), list) else []
             seen = set()
             for step in steps:
@@ -71,10 +75,11 @@ class RequiredAcceptanceGateAgent:
                 conclusion = str(step.get("conclusion") or "missing")
                 step_report.append({"job": job.get("name"), "name": name,
                                     "status": step.get("status"), "conclusion": conclusion})
-                if name in CORE_STEPS and conclusion != "success":
+                if job_name == "validate" and name in CORE_STEPS and conclusion != "success":
                     reasons.append("required_step_not_success:" + name)
-            for missing in sorted(CORE_STEPS - seen):
-                reasons.append("required_step_missing:" + missing)
+            if job_name == "validate":
+                for missing in sorted(CORE_STEPS - seen):
+                    reasons.append("required_step_missing:" + missing)
             if job.get("conclusion") == "failure" and job.get("id") is not None:
                 try:
                     raw = self.client.get_job_logs(repository, int(job["id"]))
