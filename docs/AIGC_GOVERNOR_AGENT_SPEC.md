@@ -80,7 +80,7 @@ Before production, extend the contract to bind environment, resource identifiers
 ## 7. Required control pipeline
 
 1. Intake: normalize request, assign unique IDs, preserve original request and provenance.
-2. Identity and authorization: independently verify agent identity, owner, delegated authority, scope, expiry, and revocation.
+2. Identity controls: independently authenticate the agent and owner, then verify delegated authority, scope, expiry, and revocation.
 3. Policy applicability: determine jurisdiction, obligations, data classes, risk tier, and required assessments.
 4. Risk analysis: map harms, threat models, failure modes, affected parties, reversibility, blast radius, and residual risk.
 5. Evidence validation: verify signatures and issuer identity; bind digests to exact artifacts, commit, workflow, and subject; reject self-attested evidence when independence is required.
