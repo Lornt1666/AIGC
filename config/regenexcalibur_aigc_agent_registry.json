@@ -69,11 +69,7 @@
       "name": "RegenExcalibur Program Governor",
       "responsibility": "scope_milestones_risk_handoffs",
       "authority_tier": "R1",
-      "dependencies": [
-        "RX-01",
-        "RX-11",
-        "RX-15"
-      ],
+      "dependencies": [],
       "authority_boundary": "Coordinate only; cannot approve own outputs or bypass domain review.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
@@ -109,8 +105,7 @@
       "responsibility": "materials_durability_manufacturing_test_plan",
       "authority_tier": "R1",
       "dependencies": [
-        "RX-02",
-        "RX-07"
+        "RX-02"
       ],
       "authority_boundary": "No fabrication-ready disposition without approved calculations, drawings, BOM, QA and tests.",
       "enabled": false,
