@@ -10,6 +10,7 @@ from typing import Any, Awaitable, Callable, Mapping
 CONTRACT_VERSION = "aigc-agent-task/1.0"
 RELEASE_AUTHORITY = "Release Assurance Agent"
 FORBIDDEN_CAPABILITIES = frozenset({"admin","grant_privileges","merge","deploy","release","approve_self","override_policy","financial_commit","secrets_write"})
+FORBIDDEN_TOOLS = frozenset({"admin","grant_privileges","merge","deploy","release","approve_self","override_policy","financial_commit","secrets_write"})
 class RuntimeBlocked(RuntimeError): pass
 
 @dataclass(frozen=True)
@@ -76,6 +77,7 @@ class AgentRuntime:
     def register(self, identity, handlers):
         identity.validate()
         if identity.agent_id in self.identities: raise RuntimeBlocked("duplicate_agent_identity")
+        if identity.allowed_tools & FORBIDDEN_TOOLS: raise RuntimeBlocked("forbidden_tool_in_allowlist")
         if not handlers or set(handlers)-identity.allowed_tools: raise RuntimeBlocked("handler_outside_tool_allowlist")
         self.identities[identity.agent_id] = identity; self.circuits[identity.agent_id] = Circuit()
         for tool, handler in handlers.items(): self.handlers[(identity.agent_id,tool)] = handler
