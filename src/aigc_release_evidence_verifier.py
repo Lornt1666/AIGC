@@ -12,6 +12,7 @@ from dataclasses import dataclass
 import hashlib
 import json
 import re
+import time
 from typing import Any, Mapping, Sequence
 
 SCHEMA_VERSION = "aigc-evidence-verifier-receipt/1.0"
@@ -102,7 +103,7 @@ def _same(record: Mapping[str, Any], key: str, expected: Any, reason: str, reaso
 
 def _receipt_ok(record: Any, *, evidence_type: str, sha: str, tree_sha: str,
                 policy: VerifierPolicy, reasons: list[str], prefix: str,
-                run_id: str | None = None, run_attempt: str | None = None) -> bool:
+                evaluation_time: int, run_id: str | None = None, run_attempt: str | None = None) -> bool:
     if not isinstance(record, Mapping):
         reasons.append(prefix + "_missing")
         return False
@@ -145,15 +146,23 @@ def _receipt_ok(record: Any, *, evidence_type: str, sha: str, tree_sha: str,
     if not isinstance(record.get("verification_method"), str) or not record.get("verification_method", "").strip():
         reasons.append(prefix + "_verification_method_missing")
         ok = False
-    if not isinstance(record.get("verified_at"), int) or record.get("verified_at", 0) <= 0:
+    verified_at = record.get("verified_at")
+    if not isinstance(verified_at, int) or verified_at <= 0:
         reasons.append(prefix + "_verification_time_missing")
+        ok = False
+    elif verified_at > evaluation_time + 30 or evaluation_time - verified_at > policy.max_evidence_age_seconds:
+        reasons.append(prefix + "_evidence_stale_or_future_dated")
         ok = False
     return ok
 
 
-def evaluate_evidence(policy: VerifierPolicy, bundle: Mapping[str, Any]) -> dict[str, Any]:
-    """Evaluate one immutable evidence bundle; deterministic for the same inputs."""
+def evaluate_evidence(policy: VerifierPolicy, bundle: Mapping[str, Any], *, evaluation_time: int | None = None) -> dict[str, Any]:
+    """Evaluate one immutable evidence bundle; inject evaluation_time for reproducible tests."""
+    evaluation_time = int(time.time()) if evaluation_time is None else evaluation_time
     reasons = policy.validate()
+    if not isinstance(evaluation_time, int) or evaluation_time <= 0:
+        reasons.append("evaluation_time_invalid")
+        evaluation_time = 1
     subject = bundle.get("subject") if isinstance(bundle, Mapping) else None
     if not isinstance(subject, Mapping):
         subject = {}
@@ -169,6 +178,8 @@ def evaluate_evidence(policy: VerifierPolicy, bundle: Mapping[str, Any]) -> dict
         reasons.append("subject_repository_mismatch")
     if str(subject.get("repository_id", "")) != policy.repository_id:
         reasons.append("subject_repository_id_mismatch")
+    if str(subject.get("owner_id", "")) != policy.owner_id:
+        reasons.append("subject_owner_id_mismatch")
     if subject.get("ref") not in policy.allowed_refs:
         reasons.append("subject_ref_not_allowlisted")
     if subject.get("event") not in policy.allowed_events:
@@ -184,6 +195,7 @@ def evaluate_evidence(policy: VerifierPolicy, bundle: Mapping[str, Any]) -> dict
     for key, expected, reason in (
         ("repository", policy.repository, "ci_repository_mismatch"),
         ("repository_id", policy.repository_id, "ci_repository_id_mismatch"),
+        ("owner_id", policy.owner_id, "ci_owner_id_mismatch"),
         ("head_sha", sha, "ci_head_sha_mismatch"),
         ("tree_sha", tree_sha, "ci_tree_sha_mismatch"),
         ("workflow_path", policy.workflow_path, "ci_workflow_path_mismatch"),
@@ -241,11 +253,14 @@ def evaluate_evidence(policy: VerifierPolicy, bundle: Mapping[str, Any]) -> dict
 
     oidc = bundle.get("oidc")
     oidc_ok = _receipt_ok(oidc, evidence_type="oidc-verification", sha=sha, tree_sha=tree_sha,
-                          policy=policy, reasons=reasons, prefix="oidc",
+                          policy=policy, reasons=reasons, prefix="oidc", evaluation_time=evaluation_time,
                           run_id=run_id, run_attempt=run_attempt)
     if isinstance(oidc, Mapping):
         if oidc.get("issuer") != "https://token.actions.githubusercontent.com":
             reasons.append("oidc_issuer_mismatch")
+            oidc_ok = False
+        if str(oidc.get("owner_id", "")) != policy.owner_id:
+            reasons.append("oidc_owner_id_mismatch")
             oidc_ok = False
         if oidc.get("signature_verified") is not True:
             reasons.append("oidc_signature_not_verified")
@@ -268,7 +283,7 @@ def evaluate_evidence(policy: VerifierPolicy, bundle: Mapping[str, Any]) -> dict
 
     att = bundle.get("attestation")
     att_ok = _receipt_ok(att, evidence_type="attestation-verification", sha=sha, tree_sha=tree_sha,
-                          policy=policy, reasons=reasons, prefix="attestation",
+                          policy=policy, reasons=reasons, prefix="attestation", evaluation_time=evaluation_time,
                           run_id=run_id, run_attempt=run_attempt)
     if isinstance(att, Mapping):
         for key, expected, reason in (
@@ -298,7 +313,7 @@ def evaluate_evidence(policy: VerifierPolicy, bundle: Mapping[str, Any]) -> dict
 
     controller = bundle.get("controller")
     controller_ok = _receipt_ok(controller, evidence_type="controller-assurance", sha=sha, tree_sha=tree_sha,
-                                policy=policy, reasons=reasons, prefix="controller")
+                                policy=policy, reasons=reasons, prefix="controller", evaluation_time=evaluation_time)
     if isinstance(controller, Mapping):
         for key in ("real_interface_verified", "server_side_authorization", "durable_intent_before_dispatch",
                     "idempotency_verified", "restart_recovery_verified", "ambiguous_outcome_is_unknown",
@@ -309,7 +324,7 @@ def evaluate_evidence(policy: VerifierPolicy, bundle: Mapping[str, Any]) -> dict
 
     audit = bundle.get("audit")
     audit_ok = _receipt_ok(audit, evidence_type="audit-service-assurance", sha=sha, tree_sha=tree_sha,
-                            policy=policy, reasons=reasons, prefix="audit")
+                            policy=policy, reasons=reasons, prefix="audit", evaluation_time=evaluation_time)
     if isinstance(audit, Mapping):
         for key in ("real_interface_verified", "independent_admin_boundary", "append_only_verified",
                     "tamper_detection_verified", "retention_verified", "restore_test_passed",
@@ -355,7 +370,7 @@ def evaluate_evidence(policy: VerifierPolicy, bundle: Mapping[str, Any]) -> dict
 
     review = bundle.get("independent_review")
     review_ok = _receipt_ok(review, evidence_type="independent-security-review", sha=sha, tree_sha=tree_sha,
-                            policy=policy, reasons=reasons, prefix="review")
+                            policy=policy, reasons=reasons, prefix="review", evaluation_time=evaluation_time)
     if isinstance(review, Mapping):
         for key in ("reviewer_authenticated", "reviewer_independent", "review_signature_verified",
                     "findings_closed", "remediation_retested", "review_bound_to_manifest"):
@@ -365,13 +380,13 @@ def evaluate_evidence(policy: VerifierPolicy, bundle: Mapping[str, Any]) -> dict
         if review.get("reviewer_identity") in {subject.get("author_identity"), subject.get("implementer_identity")}:
             reasons.append("reviewer_not_independent_of_author_or_implementer")
             review_ok = False
-        if not _digest(review.get("evidence_manifest_sha256")):
-            reasons.append("review_manifest_binding_missing")
+        if review.get("evidence_manifest_sha256") != artifact.get("manifest_sha256") or not _digest(review.get("evidence_manifest_sha256")):
+            reasons.append("review_manifest_binding_missing_or_mismatched")
             review_ok = False
 
     acceptance = bundle.get("human_acceptance")
     acceptance_ok = _receipt_ok(acceptance, evidence_type="human-acceptance", sha=sha, tree_sha=tree_sha,
-                                policy=policy, reasons=reasons, prefix="acceptance")
+                                policy=policy, reasons=reasons, prefix="acceptance", evaluation_time=evaluation_time)
     if isinstance(acceptance, Mapping):
         for key in ("approver_authenticated", "approver_authorized", "acceptance_signature_verified",
                     "approval_current", "bound_to_manifest", "bound_to_review"):
@@ -381,8 +396,8 @@ def evaluate_evidence(policy: VerifierPolicy, bundle: Mapping[str, Any]) -> dict
         if acceptance.get("approver_identity") in {subject.get("author_identity"), subject.get("implementer_identity")}:
             reasons.append("approver_not_independent_of_author_or_implementer")
             acceptance_ok = False
-        if not _digest(acceptance.get("evidence_manifest_sha256")):
-            reasons.append("acceptance_manifest_binding_missing")
+        if acceptance.get("evidence_manifest_sha256") != artifact.get("manifest_sha256") or not _digest(acceptance.get("evidence_manifest_sha256")):
+            reasons.append("acceptance_manifest_binding_missing_or_mismatched")
             acceptance_ok = False
         if isinstance(review, Mapping) and acceptance.get("review_content_sha256") != review.get("content_sha256"):
             reasons.append("acceptance_review_binding_mismatch")
