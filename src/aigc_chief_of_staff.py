@@ -30,7 +30,8 @@ STAGES = [
     {"id": "blue-review", "name": "Defensive controls, telemetry, and recovery review", "depends_on": ["contract-gate"], "agent": "Blue Team", "mode": "evidence-required"},
     {"id": "green-remediation", "name": "Draft minimal remediation proposals for verified findings", "depends_on": ["aer-review", "red-review", "blue-review"], "agent": "Green Team", "mode": "proposal-only"},
     {"id": "independent-verification", "name": "Verify evidence provenance, exact revision, and separation of duties", "depends_on": ["green-remediation"], "agent": "Independent Verifier", "mode": "trusted-verifier-required"},
-    {"id": "human-acceptance", "name": "Human review and explicit acceptance of consequential changes", "depends_on": ["independent-verification"], "agent": "Authorized Human Reviewer", "mode": "approval-required"},
+    {"id": "ceo-approval", "name": "Evaluate proposed action against bounded CEO approval policy", "depends_on": ["independent-verification"], "agent": "AIGC CEO Agent", "mode": "bounded-policy-approval-only"},
+    {"id": "human-acceptance", "name": "Human review and explicit acceptance of consequential changes", "depends_on": ["ceo-approval"], "agent": "Authorized Human Reviewer", "mode": "approval-required"},
     {"id": "release-assurance", "name": "Evaluate release evidence", "depends_on": ["human-acceptance"], "agent": "Canonical Release Assurance", "mode": "canonical-authority-only"},
 ]
 
