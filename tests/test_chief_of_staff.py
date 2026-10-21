@@ -41,7 +41,9 @@ class ChiefOfStaffTests(unittest.TestCase):
         self.assertEqual(by_id["chief-of-staff"]["status"], "COMPLETE")
         self.assertEqual(by_id["archon-genesis"]["status"], "COMPLETE")
         self.assertEqual(by_id["contract-gate"]["status"], "PASS")
-        for stage_id in ("aer-review", "red-review", "blue-review", "green-remediation", "independent-verification", "human-acceptance", "release-assurance"):
+        self.assertEqual(by_id["ceo-approval"]["agent"], "AIGC CEO Agent")
+        self.assertEqual(by_id["human-acceptance"]["depends_on"], ["ceo-approval"])
+        for stage_id in ("aer-review", "red-review", "blue-review", "green-remediation", "independent-verification", "ceo-approval", "human-acceptance", "release-assurance"):
             self.assertEqual(by_id[stage_id]["status"], "BLOCKED_INPUTS")
 
     def test_authority_cannot_be_escalated(self):
