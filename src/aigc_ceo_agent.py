@@ -17,6 +17,10 @@ from typing import Any, Callable
 
 POLICY_ID = "aigc-ceo-action-approval-v1"
 REQUIRED_BINDINGS = ("repository", "commit_sha", "tree_sha", "policy_digest", "invocation_id")
+APPROVABLE_ACTIONS = {
+    "regenerate_internal_index", "generate_documentation_draft",
+    "rebuild_local_report", "run_offline_validation", "format_generated_document",
+}
 FORBIDDEN_ACTIONS = {
     "merge", "release", "deploy", "deployment", "secret_access", "permission_change",
     "credential_rotation", "production_write", "financial_commitment", "external_purchase",
@@ -74,13 +78,15 @@ def evaluate_action(request: dict[str, Any], envelope: dict[str, Any],
         if not verified:
             return _receipt("HOLD", "trusted_evidence_verification_failed", request, envelope)
 
-    if action in FORBIDDEN_ACTIONS or request.get("external_effect") is True:
+    if action in FORBIDDEN_ACTIONS or request.get("external_effect") is not False:
         return _receipt("REQUIRES_HUMAN", "consequential_action_requires_human_authorization", request, envelope)
+    if action not in APPROVABLE_ACTIONS:
+        return _receipt("REQUIRES_HUMAN", "action_type_not_in_approved_allowlist", request, envelope)
     if request.get("reversible") is not True:
         return _receipt("REQUIRES_HUMAN", "action_not_proven_reversible", request, envelope)
-    if request.get("estimated_cost") not in (0, 0.0, None):
+    if request.get("estimated_cost") != 0:
         return _receipt("REQUIRES_HUMAN", "financial_cost_requires_human_authorization", request, envelope)
-    if request.get("permission_change") is True or request.get("secret_access") is True:
+    if request.get("permission_change") is not False or request.get("secret_access") is not False:
         return _receipt("REQUIRES_HUMAN", "privilege_or_secret_boundary_requires_human_authorization", request, envelope)
     if risk != "low":
         return _receipt("REQUIRES_HUMAN", "only_low_risk_actions_are_within_ceo_autoapproval", request, envelope)
