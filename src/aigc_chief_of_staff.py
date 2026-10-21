@@ -163,7 +163,7 @@ def main(argv: list[str] | None = None) -> int:
         result["runbook_digest_sha256"] = _sha(result)
     except (OSError, ValueError) as exc:
         parser.error(f"documentation pack generation failed closed: {exc}")
-    (out / "chief_of_staff_runbook.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\\n", encoding="utf-8")
+    (out / "chief_of_staff_runbook.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     (out / "chief_of_staff_report.md").write_text(render_report(result), encoding="utf-8")
     execution_summary = None
     if args.evidence_envelope:
