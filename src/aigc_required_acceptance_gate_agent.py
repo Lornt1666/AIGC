@@ -29,9 +29,11 @@ CORE_STEPS = {
 class RequiredAcceptanceGateAgent:
     """Inspect one immutable workflow run and fail closed on missing proof."""
 
-    def __init__(self, client: Any, reviewer_authenticator: Any, release_assurance: Any = None):
+    def __init__(self, client: Any, reviewer_authenticator: Any, release_assurance: Any = None,
+                 human_acceptance_authenticator: Any = None):
         self.client = client
         self.reviewer_authenticator = reviewer_authenticator
+        self.human_acceptance_authenticator = human_acceptance_authenticator
         self.release_assurance = release_assurance
 
     def inspect(self, *, repository: str, run_id: int, expected_sha: str,
@@ -145,11 +147,24 @@ class RequiredAcceptanceGateAgent:
                 reasons.append("independent_review_invalid:" + type(exc).__name__)
         else:
             reasons.append("independent_review_missing")
-        if not isinstance(human_acceptance, Mapping) or human_acceptance.get("accepted") is not True:
+        authenticated_human_acceptance = None
+        if not isinstance(human_acceptance, Mapping):
             reasons.append("explicit_human_acceptance_missing")
-        elif (human_acceptance.get("subject_sha") != expected_sha
-              or not str(human_acceptance.get("human_id", "")).strip()):
-            reasons.append("human_acceptance_subject_or_identity_invalid")
+        elif self.human_acceptance_authenticator is None or artifact_report is None:
+            reasons.append("human_acceptance_authenticator_unconfigured")
+        else:
+            try:
+                authenticated_human_acceptance = self.human_acceptance_authenticator.verify(
+                    human_acceptance, expected_sha=expected_sha,
+                    artifact_digest=artifact_report["computed_sha256"])
+                if (not isinstance(authenticated_human_acceptance, Mapping)
+                    or authenticated_human_acceptance.get("authenticated") is not True
+                    or authenticated_human_acceptance.get("accepted") is not True
+                    or authenticated_human_acceptance.get("subject_sha") != expected_sha
+                    or not str(authenticated_human_acceptance.get("human_id", "")).strip()):
+                    reasons.append("human_acceptance_subject_or_identity_invalid")
+            except Exception as exc:
+                reasons.append("human_acceptance_authentication_failed:" + type(exc).__name__)
 
         reasons = sorted(set(reasons))
         report = {
@@ -162,7 +177,7 @@ class RequiredAcceptanceGateAgent:
                 re.sub(r"(?i)(token|password|secret|api[_-]?key)(\s*[:=]\s*)[^\s,;]+",
                        r"\1\2[REDACTED]", x)[:500] for x in failure_signals],
             "artifact": artifact_report, "authenticated_review": review,
-            "human_acceptance": dict(human_acceptance) if isinstance(human_acceptance, Mapping) else None,
+            "human_acceptance": authenticated_human_acceptance,
             "reasons": reasons, "status": "READY_FOR_RELEASE_ASSURANCE" if not reasons else "BLOCK",
             "release_decision": "BLOCK", "submitted_to_release_assurance": False,
             "automatic_changes_performed": False,
