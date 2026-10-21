@@ -156,7 +156,7 @@ def evaluate_governance(request: Mapping[str, Any], *, now: datetime | None = No
     approval_required = (
         any(a in HUMAN_GATED_ACTIONS for a in action_ids)
         or any(c in HIGH_RISK_CATEGORIES for c in capabilities)
-        or risk_tier in {"high", "critical", "unknown"}
+        or (isinstance(risk_tier, str) and risk_tier in {"high", "critical", "unknown"})
     )
     if approval_required:
         if human_approval.get("approved") is not True:
