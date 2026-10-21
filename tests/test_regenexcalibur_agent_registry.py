@@ -17,7 +17,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
     def test_registry_is_valid_and_fail_closed(self):
         result = validate_registry(self.registry)
         self.assertEqual(result["status"], "VALID")
-        self.assertEqual(result["agent_count"], 28)
+        self.assertEqual(result["agent_count"], 29)
         self.assertEqual(result["dependency_graph"], "ACYCLIC")
         self.assertEqual(result["default_disposition"], "BLOCK")
         self.assertEqual(result["production_authorization"], "NOT_GRANTED")
@@ -44,11 +44,15 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
         result = validate_registry(self.registry)
         self.assertEqual(result["release_authority"], "RX-19")
         by_id = {agent["id"]: agent for agent in self.registry["agents"]}
-        for agent_id in ("RX-21", "RX-22", "RX-23", "RX-24", "RX-25", "RX-26", "RX-27"):
+        for agent_id in ("RX-21", "RX-22", "RX-23", "RX-24", "RX-25", "RX-26", "RX-27", "RX-28"):
             self.assertIn(agent_id, by_id)
             self.assertFalse(by_id[agent_id]["enabled"])
         self.assertEqual(by_id["RX-24"]["authority_tier"], "R4")
         self.assertEqual(by_id["RX-25"]["authority_tier"], "R4")
+        self.assertEqual(by_id["RX-28"]["authority_tier"], "R0")
+        self.assertIn("RX-19", by_id["RX-28"]["dependencies"])
+        self.assertIn("BLOCK", by_id["RX-28"]["authority_boundary"])
+        self.assertFalse(by_id["RX-28"]["enabled"])
 
     def test_agents_must_remain_disabled_by_default(self):
         data = copy.deepcopy(self.registry)
