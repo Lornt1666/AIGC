@@ -117,6 +117,20 @@ class GovernorPolicyTests(unittest.TestCase):
         result = evaluate_governance(valid_request(risk_tier="unknown"), now=NOW)
         self.assertEqual(result["decision"], "BLOCK")
 
+    def test_malformed_risk_type_fails_closed_without_exception(self):
+        result = evaluate_governance(valid_request(risk_tier=[]), now=NOW)
+        self.assertEqual(result["decision"], "BLOCK")
+
+    def test_unknown_evidence_field_fails_closed(self):
+        request = valid_request()
+        request["evidence"][0]["trusted_by_prompt"] = True
+        self.assertEqual(evaluate_governance(request, now=NOW)["decision"], "BLOCK")
+
+    def test_unknown_human_approval_field_fails_closed(self):
+        request = valid_request()
+        request["human_approval"]["override"] = True
+        self.assertEqual(evaluate_governance(request, now=NOW)["decision"], "BLOCK")
+
     def test_signature_or_authentication_is_not_created_by_governor(self):
         result = evaluate_governance(valid_request(), now=NOW)
         self.assertEqual(result["authority"], "governance_policy_advisory")
