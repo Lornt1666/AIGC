@@ -17,7 +17,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
     def test_registry_is_valid_and_fail_closed(self):
         result = validate_registry(self.registry)
         self.assertEqual(result["status"], "VALID")
-        self.assertEqual(result["agent_count"], 29)
+        self.assertEqual(result["agent_count"], 33)
         self.assertEqual(len(self.registry["operational_gate_contracts"]), 7)
         self.assertEqual(self.registry["final_decision_contract"]["canonical_decision_authority"], "RX-19")
         self.assertEqual(result["dependency_graph"], "ACYCLIC")
@@ -71,6 +71,33 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
         data = copy.deepcopy(self.registry)
         data["final_decision_contract"]["canonical_decision_authority"] = "RX-28"
         with self.assertRaisesRegex(RegistryError, "final_decision_authority_mismatch"):
+            validate_registry(data)
+
+    def test_new_assurance_agents_have_contracts_and_remain_disabled(self):
+        by_id = {agent["id"]: agent for agent in self.registry["agents"]}
+        contracts = {item["agent_id"]: item for item in self.registry["new_agent_contracts"]}
+        for agent_id in ("RX-29", "RX-30", "RX-31", "RX-40"):
+            self.assertIn(agent_id, by_id)
+            self.assertIn(agent_id, contracts)
+            self.assertFalse(by_id[agent_id]["enabled"])
+            self.assertEqual(by_id[agent_id]["implementation_status"], "SPECIFIED_NOT_PRODUCTION_INTEGRATED")
+            self.assertTrue(contracts[agent_id]["self_approval_prohibited"])
+            self.assertTrue(contracts[agent_id]["human_approved_activation_required"])
+            self.assertTrue(contracts[agent_id]["rollback_plan_required"])
+            self.assertEqual(contracts[agent_id]["failure_disposition"], "BLOCK")
+
+    def test_lifecycle_statuses_are_distinct_and_production_is_not_authorized(self):
+        lifecycle = self.registry["implementation_lifecycle"]
+        self.assertEqual(lifecycle["operational_statuses"], [
+            "SPECIFIED", "IMPLEMENTED", "TESTED", "INDEPENDENTLY_VERIFIED", "PRODUCTION_AUTHORIZED"
+        ])
+        self.assertEqual(lifecycle["default_operational_status"], "SPECIFIED")
+        self.assertFalse(lifecycle["production_authorization_granted"])
+
+    def test_incomplete_new_agent_contract_blocks(self):
+        data = copy.deepcopy(self.registry)
+        data["new_agent_contracts"][0]["tool_allowlist"] = []
+        with self.assertRaisesRegex(RegistryError, "new_agent_contract_incomplete_or_unsafe"):
             validate_registry(data)
 
     def test_agents_must_remain_disabled_by_default(self):
