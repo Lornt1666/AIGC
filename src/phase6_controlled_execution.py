@@ -10,6 +10,9 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Protocol
 
+from src.safety_evidence_verifier import SafetyEvidenceVerifier
+from src.safety_evidence_verifier_agent import SafetyEvidenceVerifierAgent
+
 
 class ExecutionMode(str, Enum):
     DRY_RUN = "dry_run"
@@ -62,6 +65,7 @@ class ExecutionSafety:
     batch_action: bool = False
     forbidden_action_detected: bool = False
     notes: List[str] = field(default_factory=list)
+    evidence_records: List[Dict[str, Any]] = field(default_factory=list)
 
 
 @dataclass
@@ -222,6 +226,9 @@ Steps:
 
 
 class Phase6Validator:
+    def __init__(self, evidence_verifier: Optional[SafetyEvidenceVerifier] = None):
+        self.evidence_verifier = evidence_verifier or SafetyEvidenceVerifier.from_environment()
+
     ALLOWED_ACTION_TYPES = {
         "send_proposal",
         "apply",
@@ -257,10 +264,13 @@ class Phase6Validator:
             return "Invalid expiration timestamp."
         if datetime.now(timezone.utc) > expires_at:
             return "Authorization expired."
-        if not packet.safety.ai_disclosure_preserved:
-            return "AI disclosure preservation was not confirmed."
-        if not packet.safety.privacy_checked:
-            return "Privacy check was not confirmed."
+        # Dry-run has no external side effect. Keep it available for safe internal
+        # vertical-slice validation, but retain the verifier's BLOCK receipt in the
+        # audit ledger. Any mode capable of an external action requires signed evidence.
+        if packet.execution_mode != ExecutionMode.DRY_RUN.value:
+            evidence_error = self.evidence_verifier.verify(packet, packet.safety.evidence_records)
+            if evidence_error:
+                return evidence_error
         if packet.execution_mode == ExecutionMode.APPROVED_API.value and not packet.safety.credential_use_approved:
             return "API execution requested without approved credential use."
         return None
@@ -271,6 +281,10 @@ class ControlledExecutionEngine:
         self.project_root = project_root
         self.ledger = Phase6AuditLedger(project_root / "data" / "audit" / "aigc_phase6_audit.jsonl")
         self.validator = Phase6Validator()
+        self.safety_verifier_agent = SafetyEvidenceVerifierAgent(
+            self.validator.evidence_verifier,
+            self.project_root,
+        )
         self.adapters: Dict[str, ExecutionAdapter] = {
             ExecutionMode.DRY_RUN.value: DryRunAdapter(),
             ExecutionMode.MANUAL_HANDOFF.value: ManualHandoffAdapter(),
@@ -288,7 +302,15 @@ class ControlledExecutionEngine:
             "execution_mode": packet.execution_mode,
             "action_type": packet.action_type,
         })
+        safety_receipt = self.safety_verifier_agent.run(packet)
+        self.ledger.record("phase6_safety_verification_receipt", asdict(safety_receipt))
         validation_error = self.validator.validate(packet)
+        if (
+            packet.execution_mode != ExecutionMode.DRY_RUN.value
+            and safety_receipt.verdict != "PASS"
+            and not validation_error
+        ):
+            validation_error = safety_receipt.reason
         if validation_error:
             result = result_from_packet(
                 packet=packet,
@@ -422,17 +444,22 @@ def build_packet_from_phase5_authorization(
         ),
         action_type=infer_action_type(authorization_packet.get("proposed_external_action", "")),
         execution_mode=execution_mode,
+        # These are evidence-bearing assertions, not defaults. A packet assembled
+        # from Phase 5 authorization data alone cannot prove that these checks ran.
+        # Keep every safety assertion false until a trusted verifier supplies evidence.
         safety=ExecutionSafety(
-            platform_policy_checked=True,
-            ai_disclosure_preserved=True,
-            privacy_checked=True,
+            platform_policy_checked=False,
+            ai_disclosure_preserved=False,
+            privacy_checked=False,
             credential_use_approved=False,
             batch_action=False,
             forbidden_action_detected=False,
             notes=[
-                "Manual handoff and dry-run default.",
-                "Live API execution requires platform-specific approval and connector implementation.",
+                "Safety checks have not been verified by this packet builder.",
+                "Manual handoff and dry-run remain blocked until required safety evidence is supplied.",
+                "Live API execution requires a platform-specific approved connector, credential path, and policy review.",
             ],
+            evidence_records=authorization_packet.get("safety_evidence", []) or [],
         ),
     )
 
