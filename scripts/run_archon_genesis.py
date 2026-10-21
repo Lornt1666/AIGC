@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 import sys
 
@@ -20,8 +21,16 @@ def main() -> int:
     args = parser.parse_args()
     brief_path = (ROOT / args.brief).resolve()
     output_dir = (ROOT / args.output_dir).resolve()
-    if ROOT not in brief_path.parents or ROOT not in output_dir.parents:
-        parser.error("brief and output directory must remain inside the repository")
+    runner_temp_value = os.environ.get("RUNNER_TEMP")
+    runner_temp = Path(runner_temp_value).resolve() if runner_temp_value else None
+    output_is_repo_child = ROOT in output_dir.parents
+    output_is_runner_temp_child = (
+        runner_temp is not None
+        and runner_temp in output_dir.parents
+        and output_dir != runner_temp
+    )
+    if ROOT not in brief_path.parents or not (output_is_repo_child or output_is_runner_temp_child):
+        parser.error("brief must remain inside the repository; output must remain inside the repository or RUNNER_TEMP")
     if not brief_path.is_file():
         parser.error(f"brief does not exist: {brief_path}")
     try:
