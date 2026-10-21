@@ -477,5 +477,307 @@
     "require_independently_administered_audit_retention": true,
     "no_hash_only_provenance_fallback": true,
     "no_agent_self_approval": true
+  },
+  "operational_gate_contracts": [
+    {
+      "gate_id": "reviewer_assignment",
+      "agent_id": "RX-21",
+      "sequence": 1,
+      "required_inputs": [
+        "repository_id",
+        "pull_request_number",
+        "exact_head_sha",
+        "reviewer_identity",
+        "administrator_authorization_evidence",
+        "reviewer_qualification_evidence",
+        "conflict_of_interest_declaration"
+      ],
+      "required_outputs": [
+        "assignment_request_ref",
+        "authorized_assigner_identity",
+        "reviewer_identity",
+        "qualification_evidence_ref",
+        "independence_check",
+        "reviewed_head_sha",
+        "status"
+      ],
+      "pass_criteria": [
+        "authorized repository administrator performs assignment",
+        "reviewer qualifications evidenced",
+        "reviewer independent of implementation and approval",
+        "reviewer explicitly bound to exact_head_sha"
+      ],
+      "failure_disposition": "BLOCK",
+      "invalidated_by": [
+        "pull_request_head_changed",
+        "reviewer_identity_changed",
+        "qualification_or_conflict_evidence_changed"
+      ],
+      "side_effects": "May prepare a request; assignment itself must be performed by an authorized repository administrator."
+    },
+    {
+      "gate_id": "review_findings_and_remediation",
+      "agent_id": "RX-22",
+      "sequence": 2,
+      "required_inputs": [
+        "exact_head_sha",
+        "reviewer_assignment_ref",
+        "review_record_ref",
+        "finding_ids",
+        "severity",
+        "affected_paths_or_controls"
+      ],
+      "required_outputs": [
+        "reviewed_head_sha",
+        "reviewer_independence_evidence_ref",
+        "finding_ledger",
+        "finding_statuses",
+        "remediation_commit_shas",
+        "retest_evidence_refs",
+        "unresolved_findings",
+        "status"
+      ],
+      "pass_criteria": [
+        "authenticated review covers exact reviewed head",
+        "each finding has stable ID, severity, disposition and traceable remediation",
+        "each claimed fix has evidence-backed retest",
+        "unresolved critical or high findings block"
+      ],
+      "failure_disposition": "BLOCK",
+      "invalidated_by": [
+        "reviewed_head_changed",
+        "remediation_commit_added",
+        "retest_evidence_superseded",
+        "finding_reopened"
+      ],
+      "side_effects": "Read-only evidence validation; no self-review, finding suppression, or self-approval."
+    },
+    {
+      "gate_id": "exact_head_ci",
+      "agent_id": "RX-23",
+      "sequence": 3,
+      "required_inputs": [
+        "final_head_sha",
+        "expected_workflow_set",
+        "required_check_policy_version",
+        "finding_ledger_digest"
+      ],
+      "required_outputs": [
+        "tested_commit_sha",
+        "tree_sha",
+        "workflow_run_ids",
+        "run_attempts",
+        "required_check_results",
+        "artifact_digests",
+        "ci_receipt_digest",
+        "status"
+      ],
+      "pass_criteria": [
+        "complete required workflow set succeeded",
+        "all results refer to final_head_sha and exact run attempts",
+        "no required check is skipped, weakened, missing, or stale",
+        "receipt records commit/tree/workflow/run/attempt"
+      ],
+      "failure_disposition": "BLOCK",
+      "invalidated_by": [
+        "any_new_commit",
+        "required_workflow_or_policy_change",
+        "run_attempt_superseded",
+        "required_check_failure"
+      ],
+      "side_effects": "May request or observe CI; cannot edit policy to obtain a pass."
+    },
+    {
+      "gate_id": "human_acceptance",
+      "agent_id": "RX-24",
+      "sequence": 4,
+      "required_inputs": [
+        "approver_identity",
+        "approver_authority_evidence",
+        "scope",
+        "exact_head_sha",
+        "evidence_package_sha256",
+        "timestamp",
+        "conditions"
+      ],
+      "required_outputs": [
+        "authenticated_approver",
+        "authority_evidence_ref",
+        "accepted_scope",
+        "accepted_head_sha",
+        "accepted_evidence_digest",
+        "timestamp",
+        "conditions",
+        "status"
+      ],
+      "pass_criteria": [
+        "acceptance is explicit and attributable to authorized human",
+        "commit and evidence digest match candidate packet",
+        "scope and conditions are unambiguous",
+        "acceptance follows availability of required review and remediation evidence"
+      ],
+      "failure_disposition": "BLOCK",
+      "invalidated_by": [
+        "commit_changed",
+        "evidence_digest_changed",
+        "acceptance_revoked_or_expired",
+        "scope_or_policy_changed"
+      ],
+      "side_effects": "Validation only; never manufactures, impersonates, or records acceptance on behalf of a person."
+    },
+    {
+      "gate_id": "protected_merge",
+      "agent_id": "RX-25",
+      "sequence": 5,
+      "required_inputs": [
+        "repository_ruleset_readback_ref",
+        "branch_protection_readback_ref",
+        "exact_pr_head_sha",
+        "required_checks_receipt_ref",
+        "independent_review_ref",
+        "human_acceptance_ref",
+        "review_thread_state_ref"
+      ],
+      "required_outputs": [
+        "protection_snapshot_digest",
+        "required_checks_satisfied",
+        "approval_state",
+        "conversation_resolution_state",
+        "mergeability_state",
+        "authorized_merge_path",
+        "status"
+      ],
+      "pass_criteria": [
+        "live protection read-back confirms required review/checks and restricted bypass",
+        "approvals are valid for exact head and from eligible reviewers",
+        "required conversations resolved",
+        "authorized protected merge path confirmed"
+      ],
+      "failure_disposition": "BLOCK",
+      "invalidated_by": [
+        "head_changed",
+        "ruleset_changed",
+        "approval_dismissed",
+        "required_check_changed",
+        "review_thread_reopened"
+      ],
+      "side_effects": "Readiness assessment only; no merge or protection mutation."
+    },
+    {
+      "gate_id": "post_merge_trust_and_artifact_verification",
+      "agent_id": "RX-26",
+      "sequence": 6,
+      "required_inputs": [
+        "merged_main_sha",
+        "successful_main_workflow_run_id",
+        "run_attempt",
+        "oidc_verifier_output_ref",
+        "signed_attestation_ref",
+        "expected_repository_id",
+        "expected_workflow_identity",
+        "expected_predicate_type",
+        "evidence_subject_digest"
+      ],
+      "required_outputs": [
+        "main_sha",
+        "run_id",
+        "run_attempt",
+        "verified_oidc_claims_digest",
+        "verified_signer_identity",
+        "verified_predicate_type",
+        "verified_source_sha",
+        "verified_subject_digest",
+        "verification_tool_identity",
+        "status"
+      ],
+      "pass_criteria": [
+        "actual OIDC claims verified by trusted verifier",
+        "signed attestation cryptographically verifies",
+        "repository and workflow identity/ref match policy",
+        "source SHA equals resulting main SHA",
+        "predicate and subject digest match expected evidence package"
+      ],
+      "failure_disposition": "BLOCK",
+      "invalidated_by": [
+        "main_sha_changed",
+        "run_or_attempt_changed",
+        "attestation_or_subject_digest_changed",
+        "trust_policy_changed"
+      ],
+      "side_effects": "Read-only verification; mocks, hashes alone, feature-branch runs, or self-assertions do not qualify."
+    },
+    {
+      "gate_id": "retained_artifact_and_independent_audit",
+      "agent_id": "RX-27",
+      "sequence": 7,
+      "required_inputs": [
+        "artifact_download_ref",
+        "artifact_manifest_ref",
+        "expected_artifact_digest",
+        "run_id",
+        "run_attempt",
+        "commit_sha",
+        "tree_sha",
+        "independent_audit_system_identity",
+        "retention_policy_ref",
+        "restore_or_retrieval_test_ref"
+      ],
+      "required_outputs": [
+        "artifact_inventory",
+        "recomputed_digests",
+        "run_attempt_commit_binding",
+        "retention_system_identity",
+        "retention_evidence_ref",
+        "retrieval_test_result",
+        "evidence_packet_digest",
+        "missing_evidence",
+        "status"
+      ],
+      "pass_criteria": [
+        "actual retained artifact downloaded and inspected",
+        "package digests recomputed and match manifest/attestation subject",
+        "receipts bind run/attempt/commit/tree/digest",
+        "independently administered audit retention evidenced and retrieval tested",
+        "complete packet delivered to RX-19"
+      ],
+      "failure_disposition": "BLOCK",
+      "invalidated_by": [
+        "artifact_replaced_or_expired",
+        "digest_mismatch",
+        "run_attempt_binding_mismatch",
+        "retention_or_access_policy_changed",
+        "retrieval_test_failed"
+      ],
+      "side_effects": "Evidence custody and verification only; local log/hash chain alone is insufficient."
+    }
+  ],
+  "final_decision_contract": {
+    "agent_id": "RX-28",
+    "canonical_decision_authority": "RX-19",
+    "required_gate_ids": [
+      "reviewer_assignment",
+      "review_findings_and_remediation",
+      "exact_head_ci",
+      "human_acceptance",
+      "protected_merge",
+      "post_merge_trust_and_artifact_verification",
+      "retained_artifact_and_independent_audit"
+    ],
+    "required_outputs": [
+      "evidence_packet_digest",
+      "gate_statuses",
+      "unresolved_findings",
+      "exact_head_sha",
+      "final_disposition_recommendation",
+      "handoff_ref"
+    ],
+    "pass_criteria": [
+      "all required gates pass on the same commit and applicable evidence digest",
+      "no stale or contradictory evidence",
+      "evidence packet is complete and verifiable",
+      "handoff is delivered to RX-19"
+    ],
+    "failure_disposition": "BLOCK",
+    "authority_boundary": "RX-28 coordinates and assembles only; RX-19 alone decides release disposition. RX-28 cannot merge, accept for a human, override BLOCK, or authorize release."
   }
 }
