@@ -113,63 +113,63 @@ class EvidenceVerifierTests(unittest.TestCase):
     def test_wrong_commit_blocks(self):
         value = bundle()
         value["ci"]["head_sha"] = "f" * 40
-        result = evaluate_evidence(policy(), value)
+        result = evaluate_evidence(policy(), value, evaluation_time=1792600000)
         self.assertEqual(result["disposition"], BLOCK)
         self.assertIn("ci_head_sha_mismatch", result["reasons"])
 
     def test_skipped_required_check_blocks(self):
         value = bundle()
         value["ci"]["checks"][0]["skipped"] = True
-        result = evaluate_evidence(policy(), value)
+        result = evaluate_evidence(policy(), value, evaluation_time=1792600000)
         self.assertEqual(result["disposition"], BLOCK)
         self.assertTrue(any("skipped" in reason for reason in result["reasons"]))
 
     def test_wrong_attestation_digest_blocks(self):
         value = bundle()
         value["attestation"]["subject_sha256"] = "f" * 64
-        result = evaluate_evidence(policy(), value)
+        result = evaluate_evidence(policy(), value, evaluation_time=1792600000)
         self.assertEqual(result["disposition"], BLOCK)
         self.assertIn("attestation_subject_digest_mismatch", result["reasons"])
 
     def test_hash_only_fallback_blocks(self):
         value = bundle()
         value["attestation"]["hash_only_fallback"] = True
-        result = evaluate_evidence(policy(), value)
+        result = evaluate_evidence(policy(), value, evaluation_time=1792600000)
         self.assertIn("attestation_hash_only_fallback_detected_or_unknown", result["reasons"])
 
     def test_same_audit_and_controller_admin_boundary_blocks(self):
         value = bundle()
         value["audit"]["admin_boundary_id"] = "control-admin"
-        result = evaluate_evidence(policy(), value)
+        result = evaluate_evidence(policy(), value, evaluation_time=1792600000)
         self.assertIn("audit_not_independently_administered", result["reasons"])
 
     def test_controller_ambiguous_success_claim_blocks(self):
         value = bundle()
         value["controller"]["ambiguous_outcome_is_unknown"] = False
-        result = evaluate_evidence(policy(), value)
+        result = evaluate_evidence(policy(), value, evaluation_time=1792600000)
         self.assertIn("controller_gate_failed:ambiguous_outcome_is_unknown", result["reasons"])
 
     def test_missing_adversarial_case_blocks(self):
         value = bundle()
         value["adversarial"]["cases"].pop()
-        result = evaluate_evidence(policy(), value)
+        result = evaluate_evidence(policy(), value, evaluation_time=1792600000)
         self.assertTrue(any(reason.startswith("adversarial_case_missing") for reason in result["reasons"]))
 
     def test_non_independent_reviewer_blocks(self):
         value = bundle()
         value["independent_review"]["reviewer_identity"] = "developer:implementer"
-        result = evaluate_evidence(policy(), value)
+        result = evaluate_evidence(policy(), value, evaluation_time=1792600000)
         self.assertIn("reviewer_not_independent_of_author_or_implementer", result["reasons"])
 
     def test_human_acceptance_wrong_review_binding_blocks(self):
         value = bundle()
         value["human_acceptance"]["review_content_sha256"] = "f" * 64
-        result = evaluate_evidence(policy(), value)
+        result = evaluate_evidence(policy(), value, evaluation_time=1792600000)
         self.assertIn("acceptance_review_binding_mismatch", result["reasons"])
 
     def test_deterministic_receipt_digest(self):
-        first = evaluate_evidence(policy(), bundle())
-        second = evaluate_evidence(policy(), bundle())
+        first = evaluate_evidence(policy(), bundle(), evaluation_time=1792600000)
+        second = evaluate_evidence(policy(), bundle(), evaluation_time=1792600000)
         self.assertEqual(first, second)
 
 
@@ -186,7 +186,7 @@ class EvidenceVerifierTests(unittest.TestCase):
         self.assertIn("review_manifest_binding_missing_or_mismatched", result["reasons"])
 
     def test_handoff_is_not_release_authorization(self):
-        result = evaluate_evidence(policy(), bundle())
+        result = evaluate_evidence(policy(), bundle(), evaluation_time=1792600000)
         handoff = handoff_payload(result, evidence_manifest_uri="evidence://manifest/123",
                                   evidence_manifest_sha256="e" * 64)
         self.assertEqual(handoff["release_authorization"], "NOT_GRANTED")
