@@ -1,6 +1,6 @@
 import unittest
 
-from verify_github_actions_oidc_claims import (
+from scripts.verify_github_actions_oidc_claims import (
     IdentityVerificationError,
     validate_bound_claims,
     REPOSITORY,
