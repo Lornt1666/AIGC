@@ -150,3 +150,51 @@ def verify_artifact(
         "gh_version_minimum": ".".join(str(part) for part in MIN_GH_VERSION),
         "verified_attestation_count": len(accepted),
     }
+
+
+
+def make_release_provenance_verifier(
+    *,
+    receipt_bundle_path: str | Path,
+    release_artifact_path: str | Path,
+    receipt_signer_workflow: str,
+    receipt_certificate_identity: str,
+    artifact_signer_workflow: str,
+    artifact_certificate_identity: str,
+):
+    """Create the callback contract expected by ReleaseAssuranceAgent.
+
+    Paths and signer identities must come from trusted deployment configuration, not
+    from the packet or an LLM. The receipt bundle file must contain exactly the
+    canonical JSON bytes of canonical_ci.stage_receipts. Both artifacts are verified
+    independently; any error returns False so the decision agent blocks.
+    """
+    def verify(canonical_ci: dict, subject: dict) -> bool:
+        try:
+            source_sha = subject["commit_sha"]
+            stage_receipts = canonical_ci["stage_receipts"]
+            expected_bundle_sha = hashlib.sha256(
+                json.dumps(stage_receipts, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+            ).hexdigest()
+            if canonical_ci.get("stage_receipts_sha256") != expected_bundle_sha:
+                return False
+            if canonical_ci.get("attested_receipt_bundle_sha256") != expected_bundle_sha:
+                return False
+            verify_artifact(
+                receipt_bundle_path,
+                expected_sha256=expected_bundle_sha,
+                expected_signer_workflow=receipt_signer_workflow,
+                expected_certificate_identity=receipt_certificate_identity,
+                expected_source_sha=source_sha,
+            )
+            verify_artifact(
+                release_artifact_path,
+                expected_sha256=subject["artifact_sha256"],
+                expected_signer_workflow=artifact_signer_workflow,
+                expected_certificate_identity=artifact_certificate_identity,
+                expected_source_sha=source_sha,
+            )
+            return True
+        except (KeyError, TypeError, ValueError, ProvenanceVerificationError, OSError):
+            return False
+    return verify
