@@ -147,8 +147,9 @@ class RedTeamAgent(TeamAgent):
                        and authorization.get("authenticated") is True
                        and _valid_timestamp(authorization.get("start_at_utc"))
                        and _valid_timestamp(authorization.get("end_at_utc")))
-        allowed = authorization.get("allowed_targets", []) if isinstance(authorization, dict) else []
-        targets_ok = isinstance(requested_targets, list) and bool(requested_targets) and all(
+        allowed = authorization.get("allowed_targets") if isinstance(authorization, dict) else None
+        allowed_ok = isinstance(allowed, list) and all(isinstance(t, str) and t for t in allowed)
+        targets_ok = allowed_ok and isinstance(requested_targets, list) and bool(requested_targets) and all(
             isinstance(t, str) and t in allowed for t in requested_targets)
         checks = [
             {"id": "authorization", "status": PASS if auth_ok else BLOCK,
@@ -232,7 +233,10 @@ class AuthenticatedTeamReportAdapter:
     def validate(self, reports: Any, repository: str, commit_sha: str, tree_sha: str,
                  policy_digest: str) -> dict[str, Any]:
         required = {"aer", "red-team", "blue-team", "green-team"}
-        by_id = {r.get("agent_id"): r for r in reports if isinstance(r, dict)} if isinstance(reports, list) else {}
+        valid_reports = [r for r in reports if isinstance(r, dict)] if isinstance(reports, list) else []
+        ids = [r.get("agent_id") for r in valid_reports]
+        duplicate_ids = len(ids) != len(set(ids))
+        by_id = {r.get("agent_id"): r for r in valid_reports}
         checks = []
         for agent_id in sorted(required):
             report = by_id.get(agent_id)
@@ -251,10 +255,10 @@ class AuthenticatedTeamReportAdapter:
                 except Exception:
                     authenticated = False
             auth_status = report.get("authentication", {}).get("status") if isinstance(report, dict) and isinstance(report.get("authentication"), dict) else None
-            ok = bool(binding_ok and digest_ok and authenticated and auth_status == "AUTHENTICATED")
+            ok = bool(binding_ok and digest_ok and authenticated and auth_status == "AUTHENTICATED" and not duplicate_ids)
             checks.append({"id": f"authenticated_{agent_id}", "status": PASS if ok else BLOCK,
                            "detail": "Report digest, exact binding, and trusted authentication verified." if ok else
-                           "Missing, unauthenticated, tampered, or mismatched team report."})
+                           "Missing, duplicate, unauthenticated, tampered, or mismatched team report."})
         return {"adapter_id": "authenticated-team-report-adapter", "repository": repository,
                 "commit_sha": commit_sha, "tree_sha": tree_sha, "policy_digest": policy_digest,
                 "checks": checks, "status": PASS if all(c["status"] == PASS for c in checks) else BLOCK,
