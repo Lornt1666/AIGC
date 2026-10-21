@@ -71,7 +71,7 @@ def validate_envelope(envelope: Any) -> list[dict[str, str]]:
         if expires <= issued:
             problems.append({"id": "envelope_expiry_order", "status": BLOCK, "detail": "Expiry must be later than issue time."})
     if "evidence_refs" in envelope and not isinstance(envelope["evidence_refs"], list):
-        problems.append({"id": "envelope_evidence_refs", "status": BLOCK, "detail": "evidence_refs must be a list.")
+        problems.append({"id": "envelope_evidence_refs", "status": BLOCK, "detail": "evidence_refs must be a list."})
     return problems
 
 
