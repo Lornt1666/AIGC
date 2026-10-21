@@ -140,6 +140,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_kms_signer.py' -v
           python -m unittest discover -s tests -p 'test_evidence_archive.py' -v
           python -m unittest discover -s tests -p 'test_documentation_architect.py' -v
+          python -m unittest discover -s tests -p 'test_executive_agents.py' -v
           python src/aigc_documentation_architect.py \
             --input config/archon_genesis_aigc_brief.json \
             --output-dir "$RUNNER_TEMP/aigc-ci-stage-results/documentation_architect_aigc"
