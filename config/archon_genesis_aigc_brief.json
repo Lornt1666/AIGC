@@ -1,7 +1,7 @@
 {
   "project": "AIGC — Artificial Intelligence Gladiator Coliseum",
   "compiler": "ARCHON-GENESIS",
-  "objective": "Close gaps across context synthesis, architecture contracts, dependency impact, adversarial assurance, defensive controls, evidence validation, observability, and independent verification.",
+  "objective": "Close gaps across context synthesis, executive coordination, C-suite and board stewardship, architecture contracts, dependency impact, adversarial assurance, defensive controls, evidence validation, observability, and independent verification.",
   "source_context": [
     "AIGC constitutional governance and Governor boundaries",
     "Chief of Staff coordination and specialist C-suite role separation",
@@ -9,7 +9,8 @@
     "GitHub exact-head CI, artifact digest, receipt and stage evidence",
     "OIDC identity and externally provisioned trust roots",
     "Canonical Release Assurance Agent as sole release decision authority",
-    "Human acceptance before consequential actions"
+    "Human acceptance before consequential actions",
+    "Executive and board-level role separation: CEO strategy, Chief of Staff, COO, CFO, CTO, CIO, CISO, Chief AI Governance, Risk/Compliance, Legal/Regulatory, Data/Provenance, Product/Customer, Investment/Portfolio, Corporate Development, Board Secretariat, Internal Audit, and People/Talent"
   ],
   "governance_constraints": {
     "default_mode": "read_only",
@@ -20,6 +21,8 @@
     "no_merge_deploy_or_release_authority": true,
     "human_approval_for_side_effects": true,
     "independent_review_required": true,
-    "canonical_release_authority": "Release Assurance Agent"
+    "canonical_release_authority": "Release Assurance Agent",
+    "executive_agents_are_advisory": true,
+    "human_executives_remain_accountable": true
   }
 }
