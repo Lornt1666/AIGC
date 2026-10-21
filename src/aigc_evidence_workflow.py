@@ -51,7 +51,7 @@ def authenticate_report(report: dict[str, Any], signer: SIGNER | None,
             if not isinstance(signature, dict) or not signature.get("signature_b64") or not signature.get("signer_identity"):
                 raise ValueError("signer returned incomplete signature metadata")
             report["authentication"] = {
-                "status": "SIGNED", "method": "Ed25519", **signature,
+                "status": "SIGNED", "method": signature.get("method", "Ed25519"), **signature,
                 "signed_payload_sha256": sha256_hex(payload),
             }
             if verifier is not None:
@@ -68,7 +68,7 @@ def authenticate_report(report: dict[str, Any], signer: SIGNER | None,
                     report["authentication"]["verification"] = {"verified": False}
         except Exception as exc:
             report["authentication"] = {
-                "status": "REJECTED", "method": "Ed25519",
+                "status": "REJECTED", "method": "external-signer",
                 "failure_class": type(exc).__name__,
             }
     _seal_digest(report)
@@ -306,13 +306,27 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--envelope", required=True, help="JSON with repository, commit_sha, tree_sha, policy_digest, invocation_id, policy_id")
     parser.add_argument("--inputs", required=True, help="JSON object containing specialist evidence inputs")
     parser.add_argument("--output-dir", required=True, help="Directory for reports and hash-chained JSONL evidence")
+    parser.add_argument("--aws-kms", action="store_true", help="Use AWS KMS RSA-PSS signing and a separately pinned RSA public key")
+    parser.add_argument("--kms-key-id", help="AWS KMS asymmetric RSA signing key ID/ARN")
+    parser.add_argument("--signer-identity", help="Expected stable signer identity")
+    parser.add_argument("--trust-root-id", help="Operator-managed trust-root identifier")
+    parser.add_argument("--trusted-public-key-file", help="Path to separately provisioned trusted RSA public key PEM")
+    parser.add_argument("--aws-region", help="AWS region; otherwise boto3 default region resolution is used")
     args = parser.parse_args(argv)
     try:
         envelope = json.loads(Path(args.envelope).read_text(encoding="utf-8"))
         inputs = json.loads(Path(args.inputs).read_text(encoding="utf-8"))
-        # CLI intentionally does not construct a signer from local private-key files.
-        # Production wiring must inject an approved external signer/verifier adapter.
-        summary = run_workflow(envelope, inputs, Path(args.output_dir))
+        signer = verifier = None
+        if args.aws_kms:
+            if not all((args.kms_key_id, args.signer_identity, args.trust_root_id, args.trusted_public_key_file)):
+                parser.error("--aws-kms requires --kms-key-id, --signer-identity, --trust-root-id, and --trusted-public-key-file")
+            from aigc_kms_signer import build_aws_kms_adapters
+            public_key_pem = Path(args.trusted_public_key_file).read_text(encoding="utf-8")
+            signer, verifier = build_aws_kms_adapters(
+                args.kms_key_id, args.signer_identity, args.trust_root_id,
+                public_key_pem, args.aws_region)
+        # No private-key file or private key material is accepted by this CLI.
+        summary = run_workflow(envelope, inputs, Path(args.output_dir), signer, verifier)
     except (OSError, json.JSONDecodeError, ValueError) as exc:
         parser.error(str(exc))
     print(json.dumps({"status": summary["status"], "release_decision": summary["release_decision"],
