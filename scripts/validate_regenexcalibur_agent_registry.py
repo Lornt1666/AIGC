@@ -11,7 +11,7 @@ from typing import Any
 REQUIRED_TOP_LEVEL = {
     "schema_version", "project_id", "orchestration_platform", "status",
     "default_disposition", "authority_tiers", "shared_contract", "agents",
-    "mandatory_human_gates", "acceptance_policy",
+    "mandatory_human_gates", "acceptance_policy", "operational_gate_contracts", "final_decision_contract",
 }
 REQUIRED_AGENT = {
     "id", "name", "responsibility", "authority_tier", "dependencies",
@@ -54,7 +54,7 @@ def validate_registry(data: Any) -> dict[str, Any]:
             raise RegistryError("implementation_status_overclaims_readiness")
         ids.append(agent["id"])
         by_id[agent["id"]] = agent
-    if len(by_id) != 29
+    if len(by_id) != 29:
         raise RegistryError("unexpected_agent_count")
     for agent in data["agents"]:
         if agent["id"] in agent["dependencies"]:
@@ -102,6 +102,22 @@ def validate_registry(data: Any) -> dict[str, Any]:
         raise RegistryError("release_block_coordinator_must_depend_on_canonical_assurance")
     if "BLOCK" not in by_id["RX-28"]["authority_boundary"]:
         raise RegistryError("release_block_coordinator_must_preserve_block")
+    gate_contracts = data["operational_gate_contracts"]
+    required_gate_ids = {"reviewer_assignment", "review_findings_and_remediation", "exact_head_ci", "human_acceptance", "protected_merge", "post_merge_trust_and_artifact_verification", "retained_artifact_and_independent_audit"}
+    if not isinstance(gate_contracts, list) or {g.get("gate_id") for g in gate_contracts if isinstance(g, dict)} != required_gate_ids:
+        raise RegistryError("operational_gate_contracts_missing_or_ambiguous")
+    for gate in gate_contracts:
+        if not all(gate.get(key) for key in ("agent_id", "required_inputs", "required_outputs", "pass_criteria", "failure_disposition", "invalidated_by", "side_effects")):
+            raise RegistryError("operational_gate_contract_incomplete")
+        if gate["agent_id"] not in by_id or gate["failure_disposition"] != "BLOCK":
+            raise RegistryError("operational_gate_contract_weak_or_unbound")
+        if by_id[gate["agent_id"]]["enabled"] is not False:
+            raise RegistryError("operational_gate_agent_must_be_disabled")
+    final_contract = data["final_decision_contract"]
+    if final_contract.get("agent_id") != "RX-28" or final_contract.get("canonical_decision_authority") != "RX-19":
+        raise RegistryError("final_decision_authority_mismatch")
+    if final_contract.get("failure_disposition") != "BLOCK" or not final_contract.get("required_gate_ids"):
+        raise RegistryError("final_decision_contract_must_fail_closed")
     policy = data["acceptance_policy"]
     required_true = (
         "independent_review_required", "human_acceptance_required",
