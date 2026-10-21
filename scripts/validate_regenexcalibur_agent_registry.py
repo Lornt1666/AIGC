@@ -54,7 +54,7 @@ def validate_registry(data: Any) -> dict[str, Any]:
             raise RegistryError("implementation_status_overclaims_readiness")
         ids.append(agent["id"])
         by_id[agent["id"]] = agent
-    if len(by_id) != 29:
+    if len(by_id) != 33:
         raise RegistryError("unexpected_agent_count")
     for agent in data["agents"]:
         if agent["id"] in agent["dependencies"]:
@@ -129,6 +129,42 @@ def validate_registry(data: Any) -> dict[str, Any]:
         raise RegistryError("acceptance_policy_weak_or_incomplete")
     if not data["mandatory_human_gates"]:
         raise RegistryError("mandatory_human_gates_missing")
+    lifecycle = data.get("implementation_lifecycle")
+    if not isinstance(lifecycle, dict):
+        raise RegistryError("implementation_lifecycle_missing")
+    expected_statuses = ["SPECIFIED", "IMPLEMENTED", "TESTED", "INDEPENDENTLY_VERIFIED", "PRODUCTION_AUTHORIZED"]
+    if lifecycle.get("operational_statuses") != expected_statuses:
+        raise RegistryError("implementation_lifecycle_statuses_invalid")
+    if lifecycle.get("default_operational_status") != "SPECIFIED" or lifecycle.get("production_authorization_granted") is not False:
+        raise RegistryError("implementation_lifecycle_must_default_to_specified_and_unauthorized")
+    if lifecycle.get("non_equivalence_rule") is None or lifecycle.get("policy") is None:
+        raise RegistryError("implementation_lifecycle_evidence_policy_missing")
+    contract_list = data.get("new_agent_contracts")
+    expected_new_agents = {"RX-29", "RX-30", "RX-31", "RX-40"}
+    if not isinstance(contract_list, list) or {x.get("agent_id") for x in contract_list if isinstance(x, dict)} != expected_new_agents:
+        raise RegistryError("new_agent_contracts_missing_or_ambiguous")
+    for contract in contract_list:
+        if (contract.get("contract_version") != "1.0.0"
+            or not contract.get("input_schema_ref")
+            or not contract.get("output_schema_ref")
+            or not contract.get("tool_allowlist")
+            or contract.get("required_evidence_binding") != lifecycle.get("evidence_binding_fields")
+            or contract.get("required_test_classes") != lifecycle.get("minimum_test_classes")
+            or contract.get("human_approved_activation_required") is not True
+            or contract.get("rollback_plan_required") is not True
+            or contract.get("self_approval_prohibited") is not True
+            or contract.get("production_authorization") is not False
+            or contract.get("failure_disposition") != "BLOCK"):
+            raise RegistryError("new_agent_contract_incomplete_or_unsafe")
+        agent = by_id.get(contract["agent_id"])
+        if not agent or agent["enabled"] is not False or agent["implementation_status"] != "SPECIFIED_NOT_PRODUCTION_INTEGRATED":
+            raise RegistryError("new_agent_status_overclaims_readiness")
+    for agent_id in expected_new_agents:
+        agent = by_id[agent_id]
+        if agent["authority_tier"] not in {"R0", "R1", "R2"}:
+            raise RegistryError("new_agent_authority_tier_too_high")
+        if "cannot" not in agent["authority_boundary"].lower() or "self-approve" not in agent["authority_boundary"].lower():
+            raise RegistryError("new_agent_authority_boundary_missing")
     return {
         "status": "VALID",
         "agent_count": len(by_id),
