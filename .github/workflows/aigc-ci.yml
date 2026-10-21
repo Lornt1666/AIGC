@@ -153,6 +153,13 @@ jobs:
           set -euo pipefail
           PYTHONPATH=src python -m unittest discover -s tests -p 'test_aigc_oidc_identity.py' -v
 
+      - name: Run GitHub OIDC exact claim-binding tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src:. python -m unittest discover -s tests -p 'test_github_actions_oidc_claim_binding.py' -v
+
+
       - name: Run control-plane agent unit tests
         shell: bash
         run: |
