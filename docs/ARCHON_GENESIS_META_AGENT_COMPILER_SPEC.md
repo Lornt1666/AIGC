@@ -22,6 +22,10 @@ python -m unittest discover -s tests -p 'test_archon_genesis.py' -v
 
 The command writes a JSON result, a Markdown report, and one prompt file per generated agent into the caller-selected output directory. It performs no network calls, model calls, shell execution of generated prompts, repository writes, or release actions. The compiler is deterministic and template/rule-based; it is not yet an LLM-driven semantic planner. CI inclusion does not itself prove a run passed; check the exact-head workflow result before treating execution as validated.
 
+## 0.1 Operational coordination
+
+The AIGC Chief of Staff implementation lives in `src/aigc_chief_of_staff.py`, with its ordered work queue and execution boundaries documented in `docs/CHIEF_OF_STAFF_AGENT.md`. ARCHON-GENESIS remains the architecture compiler; the Chief of Staff is the operational coordinator that invokes the offline compiler, validates coordinator invariants, and issues explicit work orders. It does not replace ARCHON, specialist evidence producers, independent authentication, human authorization, or canonical Release Assurance. Specialist work orders must remain blocked until their required evidence and integrations are actually available.
+
 ## 1. Mission and non-goals
 
 ARCHON-GENESIS ingests a project objective and compiles a minimal, evidence-grounded multi-agent architecture. It decomposes work, predicts the minimum necessary operational and defensive agents, defines machine-checkable contracts, produces copyable system prompts, audits failure modes, and generates a lifecycle/runbook package.
