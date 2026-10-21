@@ -66,6 +66,16 @@ class FakeAuthenticator:
                 "subject_sha": expected_sha, "artifact_digest": artifact_digest}
 
 
+class FakeHumanAcceptanceAuthenticator:
+    def verify(self, acceptance, *, expected_sha, artifact_digest):
+        if (acceptance.get("valid") is not True
+                or acceptance.get("subject_sha") != expected_sha
+                or acceptance.get("artifact_digest") != artifact_digest):
+            raise ValueError("human acceptance signature invalid")
+        return {"authenticated": True, "accepted": True, "subject_sha": expected_sha,
+                "artifact_digest": artifact_digest, "human_id": "authorized-human"}
+
+
 class FakeReleaseAssurance:
     def __init__(self):
         self.called = False
@@ -79,7 +89,7 @@ class AcceptanceGateTests(unittest.TestCase):
     def setUp(self):
         self.client = FakeClient()
         self.assurance = FakeReleaseAssurance()
-        self.agent = RequiredAcceptanceGateAgent(self.client, FakeAuthenticator(), self.assurance)
+        self.agent = RequiredAcceptanceGateAgent(self.client, FakeAuthenticator(), self.assurance, FakeHumanAcceptanceAuthenticator())
 
     def test_failed_workflow_blocks_even_with_matching_artifact(self):
         self.client.run["conclusion"] = "failure"
@@ -102,7 +112,7 @@ class AcceptanceGateTests(unittest.TestCase):
         report = self.agent.inspect(
             repository="Lornt1666/AIGC", run_id=RUN, expected_sha=SHA,
             expected_tree_sha=TREE, independent_review={"valid": True},
-            human_acceptance={"accepted": True, "subject_sha": SHA, "human_id": "authorized-human"},
+            human_acceptance={"valid": True, "subject_sha": SHA, "artifact_digest": "sha256:" + hashlib.sha256(self.client.data).hexdigest()},
         )
         self.assertEqual(report["status"], "READY_FOR_RELEASE_ASSURANCE")
         self.assertTrue(report["submitted_to_release_assurance"])
