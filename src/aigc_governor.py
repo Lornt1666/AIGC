@@ -107,7 +107,7 @@ def evaluate_governance(request: Mapping[str, Any], *, now: datetime | None = No
         reasons.append("duplicate_action_id")
 
     risk_tier = request.get("risk_tier")
-    if risk_tier not in {"low", "moderate", "high", "critical", "unknown"}:
+    if not isinstance(risk_tier, str) or risk_tier not in {"low", "moderate", "high", "critical", "unknown"}:
         reasons.append("invalid_risk_tier")
     elif risk_tier in {"critical", "unknown"}:
         reasons.append("risk_tier_not_permittable")
@@ -128,6 +128,9 @@ def evaluate_governance(request: Mapping[str, Any], *, now: datetime | None = No
                 reasons.append(prefix + "_not_object")
                 continue
             missing_evidence = EVIDENCE_FIELDS - set(item.keys())
+            unknown_evidence = set(item.keys()) - EVIDENCE_FIELDS
+            if unknown_evidence:
+                reasons.append(prefix + "_unknown_fields")
             if missing_evidence:
                 reasons.append(prefix + "_missing_fields")
                 continue
@@ -148,6 +151,8 @@ def evaluate_governance(request: Mapping[str, Any], *, now: datetime | None = No
     if not isinstance(human_approval, Mapping):
         reasons.append("human_approval_object_required")
         human_approval = {}
+    elif set(human_approval.keys()) - {"approved", "request_digest", "approver_id", "authenticated"}:
+        reasons.append("human_approval_unknown_fields")
     approval_required = (
         any(a in HUMAN_GATED_ACTIONS for a in action_ids)
         or any(c in HIGH_RISK_CATEGORIES for c in capabilities)
