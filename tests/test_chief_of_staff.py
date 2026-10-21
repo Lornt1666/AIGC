@@ -68,5 +68,33 @@ class ChiefOfStaffTests(unittest.TestCase):
             result = json.loads((out / "chief_of_staff_runbook.json").read_text(encoding="utf-8"))
             self.assertEqual(result["status"], "BLOCK")
 
+
+    def test_cli_delegates_to_evidence_workflow_when_versioned_inputs_are_supplied(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            envelope_path = root / "envelope.json"
+            inputs_path = root / "inputs.json"
+            output = root / "out"
+            envelope_path.write_text(json.dumps({
+                "schema_version": "1.0", "policy_id": "aigc-team-assurance-v1",
+                "repository": "Lornt1666/AIGC", "commit_sha": "a" * 40,
+                "tree_sha": "b" * 40, "policy_digest": "c" * 64,
+                "invocation_id": "chief-of-staff-test-run",
+                "producer_identity": "test-fixture",
+                "issued_at_utc": "2026-10-21T00:00:00Z",
+                "expires_at_utc": "2026-10-22T00:00:00Z", "evidence_refs": [],
+            }), encoding="utf-8")
+            inputs_path.write_text("{}", encoding="utf-8")
+            proc = subprocess.run([
+                sys.executable, str(ROOT / "src" / "aigc_chief_of_staff.py"),
+                "--input", str(BRIEF_PATH), "--output-dir", str(output),
+                "--evidence-envelope", str(envelope_path), "--evidence-inputs", str(inputs_path),
+            ], capture_output=True, text=True)
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            result = json.loads((output / "chief_of_staff_execution.json").read_text(encoding="utf-8"))
+            self.assertEqual(result["release_decision"], "BLOCK")
+            self.assertFalse(result["authentication_configured"])
+            self.assertTrue((output / "evidence_workflow" / "evidence.jsonl").is_file())
+
 if __name__ == "__main__":
     unittest.main()
