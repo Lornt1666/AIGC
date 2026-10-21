@@ -152,6 +152,12 @@ jobs:
           set -euo pipefail
           python -m unittest discover -s tests -p 'test_aigc_control_plane_agents.py' -v
 
+      - name: Run real GitHub attestation adapter contract tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -m unittest discover -s tests -p 'test_aigc_gh_attestation_adapter.py' -v
+
       - name: Run fail-closed evidence verifier policy tests
         shell: bash
         run: |
@@ -397,13 +403,19 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
-          "$RUNNER_TEMP/gh/bin/gh" attestation verify \
-            "$RUNNER_TEMP/aigc-release-assurance/evidence.zip" \
-            --repo Lornt1666/AIGC \
+          PYTHONPATH=. python scripts/verify_aigc_gh_attestation.py \
+            --gh "$RUNNER_TEMP/gh/bin/gh" \
+            --artifact "$RUNNER_TEMP/aigc-release-assurance/evidence.zip" \
+            --repository Lornt1666/AIGC \
             --signer-workflow Lornt1666/AIGC/.github/workflows/aigc-ci.yml \
-            --source-digest "$GITHUB_SHA" \
-            --format json > "$RUNNER_TEMP/aigc-release-assurance/attestation-verification.json"
+            --source-sha "$GITHUB_SHA" \
+            --expected-predicate "https://slsa.dev/provenance/v1" \
+            --output "$RUNNER_TEMP/aigc-release-assurance/attestation-receipt.json" \
+            --raw-output "$RUNNER_TEMP/aigc-release-assurance/attestation-verification.json" \
+            > "$RUNNER_TEMP/aigc-release-assurance/attestation-adapter-summary.json"
+          test -s "$RUNNER_TEMP/aigc-release-assurance/attestation-receipt.json"
           test -s "$RUNNER_TEMP/aigc-release-assurance/attestation-verification.json"
+          test -s "$RUNNER_TEMP/aigc-release-assurance/attestation-adapter-summary.json"
 
       - name: Upload verified provenance evidence
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
