@@ -522,8 +522,7 @@
       "dependencies": [
         "RX-01",
         "RX-11",
-        "RX-16",
-        "RX-38"
+        "RX-16"
       ],
       "authority_boundary": "Read-only control mapping; cannot claim certification or legal compliance, approve its own mapping, or authorize release.",
       "enabled": false,
