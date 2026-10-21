@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0",
+  "project_id": "AIGC",
+  "objective": "Build a governed autonomous workforce that ingests a synthetic work order, decomposes tasks, assigns bounded agents, performs offline research and artifact generation, validates deliverables, and records exact-revision evidence without bypassing policy, authorization, or human review.",
+  "constraints": {
+    "budget": "near-zero incremental spend",
+    "compute": "existing CI and offline/local execution where feasible",
+    "privacy": "do not expose secrets or private data",
+    "schedule": "unknown",
+    "latency": "unknown",
+    "regulatory": "unknown",
+    "hardware": "unknown"
+  },
+  "interfaces": [
+    {
+      "name": "GitHub repository",
+      "access": "read",
+      "scope": "source inspection and review; exact commit/tree binding required"
+    },
+    {
+      "name": "GitHub Actions",
+      "access": "execute",
+      "scope": "CI only; service availability and billing limits may block runs"
+    },
+    {
+      "name": "AER and Red/Blue/Green reports",
+      "access": "unknown",
+      "scope": "proposals only; authenticated evidence required before trust"
+    },
+    {
+      "name": "Canonical Release Assurance",
+      "access": "unknown",
+      "scope": "existing sole release decision authority"
+    }
+  ],
+  "scale_reliability_target": {
+    "availability": "unknown",
+    "throughput": "unknown",
+    "latency": "unknown",
+    "recovery": "unknown",
+    "durability": "evidence records must bind to exact revision and policy"
+  },
+  "risk_class": "high",
+  "approval_policy": {
+    "human_review_required": true,
+    "prohibited": [
+      "self-approval",
+      "permission escalation",
+      "secret creation",
+      "live security testing without separate authorization",
+      "external writes without explicit authorization",
+      "merge or deployment by ARCHON"
+    ],
+    "release_authority": "existing canonical Release Assurance only"
+  },
+  "requested_mode": "propose",
+  "source_refs": [
+    {
+      "kind": "repository",
+      "ref": "Lornt1666/AIGC"
+    },
+    {
+      "kind": "architecture_spec",
+      "ref": "docs/ARCHON_GENESIS_META_AGENT_COMPILER_SPEC.md"
+    },
+    {
+      "kind": "team_agent_module",
+      "ref": "src/aigc_team_agents.py"
+    },
+    {
+      "kind": "team_agent_module",
+      "ref": "src/aigc_team_agents.py"
+    }
+  ]
+}
