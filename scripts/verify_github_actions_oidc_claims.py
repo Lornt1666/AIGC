@@ -47,7 +47,7 @@ def request_oidc_token() -> str:
     endpoint = os.environ.get("ACTIONS_ID_TOKEN_REQUEST_URL", "")
     request_token = os.environ.get("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "")
     parsed = urlparse(endpoint)
-    if parsed.scheme != "https" or parsed.hostname != "token.actions.githubusercontent.com":
+    if parsed.scheme != "https" or parsed.hostname != "pipelines.actions.githubusercontent.com":
         raise IdentityVerificationError("oidc_request_endpoint_untrusted")
     if not request_token:
         raise IdentityVerificationError("oidc_request_token_missing")
