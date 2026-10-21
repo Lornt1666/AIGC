@@ -38,13 +38,13 @@ def receipt(evidence_type, **extra):
 def bundle():
     return {
         "subject": {
-            "repository": "Lornt1666/AIGC", "repository_id": "1287333065", "commit_sha": SHA,
+            "repository": "Lornt1666/AIGC", "repository_id": "1287333065", "owner_id": "1", "commit_sha": SHA,
             "tree_sha": TREE, "ref": "refs/heads/main", "event": "push",
             "source_tree_verified": True, "author_identity": "developer:author",
             "implementer_identity": "developer:implementer",
         },
         "ci": {
-            "repository": "Lornt1666/AIGC", "repository_id": "1287333065", "head_sha": SHA,
+            "repository": "Lornt1666/AIGC", "repository_id": "1287333065", "owner_id": "1", "head_sha": SHA,
             "tree_sha": TREE, "workflow_path": ".github/workflows/aigc-ci.yml",
             "event": "push", "ref": "refs/heads/main", "run_id": "123456", "run_attempt": "2",
             "status": "completed", "conclusion": "success", "required_checks_complete": True,
@@ -60,7 +60,7 @@ def bundle():
             "manifest_sha256": "e" * 64,
         },
         "oidc": receipt("oidc-verification", run_id="123456", run_attempt="2",
-                        issuer="https://token.actions.githubusercontent.com", signature_verified=True,
+                        issuer="https://token.actions.githubusercontent.com", owner_id="1", signature_verified=True,
                         audience_matches_policy=True, subject_matches_policy=True, claims_match_exact_run=True,
                         raw_token_retained=False, replay_protection_verified=True),
         "attestation": receipt("attestation-verification", run_id="123456", run_attempt="2",
@@ -97,7 +97,7 @@ def bundle():
 
 class EvidenceVerifierTests(unittest.TestCase):
     def test_complete_packet_is_only_ready_for_canonical_review(self):
-        result = evaluate_evidence(policy(), bundle())
+        result = evaluate_evidence(policy(), bundle(), evaluation_time=1792600000)
         self.assertEqual(result["disposition"], READY)
         self.assertEqual(result["release_decision"], BLOCK)
         self.assertFalse(result["automatic_mutations_performed"])
@@ -106,7 +106,7 @@ class EvidenceVerifierTests(unittest.TestCase):
     def test_missing_evidence_blocks(self):
         value = bundle()
         value.pop("attestation")
-        result = evaluate_evidence(policy(), value)
+        result = evaluate_evidence(policy(), value, evaluation_time=1792600000)
         self.assertEqual(result["disposition"], BLOCK)
         self.assertIn("attestation_missing", result["reasons"])
 
@@ -172,6 +172,19 @@ class EvidenceVerifierTests(unittest.TestCase):
         second = evaluate_evidence(policy(), bundle())
         self.assertEqual(first, second)
 
+
+    def test_stale_verification_receipt_blocks(self):
+        value = bundle()
+        value["oidc"]["verified_at"] = 1792590000
+        result = evaluate_evidence(policy(), value, evaluation_time=1792600000)
+        self.assertIn("oidc_evidence_stale_or_future_dated", result["reasons"])
+
+    def test_review_manifest_must_match_exact_artifact_manifest(self):
+        value = bundle()
+        value["independent_review"]["evidence_manifest_sha256"] = "f" * 64
+        result = evaluate_evidence(policy(), value, evaluation_time=1792600000)
+        self.assertIn("review_manifest_binding_missing_or_mismatched", result["reasons"])
+
     def test_handoff_is_not_release_authorization(self):
         result = evaluate_evidence(policy(), bundle())
         handoff = handoff_payload(result, evidence_manifest_uri="evidence://manifest/123",
@@ -180,7 +193,7 @@ class EvidenceVerifierTests(unittest.TestCase):
         self.assertEqual(handoff["destination"], "canonical Release Assurance Agent")
 
     def test_blocked_receipt_cannot_be_handed_off(self):
-        result = evaluate_evidence(policy(), {"subject": {}})
+        result = evaluate_evidence(policy(), {"subject": {}}, evaluation_time=1792600000)
         with self.assertRaisesRegex(ValueError, "handoff_blocked"):
             handoff_payload(result, evidence_manifest_uri="evidence://manifest/123",
                             evidence_manifest_sha256="e" * 64)
