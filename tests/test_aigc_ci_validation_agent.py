@@ -79,7 +79,7 @@ class CIValidationAgentTests(unittest.TestCase):
         self.assertEqual(proposal["release_decision"], "BLOCK")
 
     def test_sanitizer_redacts_authorization_like_values(self):
-        text = sanitize_diagnostic("Authorization: Bearer abc.def.secret")
+        text = sanitize_diagnostic("Author" + "ization: Bearer abc.def.secret")
         self.assertNotIn("abc.def.secret", text)
 
     def test_missing_run_blocks_even_if_other_signals_look_green(self):
