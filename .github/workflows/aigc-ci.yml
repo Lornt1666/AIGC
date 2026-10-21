@@ -120,6 +120,12 @@ jobs:
             scripts/validate_gemini_staging_authorization.py \
             scripts/run_focused_gemini_ci.py
 
+      - name: Run Governor Agent policy tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_aigc_governor.py' -v
+
       - name: Scan release-only paths for secret-like content
         shell: bash
         run: |
