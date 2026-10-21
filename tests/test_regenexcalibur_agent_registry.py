@@ -18,6 +18,8 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
         result = validate_registry(self.registry)
         self.assertEqual(result["status"], "VALID")
         self.assertEqual(result["agent_count"], 29)
+        self.assertEqual(len(self.registry["operational_gate_contracts"]), 7)
+        self.assertEqual(self.registry["final_decision_contract"]["canonical_decision_authority"], "RX-19")
         self.assertEqual(result["dependency_graph"], "ACYCLIC")
         self.assertEqual(result["default_disposition"], "BLOCK")
         self.assertEqual(result["production_authorization"], "NOT_GRANTED")
@@ -53,6 +55,23 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
         self.assertIn("RX-19", by_id["RX-28"]["dependencies"])
         self.assertIn("BLOCK", by_id["RX-28"]["authority_boundary"])
         self.assertFalse(by_id["RX-28"]["enabled"])
+
+    def test_operational_gate_contracts_fail_closed_and_bind_to_agents(self):
+        data = copy.deepcopy(self.registry)
+        self.assertEqual(len(data["operational_gate_contracts"]), 7)
+        agent_ids = {agent["id"] for agent in data["agents"]}
+        for gate in data["operational_gate_contracts"]:
+            self.assertEqual(gate["failure_disposition"], "BLOCK")
+            self.assertIn(gate["agent_id"], agent_ids)
+        data["operational_gate_contracts"][2]["failure_disposition"] = "WARN"
+        with self.assertRaisesRegex(RegistryError, "operational_gate_contract_weak_or_unbound"):
+            validate_registry(data)
+
+    def test_final_decision_cannot_be_reassigned_from_rx19(self):
+        data = copy.deepcopy(self.registry)
+        data["final_decision_contract"]["canonical_decision_authority"] = "RX-28"
+        with self.assertRaisesRegex(RegistryError, "final_decision_authority_mismatch"):
+            validate_registry(data)
 
     def test_agents_must_remain_disabled_by_default(self):
         data = copy.deepcopy(self.registry)
