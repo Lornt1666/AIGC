@@ -146,6 +146,12 @@ jobs:
           set -euo pipefail
           python -m unittest discover -s tests -p 'test_aigc_oidc_identity.py' -v
 
+      - name: Run control-plane agent unit tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_aigc_control_plane_agents.py' -v
+
       - name: Scan release-only paths for secret-like content
         shell: bash
         run: |
