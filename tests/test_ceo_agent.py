@@ -97,6 +97,21 @@ class CEOAgentTests(unittest.TestCase):
         self.assertEqual(result["decision"], "HOLD")
         self.assertEqual(result["reason_code"], "evidence_version_binding_mismatch")
 
+    def test_unknown_action_type_requires_human(self):
+        req = valid_request()
+        req["action_type"] = "send_external_message"
+        result = evaluate_action(req, envelope(), verify_evidence)
+        self.assertEqual(result["decision"], "REQUIRES_HUMAN")
+        self.assertEqual(result["reason_code"], "action_type_not_in_approved_allowlist")
+
+    def test_missing_zero_cost_or_explicit_no_effect_fields_require_human(self):
+        req = valid_request()
+        del req["estimated_cost"]
+        self.assertEqual(evaluate_action(req, envelope(), verify_evidence)["decision"], "REQUIRES_HUMAN")
+        req = valid_request()
+        del req["external_effect"]
+        self.assertEqual(evaluate_action(req, envelope(), verify_evidence)["decision"], "REQUIRES_HUMAN")
+
     def test_deploy_merge_and_release_require_human(self):
         for action in ("deploy", "merge", "release", "secret_access", "financial_commitment"):
             with self.subTest(action=action):
