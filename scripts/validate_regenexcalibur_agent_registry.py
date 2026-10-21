@@ -54,7 +54,7 @@ def validate_registry(data: Any) -> dict[str, Any]:
             raise RegistryError("implementation_status_overclaims_readiness")
         ids.append(agent["id"])
         by_id[agent["id"]] = agent
-    if len(by_id) != 33:
+    if len(by_id) != 38:
         raise RegistryError("unexpected_agent_count")
     for agent in data["agents"]:
         if agent["id"] in agent["dependencies"]:
@@ -140,7 +140,7 @@ def validate_registry(data: Any) -> dict[str, Any]:
     if lifecycle.get("non_equivalence_rule") is None or lifecycle.get("policy") is None:
         raise RegistryError("implementation_lifecycle_evidence_policy_missing")
     contract_list = data.get("new_agent_contracts")
-    expected_new_agents = {"RX-29", "RX-30", "RX-31", "RX-40"}
+    expected_new_agents = {"RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45"}
     if not isinstance(contract_list, list) or {x.get("agent_id") for x in contract_list if isinstance(x, dict)} != expected_new_agents:
         raise RegistryError("new_agent_contracts_missing_or_ambiguous")
     for contract in contract_list:

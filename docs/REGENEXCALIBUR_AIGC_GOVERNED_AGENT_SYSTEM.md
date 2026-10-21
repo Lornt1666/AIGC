@@ -239,3 +239,28 @@ References:
 - OWASP GenAI Security Project: https://genai.owasp.org/llm-top-10/
 - OpenSSF Scorecard: https://openssf.org/projects/scorecard/
 - SLSA artifact verification: https://github.com/slsa-framework/slsa/blob/main/spec/verifying-artifacts.md
+
+
+## Framework assurance and evidence freshness agents
+
+This branch specifies five additional disabled-by-default agents:
+
+- **RX-41 — NIST Secure Development and AI Risk Mapping:** maps NIST SSDF, SP 800-218A, AI RMF, and GenAI Profile practices to testable controls and evidence. It cannot claim certification or legal compliance.
+- **RX-42 — OWASP Agentic AI Threat and Control Assurance:** maps GenAI and agentic threats to bounded, isolated tests and control requirements.
+- **RX-43 — OpenSSF Repository and Dependency Posture:** evaluates Scorecard and related checks with explicit scope and timestamps. A score is not proof of artifact safety.
+- **RX-44 — SLSA Provenance Policy Verification:** checks provenance against explicit source revision, workflow identity, builder, predicate, and artifact-subject expectations. Existence alone is not verification.
+- **RX-45 — Evidence Freshness and Lifecycle Transition Policy Enforcer:** requires milestone-specific authenticated evidence and evaluates whether source, policy, workflow, configuration, or artifact changes invalidate dependent evidence.
+
+### Lifecycle and invalidation rule
+
+The five lifecycle statuses `SPECIFIED`, `IMPLEMENTED`, `TESTED`, `INDEPENDENTLY_VERIFIED`, and `PRODUCTION_AUTHORIZED` remain separate. A transition requires evidence for that specific milestone bound to source commit, policy version, artifact digest, test run ID and attempt, and evidence digest. A change invalidates evidence when it changes an input declared in that evidence's dependency binding. Evidence is not presumed fresh merely because a previous gate passed. RX-45 cannot grant production authorization or release approval.
+
+### Reference frameworks and tools
+
+- NIST SSDF SP 800-218A: https://csrc.nist.gov/pubs/sp/800/218/a/final
+- NIST AI Risk Management Framework: https://www.nist.gov/itl/ai-risk-management-framework
+- OWASP GenAI Security Project: https://genai.owasp.org/llm-top-10/
+- OpenSSF Scorecard: https://github.com/ossf/scorecard
+- SLSA verification guidance: https://github.com/slsa-framework/slsa/blob/main/spec/verifying-artifacts.md
+
+These are design references. They do not demonstrate that the controls are deployed, that AIGC is compliant, or that the agents have passed tests.
