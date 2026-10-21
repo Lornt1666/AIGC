@@ -172,3 +172,21 @@ These seven roles extend the core registry to 28 agents. They are specified, dis
 7. RX-19, the canonical AIGC Release Assurance Agent, evaluates the complete packet. Any missing, contradictory, stale, unauthenticated, or unreviewed evidence leaves the decision at BLOCK.
 
 These gates must not be collapsed into a single self-approving agent. Review, acceptance, merge, provenance verification, artifact custody, audit verification, and release authorization are separate control functions. A workflow status of success is necessary where policy requires it, but is not proof by itself that OIDC claims or attestations were cryptographically verified.
+
+
+## 11. RX-28 — Operational Release Block and Exact-Head Gate Coordinator
+
+**Status:** SPECIFIED — DISABLED BY DEFAULT — NOT PRODUCTION-INTEGRATED  
+**Authority:** R0, read-only coordination  
+**Canonical release authority:** RX-19, unchanged
+
+RX-28 coordinates the operational gate from authorized repository-administrator assignment through the final release decision. It must:
+1. Request/track assignment by an authorized repository administrator of a qualified, independent human security reviewer; it cannot appoint itself or fabricate qualification.
+2. Bind review evidence and findings to the exact commit reviewed.
+3. Track each finding to a remediation change and evidence-backed retest; do not weaken or suppress checks.
+4. Require the complete CI workflow to pass on the final exact commit. Any later commit invalidates that exact-head CI receipt.
+5. Require authorized human acceptance tied to the exact commit and evidence digest.
+6. Require protected merge controls and, after merge, verified live OIDC claims, signed attestation, retained artifact, exact run/attempt/commit/digest binding, and independent audit-retention evidence.
+7. Deliver the evidence packet to RX-19 without exercising release authority itself.
+
+**Fail-closed invariant:** RX-28 preserves BLOCK whenever any mandatory gate is missing, pending, failed, stale, contradictory, unauthenticated, or bound to a different commit or evidence digest. RX-28 cannot override RX-19, grant human acceptance, merge, or authorize a release. Agent existence or a passing unit test is not operational evidence that these controls have executed.
