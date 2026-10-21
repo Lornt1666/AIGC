@@ -136,6 +136,45 @@ jobs:
             --input config/archon_genesis_aigc_brief.json \
             --output-dir "$RUNNER_TEMP/aigc-ci-stage-results/chief_of_staff_aigc"
 
+      - name: Run evidence-driven specialist workflow offline
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_evidence_workflow.py' -v
+          export AIGC_TESTED_TREE_SHA="$(git rev-parse 'HEAD^{tree}')"
+          python - <<'PY'
+          import hashlib
+          import os
+          from pathlib import Path
+          from aigc_evidence_workflow import run_workflow, verify_ledger
+          from aigc_team_agents import POLICY_ID
+          import sys
+          sys.path.insert(0, "src")
+          output = Path(os.environ["RUNNER_TEMP"]) / "aigc-ci-stage-results" / "evidence_workflow"
+          envelope = {
+              "schema_version": "1.0", "policy_id": POLICY_ID,
+              "repository": os.environ["GITHUB_REPOSITORY"],
+              "commit_sha": os.environ["OBSERVED_HEAD_SHA"],
+              "tree_sha": os.environ["AIGC_TESTED_TREE_SHA"],
+              "policy_digest": hashlib.sha256(POLICY_ID.encode()).hexdigest(),
+              "invocation_id": f"{os.environ['GITHUB_RUN_ID']}-{os.environ['GITHUB_RUN_ATTEMPT']}",
+              "producer_identity": "github-actions-offline-test",
+              "issued_at_utc": "2026-10-21T00:00:00Z",
+              "expires_at_utc": "2026-10-22T00:00:00Z",
+              "evidence_refs": [],
+          }
+          result = run_workflow(envelope, {}, output)
+          ledger = verify_ledger(output / "evidence.jsonl")
+          if result["release_decision"] != "BLOCK" or not ledger["valid"]:
+              raise SystemExit("Fail-closed workflow invariant failed")
+          if len(result["reports"]) != 3 or result["authentication_configured"]:
+              raise SystemExit("Expected three real offline specialist reports and no implicit trust")
+          print({"status": result["status"], "release_decision": result["release_decision"],
+                 "specialist_reports": len(result["reports"]), "ledger": ledger})
+          PY
+        env:
+          OBSERVED_HEAD_SHA: ${{ steps.identity.outputs.observed_head_sha }}
+
       - name: Scan release-only paths for secret-like content
         shell: bash
         run: |
