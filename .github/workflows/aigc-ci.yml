@@ -130,7 +130,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_archon_genesis.py' -v
           python src/archon_genesis.py \
             --input config/archon_genesis_aigc_brief.json \
-            --output-dir "$RUNNER_TEMP/aigc-stage-results/archon_genesis_aigc"
+            --output-dir "$RUNNER_TEMP/aigc-ci-stage-results/archon_genesis_aigc"
 
       - name: Scan release-only paths for secret-like content
         shell: bash
