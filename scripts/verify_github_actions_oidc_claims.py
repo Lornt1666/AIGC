@@ -23,15 +23,18 @@ OIDC_ISSUER = "https://token.actions.githubusercontent.com"
 OIDC_AUDIENCE = "urn:aigc:release-evidence:verify"
 
 
-def validate_bound_claims(claims: dict, *, expected_sha: str, expected_run_id: str,
-                          expected_run_attempt: str) -> None:
+def validate_bound_claims(claims: dict, *, expected_sha: str, expected_workflow_sha: str,
+                          expected_run_id: str, expected_run_attempt: str) -> None:
+    # GitHub defines workflow_sha as the commit containing the workflow file; it may differ from sha.
+    if len(expected_workflow_sha) != 40 or any(c not in "0123456789abcdef" for c in expected_workflow_sha):
+        raise IdentityVerificationError("invalid_expected_workflow_sha")
     expected = {
         "repository": REPOSITORY,
         "repository_id": REPOSITORY_ID,
         "ref": "refs/heads/main",
         "workflow": WORKFLOW_NAME,
         "workflow_ref": WORKFLOW_REF,
-        "workflow_sha": expected_sha,
+        "workflow_sha": expected_workflow_sha,
         "sha": expected_sha,
         "event_name": "push",
         "run_id": expected_run_id,
@@ -70,6 +73,7 @@ def main() -> int:
     expected_sha = os.environ.get("GITHUB_SHA", "")
     run_id = os.environ.get("GITHUB_RUN_ID", "")
     run_attempt = os.environ.get("GITHUB_RUN_ATTEMPT", "")
+    expected_workflow_sha = os.environ.get("GITHUB_WORKFLOW_SHA", "")
     if len(expected_sha) != 40 or any(c not in "0123456789abcdef" for c in expected_sha):
         raise SystemExit("BLOCK: invalid expected commit SHA")
     if not run_id.isdigit() or not run_attempt.isdigit():
@@ -109,6 +113,7 @@ def main() -> int:
         claims = jwt.decode(token, options={"verify_signature": False, "verify_exp": False,
                                              "verify_aud": False, "verify_iss": False})
         validate_bound_claims(claims, expected_sha=expected_sha,
+                              expected_workflow_sha=expected_workflow_sha,
                               expected_run_id=run_id, expected_run_attempt=run_attempt)
     except IdentityVerificationError as exc:
         raise SystemExit("BLOCK: " + str(exc)) from exc
