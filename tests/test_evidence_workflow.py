@@ -77,6 +77,15 @@ class EvidenceWorkflowTests(unittest.TestCase):
                              "BLOCKED_DEPENDENCY")
             self.assertEqual(result["release_decision"], "BLOCK")
 
+    def test_missing_or_empty_ledger_is_not_valid_evidence(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / "missing.jsonl"
+            with self.assertRaisesRegex(ValueError, "missing or empty"):
+                verify_ledger(path)
+            path.write_text("", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "missing or empty"):
+                verify_ledger(path)
+
     def test_hash_chain_detects_tampering(self):
         with tempfile.TemporaryDirectory() as temp:
             path = Path(temp) / "evidence.jsonl"
