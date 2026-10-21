@@ -1,11 +1,26 @@
 # ARCHON-GENESIS: Meta-Agent Architecture Compiler Specification
 
-**Status:** DESIGN SPECIFICATION — NOT A DEPLOYED AUTONOMOUS SERVICE  
+**Status:** IMPLEMENTED — DETERMINISTIC OFFLINE CLI; NOT AN AUTONOMOUS EXECUTOR  
 **Repository:** `Lornt1666/AIGC`  
 **Policy ID:** `aigc-archon-genesis-v1`  
 **Default mode:** `observe`  
 **Release authority:** Existing canonical Release Assurance only  
 **Assumption:** ARCHON-GENESIS is an architecture-design and agent-specification compiler, not an unrestricted agent executor.
+
+## 0. Runnable implementation
+
+The deterministic offline compiler is implemented in `src/archon_genesis.py`. Its AIGC-specific input brief is `config/archon_genesis_aigc_brief.json`; contract tests are in `tests/test_archon_genesis.py`. The CI workflow runs those tests and compiles the AIGC brief into the temporary CI evidence directory.
+
+Run locally from the repository root:
+
+```bash
+python src/archon_genesis.py \
+  --input config/archon_genesis_aigc_brief.json \
+  --output-dir ./artifacts/archon_genesis_aigc
+python -m unittest discover -s tests -p 'test_archon_genesis.py' -v
+```
+
+The command writes a JSON result, a Markdown report, and one prompt file per generated agent into the caller-selected output directory. It performs no network calls, model calls, shell execution of generated prompts, repository writes, or release actions. The compiler is deterministic and template/rule-based; it is not yet an LLM-driven semantic planner. CI inclusion does not itself prove a run passed; check the exact-head workflow result before treating execution as validated.
 
 ## 1. Mission and non-goals
 
