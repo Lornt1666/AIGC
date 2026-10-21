@@ -34,7 +34,8 @@ def digest(value: Any) -> str:
     return hashlib.sha256(canonical_json(value)).hexdigest()
 
 
-def evaluate_action(request: dict[str, Any], envelope: dict[str, Any],\n                    evidence_verifier: Callable[[dict[str, Any], dict[str, Any]], bool] | None = None) -> dict[str, Any]:
+def evaluate_action(request: dict[str, Any], envelope: dict[str, Any],
+                    evidence_verifier: Callable[[dict[str, Any], dict[str, Any]], bool] | None = None) -> dict[str, Any]:
     """Return a policy decision receipt. This function never executes the action."""
     if not isinstance(request, dict) or not isinstance(envelope, dict):
         raise ValueError("request and envelope must be JSON objects")
