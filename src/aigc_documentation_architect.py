@@ -77,9 +77,11 @@ def select_documents(brief: dict[str, Any]) -> list[tuple[str, str, str]]:
     # documents even if the brief has not described them in detail.
     risk = str(brief.get("risk_level", brief.get("risk", ""))).lower()
     if risk in {"high", "critical", "very high"}:
+        present = {doc[2] for doc in docs}
         for doc in OPTIONAL_DOCS:
-            if doc[2] in {"security", "compliance"} and doc not in docs:
+            if doc[2] in {"security", "compliance"} and doc[2] not in present:
                 docs.append(doc[:3])
+                present.add(doc[2])
     return docs
 
 def _content(kind: str, brief: dict[str, Any], source_digest: str) -> str:
