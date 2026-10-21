@@ -146,10 +146,10 @@ jobs:
           import hashlib
           import os
           from pathlib import Path
-          from aigc_evidence_workflow import run_workflow, verify_ledger
-          from aigc_team_agents import POLICY_ID
           import sys
           sys.path.insert(0, "src")
+          from aigc_evidence_workflow import run_workflow, verify_ledger
+          from aigc_team_agents import POLICY_ID
           output = Path(os.environ["RUNNER_TEMP"]) / "aigc-ci-stage-results" / "evidence_workflow"
           envelope = {
               "schema_version": "1.0", "policy_id": POLICY_ID,
