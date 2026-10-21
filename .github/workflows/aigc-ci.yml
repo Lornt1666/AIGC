@@ -132,6 +132,12 @@ jobs:
           set -euo pipefail
           python -m unittest discover -s tests -p 'test_aigc_governor_milestones.py' -v
 
+      - name: Run OIDC identity verifier tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_aigc_oidc_identity.py' -v
+
       - name: Scan release-only paths for secret-like content
         shell: bash
         run: |
