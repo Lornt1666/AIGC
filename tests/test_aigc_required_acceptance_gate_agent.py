@@ -34,8 +34,12 @@ class FakeClient:
                     "status": "completed", "conclusion": conclusion}
         self.steps = [{"name": name, "status": "completed", "conclusion": "success"}
                       for name in sorted(CORE_STEPS)]
-        self.jobs = [{"id": 7, "name": "validate", "status": "completed",
-                      "conclusion": conclusion, "steps": self.steps}]
+        self.jobs = [
+            {"id": 7, "name": "validate", "status": "completed",
+             "conclusion": conclusion, "steps": self.steps},
+            {"id": 8, "name": "revalidate_locked_releases", "status": "completed",
+             "conclusion": "skipped", "steps": None},
+        ]
         self.artifacts = [{
             "id": 99, "name": "evidence-" + SHA, "expired": False,
             "digest": "sha256:" + hashlib.sha256(self.data).hexdigest(),
