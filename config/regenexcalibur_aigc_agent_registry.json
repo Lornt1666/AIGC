@@ -183,8 +183,7 @@
       "responsibility": "vendor_certifications_lead_times_substitutions",
       "authority_tier": "R0",
       "dependencies": [
-        "RX-11",
-        "RX-10"
+        "RX-11"
       ],
       "authority_boundary": "No purchase orders, vendor onboarding or commitments.",
       "enabled": false,
