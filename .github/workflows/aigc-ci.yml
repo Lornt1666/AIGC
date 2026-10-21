@@ -152,6 +152,14 @@ jobs:
           set -euo pipefail
           PYTHONPATH=src python -m unittest discover -s tests -p 'test_archon_genesis.py' -v
 
+      - name: Generate ARCHON-GENESIS agent proposal artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python scripts/run_archon_genesis.py \
+            --brief config/archon_genesis_aigc_brief.json \
+            --output-dir "$RUNNER_TEMP/aigc-ci-stage-results/archon_genesis"
+
       - name: Scan release-only paths for secret-like content
         shell: bash
         run: |
