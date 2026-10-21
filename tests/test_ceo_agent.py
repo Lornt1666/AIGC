@@ -20,6 +20,14 @@ def envelope():
     }
 
 
+def verify_evidence(item, env):
+    return (
+        item.get("authentication_status") == "AUTHENTICATED"
+        and item.get("evidence_ref") is not None
+        and all(item.get(key) == env.get(key) for key in REQUIRED_BINDINGS)
+    )
+
+
 def valid_request():
     env = envelope()
     return {
@@ -44,24 +52,34 @@ def valid_request():
 
 class CEOAgentTests(unittest.TestCase):
     def test_approves_only_bounded_low_risk_internal_reversible_action(self):
-        result = evaluate_action(valid_request(), envelope())
+        result = evaluate_action(valid_request(), envelope(), verify_evidence)
         self.assertEqual(result["decision"], "APPROVE")
         self.assertEqual(result["policy_id"], POLICY_ID)
         self.assertFalse(result["execution_performed"])
         self.assertEqual(result["release_decision"], "NOT_MADE")
         self.assertEqual(len(result["receipt_digest_sha256"]), 64)
 
+    def test_no_trusted_verifier_holds_even_if_caller_claims_authenticated(self):
+        result = evaluate_action(valid_request(), envelope())
+        self.assertEqual(result["decision"], "HOLD")
+        self.assertEqual(result["reason_code"], "trusted_evidence_verifier_unavailable")
+
+    def test_trusted_verifier_failure_holds(self):
+        result = evaluate_action(valid_request(), envelope(), lambda _item, _env: False)
+        self.assertEqual(result["decision"], "HOLD")
+        self.assertEqual(result["reason_code"], "trusted_evidence_verification_failed")
+
     def test_missing_binding_holds(self):
         env = envelope()
         del env["tree_sha"]
-        result = evaluate_action(valid_request(), env)
+        result = evaluate_action(valid_request(), env, verify_evidence)
         self.assertEqual(result["decision"], "HOLD")
         self.assertEqual(result["reason_code"], "missing_version_binding")
 
     def test_mismatched_revision_holds(self):
         req = valid_request()
         req["commit_sha"] = "e" * 40
-        result = evaluate_action(req, envelope())
+        result = evaluate_action(req, envelope(), verify_evidence)
         self.assertEqual(result["decision"], "HOLD")
         self.assertEqual(result["reason_code"], "request_envelope_binding_mismatch")
 
