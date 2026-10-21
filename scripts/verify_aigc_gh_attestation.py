@@ -19,6 +19,8 @@ import sys
 from typing import Any, Mapping
 
 DEFAULT_PREDICATE = "https://slsa.dev/provenance/v1"
+DEFAULT_REPOSITORY_ID = "1287333065"
+DEFAULT_CERT_IDENTITY = "https://github.com/Lornt1666/AIGC/.github/workflows/aigc-ci.yml@refs/heads/main"
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 DIGEST_RE = re.compile(r"^[0-9a-f]{64}$")
 
@@ -40,6 +42,8 @@ def validate_verification_output(
     *,
     artifact_sha256: str,
     expected_predicate: str,
+    expected_repository_id: str = DEFAULT_REPOSITORY_ID,
+    expected_cert_identity: str = DEFAULT_CERT_IDENTITY,
 ) -> dict[str, Any]:
     """Validate the documented gh attestation verify --format json result shape."""
     if not isinstance(payload, list) or not payload:
@@ -74,6 +78,10 @@ def validate_verification_output(
         timestamps = result.get("verifiedTimestamps")
         if not isinstance(certificate, Mapping) or not certificate:
             raise AttestationVerificationError("verified_signing_certificate_missing")
+        if str(certificate.get("sourceRepositoryIdentifier", "")) != expected_repository_id:
+            raise AttestationVerificationError("verified_source_repository_id_mismatch")
+        if certificate.get("subjectAlternativeName") != expected_cert_identity:
+            raise AttestationVerificationError("verified_signer_certificate_identity_mismatch")
         if not isinstance(timestamps, list) or not timestamps:
             raise AttestationVerificationError("verified_transparency_timestamp_missing")
         matched.append({"certificate_present": True, "verified_timestamp_count": len(timestamps)})
@@ -93,6 +101,8 @@ def verify_attestation(
     signer_workflow: str,
     source_sha: str,
     expected_predicate: str = DEFAULT_PREDICATE,
+    expected_repository_id: str = DEFAULT_REPOSITORY_ID,
+    expected_cert_identity: str = DEFAULT_CERT_IDENTITY,
     timeout_seconds: int = 90,
     runner=subprocess.run,
 ) -> tuple[dict[str, Any], str]:
@@ -110,6 +120,7 @@ def verify_attestation(
         gh_path, "attestation", "verify", str(artifact),
         "--repo", repository,
         "--signer-workflow", signer_workflow,
+        "--cert-identity", expected_cert_identity,
         "--source-digest", source_sha,
         "--predicate-type", expected_predicate,
         "--format", "json",
@@ -129,7 +140,8 @@ def verify_attestation(
     except (json.JSONDecodeError, TypeError) as exc:
         raise AttestationVerificationError("attestation_verifier_json_invalid") from exc
     structural = validate_verification_output(
-        parsed, artifact_sha256=digest, expected_predicate=expected_predicate
+        parsed, artifact_sha256=digest, expected_predicate=expected_predicate,
+        expected_repository_id=expected_repository_id, expected_cert_identity=expected_cert_identity,
     )
     receipt = {
         "schema_version": "aigc-gh-attestation-verification/1.0",
