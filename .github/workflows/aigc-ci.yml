@@ -131,6 +131,10 @@ jobs:
           python src/archon_genesis.py \
             --input config/archon_genesis_aigc_brief.json \
             --output-dir "$RUNNER_TEMP/aigc-ci-stage-results/archon_genesis_aigc"
+          python -m unittest discover -s tests -p 'test_chief_of_staff.py' -v
+          python src/aigc_chief_of_staff.py \
+            --input config/archon_genesis_aigc_brief.json \
+            --output-dir "$RUNNER_TEMP/aigc-ci-stage-results/chief_of_staff_aigc"
 
       - name: Scan release-only paths for secret-like content
         shell: bash
