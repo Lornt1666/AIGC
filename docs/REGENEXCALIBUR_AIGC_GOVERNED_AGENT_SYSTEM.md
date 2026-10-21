@@ -205,3 +205,37 @@ The machine-readable registry defines seven explicit operational gate contracts 
 - Artifact/audit verification inspects retained artifacts, recomputes digests, binds run/attempt/commit/tree/digest, and verifies independently administered retention and retrieval.
 
 RX-28 assembles the same-commit evidence packet and hands it to RX-19. RX-28 cannot decide release, override BLOCK, merge, or provide human acceptance. All agents remain disabled by default and production authorization remains NOT GRANTED.
+
+
+## Assurance agent expansion and implementation lifecycle
+
+This branch specifies four additional disabled-by-default agents:
+
+- **RX-29 — Adversarial Security Validation Agent:** isolated adversarial tests for prompt injection, tool abuse, evidence tampering, and authority-boundary bypass.
+- **RX-30 — Independent Policy Conformance Verifier:** read-only checks that authenticated policy versions and tool permissions match execution decisions.
+- **RX-31 — Software Supply-Chain and Dependency Assurance Agent:** SBOM, dependency vulnerabilities, workflow/action pinning, licensing, and component provenance.
+- **RX-40 — Architecture Drift and Technical-Debt Auditor:** read-only comparison of registry, contracts, dependencies, tests, CI workflows, and deployment configuration.
+
+### Non-equivalent implementation statuses
+
+The implementation lifecycle defines five distinct milestones: `SPECIFIED`, `IMPLEMENTED`, `TESTED`, `INDEPENDENTLY_VERIFIED`, and `PRODUCTION_AUTHORIZED`. Evidence for one milestone cannot be used to infer a later milestone. New agents remain `SPECIFIED_NOT_PRODUCTION_INTEGRATED`, disabled, and unauthorized until separate evidence supports promotion.
+
+Each new agent contract requires:
+- Versioned input/output schema references and a narrow tool allowlist.
+- A declared authority tier, no-self-approval boundary, and fail-closed disposition.
+- Unit, integration, negative, and failure-injection tests appropriate to the role.
+- Evidence bound to source commit SHA, policy version, artifact digest, test run ID and attempt, and evidence digest.
+- Explicit human-approved activation, least-privilege identity, and a tested rollback plan.
+
+Missing, stale, malformed, contradictory, unauthenticated, or wrong-commit evidence blocks status promotion. CI success does not constitute independent review, human acceptance, production authorization, or release approval. RX-19 remains the sole release decision authority.
+
+### Research basis
+
+The design draws on the NIST Secure Software Development Framework (including SP 800-218A for generative-AI and dual-use foundation-model development), NIST AI Risk Management Framework and Generative AI Profile, OWASP GenAI Security Project risks, OpenSSF Scorecard, and SLSA provenance verification guidance. These sources are control-design inputs, not evidence that AIGC is compliant or that any control is deployed.
+
+References:
+- NIST SP 800-218A: https://csrc.nist.gov/pubs/sp/800/218/a/final
+- NIST AI RMF: https://www.nist.gov/itl/ai-risk-management-framework
+- OWASP GenAI Security Project: https://genai.owasp.org/llm-top-10/
+- OpenSSF Scorecard: https://openssf.org/projects/scorecard/
+- SLSA artifact verification: https://github.com/slsa-framework/slsa/blob/main/spec/verifying-artifacts.md
