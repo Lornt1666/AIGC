@@ -114,8 +114,11 @@ def assess(repo: str, token: str | None) -> dict[str, Any]:
             rule for rule in rulesets
             if isinstance(rule, dict) and rule.get("enforcement") == "active"
         ]
+        # Presence of an active ruleset is not proof that its target, rules,
+        # bypass actors, or conditions meet the required policy. This first
+        # version reports presence only and therefore cannot mark the gate PASS.
         report["checks"]["rulesets"] = {
-            "status": "PASS" if active else "BLOCK",
+            "status": "BLOCK",
             "visible_count": len(rulesets),
             "active_count": len(active),
             "rulesets": [
@@ -133,6 +136,10 @@ def assess(repo: str, token: str | None) -> dict[str, Any]:
         if not active:
             report["required_actions"].append(
                 "Repository administrator: create and activate a ruleset targeting main and a release-tag ruleset (confirm the actual tag naming convention first)."
+            )
+        else:
+            report["required_actions"].append(
+                "Inspect each active ruleset's full detail response, target refs, required rules, and bypass actors; active ruleset presence alone is not a pass."
             )
     except GitHubReadError as exc:
         report["checks"]["rulesets"] = {
@@ -193,13 +200,14 @@ def assess(repo: str, token: str | None) -> dict[str, Any]:
         include = ref_name.get("include") or []
         exclude = ref_name.get("exclude") or []
         if rule.get("enforcement") == "active" and any(
-            pattern in (f"refs/tags/{REQUIRED_TAG_PATTERN_HINT}", f"~ALL")
-            or pattern == f"refs/tags/{REQUIRED_TAG_PATTERN_HINT}"
+            pattern == f"refs/tags/{REQUIRED_TAG_PATTERN_HINT}"
             for pattern in include
         ) and not exclude:
             tag_covered = True
     report["checks"]["release_tag_protection"] = {
-        "status": "PASS" if tag_covered else "BLOCK",
+        # A matching include pattern alone is insufficient without verifying
+        # the detailed rules that prevent tag updates/deletion and bypass.
+        "status": "BLOCK",
         "pattern_hint": REQUIRED_TAG_PATTERN_HINT,
         "note": "Confirm actual tag convention and inspect rule conditions, update/delete restrictions, and bypass actors manually.",
     }
@@ -217,11 +225,9 @@ def assess(repo: str, token: str | None) -> dict[str, Any]:
     ])
 
     statuses = [value.get("status", "UNKNOWN") for value in report["checks"].values()]
-    all_protection_checks_pass = (
-        report["checks"].get("rulesets", {}).get("status") == "PASS"
-        and report["checks"].get("branch_protection", {}).get("status") == "PASS"
-        and report["checks"].get("release_tag_protection", {}).get("status") == "PASS"
-    )
+    # This implementation deliberately cannot assert full protection until
+    # it fetches and evaluates each ruleset's detailed rules and bypass actors.
+    all_protection_checks_pass = False
     report["decision"] = "BLOCK"  # This read-only settings audit cannot approve a release.
     report["repository_protection_assessment"] = (
         "PROTECTION_READBACK_PARTIAL_PASS" if all_protection_checks_pass else "BLOCK"
