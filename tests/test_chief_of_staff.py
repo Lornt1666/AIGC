@@ -65,8 +65,12 @@ class ChiefOfStaffTests(unittest.TestCase):
             self.assertEqual(proc.returncode, 0, proc.stderr)
             self.assertTrue((out / "chief_of_staff_runbook.json").is_file())
             self.assertTrue((out / "chief_of_staff_report.md").is_file())
+            self.assertTrue((out / "documentation" / "README.md").is_file())
+            self.assertTrue((out / "documentation" / "documentation_manifest.json").is_file())
             result = json.loads((out / "chief_of_staff_runbook.json").read_text(encoding="utf-8"))
             self.assertEqual(result["status"], "BLOCK")
+            self.assertEqual(result["documentation_pack"]["status"], "GENERATED_DRAFT")
+            self.assertEqual(result["documentation_pack"]["index_path"], "documentation/README.md")
 
 
     def test_cli_delegates_to_evidence_workflow_when_versioned_inputs_are_supplied(self):
