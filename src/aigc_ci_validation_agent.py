@@ -11,9 +11,9 @@ from typing import Any, Mapping
 SCHEMA_VERSION = "aigc-ci-observation/1.0"
 FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
 SECRET_PATTERNS = (
-    re.compile(r"(?i)(authorization\\s*[:=]\\s*)[^\\s,;]+"),
-    re.compile(r"(?i)(bearer\\s+)[A-Za-z0-9._~+/=-]+"),
-    re.compile(r"(?i)(token|password|secret|api[_-]?key)(\\s*[:=]\\s*)[^\\s,;]+"),
+    re.compile(r"(?i)(authorization\s*[:=]\s*)[^\s,;]+"),
+    re.compile(r"(?i)(bearer\s+)[A-Za-z0-9._~+/=-]+"),
+    re.compile(r"(?i)(token|password|secret|api[_-]?key)(\s*[:=]\s*)[^\s,;]+"),
 )
 MAX_DIAGNOSTIC_LENGTH = 500
 
