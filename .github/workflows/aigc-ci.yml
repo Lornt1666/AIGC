@@ -146,6 +146,12 @@ jobs:
           set -euo pipefail
           python -m unittest discover -s tests -p 'test_aigc_oidc_identity.py' -v
 
+      - name: Run ARCHON-GENESIS compiler tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python -m unittest discover -s tests -p 'test_archon_genesis.py' -v
+
       - name: Scan release-only paths for secret-like content
         shell: bash
         run: |
