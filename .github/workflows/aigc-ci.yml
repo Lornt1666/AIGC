@@ -120,6 +120,13 @@ jobs:
             scripts/validate_gemini_staging_authorization.py \
             scripts/run_focused_gemini_ci.py
 
+      - name: Validate RegenExcalibur governed agent registry
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/validate_regenexcalibur_agent_registry.py
+          PYTHONPATH=. python -m unittest discover -s tests -p 'test_regenexcalibur_agent_registry.py' -v
+
       - name: Run Governor Agent policy tests
         shell: bash
         run: |
