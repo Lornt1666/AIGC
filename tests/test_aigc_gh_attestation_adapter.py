@@ -64,11 +64,14 @@ class GitHubAttestationAdapterTests(unittest.TestCase):
                 gh_path="/opt/gh/bin/gh", artifact_path=str(artifact),
                 repository="Lornt1666/AIGC",
                 signer_workflow="Lornt1666/AIGC/.github/workflows/aigc-ci.yml",
-                source_sha=SHA, runner=runner,
+                source_sha=SHA, run_id="123456", run_attempt="2", runner=runner,
             )
             self.assertEqual(receipt["status"], "VERIFIED")
             self.assertEqual(receipt["artifact_sha256"], digest)
             self.assertEqual(receipt["source_sha"], SHA)
+            self.assertEqual(receipt["workflow_run_id"], "123456")
+            self.assertEqual(receipt["workflow_run_attempt"], "2")
+            self.assertEqual(receipt["repository_id"], "1287333065")
             self.assertIs(receipt["signature_verified"], True)
             self.assertIs(receipt["transparency_verified"], True)
             self.assertIs(receipt["hash_only_fallback"], False)
@@ -92,7 +95,7 @@ class GitHubAttestationAdapterTests(unittest.TestCase):
                 verify_attestation(
                     gh_path="gh", artifact_path=str(artifact), repository="Lornt1666/AIGC",
                     signer_workflow="Lornt1666/AIGC/.github/workflows/aigc-ci.yml",
-                    source_sha=SHA, runner=runner,
+                    source_sha=SHA, run_id="123456", run_attempt="2", runner=runner,
                 )
 
     def test_wrong_certificate_repository_id_or_signer_identity_blocks(self):
@@ -121,7 +124,7 @@ class GitHubAttestationAdapterTests(unittest.TestCase):
             with self.assertRaisesRegex(AttestationVerificationError, "source_sha_invalid"):
                 verify_attestation(
                     gh_path="gh", artifact_path=str(artifact), repository="Lornt1666/AIGC",
-                    signer_workflow="workflow", source_sha="not-a-sha",
+                    signer_workflow="workflow", source_sha="not-a-sha", run_id="123456", run_attempt="2",
                     runner=lambda *a, **k: self.fail("runner must not execute"),
                 )
 
