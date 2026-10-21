@@ -155,7 +155,11 @@ class HashChainLedger:
 
 
 def verify_ledger(path: Path) -> dict[str, Any]:
+    if not path.is_file() or path.stat().st_size == 0:
+        raise ValueError("evidence ledger is missing or empty")
     ledger = HashChainLedger(path)
+    if ledger.sequence == 0:
+        raise ValueError("evidence ledger contains no records")
     return {"valid": True, "records": ledger.sequence, "final_digest": ledger.previous_hash}
 
 
