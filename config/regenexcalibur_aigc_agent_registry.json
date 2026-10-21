@@ -513,6 +513,80 @@
       "authority_boundary": "Read-only comparison and discrepancy reporting; cannot rewrite protected governance, alter CI requirements, self-approve, or authorize release.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-41",
+      "name": "NIST Secure Development and AI Risk Mapping Agent",
+      "responsibility": "map NIST SSDF SP800-218A AI RMF and GenAI profile practices to versioned requirements controls tests and evidence",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-01",
+        "RX-11",
+        "RX-16",
+        "RX-38"
+      ],
+      "authority_boundary": "Read-only control mapping; cannot claim certification or legal compliance, approve its own mapping, or authorize release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-42",
+      "name": "OWASP Agentic AI Threat and Control Assurance Agent",
+      "responsibility": "map OWASP GenAI and agentic risks including prompt injection excessive agency tool misuse supply-chain risk and unbounded consumption to testable controls",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-29",
+        "RX-30",
+        "RX-31",
+        "RX-11"
+      ],
+      "authority_boundary": "Threat modeling and test planning only; cannot test production without authorization, waive findings, self-approve, or authorize release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-43",
+      "name": "OpenSSF Repository and Dependency Posture Agent",
+      "responsibility": "run or interpret OpenSSF Scorecard and related repository security checks with explicit scope version timestamp and findings",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-31",
+        "RX-11",
+        "RX-16"
+      ],
+      "authority_boundary": "Advisory posture assessment only; a score is not proof of artifact safety, cannot suppress findings, self-approve, or authorize release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-44",
+      "name": "SLSA Provenance Policy Verification Agent",
+      "responsibility": "verify build provenance against explicit repository workflow identity source revision artifact subject digest builder and predicate expectations",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-16",
+        "RX-26",
+        "RX-31"
+      ],
+      "authority_boundary": "Read-only verification; presence of provenance is not validity, cannot accept hash-only evidence, self-approve, or authorize release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-45",
+      "name": "Evidence Freshness and Lifecycle Transition Policy Enforcer",
+      "responsibility": "enforce evidence-bound lifecycle transitions and invalidate affected evidence after source policy workflow artifact or configuration changes",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-15",
+        "RX-16",
+        "RX-18",
+        "RX-19",
+        "RX-30"
+      ],
+      "authority_boundary": "Read-only transition evaluation and blocking only; cannot promote status without milestone-specific authenticated evidence, self-approve, or authorize release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     }
   ],
   "mandatory_human_gates": [
@@ -868,7 +942,9 @@
       "artifact_digest_binding",
       "operational_status",
       "human_approved_activation_procedure",
-      "rollback_plan"
+      "rollback_plan",
+      "framework_mapping_or_verification_method",
+      "evidence_freshness_and_invalidation_rules"
     ],
     "minimum_test_classes": [
       "unit",
@@ -900,7 +976,7 @@
     ],
     "default_operational_status": "SPECIFIED",
     "production_authorization_granted": false,
-    "policy": "Do not claim a status without its own evidence. Missing, stale, malformed, contradictory, unauthenticated, or wrong-commit evidence BLOCKS promotion."
+    "policy": "Do not claim a status without its own evidence. Missing, stale, malformed, contradictory, unauthenticated, or wrong-commit evidence BLOCKS promotion. Status transitions require milestone-specific authenticated evidence. Any source, policy, workflow, configuration, or artifact change invalidates the evidence whose declared dependency set includes that changed input; unrelated evidence may remain valid only when its dependency binding proves non-impact."
   },
   "new_agent_contracts": [
     {
@@ -1007,6 +1083,160 @@
         "read_ci_workflows",
         "read_test_inventory",
         "write_drift_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-41",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_framework_sources",
+        "read_control_mappings",
+        "write_control_gap_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-42",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_threat_catalogs",
+        "read_agent_tool_contracts",
+        "run_isolated_threat_mapping",
+        "write_threat_control_matrix"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-43",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_repository_metadata",
+        "run_scorecard_checks",
+        "read_sbom",
+        "write_posture_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-44",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_attestation_bundle",
+        "verify_provenance_expectations",
+        "read_artifact_digest",
+        "write_verification_receipt"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-45",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_lifecycle_evidence",
+        "compare_evidence_bindings",
+        "evaluate_invalidation_rules",
+        "write_transition_decision"
       ],
       "required_evidence_binding": [
         "source_commit_sha",
