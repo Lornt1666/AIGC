@@ -13,7 +13,7 @@ import hashlib
 import json
 import re
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 POLICY_ID = "aigc-ceo-action-approval-v1"
 REQUIRED_BINDINGS = ("repository", "commit_sha", "tree_sha", "policy_digest", "invocation_id")
@@ -34,7 +34,7 @@ def digest(value: Any) -> str:
     return hashlib.sha256(canonical_json(value)).hexdigest()
 
 
-def evaluate_action(request: dict[str, Any], envelope: dict[str, Any]) -> dict[str, Any]:
+def evaluate_action(request: dict[str, Any], envelope: dict[str, Any],\n                    evidence_verifier: Callable[[dict[str, Any], dict[str, Any]], bool] | None = None) -> dict[str, Any]:
     """Return a policy decision receipt. This function never executes the action."""
     if not isinstance(request, dict) or not isinstance(envelope, dict):
         raise ValueError("request and envelope must be JSON objects")
@@ -54,8 +54,11 @@ def evaluate_action(request: dict[str, Any], envelope: dict[str, Any]) -> dict[s
     if not isinstance(evidence, list) or not evidence:
         return _receipt("HOLD", "missing_evidence", request, envelope)
 
-    # Evidence is trusted only if each record is independently authenticated and
-    # bound to the same repository/commit/tree/policy/invocation.
+    # Never trust a caller-supplied authentication_status field by itself.
+    # A separate verifier/store integration must cryptographically authenticate
+    # each evidence record and its signer/version binding.
+    if evidence_verifier is None:
+        return _receipt("HOLD", "trusted_evidence_verifier_unavailable", request, envelope)
     for item in evidence:
         if not isinstance(item, dict) or item.get("authentication_status") != "AUTHENTICATED":
             return _receipt("HOLD", "evidence_not_authenticated", request, envelope)
@@ -63,6 +66,12 @@ def evaluate_action(request: dict[str, Any], envelope: dict[str, Any]) -> dict[s
             return _receipt("HOLD", "evidence_version_binding_mismatch", request, envelope)
         if not item.get("evidence_ref"):
             return _receipt("HOLD", "evidence_reference_missing", request, envelope)
+        try:
+            verified = evidence_verifier(item, envelope) is True
+        except Exception:
+            verified = False
+        if not verified:
+            return _receipt("HOLD", "trusted_evidence_verification_failed", request, envelope)
 
     if action in FORBIDDEN_ACTIONS or request.get("external_effect") is True:
         return _receipt("REQUIRES_HUMAN", "consequential_action_requires_human_authorization", request, envelope)
