@@ -152,6 +152,12 @@ jobs:
           set -euo pipefail
           python -m unittest discover -s tests -p 'test_aigc_control_plane_agents.py' -v
 
+      - name: Run fail-closed evidence verifier policy tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python -m unittest discover -s tests -p 'test_aigc_release_evidence_verifier.py' -v
+
       - name: Scan release-only paths for secret-like content
         shell: bash
         run: |
