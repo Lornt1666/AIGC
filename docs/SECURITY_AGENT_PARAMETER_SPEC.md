@@ -284,7 +284,7 @@ Unit tests with mocks are useful but insufficient. Before calling the system pro
 - GitHub creating repository rulesets and bypass configuration: https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/creating-rulesets-for-a-repository
 - GitHub protected branches: https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches
 - OWASP CI/CD Security Cheat Sheet: https://cheatsheetseries.owasp.org/cheatsheets/CI_CD_Security_Cheat_Sheet.html
-- SLSA specification and provenance: https://slsa.dev/spec/v1.1/ and https://slsa.dev/spec/v1.1/provenance
+- SLSA specification and provenance: https://slsa.dev/spec/v1.2/ and https://slsa.dev/spec/v1.2/provenance
 - in-toto Attestation Framework: https://github.com/in-toto/attestation/blob/main/spec/README.md
 - GitHub artifact attestations API and verification guidance: https://docs.github.com/en/rest/orgs/attestations
 
