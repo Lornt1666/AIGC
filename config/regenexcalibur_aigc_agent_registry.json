@@ -438,6 +438,25 @@
       "authority_boundary": "Cannot claim independent retention from a same-process/local log alone and cannot authorize release; hands evidence to RX-19 for final evaluation.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-28",
+      "name": "Operational Release Block and Exact-Head Gate Coordinator",
+      "responsibility": "coordinate authorized repository-administrator assignment of a qualified independent security reviewer; track review findings through evidenced remediation; require complete CI on the final exact commit; continuously enforce a BLOCK disposition for RX-19 until every required review, human acceptance, protected-merge, live provenance, signed-evidence, audit-retention, and release criterion is verified",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-21",
+        "RX-22",
+        "RX-23",
+        "RX-24",
+        "RX-25",
+        "RX-26",
+        "RX-27",
+        "RX-19"
+      ],
+      "authority_boundary": "Read-only gate coordinator. May request authorized actions and assemble evidence but cannot appoint reviewers, self-approve, close findings without evidence, alter or weaken required checks, accept on behalf of a human, bypass protections, merge, attest to unverified provenance, or override RX-19 BLOCK. Missing, stale, contradictory, unauthenticated, or wrong-commit evidence must preserve BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     }
   ],
   "mandatory_human_gates": [
