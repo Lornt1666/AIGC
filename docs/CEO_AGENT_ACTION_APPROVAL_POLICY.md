@@ -8,7 +8,7 @@ The CEO Agent is a deterministic, policy-bound approval gate for proposed AIGC a
 
 ## Approval boundary
 
-The CEO Agent may return `APPROVE` only when all conditions hold:
+The CEO Agent may return `APPROVE` only for the explicit allowlist `regenerate_internal_index`, `generate_documentation_draft`, `rebuild_local_report`, `run_offline_validation`, or `format_generated_document`, and only when all conditions hold. Unknown action types require human authorization.
 
 - The request and envelope bind to the same repository, full commit SHA, full tree SHA, policy digest, and invocation ID.
 - Each evidence item declares an authenticated status, evidence reference, and matching version bindings. In production, the status must be produced by the independently configured trusted verifier, not accepted from untrusted user input.
