@@ -144,7 +144,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python -m unittest discover -s tests -p 'test_aigc_oidc_identity.py' -v
+          PYTHONPATH=src python -m unittest discover -s tests -p 'test_aigc_oidc_identity.py' -v
 
       - name: Run ARCHON-GENESIS compiler tests
         shell: bash
