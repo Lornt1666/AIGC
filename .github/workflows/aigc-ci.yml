@@ -120,6 +120,13 @@ jobs:
             scripts/validate_gemini_staging_authorization.py \
             scripts/run_focused_gemini_ci.py
 
+      - name: Run security assurance agent unit tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_security_agents.py' -v
+          python -m unittest discover -s tests -p 'test_repository_admin_agent.py' -v
+
       - name: Scan release-only paths for secret-like content
         shell: bash
         run: |
