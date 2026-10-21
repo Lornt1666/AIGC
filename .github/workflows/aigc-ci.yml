@@ -424,6 +424,8 @@ jobs:
             --repository Lornt1666/AIGC \
             --signer-workflow Lornt1666/AIGC/.github/workflows/aigc-ci.yml \
             --source-sha "$GITHUB_SHA" \
+            --run-id "$GITHUB_RUN_ID" \
+            --run-attempt "$GITHUB_RUN_ATTEMPT" \
             --expected-predicate "https://slsa.dev/provenance/v1" \
             --output "$RUNNER_TEMP/aigc-release-assurance/attestation-receipt.json" \
             --raw-output "$RUNNER_TEMP/aigc-release-assurance/attestation-verification.json" \
