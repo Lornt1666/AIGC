@@ -136,6 +136,11 @@ jobs:
             --input config/archon_genesis_aigc_brief.json \
             --output-dir "$RUNNER_TEMP/aigc-ci-stage-results/chief_of_staff_aigc"
 
+          python -m unittest discover -s tests -p 'test_documentation_architect.py' -v
+          python src/aigc_documentation_architect.py \
+            --input config/archon_genesis_aigc_brief.json \
+            --output-dir "$RUNNER_TEMP/aigc-ci-stage-results/documentation_architect_aigc"
+
       - name: Run evidence-driven specialist workflow offline
         shell: bash
         run: |
