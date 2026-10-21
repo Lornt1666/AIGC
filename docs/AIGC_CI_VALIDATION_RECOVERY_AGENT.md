@@ -1,37 +1,42 @@
-# AIGC CI Validation & Recovery Agent
+# AIGC CI Validation & Recovery Agent Suite
 
-**Mode:** read-only observation and diagnosis. **Release authority:** none. **Default disposition:** BLOCK.
+Mode: read-only. Default disposition: BLOCK. Canonical release authority: Release Assurance Agent only.
 
-## Purpose and authority boundary
+## Agents
+1. Canonical Runner vs Overall Workflow Agent separates runner success from complete workflow success.
+2. Read-only Observer & Diagnosis Agent normalizes run, job, step, log, artifact, and stage evidence.
+3. Fail-Closed Test Agent defines adversarial missing, stale, forged, digest, signature, and review cases.
+4. Operating Specification Agent publishes authority boundaries and state rules.
+5. Failure Diagnosis & Minimal Repair Agent proposes bounded changes for human approval; never applies them.
+6. Validation Status Agent requires both runner and workflow success with no blockers.
+7. Current Disposition Agent remains blocked until the acceptance gate is met.
+8. Live Monitoring Service reads GitHub Actions metadata, downloads artifacts, verifies SHA-256 against GitHub's advertised digest, checks exact-head receipts, and authenticates reviews using Ed25519.
+9. Next Acceptance Gate Agent requires the exact latest SHA, a successful complete workflow, verified artifact, and signed independent review.
 
-The agent observes GitHub Actions workflow runs, job summaries, step outcomes, sanitized logs, artifact metadata, and stage records. It normalizes those observations into a stable evidence record and proposes minimal repairs for human approval. It does not write to GitHub, edit files, retry workflows, change protected controls, merge, deploy, or override the canonical Release Assurance Agent.
+## Runner vs workflow
+The canonical runner can pass while later tests, scanners, policy gates, or jobs fail. These outcomes are reported separately. Any failed required job or step blocks acceptance.
 
-The canonical Release Assurance Agent remains the sole release decision authority. A successful sub-runner is not equivalent to a successful workflow, and an uploaded artifact is not proof that all gates passed.
+## Live trust model
+Supply a runtime GitHub read token and an independently administered reviewer public-key trust store. Credentials and keys are not stored in the repository. The signed reviewer payload binds reviewer ID, approval, exact SHA, artifact digest, issue time, and expiry. A reviewer name or self-asserted authentication boolean is insufficient.
 
-## Evidence normalization
+The service checks archive size, member count/size, path traversal, JSON validity, advertised digest, artifact run SHA, and embedded receipt SHA. Matching GitHub's advertised digest proves byte consistency with that metadata, not independent signed build provenance. Production readiness still requires trusted attestation producer/verifier and separately retained evidence.
 
-Every observation records the repository, expected and observed full commit SHA, workflow run ID/status/conclusion, job and step IDs/statuses, artifact IDs/names/digests/expiry, stage IDs/statuses, tested tree SHA, independent-review status, normalized reasons, and explicit false authority flags.
+## Isolated repair and acceptance
+A human approves a patch; the patch is committed as a new SHA; the full canonical workflow reruns on that exact commit/tree; old-head evidence is discarded; the artifact is inspected and digest-verified; and signed independent review is obtained. This suite does not edit source, alter controls, or trigger reruns.
 
-A valid observation requires a completed successful run on the expected full SHA, available unexpired artifact metadata bound to that SHA, no failed steps, successful stage records bound to the same SHA, and authenticated independent review bound to the same SHA. This is a consistency check, not cryptographic verification of downloaded artifact contents.
+Adversarial cases: runner passes but workflow fails; missing run/job/artifact/receipt/stage; stale SHA; forged stage success; bad digest; expired artifact; malformed JSON; ZIP traversal/resource exhaustion; unknown reviewer; invalid/expired signature; mismatched subject or artifact digest; failed review.
 
-## Failure diagnosis
+## Current observed run
+Run [39548398273](https://github.com/Lornt1666/AIGC/actions/runs/39548398273), commit ba943c833e7ae5e146b83970fd90c7bd76a72c0c, failed. Dependency installation passed, but the canonical runner failed at the redaction stage. Later tests were skipped. Evidence uploaded on failure does not imply workflow success.
 
-The agent classifies observed issues (for example, Python import-path errors, dependency-integrity failures, redaction findings, and failed workflow steps) and produces a bounded, sanitized repair proposal. It must identify the failing stage, relevant evidence identifiers, confidence/limitations, and required approval. It must never propose weakening required checks, scanners, branch protection, signing, provenance, review, or release gates.
+Current disposition: VALIDATION_PENDING_RELEASE_BLOCKED.
 
-## Isolated repair validation
+## Next acceptance gate
+1. Inspect the specific redaction finding and propose a minimal text correction without weakening the scanner.
+2. Obtain human approval and commit the fix.
+3. Complete the full canonical workflow successfully on the new exact SHA.
+4. Inspect the artifact; verify digest, receipt, stage records, SHA, tree, and run binding.
+5. Obtain an unexpired signed review from a trusted independent reviewer whose public key is provisioned outside the repository.
+6. Submit evidence to Release Assurance and record explicit human acceptance. Until then, remain BLOCK.
 
-After an authorized human approves a proposal, an implementer may apply it on a new commit. The validation agent must then run the complete canonical workflow on the new exact commit and tree, inspect the complete evidence artifact, and discard all prior-head success evidence. No in-place edits or protected-control changes are made by this observer.
-
-## Fail-closed adversarial cases
-
-Tests cover missing artifacts, stale commit SHA, a forged stage success that conflicts with a failed workflow step, failed/missing independent review, expired artifacts, missing run data, and diagnostic redaction. Any missing, inconsistent, stale, or unverifiable input yields BLOCK.
-
-## Current observed incident
-
-Run [39547586183](https://github.com/Lornt1666/AIGC/actions/runs/39547586183) tested commit `769a03dacdd76dab9dc4f1450d3c6596c0acf8b3`. Dependency installation and the canonical validation runner passed. The Governor integration milestone test step failed because `tests/test_aigc_governor_milestones.py` imports `aigc_governor_milestones`, while the module is under `src/` and that test invocation did not configure the source import path. Subsequent OIDC and security scan steps were skipped. The artifact is present but does not make the overall workflow successful.
-
-**Minimal repair proposal (not applied by this agent):** configure the affected test invocation to resolve the existing `src/` package, for example with a scoped `PYTHONPATH=src`, or use a repository-wide packaging configuration. Preserve all tests and security gates, then rerun the entire canonical workflow on the new commit.
-
-## Implementation status and limitations
-
-This implementation is a pure read-only normalization and triage library. It does not itself call GitHub APIs, download or cryptographically verify artifacts, authenticate reviewers, persist evidence, apply patches, or launch workflows. Those integrations require separately permissioned adapters and authenticated evidence. Until they exist and independent review accepts the implementation, the agent is advisory only and release disposition remains BLOCK.
+Limits: Live monitoring needs runtime GitHub read access and an external reviewer trust registry. No auto-patching, reruns, merge, deployment, or release decision is implemented. Hash integrity does not replace authenticated provenance.
