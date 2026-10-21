@@ -69,6 +69,18 @@ class GitHubActionsReadOnlyClient:
  def get_run(self,repo,rid): return self._api(f"https://api.github.com/repos/{repo}/actions/runs/{int(rid)}")
  def get_jobs(self,repo,rid): return self._api(f"https://api.github.com/repos/{repo}/actions/runs/{int(rid)}/jobs").get("jobs",[])
  def get_artifacts(self,repo,rid): return self._api(f"https://api.github.com/repos/{repo}/actions/runs/{int(rid)}/artifacts").get("artifacts",[])
+ def get_job_logs(self,repo,jid):
+  url=f"https://api.github.com/repos/{repo}/actions/jobs/{int(jid)}/logs"
+  r=self.client.get(url,headers={"Authorization":f"Bearer {self.token}","Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"})
+  for _ in range(4):
+   if r.status_code not in (301,302,303,307,308):
+    r.raise_for_status()
+    if len(r.content)>10*1024*1024: raise EvidenceError("job_logs_too_large")
+    return r.text
+   target=r.headers.get("location",""); p=urlparse(target); host=p.hostname or ""
+   if p.scheme!="https" or not (host in {"github.com","objects.githubusercontent.com"} or host.endswith(".blob.core.windows.net") or host.endswith(".amazonaws.com") or host.endswith(".githubusercontent.com")): raise EvidenceError("job_log_redirect_host_rejected")
+   r=self.client.get(target)
+  raise EvidenceError("job_log_redirect_limit")
  def download_artifact(self,repo,aid):
   r=self.client.get(f"https://api.github.com/repos/{repo}/actions/artifacts/{int(aid)}/zip",headers={"Authorization":f"Bearer {self.token}","Accept":"application/vnd.github+json"})
   for _ in range(4):
