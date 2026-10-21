@@ -158,7 +158,7 @@ def main(argv: list[str] | None = None) -> int:
             evidence_inputs = json.loads(Path(args.evidence_inputs).read_text(encoding="utf-8"))
             execution_summary = run_workflow(envelope, evidence_inputs, out / "evidence_workflow")
             (out / "chief_of_staff_execution.json").write_text(
-                json.dumps(execution_summary, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+                json.dumps(execution_summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         except (OSError, json.JSONDecodeError, ValueError) as exc:
             parser.error(str(exc))
     print(json.dumps({"status": result["status"], "project_id": result["project_id"], "work_orders": len(result["work_orders"]), "completed_stages": sum(x["status"] in {"COMPLETE", "PASS"} for x in result["work_orders"]), "blocked_input_stages": sum(x["status"] == "BLOCKED_INPUTS" for x in result["work_orders"]), "release_decision": execution_summary["release_decision"] if execution_summary else "NOT_MADE", "specialist_workflow_status": execution_summary["status"] if execution_summary else "NOT_RUN"}, indent=2))
