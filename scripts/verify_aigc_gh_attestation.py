@@ -100,6 +100,8 @@ def verify_attestation(
     repository: str,
     signer_workflow: str,
     source_sha: str,
+    run_id: str,
+    run_attempt: str,
     expected_predicate: str = DEFAULT_PREDICATE,
     expected_repository_id: str = DEFAULT_REPOSITORY_ID,
     expected_cert_identity: str = DEFAULT_CERT_IDENTITY,
@@ -110,6 +112,8 @@ def verify_attestation(
         raise AttestationVerificationError("verifier_repository_and_signer_identity_required")
     if not SHA_RE.fullmatch(source_sha):
         raise AttestationVerificationError("source_sha_invalid")
+    if not run_id.isdigit() or not run_attempt.isdigit() or int(run_id) < 1 or int(run_attempt) < 1:
+        raise AttestationVerificationError("workflow_run_identity_invalid")
     if not expected_predicate or timeout_seconds < 1 or timeout_seconds > 180:
         raise AttestationVerificationError("verification_policy_invalid")
     artifact = Path(artifact_path)
@@ -148,6 +152,10 @@ def verify_attestation(
         "status": "VERIFIED",
         "repository": repository,
         "source_sha": source_sha,
+        "workflow_run_id": run_id,
+        "workflow_run_attempt": run_attempt,
+        "repository_id": DEFAULT_REPOSITORY_ID,
+        "signer_certificate_identity": DEFAULT_CERT_IDENTITY,
         "artifact_sha256": digest,
         "predicate_type": expected_predicate,
         "signer_workflow": signer_workflow,
@@ -174,6 +182,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--repository", required=True)
     parser.add_argument("--signer-workflow", required=True)
     parser.add_argument("--source-sha", required=True)
+    parser.add_argument("--run-id", required=True)
+    parser.add_argument("--run-attempt", required=True)
     parser.add_argument("--expected-predicate", default=DEFAULT_PREDICATE)
     parser.add_argument("--output", required=True, help="Receipt JSON output path")
     parser.add_argument("--raw-output", required=True, help="Raw structured verifier JSON path")
@@ -182,6 +192,7 @@ def main(argv: list[str] | None = None) -> int:
         receipt, raw = verify_attestation(
             gh_path=args.gh, artifact_path=args.artifact, repository=args.repository,
             signer_workflow=args.signer_workflow, source_sha=args.source_sha,
+            run_id=args.run_id, run_attempt=args.run_attempt,
             expected_predicate=args.expected_predicate,
         )
         for path, content in (
