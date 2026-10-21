@@ -148,7 +148,22 @@ def main(argv: list[str] | None = None) -> int:
         parser.error(str(exc))
     out = Path(args.output_dir)
     out.mkdir(parents=True, exist_ok=True)
-    (out / "chief_of_staff_runbook.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    try:
+        from aigc_documentation_architect import generate_document_pack
+        doc_manifest = generate_document_pack(brief, out / "documentation")
+        result["documentation_pack"] = {
+            "status": doc_manifest["status"],
+            "document_count": doc_manifest["document_count"],
+            "source_digest_sha256": doc_manifest["source_digest_sha256"],
+            "manifest_sha256": doc_manifest["manifest_sha256"],
+            "index_path": "documentation/README.md",
+            "manifest_path": "documentation/documentation_manifest.json",
+        }
+        result.pop("runbook_digest_sha256", None)
+        result["runbook_digest_sha256"] = _sha(result)
+    except (OSError, ValueError) as exc:
+        parser.error(f"documentation pack generation failed closed: {exc}")
+    (out / "chief_of_staff_runbook.json").write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\\n", encoding="utf-8")
     (out / "chief_of_staff_report.md").write_text(render_report(result), encoding="utf-8")
     execution_summary = None
     if args.evidence_envelope:
