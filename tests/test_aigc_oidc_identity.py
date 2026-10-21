@@ -36,6 +36,7 @@ class OIDCIdentityTests(unittest.TestCase):
         self.policy = OIDCTrustPolicy(
             issuer="https://issuer.example.test",
             audience="urn:aigc:test",
+            jwks_uri="https://issuer.example.test/.well-known/jwks.json",
             allowed_subjects=frozenset({"repo:Lornt1666/AIGC:ref:refs/heads/main"}),
             allowed_repositories=frozenset({"Lornt1666/AIGC"}),
             allowed_refs=frozenset({"refs/heads/main"}),
@@ -124,7 +125,7 @@ class OIDCIdentityTests(unittest.TestCase):
 
     def test_missing_trust_subjects_rejected_at_configuration(self):
         with self.assertRaises(ValueError):
-            OIDCTrustPolicy(issuer="https://issuer.example.test", audience="urn:test", allowed_subjects=frozenset())
+            OIDCTrustPolicy(issuer="https://issuer.example.test", audience="urn:test", jwks_uri="https://issuer.example.test/keys", allowed_subjects=frozenset())
 
 
 if __name__ == "__main__":
