@@ -372,7 +372,7 @@ def evaluate_evidence(policy: VerifierPolicy, bundle: Mapping[str, Any], *, eval
     review_ok = _receipt_ok(review, evidence_type="independent-security-review", sha=sha, tree_sha=tree_sha,
                             policy=policy, reasons=reasons, prefix="review", evaluation_time=evaluation_time)
     if isinstance(review, Mapping):
-        for key in ("reviewer_authenticated", "reviewer_independent", "review_signature_verified",
+        for key in ("reviewer_authenticated", "reviewer_independent", "reviewer_signature_verified",
                     "findings_closed", "remediation_retested", "review_bound_to_manifest"):
             if review.get(key) is not True:
                 reasons.append("review_gate_failed:" + key)
