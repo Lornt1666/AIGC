@@ -126,6 +126,7 @@ jobs:
           set -euo pipefail
           python -m unittest discover -s tests -p 'test_security_agents.py' -v
           python -m unittest discover -s tests -p 'test_repository_admin_agent.py' -v
+          python -m unittest discover -s tests -p 'test_team_agents.py' -v
 
       - name: Scan release-only paths for secret-like content
         shell: bash
