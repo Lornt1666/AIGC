@@ -104,6 +104,38 @@ class RuntimeMaturityTests(unittest.TestCase):
             self.assertEqual(telemetry.metrics()["invocation_count"], 1)
             store.close()
 
+
+    def test_tool_exception_is_unknown_and_never_blindly_replayed(self):
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as directory:
+            store = SQLiteGovernanceStore(str(Path(directory) / "unknown.sqlite"))
+            broker = PermitBroker(store, enabled_agent_ids={"RX-123"}, permit_verifier=lambda p: p.signature == "test-only")
+            adapter = GovernedToolAdapter(broker, store)
+            now = datetime.now(timezone.utc).replace(microsecond=0)
+            permit = ToolPermit(
+                permit_id="permit-unknown-1", task_id="task-runtime-1", agent_id="RX-123",
+                tool_name="records.read", action="read", resource="record:1", policy_version="policy-1",
+                issued_at=(now - timedelta(minutes=1)).isoformat().replace("+00:00", "Z"),
+                expires_at=(now + timedelta(minutes=5)).isoformat().replace("+00:00", "Z"),
+                signature="test-only",
+            )
+            calls = []
+            def uncertain_handler():
+                calls.append("called")
+                raise TimeoutError("simulated uncertain external outcome")
+            result = adapter.invoke(contract=make_contract(), permit=permit, tool_name="records.read",
+                action="read", resource="record:1", policy_version="policy-1",
+                idempotency_key="idem-unknown", handler=uncertain_handler)
+            self.assertEqual(result["status"], "UNKNOWN")
+            self.assertTrue(result["reconciliation_required"])
+            with self.assertRaisesRegex(GovernanceError, "invocation_outcome_unknown_requires_reconciliation"):
+                adapter.invoke(contract=make_contract(), permit=permit, tool_name="records.read",
+                    action="read", resource="record:1", policy_version="policy-1",
+                    idempotency_key="idem-unknown", handler=uncertain_handler)
+            self.assertEqual(len(calls), 1)
+            store.close()
+
     def test_durable_invocation_key_rejects_changed_request(self):
         store = SQLiteGovernanceStore(":memory:")
         store.begin_invocation("same-key", "digest-a")
