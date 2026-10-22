@@ -105,10 +105,12 @@ class RecoveryGateTests(unittest.TestCase):
         results = {gate: "PASS" for gate in GATE_SEQUENCE}
         decision = validate_gate_progress(GATE_SEQUENCE[-1], SHA, results, SHA)
         self.assertEqual(decision.status, "PASS")
-        blocked = validate_gate_progress(GATE_SEQUENCE[-1], SHA, {**results, GATE_SEQUENCE[2]: "BLOCK"}, SHA)
+        blocked = validate_gate_progress(
+            GATE_SEQUENCE[-1], SHA, {**results, GATE_SEQUENCE[2]: "BLOCK"}, SHA
+        )
         self.assertEqual(blocked.status, "BLOCK")
-        mismatch = validate_gate_progress(GATE_SEQUENCE[0], SHA, results, OTHER_SHA)
-        self.assertEqual(mismatch.status, "BLOCK")
+        with self.assertRaisesRegex(RecoveryGateError, "gate_evidence_commit_mismatch"):
+            validate_gate_progress(GATE_SEQUENCE[0], SHA, results, OTHER_SHA)
 
 
 if __name__ == "__main__":
