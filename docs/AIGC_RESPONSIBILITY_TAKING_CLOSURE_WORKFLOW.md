@@ -56,7 +56,7 @@ The evaluator returns `READY_FOR_RX19_REVIEW` only when all nine gates pass. Thi
 Run locally from the repository root:
 
 ```sh
-python -m unittest tests.test_aigc_responsibility_closure -v
+PYTHONPATH=src python -m unittest discover -s tests -p 'test_aigc_responsibility_closure.py' -v
 ```
 
 The CI result must be inspected for the exact PR head after this change. A passing unit suite is not a substitute for external admin/reviewer/approver actions, trusted producer verification, or RX-19's sole decision.
