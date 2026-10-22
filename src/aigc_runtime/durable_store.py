@@ -20,7 +20,7 @@ class SQLiteGovernanceStore:
             raise GovernanceError("sqlite_path_required")
         self.path = path
         self._lock = threading.RLock()
-        self._db = sqlite3.connect(path, timeout=10, isolation_level=None, check_same_thread=False)
+        self._db = sqlite3.connect(path, timeout=10, isolation_level="IMMEDIATE", check_same_thread=False)
         self._db.row_factory = sqlite3.Row
         self._db.execute("PRAGMA foreign_keys=ON")
         self._db.execute("PRAGMA busy_timeout=10000")
