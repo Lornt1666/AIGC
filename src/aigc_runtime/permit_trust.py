@@ -7,7 +7,7 @@ from typing import Iterable
 
 import jwt
 
-from .governed_runtime import GovernanceError, ToolPermit
+from .governed_runtime import GovernanceError, ToolPermit, parse_utc
 
 
 @dataclass(frozen=True)
@@ -57,6 +57,9 @@ class EdDsaPermitVerifier:
                 and claims.get("policy_version") == permit.policy_version
                 and claims.get("key_id") == permit.key_id
                 and claims.get("max_uses") == permit.max_uses
+                and claims.get("human_approval_ref") == permit.human_approval_ref
+                and claims.get("iat") == int(parse_utc(permit.issued_at).timestamp())
+                and claims.get("exp") == int(parse_utc(permit.expires_at).timestamp())
             )
         except (jwt.PyJWTError, TypeError, ValueError):
             return False
