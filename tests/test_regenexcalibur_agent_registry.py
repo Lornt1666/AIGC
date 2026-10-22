@@ -103,6 +103,16 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
             self.assertFalse(by_id[agent_id]["enabled"])
             self.assertEqual(by_id[agent_id]["implementation_status"], "SPECIFIED_NOT_PRODUCTION_INTEGRATED")
 
+    def test_research_quality_contract_fails_closed(self):
+        data = copy.deepcopy(self.registry)
+        data["research_intelligence_contract"]["no_unsupported_compliance_claims"] = False
+        with self.assertRaisesRegex(RegistryError, "research_intelligence_authority_boundary_weak"):
+            validate_registry(data)
+        data = copy.deepcopy(self.registry)
+        data["research_intelligence_contract"]["research_quality_rules"] = []
+        with self.assertRaisesRegex(RegistryError, "research_quality_rules_missing"):
+            validate_registry(data)
+
     def test_lifecycle_statuses_are_distinct_and_production_is_not_authorized(self):
         lifecycle = self.registry["implementation_lifecycle"]
         self.assertEqual(lifecycle["operational_statuses"], [
