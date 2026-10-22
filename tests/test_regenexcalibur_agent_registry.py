@@ -17,7 +17,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
     def test_registry_is_valid_and_fail_closed(self):
         result = validate_registry(self.registry)
         self.assertEqual(result["status"], "VALID")
-        self.assertEqual(result["agent_count"], 50)
+        self.assertEqual(result["agent_count"], 61)
         self.assertEqual(len(self.registry["operational_gate_contracts"]), 7)
         self.assertEqual(self.registry["final_decision_contract"]["canonical_decision_authority"], "RX-19")
         self.assertEqual(result["dependency_graph"], "ACYCLIC")
@@ -76,7 +76,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
     def test_new_assurance_agents_have_contracts_and_remain_disabled(self):
         by_id = {agent["id"]: agent for agent in self.registry["agents"]}
         contracts = {item["agent_id"]: item for item in self.registry["new_agent_contracts"]}
-        for agent_id in ("RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57"):
+        for agent_id in ("RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57", "RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68"):
             self.assertIn(agent_id, by_id)
             self.assertIn(agent_id, contracts)
             self.assertFalse(by_id[agent_id]["enabled"])
@@ -139,3 +139,18 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+    def test_research_intelligence_agents_are_disabled_and_fail_closed(self):
+        contract = self.registry["research_intelligence_contract"]
+        self.assertEqual(contract["failure_disposition"], "BLOCK")
+        self.assertTrue(contract["no_unsupported_compliance_claims"])
+        self.assertTrue(contract["no_agent_self_approval"])
+        self.assertTrue(contract["no_production_side_effects"])
+        by_id = {agent["id"]: agent for agent in self.registry["agents"]}
+        contracts = {item["agent_id"]: item for item in self.registry["new_agent_contracts"]}
+        for agent_id in ("RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68"):
+            self.assertFalse(by_id[agent_id]["enabled"])
+            self.assertEqual(by_id[agent_id]["implementation_status"], "SPECIFIED_NOT_PRODUCTION_INTEGRATED")
+            self.assertIn(agent_id, contracts)
+            self.assertEqual(contracts[agent_id]["failure_disposition"], "BLOCK")
+            self.assertTrue(contracts[agent_id]["self_approval_prohibited"])
