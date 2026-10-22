@@ -17,7 +17,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
     def test_registry_is_valid_and_fail_closed(self):
         result = validate_registry(self.registry)
         self.assertEqual(result["status"], "VALID")
-        self.assertEqual(result["agent_count"], 45)
+        self.assertEqual(result["agent_count"], 50)
         self.assertEqual(len(self.registry["operational_gate_contracts"]), 7)
         self.assertEqual(self.registry["final_decision_contract"]["canonical_decision_authority"], "RX-19")
         self.assertEqual(result["dependency_graph"], "ACYCLIC")
@@ -76,7 +76,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
     def test_new_assurance_agents_have_contracts_and_remain_disabled(self):
         by_id = {agent["id"]: agent for agent in self.registry["agents"]}
         contracts = {item["agent_id"]: item for item in self.registry["new_agent_contracts"]}
-        for agent_id in ("RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52"):
+        for agent_id in ("RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57"):
             self.assertIn(agent_id, by_id)
             self.assertIn(agent_id, contracts)
             self.assertFalse(by_id[agent_id]["enabled"])
@@ -85,6 +85,23 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
             self.assertTrue(contracts[agent_id]["human_approved_activation_required"])
             self.assertTrue(contracts[agent_id]["rollback_plan_required"])
             self.assertEqual(contracts[agent_id]["failure_disposition"], "BLOCK")
+
+    def test_handoff_coordinator_preserves_required_order_and_fail_closed_rules(self):
+        contract = self.registry["handoff_coordination_contract"]
+        self.assertEqual(contract["default_disposition"], "BLOCK")
+        self.assertEqual(contract["canonical_release_authority"], "RX-19")
+        self.assertEqual([step["sequence"] for step in contract["sequence"]], list(range(1, 9)))
+        self.assertEqual([step["agent_id"] for step in contract["sequence"]], [
+            "RX-53", "RX-54", "RX-55", "RX-50", "RX-56", "RX-49", "RX-51", "RX-52"
+        ])
+        self.assertTrue(contract["no_agent_self_approval"])
+        self.assertTrue(contract["no_agent_may_assign_human_identity"])
+        self.assertTrue(contract["no_agent_may_bypass_protection"])
+        self.assertTrue(contract["no_agent_may_merge_or_authorize_release"])
+        by_id = {agent["id"]: agent for agent in self.registry["agents"]}
+        for agent_id in ("RX-53", "RX-54", "RX-55", "RX-56", "RX-57"):
+            self.assertFalse(by_id[agent_id]["enabled"])
+            self.assertEqual(by_id[agent_id]["implementation_status"], "SPECIFIED_NOT_PRODUCTION_INTEGRATED")
 
     def test_lifecycle_statuses_are_distinct_and_production_is_not_authorized(self):
         lifecycle = self.registry["implementation_lifecycle"]
