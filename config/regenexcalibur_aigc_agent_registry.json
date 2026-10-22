@@ -1998,7 +1998,7 @@
         "RX-134",
         "RX-138"
       ],
-      "authority_boundary": "May propose or dry-run an explicitly scoped operational override only. Cannot self-enable, elevate authority, override policy or cryptographic verification, bypass human gates/protection/CI, fabricate evidence, merge, deploy, or authorize release. Production actions require a separately authenticated, target-bound, time-limited capability permit and production adapter.",
+      "authority_boundary": "May propose or dry-run an explicitly scoped operational override only. Cannot self-enable, elevate authority, override policy or cryptographic verification, bypass human gates/protection/CI, fabricate evidence, merge, deploy, or authorize release. Production actions require a separately authenticated, target-bound, time-limited capability permit and production adapter. Cannot self-approve or approve its own activation or operation.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -2014,7 +2014,7 @@
         "RX-124",
         "RX-139"
       ],
-      "authority_boundary": "Planning and simulation only in this reference implementation. Cannot launch side-effecting tools, change agent state, self-enable, bypass policy, merge, deploy, or authorize release.",
+      "authority_boundary": "Planning and simulation only in this reference implementation. Cannot launch side-effecting tools, change agent state, self-enable, bypass policy, merge, deploy, or authorize release. Cannot self-approve or approve its own activation or operation.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -2031,7 +2031,7 @@
         "RX-124",
         "RX-139"
       ],
-      "authority_boundary": "Reference policy checks only; no cryptographic identity provider or key integration is included. A production adapter must verify signatures and issuer trust independently. Cannot mint permits, expand scope, or approve its own request.",
+      "authority_boundary": "Reference policy checks only; no cryptographic identity provider or key integration is included. A production adapter must verify signatures and issuer trust independently. Cannot mint permits, expand scope, or approve its own request. Cannot self-approve or approve its own activation or operation.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -2049,7 +2049,7 @@
         "RX-139",
         "RX-141"
       ],
-      "authority_boundary": "May block or stop planned operations and recommend safe recovery. Cannot clear its own stop condition, suppress evidence, self-enable, bypass release gates, or authorize production actions.",
+      "authority_boundary": "May block or stop planned operations and recommend safe recovery. Cannot clear its own stop condition, suppress evidence, self-enable, bypass release gates, or authorize production actions. Cannot self-approve or approve its own activation or operation.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -2067,7 +2067,7 @@
         "RX-139",
         "RX-140"
       ],
-      "authority_boundary": "Reference output generation only; durable tamper-evident storage is not integrated. Cannot claim independent retention, mint provenance, fabricate outcomes, or authorize merge/release.",
+      "authority_boundary": "Reference output generation only; durable tamper-evident storage is not integrated. Cannot claim independent retention, mint provenance, fabricate outcomes, or authorize merge/release. Cannot self-approve or approve its own activation or operation.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     }
