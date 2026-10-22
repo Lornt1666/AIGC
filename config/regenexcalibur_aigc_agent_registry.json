@@ -953,7 +953,7 @@
         "RX-58",
         "RX-63"
       ],
-      "authority_boundary": "Disabled, specification-only. No production side effects, external communication, submission, purchase, contract acceptance, policy modification, reviewer assignment, merge or release. Consequential external actions require explicit human approval; missing permission or evidence blocks.",
+      "authority_boundary": "This agent cannot grant administrative access, invent or assign a human identity, manufacture consent or acceptance, bypass source permissions or repository protections, or perform unauthorized external actions. It cannot self-approve, merge, or authorize release. Disabled by default; fail closed on missing or stale evidence; human-approved activation is required.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -966,7 +966,7 @@
         "RX-58",
         "RX-69"
       ],
-      "authority_boundary": "Disabled, specification-only. No production side effects, external communication, submission, purchase, contract acceptance, policy modification, reviewer assignment, merge or release. Consequential external actions require explicit human approval; missing permission or evidence blocks.",
+      "authority_boundary": "This agent cannot grant administrative access, invent or assign a human identity, manufacture consent or acceptance, bypass source permissions or repository protections, or perform unauthorized external actions. It cannot self-approve, merge, or authorize release. Disabled by default; fail closed on missing or stale evidence; human-approved activation is required.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -980,7 +980,7 @@
         "RX-70",
         "RX-63"
       ],
-      "authority_boundary": "Disabled, specification-only. No production side effects, external communication, submission, purchase, contract acceptance, policy modification, reviewer assignment, merge or release. Consequential external actions require explicit human approval; missing permission or evidence blocks.",
+      "authority_boundary": "This agent cannot grant administrative access, invent or assign a human identity, manufacture consent or acceptance, bypass source permissions or repository protections, or perform unauthorized external actions. It cannot self-approve, merge, or authorize release. Disabled by default; fail closed on missing or stale evidence; human-approved activation is required.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -994,7 +994,7 @@
         "RX-71",
         "RX-63"
       ],
-      "authority_boundary": "Disabled, specification-only. No production side effects, external communication, submission, purchase, contract acceptance, policy modification, reviewer assignment, merge or release. Consequential external actions require explicit human approval; missing permission or evidence blocks.",
+      "authority_boundary": "This agent cannot grant administrative access, invent or assign a human identity, manufacture consent or acceptance, bypass source permissions or repository protections, or perform unauthorized external actions. It cannot self-approve, merge, or authorize release. Disabled by default; fail closed on missing or stale evidence; human-approved activation is required.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -1002,13 +1002,13 @@
       "id": "RX-73",
       "name": "Human Application Approval and Submission Gate",
       "responsibility": "Require explicit scoped human approval before any application submission or external communication; keep assessments, legal declarations, references and identity checks human-controlled.",
-      "authority_tier": "R4",
+      "authority_tier": "R0",
       "dependencies": [
         "RX-72",
         "RX-74",
         "RX-24"
       ],
-      "authority_boundary": "Disabled, specification-only. No production side effects, external communication, submission, purchase, contract acceptance, policy modification, reviewer assignment, merge or release. Consequential external actions require explicit human approval; missing permission or evidence blocks.",
+      "authority_boundary": "This agent cannot grant administrative access, invent or assign a human identity, manufacture consent or acceptance, bypass source permissions or repository protections, or perform unauthorized external actions. It cannot self-approve, merge, or authorize release. Disabled by default; fail closed on missing or stale evidence; human-approved activation is required.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -1022,7 +1022,7 @@
         "RX-59",
         "RX-63"
       ],
-      "authority_boundary": "Disabled, specification-only. No production side effects, external communication, submission, purchase, contract acceptance, policy modification, reviewer assignment, merge or release. Consequential external actions require explicit human approval; missing permission or evidence blocks.",
+      "authority_boundary": "This agent cannot grant administrative access, invent or assign a human identity, manufacture consent or acceptance, bypass source permissions or repository protections, or perform unauthorized external actions. It cannot self-approve, merge, or authorize release. Disabled by default; fail closed on missing or stale evidence; human-approved activation is required.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -1036,7 +1036,7 @@
         "RX-71",
         "RX-73"
       ],
-      "authority_boundary": "Disabled, specification-only. No production side effects, external communication, submission, purchase, contract acceptance, policy modification, reviewer assignment, merge or release. Consequential external actions require explicit human approval; missing permission or evidence blocks.",
+      "authority_boundary": "This agent cannot grant administrative access, invent or assign a human identity, manufacture consent or acceptance, bypass source permissions or repository protections, or perform unauthorized external actions. It cannot self-approve, merge, or authorize release. Disabled by default; fail closed on missing or stale evidence; human-approved activation is required.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -1050,7 +1050,7 @@
         "RX-66",
         "RX-68"
       ],
-      "authority_boundary": "Disabled, specification-only. No production side effects, external communication, submission, purchase, contract acceptance, policy modification, reviewer assignment, merge or release. Consequential external actions require explicit human approval; missing permission or evidence blocks.",
+      "authority_boundary": "This agent cannot grant administrative access, invent or assign a human identity, manufacture consent or acceptance, bypass source permissions or repository protections, or perform unauthorized external actions. It cannot self-approve, merge, or authorize release. Disabled by default; fail closed on missing or stale evidence; human-approved activation is required.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -1064,7 +1064,7 @@
         "RX-66",
         "RX-68"
       ],
-      "authority_boundary": "Disabled, specification-only. No production side effects, external communication, submission, purchase, contract acceptance, policy modification, reviewer assignment, merge or release. Consequential external actions require explicit human approval; missing permission or evidence blocks.",
+      "authority_boundary": "This agent cannot grant administrative access, invent or assign a human identity, manufacture consent or acceptance, bypass source permissions or repository protections, or perform unauthorized external actions. It cannot self-approve, merge, or authorize release. Disabled by default; fail closed on missing or stale evidence; human-approved activation is required.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -1078,7 +1078,7 @@
         "RX-77",
         "RX-68"
       ],
-      "authority_boundary": "Disabled, specification-only. No production side effects, external communication, submission, purchase, contract acceptance, policy modification, reviewer assignment, merge or release. Consequential external actions require explicit human approval; missing permission or evidence blocks.",
+      "authority_boundary": "This agent cannot grant administrative access, invent or assign a human identity, manufacture consent or acceptance, bypass source permissions or repository protections, or perform unauthorized external actions. It cannot self-approve, merge, or authorize release. Disabled by default; fail closed on missing or stale evidence; human-approved activation is required.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -1092,7 +1092,7 @@
         "RX-77",
         "RX-78"
       ],
-      "authority_boundary": "Disabled, specification-only. No production side effects, external communication, submission, purchase, contract acceptance, policy modification, reviewer assignment, merge or release. Consequential external actions require explicit human approval; missing permission or evidence blocks.",
+      "authority_boundary": "This agent cannot grant administrative access, invent or assign a human identity, manufacture consent or acceptance, bypass source permissions or repository protections, or perform unauthorized external actions. It cannot self-approve, merge, or authorize release. Disabled by default; fail closed on missing or stale evidence; human-approved activation is required.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -1107,7 +1107,7 @@
         "RX-79",
         "RX-65"
       ],
-      "authority_boundary": "Disabled, specification-only. No production side effects, external communication, submission, purchase, contract acceptance, policy modification, reviewer assignment, merge or release. Consequential external actions require explicit human approval; missing permission or evidence blocks.",
+      "authority_boundary": "This agent cannot grant administrative access, invent or assign a human identity, manufacture consent or acceptance, bypass source permissions or repository protections, or perform unauthorized external actions. It cannot self-approve, merge, or authorize release. Disabled by default; fail closed on missing or stale evidence; human-approved activation is required.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -1122,7 +1122,7 @@
         "RX-67",
         "RX-79"
       ],
-      "authority_boundary": "Disabled, specification-only. No production side effects, external communication, submission, purchase, contract acceptance, policy modification, reviewer assignment, merge or release. Consequential external actions require explicit human approval; missing permission or evidence blocks.",
+      "authority_boundary": "This agent cannot grant administrative access, invent or assign a human identity, manufacture consent or acceptance, bypass source permissions or repository protections, or perform unauthorized external actions. It cannot self-approve, merge, or authorize release. Disabled by default; fail closed on missing or stale evidence; human-approved activation is required.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -1136,7 +1136,7 @@
         "RX-66",
         "RX-80"
       ],
-      "authority_boundary": "Disabled, specification-only. No production side effects, external communication, submission, purchase, contract acceptance, policy modification, reviewer assignment, merge or release. Consequential external actions require explicit human approval; missing permission or evidence blocks.",
+      "authority_boundary": "This agent cannot grant administrative access, invent or assign a human identity, manufacture consent or acceptance, bypass source permissions or repository protections, or perform unauthorized external actions. It cannot self-approve, merge, or authorize release. Disabled by default; fail closed on missing or stale evidence; human-approved activation is required.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -1151,7 +1151,7 @@
         "RX-64",
         "RX-67"
       ],
-      "authority_boundary": "Disabled, specification-only. No production side effects, external communication, submission, purchase, contract acceptance, policy modification, reviewer assignment, merge or release. Consequential external actions require explicit human approval; missing permission or evidence blocks.",
+      "authority_boundary": "This agent cannot grant administrative access, invent or assign a human identity, manufacture consent or acceptance, bypass source permissions or repository protections, or perform unauthorized external actions. It cannot self-approve, merge, or authorize release. Disabled by default; fail closed on missing or stale evidence; human-approved activation is required.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     }
