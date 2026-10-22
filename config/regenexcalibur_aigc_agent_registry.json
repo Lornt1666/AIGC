@@ -1,0 +1,783 @@
+{
+  "schema_version": "regenexcalibur-aigc-agent-registry/1.0",
+  "project_id": "REGENEXCALIBUR",
+  "orchestration_platform": "AIGC",
+  "status": "DESIGN_BASELINE",
+  "default_disposition": "BLOCK",
+  "authority_tiers": {
+    "R0": "Read-only observation and evidence gathering",
+    "R1": "Drafting and analysis in isolated workspaces",
+    "R2": "Bounded sandbox testing; no production side effects",
+    "R3": "Explicit allowlisted controlled execution with expiry, idempotency, audit receipt and rollback",
+    "R4": "Human-reserved decisions; agent may assemble evidence but cannot impersonate approver"
+  },
+  "shared_contract": {
+    "required_input_fields": [
+      "contract_version",
+      "task_id",
+      "project_id",
+      "agent_id",
+      "agent_version",
+      "policy_version",
+      "objective",
+      "scope",
+      "exclusions",
+      "acceptance_criteria",
+      "risk_tier",
+      "input_refs",
+      "allowed_tools",
+      "permitted_side_effects",
+      "reviewer_role"
+    ],
+    "required_result_fields": [
+      "status",
+      "summary",
+      "assumptions",
+      "limitations",
+      "risks",
+      "open_questions",
+      "artifact_digests",
+      "evidence_refs",
+      "test_results",
+      "unresolved_findings",
+      "proposed_actions",
+      "side_effects_performed",
+      "audit_event_ids",
+      "approval_required",
+      "approval_status"
+    ],
+    "statuses": [
+      "SUCCEEDED",
+      "PARTIAL",
+      "BLOCKED",
+      "FAILED",
+      "UNKNOWN"
+    ],
+    "fail_closed_conditions": [
+      "missing_provenance",
+      "stale_evidence",
+      "unknown_schema",
+      "policy_mismatch",
+      "invalid_signature",
+      "contradictory_critical_evidence",
+      "unresolved_high_severity_finding"
+    ]
+  },
+  "agents": [
+    {
+      "id": "RX-00",
+      "name": "RegenExcalibur Program Governor",
+      "responsibility": "scope_milestones_risk_handoffs",
+      "authority_tier": "R1",
+      "dependencies": [],
+      "authority_boundary": "Coordinate only; cannot approve own outputs or bypass domain review.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-01",
+      "name": "Requirements and Traceability Architect",
+      "responsibility": "requirements_acceptance_traceability",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-00"
+      ],
+      "authority_boundary": "No requirement is verified without linked evidence.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-02",
+      "name": "Built-Environment Systems Architect",
+      "responsibility": "system_context_interfaces_design_alternatives",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-01",
+        "RX-11"
+      ],
+      "authority_boundary": "Design support only; regulated design requires qualified human approval.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-03",
+      "name": "Materials and Fabrication Engineer",
+      "responsibility": "materials_durability_manufacturing_test_plan",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-02"
+      ],
+      "authority_boundary": "No fabrication-ready disposition without approved calculations, drawings, BOM, QA and tests.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-04",
+      "name": "Envelope and BIPV Integration Agent",
+      "responsibility": "façade_weather_thermal_moisture_fire_electrical_interfaces",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-02",
+        "RX-03",
+        "RX-06",
+        "RX-07"
+      ],
+      "authority_boundary": "Cannot certify code compliance, structural adequacy or electrical safety.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-05",
+      "name": "Carbon and MRV Assurance Agent",
+      "responsibility": "baseline_lifecycle_uncertainty_monitoring_verification",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-11",
+        "RX-08"
+      ],
+      "authority_boundary": "No public quantified carbon claim without reproducible calculations and independent verification.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-06",
+      "name": "Codes Permits and Regulatory Research Agent",
+      "responsibility": "jurisdiction_code_permit_standard_research",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-11"
+      ],
+      "authority_boundary": "Research only; does not issue legal, code or regulator approval.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-07",
+      "name": "Safety Hazard and Constructability Agent",
+      "responsibility": "hazard_register_failure_modes_constructability",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-02",
+        "RX-03"
+      ],
+      "authority_boundary": "Cannot waive hazards or replace competent safety review.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-08",
+      "name": "Lifecycle and Circularity Agent",
+      "responsibility": "repair_disassembly_reuse_recycling_end_of_life",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-03",
+        "RX-11"
+      ],
+      "authority_boundary": "Claims require source evidence and explicit assumptions.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-09",
+      "name": "Supply Chain and Procurement Analyst",
+      "responsibility": "vendor_certifications_lead_times_substitutions",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-11"
+      ],
+      "authority_boundary": "No purchase orders, vendor onboarding or commitments.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-10",
+      "name": "Commercial and Finance Modeler",
+      "responsibility": "capex_opex_sensitivity_scenarios_unit_economics",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-09",
+        "RX-11"
+      ],
+      "authority_boundary": "Estimates are not quotes, financing commitments or guaranteed returns.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-11",
+      "name": "Research and Evidence Librarian",
+      "responsibility": "source_register_primary_sources_freshness_conflicts",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-00"
+      ],
+      "authority_boundary": "Uncited assertions and agent consensus are not proof.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-12",
+      "name": "Digital Twin and Data Contract Architect",
+      "responsibility": "asset_schemas_interfaces_bim_cad_telemetry_quality",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-01",
+        "RX-02"
+      ],
+      "authority_boundary": "No authoritative design mutation without approved change control.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-13",
+      "name": "Test Commissioning and Verification Planner",
+      "responsibility": "test_matrix_instrumentation_acceptance_retests",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-01",
+        "RX-02",
+        "RX-07"
+      ],
+      "authority_boundary": "Cannot certify tests not independently observed or validated.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-14",
+      "name": "Independent Design and Claims Reviewer",
+      "responsibility": "independent_challenge_safety_code_carbon_evidence",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-01",
+        "RX-03",
+        "RX-04",
+        "RX-05",
+        "RX-06",
+        "RX-07",
+        "RX-08",
+        "RX-13"
+      ],
+      "authority_boundary": "Must be independent of authoring and disclose conflicts; review is not release approval.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-15",
+      "name": "Change Control and Configuration Manager",
+      "responsibility": "baseline_revision_impact_supersession_rollback",
+      "authority_tier": "R1",
+      "dependencies": [
+        "RX-01",
+        "RX-12",
+        "RX-14"
+      ],
+      "authority_boundary": "Cannot approve its own change or overwrite accepted baselines.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-16",
+      "name": "AIGC Evidence and Provenance Verifier",
+      "responsibility": "exact_commit_run_artifact_digest_signer_predicate",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-11",
+        "RX-15"
+      ],
+      "authority_boundary": "Evidence readiness only; cannot authorize release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-17",
+      "name": "Security Privacy and Tool Permission Agent",
+      "responsibility": "least_privilege_secret_handling_threat_model_tool_allowlist",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-00",
+        "RX-16"
+      ],
+      "authority_boundary": "Cannot grant itself permissions or disable controls.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-18",
+      "name": "Audit and Retention Custodian",
+      "responsibility": "attributable_events_independent_retention_restore",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-16",
+        "RX-17"
+      ],
+      "authority_boundary": "Local logs or hash chains alone do not establish independent immutable retention.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-19",
+      "name": "Canonical AIGC Release Assurance Agent",
+      "responsibility": "release_packet_policy_evaluation",
+      "authority_tier": "R4",
+      "dependencies": [
+        "RX-14",
+        "RX-16",
+        "RX-17",
+        "RX-18",
+        "RX-20"
+      ],
+      "authority_boundary": "Sole software release authority; blocks on missing or unverifiable evidence.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-20",
+      "name": "Human Decision and Acceptance Gate",
+      "responsibility": "authenticated_approver_scope_exact_digest_timestamp_conditions",
+      "authority_tier": "R4",
+      "dependencies": [
+        "RX-14",
+        "RX-15",
+        "RX-16"
+      ],
+      "authority_boundary": "Never fabricate consent; silence and CI success are not acceptance.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-21",
+      "name": "Repository Reviewer Assignment and Independence Gate",
+      "responsibility": "prepare reviewer qualification criteria, inspect repository reviewer/permissions metadata, and request assignment by an authorized repository administrator",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-17",
+        "RX-19"
+      ],
+      "authority_boundary": "Cannot appoint itself, fabricate reviewer credentials, request privileged access beyond policy, or treat its own review as independent.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-22",
+      "name": "Independent Security Review Evidence Gate",
+      "responsibility": "validate that a qualified human reviewer examined the exact PR head, workflow permissions, OIDC/Sigstore adapter, trust boundaries, findings, and remediation",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-21",
+        "RX-16"
+      ],
+      "authority_boundary": "Collects and validates evidence of a review; is not the independent reviewer and cannot approve its own implementation.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-23",
+      "name": "Findings Remediation and Exact-Head CI Orchestrator",
+      "responsibility": "track review findings to fixes, preserve required checks, run full CI on the final exact commit, and bind results to commit/tree/run/attempt",
+      "authority_tier": "R2",
+      "dependencies": [
+        "RX-22",
+        "RX-15",
+        "RX-16"
+      ],
+      "authority_boundary": "Cannot suppress or weaken checks, rewrite review findings as resolved without evidence, merge, or release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-24",
+      "name": "Authenticated Human Acceptance Custodian",
+      "responsibility": "validate authorized human acceptance bound to exact commit and evidence digest, including approver identity, scope, timestamp, and conditions",
+      "authority_tier": "R4",
+      "dependencies": [
+        "RX-22",
+        "RX-23",
+        "RX-16"
+      ],
+      "authority_boundary": "Never solicits consent through impersonation, fabricates acceptance, or treats CI/reviewer approval/silence as human acceptance.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-25",
+      "name": "Protected Merge Readiness Gate",
+      "responsibility": "verify branch rules, required checks, review approvals, conversation resolution, exact PR head, and authorized merge path before a human/authorized repository process merges",
+      "authority_tier": "R4",
+      "dependencies": [
+        "RX-22",
+        "RX-23",
+        "RX-24"
+      ],
+      "authority_boundary": "Readiness assessment only; cannot bypass branch protection or merge unilaterally.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-26",
+      "name": "Mainline OIDC and Attestation Verifier",
+      "responsibility": "inspect exact successful main-branch run and verify actual OIDC claims plus signed attestation repository identity, workflow identity, source SHA, predicate, and evidence subject digest",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-25",
+        "RX-16",
+        "RX-17"
+      ],
+      "authority_boundary": "Must use live verifier output and authenticated claims; mocks, hashes alone, feature-branch runs, or agent assertions do not satisfy trust verification.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-27",
+      "name": "Signed Evidence Artifact and Independent Audit Gate",
+      "responsibility": "download and inspect retained signed-evidence artifacts, recompute package digests, bind receipts to exact run/attempt/commit/digest, verify independent audit retention, and evaluate release-criteria completeness",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-26",
+        "RX-18",
+        "RX-14"
+      ],
+      "authority_boundary": "Cannot claim independent retention from a same-process/local log alone and cannot authorize release; hands evidence to RX-19 for final evaluation.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-28",
+      "name": "Operational Release Block and Exact-Head Gate Coordinator",
+      "responsibility": "coordinate authorized repository-administrator assignment of a qualified independent security reviewer; track review findings through evidenced remediation; require complete CI on the final exact commit; continuously enforce a BLOCK disposition for RX-19 until every required review, human acceptance, protected-merge, live provenance, signed-evidence, audit-retention, and release criterion is verified",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-21",
+        "RX-22",
+        "RX-23",
+        "RX-24",
+        "RX-25",
+        "RX-26",
+        "RX-27",
+        "RX-19"
+      ],
+      "authority_boundary": "Read-only gate coordinator. May request authorized actions and assemble evidence but cannot appoint reviewers, self-approve, close findings without evidence, alter or weaken required checks, accept on behalf of a human, bypass protections, merge, attest to unverified provenance, or override RX-19 BLOCK. Missing, stale, contradictory, unauthenticated, or wrong-commit evidence must preserve BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    }
+  ],
+  "mandatory_human_gates": [
+    "regulated_design_acceptance",
+    "fabrication_release",
+    "permit_or_legal_attestation",
+    "procurement_commitment",
+    "public_environmental_claim",
+    "production_deployment",
+    "software_release"
+  ],
+  "acceptance_policy": {
+    "independent_review_required": true,
+    "human_acceptance_required": true,
+    "bind_review_to_exact_artifact_digest": true,
+    "bind_acceptance_to_exact_artifact_digest": true,
+    "require_live_cryptographic_provenance": true,
+    "require_independently_administered_audit_retention": true,
+    "no_hash_only_provenance_fallback": true,
+    "no_agent_self_approval": true
+  },
+  "operational_gate_contracts": [
+    {
+      "gate_id": "reviewer_assignment",
+      "agent_id": "RX-21",
+      "sequence": 1,
+      "required_inputs": [
+        "repository_id",
+        "pull_request_number",
+        "exact_head_sha",
+        "reviewer_identity",
+        "administrator_authorization_evidence",
+        "reviewer_qualification_evidence",
+        "conflict_of_interest_declaration"
+      ],
+      "required_outputs": [
+        "assignment_request_ref",
+        "authorized_assigner_identity",
+        "reviewer_identity",
+        "qualification_evidence_ref",
+        "independence_check",
+        "reviewed_head_sha",
+        "status"
+      ],
+      "pass_criteria": [
+        "authorized repository administrator performs assignment",
+        "reviewer qualifications evidenced",
+        "reviewer independent of implementation and approval",
+        "reviewer explicitly bound to exact_head_sha"
+      ],
+      "failure_disposition": "BLOCK",
+      "invalidated_by": [
+        "pull_request_head_changed",
+        "reviewer_identity_changed",
+        "qualification_or_conflict_evidence_changed"
+      ],
+      "side_effects": "May prepare a request; assignment itself must be performed by an authorized repository administrator."
+    },
+    {
+      "gate_id": "review_findings_and_remediation",
+      "agent_id": "RX-22",
+      "sequence": 2,
+      "required_inputs": [
+        "exact_head_sha",
+        "reviewer_assignment_ref",
+        "review_record_ref",
+        "finding_ids",
+        "severity",
+        "affected_paths_or_controls"
+      ],
+      "required_outputs": [
+        "reviewed_head_sha",
+        "reviewer_independence_evidence_ref",
+        "finding_ledger",
+        "finding_statuses",
+        "remediation_commit_shas",
+        "retest_evidence_refs",
+        "unresolved_findings",
+        "status"
+      ],
+      "pass_criteria": [
+        "authenticated review covers exact reviewed head",
+        "each finding has stable ID, severity, disposition and traceable remediation",
+        "each claimed fix has evidence-backed retest",
+        "unresolved critical or high findings block"
+      ],
+      "failure_disposition": "BLOCK",
+      "invalidated_by": [
+        "reviewed_head_changed",
+        "remediation_commit_added",
+        "retest_evidence_superseded",
+        "finding_reopened"
+      ],
+      "side_effects": "Read-only evidence validation; no self-review, finding suppression, or self-approval."
+    },
+    {
+      "gate_id": "exact_head_ci",
+      "agent_id": "RX-23",
+      "sequence": 3,
+      "required_inputs": [
+        "final_head_sha",
+        "expected_workflow_set",
+        "required_check_policy_version",
+        "finding_ledger_digest"
+      ],
+      "required_outputs": [
+        "tested_commit_sha",
+        "tree_sha",
+        "workflow_run_ids",
+        "run_attempts",
+        "required_check_results",
+        "artifact_digests",
+        "ci_receipt_digest",
+        "status"
+      ],
+      "pass_criteria": [
+        "complete required workflow set succeeded",
+        "all results refer to final_head_sha and exact run attempts",
+        "no required check is skipped, weakened, missing, or stale",
+        "receipt records commit/tree/workflow/run/attempt"
+      ],
+      "failure_disposition": "BLOCK",
+      "invalidated_by": [
+        "any_new_commit",
+        "required_workflow_or_policy_change",
+        "run_attempt_superseded",
+        "required_check_failure"
+      ],
+      "side_effects": "May request or observe CI; cannot edit policy to obtain a pass."
+    },
+    {
+      "gate_id": "human_acceptance",
+      "agent_id": "RX-24",
+      "sequence": 4,
+      "required_inputs": [
+        "approver_identity",
+        "approver_authority_evidence",
+        "scope",
+        "exact_head_sha",
+        "evidence_package_sha256",
+        "timestamp",
+        "conditions"
+      ],
+      "required_outputs": [
+        "authenticated_approver",
+        "authority_evidence_ref",
+        "accepted_scope",
+        "accepted_head_sha",
+        "accepted_evidence_digest",
+        "timestamp",
+        "conditions",
+        "status"
+      ],
+      "pass_criteria": [
+        "acceptance is explicit and attributable to authorized human",
+        "commit and evidence digest match candidate packet",
+        "scope and conditions are unambiguous",
+        "acceptance follows availability of required review and remediation evidence"
+      ],
+      "failure_disposition": "BLOCK",
+      "invalidated_by": [
+        "commit_changed",
+        "evidence_digest_changed",
+        "acceptance_revoked_or_expired",
+        "scope_or_policy_changed"
+      ],
+      "side_effects": "Validation only; never manufactures, impersonates, or records acceptance on behalf of a person."
+    },
+    {
+      "gate_id": "protected_merge",
+      "agent_id": "RX-25",
+      "sequence": 5,
+      "required_inputs": [
+        "repository_ruleset_readback_ref",
+        "branch_protection_readback_ref",
+        "exact_pr_head_sha",
+        "required_checks_receipt_ref",
+        "independent_review_ref",
+        "human_acceptance_ref",
+        "review_thread_state_ref"
+      ],
+      "required_outputs": [
+        "protection_snapshot_digest",
+        "required_checks_satisfied",
+        "approval_state",
+        "conversation_resolution_state",
+        "mergeability_state",
+        "authorized_merge_path",
+        "status"
+      ],
+      "pass_criteria": [
+        "live protection read-back confirms required review/checks and restricted bypass",
+        "approvals are valid for exact head and from eligible reviewers",
+        "required conversations resolved",
+        "authorized protected merge path confirmed"
+      ],
+      "failure_disposition": "BLOCK",
+      "invalidated_by": [
+        "head_changed",
+        "ruleset_changed",
+        "approval_dismissed",
+        "required_check_changed",
+        "review_thread_reopened"
+      ],
+      "side_effects": "Readiness assessment only; no merge or protection mutation."
+    },
+    {
+      "gate_id": "post_merge_trust_and_artifact_verification",
+      "agent_id": "RX-26",
+      "sequence": 6,
+      "required_inputs": [
+        "merged_main_sha",
+        "successful_main_workflow_run_id",
+        "run_attempt",
+        "oidc_verifier_output_ref",
+        "signed_attestation_ref",
+        "expected_repository_id",
+        "expected_workflow_identity",
+        "expected_predicate_type",
+        "evidence_subject_digest"
+      ],
+      "required_outputs": [
+        "main_sha",
+        "run_id",
+        "run_attempt",
+        "verified_oidc_claims_digest",
+        "verified_signer_identity",
+        "verified_predicate_type",
+        "verified_source_sha",
+        "verified_subject_digest",
+        "verification_tool_identity",
+        "status"
+      ],
+      "pass_criteria": [
+        "actual OIDC claims verified by trusted verifier",
+        "signed attestation cryptographically verifies",
+        "repository and workflow identity/ref match policy",
+        "source SHA equals resulting main SHA",
+        "predicate and subject digest match expected evidence package"
+      ],
+      "failure_disposition": "BLOCK",
+      "invalidated_by": [
+        "main_sha_changed",
+        "run_or_attempt_changed",
+        "attestation_or_subject_digest_changed",
+        "trust_policy_changed"
+      ],
+      "side_effects": "Read-only verification; mocks, hashes alone, feature-branch runs, or self-assertions do not qualify."
+    },
+    {
+      "gate_id": "retained_artifact_and_independent_audit",
+      "agent_id": "RX-27",
+      "sequence": 7,
+      "required_inputs": [
+        "artifact_download_ref",
+        "artifact_manifest_ref",
+        "expected_artifact_digest",
+        "run_id",
+        "run_attempt",
+        "commit_sha",
+        "tree_sha",
+        "independent_audit_system_identity",
+        "retention_policy_ref",
+        "restore_or_retrieval_test_ref"
+      ],
+      "required_outputs": [
+        "artifact_inventory",
+        "recomputed_digests",
+        "run_attempt_commit_binding",
+        "retention_system_identity",
+        "retention_evidence_ref",
+        "retrieval_test_result",
+        "evidence_packet_digest",
+        "missing_evidence",
+        "status"
+      ],
+      "pass_criteria": [
+        "actual retained artifact downloaded and inspected",
+        "package digests recomputed and match manifest/attestation subject",
+        "receipts bind run/attempt/commit/tree/digest",
+        "independently administered audit retention evidenced and retrieval tested",
+        "complete packet delivered to RX-19"
+      ],
+      "failure_disposition": "BLOCK",
+      "invalidated_by": [
+        "artifact_replaced_or_expired",
+        "digest_mismatch",
+        "run_attempt_binding_mismatch",
+        "retention_or_access_policy_changed",
+        "retrieval_test_failed"
+      ],
+      "side_effects": "Evidence custody and verification only; local log/hash chain alone is insufficient."
+    }
+  ],
+  "final_decision_contract": {
+    "agent_id": "RX-28",
+    "canonical_decision_authority": "RX-19",
+    "required_gate_ids": [
+      "reviewer_assignment",
+      "review_findings_and_remediation",
+      "exact_head_ci",
+      "human_acceptance",
+      "protected_merge",
+      "post_merge_trust_and_artifact_verification",
+      "retained_artifact_and_independent_audit"
+    ],
+    "required_outputs": [
+      "evidence_packet_digest",
+      "gate_statuses",
+      "unresolved_findings",
+      "exact_head_sha",
+      "final_disposition_recommendation",
+      "handoff_ref"
+    ],
+    "pass_criteria": [
+      "all required gates pass on the same commit and applicable evidence digest",
+      "no stale or contradictory evidence",
+      "evidence packet is complete and verifiable",
+      "handoff is delivered to RX-19"
+    ],
+    "failure_disposition": "BLOCK",
+    "authority_boundary": "RX-28 coordinates and assembles only; RX-19 alone decides release disposition. RX-28 cannot merge, accept for a human, override BLOCK, or authorize release."
+  }
+}
