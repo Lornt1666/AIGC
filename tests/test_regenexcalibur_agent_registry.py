@@ -289,7 +289,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
     def test_runtime_mishap_recovery_agents_are_disabled_and_sequence_is_ordered(self):
         result = validate_registry(self.registry)
         recovery = self.registry["runtime_mishap_recovery_contract"]
-        self.assertEqual(result["agent_count"], 136)
+        self.assertEqual(result["agent_count"], 137)
         self.assertEqual(recovery["canonical_release_authority"], "RX-19")
         self.assertFalse(recovery["production_authorization"])
         self.assertEqual([step["sequence"] for step in recovery["operating_sequence"]], list(range(1, 9)))
@@ -302,7 +302,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
 
     def test_override_agents_are_disabled_and_contract_is_fail_closed(self):
         result = validate_registry(self.registry)
-        self.assertEqual(result["agent_count"], 136)
+        self.assertEqual(result["agent_count"], 137)
         contract = self.registry["agent_operations_override_contract"]
         self.assertEqual(contract["canonical_release_authority"], "RX-19")
         self.assertFalse(contract["production_authorization"])
