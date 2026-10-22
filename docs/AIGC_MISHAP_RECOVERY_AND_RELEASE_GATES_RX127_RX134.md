@@ -1,0 +1,145 @@
+# AIGC Mishap Recovery and Release-Gate Operations — RX-127–RX-134
+
+**Status:** specification and registry contracts added; operational activation not authorized  
+**Default disposition:** BLOCK  
+**Release authority:** RX-19 only  
+**Scope:** failure diagnosis, safe recovery, exact-head evidence, independent review, repository protection, authenticated acceptance, provenance, and readiness handoff.
+
+## Agent responsibilities
+
+| Agent | Operational responsibility | Hard boundary |
+|---|---|---|
+| RX-127 Runtime Incident Triage and Safe Recovery | Preserve evidence, classify severity/blast radius, coordinate containment and reversible recovery | No destructive remediation before evidence capture; cannot declare resolution without proof |
+| RX-128 CI Failure Root-Cause and Regression Diagnosis | Correlate SHA/run attempt/job/step/logs/tests/artifacts; separate facts from hypotheses; produce reproduction and falsification tests | Cannot suppress tests or label an unproven cause as confirmed |
+| RX-129 Exact-Head CI and Artifact Forensics | Verify exact SHA, workflow attempt, required jobs, skipped stages, artifact digests and test summary | Stale, mismatched, incomplete, or failed evidence blocks |
+| RX-130 Crash, Retry, and Recovery Verification | Test timeout/crash/partial-side-effect/replay/cancellation/rollback paths | Unknown external outcome requires reconciliation; never blindly retry |
+| RX-131 Independent Review and Findings Closure Coordinator | Track administrator-assigned reviewer, independence, commit-bound findings, remediation and retests | Cannot assign or impersonate human reviewers or self-close findings |
+| RX-132 Repository Protection and Merge-State Readback | Coordinate authorized branch/ruleset/required-check readback and verify merge state | Permission failure is unresolved evidence, not proof that protection exists or is absent |
+| RX-133 Authenticated Acceptance and Provenance Evidence | Verify acceptance binding, signed post-merge provenance and independent artifact retrieval | Cannot fabricate acceptance, identity, signature or provenance |
+| RX-134 Operational Readiness and Incident Learning Orchestrator | Consolidate incident, SLO, rollback, review, provenance and open-blocker evidence for RX-19 | Cannot enable agents, merge, or authorize release |
+
+## Mandatory operating sequence
+
+1. **Detect and preserve — RX-127.** Capture exact commit, branch/base, run ID and attempt, job/step IDs, timestamps, failure logs, artifact IDs/digests, environment versions, and impact. Redact secrets; preserve original evidence read-only.
+2. **Diagnose and reproduce — RX-128.** Distinguish directly observed facts from hypotheses. For each hypothesis, state supporting evidence, counter-evidence, confidence, and the cheapest discriminating reproduction/falsification test. A log message occurring near a failure is not proof of causation.
+3. **Verify exact-head evidence — RX-129.** Ensure the run's observed SHA equals the candidate SHA, all required jobs finished, required stages did not silently skip, test counts and artifacts are inspected, and the attempt is identified. A rerun of a stale SHA never validates a newer commit.
+4. **Repair and prove recovery — RX-130.** Make the smallest safe change that addresses the demonstrated cause. Add a regression test. Exercise failure injection, replay, timeout, crash and rollback paths. Record uncertain external side effects as UNKNOWN; reconcile before any retry. Never remove or weaken an assertion merely to obtain a green run.
+5. **Independent human review — RX-131.** An authorized repository administrator assigns a qualified independent human reviewer. Bind every finding to the reviewed SHA; record remediation commits and evidence-backed retests. AI agents provide analysis but are not the independent reviewer.
+6. **Protection readback — RX-132.** Obtain administrator-authorized readback of required checks, branch/ruleset restrictions, reviewer requirements, and bypass permissions. If permissions prevent readback, leave the gate unresolved and blocked.
+7. **Acceptance and provenance — RX-133.** Verify authenticated human acceptance is cryptographically or otherwise verifiably bound to the exact final SHA and evidence-manifest digest. After authorized merge, verify signing identity, attestation claims, provenance, and independent retrieval of retained evidence.
+8. **Operational readiness and RX-19 handoff — RX-134.** Summarize completed evidence, open findings, SLO/telemetry status, runbooks, rollback rehearsal, remaining risk, and gate decisions. Send the complete evidence packet to RX-19, the sole canonical release decision authority.
+
+## Minimum incident record
+
+Each incident/remediation record should contain:
+- Unique incident ID, severity, detection time, affected components, owner, and status.
+- Exact source SHA, base SHA, workflow run ID/attempt, job/step identifiers, and immutable log/artifact references.
+- Observed failure signature and redacted evidence digest.
+- Root-cause statement with confidence, evidence, alternatives considered, and falsification result.
+- Remediation commit, regression-test reference, exact-head validation receipt, and before/after outcome.
+- Recovery/rollback test result and reconciliation record for uncertain side effects.
+- Reviewer assignment/identity evidence, finding IDs and retests, administrator protection readback, authenticated acceptance receipt, provenance digest, and retention retrieval receipt as applicable.
+
+## Anti-mishap invariants
+
+- Never delete, rewrite, or conceal failed evidence to make a run appear successful.
+- Never weaken or skip a required test to obtain a pass.
+- Never change a root-cause label from hypothesis to confirmed without discriminating evidence.
+- Never retry an uncertain side effect until it has been reconciled or proven safe to retry.
+- Never treat a workflow success on an old SHA as validation of a new SHA.
+- Never infer repository protection state from a 403, 404, unavailable connector, or permission error.
+- Never treat a chat statement, bot comment, or agent-generated record as authenticated acceptance.
+- Any new source, test, workflow, policy, or relevant configuration commit invalidates dependent exact-head evidence.
+- Missing, stale, contradictory, unauthorized, or unverifiable evidence yields BLOCK.
+- No agent can self-enable, self-approve, assign a human identity, bypass protection, merge, or authorize release.
+
+## Current known incident context
+
+The prior CI attempt #39780164587 failed, and its rerun also ended in failure. Logs included PostgreSQL errors involving duplicate key command_center_one_active_run and a rejected invalid-state value against command_center_runs_status_check. These observations are not, by themselves, a confirmed root cause of the canonical validation failure. RX-128 must locate the exact failing step/assertion and obtain a discriminating reproduction before proposing a fix. The failed run's artifact is failure evidence, not a passing release receipt.
+
+The last known successful runtime-maturity test run was #39780888505 on SHA 9b07abefe888e7b7b363f75b2b748c3e41de3484. Subsequent commits to add RX-127–RX-134 mean that success does not validate the current branch head. A fresh exact-head CI run is mandatory.
+
+
+## Executable reference harness
+
+The repository now includes `src/aigc_runtime/recovery_gates.py` and focused tests in `tests/test_aigc_runtime_mishap_recovery.py`. The module provides deterministic, fail-closed primitives to:
+- validate incident records against the candidate commit and evidence digest;
+- keep root-cause statements as hypotheses unless a referenced reproduction reproduces them;
+- validate exact-head CI receipts, required jobs, skipped stages, test counts, and artifact/evidence digests;
+- block retries for uncertain side effects unless reconciliation proves the retry safe; and
+- enforce ordered gate progression with exact-SHA binding.
+
+The CI workflow runs this focused test module. These primitives are reference policy functions, not a GitHub API client, production incident commander, human identity provider, KMS, or authority to execute remediation. They do not independently prove that a supplied receipt is authentic; callers must verify its provenance before supplying it.
+
+## Activation policy
+
+RX-127–RX-134 are currently disabled, R0, and specification-only. Enable only the minimum necessary agent after implementation, contract/negative/failure-injection tests, least-privilege identity, independent review, rollback rehearsal, and authorized human activation are evidenced. This document does not authorize runtime execution or production access.
+
+
+## Release-readiness trigger layer — RX-135–RX-138
+
+**Status:** specification and reference evaluator added; all four agents remain disabled R0.  
+**Default disposition:** BLOCK. **Canonical release authority:** RX-19.
+
+| Agent | Role | Boundary |
+|---|---|---|
+| RX-135 External Gate Dependency and Authorized Action Coordinator | Tracks the human/admin/integration actions still required and prepares scoped requests with named owner roles | Cannot impersonate or assign a person, claim an action completed without evidence, or grant permissions |
+| RX-136 CI Trigger and Exact-Head Run Coordinator | Checks workflow trigger eligibility and verifies run/attempt/head alignment | Reference evaluator only; cannot forge CI receipts, suppress checks, or treat stale-head evidence as current |
+| RX-137 Evidence Packet Assembly and Digest Reconciliation Agent | Assembles commit-bound evidence refs, artifact digests, acceptance/provenance and retention receipts | Cannot authenticate unsupported claims or manufacture missing receipts |
+| RX-138 Release Readiness Trigger Supervisor | Reconciles internal CI triggers with external human dependencies and reports the gate state to RX-19 | Cannot activate agents, override BLOCK, merge, or authorize release |
+
+### Trigger sequence
+1. **RX-135 — external dependencies:** enumerate authorized roles and required evidence; administrator permission failures stay UNVERIFIED.
+2. **RX-136 — internal CI:** bind workflow run and attempt to the exact candidate SHA. A source commit, workflow change, or relevant policy change invalidates dependent evidence.
+3. **RX-137 — evidence packet:** reconcile artifact bytes/digests and evidence-manifest references; branch CI is not post-merge provenance.
+4. **RX-138 — readiness supervision:** emit a gate-by-gate status and next action owner. Hand the complete evidence packet to RX-19; do not substitute for its decision.
+
+The executable reference evaluator is `src/aigc_runtime/readiness_triggers.py`, with tests in `tests/test_aigc_readiness_triggers.py`. It evaluates supplied state only; it does not itself query GitHub, dispatch a workflow, authenticate identities, or execute external actions. CI now runs the focused test module. The current repository CI run must pass before the code can be treated as validated.
+
+### Live gate snapshot for PR #330
+- Exact-head branch CI had passed on `3e346328e9de7121fcd0284605a8bd0dfe706098`, but the trigger-agent changes create a new candidate and require a fresh run.
+- No submitted independent review was present at last read.
+- Branch protection remains UNVERIFIED because the integration could not read it back.
+- Authenticated human acceptance bound to the final candidate SHA and evidence digest is missing.
+- Merge has not occurred; post-merge provenance and independent retention retrieval are therefore not established.
+- Disposition remains **BLOCK**. No agent is production-authorized.
+
+
+## Governed override and agent operations — RX-139–RX-143
+
+**Status:** specification plus deterministic dry-run planner and automated tests. All five agents remain disabled R0; production execution and production authorization are false. Canonical release authority remains RX-19.
+
+| Agent | Responsibility | Authority limit |
+|---|---|---|
+| RX-139 — Bounded Governance Override and Agent Operations Controller | Coordinates allowed rerouting, approved fallback, read-only degradation and reconciled retries | Cannot override security/release invariants or grant itself authority |
+| RX-140 — Agent Execution Planning and Dependency Scheduler | Builds deterministic, dependency-ordered dry-run plans and rejects cycles/missing dependencies | Does not dispatch agents or perform side effects |
+| RX-141 — Scoped Capability Permit and Tool Authorization Broker | Defines permit-validation requirements for target, action, candidate, policy, audience, expiry and replay controls | Reference contract only; no production signature/issuer integration and cannot mint permits |
+| RX-142 — Safety Interlock, Kill-Switch, and Recovery Supervisor | Blocks operations on kill-switch, unsafe retry or missing evidence | Cannot clear its own stop condition or override gates |
+| RX-143 — Agent Run Ledger and Execution Evidence Recorder | Defines run-record fields for source, policy, task, permit, run and outcome digests | Does not claim tamper-evident persistence or independent retention |
+
+### Executable reference
+- `src/aigc_runtime/agent_operations.py` implements `plan_agent_operation`, a deterministic dry-run planner. It never invokes a tool or changes an agent's activation state.
+- `tests/test_aigc_agent_operations.py` tests deterministic dependency ordering, prohibited overrides, production-mode denial, kill-switch precedence, side-effect reconciliation, malformed bindings, cycles, missing dependencies and non-mutation.
+- The canonical CI workflow runs this focused test module.
+- Registry validation checks 140 unique agents, 111 agent contracts, disabled R0 status, lifecycle schema binding, override-contract completeness, and prohibited operations.
+
+### Override policy
+Permitted *planning intents* are allowlisted-agent run planning, rerouting to an allowlisted agent, retry only after side-effect reconciliation, approved fallback selection, and read-only degradation. This is not permission to execute these operations in production.
+
+Always block attempts to override release gates, disable protection, skip required CI, self-enable, elevate authority, manufacture acceptance, forge evidence, merge, deploy or authorize release. Production execution remains blocked until a separate implementation supplies trusted signature verification, issuer trust, target/action-bound short-lived permits, replay protection, isolated adapters, kill-switch enforcement, durable audit storage, independent review and explicit authorized activation.
+
+A user authorization in conversation does not itself create a GitHub administrator grant, signed capability permit, authenticated acceptance receipt, or independent security review. Do not merge or release based solely on the user's general authorization.
+
+### Evidence freshness
+Any source commit, policy version, target agent, action, permit scope or relevant workflow change invalidates dependent plans/receipts. A successful dry-run test proves planner behavior only; it is not evidence that production dispatch, cryptographic permit verification, agent deployment, merge, or release works.
+
+
+## RX-145–RX-147 — Administrator readback and independent security review evidence
+
+See `docs/AIGC_ADMIN_PROTECTION_AND_INDEPENDENT_SECURITY_REVIEW_RX145_RX147.md`.
+
+- RX-145 verifies authenticated effective branch-protection/ruleset readback; inaccessible or empty responses remain unknown and BLOCK.
+- RX-146 records qualification, conflict/independence evidence, and an authorized administrator's actual reviewer assignment; agents cannot assign or impersonate humans.
+- RX-147 tracks exact-SHA review findings through remediation and independent retest; missing retest or stale candidate binding blocks closure.
+
+These are disabled R0 specifications, not production-integrated agents. RX-19 remains the sole release decision authority.
