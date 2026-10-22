@@ -110,6 +110,7 @@ jobs:
         run: |
           set -euo pipefail
           python -m compileall -q \
+            src/aigc_runtime \
             src/gemini_workflow \
             src/webapp/gemini_app.py \
             src/webapp/gemini_ui.py \
@@ -126,6 +127,13 @@ jobs:
           set -euo pipefail
           python scripts/validate_regenexcalibur_agent_registry.py
           PYTHONPATH=. python -m unittest discover -s tests -p 'test_regenexcalibur_agent_registry.py' -v
+
+      - name: Validate AIGC governed runtime maturity gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python -m unittest discover -s tests -p 'test_aigc_governed_runtime.py' -v
+          PYTHONPATH=src python -m unittest discover -s tests -p 'test_aigc_runtime_maturity.py' -v
 
       - name: Run Governor Agent policy tests
         shell: bash
