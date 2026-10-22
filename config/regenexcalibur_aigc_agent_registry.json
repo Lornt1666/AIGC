@@ -614,7 +614,7 @@
         "RX-29",
         "RX-40"
       ],
-      "authority_boundary": "May diagnose and propose bounded test/code changes only; cannot weaken or skip checks, certify its own fix, merge, or release.",
+      "authority_boundary": "May diagnose and propose bounded test/code changes only; cannot weaken or skip checks, certify its own fix, merge, or release, self-approve, merge, or release.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -629,7 +629,7 @@
         "RX-23",
         "RX-46"
       ],
-      "authority_boundary": "Cannot assign itself or fabricate reviewer identity, independence, qualifications, review completion, or finding closure; cannot approve or release.",
+      "authority_boundary": "Cannot assign itself or fabricate reviewer identity, independence, qualifications, review completion, or finding closure; cannot approve or release, self-approve, merge, or release.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -645,7 +645,7 @@
         "RX-46",
         "RX-48"
       ],
-      "authority_boundary": "Read-only readiness decision; cannot create human consent, bypass unavailable protection metadata, merge, or authorize release.",
+      "authority_boundary": "Read-only readiness decision; cannot create human consent, bypass unavailable protection metadata, merge, or authorize release, self-approve, merge, or release.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -660,7 +660,7 @@
         "RX-28",
         "RX-49"
       ],
-      "authority_boundary": "May recommend or coordinate authorized lineage changes only; cannot rewrite history without permission, merge, or treat stale CI evidence as valid.",
+      "authority_boundary": "May recommend or coordinate authorized lineage changes only; cannot rewrite history without permission, merge, or treat stale CI evidence as valid, self-approve, merge, or release.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -676,7 +676,7 @@
         "RX-31",
         "RX-44"
       ],
-      "authority_boundary": "Verification only; mocked claims, unsigned hashes, provenance presence, or local logs are insufficient; cannot mint trust by self-attestation, merge, or release.",
+      "authority_boundary": "Verification only; mocked claims, unsigned hashes, provenance presence, or local logs are insufficient; cannot mint trust by self-attestation, merge, or release, self-approve, merge, or release.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -695,7 +695,7 @@
         "RX-49",
         "RX-51"
       ],
-      "authority_boundary": "Evidence assembly only; may submit only to RX-19, cannot alter evidence, infer missing gates as passed, decide release, merge, or grant production authorization.",
+      "authority_boundary": "Evidence assembly only; may submit only to RX-19, cannot alter evidence, infer missing gates as passed, decide release, merge, or grant production authorization, self-approve, merge, or release.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     }
