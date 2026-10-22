@@ -2090,7 +2090,7 @@
         "RX-137",
         "RX-138"
       ],
-      "authority_boundary": "Read-only coordination and evidence completeness checks only. Cannot appoint or impersonate a human reviewer, claim qualifications without evidence, change repository protections, close findings without independent retest evidence, manufacture human acceptance, weaken or skip CI, mint or fake provenance, authorize production, merge, release, or reassign RX-19 as sole release decision authority. Missing, stale, contradictory, unauthenticated, or wrong-commit evidence preserves BLOCK.",
+      "authority_boundary": "Read-only coordination and evidence completeness checks only. Cannot self-approve. Cannot appoint or impersonate a human reviewer, claim qualifications without evidence, change repository protections, close findings without independent retest evidence, manufacture human acceptance, weaken or skip CI, mint or fake provenance, authorize production, merge, release, or reassign RX-19 as sole release decision authority. Missing, stale, contradictory, unauthenticated, or wrong-commit evidence preserves BLOCK.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     }
