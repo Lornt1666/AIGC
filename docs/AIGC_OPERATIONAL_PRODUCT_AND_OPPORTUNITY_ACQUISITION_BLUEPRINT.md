@@ -42,3 +42,8 @@
 - Wellfound: https://wellfound.com/terms
 
 Source terms must be rechecked at activation. This document does not certify compliance or authorize any connector.
+
+
+## Additional runtime controls RX-84–RX-94
+
+The additional agents cover least-privilege auditing, sandbox assurance, connector contract tests, benchmark integrity, budget/quota controls, private memory lifecycle, evidence lineage, SLO/incident triage, human-review UX, rollback readiness and provider-build diagnosis. They are advisors/verifiers, not enforcement primitives. Runtime enforcement must be implemented in independently tested policy middleware, isolation boundaries, authenticated identity/approval services, observability pipelines and deployment controls. No agent may self-grant authority or make an advisory report equivalent to a control.
