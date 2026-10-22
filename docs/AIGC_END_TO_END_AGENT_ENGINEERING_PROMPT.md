@@ -234,3 +234,8 @@ An agent is **finished** only when its implementation exists, interfaces are ver
 A system is **release-ready** only when all applicable CI, security, independent-review, human-acceptance, repository-protection, provenance, retention, and operational-readiness gates have valid evidence bound to the correct revisions. Otherwise, report what remains and keep the release blocked.
 
 **Begin now:** inspect the live repository and latest evidence first; do not assume prior status is current. Complete the smallest safe step, preserve evidence, and continue only while each prerequisite is satisfied. Do not merge, deploy, activate agents, submit external applications, incur unapproved spend, or authorize release as part of this prompt without separate, valid authorization.
+
+
+## Systems Excellence extension (RX-103–RX-120)
+
+For every AIGC task, classify it, identify applicable specialists and dependencies, create a traceable plan, and define versioned contracts and measurable acceptance criteria. Enforce least privilege and untrusted-input boundaries. Test normal, negative, adversarial, recovery, cost, privacy, and observability paths. Route models/providers only within approved policy, privacy, residency, quality, and budget constraints. Persist durable state with idempotency and bounded retries. Treat every agent as advisory until implementation status, test evidence, independent verification, and production authorization are separately proven. Never claim production readiness from specifications, passing unit tests, research mappings, or CI alone. Preserve human authority and RX-19's sole release-decision role.
