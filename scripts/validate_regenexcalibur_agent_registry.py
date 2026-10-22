@@ -11,7 +11,7 @@ from typing import Any
 REQUIRED_TOP_LEVEL = {
     "schema_version", "project_id", "orchestration_platform", "status",
     "default_disposition", "authority_tiers", "shared_contract", "agents",
-    "mandatory_human_gates", "acceptance_policy", "operational_gate_contracts", "final_decision_contract", "handoff_coordination_contract", "research_intelligence_contract", "opportunity_discovery_contract", "release_operations_assurance_contract", "aigc_systems_excellence_contract", "runtime_maturity_contract", "runtime_mishap_recovery_contract",
+    "mandatory_human_gates", "acceptance_policy", "operational_gate_contracts", "final_decision_contract", "handoff_coordination_contract", "research_intelligence_contract", "opportunity_discovery_contract", "release_operations_assurance_contract", "aigc_systems_excellence_contract", "runtime_maturity_contract", "runtime_mishap_recovery_contract", "release_readiness_trigger_contract",
 }
 REQUIRED_AGENT = {
     "id", "name", "responsibility", "authority_tier", "dependencies",
@@ -54,7 +54,7 @@ def validate_registry(data: Any) -> dict[str, Any]:
             raise RegistryError("implementation_status_overclaims_readiness")
         ids.append(agent["id"])
         by_id[agent["id"]] = agent
-    if len(by_id) != 127:
+    if len(by_id) != 131:
         raise RegistryError("unexpected_agent_count")
     for agent in data["agents"]:
         if agent["id"] in agent["dependencies"]:
@@ -244,7 +244,7 @@ def validate_registry(data: Any) -> dict[str, Any]:
     if lifecycle.get("non_equivalence_rule") is None or lifecycle.get("policy") is None:
         raise RegistryError("implementation_lifecycle_evidence_policy_missing")
     contract_list = data.get("new_agent_contracts")
-    expected_new_agents = {"RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57", "RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68", "RX-69", "RX-70", "RX-71", "RX-72", "RX-73", "RX-74", "RX-75", "RX-76", "RX-77", "RX-78", "RX-79", "RX-80", "RX-81", "RX-82", "RX-83", "RX-84", "RX-85", "RX-86", "RX-87", "RX-88", "RX-89", "RX-90", "RX-91", "RX-92", "RX-93", "RX-94", "RX-95", "RX-96", "RX-97", "RX-98", "RX-99", "RX-100", "RX-101", "RX-102", "RX-103", "RX-104", "RX-105", "RX-106", "RX-107", "RX-108", "RX-109", "RX-110", "RX-111", "RX-112", "RX-113", "RX-114", "RX-115", "RX-116", "RX-117", "RX-118", "RX-119", "RX-120", "RX-121", "RX-122", "RX-123", "RX-124", "RX-125", "RX-126", "RX-127", "RX-128", "RX-129", "RX-130", "RX-131", "RX-132", "RX-133", "RX-134"}
+    expected_new_agents = {"RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57", "RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68", "RX-69", "RX-70", "RX-71", "RX-72", "RX-73", "RX-74", "RX-75", "RX-76", "RX-77", "RX-78", "RX-79", "RX-80", "RX-81", "RX-82", "RX-83", "RX-84", "RX-85", "RX-86", "RX-87", "RX-88", "RX-89", "RX-90", "RX-91", "RX-92", "RX-93", "RX-94", "RX-95", "RX-96", "RX-97", "RX-98", "RX-99", "RX-100", "RX-101", "RX-102", "RX-103", "RX-104", "RX-105", "RX-106", "RX-107", "RX-108", "RX-109", "RX-110", "RX-111", "RX-112", "RX-113", "RX-114", "RX-115", "RX-116", "RX-117", "RX-118", "RX-119", "RX-120", "RX-121", "RX-122", "RX-123", "RX-124", "RX-125", "RX-126", "RX-127", "RX-128", "RX-129", "RX-130", "RX-131", "RX-132", "RX-133", "RX-134", "RX-135", "RX-136", "RX-137", "RX-138"}
     if not isinstance(contract_list, list) or {x.get("agent_id") for x in contract_list if isinstance(x, dict)} != expected_new_agents:
         raise RegistryError("new_agent_contracts_missing_or_ambiguous")
     for contract in contract_list:
@@ -320,6 +320,27 @@ def validate_registry(data: Any) -> dict[str, Any]:
     for agent_id in expected_recovery_agents:
         if agent_id not in by_id or by_id[agent_id]["enabled"] is not False or by_id[agent_id]["authority_tier"] != "R0" or by_id[agent_id]["implementation_status"] != "SPECIFIED_NOT_PRODUCTION_INTEGRATED":
             raise RegistryError("runtime_mishap_recovery_agents_must_be_read_only_and_disabled")
+
+    triggers = data.get("release_readiness_trigger_contract")
+    if not isinstance(triggers, dict) or triggers.get("contract_version") != "1.0.0":
+        raise RegistryError("release_readiness_trigger_contract_missing_or_unsupported")
+    if triggers.get("status") != "SPECIFICATION_ONLY" or triggers.get("default_disposition") != "BLOCK" or triggers.get("canonical_release_authority") != "RX-19":
+        raise RegistryError("release_readiness_trigger_contract_must_fail_closed")
+    expected_trigger_agents = {"RX-135", "RX-136", "RX-137", "RX-138"}
+    if set(triggers.get("agent_ids", [])) != expected_trigger_agents:
+        raise RegistryError("release_readiness_trigger_agent_set_missing_or_ambiguous")
+    trigger_sequence = triggers.get("trigger_sequence")
+    if not isinstance(trigger_sequence, list) or [step.get("sequence") for step in trigger_sequence] != [1, 2, 3, 4]:
+        raise RegistryError("release_readiness_trigger_sequence_invalid")
+    if {step.get("agent_id") for step in trigger_sequence} != expected_trigger_agents or any(step.get("failure_disposition") != "BLOCK" or not step.get("required_outcomes") for step in trigger_sequence):
+        raise RegistryError("release_readiness_trigger_gate_weak_or_unbound")
+    if any(triggers.get(key) is not True for key in ("no_agent_self_approval", "no_agent_may_assign_human_identity", "no_agent_may_manufacture_acceptance", "no_agent_may_bypass_protection", "no_agent_may_merge_or_authorize_release")):
+        raise RegistryError("release_readiness_trigger_authority_boundary_weak")
+    if triggers.get("production_authorization") is not False or len(triggers.get("required_evidence_fields", [])) < 12 or len(triggers.get("required_test_classes", [])) < 8 or len(triggers.get("invalidation_rules", [])) < 5:
+        raise RegistryError("release_readiness_trigger_contract_incomplete")
+    for agent_id in expected_trigger_agents:
+        if agent_id not in by_id or by_id[agent_id]["enabled"] is not False or by_id[agent_id]["authority_tier"] != "R0" or by_id[agent_id]["implementation_status"] != "SPECIFIED_NOT_PRODUCTION_INTEGRATED":
+            raise RegistryError("release_readiness_trigger_agents_must_be_read_only_and_disabled")
 
     return {
         "status": "VALID",
