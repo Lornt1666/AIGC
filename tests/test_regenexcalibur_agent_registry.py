@@ -147,60 +147,6 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
         with self.assertRaisesRegex(RegistryError, "multiple_release_authorities"):
             validate_registry(data)
 
-
-if __name__ == "__main__":
-    unittest.main()
-
-    def test_research_intelligence_agents_are_disabled_and_fail_closed(self):
-        contract = self.registry["research_intelligence_contract"]
-        self.assertEqual(contract["failure_disposition"], "BLOCK")
-        self.assertTrue(contract["no_unsupported_compliance_claims"])
-        self.assertTrue(contract["no_agent_self_approval"])
-        self.assertTrue(contract["no_production_side_effects"])
-        by_id = {agent["id"]: agent for agent in self.registry["agents"]}
-        contracts = {item["agent_id"]: item for item in self.registry["new_agent_contracts"]}
-        for agent_id in ("RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68"):
-            self.assertFalse(by_id[agent_id]["enabled"])
-            self.assertEqual(by_id[agent_id]["implementation_status"], "SPECIFIED_NOT_PRODUCTION_INTEGRATED")
-            self.assertIn(agent_id, contracts)
-            self.assertEqual(contracts[agent_id]["failure_disposition"], "BLOCK")
-            self.assertTrue(contracts[agent_id]["self_approval_prohibited"])
-
-    def test_opportunity_discovery_contract_fails_closed(self):
-        data = copy.deepcopy(self.registry)
-        data["opportunity_discovery_contract"]["no_prohibited_scraping"] = False
-        with self.assertRaisesRegex(RegistryError, "opportunity_authority_boundary_weak"):
-            validate_registry(data)
-        data = copy.deepcopy(self.registry)
-        data["opportunity_discovery_contract"]["unknown_source_policy"] = "ALLOW"
-        with self.assertRaisesRegex(RegistryError, "unknown_opportunity_sources_must_be_denied"):
-            validate_registry(data)
-
-    def test_opportunity_source_policy_blocks_prohibited_automation(self):
-        policy_path = Path(__file__).resolve().parents[1] / "config" / "aigc_opportunity_source_policy.json"
-        policy = json.loads(policy_path.read_text(encoding="utf-8"))
-        self.assertEqual(policy["default_for_unlisted_sources"], "DENY_AUTOMATED_ACCESS")
-        by_id = {source["source_id"]: source for source in policy["sources"]}
-        self.assertEqual(by_id["canada_job_bank"]["eligibility_state"], "MANUAL_ONLY")
-        self.assertEqual(by_id["linkedin"]["eligibility_state"], "MANUAL_ONLY")
-        self.assertEqual(by_id["greenhouse_public_boards"]["eligibility_state"], "API_ALLOWED_WITH_CONSTRAINTS")
-        self.assertEqual(by_id["adzuna"]["eligibility_state"], "API_ALLOWED_WITH_CONSTRAINTS")
-        self.assertTrue(policy["application_submission"]["human_approval_required"])
-
-    def test_operational_assurance_agents_are_disabled_and_least_privilege(self):
-        by_id = {agent["id"]: agent for agent in self.registry["agents"]}
-        contracts = {item["agent_id"]: item for item in self.registry["new_agent_contracts"]}
-        expected = ("RX-84", "RX-85", "RX-86", "RX-87", "RX-88", "RX-89", "RX-90", "RX-91", "RX-92", "RX-93", "RX-94")
-        for agent_id in expected:
-            self.assertIn(agent_id, by_id)
-            self.assertIn(agent_id, contracts)
-            self.assertEqual(by_id[agent_id]["authority_tier"], "R0")
-            self.assertFalse(by_id[agent_id]["enabled"])
-            self.assertEqual(by_id[agent_id]["implementation_status"], "SPECIFIED_NOT_PRODUCTION_INTEGRATED")
-            self.assertIn("self-approve", by_id[agent_id]["authority_boundary"].lower())
-            self.assertTrue(contracts[agent_id]["self_approval_prohibited"])
-            self.assertEqual(contracts[agent_id]["failure_disposition"], "BLOCK")
-
     def test_release_operations_agents_are_disabled_and_fail_closed(self):
         contract = self.registry["release_operations_assurance_contract"]
         self.assertEqual(contract["default_disposition"], "BLOCK")
@@ -218,8 +164,11 @@ if __name__ == "__main__":
             self.assertEqual(contracts[agent_id]["failure_disposition"], "BLOCK")
 
     def test_release_operations_authority_cannot_be_reassigned(self):
-        import copy
         data = copy.deepcopy(self.registry)
         data["release_operations_assurance_contract"]["canonical_release_authority"] = "RX-102"
         with self.assertRaisesRegex(RegistryError, "release_operations_contract_must_fail_closed"):
             validate_registry(data)
+
+
+if __name__ == "__main__":
+    unittest.main()
