@@ -264,3 +264,32 @@ The five lifecycle statuses `SPECIFIED`, `IMPLEMENTED`, `TESTED`, `INDEPENDENTLY
 - SLSA verification guidance: https://github.com/slsa-framework/slsa/blob/main/spec/verifying-artifacts.md
 
 These are design references. They do not demonstrate that the controls are deployed, that AIGC is compliant, or that the agents have passed tests.
+
+
+## Independent review, CI repair, and release-evidence governance agents
+
+The following seven agents extend the registry to 45 agents. All remain disabled, specification-only, and unauthorized for production. The technical-review agent is not a substitute for an authorized independent human reviewer.
+
+- **RX-46 — Independent Technical Review and Adversarial Challenge:** examines exact-commit diffs, contracts, tests, trust boundaries, and claims; emits reproducible findings. It cannot claim human independence, approve itself, or close its own findings.
+- **RX-47 — CI Failure Diagnosis and Exact-Head Remediation:** inspects workflow jobs and sanitized evidence, identifies root causes, proposes minimal repairs without weakening checks, and requires a complete rerun on the new SHA.
+- **RX-48 — Reviewer Assignment and Findings Closure Coordinator:** prepares qualification/conflict criteria, requests authorized assignment, binds review to the exact commit, and checks remediation/retest evidence. It cannot fabricate reviewer identity or findings closure.
+- **RX-49 — Human Acceptance and Protected Merge Preconditions Verifier:** checks review, findings, exact-head CI, authenticated human acceptance, and repository protection evidence. Missing or inaccessible evidence blocks readiness.
+- **RX-50 — Stacked Pull Request Lineage and Revalidation Coordinator:** tracks base/head SHA lineage, detects upstream drift, and requires authorized retarget/rebase plus new exact-head checks after each change.
+- **RX-51 — Post-Merge OIDC Attestation and Independent Retention Verifier:** validates live identity claims, cryptographic provenance, artifact digests, and independently administered retention. Mocked claims and local hashes are insufficient.
+- **RX-52 — Canonical RX-19 Release Evidence Packet Assembler:** validates bindings and assembles the authenticated packet for RX-19. It has no release decision authority and must not infer missing gates as passed.
+
+### CI failure found and correction recorded
+
+Run [39662746441](https://github.com/Lornt1666/AIGC/actions/runs/39662746441) failed in the canonical `tests` stage. Its sanitized test evidence identifies five failures in `tests/test_verify_github_actions_oidc_claims.py`: the tests omitted the now-required `expected_workflow_sha` parameter. The corrective commit on the PR #319 branch binds the fixture workflow SHA in all five test calls. This is a root-cause fix candidate only until full CI on the new exact head confirms it.
+
+### Required release sequence
+
+1. Complete CI on PR #319's corrected exact head; repair any further failures in new commits and rerun all required checks.
+2. Obtain an authorized independent human reviewer; bind review and each finding to the exact reviewed commit and evidence digest; remediate and retest findings.
+3. Capture authenticated human acceptance for that exact commit and evidence digest.
+4. Verify actual repository protection rules and required checks, then use the protected merge process.
+5. Rebase/retarget PR #323 and then PR #324 only after their parent is resolved; rerun full CI on every final head.
+6. After merge, verify real OIDC claims, signed provenance, artifact digest binding, and independent audit retention.
+7. Submit the complete evidence packet to RX-19. RX-19 alone decides release; every missing, stale, contradictory, unauthenticated, or unverifiable gate means BLOCK.
+
+No merge, release, reviewer approval, human acceptance, or production authorization is implied by these specifications or by the test-call correction.
