@@ -121,7 +121,7 @@ The executable reference evaluator is `src/aigc_runtime/readiness_triggers.py`, 
 - `src/aigc_runtime/agent_operations.py` implements `plan_agent_operation`, a deterministic dry-run planner. It never invokes a tool or changes an agent's activation state.
 - `tests/test_aigc_agent_operations.py` tests deterministic dependency ordering, prohibited overrides, production-mode denial, kill-switch precedence, side-effect reconciliation, malformed bindings, cycles, missing dependencies and non-mutation.
 - The canonical CI workflow runs this focused test module.
-- Registry validation checks 140 unique agents, 110 agent contracts, disabled R0 status, lifecycle schema binding, override-contract completeness, and prohibited operations.
+- Registry validation checks 140 unique agents, 111 agent contracts, disabled R0 status, lifecycle schema binding, override-contract completeness, and prohibited operations.
 
 ### Override policy
 Permitted *planning intents* are allowlisted-agent run planning, rerouting to an allowlisted agent, retry only after side-effect reconciliation, approved fallback selection, and read-only degradation. This is not permission to execute these operations in production.
