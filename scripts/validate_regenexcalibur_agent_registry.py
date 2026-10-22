@@ -11,7 +11,7 @@ from typing import Any
 REQUIRED_TOP_LEVEL = {
     "schema_version", "project_id", "orchestration_platform", "status",
     "default_disposition", "authority_tiers", "shared_contract", "agents",
-    "mandatory_human_gates", "acceptance_policy", "operational_gate_contracts", "final_decision_contract", "handoff_coordination_contract", "research_intelligence_contract", "opportunity_discovery_contract",
+    "mandatory_human_gates", "acceptance_policy", "operational_gate_contracts", "final_decision_contract", "handoff_coordination_contract", "research_intelligence_contract", "opportunity_discovery_contract", "release_operations_assurance_contract",
 }
 REQUIRED_AGENT = {
     "id", "name", "responsibility", "authority_tier", "dependencies",
@@ -54,7 +54,7 @@ def validate_registry(data: Any) -> dict[str, Any]:
             raise RegistryError("implementation_status_overclaims_readiness")
         ids.append(agent["id"])
         by_id[agent["id"]] = agent
-    if len(by_id) != 87:
+    if len(by_id) != 95:
         raise RegistryError("unexpected_agent_count")
     for agent in data["agents"]:
         if agent["id"] in agent["dependencies"]:
@@ -212,7 +212,7 @@ def validate_registry(data: Any) -> dict[str, Any]:
     if lifecycle.get("non_equivalence_rule") is None or lifecycle.get("policy") is None:
         raise RegistryError("implementation_lifecycle_evidence_policy_missing")
     contract_list = data.get("new_agent_contracts")
-    expected_new_agents = {"RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57", "RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68", "RX-69", "RX-70", "RX-71", "RX-72", "RX-73", "RX-74", "RX-75", "RX-76", "RX-77", "RX-78", "RX-79", "RX-80", "RX-81", "RX-82", "RX-83", "RX-84", "RX-85", "RX-86", "RX-87", "RX-88", "RX-89", "RX-90", "RX-91", "RX-92", "RX-93", "RX-94"}
+    expected_new_agents = {"RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57", "RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68", "RX-69", "RX-70", "RX-71", "RX-72", "RX-73", "RX-74", "RX-75", "RX-76", "RX-77", "RX-78", "RX-79", "RX-80", "RX-81", "RX-82", "RX-83", "RX-84", "RX-85", "RX-86", "RX-87", "RX-88", "RX-89", "RX-90", "RX-91", "RX-92", "RX-93", "RX-94", "RX-95", "RX-96", "RX-97", "RX-98", "RX-99", "RX-100", "RX-101", "RX-102"}
     if not isinstance(contract_list, list) or {x.get("agent_id") for x in contract_list if isinstance(x, dict)} != expected_new_agents:
         raise RegistryError("new_agent_contracts_missing_or_ambiguous")
     for contract in contract_list:
@@ -237,6 +237,21 @@ def validate_registry(data: Any) -> dict[str, Any]:
             raise RegistryError("new_agent_authority_tier_too_high")
         if "cannot" not in agent["authority_boundary"].lower() or "self-approve" not in agent["authority_boundary"].lower():
             raise RegistryError("new_agent_authority_boundary_missing")
+    ops = data.get("release_operations_assurance_contract")
+    if not isinstance(ops, dict) or ops.get("contract_version") != "1.0.0":
+        raise RegistryError("release_operations_contract_missing_or_unsupported")
+    if ops.get("status") != "SPECIFICATION_ONLY" or ops.get("default_disposition") != "BLOCK" or ops.get("canonical_release_authority") != "RX-19":
+        raise RegistryError("release_operations_contract_must_fail_closed")
+    expected_ops_agents = {"RX-95", "RX-96", "RX-97", "RX-98", "RX-99", "RX-100", "RX-101", "RX-102"}
+    if set(ops.get("agent_ids", [])) != expected_ops_agents:
+        raise RegistryError("release_operations_agents_missing_or_ambiguous")
+    if any(ops.get(key) is not True for key in ("no_agent_self_approval", "no_agent_may_assign_human_identity", "no_agent_may_manufacture_acceptance", "no_agent_may_bypass_protection", "no_agent_may_merge_or_authorize_release")):
+        raise RegistryError("release_operations_authority_boundary_weak")
+    if ops.get("production_authorization") is not False or len(ops.get("research_baseline", [])) < 5 or len(ops.get("required_controls", [])) < 8 or len(ops.get("required_evidence_fields", [])) < 15 or len(ops.get("invalidation_rules", [])) < 5:
+        raise RegistryError("release_operations_evidence_contract_incomplete")
+    for agent_id in expected_ops_agents:
+        if agent_id not in by_id or by_id[agent_id]["enabled"] is not False or by_id[agent_id]["authority_tier"] != "R0":
+            raise RegistryError("release_operations_agent_must_be_read_only_and_disabled")
     return {
         "status": "VALID",
         "agent_count": len(by_id),
