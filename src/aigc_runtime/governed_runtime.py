@@ -96,6 +96,7 @@ class ToolPermit:
     expires_at: str
     max_uses: int = 1
     human_approval_ref: str | None = None
+    signature: str | None = None
 
     def validate(self, now: datetime) -> None:
         for name in ("permit_id", "task_id", "agent_id", "tool_name", "action", "resource", "policy_version"):
@@ -133,11 +134,18 @@ class AuditLedger:
 
 
 class PermitBroker:
-    """Deny-by-default permit evaluator. It does not itself execute tools."""
-    def __init__(self, ledger: AuditLedger, enabled_agent_ids: Iterable[str] = ()) -> None:
+    """Deny-by-default permit evaluator. It does not itself execute tools.
+
+    A production adapter must supply a verifier backed by a trusted key/policy
+    service. Without it, every permit is denied.
+    """
+    def __init__(self, ledger: AuditLedger, enabled_agent_ids: Iterable[str] = (),
+                 permit_verifier: Callable[[ToolPermit], bool] | None = None) -> None:
         self.ledger = ledger
         self.enabled_agent_ids = frozenset(enabled_agent_ids)
+        self.permit_verifier = permit_verifier
         self._uses: dict[str, int] = {}
+        self._permit_fingerprints: dict[str, str] = {}
 
     def authorize(
         self,
@@ -160,6 +168,13 @@ class PermitBroker:
             if permit is None:
                 raise GovernanceError("permit_missing")
             permit.validate(now)
+            if self.permit_verifier is None:
+                raise GovernanceError("permit_authenticator_unconfigured")
+            if self.permit_verifier(permit) is not True:
+                raise GovernanceError("permit_signature_invalid")
+            fingerprint = sha256_digest(asdict(permit))
+            if permit.permit_id in self._permit_fingerprints and self._permit_fingerprints[permit.permit_id] != fingerprint:
+                raise GovernanceError("permit_id_reused_with_different_contents")
             if permit.task_id != contract.task_id or permit.agent_id != contract.agent_id:
                 raise GovernanceError("permit_subject_mismatch")
             if (permit.tool_name, permit.action, permit.resource) != (tool_name, action, resource):
@@ -169,6 +184,7 @@ class PermitBroker:
             if permit.permit_id in self._uses and self._uses[permit.permit_id] >= permit.max_uses:
                 raise GovernanceError("permit_use_limit_exceeded")
             self._uses[permit.permit_id] = self._uses.get(permit.permit_id, 0) + 1
+            self._permit_fingerprints[permit.permit_id] = fingerprint
             reason = "authorized"
             allowed = True
         except GovernanceError as exc:
