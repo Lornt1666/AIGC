@@ -17,7 +17,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
     def test_registry_is_valid_and_fail_closed(self):
         result = validate_registry(self.registry)
         self.assertEqual(result["status"], "VALID")
-        self.assertEqual(result["agent_count"], 137)
+        self.assertEqual(result["agent_count"], 140)
         self.assertEqual(len(self.registry["operational_gate_contracts"]), 7)
         self.assertEqual(self.registry["final_decision_contract"]["canonical_decision_authority"], "RX-19")
         self.assertEqual(result["dependency_graph"], "ACYCLIC")
@@ -289,7 +289,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
     def test_runtime_mishap_recovery_agents_are_disabled_and_sequence_is_ordered(self):
         result = validate_registry(self.registry)
         recovery = self.registry["runtime_mishap_recovery_contract"]
-        self.assertEqual(result["agent_count"], 137)
+        self.assertEqual(result["agent_count"], 140)
         self.assertEqual(recovery["canonical_release_authority"], "RX-19")
         self.assertFalse(recovery["production_authorization"])
         self.assertEqual([step["sequence"] for step in recovery["operating_sequence"]], list(range(1, 9)))
@@ -340,6 +340,45 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
         data = copy.deepcopy(self.registry)
         data["runtime_mishap_recovery_contract"]["production_authorization"] = True
         with self.assertRaisesRegex(RegistryError, "runtime_mishap_recovery_contract_incomplete"):
+            validate_registry(data)
+
+
+    def test_admin_protection_and_independent_review_agents_fail_closed(self):
+        result = validate_registry(self.registry)
+        self.assertEqual(result["agent_count"], 140)
+        contract = self.registry["administrator_review_evidence_contract"]
+        self.assertEqual(contract["canonical_release_authority"], "RX-19")
+        self.assertFalse(contract["production_authorization"])
+        self.assertEqual([x["action"] for x in contract["operating_sequence"]], [
+            "authenticated_effective_protection_readback",
+            "authorized_independent_reviewer_assignment",
+            "commit_bound_review_remediation_and_independent_retest",
+        ])
+        by_id = {agent["id"]: agent for agent in self.registry["agents"]}
+        new_contracts = {item["agent_id"]: item for item in self.registry["new_agent_contracts"]}
+        for agent_id in ("RX-145", "RX-146", "RX-147"):
+            self.assertIn(agent_id, by_id)
+            self.assertIn(agent_id, new_contracts)
+            self.assertFalse(by_id[agent_id]["enabled"])
+            self.assertEqual(by_id[agent_id]["authority_tier"], "R0")
+            self.assertEqual(by_id[agent_id]["implementation_status"], "SPECIFIED_NOT_PRODUCTION_INTEGRATED")
+            self.assertTrue(new_contracts[agent_id]["self_approval_prohibited"])
+            self.assertEqual(new_contracts[agent_id]["failure_disposition"], "BLOCK")
+
+    def test_empty_or_unauthenticated_readback_policy_cannot_be_weakened(self):
+        data = copy.deepcopy(self.registry)
+        data["administrator_review_evidence_contract"]["operating_sequence"][0]["failure_disposition"] = "WARN"
+        with self.assertRaisesRegex(RegistryError, "administrator_review_evidence_step_incomplete_or_unsafe"):
+            validate_registry(data)
+        data = copy.deepcopy(self.registry)
+        data["administrator_review_evidence_contract"]["no_agent_may_assign_or_impersonate_human"] = False
+        with self.assertRaisesRegex(RegistryError, "administrator_review_authority_boundary_weak"):
+            validate_registry(data)
+
+    def test_release_gate_requires_new_admin_and_review_agents(self):
+        data = copy.deepcopy(self.registry)
+        data["release_gate_execution_contract"]["ordered_actions"][0]["agent_ids"].remove("RX-145")
+        with self.assertRaisesRegex(RegistryError, "release_gate_action_incomplete_or_unsafe"):
             validate_registry(data)
 
 
