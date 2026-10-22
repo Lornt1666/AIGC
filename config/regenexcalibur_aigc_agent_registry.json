@@ -1984,6 +1984,92 @@
       "authority_boundary": "Read-only supervisor; cannot activate agents, assign human identity, manufacture acceptance, self-approve, bypass protection, merge, or authorize release; any missing gate remains BLOCK.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-139",
+      "name": "Bounded Governance Override and Agent Operations Controller",
+      "responsibility": "Coordinates permitted agent dispatch, rerouting, verified-idempotent retry, and approved fallback while preserving non-overridable security and release invariants.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-19",
+        "RX-28",
+        "RX-126",
+        "RX-130",
+        "RX-134",
+        "RX-138"
+      ],
+      "authority_boundary": "May propose or dry-run an explicitly scoped operational override only. Cannot self-enable, elevate authority, override policy or cryptographic verification, bypass human gates/protection/CI, fabricate evidence, merge, deploy, or authorize release. Production actions require a separately authenticated, target-bound, time-limited capability permit and production adapter.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-140",
+      "name": "Agent Execution Planning and Dependency Scheduler",
+      "responsibility": "Builds deterministic execution plans from the allowlisted registry, resolves dependencies, applies concurrency and cycle checks, and produces dry-run dispatch plans.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-103",
+        "RX-105",
+        "RX-106",
+        "RX-124",
+        "RX-139"
+      ],
+      "authority_boundary": "Planning and simulation only in this reference implementation. Cannot launch side-effecting tools, change agent state, self-enable, bypass policy, merge, deploy, or authorize release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-141",
+      "name": "Scoped Capability Permit and Tool Authorization Broker",
+      "responsibility": "Validates target-bound capability claims, allowed actions, candidate/policy binding, expiry, audience, and replay-resistant permit identifiers before a production adapter may act.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-19",
+        "RX-27",
+        "RX-84",
+        "RX-92",
+        "RX-124",
+        "RX-139"
+      ],
+      "authority_boundary": "Reference policy checks only; no cryptographic identity provider or key integration is included. A production adapter must verify signatures and issuer trust independently. Cannot mint permits, expand scope, or approve its own request.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-142",
+      "name": "Safety Interlock, Kill-Switch, and Recovery Supervisor",
+      "responsibility": "Applies global deny conditions, emergency stop, blast-radius limits, safe degradation, and reconciliation-before-retry rules across agent operations.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-29",
+        "RX-30",
+        "RX-31",
+        "RX-127",
+        "RX-130",
+        "RX-139",
+        "RX-141"
+      ],
+      "authority_boundary": "May block or stop planned operations and recommend safe recovery. Cannot clear its own stop condition, suppress evidence, self-enable, bypass release gates, or authorize production actions.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-143",
+      "name": "Agent Run Ledger and Execution Evidence Recorder",
+      "responsibility": "Creates append-only-style structured run records binding task, policy, source SHA, agent versions, permit reference, outcomes, and evidence digests for later independent verification.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-27",
+        "RX-84",
+        "RX-91",
+        "RX-129",
+        "RX-137",
+        "RX-139",
+        "RX-140"
+      ],
+      "authority_boundary": "Reference output generation only; durable tamper-evident storage is not integrated. Cannot claim independent retention, mint provenance, fabricate outcomes, or authorize merge/release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     }
   ],
   "mandatory_human_gates": [
@@ -5546,6 +5632,181 @@
       "self_approval_prohibited": true,
       "production_authorization": false,
       "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-139",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "task_contract_digest",
+        "agent_id",
+        "permit_id",
+        "run_id",
+        "outcome_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection",
+        "authorization_boundary",
+        "dependency_graph",
+        "replay_resistance"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-140",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "task_contract_digest",
+        "agent_id",
+        "permit_id",
+        "run_id",
+        "outcome_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection",
+        "authorization_boundary",
+        "dependency_graph",
+        "replay_resistance"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-141",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "task_contract_digest",
+        "agent_id",
+        "permit_id",
+        "run_id",
+        "outcome_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection",
+        "authorization_boundary",
+        "dependency_graph",
+        "replay_resistance"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-142",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "task_contract_digest",
+        "agent_id",
+        "permit_id",
+        "run_id",
+        "outcome_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection",
+        "authorization_boundary",
+        "dependency_graph",
+        "replay_resistance"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-143",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "task_contract_digest",
+        "agent_id",
+        "permit_id",
+        "run_id",
+        "outcome_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection",
+        "authorization_boundary",
+        "dependency_graph",
+        "replay_resistance"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
     }
   ],
   "handoff_coordination_contract": {
@@ -6453,5 +6714,105 @@
     "no_agent_may_bypass_protection": true,
     "no_agent_may_merge_or_authorize_release": true,
     "production_authorization": false
+  },
+  "agent_operations_override_contract": {
+    "contract_version": "1.0.0",
+    "status": "SPECIFICATION_ONLY",
+    "default_disposition": "BLOCK",
+    "canonical_release_authority": "RX-19",
+    "agent_ids": [
+      "RX-139",
+      "RX-140",
+      "RX-141",
+      "RX-142",
+      "RX-143"
+    ],
+    "allowed_override_kinds": [
+      "reroute_to_allowlisted_agent",
+      "retry_after_side_effect_reconciliation",
+      "select_approved_fallback",
+      "degrade_to_read_only"
+    ],
+    "prohibited_override_kinds": [
+      "override_release_gate",
+      "disable_repository_protection",
+      "skip_required_ci",
+      "self_enable_agent",
+      "elevate_authority",
+      "manufacture_acceptance",
+      "forge_evidence",
+      "merge",
+      "deploy",
+      "authorize_release"
+    ],
+    "execution_modes": [
+      "dry_run"
+    ],
+    "production_execution_enabled": false,
+    "production_authorization": false,
+    "permit_requirements": [
+      "trusted_signature_verification",
+      "trusted_issuer",
+      "subject_bound",
+      "target_agent_allowlisted",
+      "actions_allowlisted",
+      "candidate_sha_bound",
+      "policy_version_bound",
+      "audience_bound",
+      "expiry_checked",
+      "unique_permit_id",
+      "replay_protection"
+    ],
+    "required_evidence_fields": [
+      "source_commit_sha",
+      "policy_version",
+      "task_contract_digest",
+      "target_agent_id",
+      "requested_operation",
+      "permit_id",
+      "permit_verification_ref",
+      "dependency_plan_digest",
+      "run_id",
+      "outcome_digest"
+    ],
+    "required_test_classes": [
+      "unit",
+      "integration",
+      "negative",
+      "failure_injection",
+      "authorization_boundary",
+      "dependency_graph",
+      "replay_resistance",
+      "kill_switch",
+      "non_overridable_invariants"
+    ],
+    "invalidation_rules": [
+      "source_commit_change_invalidates_plan",
+      "policy_change_invalidates_permit",
+      "target_or_action_change_requires_new_permit",
+      "expired_or_replayed_permit_blocks",
+      "unreconciled_side_effect_blocks_retry",
+      "kill_switch_blocks_all_execution",
+      "missing_signature_verification_blocks_production_action"
+    ],
+    "universal_controls": [
+      "all_agents_disabled_by_default",
+      "dry_run_default",
+      "explicit_allowlist",
+      "least_privilege",
+      "no_agent_self_approval",
+      "no_human_impersonation",
+      "no_security_gate_override",
+      "fail_closed",
+      "kill_switch_precedence",
+      "append_only_evidence_intent"
+    ],
+    "no_agent_self_approval": true,
+    "no_agent_may_self_enable": true,
+    "no_agent_may_elevate_authority": true,
+    "no_agent_may_override_security_invariants": true,
+    "no_agent_may_manufacture_acceptance": true,
+    "no_agent_may_bypass_protection": true,
+    "no_agent_may_merge_or_authorize_release": true
   }
 }
