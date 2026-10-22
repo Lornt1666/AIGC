@@ -2104,7 +2104,7 @@
         "RX-132",
         "RX-136"
       ],
-      "authority_boundary": "Read-only evidence verification. Cannot change protections, infer settings from 403/empty results, impersonate an administrator, or report unknown settings as passing. Missing, stale, unauthenticated, contradictory, or wrong-branch evidence yields BLOCK.",
+      "authority_boundary": "Read-only evidence verification. Cannot self-approve or change protections, infer settings from 403/empty results, impersonate an administrator, or report unknown settings as passing. Missing, stale, unauthenticated, contradictory, or wrong-branch evidence yields BLOCK.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -2133,7 +2133,7 @@
         "RX-136",
         "RX-146"
       ],
-      "authority_boundary": "Evidence tracking only; cannot impersonate independent review, close findings without independent retest, rewrite review history, waive blockers, or authorize release. Any candidate or evidence mismatch, missing retest, or stale binding yields BLOCK.",
+      "authority_boundary": "Evidence tracking only; cannot self-approve or impersonate independent review, close findings without independent retest, rewrite review history, waive blockers, or authorize release. Any candidate or evidence mismatch, missing retest, or stale binding yields BLOCK.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     }
