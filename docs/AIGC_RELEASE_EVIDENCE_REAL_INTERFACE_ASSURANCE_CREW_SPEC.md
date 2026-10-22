@@ -293,3 +293,22 @@ These sources inform design only; they do not establish AIGC conformity or prove
 | RX-83 — Runtime Operations and Integration Health | Defines connector health, SLOs, alerting, incident signals and recovery evidence. |
 
 All 15 agents remain disabled and specification-only. The candidate profile is prohibited from repository storage. Unknown sources default to deny automated access. No agent may submit an application, message an employer, accept terms, complete an assessment, sign a contract or commit funds without explicit appropriate human approval.
+
+
+## 13. Runtime integrity and operational resilience agents RX-84–RX-94
+
+| Agent | Purpose and authority boundary |
+|---|---|
+| RX-84 Policy and Capability Boundary Auditor | Audits least-privilege decisions and capability scope; cannot grant credentials or change policy. |
+| RX-85 Isolated Execution and Sandbox Assurance | Tests sandbox boundaries, network/filesystem restrictions and escape controls using safe test fixtures. |
+| RX-86 Connector Contract and Conformance Tester | Exercises schemas, rate limits, timeouts, retries and error contracts using fixtures and approved endpoints. |
+| RX-87 Evaluation Benchmark and Regression Integrity | Protects dataset provenance, checks leakage and compares versioned metrics without rewriting baselines to hide regressions. |
+| RX-88 Cost, Quota and Resource Budget Guard | Estimates costs, checks quotas and flags anomalies; cannot incur unapproved spend. |
+| RX-89 Private Memory and Knowledge Lifecycle Curator | Enforces private-store, retention, export and deletion boundaries; personal profiles must never be committed to Git. |
+| RX-90 Evidence Lineage and Reproducibility Auditor | Verifies lineage, artifact digests and reproducibility; hashes alone do not establish trusted provenance. |
+| RX-91 Observability, SLO and Incident Triage | Correlates telemetry, calculates SLO burn and drafts incident timelines and recovery recommendations. |
+| RX-92 Human Review Queue and Decision Interface | Presents evidence/uncertainty and records authenticated decision references without impersonating humans or manufacturing consent. |
+| RX-93 Integration Readiness and Rollback Planning | Maps dependencies, migration risk, feature flags, recovery points and rollback evidence. |
+| RX-94 Cloud Build and Deployment Failure Investigator | Correlates commit to provider builds, classifies failure layers and assembles authorized logs for minimal reproducible fixes. |
+
+All remain R0, disabled, specification-only and BLOCK-on-failure. RX-94 may diagnose Cloudflare/other provider builds but cannot deploy, change production secrets, or suppress failed checks. RX-92 does not itself provide a trusted authentication mechanism; that remains a separately implemented and tested identity/approval integration.
