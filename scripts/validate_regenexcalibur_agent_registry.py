@@ -54,7 +54,7 @@ def validate_registry(data: Any) -> dict[str, Any]:
             raise RegistryError("implementation_status_overclaims_readiness")
         ids.append(agent["id"])
         by_id[agent["id"]] = agent
-    if len(by_id) != 45:
+    if len(by_id) != 50:
         raise RegistryError("unexpected_agent_count")
     for agent in data["agents"]:
         if agent["id"] in agent["dependencies"]:
@@ -113,6 +113,35 @@ def validate_registry(data: Any) -> dict[str, Any]:
             raise RegistryError("operational_gate_contract_weak_or_unbound")
         if by_id[gate["agent_id"]]["enabled"] is not False:
             raise RegistryError("operational_gate_agent_must_be_disabled")
+    handoff = data.get("handoff_coordination_contract")
+    if not isinstance(handoff, dict) or handoff.get("contract_version") != "1.0.0":
+        raise RegistryError("handoff_coordination_contract_missing_or_unsupported")
+    if handoff.get("default_disposition") != "BLOCK" or handoff.get("canonical_release_authority") != "RX-19":
+        raise RegistryError("handoff_coordination_contract_must_fail_closed")
+    expected_handoff = [
+        ("RX-53", "administrator_protection_readback"),
+        ("RX-54", "independent_reviewer_assignment"),
+        ("RX-55", "finding_remediation_and_retest"),
+        ("RX-50", "lineage_and_exact_head_ci"),
+        ("RX-56", "authenticated_human_acceptance"),
+        ("RX-49", "protected_merge_preconditions"),
+        ("RX-51", "post_merge_provenance_and_retention"),
+        ("RX-52", "evidence_packet_handoff"),
+    ]
+    sequence = handoff.get("sequence")
+    if not isinstance(sequence, list) or [
+        (step.get("agent_id"), step.get("gate")) for step in sequence if isinstance(step, dict)
+    ] != expected_handoff or [step.get("sequence") for step in sequence if isinstance(step, dict)] != list(range(1, 9)):
+        raise RegistryError("handoff_coordination_sequence_invalid")
+    if any(not step.get("requires") or not step.get("pass_rule") for step in sequence):
+        raise RegistryError("handoff_coordination_step_incomplete")
+    if any(handoff.get(key) is not True for key in (
+        "no_agent_self_approval", "no_agent_may_assign_human_identity",
+        "no_agent_may_bypass_protection", "no_agent_may_merge_or_authorize_release"
+    )):
+        raise RegistryError("handoff_coordination_authority_boundary_weak")
+    if not handoff.get("invalidation_rules") or any(by_id[agent_id]["enabled"] is not False for agent_id in ("RX-53", "RX-54", "RX-55", "RX-56", "RX-57")):
+        raise RegistryError("handoff_coordination_agent_state_invalid")
     final_contract = data["final_decision_contract"]
     if final_contract.get("agent_id") != "RX-28" or final_contract.get("canonical_decision_authority") != "RX-19":
         raise RegistryError("final_decision_authority_mismatch")
@@ -140,7 +169,7 @@ def validate_registry(data: Any) -> dict[str, Any]:
     if lifecycle.get("non_equivalence_rule") is None or lifecycle.get("policy") is None:
         raise RegistryError("implementation_lifecycle_evidence_policy_missing")
     contract_list = data.get("new_agent_contracts")
-    expected_new_agents = {"RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52"}
+    expected_new_agents = {"RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57"}
     if not isinstance(contract_list, list) or {x.get("agent_id") for x in contract_list if isinstance(x, dict)} != expected_new_agents:
         raise RegistryError("new_agent_contracts_missing_or_ambiguous")
     for contract in contract_list:
