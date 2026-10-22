@@ -17,7 +17,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
     def test_registry_is_valid_and_fail_closed(self):
         result = validate_registry(self.registry)
         self.assertEqual(result["status"], "VALID")
-        self.assertEqual(result["agent_count"], 131)
+        self.assertEqual(result["agent_count"], 136)
         self.assertEqual(len(self.registry["operational_gate_contracts"]), 7)
         self.assertEqual(self.registry["final_decision_contract"]["canonical_decision_authority"], "RX-19")
         self.assertEqual(result["dependency_graph"], "ACYCLIC")
@@ -268,6 +268,34 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
             self.assertFalse(by_id[agent_id]["enabled"])
             self.assertEqual(by_id[agent_id]["authority_tier"], "R0")
             self.assertEqual(by_id[agent_id]["implementation_status"], "SPECIFIED_NOT_PRODUCTION_INTEGRATED")
+
+    def test_override_agents_are_disabled_and_contract_is_fail_closed(self):
+        result = validate_registry(self.registry)
+        self.assertEqual(result["agent_count"], 136)
+        contract = self.registry["agent_operations_override_contract"]
+        self.assertEqual(contract["canonical_release_authority"], "RX-19")
+        self.assertFalse(contract["production_authorization"])
+        self.assertEqual(contract["execution_modes"], ["dry_run"])
+        by_id = {agent["id"]: agent for agent in self.registry["agents"]}
+        contracts = {item["agent_id"]: item for item in self.registry["new_agent_contracts"]}
+        for agent_id in ("RX-139", "RX-140", "RX-141", "RX-142", "RX-143"):
+            self.assertIn(agent_id, by_id)
+            self.assertIn(agent_id, contracts)
+            self.assertFalse(by_id[agent_id]["enabled"])
+            self.assertEqual(by_id[agent_id]["authority_tier"], "R0")
+            self.assertEqual(by_id[agent_id]["implementation_status"], "SPECIFIED_NOT_PRODUCTION_INTEGRATED")
+            self.assertTrue(contracts[agent_id]["self_approval_prohibited"])
+            self.assertEqual(contracts[agent_id]["failure_disposition"], "BLOCK")
+
+    def test_override_cannot_be_promoted_or_weakened(self):
+        data = copy.deepcopy(self.registry)
+        data["agent_operations_override_contract"]["production_authorization"] = True
+        with self.assertRaisesRegex(RegistryError, "agent_operations_override_must_remain_dry_run_only"):
+            validate_registry(data)
+        data = copy.deepcopy(self.registry)
+        data["agent_operations_override_contract"]["prohibited_override_kinds"].remove("authorize_release")
+        with self.assertRaisesRegex(RegistryError, "agent_operations_override_prohibited_operations_missing"):
+            validate_registry(data)
 
     def test_runtime_mishap_recovery_tampering_blocks(self):
         data = copy.deepcopy(self.registry)
