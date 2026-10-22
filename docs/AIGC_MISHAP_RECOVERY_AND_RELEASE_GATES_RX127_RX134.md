@@ -74,3 +74,32 @@ The CI workflow runs this focused test module. These primitives are reference po
 ## Activation policy
 
 RX-127–RX-134 are currently disabled, R0, and specification-only. Enable only the minimum necessary agent after implementation, contract/negative/failure-injection tests, least-privilege identity, independent review, rollback rehearsal, and authorized human activation are evidenced. This document does not authorize runtime execution or production access.
+
+
+## Release-readiness trigger layer — RX-135–RX-138
+
+**Status:** specification and reference evaluator added; all four agents remain disabled R0.  
+**Default disposition:** BLOCK. **Canonical release authority:** RX-19.
+
+| Agent | Role | Boundary |
+|---|---|---|
+| RX-135 External Gate Dependency and Authorized Action Coordinator | Tracks the human/admin/integration actions still required and prepares scoped requests with named owner roles | Cannot impersonate or assign a person, claim an action completed without evidence, or grant permissions |
+| RX-136 CI Trigger and Exact-Head Run Coordinator | Checks workflow trigger eligibility and verifies run/attempt/head alignment | Reference evaluator only; cannot forge CI receipts, suppress checks, or treat stale-head evidence as current |
+| RX-137 Evidence Packet Assembly and Digest Reconciliation Agent | Assembles commit-bound evidence refs, artifact digests, acceptance/provenance and retention receipts | Cannot authenticate unsupported claims or manufacture missing receipts |
+| RX-138 Release Readiness Trigger Supervisor | Reconciles internal CI triggers with external human dependencies and reports the gate state to RX-19 | Cannot activate agents, override BLOCK, merge, or authorize release |
+
+### Trigger sequence
+1. **RX-135 — external dependencies:** enumerate authorized roles and required evidence; administrator permission failures stay UNVERIFIED.
+2. **RX-136 — internal CI:** bind workflow run and attempt to the exact candidate SHA. A source commit, workflow change, or relevant policy change invalidates dependent evidence.
+3. **RX-137 — evidence packet:** reconcile artifact bytes/digests and evidence-manifest references; branch CI is not post-merge provenance.
+4. **RX-138 — readiness supervision:** emit a gate-by-gate status and next action owner. Hand the complete evidence packet to RX-19; do not substitute for its decision.
+
+The executable reference evaluator is `src/aigc_runtime/readiness_triggers.py`, with tests in `tests/test_aigc_readiness_triggers.py`. It evaluates supplied state only; it does not itself query GitHub, dispatch a workflow, authenticate identities, or execute external actions. CI now runs the focused test module. The current repository CI run must pass before the code can be treated as validated.
+
+### Live gate snapshot for PR #330
+- Exact-head branch CI had passed on `3e346328e9de7121fcd0284605a8bd0dfe706098`, but the trigger-agent changes create a new candidate and require a fresh run.
+- No submitted independent review was present at last read.
+- Branch protection remains UNVERIFIED because the integration could not read it back.
+- Authenticated human acceptance bound to the final candidate SHA and evidence digest is missing.
+- Merge has not occurred; post-merge provenance and independent retention retrieval are therefore not established.
+- Disposition remains **BLOCK**. No agent is production-authorized.
