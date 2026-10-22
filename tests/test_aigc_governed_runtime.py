@@ -55,12 +55,45 @@ class GovernedRuntimeTests(unittest.TestCase):
 
     def test_broker_denies_policy_mismatch(self):
         ledger = AuditLedger()
-        broker = PermitBroker(ledger, enabled_agent_ids={"RX-103"})
+        broker = PermitBroker(ledger, enabled_agent_ids={"RX-103"}, permit_verifier=lambda p: True)
         result = broker.authorize(contract=contract(), permit=permit(),
             tool_name="records.read", action="read", resource="record:123",
             policy_version="policy-8", now=NOW)
         self.assertFalse(result["allowed"])
         self.assertEqual(result["reason"], "policy_version_mismatch")
+
+
+    def test_broker_denies_when_authenticator_is_not_configured(self):
+        ledger = AuditLedger()
+        broker = PermitBroker(ledger, enabled_agent_ids={"RX-103"})
+        result = broker.authorize(contract=contract(), permit=permit(),
+            tool_name="records.read", action="read", resource="record:123",
+            policy_version="policy-7", now=NOW)
+        self.assertFalse(result["allowed"])
+        self.assertEqual(result["reason"], "permit_authenticator_unconfigured")
+
+    def test_broker_authorizes_verified_narrow_permit_once(self):
+        ledger = AuditLedger()
+        broker = PermitBroker(ledger, enabled_agent_ids={"RX-103"}, permit_verifier=lambda p: p.signature == "verified-test-signature")
+        signed = permit(signature="verified-test-signature")
+        result = broker.authorize(contract=contract(), permit=signed,
+            tool_name="records.read", action="read", resource="record:123",
+            policy_version="policy-7", now=NOW)
+        self.assertTrue(result["allowed"])
+        self.assertEqual(result["reason"], "authorized")
+        replay = broker.authorize(contract=contract(), permit=signed,
+            tool_name="records.read", action="read", resource="record:123",
+            policy_version="policy-7", now=NOW)
+        self.assertFalse(replay["allowed"])
+        self.assertEqual(replay["reason"], "permit_use_limit_exceeded")
+
+    def test_broker_rejects_invalid_signature(self):
+        broker = PermitBroker(AuditLedger(), enabled_agent_ids={"RX-103"}, permit_verifier=lambda p: False)
+        result = broker.authorize(contract=contract(), permit=permit(),
+            tool_name="records.read", action="read", resource="record:123",
+            policy_version="policy-7", now=NOW)
+        self.assertFalse(result["allowed"])
+        self.assertEqual(result["reason"], "permit_signature_invalid")
 
     def test_broker_denies_tool_outside_contract(self):
         ledger = AuditLedger()
