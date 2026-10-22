@@ -11,7 +11,7 @@ from typing import Any
 REQUIRED_TOP_LEVEL = {
     "schema_version", "project_id", "orchestration_platform", "status",
     "default_disposition", "authority_tiers", "shared_contract", "agents",
-    "mandatory_human_gates", "acceptance_policy", "operational_gate_contracts", "final_decision_contract",
+    "mandatory_human_gates", "acceptance_policy", "operational_gate_contracts", "final_decision_contract", "handoff_coordination_contract", "research_intelligence_contract",
 }
 REQUIRED_AGENT = {
     "id", "name", "responsibility", "authority_tier", "dependencies",
@@ -142,6 +142,30 @@ def validate_registry(data: Any) -> dict[str, Any]:
         raise RegistryError("handoff_coordination_authority_boundary_weak")
     if not handoff.get("invalidation_rules") or any(by_id[agent_id]["enabled"] is not False for agent_id in ("RX-53", "RX-54", "RX-55", "RX-56", "RX-57")):
         raise RegistryError("handoff_coordination_agent_state_invalid")
+    research = data.get("research_intelligence_contract")
+    if not isinstance(research, dict) or research.get("contract_version") != "1.0.0":
+        raise RegistryError("research_intelligence_contract_missing_or_unsupported")
+    if research.get("status") != "SPECIFICATION_ONLY" or research.get("default_disposition") != "BLOCK":
+        raise RegistryError("research_intelligence_contract_must_fail_closed")
+    if any(research.get(key) is not True for key in (
+        "no_unsupported_compliance_claims", "no_agent_self_approval", "no_production_side_effects"
+    )):
+        raise RegistryError("research_intelligence_authority_boundary_weak")
+    required_research_rules = {
+        "Prefer primary government, standards-body, official project and original research sources; use secondary commentary only for context.",
+        "Record source title, publisher, canonical URL, publication/revision date, access date, jurisdiction, source type and exact claim supported.",
+        "Separate binding law/regulation, government policy, standards, normative specifications, voluntary guidance, vendor documentation and opinion.",
+        "Cross-check consequential claims against independent sources when feasible; record disagreement and missing evidence.",
+        "Never claim compliance, security, safety, certification or production readiness from a mapping exercise alone.",
+        "Research agents do not execute production changes, approve policy, assign reviewers, accept releases or override RX-19."
+    }
+    if not required_research_rules.issubset(set(research.get("research_quality_rules", []))):
+        raise RegistryError("research_quality_rules_missing")
+    if not research.get("evidence_fields") or not research.get("invalidation_rules"):
+        raise RegistryError("research_evidence_contract_incomplete")
+    for agent_id in ("RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68"):
+        if agent_id not in by_id or by_id[agent_id]["enabled"] is not False or by_id[agent_id]["authority_tier"] != "R0":
+            raise RegistryError("research_agent_must_be_read_only_and_disabled")
     final_contract = data["final_decision_contract"]
     if final_contract.get("agent_id") != "RX-28" or final_contract.get("canonical_decision_authority") != "RX-19":
         raise RegistryError("final_decision_authority_mismatch")
