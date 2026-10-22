@@ -11,7 +11,7 @@ from typing import Any
 REQUIRED_TOP_LEVEL = {
     "schema_version", "project_id", "orchestration_platform", "status",
     "default_disposition", "authority_tiers", "shared_contract", "agents",
-    "mandatory_human_gates", "acceptance_policy", "operational_gate_contracts", "final_decision_contract", "handoff_coordination_contract", "research_intelligence_contract", "opportunity_discovery_contract", "release_operations_assurance_contract", "aigc_systems_excellence_contract",
+    "mandatory_human_gates", "acceptance_policy", "operational_gate_contracts", "final_decision_contract", "handoff_coordination_contract", "research_intelligence_contract", "opportunity_discovery_contract", "release_operations_assurance_contract", "aigc_systems_excellence_contract", "runtime_maturity_contract",
 }
 REQUIRED_AGENT = {
     "id", "name", "responsibility", "authority_tier", "dependencies",
@@ -54,7 +54,7 @@ def validate_registry(data: Any) -> dict[str, Any]:
             raise RegistryError("implementation_status_overclaims_readiness")
         ids.append(agent["id"])
         by_id[agent["id"]] = agent
-    if len(by_id) != 113:
+    if len(by_id) != 119:
         raise RegistryError("unexpected_agent_count")
     for agent in data["agents"]:
         if agent["id"] in agent["dependencies"]:
@@ -185,6 +185,38 @@ def validate_registry(data: Any) -> dict[str, Any]:
         raise RegistryError("application_approval_gate_must_be_read_only")
     if not opportunity.get("source_policy_ref") or not opportunity.get("human_only_actions") or not opportunity.get("safety_rules"):
         raise RegistryError("opportunity_policy_contract_incomplete")
+
+    runtime = data.get("runtime_maturity_contract")
+    if not isinstance(runtime, dict) or runtime.get("contract_version") != "1.0.0":
+        raise RegistryError("runtime_maturity_contract_missing_or_unsupported")
+    if runtime.get("status") != "ORDERED_GATE_PLAN_NOT_PRODUCTION_ACTIVATED" or runtime.get("default_disposition") != "BLOCK":
+        raise RegistryError("runtime_maturity_contract_must_fail_closed")
+    if runtime.get("canonical_release_authority") != "RX-19" or runtime.get("production_authorization") is not False:
+        raise RegistryError("runtime_maturity_authority_boundary_weak")
+    expected_runtime_sequence = [
+        ("cryptographic_trust", "RX-121"),
+        ("durability_and_concurrency", "RX-122"),
+        ("tool_adapter_enforcement", "RX-123"),
+        ("observability_and_evaluation", "RX-124"),
+        ("independent_assurance", "RX-125"),
+    ]
+    runtime_sequence = runtime.get("sequence")
+    if not isinstance(runtime_sequence, list) or [
+        (step.get("gate_id"), step.get("agent_id")) for step in runtime_sequence if isinstance(step, dict)
+    ] != expected_runtime_sequence or [step.get("sequence") for step in runtime_sequence if isinstance(step, dict)] != list(range(1, 6)):
+        raise RegistryError("runtime_maturity_sequence_invalid")
+    if any(not step.get("required_outcomes") or step.get("failure_disposition") != "BLOCK" for step in runtime_sequence):
+        raise RegistryError("runtime_maturity_gate_incomplete_or_fail_open")
+    for agent_id in ("RX-121", "RX-122", "RX-123", "RX-124", "RX-125", "RX-126"):
+        if agent_id not in by_id or by_id[agent_id]["enabled"] is not False or by_id[agent_id]["authority_tier"] != "R0":
+            raise RegistryError("runtime_maturity_agent_must_be_disabled_and_read_only")
+    if runtime.get("orchestration_agent") != "RX-126" or runtime.get("activation_policy", {}).get("no_automatic_production_activation") is not True:
+        raise RegistryError("runtime_maturity_activation_policy_weak")
+    if any(runtime.get("activation_policy", {}).get(k) is not True for k in ("no_agent_self_approval", "no_agent_may_assign_human_identity", "no_agent_may_manufacture_acceptance", "no_agent_may_bypass_protection", "no_agent_may_merge_or_authorize_release")):
+        raise RegistryError("runtime_maturity_authority_controls_weak")
+    if not runtime.get("evidence_invalidation_rules"):
+        raise RegistryError("runtime_maturity_invalidation_rules_missing")
+
     final_contract = data["final_decision_contract"]
     if final_contract.get("agent_id") != "RX-28" or final_contract.get("canonical_decision_authority") != "RX-19":
         raise RegistryError("final_decision_authority_mismatch")
@@ -212,7 +244,7 @@ def validate_registry(data: Any) -> dict[str, Any]:
     if lifecycle.get("non_equivalence_rule") is None or lifecycle.get("policy") is None:
         raise RegistryError("implementation_lifecycle_evidence_policy_missing")
     contract_list = data.get("new_agent_contracts")
-    expected_new_agents = {"RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57", "RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68", "RX-69", "RX-70", "RX-71", "RX-72", "RX-73", "RX-74", "RX-75", "RX-76", "RX-77", "RX-78", "RX-79", "RX-80", "RX-81", "RX-82", "RX-83", "RX-84", "RX-85", "RX-86", "RX-87", "RX-88", "RX-89", "RX-90", "RX-91", "RX-92", "RX-93", "RX-94", "RX-95", "RX-96", "RX-97", "RX-98", "RX-99", "RX-100", "RX-101", "RX-102", "RX-103", "RX-104", "RX-105", "RX-106", "RX-107", "RX-108", "RX-109", "RX-110", "RX-111", "RX-112", "RX-113", "RX-114", "RX-115", "RX-116", "RX-117", "RX-118", "RX-119", "RX-120"}
+    expected_new_agents = {"RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57", "RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68", "RX-69", "RX-70", "RX-71", "RX-72", "RX-73", "RX-74", "RX-75", "RX-76", "RX-77", "RX-78", "RX-79", "RX-80", "RX-81", "RX-82", "RX-83", "RX-84", "RX-85", "RX-86", "RX-87", "RX-88", "RX-89", "RX-90", "RX-91", "RX-92", "RX-93", "RX-94", "RX-95", "RX-96", "RX-97", "RX-98", "RX-99", "RX-100", "RX-101", "RX-102", "RX-103", "RX-104", "RX-105", "RX-106", "RX-107", "RX-108", "RX-109", "RX-110", "RX-111", "RX-112", "RX-113", "RX-114", "RX-115", "RX-116", "RX-117", "RX-118", "RX-119", "RX-120", "RX-121", "RX-122", "RX-123", "RX-124", "RX-125", "RX-126"}
     if not isinstance(contract_list, list) or {x.get("agent_id") for x in contract_list if isinstance(x, dict)} != expected_new_agents:
         raise RegistryError("new_agent_contracts_missing_or_ambiguous")
     for contract in contract_list:
