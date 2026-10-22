@@ -17,7 +17,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
     def test_registry_is_valid_and_fail_closed(self):
         result = validate_registry(self.registry)
         self.assertEqual(result["status"], "VALID")
-        self.assertEqual(result["agent_count"], 127)
+        self.assertEqual(result["agent_count"], 131)
         self.assertEqual(len(self.registry["operational_gate_contracts"]), 7)
         self.assertEqual(self.registry["final_decision_contract"]["canonical_decision_authority"], "RX-19")
         self.assertEqual(result["dependency_graph"], "ACYCLIC")
@@ -77,7 +77,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
     def test_new_assurance_agents_have_contracts_and_remain_disabled(self):
         by_id = {agent["id"]: agent for agent in self.registry["agents"]}
         contracts = {item["agent_id"]: item for item in self.registry["new_agent_contracts"]}
-        for agent_id in ("RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57", "RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68", "RX-69", "RX-70", "RX-71", "RX-72", "RX-73", "RX-74", "RX-75", "RX-76", "RX-77", "RX-78", "RX-79", "RX-80", "RX-81", "RX-82", "RX-83", "RX-84", "RX-85", "RX-86", "RX-87", "RX-88", "RX-89", "RX-90", "RX-91", "RX-92", "RX-93", "RX-94", "RX-95", "RX-96", "RX-97", "RX-98", "RX-99", "RX-100", "RX-101", "RX-102", "RX-103", "RX-104", "RX-105", "RX-106", "RX-107", "RX-108", "RX-109", "RX-110", "RX-111", "RX-112", "RX-113", "RX-114", "RX-115", "RX-116", "RX-117", "RX-118", "RX-119", "RX-120", "RX-121", "RX-122", "RX-123", "RX-124", "RX-125", "RX-126", "RX-127", "RX-128", "RX-129", "RX-130", "RX-131", "RX-132", "RX-133", "RX-134"):
+        for agent_id in ("RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57", "RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68", "RX-69", "RX-70", "RX-71", "RX-72", "RX-73", "RX-74", "RX-75", "RX-76", "RX-77", "RX-78", "RX-79", "RX-80", "RX-81", "RX-82", "RX-83", "RX-84", "RX-85", "RX-86", "RX-87", "RX-88", "RX-89", "RX-90", "RX-91", "RX-92", "RX-93", "RX-94", "RX-95", "RX-96", "RX-97", "RX-98", "RX-99", "RX-100", "RX-101", "RX-102", "RX-103", "RX-104", "RX-105", "RX-106", "RX-107", "RX-108", "RX-109", "RX-110", "RX-111", "RX-112", "RX-113", "RX-114", "RX-115", "RX-116", "RX-117", "RX-118", "RX-119", "RX-120", "RX-121", "RX-122", "RX-123", "RX-124", "RX-125", "RX-126", "RX-127", "RX-128", "RX-129", "RX-130", "RX-131", "RX-132", "RX-133", "RX-134", "RX-135", "RX-136", "RX-137", "RX-138"):
             self.assertIn(agent_id, by_id)
             self.assertIn(agent_id, contracts)
             self.assertFalse(by_id[agent_id]["enabled"])
@@ -191,6 +191,34 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
             self.assertEqual(by_id[agent_id]["implementation_status"], "SPECIFIED_NOT_PRODUCTION_INTEGRATED")
             self.assertTrue(contracts[agent_id]["self_approval_prohibited"])
             self.assertEqual(contracts[agent_id]["failure_disposition"], "BLOCK")
+
+
+    def test_release_readiness_trigger_agents_are_disabled_and_fail_closed(self):
+        contract = self.registry["release_readiness_trigger_contract"]
+        self.assertEqual(contract["default_disposition"], "BLOCK")
+        self.assertEqual(contract["canonical_release_authority"], "RX-19")
+        self.assertEqual([step["sequence"] for step in contract["trigger_sequence"]], [1, 2, 3, 4])
+        by_id = {agent["id"]: agent for agent in self.registry["agents"]}
+        contracts = {item["agent_id"]: item for item in self.registry["new_agent_contracts"]}
+        for agent_id in ("RX-135", "RX-136", "RX-137", "RX-138"):
+            self.assertIn(agent_id, by_id)
+            self.assertIn(agent_id, contracts)
+            self.assertFalse(by_id[agent_id]["enabled"])
+            self.assertEqual(by_id[agent_id]["authority_tier"], "R0")
+            self.assertEqual(by_id[agent_id]["implementation_status"], "SPECIFIED_NOT_PRODUCTION_INTEGRATED")
+            self.assertTrue(contracts[agent_id]["self_approval_prohibited"])
+            self.assertTrue(contracts[agent_id]["human_approved_activation_required"])
+            self.assertEqual(contracts[agent_id]["failure_disposition"], "BLOCK")
+
+    def test_release_readiness_trigger_contract_tampering_blocks(self):
+        data = copy.deepcopy(self.registry)
+        data["release_readiness_trigger_contract"]["trigger_sequence"][0]["failure_disposition"] = "WARN"
+        with self.assertRaisesRegex(RegistryError, "release_readiness_trigger_gate_weak_or_unbound"):
+            validate_registry(data)
+        data = copy.deepcopy(self.registry)
+        data["release_readiness_trigger_contract"]["canonical_release_authority"] = "RX-138"
+        with self.assertRaisesRegex(RegistryError, "release_readiness_trigger_contract_must_fail_closed"):
+            validate_registry(data)
 
     def test_release_operations_authority_cannot_be_reassigned(self):
         data = copy.deepcopy(self.registry)
