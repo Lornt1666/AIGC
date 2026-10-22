@@ -103,3 +103,32 @@ The executable reference evaluator is `src/aigc_runtime/readiness_triggers.py`, 
 - Authenticated human acceptance bound to the final candidate SHA and evidence digest is missing.
 - Merge has not occurred; post-merge provenance and independent retention retrieval are therefore not established.
 - Disposition remains **BLOCK**. No agent is production-authorized.
+
+
+## Governed override and agent operations — RX-139–RX-143
+
+**Status:** specification plus deterministic dry-run planner and automated tests. All five agents remain disabled R0; production execution and production authorization are false. Canonical release authority remains RX-19.
+
+| Agent | Responsibility | Authority limit |
+|---|---|---|
+| RX-139 — Bounded Governance Override and Agent Operations Controller | Coordinates allowed rerouting, approved fallback, read-only degradation and reconciled retries | Cannot override security/release invariants or grant itself authority |
+| RX-140 — Agent Execution Planning and Dependency Scheduler | Builds deterministic, dependency-ordered dry-run plans and rejects cycles/missing dependencies | Does not dispatch agents or perform side effects |
+| RX-141 — Scoped Capability Permit and Tool Authorization Broker | Defines permit-validation requirements for target, action, candidate, policy, audience, expiry and replay controls | Reference contract only; no production signature/issuer integration and cannot mint permits |
+| RX-142 — Safety Interlock, Kill-Switch, and Recovery Supervisor | Blocks operations on kill-switch, unsafe retry or missing evidence | Cannot clear its own stop condition or override gates |
+| RX-143 — Agent Run Ledger and Execution Evidence Recorder | Defines run-record fields for source, policy, task, permit, run and outcome digests | Does not claim tamper-evident persistence or independent retention |
+
+### Executable reference
+- `src/aigc_runtime/agent_operations.py` implements `plan_agent_operation`, a deterministic dry-run planner. It never invokes a tool or changes an agent's activation state.
+- `tests/test_aigc_agent_operations.py` tests deterministic dependency ordering, prohibited overrides, production-mode denial, kill-switch precedence, side-effect reconciliation, malformed bindings, cycles, missing dependencies and non-mutation.
+- The canonical CI workflow runs this focused test module.
+- Registry validation checks 136 unique agents, 107 contracts, disabled R0 status, lifecycle schema binding, override-contract completeness, and prohibited operations.
+
+### Override policy
+Permitted *planning intents* are allowlisted-agent run planning, rerouting to an allowlisted agent, retry only after side-effect reconciliation, approved fallback selection, and read-only degradation. This is not permission to execute these operations in production.
+
+Always block attempts to override release gates, disable protection, skip required CI, self-enable, elevate authority, manufacture acceptance, forge evidence, merge, deploy or authorize release. Production execution remains blocked until a separate implementation supplies trusted signature verification, issuer trust, target/action-bound short-lived permits, replay protection, isolated adapters, kill-switch enforcement, durable audit storage, independent review and explicit authorized activation.
+
+A user authorization in conversation does not itself create a GitHub administrator grant, signed capability permit, authenticated acceptance receipt, or independent security review. Do not merge or release based solely on the user's general authorization.
+
+### Evidence freshness
+Any source commit, policy version, target agent, action, permit scope or relevant workflow change invalidates dependent plans/receipts. A successful dry-run test proves planner behavior only; it is not evidence that production dispatch, cryptographic permit verification, agent deployment, merge, or release works.
