@@ -17,7 +17,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
     def test_registry_is_valid_and_fail_closed(self):
         result = validate_registry(self.registry)
         self.assertEqual(result["status"], "VALID")
-        self.assertEqual(result["agent_count"], 38)
+        self.assertEqual(result["agent_count"], 45)
         self.assertEqual(len(self.registry["operational_gate_contracts"]), 7)
         self.assertEqual(self.registry["final_decision_contract"]["canonical_decision_authority"], "RX-19")
         self.assertEqual(result["dependency_graph"], "ACYCLIC")
@@ -76,7 +76,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
     def test_new_assurance_agents_have_contracts_and_remain_disabled(self):
         by_id = {agent["id"]: agent for agent in self.registry["agents"]}
         contracts = {item["agent_id"]: item for item in self.registry["new_agent_contracts"]}
-        for agent_id in ("RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45"):
+        for agent_id in ("RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52"):
             self.assertIn(agent_id, by_id)
             self.assertIn(agent_id, contracts)
             self.assertFalse(by_id[agent_id]["enabled"])
