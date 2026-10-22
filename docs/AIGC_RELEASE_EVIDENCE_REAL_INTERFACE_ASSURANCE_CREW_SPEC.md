@@ -312,3 +312,31 @@ All 15 agents remain disabled and specification-only. The candidate profile is p
 | RX-94 Cloud Build and Deployment Failure Investigator | Correlates commit to provider builds, classifies failure layers and assembles authorized logs for minimal reproducible fixes. |
 
 All remain R0, disabled, specification-only and BLOCK-on-failure. RX-94 may diagnose Cloudflare/other provider builds but cannot deploy, change production secrets, or suppress failed checks. RX-92 does not itself provide a trusted authentication mechanism; that remains a separately implemented and tested identity/approval integration.
+
+
+## 14. Release operations evidence assurance agents RX-95–RX-102
+
+These eight additional agents decompose the five requested release parameters into independently checkable evidence tasks. They complement RX-94 and RX-53–RX-57 rather than replacing them. All are R0 read-only, disabled, specification-only, and fail closed; none is a production-integrated service.
+
+| Agent | Responsibility | Required evidence / hard stop |
+|---|---|---|
+| RX-95 — Provider Build Evidence Intake and Redaction Gate | Validate authorized provider logs and evidence custody before analysis. | Build UUID, repository/branch/SHA, attempt and timestamps; redacted log digest; reject secrets or unredacted personal data. |
+| RX-96 — Cloudflare Effective Configuration and Build Context Auditor | Compare effective Cloudflare settings and repo configuration for the specific failed attempt. | Root directory, build/deploy/preview commands, branch/repository, variables/secrets presence (never values), Wrangler configuration/name, retry-time settings, config digest. Missing logs/config means root cause UNKNOWN. |
+| RX-97 — Independent Reviewer Identity and Independence Evidence Verifier | Validate administrator assignment and reviewer qualification/independence evidence. | Authorized assigner, reviewer identity and qualification, conflict declaration, exact reviewed SHA. AI review is not a substitute for a human reviewer. |
+| RX-98 — Finding Ledger and Independent Retest Integrity Verifier | Reconcile finding lifecycle from review through fix and independent retest. | Stable finding ID/severity, reviewed SHA, remediation SHA, retest run and digest, independent closure actor; unresolved high/critical finding blocks. |
+| RX-99 — Authenticated Acceptance Receipt and Replay Verifier | Verify trusted human acceptance, exact scope and replay resistance. | Authenticated actor/authority, final SHA, evidence-manifest digest, timestamp, expiry/revocation and unique receipt/nonce; chat text alone is not a receipt. |
+| RX-100 — Repository Protection and Merge-State Readback Verifier | Verify authoritative, fresh ruleset/branch protection and actual merge preconditions. | Required checks/reviews, bypass actors, current head, review-thread state and permission-sufficient administrator readback. HTTP 403/empty/incomplete readback is UNKNOWN. |
+| RX-101 — Stacked Pull Request Lineage and Evidence Invalidation Guard | Enforce dependency order and prevent advancing a stack with unresolved upstream gates. | Parent/base/head SHAs, PR states, exact-head workflow/run attempts and explicit invalidation of evidence after changes. |
+| RX-102 — Release Evidence Manifest Consistency and Retention Reconciler | Reconcile all gate evidence into one packet for RX-19. | Matching subject SHA/digests across CI, review, acceptance, protection, merge, attestation and independent retention/retrieval evidence. Hashes alone do not prove provenance or independent retention. |
+
+### Evidence-based Cloudflare diagnosis protocol
+
+Cloudflare Workers Builds distinguishes build and deploy commands; its root directory determines where the build command runs, and retrying a build applies the settings that exist at retry time. Therefore RX-95/RX-96 must preserve the failed build UUID, source SHA, timestamps, attempt, effective settings snapshot and redacted logs together. Collect the configured Git repository/branch, root directory, build/deploy/preview commands, relevant Wrangler config and dependency-lock metadata, compatibility settings where applicable, and variable/secret names or presence only. Never request or store secret values. Check worker name against Wrangler configuration and classify the failure layer from observed logs. Do not infer that any common Cloudflare error is the cause without evidence. Official references: [Cloudflare configuration](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/) and [build troubleshooting](https://developers.cloudflare.com/workers/ci-cd/builds/troubleshoot/).
+
+### Governance and provenance basis
+
+- [GitHub protected branches](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches): reviews, required checks, stale approvals and bypass policy must be checked as live controls.
+- [GitHub artifact attestations](https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/use-artifact-attestations) and [SLSA v1.2](https://slsa.dev/spec/v1.2/): verify signer/workflow identity, source, predicate and subject digest; do not treat a digest alone as provenance. Private-repository feature availability must be checked against the repository plan.
+- [Government of Canada Guide on the Use of Agentic Artificial Intelligence](https://www.canada.ca/en/government/system/digital-government/digital-government-innovations/responsible-use-ai/generative-ai/guide-use-agentic-artificial-intelligence.html): bounded autonomy, accountable human ownership, recoverability and auditability inform the agent boundaries.
+
+This is a primary-source research baseline, not an exhaustive legal or compliance assessment. Research establishes design inputs, not proof of implementation or conformity. The registry's release operations contract defines required evidence fields, invalidation rules and blocking controls. RX-19 remains the sole release decision authority.
