@@ -54,7 +54,7 @@ def validate_registry(data: Any) -> dict[str, Any]:
             raise RegistryError("implementation_status_overclaims_readiness")
         ids.append(agent["id"])
         by_id[agent["id"]] = agent
-    if len(by_id) != 136:
+    if len(by_id) != 137:
         raise RegistryError("unexpected_agent_count")
     for agent in data["agents"]:
         if agent["id"] in agent["dependencies"]:
@@ -244,7 +244,7 @@ def validate_registry(data: Any) -> dict[str, Any]:
     if lifecycle.get("non_equivalence_rule") is None or lifecycle.get("policy") is None:
         raise RegistryError("implementation_lifecycle_evidence_policy_missing")
     contract_list = data.get("new_agent_contracts")
-    expected_new_agents = {"RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57", "RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68", "RX-69", "RX-70", "RX-71", "RX-72", "RX-73", "RX-74", "RX-75", "RX-76", "RX-77", "RX-78", "RX-79", "RX-80", "RX-81", "RX-82", "RX-83", "RX-84", "RX-85", "RX-86", "RX-87", "RX-88", "RX-89", "RX-90", "RX-91", "RX-92", "RX-93", "RX-94", "RX-95", "RX-96", "RX-97", "RX-98", "RX-99", "RX-100", "RX-101", "RX-102", "RX-103", "RX-104", "RX-105", "RX-106", "RX-107", "RX-108", "RX-109", "RX-110", "RX-111", "RX-112", "RX-113", "RX-114", "RX-115", "RX-116", "RX-117", "RX-118", "RX-119", "RX-120", "RX-121", "RX-122", "RX-123", "RX-124", "RX-125", "RX-126", "RX-127", "RX-128", "RX-129", "RX-130", "RX-131", "RX-132", "RX-133", "RX-134", "RX-135", "RX-136", "RX-137", "RX-138", "RX-139", "RX-140", "RX-141", "RX-142", "RX-143"}
+    expected_new_agents = {"RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57", "RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68", "RX-69", "RX-70", "RX-71", "RX-72", "RX-73", "RX-74", "RX-75", "RX-76", "RX-77", "RX-78", "RX-79", "RX-80", "RX-81", "RX-82", "RX-83", "RX-84", "RX-85", "RX-86", "RX-87", "RX-88", "RX-89", "RX-90", "RX-91", "RX-92", "RX-93", "RX-94", "RX-95", "RX-96", "RX-97", "RX-98", "RX-99", "RX-100", "RX-101", "RX-102", "RX-103", "RX-104", "RX-105", "RX-106", "RX-107", "RX-108", "RX-109", "RX-110", "RX-111", "RX-112", "RX-113", "RX-114", "RX-115", "RX-116", "RX-117", "RX-118", "RX-119", "RX-120", "RX-121", "RX-122", "RX-123", "RX-124", "RX-125", "RX-126", "RX-127", "RX-128", "RX-129", "RX-130", "RX-131", "RX-132", "RX-133", "RX-134", "RX-135", "RX-136", "RX-137", "RX-138", "RX-139", "RX-140", "RX-141", "RX-142", "RX-143", "RX-144"}
     if not isinstance(contract_list, list) or {x.get("agent_id") for x in contract_list if isinstance(x, dict)} != expected_new_agents:
         raise RegistryError("new_agent_contracts_missing_or_ambiguous")
     for contract in contract_list:
@@ -263,6 +263,53 @@ def validate_registry(data: Any) -> dict[str, Any]:
         agent = by_id.get(contract["agent_id"])
         if not agent or agent["enabled"] is not False or agent["implementation_status"] != "SPECIFIED_NOT_PRODUCTION_INTEGRATED":
             raise RegistryError("new_agent_status_overclaims_readiness")
+
+    release_gate = data.get("release_gate_execution_contract")
+    if not isinstance(release_gate, dict) or release_gate.get("contract_version") != "1.0.0":
+        raise RegistryError("release_gate_execution_contract_missing_or_unsupported")
+    if (release_gate.get("status") != "SPECIFICATION_ONLY"
+        or release_gate.get("orchestrator_agent_id") != "RX-144"
+        or release_gate.get("default_disposition") != "BLOCK"
+        or release_gate.get("canonical_release_authority") != "RX-19"
+        or release_gate.get("production_authorization") is not False):
+        raise RegistryError("release_gate_execution_contract_must_fail_closed")
+    expected_release_actions = [
+        (1, "administrator_authenticated_repository_protection_readback", {"RX-53", "RX-132"}),
+        (2, "authorized_independent_security_reviewer_assignment", {"RX-54", "RX-131"}),
+        (3, "exact_commit_review_findings_remediation_and_independent_retest", {"RX-55", "RX-131"}),
+        (4, "complete_required_exact_head_ci_and_evidence_regeneration", {"RX-136", "RX-129", "RX-137"}),
+        (5, "authenticated_human_acceptance_binding", {"RX-56", "RX-133"}),
+        (6, "complete_packet_submission_to_rx19", {"RX-57", "RX-137", "RX-19"}),
+    ]
+    actions = release_gate.get("ordered_actions")
+    if not isinstance(actions, list) or len(actions) != len(expected_release_actions):
+        raise RegistryError("release_gate_action_sequence_invalid")
+    for action, (sequence, action_name, agent_ids) in zip(actions, expected_release_actions):
+        if (action.get("sequence") != sequence
+            or action.get("action") != action_name
+            or set(action.get("agent_ids", [])) != agent_ids
+            or not action.get("required_evidence")
+            or not action.get("pass_rule")
+            or action.get("failure_disposition") != "BLOCK"):
+            raise RegistryError("release_gate_action_incomplete_or_unsafe")
+        if any(agent_id not in by_id for agent_id in agent_ids):
+            raise RegistryError("release_gate_action_references_unknown_agent")
+    if release_gate.get("canonical_release_authority") != data["final_decision_contract"].get("canonical_decision_authority"):
+        raise RegistryError("release_gate_authority_does_not_match_canonical_authority")
+    if any(release_gate.get(key) is not True for key in (
+        "no_agent_self_approval", "no_agent_may_assign_human_identity",
+        "no_agent_may_change_repository_protections", "no_agent_may_bypass_required_ci",
+        "no_agent_may_manufacture_acceptance", "no_agent_may_close_findings_without_independent_retest",
+        "no_agent_may_merge_or_authorize_release")):
+        raise RegistryError("release_gate_authority_boundary_weak")
+    if len(release_gate.get("evidence_invalidation_rules", [])) < 4:
+        raise RegistryError("release_gate_evidence_invalidation_rules_incomplete")
+    orchestrator = by_id.get("RX-144")
+    if (not orchestrator or orchestrator.get("enabled") is not False
+        or orchestrator.get("authority_tier") != "R0"
+        or orchestrator.get("implementation_status") != "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+        or "RX-19" not in orchestrator.get("dependencies", [])):
+        raise RegistryError("release_gate_orchestrator_must_remain_read_only_and_disabled")
 
     systems = data.get("aigc_systems_excellence_contract")
     if not isinstance(systems, dict) or systems.get("contract_version") != "1.0.0":
