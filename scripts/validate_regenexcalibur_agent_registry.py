@@ -11,7 +11,7 @@ from typing import Any
 REQUIRED_TOP_LEVEL = {
     "schema_version", "project_id", "orchestration_platform", "status",
     "default_disposition", "authority_tiers", "shared_contract", "agents",
-    "mandatory_human_gates", "acceptance_policy", "operational_gate_contracts", "final_decision_contract", "handoff_coordination_contract", "research_intelligence_contract", "opportunity_discovery_contract", "release_operations_assurance_contract", "aigc_systems_excellence_contract", "runtime_maturity_contract", "runtime_mishap_recovery_contract", "release_readiness_trigger_contract", "agent_operations_override_contract",
+    "mandatory_human_gates", "acceptance_policy", "operational_gate_contracts", "final_decision_contract", "handoff_coordination_contract", "research_intelligence_contract", "opportunity_discovery_contract", "release_operations_assurance_contract", "aigc_systems_excellence_contract", "runtime_maturity_contract", "runtime_mishap_recovery_contract", "release_readiness_trigger_contract", "agent_operations_override_contract", "administrator_review_evidence_contract",
 }
 REQUIRED_AGENT = {
     "id", "name", "responsibility", "authority_tier", "dependencies",
