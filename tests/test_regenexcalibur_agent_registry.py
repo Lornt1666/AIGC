@@ -17,7 +17,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
     def test_registry_is_valid_and_fail_closed(self):
         result = validate_registry(self.registry)
         self.assertEqual(result["status"], "VALID")
-        self.assertEqual(result["agent_count"], 95)
+        self.assertEqual(result["agent_count"], 113)
         self.assertEqual(len(self.registry["operational_gate_contracts"]), 7)
         self.assertEqual(self.registry["final_decision_contract"]["canonical_decision_authority"], "RX-19")
         self.assertEqual(result["dependency_graph"], "ACYCLIC")
@@ -167,6 +167,35 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
         data = copy.deepcopy(self.registry)
         data["release_operations_assurance_contract"]["canonical_release_authority"] = "RX-102"
         with self.assertRaisesRegex(RegistryError, "release_operations_contract_must_fail_closed"):
+            validate_registry(data)
+
+
+    def test_systems_excellence_agents_are_disabled_and_fail_closed(self):
+        contract = self.registry["aigc_systems_excellence_contract"]
+        self.assertEqual(contract["default_disposition"], "BLOCK")
+        self.assertEqual(contract["canonical_release_authority"], "RX-19")
+        self.assertFalse(contract["production_authorization"])
+        by_id = {agent["id"]: agent for agent in self.registry["agents"]}
+        contracts = {item["agent_id"]: item for item in self.registry["new_agent_contracts"]}
+        for agent_id in ("RX-103", "RX-104", "RX-105", "RX-106", "RX-107", "RX-108", "RX-109", "RX-110", "RX-111", "RX-112", "RX-113", "RX-114", "RX-115", "RX-116", "RX-117", "RX-118", "RX-119", "RX-120"):
+            self.assertIn(agent_id, by_id)
+            self.assertIn(agent_id, contracts)
+            self.assertEqual(by_id[agent_id]["authority_tier"], "R0")
+            self.assertFalse(by_id[agent_id]["enabled"])
+            self.assertEqual(by_id[agent_id]["implementation_status"], "SPECIFIED_NOT_PRODUCTION_INTEGRATED")
+            self.assertTrue(contracts[agent_id]["self_approval_prohibited"])
+            self.assertEqual(contracts[agent_id]["failure_disposition"], "BLOCK")
+
+    def test_systems_excellence_cannot_reassign_release_authority(self):
+        data = copy.deepcopy(self.registry)
+        data["aigc_systems_excellence_contract"]["canonical_release_authority"] = "RX-103"
+        with self.assertRaisesRegex(RegistryError, "systems_excellence_contract_must_fail_closed"):
+            validate_registry(data)
+
+    def test_systems_excellence_blocks_missing_control_evidence(self):
+        data = copy.deepcopy(self.registry)
+        data["aigc_systems_excellence_contract"]["required_test_classes"] = []
+        with self.assertRaisesRegex(RegistryError, "systems_excellence_contract_incomplete"):
             validate_registry(data)
 
 
