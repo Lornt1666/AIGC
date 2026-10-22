@@ -7005,7 +7005,8 @@
         "sequence": 1,
         "agent_ids": [
           "RX-53",
-          "RX-132"
+          "RX-132",
+          "RX-145"
         ],
         "action": "administrator_authenticated_repository_protection_readback",
         "required_evidence": [
@@ -7024,7 +7025,8 @@
         "sequence": 2,
         "agent_ids": [
           "RX-54",
-          "RX-131"
+          "RX-131",
+          "RX-146"
         ],
         "action": "authorized_independent_security_reviewer_assignment",
         "required_evidence": [
@@ -7042,7 +7044,8 @@
         "sequence": 3,
         "agent_ids": [
           "RX-55",
-          "RX-131"
+          "RX-131",
+          "RX-147"
         ],
         "action": "exact_commit_review_findings_remediation_and_independent_retest",
         "required_evidence": [
