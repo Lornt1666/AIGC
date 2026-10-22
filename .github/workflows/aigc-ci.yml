@@ -92,6 +92,14 @@ jobs:
         shell: bash
         run: echo "tree_sha=$(git rev-parse 'HEAD^{tree}')" >> "$GITHUB_OUTPUT"
 
+      - name: Run agent operations and registry tests with diagnostic output
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/validate_regenexcalibur_agent_registry.py
+          PYTHONPATH=. python -m unittest discover -s tests -p 'test_regenexcalibur_agent_registry.py' -v
+          PYTHONPATH=src python -m unittest discover -s tests -p 'test_aigc_agent_operations.py' -v
+
       - name: Execute shared canonical validation runner
         run: |
           mkdir -p "$RUNNER_TEMP/aigc-ci-stage-results"
