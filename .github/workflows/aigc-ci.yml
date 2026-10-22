@@ -134,6 +134,7 @@ jobs:
           set -euo pipefail
           PYTHONPATH=src python -m unittest discover -s tests -p 'test_aigc_governed_runtime.py' -v
           PYTHONPATH=src python -m unittest discover -s tests -p 'test_aigc_runtime_maturity.py' -v
+          PYTHONPATH=src python -m unittest discover -s tests -p 'test_aigc_runtime_mishap_recovery.py' -v
 
       - name: Run Governor Agent policy tests
         shell: bash
