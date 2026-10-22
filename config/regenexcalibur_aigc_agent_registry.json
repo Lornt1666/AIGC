@@ -2070,6 +2070,29 @@
       "authority_boundary": "Reference output generation only; durable tamper-evident storage is not integrated. Cannot claim independent retention, mint provenance, fabricate outcomes, or authorize merge/release. Cannot self-approve or approve its own activation or operation.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-144",
+      "name": "Release Gate Execution and RX-19 Handoff Orchestrator",
+      "responsibility": "sequence the existing reviewer-assignment, exact-commit review/remediation, administrator protection readback, authenticated human acceptance, exact-head CI/evidence regeneration, and final evidence-packet submission workflows; verify every handoff is bound to the same immutable release candidate and submit only to RX-19",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-19",
+        "RX-53",
+        "RX-54",
+        "RX-55",
+        "RX-56",
+        "RX-57",
+        "RX-129",
+        "RX-132",
+        "RX-133",
+        "RX-136",
+        "RX-137",
+        "RX-138"
+      ],
+      "authority_boundary": "Read-only coordination and evidence completeness checks only. Cannot appoint or impersonate a human reviewer, claim qualifications without evidence, change repository protections, close findings without independent retest evidence, manufacture human acceptance, weaken or skip CI, mint or fake provenance, authorize production, merge, release, or reassign RX-19 as sole release decision authority. Missing, stale, contradictory, unauthenticated, or wrong-commit evidence preserves BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     }
   ],
   "mandatory_human_gates": [
@@ -5787,6 +5810,52 @@
       "self_approval_prohibited": true,
       "production_authorization": false,
       "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-144",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_registry",
+        "read_pull_request_metadata",
+        "read_workflow_runs",
+        "read_workflow_artifacts",
+        "read_review_evidence",
+        "read_administrator_protection_evidence",
+        "read_authenticated_acceptance_record",
+        "assemble_evidence_packet",
+        "request_authorized_human_action"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "source_tree_sha",
+        "policy_version",
+        "reviewed_commit_sha",
+        "review_evidence_digest",
+        "protection_readback_digest",
+        "human_acceptance_commit_sha",
+        "human_acceptance_evidence_digest",
+        "workflow_run_id",
+        "workflow_run_attempt",
+        "artifact_digest",
+        "evidence_packet_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection",
+        "stale_evidence_invalidation",
+        "wrong_commit_binding",
+        "unauthenticated_acceptance_rejection",
+        "rx19_authority_boundary"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
     }
   ],
   "handoff_coordination_contract": {
@@ -6794,5 +6863,144 @@
     "no_agent_may_manufacture_acceptance": true,
     "no_agent_may_bypass_protection": true,
     "no_agent_may_merge_or_authorize_release": true
+  },
+  "release_gate_execution_contract": {
+    "contract_version": "1.0.0",
+    "status": "SPECIFICATION_ONLY",
+    "orchestrator_agent_id": "RX-144",
+    "default_disposition": "BLOCK",
+    "canonical_release_authority": "RX-19",
+    "production_authorization": false,
+    "ordered_actions": [
+      {
+        "sequence": 1,
+        "agent_ids": [
+          "RX-53",
+          "RX-132"
+        ],
+        "action": "administrator_authenticated_repository_protection_readback",
+        "required_evidence": [
+          "authenticated_administrator_identity",
+          "repository_and_branch_identity",
+          "ruleset_and_branch_protection_readback",
+          "required_checks",
+          "bypass_actors",
+          "retrieval_timestamp",
+          "readback_digest"
+        ],
+        "pass_rule": "Effective protection settings are returned by an authorized administrator context and bound to the target repository and branch; empty or inaccessible API responses do not count as evidence.",
+        "failure_disposition": "BLOCK"
+      },
+      {
+        "sequence": 2,
+        "agent_ids": [
+          "RX-54",
+          "RX-131"
+        ],
+        "action": "authorized_independent_security_reviewer_assignment",
+        "required_evidence": [
+          "administrator_assignment_record",
+          "reviewer_identity",
+          "qualification_evidence",
+          "independence_and_conflict_declaration",
+          "reviewed_commit_sha",
+          "evidence_digest"
+        ],
+        "pass_rule": "An authorized repository administrator assigns a qualified, independent human reviewer; agents cannot assign themselves or invent identity/qualifications.",
+        "failure_disposition": "BLOCK"
+      },
+      {
+        "sequence": 3,
+        "agent_ids": [
+          "RX-55",
+          "RX-131"
+        ],
+        "action": "exact_commit_review_findings_remediation_and_independent_retest",
+        "required_evidence": [
+          "review_report",
+          "finding_ids_and_severity",
+          "finding_to_commit_binding",
+          "remediation_commit_shas",
+          "independent_retest_results",
+          "closure_evidence_digest"
+        ],
+        "pass_rule": "Every finding is tracked through remediation and independent retest; changed source or evidence digest invalidates stale closure.",
+        "failure_disposition": "BLOCK"
+      },
+      {
+        "sequence": 4,
+        "agent_ids": [
+          "RX-136",
+          "RX-129",
+          "RX-137"
+        ],
+        "action": "complete_required_exact_head_ci_and_evidence_regeneration",
+        "required_evidence": [
+          "final_commit_sha",
+          "workflow_run_id",
+          "workflow_run_attempt",
+          "required_job_conclusions",
+          "artifact_manifest",
+          "artifact_digest",
+          "evidence_packet_digest"
+        ],
+        "pass_rule": "The complete required workflow passes on the final immutable commit; every later commit invalidates the previous exact-head result and requires rerun.",
+        "failure_disposition": "BLOCK"
+      },
+      {
+        "sequence": 5,
+        "agent_ids": [
+          "RX-56",
+          "RX-133"
+        ],
+        "action": "authenticated_human_acceptance_binding",
+        "required_evidence": [
+          "authenticated_approver_identity",
+          "explicit_affirmative_acceptance",
+          "scope",
+          "timestamp",
+          "final_commit_sha",
+          "evidence_packet_digest",
+          "conditions"
+        ],
+        "pass_rule": "Acceptance is explicitly affirmative, authenticated, authorized, and bound to the final commit and exact evidence digest after review and findings closure.",
+        "failure_disposition": "BLOCK"
+      },
+      {
+        "sequence": 6,
+        "agent_ids": [
+          "RX-57",
+          "RX-137",
+          "RX-19"
+        ],
+        "action": "complete_packet_submission_to_rx19",
+        "required_evidence": [
+          "all_prior_gate_receipts",
+          "source_and_policy_binding",
+          "artifact_manifest_and_digest",
+          "review_and_retest_records",
+          "administrator_readback",
+          "human_acceptance_record",
+          "workflow_run_binding",
+          "packet_digest",
+          "rx19_submission_receipt"
+        ],
+        "pass_rule": "Submit a complete, consistent, authenticated evidence packet to RX-19 for the sole release decision; handoff or packet completeness is not release authorization.",
+        "failure_disposition": "BLOCK"
+      }
+    ],
+    "no_agent_self_approval": true,
+    "no_agent_may_assign_human_identity": true,
+    "no_agent_may_change_repository_protections": true,
+    "no_agent_may_bypass_required_ci": true,
+    "no_agent_may_manufacture_acceptance": true,
+    "no_agent_may_close_findings_without_independent_retest": true,
+    "no_agent_may_merge_or_authorize_release": true,
+    "evidence_invalidation_rules": [
+      "Any source commit change invalidates exact-head CI, review binding, acceptance binding, and the evidence packet; rerun and regenerate all affected evidence.",
+      "Any artifact digest, policy version, workflow run attempt, reviewer identity, or acceptance record change invalidates dependent packet digests and requires revalidation.",
+      "Unavailable, empty, stale, contradictory, unauthenticated, or wrong-repository evidence preserves BLOCK.",
+      "RX-144 can submit only to RX-19 and cannot interpret a handoff as an affirmative release decision."
+    ]
   }
 }
