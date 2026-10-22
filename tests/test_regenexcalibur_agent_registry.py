@@ -17,7 +17,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
     def test_registry_is_valid_and_fail_closed(self):
         result = validate_registry(self.registry)
         self.assertEqual(result["status"], "VALID")
-        self.assertEqual(result["agent_count"], 113)
+        self.assertEqual(result["agent_count"], 119)
         self.assertEqual(len(self.registry["operational_gate_contracts"]), 7)
         self.assertEqual(self.registry["final_decision_contract"]["canonical_decision_authority"], "RX-19")
         self.assertEqual(result["dependency_graph"], "ACYCLIC")
@@ -77,7 +77,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
     def test_new_assurance_agents_have_contracts_and_remain_disabled(self):
         by_id = {agent["id"]: agent for agent in self.registry["agents"]}
         contracts = {item["agent_id"]: item for item in self.registry["new_agent_contracts"]}
-        for agent_id in ("RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57", "RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68", "RX-69", "RX-70", "RX-71", "RX-72", "RX-73", "RX-74", "RX-75", "RX-76", "RX-77", "RX-78", "RX-79", "RX-80", "RX-81", "RX-82", "RX-83", "RX-84", "RX-85", "RX-86", "RX-87", "RX-88", "RX-89", "RX-90", "RX-91", "RX-92", "RX-93", "RX-94", "RX-95", "RX-96", "RX-97", "RX-98", "RX-99", "RX-100", "RX-101", "RX-102"):
+        for agent_id in ("RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57", "RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68", "RX-69", "RX-70", "RX-71", "RX-72", "RX-73", "RX-74", "RX-75", "RX-76", "RX-77", "RX-78", "RX-79", "RX-80", "RX-81", "RX-82", "RX-83", "RX-84", "RX-85", "RX-86", "RX-87", "RX-88", "RX-89", "RX-90", "RX-91", "RX-92", "RX-93", "RX-94", "RX-95", "RX-96", "RX-97", "RX-98", "RX-99", "RX-100", "RX-101", "RX-102", "RX-103", "RX-104", "RX-105", "RX-106", "RX-107", "RX-108", "RX-109", "RX-110", "RX-111", "RX-112", "RX-113", "RX-114", "RX-115", "RX-116", "RX-117", "RX-118", "RX-119", "RX-120", "RX-121", "RX-122", "RX-123", "RX-124", "RX-125", "RX-126"):
             self.assertIn(agent_id, by_id)
             self.assertIn(agent_id, contracts)
             self.assertFalse(by_id[agent_id]["enabled"])
@@ -86,6 +86,35 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
             self.assertTrue(contracts[agent_id]["human_approved_activation_required"])
             self.assertTrue(contracts[agent_id]["rollback_plan_required"])
             self.assertEqual(contracts[agent_id]["failure_disposition"], "BLOCK")
+
+
+    def test_runtime_maturity_gates_are_ordered_and_fail_closed(self):
+        runtime = self.registry["runtime_maturity_contract"]
+        self.assertEqual(runtime["canonical_release_authority"], "RX-19")
+        self.assertEqual([step["sequence"] for step in runtime["sequence"]], [1, 2, 3, 4, 5])
+        self.assertEqual([step["gate_id"] for step in runtime["sequence"]], [
+            "cryptographic_trust", "durability_and_concurrency",
+            "tool_adapter_enforcement", "observability_and_evaluation",
+            "independent_assurance",
+        ])
+        self.assertTrue(all(step["failure_disposition"] == "BLOCK" for step in runtime["sequence"]))
+        self.assertFalse(runtime["production_authorization"])
+        by_id = {agent["id"]: agent for agent in self.registry["agents"]}
+        for agent_id in ("RX-121", "RX-122", "RX-123", "RX-124", "RX-125", "RX-126"):
+            self.assertFalse(by_id[agent_id]["enabled"])
+            self.assertEqual(by_id[agent_id]["authority_tier"], "R0")
+
+    def test_runtime_gate_sequence_tampering_blocks(self):
+        data = copy.deepcopy(self.registry)
+        data["runtime_maturity_contract"]["sequence"][0]["sequence"] = 2
+        with self.assertRaisesRegex(RegistryError, "runtime_maturity_sequence_invalid"):
+            validate_registry(data)
+
+    def test_runtime_agents_cannot_be_enabled_by_registry_edit(self):
+        data = copy.deepcopy(self.registry)
+        data["agents"][-1]["enabled"] = True
+        with self.assertRaisesRegex(RegistryError, "new_registry_agents_must_default_disabled"):
+            validate_registry(data)
 
     def test_handoff_coordinator_preserves_required_order_and_fail_closed_rules(self):
         contract = self.registry["handoff_coordination_contract"]
