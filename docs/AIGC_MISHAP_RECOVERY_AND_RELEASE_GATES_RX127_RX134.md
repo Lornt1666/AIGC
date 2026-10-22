@@ -59,6 +59,18 @@ The prior CI attempt #39780164587 failed, and its rerun also ended in failure. L
 
 The last known successful runtime-maturity test run was #39780888505 on SHA 9b07abefe888e7b7b363f75b2b748c3e41de3484. Subsequent commits to add RX-127–RX-134 mean that success does not validate the current branch head. A fresh exact-head CI run is mandatory.
 
+
+## Executable reference harness
+
+The repository now includes `src/aigc_runtime/recovery_gates.py` and focused tests in `tests/test_aigc_runtime_mishap_recovery.py`. The module provides deterministic, fail-closed primitives to:
+- validate incident records against the candidate commit and evidence digest;
+- keep root-cause statements as hypotheses unless a referenced reproduction reproduces them;
+- validate exact-head CI receipts, required jobs, skipped stages, test counts, and artifact/evidence digests;
+- block retries for uncertain side effects unless reconciliation proves the retry safe; and
+- enforce ordered gate progression with exact-SHA binding.
+
+The CI workflow runs this focused test module. These primitives are reference policy functions, not a GitHub API client, production incident commander, human identity provider, KMS, or authority to execute remediation. They do not independently prove that a supplied receipt is authentic; callers must verify its provenance before supplying it.
+
 ## Activation policy
 
 RX-127–RX-134 are currently disabled, R0, and specification-only. Enable only the minimum necessary agent after implementation, contract/negative/failure-injection tests, least-privilege identity, independent review, rollback rehearsal, and authorized human activation are evidenced. This document does not authorize runtime execution or production access.
