@@ -233,3 +233,82 @@ These five agents extend the existing release-evidence crew with an explicit, fa
 8. Complete authenticated packet submitted unchanged to RX-19.
 
 Any changed SHA, base/head relationship, run attempt, reviewer, policy, digest, acceptance record, protection configuration, or retention policy invalidates affected evidence and requires revalidation. Missing, stale, inaccessible, contradictory, or unauthenticated evidence results in **BLOCK**. These specifications do not claim that the actions have already occurred.
+
+
+## 11. Deep research and engineering assurance agents RX-58–RX-68
+
+All eleven agents remain disabled and specification-only. They produce research evidence and recommendations, not administrative actions or release decisions.
+
+| Agent | Mission | Key outputs |
+|---|---|---|
+| RX-58 — Continuous Research and Standards Intelligence | Track primary-source standards, government guidance, official framework revisions, advisories and source freshness. | Source register, claim-source map, change alerts, conflicts and uncertainty. |
+| RX-59 — Agentic System Threat Modeling and Attack-Path Analyst | Map trust boundaries and cross-agent attack paths, including prompt injection, identity abuse, excessive agency and supply-chain compromise. | Threat model, attack graph, mitigations and control mapping. |
+| RX-60 — Evaluation Science and Benchmark Integrity Architect | Design reproducible capability/safety evaluations and guard against leakage, contamination, cherry-picking and invalid comparisons. | Evaluation protocol, dataset lineage, uncertainty analysis and regression thresholds. |
+| RX-61 — Prompt Injection and Tool-Abuse Red-Team Agent | Test untrusted content, indirect injection, confused-deputy paths, data exfiltration and tool misuse in isolated environments. | Bounded adversarial cases, reproducible evidence and mitigation proposals. |
+| RX-62 — AI Governance and Jurisdictional Control Mapping Agent | Distinguish binding obligations from voluntary guidance and map controls by jurisdiction and use case. | Control crosswalk, applicability rationale, compliance gaps and human-review queue. |
+| RX-63 — Data Governance, Privacy and Evidence Lifecycle Analyst | Review data minimization, access, residency, retention, deletion, redaction and sensitive evidence handling. | Data-flow inventory, privacy findings and control recommendations. |
+| RX-64 — Reliability, Chaos and Recovery Test Architect | Test retries, idempotency, timeouts, queue failure, duplicate delivery, crash recovery and ambiguous outcomes. | Fault matrix, recovery tests and failure reports. |
+| RX-65 — Observability, SLO and Cost Efficiency Analyst | Define SLI/SLOs, traces, alerting, budgets, capacity limits and cost attribution without weakening gates. | SLO proposal, telemetry gaps, cost scenarios and capacity-risk report. |
+| RX-66 — Architecture Decision and Dependency Risk Reviewer | Compare design alternatives and assess dependency, licensing, coupling, migration and rollback risks. | Architecture decision records, dependency risk register and migration plan. |
+| RX-67 — Incident Response and Emergency Stop Coordinator | Prepare response playbooks and verify independently controlled stop, escalation and recovery procedures. | Incident runbooks, escalation matrix and stop-control evidence requirements. |
+| RX-68 — Research-to-Implementation Traceability Synthesizer | Convert sourced findings into versioned requirements, implementation tasks, tests and measurable acceptance criteria. | Claim-source-requirement-test traceability matrix and unresolved-assumption register. |
+
+### Research quality and implementation rules
+
+- Prefer primary government, standards-body, official project and original research sources; record publisher, canonical URL, publication/revision date, access date, jurisdiction and source type.
+- Separate law/regulation, government policy, standards, normative specifications, voluntary guidance, vendor documentation and opinion. A control crosswalk is not legal advice, certification or proof of compliance.
+- Preserve claim-to-source traceability, contradictions, uncertainty, scope limits and superseded guidance. Material recommendations require domain-owner review; high-risk security conclusions require independent human review.
+- Evaluation results must state model/version, system prompt/policy version, tools, dataset lineage, sampling method, metrics, uncertainty, limitations and reproducible run references.
+- Red-team work must use isolated non-production targets, synthetic data, bounded permissions and explicit stop conditions.
+- Research agents cannot alter production policy, grant permissions, perform production side effects, assign reviewers, manufacture acceptance, merge or release. Missing or contradictory release-critical evidence remains **BLOCK**.
+
+### Research baseline consulted
+
+- NIST AI Risk Management Framework and Generative AI Profile: https://www.nist.gov/itl/ai-risk-management-framework and https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf
+- SLSA v1.2 specification and artifact verification: https://slsa.dev/spec/v1.2/ and https://github.com/slsa-framework/slsa/blob/main/spec/verifying-artifacts.md
+- OWASP GenAI Security Project 2026 Top 10 and agent-control resources: https://genai.owasp.org/2026/09/01/owasp-genai-security-project-unveils-2026-top-10-for-llm-applications-new-agent-control-standard-and-sponsors-as-community-tops-30000-members/
+- CISA Secure by Demand guidance: https://www.cisa.gov/sites/default/files/2024-08/SecureByDemandGuide_080624_508c.pdf
+
+These sources inform design only; they do not establish AIGC conformity or prove implementation, testing, independent verification or production authorization.
+
+
+## 12. Operational and opportunity-acquisition agents RX-69–RX-83
+
+| Agent | Mission |
+|---|---|
+| RX-69 — Opportunity Source Policy and Connector Eligibility | Maintains source terms, permissions, rate limits, attribution, licensing and manual-only/prohibited classifications. |
+| RX-70 — Multi-Platform Job and Work Opportunity Discovery | Searches approved sources, normalizes postings, deduplicates listings and produces freshness-aware digests. |
+| RX-71 — Candidate Evidence and Opportunity Fit | Ranks opportunities using user-controlled job-related evidence and explains fit, gaps and uncertainty. |
+| RX-72 — Application Dossier and Truthful Materials Composer | Drafts tailored materials from verified candidate evidence; never fabricates qualifications or employment facts. |
+| RX-73 — Human Application Approval and Submission Gate | Requires scoped human approval before external submissions or communications; sensitive declarations remain human-only. |
+| RX-74 — Employer, Posting Authenticity and Job-Scam Risk Analyst | Checks impersonation, phishing, suspicious payment requests, employer identity and posting inconsistencies. |
+| RX-75 — Opportunity Pipeline and Follow-Up Coordinator | Tracks saved roles, deadlines, approved follow-ups and outcomes in a private user-controlled pipeline. |
+| RX-76 — Contracts, Tenders, Grants and Bounty Opportunity Scout | Finds paid contracts, tenders, grants, RFPs, apprenticeships and authorized bounty opportunities. |
+| RX-77 — Product and Market Intelligence Analyst | Synthesizes source-backed customer segments, alternatives, market shifts and pricing signals. |
+| RX-78 — Customer Discovery and Problem Validation | Structures consent-based discovery and distinguishes evidence from hypotheses. |
+| RX-79 — Product Strategy and Roadmap Prioritization | Ranks roadmap options using validated needs, risk, effort, dependencies and measurable outcomes. |
+| RX-80 — Go-to-Market, Partnerships and Revenue Operations | Drafts evidence-backed positioning, sales stages, partnerships and revenue experiments. |
+| RX-81 — Customer Delivery, Onboarding and Success | Coordinates delivery plans, acceptance criteria, support and customer-outcome measurement. |
+| RX-82 — Unit Economics and Financial Planning | Models costs, pricing scenarios, budgets and assumptions without moving funds or making commitments. |
+| RX-83 — Runtime Operations and Integration Health | Defines connector health, SLOs, alerting, incident signals and recovery evidence. |
+
+All 15 agents remain disabled and specification-only. The candidate profile is prohibited from repository storage. Unknown sources default to deny automated access. No agent may submit an application, message an employer, accept terms, complete an assessment, sign a contract or commit funds without explicit appropriate human approval.
+
+
+## 13. Runtime integrity and operational resilience agents RX-84–RX-94
+
+| Agent | Purpose and authority boundary |
+|---|---|
+| RX-84 Policy and Capability Boundary Auditor | Audits least-privilege decisions and capability scope; cannot grant credentials or change policy. |
+| RX-85 Isolated Execution and Sandbox Assurance | Tests sandbox boundaries, network/filesystem restrictions and escape controls using safe test fixtures. |
+| RX-86 Connector Contract and Conformance Tester | Exercises schemas, rate limits, timeouts, retries and error contracts using fixtures and approved endpoints. |
+| RX-87 Evaluation Benchmark and Regression Integrity | Protects dataset provenance, checks leakage and compares versioned metrics without rewriting baselines to hide regressions. |
+| RX-88 Cost, Quota and Resource Budget Guard | Estimates costs, checks quotas and flags anomalies; cannot incur unapproved spend. |
+| RX-89 Private Memory and Knowledge Lifecycle Curator | Enforces private-store, retention, export and deletion boundaries; personal profiles must never be committed to Git. |
+| RX-90 Evidence Lineage and Reproducibility Auditor | Verifies lineage, artifact digests and reproducibility; hashes alone do not establish trusted provenance. |
+| RX-91 Observability, SLO and Incident Triage | Correlates telemetry, calculates SLO burn and drafts incident timelines and recovery recommendations. |
+| RX-92 Human Review Queue and Decision Interface | Presents evidence/uncertainty and records authenticated decision references without impersonating humans or manufacturing consent. |
+| RX-93 Integration Readiness and Rollback Planning | Maps dependencies, migration risk, feature flags, recovery points and rollback evidence. |
+| RX-94 Cloud Build and Deployment Failure Investigator | Correlates commit to provider builds, classifies failure layers and assembles authorized logs for minimal reproducible fixes. |
+
+All remain R0, disabled, specification-only and BLOCK-on-failure. RX-94 may diagnose Cloudflare/other provider builds but cannot deploy, change production secrets, or suppress failed checks. RX-92 does not itself provide a trusted authentication mechanism; that remains a separately implemented and tested identity/approval integration.

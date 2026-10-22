@@ -17,7 +17,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
     def test_registry_is_valid_and_fail_closed(self):
         result = validate_registry(self.registry)
         self.assertEqual(result["status"], "VALID")
-        self.assertEqual(result["agent_count"], 50)
+        self.assertEqual(result["agent_count"], 87)
         self.assertEqual(len(self.registry["operational_gate_contracts"]), 7)
         self.assertEqual(self.registry["final_decision_contract"]["canonical_decision_authority"], "RX-19")
         self.assertEqual(result["dependency_graph"], "ACYCLIC")
@@ -51,6 +51,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
             self.assertFalse(by_id[agent_id]["enabled"])
         self.assertEqual(by_id["RX-24"]["authority_tier"], "R4")
         self.assertEqual(by_id["RX-25"]["authority_tier"], "R4")
+        self.assertEqual(by_id["RX-73"]["authority_tier"], "R0")
         self.assertEqual(by_id["RX-28"]["authority_tier"], "R0")
         self.assertIn("RX-19", by_id["RX-28"]["dependencies"])
         self.assertIn("BLOCK", by_id["RX-28"]["authority_boundary"])
@@ -76,7 +77,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
     def test_new_assurance_agents_have_contracts_and_remain_disabled(self):
         by_id = {agent["id"]: agent for agent in self.registry["agents"]}
         contracts = {item["agent_id"]: item for item in self.registry["new_agent_contracts"]}
-        for agent_id in ("RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57"):
+        for agent_id in ("RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57", "RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68", "RX-69", "RX-70", "RX-71", "RX-72", "RX-73", "RX-74", "RX-75", "RX-76", "RX-77", "RX-78", "RX-79", "RX-80", "RX-81", "RX-82", "RX-83", "RX-84", "RX-85", "RX-86", "RX-87", "RX-88", "RX-89", "RX-90", "RX-91", "RX-92", "RX-93", "RX-94"):
             self.assertIn(agent_id, by_id)
             self.assertIn(agent_id, contracts)
             self.assertFalse(by_id[agent_id]["enabled"])
@@ -102,6 +103,16 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
         for agent_id in ("RX-53", "RX-54", "RX-55", "RX-56", "RX-57"):
             self.assertFalse(by_id[agent_id]["enabled"])
             self.assertEqual(by_id[agent_id]["implementation_status"], "SPECIFIED_NOT_PRODUCTION_INTEGRATED")
+
+    def test_research_quality_contract_fails_closed(self):
+        data = copy.deepcopy(self.registry)
+        data["research_intelligence_contract"]["no_unsupported_compliance_claims"] = False
+        with self.assertRaisesRegex(RegistryError, "research_intelligence_authority_boundary_weak"):
+            validate_registry(data)
+        data = copy.deepcopy(self.registry)
+        data["research_intelligence_contract"]["research_quality_rules"] = []
+        with self.assertRaisesRegex(RegistryError, "research_quality_rules_missing"):
+            validate_registry(data)
 
     def test_lifecycle_statuses_are_distinct_and_production_is_not_authorized(self):
         lifecycle = self.registry["implementation_lifecycle"]
@@ -139,3 +150,53 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+    def test_research_intelligence_agents_are_disabled_and_fail_closed(self):
+        contract = self.registry["research_intelligence_contract"]
+        self.assertEqual(contract["failure_disposition"], "BLOCK")
+        self.assertTrue(contract["no_unsupported_compliance_claims"])
+        self.assertTrue(contract["no_agent_self_approval"])
+        self.assertTrue(contract["no_production_side_effects"])
+        by_id = {agent["id"]: agent for agent in self.registry["agents"]}
+        contracts = {item["agent_id"]: item for item in self.registry["new_agent_contracts"]}
+        for agent_id in ("RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68"):
+            self.assertFalse(by_id[agent_id]["enabled"])
+            self.assertEqual(by_id[agent_id]["implementation_status"], "SPECIFIED_NOT_PRODUCTION_INTEGRATED")
+            self.assertIn(agent_id, contracts)
+            self.assertEqual(contracts[agent_id]["failure_disposition"], "BLOCK")
+            self.assertTrue(contracts[agent_id]["self_approval_prohibited"])
+
+    def test_opportunity_discovery_contract_fails_closed(self):
+        data = copy.deepcopy(self.registry)
+        data["opportunity_discovery_contract"]["no_prohibited_scraping"] = False
+        with self.assertRaisesRegex(RegistryError, "opportunity_authority_boundary_weak"):
+            validate_registry(data)
+        data = copy.deepcopy(self.registry)
+        data["opportunity_discovery_contract"]["unknown_source_policy"] = "ALLOW"
+        with self.assertRaisesRegex(RegistryError, "unknown_opportunity_sources_must_be_denied"):
+            validate_registry(data)
+
+    def test_opportunity_source_policy_blocks_prohibited_automation(self):
+        policy_path = Path(__file__).resolve().parents[1] / "config" / "aigc_opportunity_source_policy.json"
+        policy = json.loads(policy_path.read_text(encoding="utf-8"))
+        self.assertEqual(policy["default_for_unlisted_sources"], "DENY_AUTOMATED_ACCESS")
+        by_id = {source["source_id"]: source for source in policy["sources"]}
+        self.assertEqual(by_id["canada_job_bank"]["eligibility_state"], "MANUAL_ONLY")
+        self.assertEqual(by_id["linkedin"]["eligibility_state"], "MANUAL_ONLY")
+        self.assertEqual(by_id["greenhouse_public_boards"]["eligibility_state"], "API_ALLOWED_WITH_CONSTRAINTS")
+        self.assertEqual(by_id["adzuna"]["eligibility_state"], "API_ALLOWED_WITH_CONSTRAINTS")
+        self.assertTrue(policy["application_submission"]["human_approval_required"])
+
+    def test_operational_assurance_agents_are_disabled_and_least_privilege(self):
+        by_id = {agent["id"]: agent for agent in self.registry["agents"]}
+        contracts = {item["agent_id"]: item for item in self.registry["new_agent_contracts"]}
+        expected = ("RX-84", "RX-85", "RX-86", "RX-87", "RX-88", "RX-89", "RX-90", "RX-91", "RX-92", "RX-93", "RX-94")
+        for agent_id in expected:
+            self.assertIn(agent_id, by_id)
+            self.assertIn(agent_id, contracts)
+            self.assertEqual(by_id[agent_id]["authority_tier"], "R0")
+            self.assertFalse(by_id[agent_id]["enabled"])
+            self.assertEqual(by_id[agent_id]["implementation_status"], "SPECIFIED_NOT_PRODUCTION_INTEGRATED")
+            self.assertIn("self-approve", by_id[agent_id]["authority_boundary"].lower())
+            self.assertTrue(contracts[agent_id]["self_approval_prohibited"])
+            self.assertEqual(contracts[agent_id]["failure_disposition"], "BLOCK")

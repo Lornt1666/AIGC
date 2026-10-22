@@ -1,0 +1,182 @@
+{
+  "schema_version": "aigc-opportunity-source-policy/1.0",
+  "status": "SPECIFICATION_ONLY",
+  "default_for_unlisted_sources": "DENY_AUTOMATED_ACCESS",
+  "review_cycle_days": 30,
+  "source_review_required_before_automation": true,
+  "sources": [
+    {
+      "source_id": "greenhouse_public_boards",
+      "publisher": "Greenhouse",
+      "canonical_docs_url": "https://docs.greenhouse.io/job-board",
+      "eligibility_state": "API_ALLOWED_WITH_CONSTRAINTS",
+      "allowed_access": "Published public job-board GET endpoints only; verify each board and current terms",
+      "constraints": [
+        "No internal postings",
+        "Do not submit applications through this connector",
+        "Respect source attribution and data minimization"
+      ],
+      "commercial_use": "Review license/terms for intended use"
+    },
+    {
+      "source_id": "lever_public_postings",
+      "publisher": "Lever",
+      "canonical_docs_url": "https://github.com/lever/postings-api",
+      "eligibility_state": "API_ALLOWED_WITH_CONSTRAINTS",
+      "allowed_access": "Published public postings endpoints only, subject to current terms",
+      "constraints": [
+        "Not a global full-text search API; maintain approved employer-site index",
+        "No application submission",
+        "Respect rate limits and source attribution"
+      ],
+      "commercial_use": "Review current terms and intended use"
+    },
+    {
+      "source_id": "adzuna",
+      "publisher": "Adzuna",
+      "canonical_docs_url": "https://developer.adzuna.com/docs/terms_of_service",
+      "eligibility_state": "API_ALLOWED_WITH_CONSTRAINTS",
+      "allowed_access": "API-key authenticated personal job search within current rate limits",
+      "constraints": [
+        "Attribute listings as required",
+        "Commercial or revenue-generating use requires written license where terms specify",
+        "Do not redistribute raw listings without permission"
+      ],
+      "commercial_use": "LICENSE_REVIEW_REQUIRED"
+    },
+    {
+      "source_id": "remotive",
+      "publisher": "Remotive",
+      "canonical_docs_url": "https://remotive.com/remote-jobs/api",
+      "eligibility_state": "API_ALLOWED_WITH_CONSTRAINTS",
+      "allowed_access": "Public remote jobs API within current terms",
+      "constraints": [
+        "Listings may be delayed 24 hours",
+        "Link to original listing",
+        "Credit Remotive as source",
+        "Do not submit listings to prohibited third-party destinations"
+      ],
+      "commercial_use": "Review current API terms"
+    },
+    {
+      "source_id": "usajobs",
+      "publisher": "USAJOBS",
+      "canonical_docs_url": "https://developer.usajobs.gov/api-reference/job-apis",
+      "eligibility_state": "AUTHORIZATION_OR_LICENSE_REQUIRED",
+      "allowed_access": "Official API after obtaining required API key",
+      "constraints": [
+        "US federal job scope only",
+        "Protect API credentials",
+        "Follow current API policies"
+      ],
+      "commercial_use": "Review API terms"
+    },
+    {
+      "source_id": "canada_job_bank",
+      "publisher": "Government of Canada Job Bank",
+      "canonical_docs_url": "https://www.jobbank.gc.ca/termsofuse-seeker.xhtml",
+      "eligibility_state": "MANUAL_ONLY",
+      "allowed_access": "User-initiated manual visit and link-out only",
+      "constraints": [
+        "Terms prohibit automated scripts, robots, crawlers, scrapers, AI or other automated access",
+        "No automated querying or collection"
+      ],
+      "commercial_use": "No automated access"
+    },
+    {
+      "source_id": "linkedin",
+      "publisher": "LinkedIn",
+      "canonical_docs_url": "https://ca.linkedin.com/legal/user-agreement",
+      "eligibility_state": "MANUAL_ONLY",
+      "allowed_access": "Manual link-out or explicitly authorized official integration only",
+      "constraints": [
+        "No unauthorized scraping, bots, browser automation or automated activity",
+        "Do not bypass access controls or limits"
+      ],
+      "commercial_use": "Authorization required for automated integration"
+    },
+    {
+      "source_id": "wellfound",
+      "publisher": "Wellfound",
+      "canonical_docs_url": "https://wellfound.com/terms",
+      "eligibility_state": "MANUAL_ONLY",
+      "allowed_access": "Manual link-out unless permitted API or written authorization is verified",
+      "constraints": [
+        "No scraping/harvesting beyond expressly permitted terms",
+        "No account automation or mass applications"
+      ],
+      "commercial_use": "Authorization and terms review required"
+    },
+    {
+      "source_id": "indeed",
+      "publisher": "Indeed",
+      "canonical_docs_url": "https://www.indeed.com/legal",
+      "eligibility_state": "MANUAL_ONLY",
+      "allowed_access": "Manual link-out unless official API/partner permission is verified",
+      "constraints": [
+        "No scraping or automated account activity absent authorization",
+        "Re-check current terms before connector activation"
+      ],
+      "commercial_use": "Authorization and terms review required"
+    },
+    {
+      "source_id": "user_supplied_listing",
+      "publisher": "User supplied",
+      "canonical_docs_url": null,
+      "eligibility_state": "API_ALLOWED_WITH_CONSTRAINTS",
+      "allowed_access": "Analyze content or URL explicitly supplied by the user; do not bypass authentication or site controls",
+      "constraints": [
+        "Treat content as untrusted input",
+        "Keep personal profile private",
+        "Respect copyright and privacy"
+      ],
+      "commercial_use": "Not applicable"
+    }
+  ],
+  "candidate_profile": {
+    "storage": "PRIVATE_USER_CONTROLLED_STORE_ONLY",
+    "repository_storage": "PROHIBITED",
+    "required_consent": true,
+    "minimum_fields": [
+      "target_roles",
+      "skills_evidence",
+      "experience_evidence",
+      "work_mode",
+      "location_preferences",
+      "schedule_preferences",
+      "compensation_preferences",
+      "credential_constraints"
+    ],
+    "claim_policy": "Do not generate candidate facts without explicit source evidence"
+  },
+  "application_submission": {
+    "human_approval_required": true,
+    "approval_scope": [
+      "specific employer",
+      "specific job URL",
+      "exact application materials digest",
+      "specific external action",
+      "approval expiry"
+    ],
+    "auto_submit": false,
+    "auto_message": false,
+    "auto_accept_terms": false,
+    "auto_complete_assessments": false,
+    "auto_sign": false
+  },
+  "source_record_required_fields": [
+    "source_id",
+    "canonical_url",
+    "access_method",
+    "permission_basis",
+    "terms_url",
+    "terms_reviewed_at",
+    "jurisdiction",
+    "rate_limit",
+    "attribution",
+    "retention_limit",
+    "eligibility_state",
+    "reviewer"
+  ],
+  "failure_disposition": "BLOCK"
+}
