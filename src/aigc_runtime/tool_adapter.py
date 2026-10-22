@@ -39,10 +39,10 @@ class GovernedToolAdapter:
             self._observe(contract, tool_name, timestamp, start, "SUCCEEDED", None)
             return result
         except Exception as exc:
-            result = {"status": "FAILED", "error_type": type(exc).__name__,
-                      "audit_event_id": decision["audit_event_id"]}
-            self.store.finish_invocation(idempotency_key, "FAILED", result)
-            self._observe(contract, tool_name, timestamp, start, "FAILED", type(exc).__name__)
+            result = {"status": "UNKNOWN", "error_type": type(exc).__name__,
+                      "reconciliation_required": True, "audit_event_id": decision["audit_event_id"]}
+            self.store.finish_invocation(idempotency_key, "UNKNOWN", result)
+            self._observe(contract, tool_name, timestamp, start, "UNKNOWN", type(exc).__name__)
             return result
 
     def _observe(self, contract, tool_name, timestamp, start, status, reason):
