@@ -2093,6 +2093,49 @@
       "authority_boundary": "Read-only coordination and evidence completeness checks only. Cannot self-approve. Cannot appoint or impersonate a human reviewer, claim qualifications without evidence, change repository protections, close findings without independent retest evidence, manufacture human acceptance, weaken or skip CI, mint or fake provenance, authorize production, merge, release, or reassign RX-19 as sole release decision authority. Missing, stale, contradictory, unauthenticated, or wrong-commit evidence preserves BLOCK.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-145",
+      "name": "Effective Repository Protection Readback Verifier",
+      "responsibility": "Collects and reconciles authenticated effective branch-protection and ruleset readback for the PR base and release branches, including required checks, review rules, stale approvals, bypass actors, source identity, retrieval time, and evidence digest.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-53",
+        "RX-132",
+        "RX-136"
+      ],
+      "authority_boundary": "Read-only evidence verification. Cannot change protections, infer settings from 403/empty results, impersonate an administrator, or report unknown settings as passing. Missing, stale, unauthenticated, contradictory, or wrong-branch evidence yields BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-146",
+      "name": "Independent Security Reviewer Qualification and Assignment Evidence Coordinator",
+      "responsibility": "Defines qualification and conflict checks, prepares the evidence checklist, and records an authorized administrator's actual assignment of a qualified independent human reviewer bound to the exact candidate SHA and scope.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-54",
+        "RX-131",
+        "RX-145"
+      ],
+      "authority_boundary": "Coordination and evidence checking only. Cannot choose or assign a human, invent qualifications, assert independence without evidence, impersonate a reviewer, self-approve, or substitute agent output for a human review. Missing administrator assignment or qualification/conflict evidence yields BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-147",
+      "name": "Commit-Bound Security Review and Remediation Evidence Tracker",
+      "responsibility": "Tracks independent human review findings, severity, affected scope, exact reviewed SHA, remediation commits, test evidence, independent retest, closure disposition, and digest-bound invalidation history.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-55",
+        "RX-131",
+        "RX-136",
+        "RX-146"
+      ],
+      "authority_boundary": "Evidence tracking only; cannot impersonate independent review, close findings without independent retest, rewrite review history, waive blockers, or authorize release. Any candidate or evidence mismatch, missing retest, or stale binding yields BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     }
   ],
   "mandatory_human_gates": [
@@ -5846,6 +5889,102 @@
       "self_approval_prohibited": true,
       "production_authorization": false,
       "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-145",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_pull_request_metadata",
+        "read_branch_protection_readback",
+        "read_ruleset_readback",
+        "verify_administrator_identity_evidence",
+        "compute_evidence_digest"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-146",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_reviewer_qualification_evidence",
+        "read_conflict_declaration",
+        "read_administrator_assignment_event",
+        "bind_reviewer_to_candidate",
+        "request_authorized_human_action"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-147",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_human_review_records",
+        "track_findings",
+        "bind_remediation_commit",
+        "verify_independent_retest_evidence",
+        "invalidate_stale_evidence"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
     }
   ],
   "handoff_coordination_contract": {
@@ -6991,6 +7130,91 @@
       "Any artifact digest, policy version, workflow run attempt, reviewer identity, or acceptance record change invalidates dependent packet digests and requires revalidation.",
       "Unavailable, empty, stale, contradictory, unauthenticated, or wrong-repository evidence preserves BLOCK.",
       "RX-144 can submit only to RX-19 and cannot interpret a handoff as an affirmative release decision."
+    ]
+  },
+  "administrator_review_evidence_contract": {
+    "contract_version": "1.0.0",
+    "status": "SPECIFICATION_ONLY",
+    "default_disposition": "BLOCK",
+    "canonical_release_authority": "RX-19",
+    "agent_ids": [
+      "RX-145",
+      "RX-146",
+      "RX-147"
+    ],
+    "production_authorization": false,
+    "operating_sequence": [
+      {
+        "sequence": 1,
+        "action": "authenticated_effective_protection_readback",
+        "agent_ids": [
+          "RX-145"
+        ],
+        "required_evidence": [
+          "repository_identity",
+          "target_branch",
+          "authenticated_administrator_identity",
+          "authorization_evidence",
+          "retrieval_timestamp",
+          "effective_ruleset_and_branch_protection",
+          "required_check_contexts",
+          "review_requirements",
+          "stale_approval_policy",
+          "bypass_actors",
+          "readback_digest"
+        ],
+        "pass_rule": "Authenticated authorized readback returns effective settings for the exact repository and branch; 403, empty, stale, or contradictory results are unknown and BLOCK.",
+        "failure_disposition": "BLOCK"
+      },
+      {
+        "sequence": 2,
+        "action": "authorized_independent_reviewer_assignment",
+        "agent_ids": [
+          "RX-146"
+        ],
+        "required_evidence": [
+          "administrator_assignment_event",
+          "reviewer_identity",
+          "qualification_evidence",
+          "conflict_and_independence_declaration",
+          "review_scope",
+          "candidate_sha",
+          "assignment_timestamp"
+        ],
+        "pass_rule": "Authorized administrator performs the actual assignment and qualification/conflict evidence is recorded and bound to the exact candidate; agents cannot appoint or impersonate a human.",
+        "failure_disposition": "BLOCK"
+      },
+      {
+        "sequence": 3,
+        "action": "commit_bound_review_remediation_and_independent_retest",
+        "agent_ids": [
+          "RX-147"
+        ],
+        "required_evidence": [
+          "review_record",
+          "finding_ids_and_severity",
+          "reviewed_commit_sha",
+          "remediation_commit_shas",
+          "test_run_ids_and_attempts",
+          "independent_retest_result",
+          "closure_digest"
+        ],
+        "pass_rule": "Each finding is bound to the reviewed SHA, remediated, and independently retested; source changes invalidate dependent evidence.",
+        "failure_disposition": "BLOCK"
+      }
+    ],
+    "no_agent_may_change_protections": true,
+    "no_agent_may_assign_or_impersonate_human": true,
+    "no_agent_may_invent_qualifications": true,
+    "no_agent_may_self_approve": true,
+    "no_agent_may_close_findings_without_independent_retest": true,
+    "no_agent_may_bypass_ci": true,
+    "no_agent_may_merge_or_authorize_release": true,
+    "evidence_invalidation_rules": [
+      "Any source commit change invalidates exact-head CI and affected review, acceptance, and packet bindings.",
+      "Any repository, branch, reviewer identity, qualification record, policy version, workflow attempt, finding, remediation SHA, retest, or evidence digest change requires dependent evidence to be regenerated.",
+      "A 403, empty, inaccessible, unauthenticated, contradictory, or stale protection response is unknown and preserves BLOCK.",
+      "Human assignment and review must originate from authenticated GitHub human events; agent-generated summaries are not substitutes."
     ]
   }
 }
