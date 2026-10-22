@@ -121,7 +121,7 @@ The executable reference evaluator is `src/aigc_runtime/readiness_triggers.py`, 
 - `src/aigc_runtime/agent_operations.py` implements `plan_agent_operation`, a deterministic dry-run planner. It never invokes a tool or changes an agent's activation state.
 - `tests/test_aigc_agent_operations.py` tests deterministic dependency ordering, prohibited overrides, production-mode denial, kill-switch precedence, side-effect reconciliation, malformed bindings, cycles, missing dependencies and non-mutation.
 - The canonical CI workflow runs this focused test module.
-- Registry validation checks 136 unique agents, 107 contracts, disabled R0 status, lifecycle schema binding, override-contract completeness, and prohibited operations.
+- Registry validation checks 140 unique agents, 110 agent contracts, disabled R0 status, lifecycle schema binding, override-contract completeness, and prohibited operations.
 
 ### Override policy
 Permitted *planning intents* are allowlisted-agent run planning, rerouting to an allowlisted agent, retry only after side-effect reconciliation, approved fallback selection, and read-only degradation. This is not permission to execute these operations in production.
@@ -132,3 +132,14 @@ A user authorization in conversation does not itself create a GitHub administrat
 
 ### Evidence freshness
 Any source commit, policy version, target agent, action, permit scope or relevant workflow change invalidates dependent plans/receipts. A successful dry-run test proves planner behavior only; it is not evidence that production dispatch, cryptographic permit verification, agent deployment, merge, or release works.
+
+
+## RX-145–RX-147 — Administrator readback and independent security review evidence
+
+See `docs/AIGC_ADMIN_PROTECTION_AND_INDEPENDENT_SECURITY_REVIEW_RX145_RX147.md`.
+
+- RX-145 verifies authenticated effective branch-protection/ruleset readback; inaccessible or empty responses remain unknown and BLOCK.
+- RX-146 records qualification, conflict/independence evidence, and an authorized administrator's actual reviewer assignment; agents cannot assign or impersonate humans.
+- RX-147 tracks exact-SHA review findings through remediation and independent retest; missing retest or stale candidate binding blocks closure.
+
+These are disabled R0 specifications, not production-integrated agents. RX-19 remains the sole release decision authority.
