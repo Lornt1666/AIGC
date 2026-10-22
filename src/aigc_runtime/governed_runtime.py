@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 import hashlib
 import json
 import re
-from typing import Any, Iterable, Mapping
+from typing import Any, Callable, Iterable, Mapping
 
 CONTRACT_VERSION = "aigc.task/1.0"
 RUNTIME_VERSION = "aigc.runtime/0.1.0"
