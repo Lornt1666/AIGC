@@ -774,6 +774,175 @@
       "authority_boundary": "Read-only sequencing and handoff coordination; must preserve BLOCK on missing, stale, contradictory, or unauthenticated evidence; cannot perform administrator-only actions, impersonate humans, bypass protected merge, self-approve, merge, or release.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-58",
+      "name": "Continuous Research and Standards Intelligence Agent",
+      "responsibility": "monitor primary-source standards, government guidance, official framework revisions, advisories and source freshness",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-11",
+        "RX-41",
+        "RX-42",
+        "RX-43",
+        "RX-44",
+        "RX-45"
+      ],
+      "authority_boundary": "Research and evidence synthesis only; recommendations require human/domain review; cannot modify policy or production state, self-approve, merge, or release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-59",
+      "name": "Agentic System Threat Modeling and Attack-Path Analyst",
+      "responsibility": "map multi-agent trust boundaries and attack paths including prompt injection, identity abuse, excessive agency and supply-chain compromise",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-29",
+        "RX-42",
+        "RX-58"
+      ],
+      "authority_boundary": "Research and evidence synthesis only; recommendations require human/domain review; cannot modify policy or production state, self-approve, merge, or release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-60",
+      "name": "Evaluation Science and Benchmark Integrity Architect",
+      "responsibility": "design reproducible capability and safety evaluations; detect leakage, contamination, cherry-picking and invalid comparisons",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-13",
+        "RX-29",
+        "RX-30",
+        "RX-58"
+      ],
+      "authority_boundary": "Research and evidence synthesis only; recommendations require human/domain review; cannot modify policy or production state, self-approve, merge, or release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-61",
+      "name": "Prompt Injection and Tool-Abuse Red-Team Agent",
+      "responsibility": "test direct and indirect prompt injection, untrusted content, confused-deputy paths, data exfiltration and tool misuse in isolated environments",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-29",
+        "RX-42",
+        "RX-59"
+      ],
+      "authority_boundary": "Research and evidence synthesis only; recommendations require human/domain review; cannot modify policy or production state, self-approve, merge, or release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-62",
+      "name": "AI Governance and Jurisdictional Control Mapping Agent",
+      "responsibility": "map controls to government guidance, laws, standards and procurement requirements while distinguishing binding obligations from voluntary guidance",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-30",
+        "RX-41",
+        "RX-42",
+        "RX-58"
+      ],
+      "authority_boundary": "Research and evidence synthesis only; recommendations require human/domain review; cannot modify policy or production state, self-approve, merge, or release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-63",
+      "name": "Data Governance, Privacy and Evidence Lifecycle Analyst",
+      "responsibility": "assess data minimization, retention, deletion, residency, access, consent, redaction and sensitive evidence handling",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-17",
+        "RX-18",
+        "RX-41",
+        "RX-58"
+      ],
+      "authority_boundary": "Research and evidence synthesis only; recommendations require human/domain review; cannot modify policy or production state, self-approve, merge, or release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-64",
+      "name": "Reliability, Chaos and Recovery Test Architect",
+      "responsibility": "design fault-injection and recovery tests for retries, timeouts, duplicate delivery, stale workers, partial failures and UNKNOWN outcomes",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-13",
+        "RX-23",
+        "RX-29",
+        "RX-58"
+      ],
+      "authority_boundary": "Research and evidence synthesis only; recommendations require human/domain review; cannot modify policy or production state, self-approve, merge, or release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-65",
+      "name": "Observability, SLO and Cost Efficiency Analyst",
+      "responsibility": "define service-level indicators/objectives, tracing, cost attribution, budget guardrails, capacity limits and alert thresholds",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-18",
+        "RX-23",
+        "RX-58"
+      ],
+      "authority_boundary": "Research and evidence synthesis only; recommendations require human/domain review; cannot modify policy or production state, self-approve, merge, or release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-66",
+      "name": "Architecture Decision and Dependency Risk Reviewer",
+      "responsibility": "assess architecture alternatives, dependency and license exposure, blast radius, coupling, migration and rollback options",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-01",
+        "RX-12",
+        "RX-31",
+        "RX-40",
+        "RX-58"
+      ],
+      "authority_boundary": "Research and evidence synthesis only; recommendations require human/domain review; cannot modify policy or production state, self-approve, merge, or release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-67",
+      "name": "Incident Response and Emergency Stop Coordinator",
+      "responsibility": "prepare incident playbooks for compromised agents, credential leaks, provenance failure, audit gaps, unsafe side effects and emergency stop",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-17",
+        "RX-18",
+        "RX-28",
+        "RX-59",
+        "RX-64"
+      ],
+      "authority_boundary": "Research and evidence synthesis only; recommendations require human/domain review; cannot modify policy or production state, self-approve, merge, or release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-68",
+      "name": "Research-to-Implementation Traceability Synthesizer",
+      "responsibility": "turn verified research into versioned requirements, threat/control mappings, implementation tasks, tests and measurable acceptance criteria",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-01",
+        "RX-11",
+        "RX-58",
+        "RX-59",
+        "RX-60",
+        "RX-62",
+        "RX-66"
+      ],
+      "authority_boundary": "Research and evidence synthesis only; recommendations require human/domain review; cannot modify policy or production state, self-approve, merge, or release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     }
   ],
   "mandatory_human_gates": [
@@ -1825,6 +1994,347 @@
       "self_approval_prohibited": true,
       "production_authorization": false,
       "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-58",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "search_primary_sources",
+        "compare_versions",
+        "record_source_provenance",
+        "flag_superseded_guidance"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-59",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "build_attack_graph",
+        "map_controls_to_threats",
+        "rank_attack_paths",
+        "propose_mitigations"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-60",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "design_eval_protocol",
+        "validate_dataset_lineage",
+        "analyze_metric_uncertainty",
+        "detect_benchmark_leakage"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-61",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "generate_bounded_attack_cases",
+        "run_isolated_red_team_tests",
+        "capture_reproducible_evidence",
+        "recommend_mitigations"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-62",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "map_control_crosswalk",
+        "classify_authority_level",
+        "track_jurisdictional_scope",
+        "identify_compliance_gaps"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-63",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "classify_data_flows",
+        "review_retention_rules",
+        "check_redaction_requirements",
+        "map_privacy_controls"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-64",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "design_fault_matrix",
+        "validate_idempotency_contracts",
+        "test_recovery_states",
+        "report_failure_injection_results"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-65",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "propose_sli_slo",
+        "analyze_trace_coverage",
+        "estimate_cost_scenarios",
+        "detect_budget_and_capacity_risks"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-66",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "compare_architecture_options",
+        "audit_dependency_risk",
+        "draft_architecture_decision_record",
+        "map_migration_and_rollback"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-67",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "draft_incident_playbook",
+        "validate_escalation_matrix",
+        "verify_stop_control_evidence",
+        "coordinate_post_incident_actions"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-68",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "link_claims_to_primary_sources",
+        "derive_testable_requirements",
+        "maintain_traceability_matrix",
+        "flag_unverified_assumptions"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
     }
   ],
   "handoff_coordination_contract": {
@@ -1953,5 +2463,49 @@
     "no_agent_may_assign_human_identity": true,
     "no_agent_may_bypass_protection": true,
     "no_agent_may_merge_or_authorize_release": true
+  },
+  "research_intelligence_contract": {
+    "contract_version": "1.0.0",
+    "status": "SPECIFICATION_ONLY",
+    "default_disposition": "BLOCK",
+    "research_quality_rules": [
+      "Prefer primary government, standards-body, official project and original research sources; use secondary commentary only for context.",
+      "Record source title, publisher, canonical URL, publication/revision date, access date, jurisdiction, source type and exact claim supported.",
+      "Separate binding law/regulation, government policy, standards, normative specifications, voluntary guidance, vendor documentation and opinion.",
+      "Cross-check consequential claims against independent sources when feasible; record disagreement and missing evidence.",
+      "Never claim compliance, security, safety, certification or production readiness from a mapping exercise alone.",
+      "Research agents do not execute production changes, approve policy, assign reviewers, accept releases or override RX-19."
+    ],
+    "evidence_fields": [
+      "research_id",
+      "agent_id",
+      "agent_version",
+      "query_scope",
+      "jurisdiction",
+      "source_records",
+      "claim_source_map",
+      "publication_or_revision_dates",
+      "accessed_at",
+      "conflicts",
+      "uncertainties",
+      "assumptions",
+      "recommended_controls",
+      "implementation_requirements",
+      "testable_acceptance_criteria",
+      "evidence_digest",
+      "review_status"
+    ],
+    "mandatory_review": "Material recommendations require accountable domain-owner review; high-risk security conclusions require independent human review.",
+    "invalidation_rules": [
+      "source superseded or withdrawn",
+      "material framework/version change",
+      "jurisdiction or system scope changes",
+      "source content changes materially",
+      "new contradictory evidence"
+    ],
+    "failure_disposition": "BLOCK",
+    "no_unsupported_compliance_claims": true,
+    "no_agent_self_approval": true,
+    "no_production_side_effects": true
   }
 }
