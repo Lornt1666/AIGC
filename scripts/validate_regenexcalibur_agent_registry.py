@@ -54,7 +54,7 @@ def validate_registry(data: Any) -> dict[str, Any]:
             raise RegistryError("implementation_status_overclaims_readiness")
         ids.append(agent["id"])
         by_id[agent["id"]] = agent
-    if len(by_id) != 76:
+    if len(by_id) != 87:
         raise RegistryError("unexpected_agent_count")
     for agent in data["agents"]:
         if agent["id"] in agent["dependencies"]:
@@ -181,8 +181,8 @@ def validate_registry(data: Any) -> dict[str, Any]:
     for agent_id in required_opportunity_agents:
         if agent_id not in by_id or by_id[agent_id]["enabled"] is not False:
             raise RegistryError("opportunity_agent_must_be_disabled")
-    if by_id["RX-73"]["authority_tier"] != "R4":
-        raise RegistryError("application_approval_gate_must_be_human_reserved")
+    if by_id["RX-73"]["authority_tier"] != "R0":
+        raise RegistryError("application_approval_gate_must_be_read_only")
     if not opportunity.get("source_policy_ref") or not opportunity.get("human_only_actions") or not opportunity.get("safety_rules"):
         raise RegistryError("opportunity_policy_contract_incomplete")
     final_contract = data["final_decision_contract"]
@@ -212,7 +212,7 @@ def validate_registry(data: Any) -> dict[str, Any]:
     if lifecycle.get("non_equivalence_rule") is None or lifecycle.get("policy") is None:
         raise RegistryError("implementation_lifecycle_evidence_policy_missing")
     contract_list = data.get("new_agent_contracts")
-    expected_new_agents = {"RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57", "RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68", "RX-69", "RX-70", "RX-71", "RX-72", "RX-73", "RX-74", "RX-75", "RX-76", "RX-77", "RX-78", "RX-79", "RX-80", "RX-81", "RX-82", "RX-83"}
+    expected_new_agents = {"RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57", "RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68", "RX-69", "RX-70", "RX-71", "RX-72", "RX-73", "RX-74", "RX-75", "RX-76", "RX-77", "RX-78", "RX-79", "RX-80", "RX-81", "RX-82", "RX-83", "RX-84", "RX-85", "RX-86", "RX-87", "RX-88", "RX-89", "RX-90", "RX-91", "RX-92", "RX-93", "RX-94"}
     if not isinstance(contract_list, list) or {x.get("agent_id") for x in contract_list if isinstance(x, dict)} != expected_new_agents:
         raise RegistryError("new_agent_contracts_missing_or_ambiguous")
     for contract in contract_list:
