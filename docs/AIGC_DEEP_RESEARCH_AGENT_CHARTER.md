@@ -52,3 +52,12 @@ Include research ID, scope, query plan, agent/version, source register, claim-to
 6. CISA Secure by Demand Guide: https://www.cisa.gov/sites/default/files/2024-08/SecureByDemandGuide_080624_508c.pdf
 
 This source baseline informs the specification only. It does not certify AIGC, prove conformity, or substitute for live implementation tests and independent review.
+
+
+## Operational productization and opportunity acquisition (RX-69–RX-83)
+
+RX-69 manages source permissions; RX-70 searches approved job sources; RX-71 ranks evidence-backed fit; RX-72 drafts truthful materials; RX-73 enforces human approval; RX-74 screens for scams; RX-75 tracks the private pipeline; RX-76 discovers paid contracts, tenders, grants, RFPs, apprenticeships and authorized bounties. RX-77 researches markets; RX-78 validates customer problems; RX-79 prioritizes the roadmap; RX-80 develops go-to-market experiments; RX-81 coordinates delivery; RX-82 models unit economics; RX-83 defines runtime health and incident evidence.
+
+The connector registry defaults to deny for unlisted sources. Canada Job Bank and LinkedIn are manual-only in this baseline because reviewed terms prohibit unauthorized automated access. Adzuna commercial use requires license review; Remotive requires attribution/link-back and may delay listings; USAJOBS requires an API key and is US-federal scoped. Revalidate current terms before activation.
+
+Candidate profiles and application records must stay in a private user-controlled store, never the source repository. Match only on job-related evidence; do not infer protected traits. Submission, employer messaging, assessments, legal declarations, identity verification, offer acceptance, contract signing and financial commitments remain human-controlled.
