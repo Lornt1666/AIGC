@@ -96,6 +96,8 @@ class ToolPermit:
     expires_at: str
     max_uses: int = 1
     human_approval_ref: str | None = None
+    issuer_id: str | None = None
+    key_id: str | None = None
     signature: str | None = None
 
     def validate(self, now: datetime) -> None:
@@ -183,8 +185,11 @@ class PermitBroker:
                 raise GovernanceError("policy_version_mismatch")
             if permit.permit_id in self._uses and self._uses[permit.permit_id] >= permit.max_uses:
                 raise GovernanceError("permit_use_limit_exceeded")
-            self._uses[permit.permit_id] = self._uses.get(permit.permit_id, 0) + 1
-            self._permit_fingerprints[permit.permit_id] = fingerprint
+            if hasattr(self.ledger, "consume_permit"):
+                self.ledger.consume_permit(permit.permit_id, fingerprint, permit.max_uses)
+            else:
+                self._uses[permit.permit_id] = self._uses.get(permit.permit_id, 0) + 1
+                self._permit_fingerprints[permit.permit_id] = fingerprint
             reason = "authorized"
             allowed = True
         except GovernanceError as exc:
