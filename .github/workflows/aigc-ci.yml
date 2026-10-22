@@ -204,6 +204,7 @@ jobs:
         run: |
           set -euo pipefail
           PYTHONPATH=src python -m unittest discover -s tests -p 'test_aigc_release_evidence_verifier.py' -v
+          PYTHONPATH=src python -m unittest discover -s tests -p 'test_aigc_responsibility_closure.py' -v
 
       - name: Scan release-only paths for secret-like content
         shell: bash
