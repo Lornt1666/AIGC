@@ -270,3 +270,26 @@ All eleven agents remain disabled and specification-only. They produce research 
 - CISA Secure by Demand guidance: https://www.cisa.gov/sites/default/files/2024-08/SecureByDemandGuide_080624_508c.pdf
 
 These sources inform design only; they do not establish AIGC conformity or prove implementation, testing, independent verification or production authorization.
+
+
+## 12. Operational and opportunity-acquisition agents RX-69–RX-83
+
+| Agent | Mission |
+|---|---|
+| RX-69 — Opportunity Source Policy and Connector Eligibility | Maintains source terms, permissions, rate limits, attribution, licensing and manual-only/prohibited classifications. |
+| RX-70 — Multi-Platform Job and Work Opportunity Discovery | Searches approved sources, normalizes postings, deduplicates listings and produces freshness-aware digests. |
+| RX-71 — Candidate Evidence and Opportunity Fit | Ranks opportunities using user-controlled job-related evidence and explains fit, gaps and uncertainty. |
+| RX-72 — Application Dossier and Truthful Materials Composer | Drafts tailored materials from verified candidate evidence; never fabricates qualifications or employment facts. |
+| RX-73 — Human Application Approval and Submission Gate | Requires scoped human approval before external submissions or communications; sensitive declarations remain human-only. |
+| RX-74 — Employer, Posting Authenticity and Job-Scam Risk Analyst | Checks impersonation, phishing, suspicious payment requests, employer identity and posting inconsistencies. |
+| RX-75 — Opportunity Pipeline and Follow-Up Coordinator | Tracks saved roles, deadlines, approved follow-ups and outcomes in a private user-controlled pipeline. |
+| RX-76 — Contracts, Tenders, Grants and Bounty Opportunity Scout | Finds paid contracts, tenders, grants, RFPs, apprenticeships and authorized bounty opportunities. |
+| RX-77 — Product and Market Intelligence Analyst | Synthesizes source-backed customer segments, alternatives, market shifts and pricing signals. |
+| RX-78 — Customer Discovery and Problem Validation | Structures consent-based discovery and distinguishes evidence from hypotheses. |
+| RX-79 — Product Strategy and Roadmap Prioritization | Ranks roadmap options using validated needs, risk, effort, dependencies and measurable outcomes. |
+| RX-80 — Go-to-Market, Partnerships and Revenue Operations | Drafts evidence-backed positioning, sales stages, partnerships and revenue experiments. |
+| RX-81 — Customer Delivery, Onboarding and Success | Coordinates delivery plans, acceptance criteria, support and customer-outcome measurement. |
+| RX-82 — Unit Economics and Financial Planning | Models costs, pricing scenarios, budgets and assumptions without moving funds or making commitments. |
+| RX-83 — Runtime Operations and Integration Health | Defines connector health, SLOs, alerting, incident signals and recovery evidence. |
+
+All 15 agents remain disabled and specification-only. The candidate profile is prohibited from repository storage. Unknown sources default to deny automated access. No agent may submit an application, message an employer, accept terms, complete an assessment, sign a contract or commit funds without explicit appropriate human approval.
