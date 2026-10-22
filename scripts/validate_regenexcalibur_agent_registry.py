@@ -11,7 +11,7 @@ from typing import Any
 REQUIRED_TOP_LEVEL = {
     "schema_version", "project_id", "orchestration_platform", "status",
     "default_disposition", "authority_tiers", "shared_contract", "agents",
-    "mandatory_human_gates", "acceptance_policy", "operational_gate_contracts", "final_decision_contract", "handoff_coordination_contract", "research_intelligence_contract", "opportunity_discovery_contract", "release_operations_assurance_contract", "aigc_systems_excellence_contract", "runtime_maturity_contract", "runtime_mishap_recovery_contract", "release_readiness_trigger_contract",
+    "mandatory_human_gates", "acceptance_policy", "operational_gate_contracts", "final_decision_contract", "handoff_coordination_contract", "research_intelligence_contract", "opportunity_discovery_contract", "release_operations_assurance_contract", "aigc_systems_excellence_contract", "runtime_maturity_contract", "runtime_mishap_recovery_contract", "release_readiness_trigger_contract", "agent_operations_override_contract",
 }
 REQUIRED_AGENT = {
     "id", "name", "responsibility", "authority_tier", "dependencies",
@@ -54,7 +54,7 @@ def validate_registry(data: Any) -> dict[str, Any]:
             raise RegistryError("implementation_status_overclaims_readiness")
         ids.append(agent["id"])
         by_id[agent["id"]] = agent
-    if len(by_id) != 131:
+    if len(by_id) != 136:
         raise RegistryError("unexpected_agent_count")
     for agent in data["agents"]:
         if agent["id"] in agent["dependencies"]:
@@ -341,6 +341,26 @@ def validate_registry(data: Any) -> dict[str, Any]:
     for agent_id in expected_trigger_agents:
         if agent_id not in by_id or by_id[agent_id]["enabled"] is not False or by_id[agent_id]["authority_tier"] != "R0" or by_id[agent_id]["implementation_status"] != "SPECIFIED_NOT_PRODUCTION_INTEGRATED":
             raise RegistryError("release_readiness_trigger_agents_must_be_read_only_and_disabled")
+
+    override = data.get("agent_operations_override_contract")
+    if not isinstance(override, dict) or override.get("contract_version") != "1.0.0":
+        raise RegistryError("agent_operations_override_contract_missing_or_unsupported")
+    if override.get("status") != "SPECIFICATION_ONLY" or override.get("default_disposition") != "BLOCK" or override.get("canonical_release_authority") != "RX-19":
+        raise RegistryError("agent_operations_override_contract_must_fail_closed")
+    expected_override_agents = {"RX-139", "RX-140", "RX-141", "RX-142", "RX-143"}
+    if set(override.get("agent_ids", [])) != expected_override_agents:
+        raise RegistryError("agent_operations_override_agent_set_missing_or_ambiguous")
+    if override.get("execution_modes") != ["dry_run"] or override.get("production_execution_enabled") is not False or override.get("production_authorization") is not False:
+        raise RegistryError("agent_operations_override_must_remain_dry_run_only")
+    if any(override.get(key) is not True for key in ("no_agent_self_approval", "no_agent_may_self_enable", "no_agent_may_elevate_authority", "no_agent_may_override_security_invariants", "no_agent_may_manufacture_acceptance", "no_agent_may_bypass_protection", "no_agent_may_merge_or_authorize_release")):
+        raise RegistryError("agent_operations_override_authority_boundary_weak")
+    if len(override.get("permit_requirements", [])) < 10 or len(override.get("required_evidence_fields", [])) < 8 or len(override.get("required_test_classes", [])) < 8 or len(override.get("invalidation_rules", [])) < 5:
+        raise RegistryError("agent_operations_override_evidence_contract_incomplete")
+    if not set(override.get("prohibited_override_kinds", [])).issuperset({"override_release_gate", "disable_repository_protection", "skip_required_ci", "self_enable_agent", "elevate_authority", "manufacture_acceptance", "forge_evidence", "merge", "deploy", "authorize_release"}):
+        raise RegistryError("agent_operations_override_prohibited_operations_missing")
+    for agent_id in expected_override_agents:
+        if agent_id not in by_id or by_id[agent_id]["enabled"] is not False or by_id[agent_id]["authority_tier"] != "R0" or by_id[agent_id]["implementation_status"] != "SPECIFIED_NOT_PRODUCTION_INTEGRATED":
+            raise RegistryError("agent_operations_override_agents_must_be_read_only_and_disabled")
 
     return {
         "status": "VALID",
