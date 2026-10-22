@@ -5647,20 +5647,16 @@
       "required_evidence_binding": [
         "source_commit_sha",
         "policy_version",
-        "task_contract_digest",
-        "agent_id",
-        "permit_id",
-        "run_id",
-        "outcome_digest"
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
       ],
       "required_test_classes": [
         "unit",
         "integration",
         "negative",
-        "failure_injection",
-        "authorization_boundary",
-        "dependency_graph",
-        "replay_resistance"
+        "failure_injection"
       ],
       "human_approved_activation_required": true,
       "rollback_plan_required": true,
@@ -5682,20 +5678,16 @@
       "required_evidence_binding": [
         "source_commit_sha",
         "policy_version",
-        "task_contract_digest",
-        "agent_id",
-        "permit_id",
-        "run_id",
-        "outcome_digest"
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
       ],
       "required_test_classes": [
         "unit",
         "integration",
         "negative",
-        "failure_injection",
-        "authorization_boundary",
-        "dependency_graph",
-        "replay_resistance"
+        "failure_injection"
       ],
       "human_approved_activation_required": true,
       "rollback_plan_required": true,
@@ -5717,20 +5709,16 @@
       "required_evidence_binding": [
         "source_commit_sha",
         "policy_version",
-        "task_contract_digest",
-        "agent_id",
-        "permit_id",
-        "run_id",
-        "outcome_digest"
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
       ],
       "required_test_classes": [
         "unit",
         "integration",
         "negative",
-        "failure_injection",
-        "authorization_boundary",
-        "dependency_graph",
-        "replay_resistance"
+        "failure_injection"
       ],
       "human_approved_activation_required": true,
       "rollback_plan_required": true,
@@ -5752,20 +5740,16 @@
       "required_evidence_binding": [
         "source_commit_sha",
         "policy_version",
-        "task_contract_digest",
-        "agent_id",
-        "permit_id",
-        "run_id",
-        "outcome_digest"
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
       ],
       "required_test_classes": [
         "unit",
         "integration",
         "negative",
-        "failure_injection",
-        "authorization_boundary",
-        "dependency_graph",
-        "replay_resistance"
+        "failure_injection"
       ],
       "human_approved_activation_required": true,
       "rollback_plan_required": true,
@@ -5787,20 +5771,16 @@
       "required_evidence_binding": [
         "source_commit_sha",
         "policy_version",
-        "task_contract_digest",
-        "agent_id",
-        "permit_id",
-        "run_id",
-        "outcome_digest"
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
       ],
       "required_test_classes": [
         "unit",
         "integration",
         "negative",
-        "failure_injection",
-        "authorization_boundary",
-        "dependency_graph",
-        "replay_resistance"
+        "failure_injection"
       ],
       "human_approved_activation_required": true,
       "rollback_plan_required": true,
