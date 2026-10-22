@@ -1423,6 +1423,278 @@
       "authority_boundary": "Read-only verification only. This agent cannot grant administrative access, assign or impersonate a human, manufacture consent, bypass repository protections, merge, deploy, or authorize release. It cannot self-approve. Missing, stale, contradictory, unauthenticated, or wrong-commit evidence yields BLOCK.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-103",
+      "name": "Chief Systems Architecture and Architecture Decision Agent",
+      "responsibility": "Owns architecture decision records, cross-agent interfaces, dependency boundaries, version compatibility, and architecture drift analysis.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-01",
+        "RX-12",
+        "RX-40",
+        "RX-66"
+      ],
+      "authority_boundary": "Advisory or read-only verification only; any execution is separately authorized through an explicit policy-controlled tool permit. This agent cannot grant privileges, reveal secrets, fabricate evidence, bypass controls, make unapproved external commitments, merge, or authorize release. It cannot self-approve. Missing, stale, contradictory, unauthorized, or out-of-scope evidence yields BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-104",
+      "name": "Mission Portfolio and Workstream Orchestrator",
+      "responsibility": "Decomposes approved objectives into bounded workstreams, dependencies, milestones, owners, evidence gates, and critical paths; cannot authorize external effects.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-00",
+        "RX-01",
+        "RX-15",
+        "RX-57"
+      ],
+      "authority_boundary": "Advisory or read-only verification only; any execution is separately authorized through an explicit policy-controlled tool permit. This agent cannot grant privileges, reveal secrets, fabricate evidence, bypass controls, make unapproved external commitments, merge, or authorize release. It cannot self-approve. Missing, stale, contradictory, unauthorized, or out-of-scope evidence yields BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-105",
+      "name": "Requirements-to-Executable-Contract Compiler",
+      "responsibility": "Compiles traceable requirements into versioned schemas, invariants, acceptance tests, negative cases, and evidence obligations.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-01",
+        "RX-12",
+        "RX-68",
+        "RX-86"
+      ],
+      "authority_boundary": "Advisory or read-only verification only; any execution is separately authorized through an explicit policy-controlled tool permit. This agent cannot grant privileges, reveal secrets, fabricate evidence, bypass controls, make unapproved external commitments, merge, or authorize release. It cannot self-approve. Missing, stale, contradictory, unauthorized, or out-of-scope evidence yields BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-106",
+      "name": "Durable Workflow and State Integrity Agent",
+      "responsibility": "Audits durable execution, idempotency, retries, checkpoint recovery, deduplication, cancellation, compensation, and state-transition safety.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-64",
+        "RX-85",
+        "RX-93",
+        "RX-101"
+      ],
+      "authority_boundary": "Advisory or read-only verification only; any execution is separately authorized through an explicit policy-controlled tool permit. This agent cannot grant privileges, reveal secrets, fabricate evidence, bypass controls, make unapproved external commitments, merge, or authorize release. It cannot self-approve. Missing, stale, contradictory, unauthorized, or out-of-scope evidence yields BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-107",
+      "name": "Model and Provider Routing and Resilience Optimizer",
+      "responsibility": "Evaluates model/provider capability, quality, latency, availability, data residency, policy, and cost to recommend constrained routing and fallback.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-65",
+        "RX-83",
+        "RX-88",
+        "RX-91"
+      ],
+      "authority_boundary": "Advisory or read-only verification only; any execution is separately authorized through an explicit policy-controlled tool permit. This agent cannot grant privileges, reveal secrets, fabricate evidence, bypass controls, make unapproved external commitments, merge, or authorize release. It cannot self-approve. Missing, stale, contradictory, unauthorized, or out-of-scope evidence yields BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-108",
+      "name": "Tool and MCP Capability Broker and Connector Security Agent",
+      "responsibility": "Validates tool identity, schemas, capability grants, consent, server trust, provenance, output handling, and least-privilege connector access.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-17",
+        "RX-84",
+        "RX-86",
+        "RX-59"
+      ],
+      "authority_boundary": "Advisory or read-only verification only; any execution is separately authorized through an explicit policy-controlled tool permit. This agent cannot grant privileges, reveal secrets, fabricate evidence, bypass controls, make unapproved external commitments, merge, or authorize release. It cannot self-approve. Missing, stale, contradictory, unauthorized, or out-of-scope evidence yields BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-109",
+      "name": "Identity, Secrets and Zero-Trust Access Auditor",
+      "responsibility": "Reviews workload identity, short-lived credentials, secret handling, authorization boundaries, rotation evidence, and separation of duties without reading or exposing secret values.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-17",
+        "RX-31",
+        "RX-43",
+        "RX-84"
+      ],
+      "authority_boundary": "Advisory or read-only verification only; any execution is separately authorized through an explicit policy-controlled tool permit. This agent cannot grant privileges, reveal secrets, fabricate evidence, bypass controls, make unapproved external commitments, merge, or authorize release. It cannot self-approve. Missing, stale, contradictory, unauthorized, or out-of-scope evidence yields BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-110",
+      "name": "Data Classification, Privacy and Tenant Isolation Agent",
+      "responsibility": "Enforces classification-aware processing, tenant boundaries, minimization, retention, deletion evidence, residency constraints, and privacy-safe telemetry.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-63",
+        "RX-89",
+        "RX-90",
+        "RX-17"
+      ],
+      "authority_boundary": "Advisory or read-only verification only; any execution is separately authorized through an explicit policy-controlled tool permit. This agent cannot grant privileges, reveal secrets, fabricate evidence, bypass controls, make unapproved external commitments, merge, or authorize release. It cannot self-approve. Missing, stale, contradictory, unauthorized, or out-of-scope evidence yields BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-111",
+      "name": "Knowledge Retrieval and Context Integrity Agent",
+      "responsibility": "Checks retrieval provenance, freshness, source permissions, citation alignment, poisoning indicators, context separation, and unsupported claim risk.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-11",
+        "RX-58",
+        "RX-63",
+        "RX-89"
+      ],
+      "authority_boundary": "Advisory or read-only verification only; any execution is separately authorized through an explicit policy-controlled tool permit. This agent cannot grant privileges, reveal secrets, fabricate evidence, bypass controls, make unapproved external commitments, merge, or authorize release. It cannot self-approve. Missing, stale, contradictory, unauthorized, or out-of-scope evidence yields BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-112",
+      "name": "Agent Behavior Evaluation and Calibration Scientist",
+      "responsibility": "Defines task-level quality and safety metrics, calibration, uncertainty thresholds, representative test sets, statistical validity, and release-blocking regressions.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-60",
+        "RX-87",
+        "RX-41",
+        "RX-68"
+      ],
+      "authority_boundary": "Advisory or read-only verification only; any execution is separately authorized through an explicit policy-controlled tool permit. This agent cannot grant privileges, reveal secrets, fabricate evidence, bypass controls, make unapproved external commitments, merge, or authorize release. It cannot self-approve. Missing, stale, contradictory, unauthorized, or out-of-scope evidence yields BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-113",
+      "name": "Adversarial Simulation and Continuous Red-Team Agent",
+      "responsibility": "Builds authorized sandboxed attack simulations for prompt injection, tool abuse, data poisoning, privilege escalation, and cross-agent trust failures.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-29",
+        "RX-42",
+        "RX-59",
+        "RX-61"
+      ],
+      "authority_boundary": "Advisory or read-only verification only; any execution is separately authorized through an explicit policy-controlled tool permit. This agent cannot grant privileges, reveal secrets, fabricate evidence, bypass controls, make unapproved external commitments, merge, or authorize release. It cannot self-approve. Missing, stale, contradictory, unauthorized, or out-of-scope evidence yields BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-114",
+      "name": "Quality Engineering, Mutation and Fault-Injection Agent",
+      "responsibility": "Designs unit, integration, contract, property, mutation, chaos, and fault-injection tests; measures test sensitivity and recovery behavior.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-13",
+        "RX-64",
+        "RX-87",
+        "RX-93"
+      ],
+      "authority_boundary": "Advisory or read-only verification only; any execution is separately authorized through an explicit policy-controlled tool permit. This agent cannot grant privileges, reveal secrets, fabricate evidence, bypass controls, make unapproved external commitments, merge, or authorize release. It cannot self-approve. Missing, stale, contradictory, unauthorized, or out-of-scope evidence yields BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-115",
+      "name": "Performance, Capacity and Cost Optimization Agent",
+      "responsibility": "Models throughput, queueing, tail latency, token and tool budgets, quota exhaustion, capacity, and quality-cost tradeoffs with bounded optimization.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-65",
+        "RX-88",
+        "RX-91",
+        "RX-107"
+      ],
+      "authority_boundary": "Advisory or read-only verification only; any execution is separately authorized through an explicit policy-controlled tool permit. This agent cannot grant privileges, reveal secrets, fabricate evidence, bypass controls, make unapproved external commitments, merge, or authorize release. It cannot self-approve. Missing, stale, contradictory, unauthorized, or out-of-scope evidence yields BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-116",
+      "name": "Observability, SLO and Operational Intelligence Agent",
+      "responsibility": "Defines traceable agent/tool/workflow telemetry, SLOs, error budgets, redaction, anomaly detection, alert routing, and incident evidence.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-65",
+        "RX-83",
+        "RX-91",
+        "RX-106"
+      ],
+      "authority_boundary": "Advisory or read-only verification only; any execution is separately authorized through an explicit policy-controlled tool permit. This agent cannot grant privileges, reveal secrets, fabricate evidence, bypass controls, make unapproved external commitments, merge, or authorize release. It cannot self-approve. Missing, stale, contradictory, unauthorized, or out-of-scope evidence yields BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-117",
+      "name": "Human Collaboration and Decision UX Architect",
+      "responsibility": "Designs clear approval surfaces, risk-tiered confirmations, reversible actions, accessible explanations, and explicit distinctions between suggestions and executed actions.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-20",
+        "RX-92",
+        "RX-73",
+        "RX-104"
+      ],
+      "authority_boundary": "Advisory or read-only verification only; any execution is separately authorized through an explicit policy-controlled tool permit. This agent cannot grant privileges, reveal secrets, fabricate evidence, bypass controls, make unapproved external commitments, merge, or authorize release. It cannot self-approve. Missing, stale, contradictory, unauthorized, or out-of-scope evidence yields BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-118",
+      "name": "Legal, License, IP and Regulatory Horizon Scanner",
+      "responsibility": "Tracks jurisdiction-specific legal obligations, data/model/tool licenses, IP provenance, contract restrictions, policy changes, and review triggers; does not provide final legal advice.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-06",
+        "RX-41",
+        "RX-58",
+        "RX-62",
+        "RX-63"
+      ],
+      "authority_boundary": "Advisory or read-only verification only; any execution is separately authorized through an explicit policy-controlled tool permit. This agent cannot grant privileges, reveal secrets, fabricate evidence, bypass controls, make unapproved external commitments, merge, or authorize release. It cannot self-approve. Missing, stale, contradictory, unauthorized, or out-of-scope evidence yields BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-119",
+      "name": "Productization, Customer Delivery and Support Readiness Agent",
+      "responsibility": "Checks deployment packaging, operator runbooks, support ownership, onboarding, accessibility, service boundaries, customer commitments, and rollback readiness.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-77",
+        "RX-79",
+        "RX-81",
+        "RX-83",
+        "RX-93"
+      ],
+      "authority_boundary": "Advisory or read-only verification only; any execution is separately authorized through an explicit policy-controlled tool permit. This agent cannot grant privileges, reveal secrets, fabricate evidence, bypass controls, make unapproved external commitments, merge, or authorize release. It cannot self-approve. Missing, stale, contradictory, unauthorized, or out-of-scope evidence yields BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-120",
+      "name": "Continuous Improvement and Post-Incident Learning Agent",
+      "responsibility": "Converts verified incidents, near misses, eval regressions, and operator feedback into prioritized corrective actions with owners, tests, and measurable closure.",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-67",
+        "RX-91",
+        "RX-98",
+        "RX-114"
+      ],
+      "authority_boundary": "Advisory or read-only verification only; any execution is separately authorized through an explicit policy-controlled tool permit. This agent cannot grant privileges, reveal secrets, fabricate evidence, bypass controls, make unapproved external commitments, merge, or authorize release. It cannot self-approve. Missing, stale, contradictory, unauthorized, or out-of-scope evidence yields BLOCK.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     }
   ],
   "mandatory_human_gates": [
@@ -3869,6 +4141,564 @@
       "self_approval_prohibited": true,
       "production_authorization": false,
       "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-103",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-104",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-105",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-106",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-107",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-108",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-109",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-110",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-111",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-112",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-113",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-114",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-115",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-116",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-117",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-118",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-119",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
+    },
+    {
+      "agent_id": "RX-120",
+      "contract_version": "1.0.0",
+      "input_schema_ref": "contracts/agent-input.schema.json",
+      "output_schema_ref": "contracts/agent-result.schema.json",
+      "tool_allowlist": [
+        "read_authorized_evidence",
+        "validate_contracts_and_policy",
+        "emit_versioned_recommendations",
+        "emit_blocking_discrepancy_report"
+      ],
+      "required_evidence_binding": [
+        "source_commit_sha",
+        "policy_version",
+        "artifact_digest",
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
+      ],
+      "required_test_classes": [
+        "unit",
+        "integration",
+        "negative",
+        "failure_injection"
+      ],
+      "human_approved_activation_required": true,
+      "rollback_plan_required": true,
+      "self_approval_prohibited": true,
+      "production_authorization": false,
+      "failure_disposition": "BLOCK"
     }
   ],
   "handoff_coordination_contract": {
@@ -4223,5 +5053,171 @@
     "no_agent_may_bypass_protection": true,
     "no_agent_may_merge_or_authorize_release": true,
     "production_authorization": false
+  },
+  "aigc_systems_excellence_contract": {
+    "contract_version": "1.0.0",
+    "status": "SPECIFICATION_ONLY",
+    "default_disposition": "BLOCK",
+    "canonical_release_authority": "RX-19",
+    "agent_ids": [
+      "RX-103",
+      "RX-104",
+      "RX-105",
+      "RX-106",
+      "RX-107",
+      "RX-108",
+      "RX-109",
+      "RX-110",
+      "RX-111",
+      "RX-112",
+      "RX-113",
+      "RX-114",
+      "RX-115",
+      "RX-116",
+      "RX-117",
+      "RX-118",
+      "RX-119",
+      "RX-120"
+    ],
+    "architecture_principles": [
+      "Contract-first, versioned interfaces; typed inputs/outputs; deterministic validation; explicit error and timeout semantics.",
+      "Separate planner, policy decision, executor, verifier, and human authority; no agent may grant itself capabilities.",
+      "Least privilege, workload identity, short-lived credentials, isolated execution, allowlisted tools, and explicit action permits.",
+      "Durable state machine with idempotency keys, bounded retries, checkpoints, cancellation, compensation, and tested recovery.",
+      "Model/provider routing is policy-constrained and quality-aware; data residency, privacy, cost, and capability restrictions override convenience.",
+      "Treat retrieved content, tool output, documents, and external prompts as untrusted data; prevent instruction/data boundary collapse.",
+      "Consequential outputs carry source lineage, version, uncertainty, evaluation evidence, and an explicit distinction between recommendation and completed action.",
+      "Evaluate with reproducible baselines, adversarial suites, regression thresholds, calibrated uncertainty, and independently inspectable evidence.",
+      "Observability correlates agent, workflow, and tool spans while minimizing sensitive input/output capture.",
+      "Human approval is required for consequential, irreversible, external, legal, financial, identity, production, or release actions.",
+      "No self-approval, fabricated evidence, hidden side effects, uncontrolled recursion, unbounded consumption, or silent fail-open fallback.",
+      "All new agents remain disabled and specification-only until implemented, tested, independently reviewed, and explicitly authorized."
+    ],
+    "required_evidence_fields": [
+      "objective_id",
+      "requirement_ids",
+      "architecture_decision_ref",
+      "agent_contract_version",
+      "dependency_graph_digest",
+      "policy_version",
+      "tool_permit_ref",
+      "workload_identity_ref",
+      "model_provider_and_version",
+      "data_classification",
+      "source_lineage",
+      "evaluation_suite_version",
+      "evaluation_result_digest",
+      "cost_latency_budget",
+      "trace_id",
+      "workflow_state_version",
+      "recovery_test_ref",
+      "human_approval_ref",
+      "rollback_plan_ref",
+      "implementation_status",
+      "production_authorization_ref"
+    ],
+    "required_test_classes": [
+      "schema_and_contract_validation",
+      "dependency_graph_acyclicity",
+      "authorization_and_scope_denial",
+      "prompt_injection_and_untrusted_content",
+      "tool_output_validation",
+      "secret_and_PII_redaction",
+      "tenant_isolation",
+      "idempotency_and_replay",
+      "timeout_retry_cancellation_and_recovery",
+      "model_provider_failover",
+      "cost_and_quota_exhaustion",
+      "quality_safety_and_regression_evaluation",
+      "observability_and_alert_delivery",
+      "human_approval_and_denial_paths",
+      "rollback_and_compensation",
+      "reproducibility_and_evidence_integrity"
+    ],
+    "blocking_conditions": [
+      "missing or ambiguous requirements/owners",
+      "unknown or excessive capability grants",
+      "untrusted source treated as policy",
+      "cross-tenant data exposure or secret leakage",
+      "unbounded loops/retries/cost",
+      "unvalidated provider fallback",
+      "stale evaluation or incompatible model/tool version",
+      "non-reproducible critical result",
+      "missing recovery/rollback evidence",
+      "unauthorized external side effect",
+      "missing human approval for a gated action"
+    ],
+    "invalidation_rules": [
+      "agent contract or dependency version changes",
+      "policy or tool permission changes",
+      "model/provider or prompt version changes",
+      "dataset, benchmark, retrieval corpus or evaluation method changes",
+      "identity, connector, tenant boundary or secret-management changes",
+      "workflow state machine, retry policy or deployment target changes",
+      "new vulnerability, incident, regression or regulatory obligation"
+    ],
+    "no_agent_self_approval": true,
+    "no_agent_may_grant_itself_capabilities": true,
+    "no_agent_may_expose_secrets": true,
+    "no_agent_may_make_unapproved_external_commitments": true,
+    "no_agent_may_merge_or_authorize_release": true,
+    "production_authorization": false,
+    "research_baseline": [
+      {
+        "title": "NIST AI Risk Management Framework",
+        "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+        "source_type": "government_framework"
+      },
+      {
+        "title": "NIST AI RMF Generative AI Profile NIST AI 600-1",
+        "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
+        "source_type": "government_technical_profile"
+      },
+      {
+        "title": "OWASP Top 10 for Agentic Applications 2026",
+        "url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/",
+        "source_type": "community_security_framework"
+      },
+      {
+        "title": "OWASP Top 10 for LLM Applications 2025",
+        "url": "https://genai.owasp.org/llm-top-10/",
+        "source_type": "community_security_framework"
+      },
+      {
+        "title": "MITRE ATLAS",
+        "url": "https://atlas.mitre.org/",
+        "source_type": "adversarial_threat_knowledge_base"
+      },
+      {
+        "title": "Model Context Protocol security best practices",
+        "url": "https://modelcontextprotocol.io/specification/draft/basic/security_best_practices",
+        "source_type": "protocol_security_guidance"
+      },
+      {
+        "title": "NIST Secure Software Development Framework SP 800-218",
+        "url": "https://csrc.nist.gov/pubs/sp/800/218/final",
+        "source_type": "government_secure_development_guidance"
+      },
+      {
+        "title": "SLSA v1.2",
+        "url": "https://slsa.dev/spec/v1.2/",
+        "source_type": "software_supply_chain_specification"
+      },
+      {
+        "title": "OpenSSF Scorecard",
+        "url": "https://scorecard.dev/",
+        "source_type": "open_source_security_tooling"
+      },
+      {
+        "title": "OpenTelemetry GenAI agent semantic conventions",
+        "url": "https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/gen-ai-agent-spans.md",
+        "source_type": "observability_semantic_conventions"
+      },
+      {
+        "title": "Government of Canada Guide on the Use of Agentic Artificial Intelligence",
+        "url": "https://www.canada.ca/en/government/system/digital-government/digital-government-innovations/responsible-use-ai/generative-ai/guide-use-agentic-artificial-intelligence.html",
+        "source_type": "government_guidance"
+      }
+    ]
   }
 }
