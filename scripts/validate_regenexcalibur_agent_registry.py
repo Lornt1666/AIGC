@@ -54,7 +54,7 @@ def validate_registry(data: Any) -> dict[str, Any]:
             raise RegistryError("implementation_status_overclaims_readiness")
         ids.append(agent["id"])
         by_id[agent["id"]] = agent
-    if len(by_id) != 137:
+    if len(by_id) != 140:
         raise RegistryError("unexpected_agent_count")
     for agent in data["agents"]:
         if agent["id"] in agent["dependencies"]:
@@ -244,7 +244,7 @@ def validate_registry(data: Any) -> dict[str, Any]:
     if lifecycle.get("non_equivalence_rule") is None or lifecycle.get("policy") is None:
         raise RegistryError("implementation_lifecycle_evidence_policy_missing")
     contract_list = data.get("new_agent_contracts")
-    expected_new_agents = {"RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57", "RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68", "RX-69", "RX-70", "RX-71", "RX-72", "RX-73", "RX-74", "RX-75", "RX-76", "RX-77", "RX-78", "RX-79", "RX-80", "RX-81", "RX-82", "RX-83", "RX-84", "RX-85", "RX-86", "RX-87", "RX-88", "RX-89", "RX-90", "RX-91", "RX-92", "RX-93", "RX-94", "RX-95", "RX-96", "RX-97", "RX-98", "RX-99", "RX-100", "RX-101", "RX-102", "RX-103", "RX-104", "RX-105", "RX-106", "RX-107", "RX-108", "RX-109", "RX-110", "RX-111", "RX-112", "RX-113", "RX-114", "RX-115", "RX-116", "RX-117", "RX-118", "RX-119", "RX-120", "RX-121", "RX-122", "RX-123", "RX-124", "RX-125", "RX-126", "RX-127", "RX-128", "RX-129", "RX-130", "RX-131", "RX-132", "RX-133", "RX-134", "RX-135", "RX-136", "RX-137", "RX-138", "RX-139", "RX-140", "RX-141", "RX-142", "RX-143", "RX-144"}
+    expected_new_agents = {"RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57", "RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68", "RX-69", "RX-70", "RX-71", "RX-72", "RX-73", "RX-74", "RX-75", "RX-76", "RX-77", "RX-78", "RX-79", "RX-80", "RX-81", "RX-82", "RX-83", "RX-84", "RX-85", "RX-86", "RX-87", "RX-88", "RX-89", "RX-90", "RX-91", "RX-92", "RX-93", "RX-94", "RX-95", "RX-96", "RX-97", "RX-98", "RX-99", "RX-100", "RX-101", "RX-102", "RX-103", "RX-104", "RX-105", "RX-106", "RX-107", "RX-108", "RX-109", "RX-110", "RX-111", "RX-112", "RX-113", "RX-114", "RX-115", "RX-116", "RX-117", "RX-118", "RX-119", "RX-120", "RX-121", "RX-122", "RX-123", "RX-124", "RX-125", "RX-126", "RX-127", "RX-128", "RX-129", "RX-130", "RX-131", "RX-132", "RX-133", "RX-134", "RX-135", "RX-136", "RX-137", "RX-138", "RX-139", "RX-140", "RX-141", "RX-142", "RX-143", "RX-144", "RX-145", "RX-146", "RX-147"}
     if not isinstance(contract_list, list) or {x.get("agent_id") for x in contract_list if isinstance(x, dict)} != expected_new_agents:
         raise RegistryError("new_agent_contracts_missing_or_ambiguous")
     for contract in contract_list:
@@ -274,9 +274,9 @@ def validate_registry(data: Any) -> dict[str, Any]:
         or release_gate.get("production_authorization") is not False):
         raise RegistryError("release_gate_execution_contract_must_fail_closed")
     expected_release_actions = [
-        (1, "administrator_authenticated_repository_protection_readback", {"RX-53", "RX-132"}),
-        (2, "authorized_independent_security_reviewer_assignment", {"RX-54", "RX-131"}),
-        (3, "exact_commit_review_findings_remediation_and_independent_retest", {"RX-55", "RX-131"}),
+        (1, "administrator_authenticated_repository_protection_readback", {"RX-53", "RX-132", "RX-145"}),
+        (2, "authorized_independent_security_reviewer_assignment", {"RX-54", "RX-131", "RX-146"}),
+        (3, "exact_commit_review_findings_remediation_and_independent_retest", {"RX-55", "RX-131", "RX-147"}),
         (4, "complete_required_exact_head_ci_and_evidence_regeneration", {"RX-136", "RX-129", "RX-137"}),
         (5, "authenticated_human_acceptance_binding", {"RX-56", "RX-133"}),
         (6, "complete_packet_submission_to_rx19", {"RX-57", "RX-137", "RX-19"}),
@@ -408,6 +408,42 @@ def validate_registry(data: Any) -> dict[str, Any]:
     for agent_id in expected_override_agents:
         if agent_id not in by_id or by_id[agent_id]["enabled"] is not False or by_id[agent_id]["authority_tier"] != "R0" or by_id[agent_id]["implementation_status"] != "SPECIFIED_NOT_PRODUCTION_INTEGRATED":
             raise RegistryError("agent_operations_override_agents_must_be_read_only_and_disabled")
+
+    admin_review = data.get("administrator_review_evidence_contract")
+    if not isinstance(admin_review, dict) or admin_review.get("contract_version") != "1.0.0":
+        raise RegistryError("administrator_review_evidence_contract_missing_or_unsupported")
+    if (admin_review.get("status") != "SPECIFICATION_ONLY"
+        or admin_review.get("default_disposition") != "BLOCK"
+        or admin_review.get("canonical_release_authority") != "RX-19"
+        or admin_review.get("production_authorization") is not False
+        or set(admin_review.get("agent_ids", [])) != {"RX-145", "RX-146", "RX-147"}):
+        raise RegistryError("administrator_review_evidence_contract_must_fail_closed")
+    expected_admin_steps = [
+        (1, "authenticated_effective_protection_readback", {"RX-145"}),
+        (2, "authorized_independent_reviewer_assignment", {"RX-146"}),
+        (3, "commit_bound_review_remediation_and_independent_retest", {"RX-147"}),
+    ]
+    admin_steps = admin_review.get("operating_sequence")
+    if not isinstance(admin_steps, list) or len(admin_steps) != len(expected_admin_steps):
+        raise RegistryError("administrator_review_evidence_sequence_invalid")
+    for step, (sequence, action, agent_ids) in zip(admin_steps, expected_admin_steps):
+        if (step.get("sequence") != sequence or step.get("action") != action
+            or set(step.get("agent_ids", [])) != agent_ids
+            or not step.get("required_evidence") or not step.get("pass_rule")
+            or step.get("failure_disposition") != "BLOCK"):
+            raise RegistryError("administrator_review_evidence_step_incomplete_or_unsafe")
+    if any(admin_review.get(key) is not True for key in (
+        "no_agent_may_change_protections", "no_agent_may_assign_or_impersonate_human",
+        "no_agent_may_invent_qualifications", "no_agent_may_self_approve",
+        "no_agent_may_close_findings_without_independent_retest",
+        "no_agent_may_bypass_ci", "no_agent_may_merge_or_authorize_release")):
+        raise RegistryError("administrator_review_authority_boundary_weak")
+    if len(admin_review.get("evidence_invalidation_rules", [])) < 4:
+        raise RegistryError("administrator_review_invalidation_rules_incomplete")
+    for agent_id in ("RX-145", "RX-146", "RX-147"):
+        agent = by_id.get(agent_id)
+        if not agent or agent.get("enabled") is not False or agent.get("authority_tier") != "R0" or agent.get("implementation_status") != "SPECIFIED_NOT_PRODUCTION_INTEGRATED":
+            raise RegistryError("administrator_review_agents_must_remain_disabled_r0_specifications")
 
     return {
         "status": "VALID",
