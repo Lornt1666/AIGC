@@ -495,7 +495,7 @@
         "RX-16",
         "RX-17"
       ],
-      "authority_boundary": "Inventory and assessment only; cannot silently suppress findings, publish artifacts, upgrade dependencies, or authorize release.",
+      "authority_boundary": "Inventory and assessment only; cannot silently suppress findings, publish artifacts, upgrade dependencies, or authorize release, self-approve, or authorize release.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
@@ -524,7 +524,7 @@
         "RX-11",
         "RX-16"
       ],
-      "authority_boundary": "Read-only control mapping; cannot claim certification or legal compliance, approve its own mapping, or authorize release.",
+      "authority_boundary": "Read-only control mapping; cannot claim certification or legal compliance, approve its own mapping, or authorize release, self-approve, or authorize release.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     },
