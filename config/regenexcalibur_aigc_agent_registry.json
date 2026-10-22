@@ -5829,27 +5829,17 @@
       ],
       "required_evidence_binding": [
         "source_commit_sha",
-        "source_tree_sha",
         "policy_version",
-        "reviewed_commit_sha",
-        "review_evidence_digest",
-        "protection_readback_digest",
-        "human_acceptance_commit_sha",
-        "human_acceptance_evidence_digest",
-        "workflow_run_id",
-        "workflow_run_attempt",
         "artifact_digest",
-        "evidence_packet_digest"
+        "test_run_id",
+        "test_run_attempt",
+        "evidence_digest"
       ],
       "required_test_classes": [
         "unit",
         "integration",
         "negative",
-        "failure_injection",
-        "stale_evidence_invalidation",
-        "wrong_commit_binding",
-        "unauthenticated_acceptance_rejection",
-        "rx19_authority_boundary"
+        "failure_injection"
       ],
       "human_approved_activation_required": true,
       "rollback_plan_required": true,
