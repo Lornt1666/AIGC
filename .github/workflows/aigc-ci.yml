@@ -100,6 +100,16 @@ jobs:
           PYTHONPATH=. python -m unittest discover -s tests -p 'test_regenexcalibur_agent_registry.py' -v
           PYTHONPATH=src python -m unittest discover -s tests -p 'test_aigc_agent_operations.py' -v
 
+      - name: Diagnose registry validation failure (non-authoritative)
+        if: always()
+        shell: bash
+        run: |
+          set +e
+          python scripts/validate_regenexcalibur_agent_registry.py
+          status=$?
+          echo "Registry diagnostic exit code: $status"
+          exit 0
+
       - name: Execute shared canonical validation runner
         run: |
           mkdir -p "$RUNNER_TEMP/aigc-ci-stage-results"
