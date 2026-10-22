@@ -209,3 +209,27 @@ Emit structured, redacted events for each state transition and rejection. Monito
 - GitHub Docs, Artifact attestations: https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/use-artifact-attestations
 - GitHub CLI, gh attestation verify: https://cli.github.com/manual/gh_attestation_verify
 - SLSA, Verifying artifacts: https://github.com/slsa-framework/slsa/blob/main/spec/verifying-artifacts.md
+
+
+## 10. Handoff coordination agents RX-53–RX-57
+
+These five agents extend the existing release-evidence crew with an explicit, fail-closed handoff path. They are specification-only, disabled by default, and not production-integrated.
+
+- **RX-53 — Repository Protection Configuration Evidence Coordinator:** requests and validates an administrator-authenticated readback of the actual `main` protection/ruleset configuration, required check names, bypass actors, and retrieval timestamp. An empty ruleset response or HTTP 403 without proven administrative visibility is not evidence that protection is absent or correct.
+- **RX-54 — Independent Reviewer Qualification and Assignment Coordinator:** tracks the authorized assigner, reviewer identity, qualifications, conflict-of-interest declaration, and exact commit/evidence-digest binding. It cannot invent a person or treat an AI agent as the independent human reviewer.
+- **RX-55 — Exact-Commit Findings Remediation and Retest Closure Verifier:** requires a finding inventory, immutable finding-to-commit/digest binding, remediation commit, independent retest results, and attributable closure evidence. A changed head invalidates dependent review/closure evidence.
+- **RX-56 — Authenticated Human Acceptance Binding Verifier:** verifies authenticated actor identity/authority and explicit acceptance bound to the same final commit and evidence digest, after review and finding closure. A conversational authorization statement is not itself the repository's authenticated acceptance record.
+- **RX-57 — Release Handoff Sequencing and Evidence Readiness Orchestrator:** coordinates the sequence but has no administrative, human-approval, merge, or release authority. It preserves RX-19 as the sole release decision authority.
+
+### Required handoff sequence
+
+1. Administrator-authenticated protection and required-check readback.
+2. Qualified independent human reviewer assigned by an authorized administrator.
+3. Findings bound to the reviewed SHA and digest; remediation and independent retest evidenced; closure verified.
+4. Stacked PR lineage advanced in order; full CI rerun against each exact head after every rebase or retarget.
+5. Authenticated human acceptance bound to the final SHA and evidence digest.
+6. Protected merge only after the protection readback and all required gates are verified.
+7. Post-merge live OIDC, cryptographic provenance, artifact digest, independent retention, and retrieval checks.
+8. Complete authenticated packet submitted unchanged to RX-19.
+
+Any changed SHA, base/head relationship, run attempt, reviewer, policy, digest, acceptance record, protection configuration, or retention policy invalidates affected evidence and requires revalidation. Missing, stale, inaccessible, contradictory, or unauthenticated evidence results in **BLOCK**. These specifications do not claim that the actions have already occurred.
