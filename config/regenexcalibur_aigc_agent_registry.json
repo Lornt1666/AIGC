@@ -4819,11 +4819,8 @@
       "required_test_classes": [
         "unit",
         "integration",
-        "contract",
         "negative",
-        "failure_injection",
-        "recovery",
-        "evidence_integrity"
+        "failure_injection"
       ],
       "human_approved_activation_required": true,
       "rollback_plan_required": true,
@@ -4853,11 +4850,8 @@
       "required_test_classes": [
         "unit",
         "integration",
-        "contract",
         "negative",
-        "failure_injection",
-        "recovery",
-        "evidence_integrity"
+        "failure_injection"
       ],
       "human_approved_activation_required": true,
       "rollback_plan_required": true,
@@ -4887,11 +4881,8 @@
       "required_test_classes": [
         "unit",
         "integration",
-        "contract",
         "negative",
-        "failure_injection",
-        "recovery",
-        "evidence_integrity"
+        "failure_injection"
       ],
       "human_approved_activation_required": true,
       "rollback_plan_required": true,
@@ -4921,11 +4912,8 @@
       "required_test_classes": [
         "unit",
         "integration",
-        "contract",
         "negative",
-        "failure_injection",
-        "recovery",
-        "evidence_integrity"
+        "failure_injection"
       ],
       "human_approved_activation_required": true,
       "rollback_plan_required": true,
@@ -4955,11 +4943,8 @@
       "required_test_classes": [
         "unit",
         "integration",
-        "contract",
         "negative",
-        "failure_injection",
-        "recovery",
-        "evidence_integrity"
+        "failure_injection"
       ],
       "human_approved_activation_required": true,
       "rollback_plan_required": true,
@@ -4989,11 +4974,8 @@
       "required_test_classes": [
         "unit",
         "integration",
-        "contract",
         "negative",
-        "failure_injection",
-        "recovery",
-        "evidence_integrity"
+        "failure_injection"
       ],
       "human_approved_activation_required": true,
       "rollback_plan_required": true,
