@@ -29,14 +29,14 @@ def claims():
 
 class GitHubOIDCClaimPolicyTests(unittest.TestCase):
     def test_exact_main_workflow_claims_pass(self):
-        validate_bound_claims(claims(), expected_sha=SHA,
+        validate_bound_claims(claims(), expected_sha=SHA, expected_workflow_sha=SHA,
                               expected_run_id="12345", expected_run_attempt="1")
 
     def test_wrong_repository_blocks(self):
         value = claims()
         value["repository"] = "attacker/repo"
         with self.assertRaisesRegex(IdentityVerificationError, "repository"):
-            validate_bound_claims(value, expected_sha=SHA,
+            validate_bound_claims(value, expected_sha=SHA, expected_workflow_sha=SHA,
                                   expected_run_id="12345", expected_run_attempt="1")
 
     def test_wrong_workflow_blocks(self):
