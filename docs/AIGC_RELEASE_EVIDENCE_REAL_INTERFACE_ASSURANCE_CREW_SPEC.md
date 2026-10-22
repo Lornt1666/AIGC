@@ -233,3 +233,40 @@ These five agents extend the existing release-evidence crew with an explicit, fa
 8. Complete authenticated packet submitted unchanged to RX-19.
 
 Any changed SHA, base/head relationship, run attempt, reviewer, policy, digest, acceptance record, protection configuration, or retention policy invalidates affected evidence and requires revalidation. Missing, stale, inaccessible, contradictory, or unauthenticated evidence results in **BLOCK**. These specifications do not claim that the actions have already occurred.
+
+
+## 11. Deep research and engineering assurance agents RX-58–RX-68
+
+All eleven agents remain disabled and specification-only. They produce research evidence and recommendations, not administrative actions or release decisions.
+
+| Agent | Mission | Key outputs |
+|---|---|---|
+| RX-58 — Continuous Research and Standards Intelligence | Track primary-source standards, government guidance, official framework revisions, advisories and source freshness. | Source register, claim-source map, change alerts, conflicts and uncertainty. |
+| RX-59 — Agentic System Threat Modeling and Attack-Path Analyst | Map trust boundaries and cross-agent attack paths, including prompt injection, identity abuse, excessive agency and supply-chain compromise. | Threat model, attack graph, mitigations and control mapping. |
+| RX-60 — Evaluation Science and Benchmark Integrity Architect | Design reproducible capability/safety evaluations and guard against leakage, contamination, cherry-picking and invalid comparisons. | Evaluation protocol, dataset lineage, uncertainty analysis and regression thresholds. |
+| RX-61 — Prompt Injection and Tool-Abuse Red-Team Agent | Test untrusted content, indirect injection, confused-deputy paths, data exfiltration and tool misuse in isolated environments. | Bounded adversarial cases, reproducible evidence and mitigation proposals. |
+| RX-62 — AI Governance and Jurisdictional Control Mapping Agent | Distinguish binding obligations from voluntary guidance and map controls by jurisdiction and use case. | Control crosswalk, applicability rationale, compliance gaps and human-review queue. |
+| RX-63 — Data Governance, Privacy and Evidence Lifecycle Analyst | Review data minimization, access, residency, retention, deletion, redaction and sensitive evidence handling. | Data-flow inventory, privacy findings and control recommendations. |
+| RX-64 — Reliability, Chaos and Recovery Test Architect | Test retries, idempotency, timeouts, queue failure, duplicate delivery, crash recovery and ambiguous outcomes. | Fault matrix, recovery tests and failure reports. |
+| RX-65 — Observability, SLO and Cost Efficiency Analyst | Define SLI/SLOs, traces, alerting, budgets, capacity limits and cost attribution without weakening gates. | SLO proposal, telemetry gaps, cost scenarios and capacity-risk report. |
+| RX-66 — Architecture Decision and Dependency Risk Reviewer | Compare design alternatives and assess dependency, licensing, coupling, migration and rollback risks. | Architecture decision records, dependency risk register and migration plan. |
+| RX-67 — Incident Response and Emergency Stop Coordinator | Prepare response playbooks and verify independently controlled stop, escalation and recovery procedures. | Incident runbooks, escalation matrix and stop-control evidence requirements. |
+| RX-68 — Research-to-Implementation Traceability Synthesizer | Convert sourced findings into versioned requirements, implementation tasks, tests and measurable acceptance criteria. | Claim-source-requirement-test traceability matrix and unresolved-assumption register. |
+
+### Research quality and implementation rules
+
+- Prefer primary government, standards-body, official project and original research sources; record publisher, canonical URL, publication/revision date, access date, jurisdiction and source type.
+- Separate law/regulation, government policy, standards, normative specifications, voluntary guidance, vendor documentation and opinion. A control crosswalk is not legal advice, certification or proof of compliance.
+- Preserve claim-to-source traceability, contradictions, uncertainty, scope limits and superseded guidance. Material recommendations require domain-owner review; high-risk security conclusions require independent human review.
+- Evaluation results must state model/version, system prompt/policy version, tools, dataset lineage, sampling method, metrics, uncertainty, limitations and reproducible run references.
+- Red-team work must use isolated non-production targets, synthetic data, bounded permissions and explicit stop conditions.
+- Research agents cannot alter production policy, grant permissions, perform production side effects, assign reviewers, manufacture acceptance, merge or release. Missing or contradictory release-critical evidence remains **BLOCK**.
+
+### Research baseline consulted
+
+- NIST AI Risk Management Framework and Generative AI Profile: https://www.nist.gov/itl/ai-risk-management-framework and https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf
+- SLSA v1.2 specification and artifact verification: https://slsa.dev/spec/v1.2/ and https://github.com/slsa-framework/slsa/blob/main/spec/verifying-artifacts.md
+- OWASP GenAI Security Project 2026 Top 10 and agent-control resources: https://genai.owasp.org/2026/09/01/owasp-genai-security-project-unveils-2026-top-10-for-llm-applications-new-agent-control-standard-and-sponsors-as-community-tops-30000-members/
+- CISA Secure by Demand guidance: https://www.cisa.gov/sites/default/files/2024-08/SecureByDemandGuide_080624_508c.pdf
+
+These sources inform design only; they do not establish AIGC conformity or prove implementation, testing, independent verification or production authorization.
