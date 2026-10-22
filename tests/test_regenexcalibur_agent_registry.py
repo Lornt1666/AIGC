@@ -17,7 +17,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
     def test_registry_is_valid_and_fail_closed(self):
         result = validate_registry(self.registry)
         self.assertEqual(result["status"], "VALID")
-        self.assertEqual(result["agent_count"], 61)
+        self.assertEqual(result["agent_count"], 76)
         self.assertEqual(len(self.registry["operational_gate_contracts"]), 7)
         self.assertEqual(self.registry["final_decision_contract"]["canonical_decision_authority"], "RX-19")
         self.assertEqual(result["dependency_graph"], "ACYCLIC")
@@ -76,7 +76,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
     def test_new_assurance_agents_have_contracts_and_remain_disabled(self):
         by_id = {agent["id"]: agent for agent in self.registry["agents"]}
         contracts = {item["agent_id"]: item for item in self.registry["new_agent_contracts"]}
-        for agent_id in ("RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57", "RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68"):
+        for agent_id in ("RX-29", "RX-30", "RX-31", "RX-40", "RX-41", "RX-42", "RX-43", "RX-44", "RX-45", "RX-46", "RX-47", "RX-48", "RX-49", "RX-50", "RX-51", "RX-52", "RX-53", "RX-54", "RX-55", "RX-56", "RX-57", "RX-58", "RX-59", "RX-60", "RX-61", "RX-62", "RX-63", "RX-64", "RX-65", "RX-66", "RX-67", "RX-68", "RX-69", "RX-70", "RX-71", "RX-72", "RX-73", "RX-74", "RX-75", "RX-76", "RX-77", "RX-78", "RX-79", "RX-80", "RX-81", "RX-82", "RX-83"):
             self.assertIn(agent_id, by_id)
             self.assertIn(agent_id, contracts)
             self.assertFalse(by_id[agent_id]["enabled"])
@@ -164,3 +164,24 @@ if __name__ == "__main__":
             self.assertIn(agent_id, contracts)
             self.assertEqual(contracts[agent_id]["failure_disposition"], "BLOCK")
             self.assertTrue(contracts[agent_id]["self_approval_prohibited"])
+
+    def test_opportunity_discovery_contract_fails_closed(self):
+        data = copy.deepcopy(self.registry)
+        data["opportunity_discovery_contract"]["no_prohibited_scraping"] = False
+        with self.assertRaisesRegex(RegistryError, "opportunity_authority_boundary_weak"):
+            validate_registry(data)
+        data = copy.deepcopy(self.registry)
+        data["opportunity_discovery_contract"]["unknown_source_policy"] = "ALLOW"
+        with self.assertRaisesRegex(RegistryError, "unknown_opportunity_sources_must_be_denied"):
+            validate_registry(data)
+
+    def test_opportunity_source_policy_blocks_prohibited_automation(self):
+        policy_path = Path(__file__).resolve().parents[1] / "config" / "aigc_opportunity_source_policy.json"
+        policy = json.loads(policy_path.read_text(encoding="utf-8"))
+        self.assertEqual(policy["default_for_unlisted_sources"], "DENY_AUTOMATED_ACCESS")
+        by_id = {source["source_id"]: source for source in policy["sources"]}
+        self.assertEqual(by_id["canada_job_bank"]["eligibility_state"], "MANUAL_ONLY")
+        self.assertEqual(by_id["linkedin"]["eligibility_state"], "MANUAL_ONLY")
+        self.assertEqual(by_id["greenhouse_public_boards"]["eligibility_state"], "API_ALLOWED_WITH_CONSTRAINTS")
+        self.assertEqual(by_id["adzuna"]["eligibility_state"], "API_ALLOWED_WITH_CONSTRAINTS")
+        self.assertTrue(policy["application_submission"]["human_approval_required"])
