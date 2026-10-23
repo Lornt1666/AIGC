@@ -76,6 +76,28 @@ class ArbiterTests(unittest.TestCase):
 
 
 class OrchestratorSafetyTests(unittest.TestCase):
+    def test_rejects_non_finite_operation_timeout(self):
+        for value in (float("nan"), float("inf"), float("-inf")):
+            with self.subTest(value=value), self.assertRaisesRegex(ValueError, "operation_timeout_seconds"):
+                SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost",
+                                operation_timeout_seconds=value)
+
+    def test_rejects_invalid_retry_delay_bounds(self):
+        invalid = (
+            {"base_retry_seconds": -0.01, "max_retry_seconds": 1},
+            {"base_retry_seconds": 2, "max_retry_seconds": 1},
+            {"base_retry_seconds": 1, "max_retry_seconds": 60.01},
+            {"base_retry_seconds": float("nan"), "max_retry_seconds": 1},
+        )
+        for overrides in invalid:
+            with self.subTest(overrides=overrides), self.assertRaisesRegex(ValueError, "retry"):
+                SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost", **overrides)
+
+    def test_rejects_unbounded_database_pool_size(self):
+        with self.assertRaisesRegex(ValueError, "database pool bounds"):
+            SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost",
+                            pool_min_size=1, pool_max_size=257)
+
     def test_defaults_to_dry_run(self):
         coordinator = SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost",
                                       adapters={"read": lambda *a, **k: None})
