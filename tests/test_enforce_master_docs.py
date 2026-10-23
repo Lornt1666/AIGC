@@ -67,7 +67,7 @@ class MasterDocumentationGateTests(unittest.TestCase):
     def test_local_link_escape_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            docs = {"docs/master/README.md": "[outside](../../outside.md)"}
+            docs = {"docs/master/README.md": "[outside](../../../outside.md)"}
             errors = validate_local_links(root, docs)
             self.assertTrue(any("escapes repository" in error for error in errors))
 
