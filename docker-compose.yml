@@ -76,6 +76,7 @@ services:
       POSTGRES_DB: aigc
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
       AIGC_APP_DB_PASSWORD: ${AIGC_APP_DB_PASSWORD:?set AIGC_APP_DB_PASSWORD}
+      AIGC_RECEIPT_DB_PASSWORD: ${AIGC_RECEIPT_DB_PASSWORD:?set AIGC_RECEIPT_DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./core/init/01-create-runtime-roles.sh:/docker-entrypoint-initdb.d/01-create-runtime-roles.sh:ro
