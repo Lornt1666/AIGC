@@ -21,7 +21,6 @@ from aigc_runtime.artifact_verifier import ArtifactVerificationError, download_a
 from aigc_runtime.github_evidence import GitHubEvidenceError, acquire_live_snapshot
 from aigc_runtime.receipt_verifier import Ed25519ReceiptVerifier, ReceiptVerificationError, TrustedReceiptKey
 from aigc_runtime.receipt_claim_store import PostgresReceiptClaimStore
-from aigc_runtime.receipt_claim_store import PostgresReceiptClaimStore, ReceiptClaimError
 
 
 PURPOSES = {
