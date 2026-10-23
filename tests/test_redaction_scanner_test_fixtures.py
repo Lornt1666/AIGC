@@ -30,3 +30,16 @@ def test_real_prefixed_secret_is_still_detected_under_tests() -> None:
 
     assert findings
     assert any(finding.severity == "high" for finding in findings)
+
+
+def test_ci_workflow_test_only_values_are_ignored_but_secret_like_values_are_not() -> None:
+    scanner = RedactionScanner()
+    workflow_path = ".github/workflows/aigc-ci.yml"
+    fixture_value = "test_" + "only_ci_password_fixture_0123456789abcdef"
+    assignment_prefix = "POSTGRES_" + "PASSWORD: "
+
+    assert scanner.scan_text(assignment_prefix + fixture_value, path=workflow_path) == []
+
+    secret_value = "".join(("aB3!", "xY7@", "mN9#", "pQ2$", "rS5%"))
+    findings = scanner.scan_text(assignment_prefix + secret_value, path=workflow_path)
+    assert findings
