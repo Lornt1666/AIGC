@@ -16,7 +16,14 @@ from typing import Any, Dict, List
 
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
+
+from src.core.contracts import TaskContract
+from src.core.task_lifecycle_store import (
+    PostgresTaskLifecycleStore,
+    TaskIdempotencyConflict,
+    TaskStoreUnavailable,
+)
 
 from src.webapp.command_center_store import (
     CommandCenterStoreError,
@@ -63,6 +70,8 @@ MAX_OUTPUT_CHARS = 2000
 COMMAND_CENTER_TOKEN_ENV = "AIGC_COMMAND_CENTER_TOKEN"
 _COMMAND_CENTER_STORE: Any | None = None
 _COMMAND_CENTER_STORE_LOCK = threading.Lock()
+_TASK_LIFECYCLE_STORE: Any | None = None
+_TASK_LIFECYCLE_STORE_LOCK = threading.Lock()
 
 
 def _production_mode() -> bool:
@@ -553,6 +562,81 @@ loadReviews();
 </body>
 </html>
 """
+
+
+def _task_lifecycle_store() -> PostgresTaskLifecycleStore:
+    """Return the PostgreSQL-owned task store; never apply migrations at startup."""
+    global _TASK_LIFECYCLE_STORE
+    dsn = os.environ.get(
+        "AIGC_TASK_DATABASE_URL",
+        os.environ.get("AIGC_COMMAND_CENTER_DATABASE_URL", ""),
+    ).strip()
+    if not dsn:
+        raise TaskStoreUnavailable("Durable task database configuration is missing")
+    with _TASK_LIFECYCLE_STORE_LOCK:
+        if _TASK_LIFECYCLE_STORE is None:
+            _TASK_LIFECYCLE_STORE = PostgresTaskLifecycleStore(
+                dsn,
+                sslmode=os.environ.get("AIGC_TASK_DATABASE_SSLMODE", "verify-full").strip(),
+                sslrootcert=os.environ.get("AIGC_TASK_DATABASE_SSLROOTCERT", "").strip() or None,
+            )
+        return _TASK_LIFECYCLE_STORE
+
+
+@app.post("/api/tasks", status_code=202, dependencies=[Depends(require_operator_auth)])
+def submit_durable_task(request: Request, body: Dict[str, Any]) -> Dict[str, Any]:
+    """Submit only the explicitly registered synthetic pilot task."""
+    idempotency_key = request.headers.get("idempotency-key", "").strip()
+    if not idempotency_key or len(idempotency_key) < 8 or len(idempotency_key) > 256:
+        raise HTTPException(status_code=400, detail="Idempotency-Key header must contain 8..256 characters.")
+    if body.get("idempotency_key") != idempotency_key:
+        raise HTTPException(status_code=422, detail="Body and header idempotency keys must match.")
+    if body.get("task_type") != "test.echo":
+        raise HTTPException(status_code=422, detail="Task type is not registered for synthetic execution.")
+    try:
+        task = TaskContract.model_validate({
+            "idempotency_key": idempotency_key,
+            "task_type": body.get("task_type"),
+            "payload": body.get("payload", {}),
+            "deadline_at": body.get("deadline_at"),
+            "timeout_seconds": body.get("timeout_seconds", 30),
+            "hop_count": body.get("hop_count", 0),
+            "max_hops": body.get("max_hops", 10),
+        })
+    except ValidationError as exc:
+        raise HTTPException(status_code=422, detail="Task contract validation failed.") from exc
+    try:
+        record = _task_lifecycle_store().submit_task(
+            owner_id=_operator_actor_id(request),
+            idempotency_key=idempotency_key,
+            task=task,
+        )
+    except TaskIdempotencyConflict as exc:
+        raise HTTPException(status_code=409, detail="Idempotency key is bound to different task content.") from exc
+    except TaskStoreUnavailable as exc:
+        raise HTTPException(status_code=503, detail="Durable task store is unavailable.") from exc
+    record.pop("owner_id", None)
+    record["status_url"] = f"/api/tasks/{record['task_id']}"
+    return record
+
+
+@app.get("/api/tasks/{task_id}", dependencies=[Depends(require_operator_auth)])
+def get_durable_task(task_id: str, request: Request) -> Dict[str, Any]:
+    """Retrieve a task only for the operator identity that submitted it."""
+    try:
+        record = _task_lifecycle_store().get_task(
+            owner_id=_operator_actor_id(request),
+            task_id=task_id,
+        )
+    except TaskStoreUnavailable as exc:
+        raise HTTPException(status_code=503, detail="Durable task store is unavailable.") from exc
+    if record is None:
+        # Do not reveal whether another operator owns the requested task.
+        raise HTTPException(status_code=404, detail="Task not found.")
+    record.pop("owner_id", None)
+    record["status_url"] = f"/api/tasks/{task_id}"
+    return record
+
 
 
 if __name__ == "__main__":
