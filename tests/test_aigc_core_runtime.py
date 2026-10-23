@@ -140,6 +140,22 @@ class OrchestratorSafetyTests(unittest.TestCase):
             SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost",
                             pool_min_size=1, pool_max_size=257)
 
+    def test_saga_deadline_includes_waiting_for_concurrency_slot(self):
+        coordinator = SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost",
+                                      dry_run=True, adapters={"read": lambda *a, **k: None})
+        item = contract(timeout_seconds=0.02)
+        async def run():
+            coordinator.semaphore = asyncio.Semaphore(1)
+            await coordinator.semaphore.acquire()
+            try:
+                started = asyncio.get_running_loop().time()
+                with self.assertRaisesRegex(OrchestrationError, "saga_deadline_exceeded_waiting_for_concurrency_slot"):
+                    await coordinator.run_saga(item, [SagaStep("s1", "read", {})], dry_run=True)
+                self.assertLess(asyncio.get_running_loop().time() - started, 0.15)
+            finally:
+                coordinator.semaphore.release()
+        asyncio.run(run())
+
     def test_saga_deadline_covers_multiple_steps_and_fails_closed_before_late_compensation(self):
         calls = {"adapter": 0}
         async def adapter(payload, *, idempotency_key):
