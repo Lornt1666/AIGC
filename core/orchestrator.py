@@ -76,6 +76,9 @@ class SagaCoordinator:
         redis_url: str,
         stream_name: str = "aigc:tasks:v1",
         consumer_group: str = "aigc-workers-v1",
+        dead_letter_stream: str = "aigc:dead-letter:v1",
+        max_deliveries: int = 5,
+        pending_idle_ms: int = 30_000,
         dry_run: bool = True,
         max_hops: int = 10,
         max_concurrency: int = 16,
@@ -103,6 +106,13 @@ class SagaCoordinator:
         self.database_url = database_url
         self.stream_name = stream_name
         self.consumer_group = consumer_group
+        self.dead_letter_stream = dead_letter_stream
+        if max_deliveries < 1 or max_deliveries > 20:
+            raise ValueError("max_deliveries must be in [1,20]")
+        if pending_idle_ms < 1000 or pending_idle_ms > 3_600_000:
+            raise ValueError("pending_idle_ms must be in [1000,3600000]")
+        self.max_deliveries = max_deliveries
+        self.pending_idle_ms = pending_idle_ms
         self.dry_run = dry_run
         self.max_hops = max_hops
         self.operation_timeout_seconds = operation_timeout_seconds
@@ -236,36 +246,67 @@ class SagaCoordinator:
         return str(event_id)
 
     async def consume_once(self, handler: Callable[[Mapping[str, Any]], Awaitable[None]], *, block_ms: int = 1000) -> int:
-        """Read one stream batch; duplicate deliveries are handled by DB event dedupe."""
+        """Process pending retries before new entries; poison messages are dead-lettered at a fixed ceiling."""
         if block_ms < 1 or block_ms > 30_000:
             raise ValueError("block_ms must be in [1,30000]")
-        entries = await self.redis.xreadgroup(self.consumer_group, "aigc-worker-" + str(id(self)),
-                                              {self.stream_name: ">"}, count=16, block=block_ms)
+        consumer = "aigc-worker-" + str(id(self))
+        entries: list[tuple[str, Mapping[str, str]]] = []
+        claimed = await self.redis.xautoclaim(self.stream_name, self.consumer_group, consumer,
+                                               min_idle_time=self.pending_idle_ms, start_id="0-0", count=16)
+        if len(claimed) >= 2 and claimed[1]:
+            entries.extend((stream_id, fields) for stream_id, fields in claimed[1])
+        if not entries:
+            new_entries = await self.redis.xreadgroup(self.consumer_group, consumer,
+                {self.stream_name: ">"}, count=16, block=block_ms)
+            for _, messages in new_entries:
+                entries.extend(messages)
         processed = 0
-        for _, messages in entries:
-            for stream_id, fields in messages:
-                try:
-                    event_id = UUID(fields["event_id"])
-                    event = json.loads(fields["payload"])
-                    if event.get("event_id") != str(event_id):
-                        raise OrchestrationError("stream_event_id_payload_mismatch")
-                    async with self.pool.connection() as conn:
-                        async with conn.transaction():
-                            async with conn.cursor() as cur:
-                                await cur.execute(
-                                    "INSERT INTO aigc_consumed_events(consumer_name,event_id) VALUES(%s,%s) ON CONFLICT DO NOTHING RETURNING event_id",
-                                    (self.consumer_group, str(event_id)))
-                                claimed = await cur.fetchone()
-                                if claimed:
-                                    await handler(event)
+        for stream_id, fields in entries:
+            event_id = fields.get("event_id", "missing")
+            try:
+                event = json.loads(fields["payload"])
+                parsed_id = UUID(event_id)
+                if not isinstance(event, Mapping) or event.get("event_id") != str(parsed_id):
+                    raise OrchestrationError("stream_event_id_payload_mismatch")
+                hop_count = event.get("hop_count", 0)
+                if not isinstance(hop_count, int) or isinstance(hop_count, bool) or hop_count > self.max_hops:
+                    raise OrchestrationError("message_hop_limit_exceeded")
+                async with self.pool.connection() as conn:
+                    async with conn.transaction():
+                        async with conn.cursor() as cur:
+                            await cur.execute(
+                                "INSERT INTO aigc_consumed_events(consumer_name,event_id) VALUES(%s,%s) ON CONFLICT DO NOTHING RETURNING event_id",
+                                (self.consumer_group, str(parsed_id)))
+                            claimed_event = await cur.fetchone()
+                            if claimed_event:
+                                await handler(event)
+                await self.redis.xack(self.stream_name, self.consumer_group, stream_id)
+                processed += 1
+            except asyncio.CancelledError:
+                raise
+            except Exception as exc:
+                pending = await self.redis.xpending_range(self.stream_name, self.consumer_group, min=stream_id, max=stream_id, count=1)
+                deliveries = int(pending[0].get("times_delivered", 1)) if pending else 1
+                if deliveries >= self.max_deliveries:
+                    await self.redis.xadd(self.dead_letter_stream, {
+                        "source_stream": self.stream_name, "source_stream_id": stream_id,
+                        "event_id": event_id, "payload": fields.get("payload", ""),
+                        "failure_type": type(exc).__name__, "delivery_count": str(deliveries),
+                        "disposition": "MANUAL_REVIEW_REQUIRED"})
                     await self.redis.xack(self.stream_name, self.consumer_group, stream_id)
+                    try:
+                        task_id = UUID(json.loads(fields["payload"]).get("task_id"))
+                        await self.record_event(task_id, "MESSAGE_DEAD_LETTERED", {
+                            "event_id": event_id, "source_stream_id": stream_id,
+                            "failure_type": type(exc).__name__, "delivery_count": deliveries,
+                            "dead_letter_stream": self.dead_letter_stream})
+                    except Exception:
+                        # The DLQ record is durable in Redis; an audit-write failure is separately observable.
+                        pass
                     processed += 1
-                except Exception:
-                    # Do not ACK failed events. They remain pending for bounded reclaim
-                    # by an operator-controlled recovery worker; never hot-loop poison pills.
-                    raise
+                    continue
+                raise
         return processed
-
     async def run_saga(self, contract: TaskContract, steps: list[SagaStep], *,
                        dry_run: bool | None = None, permit_ref: str | None = None) -> dict[str, Any]:
         """Run an explicitly registered saga; default dry-run, compensate completed steps in reverse order."""
