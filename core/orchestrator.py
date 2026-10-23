@@ -279,9 +279,23 @@ class SagaCoordinator:
         if not dry:
             if self.permit_verifier is None or not permit_ref:
                 raise OrchestrationError("authenticated_permit_verifier_and_receipt_required")
-            if not await self.permit_verifier(permit_ref, {"task_id": str(contract.task_id),
-                    "policy_version": contract.policy_version, "steps": [s.operation for s in steps]}, contract.idempotency_key):
-                raise OrchestrationError("permit_verification_denied")
+            if not contract.candidate_sha:
+                raise OrchestrationError("live_mutation_requires_exact_candidate_sha")
+            # Preflight every operation and scope before the first side effect.
+            for planned in steps:
+                if planned.operation not in self.adapters:
+                    raise OrchestrationError("operation_not_allowlisted:" + planned.operation)
+                if not planned.idempotent:
+                    raise OrchestrationError("live_operation_must_declare_idempotency")
+                if planned.irreversible:
+                    raise OrchestrationError("irreversible_operation_requires_separate_human_approval_adapter")
+                planned_key = hashlib.sha256(f"{contract.idempotency_key}:{planned.step_id}".encode()).hexdigest()
+                claims = {"task_id": str(contract.task_id), "candidate_sha": contract.candidate_sha,
+                    "policy_version": contract.policy_version, "operation": planned.operation,
+                    "input_digest": sha256_text(canonical_json(dict(planned.input_payload))),
+                    "compensation_operation": planned.compensation_operation, "irreversible": planned.irreversible}
+                if not await self.permit_verifier(permit_ref, claims, planned_key):
+                    raise OrchestrationError("permit_verification_denied:" + planned.step_id)
         receipts: list[StepReceipt] = []
         completed: list[SagaStep] = []
         started_all = time.monotonic()
@@ -364,7 +378,7 @@ class SagaCoordinator:
                 results.append({"step_id": step.step_id, "status": "BLOCK", "reason": "compensation_permit_missing"})
                 continue
             key = hashlib.sha256(f"{contract.idempotency_key}:compensate:{step.step_id}".encode()).hexdigest()
-            permitted = await self.permit_verifier(permit_ref, {"task_id": str(contract.task_id),
+            permitted = await self.permit_verifier(permit_ref, {"task_id": str(contract.task_id), "candidate_sha": contract.candidate_sha,
                 "operation": operation, "policy_version": contract.policy_version,
                 "compensation_for": step.step_id}, key)
             if not permitted:
