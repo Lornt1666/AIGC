@@ -359,7 +359,7 @@ class SagaCoordinator:
                     status = "SIMULATED"
                 else:
                     try:
-                        result = await self._invoke_with_retry(self.adapters[step.operation], step.input_payload, key,
+                        result = await self._invoke_with_retry(step.operation, self.adapters[step.operation], step.input_payload, key,
                                                                timeout=min(self.operation_timeout_seconds, contract.timeout_seconds))
                         status = "SUCCEEDED"
                         completed.append(step)
@@ -427,7 +427,7 @@ class SagaCoordinator:
                 results.append({"step_id": step.step_id, "status": "BLOCK", "reason": "compensation_permit_denied"})
                 continue
             try:
-                result = await self._invoke_with_retry(self.adapters[operation], step.compensation_payload or {},
+                result = await self._invoke_with_retry(operation, self.adapters[operation], step.compensation_payload or {},
                     key, timeout=min(self.operation_timeout_seconds, contract.timeout_seconds))
                 results.append({"step_id": step.step_id, "status": "COMPENSATION_REQUEST_SUCCEEDED",
                                 "result": dict(result)})
@@ -437,8 +437,15 @@ class SagaCoordinator:
         clean = bool(results) and all(item["status"] == "COMPENSATION_REQUEST_SUCCEEDED" for item in results)
         return {"status": "COMPENSATION_REQUESTS_SUCCEEDED" if clean else "INCOMPLETE",
                 "steps": results, "release_authorization": False}
-    async def _invoke_with_retry(self, adapter: ActionAdapter, payload: Mapping[str, Any], key: str,
+    async def _invoke_with_retry(self, operation: str, adapter: ActionAdapter,
+                                 payload: Mapping[str, Any], key: str,
                                  *, timeout: float) -> Mapping[str, Any]:
+        """Retry only after a trusted read-after-write reconciler proves no effect occurred.
+
+        A timeout or transport exception is ambiguous: the remote side may have committed
+        the operation before the response was lost. Idempotency keys are necessary but are
+        not a substitute for reconciling the target system's actual outcome.
+        """
         last_error: Exception | None = None
         for attempt in range(self.max_attempts):
             try:
@@ -451,8 +458,24 @@ class SagaCoordinator:
                 raise
             except Exception as exc:
                 last_error = exc
+                if self.outcome_reconciler is None:
+                    raise OrchestrationError(
+                        "retry_prohibited_without_trusted_outcome_reconciliation:" + type(exc).__name__
+                    ) from exc
+                try:
+                    outcome = await self.outcome_reconciler(operation, payload, key)
+                except Exception as reconcile_exc:
+                    raise OrchestrationError(
+                        "retry_prohibited_outcome_reconciliation_failed:" + type(reconcile_exc).__name__
+                    ) from reconcile_exc
+                if outcome != "NOT_APPLIED":
+                    raise OrchestrationError(
+                        "retry_prohibited_side_effect_outcome:" + str(outcome)
+                    ) from exc
                 if attempt + 1 >= self.max_attempts:
                     break
                 ceiling = min(self.max_retry_seconds, self.base_retry_seconds * (2 ** attempt))
                 await asyncio.sleep(random.uniform(0, ceiling))
-        raise OrchestrationError("adapter_failed_after_bounded_idempotent_retries:" + type(last_error).__name__) from last_error
+        raise OrchestrationError(
+            "adapter_failed_after_reconciled_not_applied_retries:" + type(last_error).__name__
+        ) from last_error
