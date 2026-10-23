@@ -109,6 +109,12 @@ def audit_python_source(source: str, *, max_bytes: int = 128_000,
             name = node.func.id if isinstance(node.func, ast.Name) else node.func.attr if isinstance(node.func, ast.Attribute) else ""
             if name in _BANNED_CALLS:
                 findings.append(Finding("AST-007", "CRITICAL", node.lineno, node.col_offset, "dangerous_call_blocked:" + name))
+            elif isinstance(node.func, ast.Name) and name not in _ALLOWED_BUILTIN_CALLS:
+                findings.append(Finding("AST-011", "HIGH", node.lineno, node.col_offset, "call_not_allowlisted:" + name))
+            elif isinstance(node.func, ast.Attribute):
+                base = node.func.value
+                if not (isinstance(base, ast.Name) and base.id in _ALLOWED_IMPORTS and name.isidentifier() and not name.startswith("_")):
+                    findings.append(Finding("AST-011", "HIGH", node.lineno, node.col_offset, "attribute_call_not_allowlisted:" + name))
             if isinstance(node.func, ast.Attribute) and node.func.attr.startswith("__"):
                 findings.append(Finding("AST-008", "CRITICAL", node.lineno, node.col_offset, "dunder_attribute_call_blocked"))
         elif isinstance(node, ast.Attribute) and node.attr.startswith("__"):
