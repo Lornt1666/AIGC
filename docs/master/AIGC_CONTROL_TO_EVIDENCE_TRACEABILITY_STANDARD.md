@@ -244,3 +244,16 @@ Evidence chain for the documentation gate:
 7. Independent acceptance of the full release evidence packet.
 
 A subsequent commit invalidates the prior candidate's result for release acceptance. DOC-GATE-01 has no authority to waive findings, alter policies, approve a contract, enable an agent, merge a pull request, or release AIGC.
+
+
+## 16. Saga authorization snapshot and point-of-effect controls
+
+| Control ID | Required behavior | Implementation reference | Verification contract | Status rule |
+|---|---|---|---|---|
+| SAGA-AUTH-01 | Snapshot canonical JSON inputs before any awaited permit check; reject non-JSON, invalid Unicode, recursion failures, and payloads above 1,000,000 UTF-8 bytes | `core/orchestrator.py::SagaCoordinator.run_saga` | Mutate caller-owned nested mappings during async permit verification; prove adapter receives the exact snapshotted payload. Test invalid Unicode, circular input, non-finite values and oversized payload | `IMPLEMENTED_UNVERIFIED` until exact-head CI passes |
+| SAGA-AUTH-02 | Bind the permit's input digest to the same canonical snapshot sent to the adapter | `core/orchestrator.py::SagaCoordinator.run_saga` | Compare verifier's input digest with the exact payload observed by the fake adapter; altered caller-owned data must not change execution bytes | `IMPLEMENTED_UNVERIFIED` until exact-head CI passes |
+| SAGA-AUTH-03 | Reverify the permit immediately before every external adapter attempt, including retries | `core/orchestrator.py::SagaCoordinator._invoke_with_retry` via `before_attempt` | Expire/revoke authorization between preflight and dispatch and between retry attempts; adapter must not be invoked for a denied attempt | `IMPLEMENTED_UNVERIFIED` until exact-head CI passes |
+| SAGA-AUTH-04 | Bind compensation authorization to the compensation payload and original action context; reverify on each compensation attempt | `core/orchestrator.py::SagaCoordinator._compensate` | Verify compensation payload digest and original payload digest; denial or expired permit must produce manual reconciliation and no compensation adapter call | `IMPLEMENTED_UNVERIFIED` until exact-head CI passes |
+| SAGA-AUTH-05 | Ensure malformed or over-limit payloads fail before permit verification or any adapter call | `core/orchestrator.py::SagaCoordinator.run_saga` | Negative tests assert zero verifier and adapter invocations for invalid or oversized input | `IMPLEMENTED_UNVERIFIED` until exact-head CI passes |
+
+The canonical snapshot is an authorization boundary, not a substitute for a sandbox. Only trusted, explicitly registered adapters may be invoked. Adapter contracts must still independently validate target resources, use least-privilege credentials, and provide outcome reconciliation for ambiguous remote effects.
