@@ -1,9 +1,11 @@
 name: AIGC CI
 
 on:
+  # Pull requests validate feature branches. Push validation on main avoids duplicate runs
+  # for the same feature-branch commit while preserving main-branch validation.
   push:
     branches:
-      - "**"
+      - main
   pull_request:
   workflow_dispatch:
     inputs:
