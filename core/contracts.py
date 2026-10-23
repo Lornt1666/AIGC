@@ -5,7 +5,7 @@ agent code as a side effect of registry discovery.
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from enum import Enum
 import re
 from typing import Any, Literal
@@ -180,8 +180,8 @@ class ToolPermit(StrictModel):
     def valid_scope_and_expiry(self) -> "ToolPermit":
         if self.expires_at <= self.issued_at:
             raise ValueError("permit expiry must follow issue time")
-        if self.expires_at - self.issued_at > __import__("datetime").timedelta(minutes=15):
+        if self.expires_at - self.issued_at > timedelta(minutes=15):
             raise ValueError("permit lifetime exceeds 15-minute maximum")
-        if not _SHA256.fullmatch(self.candidate_sha):
-            raise ValueError("candidate_sha must be a full SHA-256 digest")
+        if not re.fullmatch(r"[0-9a-f]{40}", self.candidate_sha):
+            raise ValueError("candidate_sha must be a full 40-character Git commit SHA")
         return self
