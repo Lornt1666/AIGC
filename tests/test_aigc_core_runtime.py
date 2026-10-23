@@ -64,6 +64,11 @@ class ArbiterTests(unittest.TestCase):
     def test_deep_or_large_input_fails_closed(self):
         self.assertEqual(audit_python_source("x=1", max_bytes=1).status, "BLOCK")
 
+    def test_arbitrary_calls_are_blocked(self):
+        for source in ("print('x')", "object().danger()", "open('/etc/passwd')", "__import__('os')"):
+            with self.subTest(source=source):
+                self.assertEqual(audit_python_source(source).status, "BLOCK")
+
 
 class OrchestratorSafetyTests(unittest.TestCase):
     def test_defaults_to_dry_run(self):
