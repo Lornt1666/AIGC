@@ -8,7 +8,7 @@ from pydantic import ValidationError
 
 from core.contracts import MutationPayload, TaskContract, ToolPermit
 from core.arbiter import audit_python_source
-from core.orchestrator import OrchestrationError, SagaCoordinator, SagaStep
+from core.orchestrator import OrchestrationError, SagaCoordinator, SagaStep, validate_hop_count
 
 
 def contract(**overrides):
@@ -27,6 +27,20 @@ def contract(**overrides):
 
 
 class ContractTests(unittest.TestCase):
+    def test_hop_count_rejects_negative_boolean_and_over_limit_values(self):
+        for value in (-1, True, 11, 1.5, "2", None):
+            with self.subTest(value=value), self.assertRaises(OrchestrationError):
+                validate_hop_count(value, 10)
+
+    def test_hop_count_accepts_zero_and_configured_limit(self):
+        self.assertEqual(validate_hop_count(0, 10), 0)
+        self.assertEqual(validate_hop_count(10, 10), 10)
+
+    def test_hop_count_configuration_is_bounded(self):
+        for limit in (0, 11, True, 1.5):
+            with self.subTest(limit=limit), self.assertRaises(ValueError):
+                validate_hop_count(0, limit)
+
     def test_contract_is_strict_and_versioned(self):
         item = contract()
         self.assertEqual(item.contract_version, "1.0.0")
