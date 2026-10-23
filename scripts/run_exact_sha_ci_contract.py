@@ -103,18 +103,50 @@ def _safe_diagnostics(stage_id: str, output: str) -> dict[str, object] | None:
         }
     if stage_id == "tests":
         node_ids: list[str] = []
+        signatures: list[dict[str, str]] = []
+        seen_signatures: set[tuple[str, str, str]] = set()
         for raw_line in output.splitlines():
             line = raw_line.strip()
-            if not line.startswith(("FAILED ", "ERROR ")):
+            if line.startswith(("FAILED ", "ERROR ")):
+                remainder = line.split(" ", 1)[1]
+                node_id = remainder.split(" - ", 1)[0].strip()
+                if node_id and node_id not in node_ids:
+                    node_ids.append(node_id)
+            if not line.startswith("E   "):
                 continue
-            remainder = line.split(" ", 1)[1]
-            node_id = remainder.split(" - ", 1)[0].strip()
-            if node_id and node_id not in node_ids:
-                node_ids.append(node_id)
+            detail = line[4:].strip()
+            exception_match = re.match(
+                r"^(?:[A-Za-z_][\\w.]*\\.)?([A-Za-z_][\\w]*(?:Error|Exception|Warning))(?::\\s*(.*))?$",
+                detail,
+            )
+            if not exception_match:
+                continue
+            kind, message = exception_match.group(1), exception_match.group(2) or ""
+            signature = {"kind": kind, "module": "", "symbol": ""}
+            missing_module = re.search(r"No module named ['\\\"]([A-Za-z0-9_.-]{1,160})['\\\"]", message)
+            cannot_import = re.search(
+                r"cannot import name ['\\\"]([A-Za-z0-9_]{1,120})['\\\"] from ['\\\"]([A-Za-z0-9_.]{1,160})['\\\"]",
+                message,
+            )
+            missing_attribute = re.search(
+                r"module ['\\\"]([A-Za-z0-9_.]{1,160})['\\\"] has no attribute ['\\\"]([A-Za-z0-9_]{1,120})['\\\"]",
+                message,
+            )
+            if missing_module:
+                signature["module"] = missing_module.group(1)
+            elif cannot_import:
+                signature["symbol"], signature["module"] = cannot_import.group(1), cannot_import.group(2)
+            elif missing_attribute:
+                signature["module"], signature["symbol"] = missing_attribute.group(1), missing_attribute.group(2)
+            key = (signature["kind"], signature["module"], signature["symbol"])
+            if key not in seen_signatures:
+                seen_signatures.add(key)
+                signatures.append(signature)
         return {
             "failed_or_error_test_count": len(node_ids),
             "failed_or_error_tests": node_ids[:100],
-            "truncated": len(node_ids) > 100,
+            "failure_signatures": signatures[:50],
+            "truncated": len(node_ids) > 100 or len(signatures) > 50,
         }
     return None
 
