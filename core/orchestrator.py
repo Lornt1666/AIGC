@@ -642,10 +642,16 @@ class SagaCoordinator:
         the operation before the response was lost. Idempotency keys are necessary but are
         not a substitute for reconciling the target system's actual outcome.
         """
+        if not math.isfinite(timeout) or timeout <= 0 or timeout > 300:
+            raise ValueError("timeout must be finite and in (0,300]")
+        deadline = time.monotonic() + timeout
         last_error: Exception | None = None
         for attempt in range(self.max_attempts):
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise OrchestrationError("operation_deadline_exceeded") from last_error
             try:
-                async with asyncio.timeout(timeout):
+                async with asyncio.timeout(remaining):
                     result = await adapter(payload, idempotency_key=key)
                 if not isinstance(result, Mapping):
                     raise OrchestrationError("adapter_result_must_be_mapping")
@@ -654,12 +660,22 @@ class SagaCoordinator:
                 raise
             except Exception as exc:
                 last_error = exc
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    # The remote side may have committed before the response timed out.
+                    # Stop retrying and explicitly surface the unresolved outcome.
+                    raise OrchestrationError(
+                        "operation_deadline_exceeded_outcome_unreconciled"
+                    ) from exc
                 if self.outcome_reconciler is None:
                     raise OrchestrationError(
                         "retry_prohibited_without_trusted_outcome_reconciliation:" + type(exc).__name__
                     ) from exc
                 try:
-                    outcome = await self.outcome_reconciler(operation, payload, key)
+                    async with asyncio.timeout(remaining):
+                        outcome = await self.outcome_reconciler(operation, payload, key)
+                except asyncio.CancelledError:
+                    raise
                 except Exception as reconcile_exc:
                     raise OrchestrationError(
                         "retry_prohibited_outcome_reconciliation_failed:" + type(reconcile_exc).__name__
@@ -671,7 +687,11 @@ class SagaCoordinator:
                 if attempt + 1 >= self.max_attempts:
                     break
                 ceiling = min(self.max_retry_seconds, self.base_retry_seconds * (2 ** attempt))
-                await asyncio.sleep(random.uniform(0, ceiling))
+                delay = random.uniform(0, ceiling)
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    raise OrchestrationError("operation_deadline_exceeded") from exc
+                await asyncio.sleep(min(delay, remaining))
         raise OrchestrationError(
             "adapter_failed_after_reconciled_not_applied_retries:" + type(last_error).__name__
         ) from last_error
