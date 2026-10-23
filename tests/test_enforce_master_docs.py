@@ -3,8 +3,10 @@ from __future__ import annotations
 import tempfile
 import unittest
 from pathlib import Path
+import sys
 
-from scripts.enforce_master_docs import REQUIRED_DOCS, validate_documents, validate_local_links
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+from enforce_master_docs import REQUIRED_DOCS, validate_documents, validate_local_links
 
 
 def valid_documents() -> dict[str, str]:
