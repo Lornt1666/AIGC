@@ -7,7 +7,7 @@ import unittest
 from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 
-from aigc_runtime.github_evidence import GitHubEvidenceError, GitHubReadOnlyClient, _safe_repo
+from aigc_runtime.github_evidence import GitHubEvidenceError, GitHubReadOnlyClient, _safe_repo, acquire_live_snapshot
 from aigc_runtime.receipt_verifier import Ed25519ReceiptVerifier, ReceiptVerificationError, TrustedReceiptKey, canonical_bytes
 from aigc_runtime.artifact_verifier import ArtifactVerificationError, verify_artifact_zip
 
@@ -44,6 +44,65 @@ class GitHubEvidenceTests(unittest.TestCase):
         client = GitHubReadOnlyClient("token", max_pages=1, opener=lambda *a, **k: Resp())
         with self.assertRaisesRegex(GitHubEvidenceError, "pagination_limit_exceeded"):
             client.get_all("https://api.github.com/repos/o/r?page=1")
+
+    def test_live_acquisition_rechecks_head_and_marks_protection_403_unverifiable(self):
+        head = "a" * 40
+        base = "b" * 40
+        class FakeClient:
+            def __init__(self, heads):
+                self.heads = list(heads)
+                self.pr_calls = 0
+                self.urls = []
+            def get(self, url):
+                self.urls.append(url)
+                if "/pulls/7" in url:
+                    sha = self.heads[min(self.pr_calls, len(self.heads)-1)]
+                    self.pr_calls += 1
+                    return {"head": {"sha": sha}, "base": {"sha": base, "ref": "main"},
+                            "state": "open", "draft": True, "merged": False}, {}
+                if "/commits/" in url and url.endswith("/status"):
+                    return {"state": "success", "statuses": []}, {}
+                if "/branches/" in url and url.endswith("/protection"):
+                    raise GitHubEvidenceError("github_api_unavailable:403")
+                return {}, {}
+            def get_collection(self, url, collection_key=None):
+                self.urls.append(url)
+                if "/actions/runs?" in url:
+                    return [{"id": 123, "run_attempt": 1, "head_sha": head, "status": "completed",
+                             "conclusion": "success", "event": "pull_request", "workflow_id": 4}]
+                if "/attempts/1/jobs" in url:
+                    return [{"id": 9, "name": "validate", "status": "completed", "conclusion": "success"}]
+                if "/artifacts?" in url:
+                    return [{"id": 456, "name": "evidence", "digest": "sha256:" + "c"*64,
+                             "size_in_bytes": 12, "expired": False,
+                             "workflow_run": {"id": 123, "head_sha": head}}]
+                return []
+        client = FakeClient([head, head])
+        snapshot = acquire_live_snapshot("owner/repo", 7, client=client, required_ci_jobs=["validate"])
+        self.assertEqual(snapshot["candidate_sha"], head)
+        self.assertEqual(snapshot["observed_head_sha"], head)
+        self.assertFalse(snapshot["head_changed_during_acquisition"])
+        self.assertIn("head_sha=", next(url for url in client.urls if "/actions/runs?" in url))
+        self.assertEqual(snapshot["protection_readbacks"]["main"]["status"], "UNVERIFIABLE")
+        self.assertEqual(snapshot["ci_runs"][0]["artifacts"][0]["id"], 456)
+
+    def test_live_acquisition_marks_head_change_during_collection_stale(self):
+        head, changed, base = "a"*40, "c"*40, "b"*40
+        class FakeClient:
+            def __init__(self): self.pr_calls = 0
+            def get(self, url):
+                if "/pulls/7" in url:
+                    sha = head if self.pr_calls == 0 else changed
+                    self.pr_calls += 1
+                    return {"head": {"sha": sha}, "base": {"sha": base, "ref": "main"},
+                            "state": "open", "draft": True, "merged": False}, {}
+                if "/branches/" in url: raise GitHubEvidenceError("github_api_unavailable:403")
+                return {}, {}
+            def get_collection(self, url, collection_key=None): return []
+        snapshot = acquire_live_snapshot("owner/repo", 7, client=FakeClient())
+        self.assertEqual(snapshot["candidate_sha"], head)
+        self.assertEqual(snapshot["observed_head_sha"], changed)
+        self.assertTrue(snapshot["head_changed_during_acquisition"])
 
 
 @unittest.skipIf(Ed25519PrivateKey is None, "cryptography is not installed")
