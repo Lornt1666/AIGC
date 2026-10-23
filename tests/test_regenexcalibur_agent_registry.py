@@ -17,7 +17,8 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
     def test_registry_is_valid_and_fail_closed(self):
         result = validate_registry(self.registry)
         self.assertEqual(result["status"], "VALID")
-        self.assertEqual(result["agent_count"], 140)
+        self.assertEqual(result["agent_count"], len(self.registry["agents"]))
+        self.assertEqual(result["agent_count"], 153)
         self.assertEqual(len(self.registry["operational_gate_contracts"]), 7)
         self.assertEqual(self.registry["final_decision_contract"]["canonical_decision_authority"], "RX-19")
         self.assertEqual(result["dependency_graph"], "ACYCLIC")
@@ -100,7 +101,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
         self.assertTrue(all(step["failure_disposition"] == "BLOCK" for step in runtime["sequence"]))
         self.assertFalse(runtime["production_authorization"])
         by_id = {agent["id"]: agent for agent in self.registry["agents"]}
-        for agent_id in ("RX-121", "RX-122", "RX-123", "RX-124", "RX-125", "RX-126"):
+        for agent_id in ("RX-121", "RX-122", "RX-123", "RX-124", "RX-125", "RX-126", "RX-149", "RX-150", "RX-151", "RX-152", "RX-153", "RX-154", "RX-155", "RX-156", "RX-157", "RX-158", "RX-159", "RX-160", "RX-161"):
             self.assertFalse(by_id[agent_id]["enabled"])
             self.assertEqual(by_id[agent_id]["authority_tier"], "R0")
 
@@ -129,7 +130,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
         self.assertTrue(contract["no_agent_may_bypass_protection"])
         self.assertTrue(contract["no_agent_may_merge_or_authorize_release"])
         by_id = {agent["id"]: agent for agent in self.registry["agents"]}
-        for agent_id in ("RX-53", "RX-54", "RX-55", "RX-56", "RX-57"):
+        for agent_id in ("RX-53", "RX-54", "RX-55", "RX-56", "RX-57", "RX-149", "RX-150", "RX-151", "RX-152", "RX-153", "RX-154", "RX-155", "RX-156", "RX-157", "RX-158", "RX-159", "RX-160", "RX-161"):
             self.assertFalse(by_id[agent_id]["enabled"])
             self.assertEqual(by_id[agent_id]["implementation_status"], "SPECIFIED_NOT_PRODUCTION_INTEGRATED")
 
