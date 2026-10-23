@@ -200,7 +200,7 @@ class OrchestratorSafetyTests(unittest.TestCase):
                 self.query, self.params = query, params
             async def fetchone(self):
                 if "aigc_schema_migrations" in self.query:
-                    return {"version": "001_runtime"}
+                    return {"version": self.params[0]} if self.params and self.params[0] in {"001_runtime", "002_receipt_claims"} else None
                 if "to_regclass" in self.query:
                     return {"tasks": "aigc_tasks", "events": "aigc_events",
                             "outbox": "aigc_outbox", "consumed": "aigc_consumed_events"}
