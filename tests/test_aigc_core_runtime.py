@@ -100,6 +100,24 @@ class OrchestratorSafetyTests(unittest.TestCase):
             with self.subTest(stream=stream, stream_id=stream_id), self.assertRaises(ValueError):
                 dead_letter_disposition_id(stream, stream_id)
 
+    def test_pending_reclaim_advances_xautoclaim_cursor(self):
+        class FakeRedis:
+            def __init__(self):
+                self.starts = []
+            async def xautoclaim(self, *args, **kwargs):
+                self.starts.append(kwargs["start_id"])
+                return ("123456789-0" if len(self.starts) == 1 else "0-0", [], [])
+            async def xreadgroup(self, *args, **kwargs):
+                return []
+        coordinator = SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost")
+        fake = FakeRedis()
+        coordinator.redis = fake
+        async def run():
+            await coordinator.consume_once(lambda event, conn: None, block_ms=1)
+            await coordinator.consume_once(lambda event, conn: None, block_ms=1)
+        asyncio.run(run())
+        self.assertEqual(fake.starts, ["0-0", "123456789-0"])
+
     def test_rejects_non_finite_operation_timeout(self):
         for value in (float("nan"), float("inf"), float("-inf")):
             with self.subTest(value=value), self.assertRaisesRegex(ValueError, "operation_timeout_seconds"):
