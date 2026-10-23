@@ -1,21 +1,23 @@
-FROM python:3.12-slim
+# syntax=docker/dockerfile:1
+# Pin base images by digest and replace range requirements with a reviewed lockfile before production.
+FROM python:3.12-slim-bookworm AS builder
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1 PIP_NO_CACHE_DIR=1 PYTHONDONTWRITEBYTECODE=1
+WORKDIR /build
+COPY requirements.txt .
+RUN python -m venv /opt/venv && /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
+COPY core ./core
+COPY src ./src
+RUN /opt/venv/bin/python -m compileall -q core src/aigc_runtime
 
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-ENV PORT=8000
-
+FROM python:3.12-slim-bookworm AS runtime
+ENV PATH="/opt/venv/bin:$PATH" PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_DISABLE_PIP_VERSION_CHECK=1
+RUN groupadd --system --gid 10001 aigc && useradd --system --uid 10001 --gid aigc --home-dir /nonexistent --shell /usr/sbin/nologin aigc
 WORKDIR /app
-
-RUN python -m pip install --upgrade pip
-COPY requirements.txt /app/requirements.txt
-RUN python -m pip install --no-cache-dir -r /app/requirements.txt
-
-COPY . /app
-
-RUN groupadd --system aigc && useradd --system --gid aigc --home-dir /app --no-create-home aigc \
-    && chown -R aigc:aigc /app
-USER aigc
-
-EXPOSE 8000
-
-CMD ["sh", "-c", "uvicorn src.webapp.app:app --host 0.0.0.0 --port ${PORT}"]
+COPY --from=builder /opt/venv /opt/venv
+COPY --chown=10001:10001 core ./core
+COPY --chown=10001:10001 scripts ./scripts
+COPY --chown=10001:10001 src ./src
+USER 10001:10001
+EXPOSE 8080
+HEALTHCHECK --interval=20s --timeout=3s --start-period=20s --retries=3 CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health/live', timeout=2)"
+CMD ["uvicorn", "core.service:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "1"]
