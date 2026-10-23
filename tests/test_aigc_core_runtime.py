@@ -114,7 +114,7 @@ class OrchestratorSafetyTests(unittest.TestCase):
             dry_run=False, adapters={"write": adapter}, permit_verifier=permit)
         item = contract()
         with self.assertRaisesRegex(Exception, "exact_candidate_sha"):
-            asyncio.run(coordinator.run_saga(item, [SagaStep("s1", "write", {}, idempotent=True)],
+            asyncio.run(coordinator.run_saga(item, [SagaStep("s1", "write", {}, idempotent=True, side_effecting=False)],
                 dry_run=False, permit_ref="signed-permit-ref"))
         self.assertEqual(calls, [])
 
@@ -128,7 +128,7 @@ class OrchestratorSafetyTests(unittest.TestCase):
         coordinator = SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost",
             dry_run=False, adapters={"first": adapter, "second": adapter}, permit_verifier=permit)
         item = contract(candidate_sha="a"*40)
-        steps = [SagaStep("s1", "first", {}, idempotent=True), SagaStep("s2", "second", {}, idempotent=True)]
+        steps = [SagaStep("s1", "first", {}, idempotent=True, side_effecting=False), SagaStep("s2", "second", {}, idempotent=True, side_effecting=False)]
         with self.assertRaisesRegex(Exception, "permit_verification_denied"):
             asyncio.run(coordinator.run_saga(item, steps, dry_run=False, permit_ref="signed-permit-ref"))
         self.assertEqual(calls, [])
