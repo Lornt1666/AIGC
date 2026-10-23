@@ -69,6 +69,38 @@ class GitHubReadOnlyClient:
         except (UnicodeError, json.JSONDecodeError) as exc:
             raise GitHubEvidenceError("github_api_invalid_json") from exc
 
+    def get_collection(self, url: str, collection_key: str | None = None) -> list[Any]:
+        """Fetch a complete REST collection, handling GitHub's object-wrapped arrays."""
+        items: list[Any] = []
+        next_url = url
+        seen: set[str] = set()
+        for _ in range(self.max_pages):
+            if next_url in seen:
+                raise GitHubEvidenceError("pagination_loop_detected")
+            seen.add(next_url)
+            payload, headers = self.get(next_url)
+            if isinstance(payload, list):
+                page = payload
+            elif isinstance(payload, Mapping) and collection_key and isinstance(payload.get(collection_key), list):
+                page = payload[collection_key]
+            else:
+                raise GitHubEvidenceError("expected_collection_response:" + str(collection_key))
+            items.extend(page)
+            link = headers.get("link", "")
+            next_link = None
+            for part in link.split(","):
+                if 'rel="next"' in part:
+                    left, right = part.find("<"), part.find(">")
+                    if left >= 0 and right > left:
+                        next_link = part[left + 1:right]
+            if not next_link:
+                return items
+            parsed = urllib.parse.urlparse(next_link)
+            if parsed.scheme != "https" or parsed.hostname != "api.github.com":
+                raise GitHubEvidenceError("pagination_url_not_allowlisted")
+            next_url = next_link
+        raise GitHubEvidenceError("pagination_limit_exceeded")
+
     def get_all(self, url: str) -> list[Any]:
         items: list[Any] = []
         next_url = url
@@ -130,12 +162,8 @@ def acquire_live_snapshot(repository: str, pr_number: int, *,
     base_branch = pr["base"].get("ref")
     if not isinstance(head, str) or len(head) != 40 or not isinstance(base_sha, str) or len(base_sha) != 40:
         raise GitHubEvidenceError("pull_request_sha_missing_or_invalid")
-    runs_payload, _ = api.get(root + "/actions/runs?head_sha=" + head + "&per_page=100")
-    runs = runs_payload.get("workflow_runs") if isinstance(runs_payload, Mapping) else None
-    if not isinstance(runs, list):
-        raise GitHubEvidenceError("workflow_run_collection_malformed")
-    # The run list endpoint is paginated independently; re-fetch with a proper paginated URL.
-    all_runs = api.get_all(root + "/actions/runs?head_sha=" + head + "&per_page=100")
+    # GitHub returns workflow runs in an object-wrapped collection; paginate the named array.
+    all_runs = api.get_collection(root + "/actions/runs?head=" + head + "&per_page=100", "workflow_runs")
     ci_runs: list[dict[str, Any]] = []
     for run in all_runs:
         if not isinstance(run, Mapping) or run.get("head_sha") != head:
@@ -144,7 +172,7 @@ def acquire_live_snapshot(repository: str, pr_number: int, *,
         attempt = run.get("run_attempt", 1)
         if not isinstance(run_id, int) or not isinstance(attempt, int):
             continue
-        jobs = api.get_all(root + "/actions/runs/" + str(run_id) + "/attempts/" + str(attempt) + "/jobs?per_page=100")
+        jobs = api.get_collection(root + "/actions/runs/" + str(run_id) + "/attempts/" + str(attempt) + "/jobs?per_page=100", "jobs")
         ci_runs.append({
             "run_id": run_id, "run_attempt": attempt, "head_sha": run.get("head_sha"),
             "status": run.get("status"), "conclusion": run.get("conclusion"),
@@ -153,8 +181,8 @@ def acquire_live_snapshot(repository: str, pr_number: int, *,
                       "conclusion": j.get("conclusion"), "head_sha": head}
                      for j in jobs if isinstance(j, Mapping)],
         })
-    reviews = api.get_all(root + "/pulls/" + str(pr_number) + "/reviews?per_page=100")
-    review_comments = api.get_all(root + "/pulls/" + str(pr_number) + "/comments?per_page=100")
+    reviews = api.get_collection(root + "/pulls/" + str(pr_number) + "/reviews?per_page=100")
+    review_comments = api.get_collection(root + "/pulls/" + str(pr_number) + "/comments?per_page=100")
     commit_status, _ = api.get(root + "/commits/" + head + "/status")
     check_runs, _ = api.get(root + "/commits/" + head + "/check-runs?per_page=100")
     protections = {}
