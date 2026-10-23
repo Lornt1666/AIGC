@@ -9,16 +9,17 @@
 ## Read in this order
 
 1. [MVP Master Specification](AIGC_MVP_MASTER_SPECIFICATION.md) — what AIGC is supposed to do, system boundaries, phases, target architecture, data flows, persistence, security, observability, and acceptance rules.
-2. [Control-to-Evidence Traceability Standard](AIGC_CONTROL_TO_EVIDENCE_TRACEABILITY_STANDARD.md) — the normative chain from requirements to controls, implementation, tests, operational evidence, and authorized acceptance; includes system ordering, architecture trade-offs, required controls, failure modes, and release gates.
-3. [Wiring and Interface Registry](AIGC_WIRING_AND_INTERFACE_REGISTRY.md) — 45 defined logical wires with producer/consumer, purpose, failure behavior, contract expectations, component responsibilities, agent roles, and unknowns requiring verification.
-4. [Implementation Audit and Certification Dossier](AIGC_IMPLEMENTATION_AUDIT_AND_CERTIFICATION_DOSSIER.md) — candidate-specific source/CI findings, status for each of the 45 wires, blocking defects, remediation order, and the evidence required before a conformity certificate can be issued. Current disposition: NOT CERTIFIED / BLOCKED.
-5. [Verification and Production Acceptance Plan](AIGC_VERIFICATION_AND_PRODUCTION_ACCEPTANCE_PLAN.md) — test layers, negative tests, fault-injection matrix, evidence model, release gates, and candidate-freshness rules.
-6. [Operations, Security, and Recovery Runbook](AIGC_OPERATIONS_SECURITY_AND_RECOVERY_RUNBOOK.md) — safe local validation, staging deployment, emergency stop, queue handling, incident response, backup/recovery, and release closure operations.
-7. [Operator Responsibility and Authorized Use Acknowledgment](AIGC_OPERATOR_RESPONSIBILITY_AND_AUTHORIZED_USE_ACKNOWLEDGMENT.md) — a draft operator-accountability and task-authorization record; not a blanket liability waiver and not legally adopted until reviewed by qualified counsel.
-8. [Documentation Governance and Enforcement Agents](AIGC_DOCUMENTATION_GOVERNANCE_AND_ENFORCEMENT_AGENTS.md) — DOC-GATE-01, traceability, authorization, and evidence-gate roles, boundaries, and acceptance tests.
-9. [Governance and System Charter](../AIGC_GOVERNANCE_AND_SYSTEM_CHARTER.md) — identity, authority hierarchy, agent role boundaries, governance, and change control.
-10. [Production Closure Acceptance Matrix](../PRODUCTION_CLOSURE_ACCEPTANCE_MATRIX.md) — current closure gate matrix and evidence invariants.
-11. [Repository README](../../README.md) — current command surface and documented phase behavior.
+2. [Architecture Decision, Reliability Bounds, and Failure Analysis](AIGC_ARCHITECTURE_DECISION_AND_FAILURE_ANALYSIS.md) — comparison of centralized, choreography, and hybrid Saga designs; evidence-vs-target taxonomy; reliability bounds; subsystem responsibilities; and 16-mode FMEA.
+3. [Control-to-Evidence Traceability Standard](AIGC_CONTROL_TO_EVIDENCE_TRACEABILITY_STANDARD.md) — the normative chain from requirements to controls, implementation, tests, operational evidence, and authorized acceptance; includes system ordering, architecture trade-offs, required controls, failure modes, and release gates.
+4. [Wiring and Interface Registry](AIGC_WIRING_AND_INTERFACE_REGISTRY.md) — 45 defined logical wires with producer/consumer, purpose, failure behavior, contract expectations, component responsibilities, agent roles, and unknowns requiring verification.
+5. [Implementation Audit and Certification Dossier](AIGC_IMPLEMENTATION_AUDIT_AND_CERTIFICATION_DOSSIER.md) — candidate-specific source/CI findings, status for each of the 45 wires, blocking defects, remediation order, and the evidence required before a conformity certificate can be issued. Current disposition: NOT CERTIFIED / BLOCKED.
+6. [Verification and Production Acceptance Plan](AIGC_VERIFICATION_AND_PRODUCTION_ACCEPTANCE_PLAN.md) — test layers, negative tests, fault-injection matrix, evidence model, release gates, and candidate-freshness rules.
+7. [Operations, Security, and Recovery Runbook](AIGC_OPERATIONS_SECURITY_AND_RECOVERY_RUNBOOK.md) — safe local validation, staging deployment, emergency stop, queue handling, incident response, backup/recovery, and release closure operations.
+8. [Operator Responsibility and Authorized Use Acknowledgment](AIGC_OPERATOR_RESPONSIBILITY_AND_AUTHORIZED_USE_ACKNOWLEDGMENT.md) — a draft operator-accountability and task-authorization record; not a blanket liability waiver and not legally adopted until reviewed by qualified counsel.
+9. [Documentation Governance and Enforcement Agents](AIGC_DOCUMENTATION_GOVERNANCE_AND_ENFORCEMENT_AGENTS.md) — DOC-GATE-01, traceability, authorization, and evidence-gate roles, boundaries, and acceptance tests.
+10. [Governance and System Charter](../AIGC_GOVERNANCE_AND_SYSTEM_CHARTER.md) — identity, authority hierarchy, agent role boundaries, governance, and change control.
+11. [Production Closure Acceptance Matrix](../PRODUCTION_CLOSURE_ACCEPTANCE_MATRIX.md) — current closure gate matrix and evidence invariants.
+12. [Repository README](../../README.md) — current command surface and documented phase behavior.
 
 ## How to use the master documents
 
@@ -41,5 +42,5 @@
 - Secret retrieval is disabled by default; the repository must store references rather than secret values.
 - Static AST screening is not a sandbox and does not authorize code execution.
 - PostgreSQL, Redis Streams, Qdrant, production telemetry, cryptographic permit verification, and external adapters must be verified in the actual checked-out implementation before they are claimed as integrated.
-- The current candidate's canonical CI stage failed at redaction in run #4591; do not claim the complete workflow passed.
+- Documentation-gate run #4605 failed because its link-escape test fixture did not actually escape the repository root; the fixture was corrected in a subsequent commit. That run's validator itself passed, but the focused tests did not. The latest candidate must be evaluated on exact-head CI before any pass claim.
 - AIGC is not production-authorized or certified by these documents.
