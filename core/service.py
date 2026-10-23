@@ -10,7 +10,6 @@ import hmac
 import json
 import os
 import time
-import hashlib
 from contextlib import asynccontextmanager
 from typing import Any
 from uuid import uuid4
@@ -41,6 +40,13 @@ async def require_api_key(authorization: str | None = Header(default=None)) -> N
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    _api_key()
+    auth_limit = int(os.environ.get("AIGC_RATE_LIMIT_AUTHENTICATED_PER_MINUTE", "120"))
+    unauth_limit = int(os.environ.get("AIGC_RATE_LIMIT_UNAUTHENTICATED_PER_MINUTE", "30"))
+    if not (1 <= auth_limit <= 10_000 and 1 <= unauth_limit <= 10_000):
+        raise RuntimeError("rate_limit_configuration_out_of_bounds")
+    app.state.rate_limit_auth = auth_limit
+    app.state.rate_limit_unauth = unauth_limit
     telemetry_status = configure_telemetry()
     app.state.telemetry_status = telemetry_status
     coordinator = SagaCoordinator(
@@ -84,20 +90,22 @@ async def telemetry_middleware(request: Request, call_next):
         provided = authorization.removeprefix("Bearer ").strip() if authorization.startswith("Bearer ") else ""
         authenticated = len(expected) >= 32 and hmac.compare_digest(provided.encode(), expected.encode())
         identity = hashlib.sha256(expected.encode()).hexdigest() if authenticated else "unauthenticated"
-        limit = int(os.environ.get("AIGC_RATE_LIMIT_AUTHENTICATED_PER_MINUTE", "120")) if authenticated else int(os.environ.get("AIGC_RATE_LIMIT_UNAUTHENTICATED_PER_MINUTE", "30"))
-        limit = max(1, min(limit, 10_000))
+        limit = request.app.state.rate_limit_auth if authenticated else request.app.state.rate_limit_unauth
         coordinator = getattr(request.app.state, "coordinator", None)
         if coordinator is None:
             status_code = 503
+            record_http_request(request.method, status_code, time.monotonic() - started, route_class)
             return JSONResponse(status_code=503, content={"detail": "rate_limit_dependency_unavailable"})
         try:
             allowed = await coordinator.redis.eval(_RATE_LIMIT_SCRIPT, 1,
                 "aigc:rate-limit:v1:" + identity, int(time.time() * 1000), 60_000, limit, uuid4().hex)
         except Exception:
             status_code = 503
+            record_http_request(request.method, status_code, time.monotonic() - started, route_class)
             return JSONResponse(status_code=503, content={"detail": "rate_limit_dependency_unavailable"})
         if int(allowed) == 0:
             status_code = 429
+            record_http_request(request.method, status_code, time.monotonic() - started, route_class)
             return JSONResponse(status_code=429, headers={"Retry-After": "60"}, content={"detail": "rate_limit_exceeded"})
     try:
         with traced_operation("aigc.http.request", {"http.request.method": request.method, "aigc.route_class": route_class}):
