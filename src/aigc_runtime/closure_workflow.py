@@ -71,7 +71,6 @@ def evaluate_closure(snapshot: Mapping[str, Any]) -> dict[str, Any]:
     if not _is_sha(candidate):
         raise ValueError("candidate_sha_invalid")
 
-    # Missing or malformed live observation is not permission to use cached state.
     observed_at = snapshot.get("observed_at")
     evaluation_time = snapshot.get("evaluation_time")
     freshness_state = "UNVERIFIABLE"
@@ -110,8 +109,6 @@ def evaluate_closure(snapshot: Mapping[str, Any]) -> dict[str, Any]:
     elif observed != candidate:
         ci_status, ci_reason = "STALE", "live_head_mismatch_invalidates_ci"
     else:
-        # All required jobs must pass together in one completed run attempt bound to
-        # this exact candidate. Never combine jobs across runs or attempts.
         valid_runs = [
             run for run in runs
             if isinstance(run, Mapping)
@@ -180,8 +177,10 @@ def evaluate_closure(snapshot: Mapping[str, Any]) -> dict[str, Any]:
     pstatus, preason = "BLOCK", "effective_protection_not_verified"
     if not isinstance(protection, Mapping):
         pstatus, preason = "UNVERIFIABLE", "authenticated_admin_protection_readback_missing"
-    elif protection.get("authenticated") is not True or protection.get("status") != "VERIFIED" or protection.get("base_branch") != snapshot.get("base_branch") or not isinstance(protection.get("release_branch"), str) or not protection.get("readback_digest") or not _is_digest(protection.get("readback_digest")):
+    elif protection.get("authenticated") is not True or protection.get("status") != "VERIFIED" or protection.get("base_branch") != snapshot.get("base_branch") or not isinstance(protection.get("release_branch"), str) or not protection.get("release_branch") or not _is_digest(protection.get("readback_digest")):
         pstatus, preason = "UNVERIFIABLE", "protection_readback_unauthenticated_incomplete_or_branch_mismatched"
+    else:
+        pstatus, preason = "PASS", "authenticated_effective_protection_readback_matches_expected_base_and_release_branches"
     gates.append(_gate("G3_EFFECTIVE_PROTECTION", "authorized repository administrator", pstatus,
         "authenticated readback of effective protections for PR base and release branches, including required checks/reviews and bypass actors",
         "authorized readback digest validates and required controls demonstrably apply to both target branches",
@@ -298,8 +297,6 @@ def evaluate_closure(snapshot: Mapping[str, Any]) -> dict[str, Any]:
         "deployment_authorization": False,
         "release_authorization": False,
     }
-    # Even a structurally complete snapshot cannot release unless every gate passes,
-    # including the authenticated RX-19 decision. This evaluator never performs release.
     body["disposition"] = "RX19_APPROVED_EVIDENCE_ONLY_NO_ACTION" if all(g["status"] == "PASS" for g in gates) else "BLOCK"
     body["manifest_digest"] = _digest(body)
     return body
