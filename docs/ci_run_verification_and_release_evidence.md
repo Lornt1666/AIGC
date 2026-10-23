@@ -188,7 +188,7 @@ A release candidate may advance only when all applicable gates have evidence:
 7. **Independent review:** an authorized reviewer records a decision tied to the exact SHA and evidence digest.
 8. **Operational readiness:** monitoring, alerting, backup/restore, rollback, access control, incident response, and dependency readiness are verified.
 9. **Legal/governance review:** any required legal acknowledgment is completed by the appropriate parties; an owner-written responsibility notice is not a substitute for legal advice or enforceable terms.
-10. **Release authorization:** the authorized decision-maker records an explicit decision bound to the exact candidate and evidence package.
+10. **Release approval gate:** the authorized decision-maker records an explicit decision bound to the exact candidate and evidence package.
 
 If any mandatory gate is missing, stale, contradictory, or UNKNOWN, the release remains blocked.
 
