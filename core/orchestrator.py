@@ -175,10 +175,14 @@ class SagaCoordinator:
                 receipt_migration = await cur.fetchone()
                 if not receipt_migration:
                     raise OrchestrationError("required_migration_missing:002_receipt_claims")
-                await cur.execute("SELECT to_regclass(%s) AS tasks, to_regclass(%s) AS events, to_regclass(%s) AS outbox, to_regclass(%s) AS consumed",
-                    ("public.aigc_tasks", "public.aigc_events", "public.aigc_outbox", "public.aigc_consumed_events"))
+                await cur.execute("SELECT version FROM aigc_schema_migrations WHERE version = %s", ("003_dead_letters",))
+                dead_letter_migration = await cur.fetchone()
+                if not dead_letter_migration:
+                    raise OrchestrationError("required_migration_missing:003_dead_letters")
+                await cur.execute("SELECT to_regclass(%s) AS tasks, to_regclass(%s) AS events, to_regclass(%s) AS outbox, to_regclass(%s) AS consumed, to_regclass(%s) AS dead_letters",
+                    ("public.aigc_tasks", "public.aigc_events", "public.aigc_outbox", "public.aigc_consumed_events", "public.aigc_dead_letters"))
                 tables = await cur.fetchone()
-                if not tables or any(not tables[name] for name in ("tasks", "events", "outbox", "consumed")):
+                if not tables or any(not tables[name] for name in ("tasks", "events", "outbox", "consumed", "dead_letters")):
                     raise OrchestrationError("required_runtime_schema_missing_or_incomplete")
                 await cur.execute(
                     "SELECT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname=%s AND tgrelid=to_regclass(%s) AND NOT tgisinternal) AS present",
@@ -349,25 +353,107 @@ class SagaCoordinator:
                 pending = await self.redis.xpending_range(self.stream_name, self.consumer_group, min=stream_id, max=stream_id, count=1)
                 deliveries = int(pending[0].get("times_delivered", 1)) if pending else 1
                 if deliveries >= self.max_deliveries:
-                    await self.redis.xadd(self.dead_letter_stream, {
-                        "source_stream": self.stream_name, "source_stream_id": stream_id,
-                        "event_id": event_id, "payload": fields.get("payload", ""),
-                        "failure_type": type(exc).__name__, "delivery_count": str(deliveries),
-                        "disposition": "MANUAL_REVIEW_REQUIRED"})
+                    disposition_id = await self._persist_dead_letter(
+                        stream_id=stream_id, event_id=event_id, payload=fields.get("payload", ""),
+                        failure_type=type(exc).__name__, delivery_count=deliveries)
+                    # The PostgreSQL ledger is canonical. Redis publication is idempotent, and
+                    # source acknowledgement occurs only after both durable recording and projection.
+                    await self._publish_dead_letter(disposition_id)
                     await self.redis.xack(self.stream_name, self.consumer_group, stream_id)
-                    try:
-                        task_id = UUID(json.loads(fields["payload"]).get("task_id"))
-                        await self.record_event(task_id, "MESSAGE_DEAD_LETTERED", {
-                            "event_id": event_id, "source_stream_id": stream_id,
-                            "failure_type": type(exc).__name__, "delivery_count": deliveries,
-                            "dead_letter_stream": self.dead_letter_stream})
-                    except Exception:
-                        # The DLQ record is durable in Redis; an audit-write failure is separately observable.
-                        pass
                     processed += 1
                     continue
                 raise
         return processed
+    async def _persist_dead_letter(self, *, stream_id: str, event_id: str,
+                                   payload: str, failure_type: str,
+                                   delivery_count: int) -> str:
+        """Persist a stable DLQ disposition before acknowledging its source entry."""
+        disposition_id = sha256_text(self.stream_name + "\\0" + stream_id)
+        async with self.pool.connection() as conn:
+            async with conn.transaction():
+                async with conn.cursor() as cur:
+                    await cur.execute(
+                        """INSERT INTO aigc_dead_letters
+                           (disposition_id, source_stream, source_stream_id, event_id,
+                            payload, payload_sha256, failure_type, delivery_count)
+                           VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
+                           ON CONFLICT (source_stream, source_stream_id) DO NOTHING""",
+                        (disposition_id, self.stream_name, stream_id, event_id,
+                         payload, sha256_text(payload), failure_type, delivery_count))
+                    await cur.execute(
+                        "SELECT disposition_id FROM aigc_dead_letters WHERE source_stream=%s AND source_stream_id=%s",
+                        (self.stream_name, stream_id))
+                    row = await cur.fetchone()
+                    if not row or row["disposition_id"] != disposition_id:
+                        raise OrchestrationError("dead_letter_ledger_conflict")
+                    # Add the ordinary event-log record in the same transaction when the
+                    # source payload names an existing task. Malformed messages remain in
+                    # the dedicated ledger rather than losing their forensic evidence.
+                    try:
+                        parsed = json.loads(payload)
+                        task_id = UUID(parsed.get("task_id"))
+                    except (ValueError, TypeError, AttributeError, json.JSONDecodeError):
+                        task_id = None
+                    if task_id is not None:
+                        await cur.execute("SELECT task_id FROM aigc_tasks WHERE task_id=%s FOR UPDATE", (str(task_id),))
+                        if await cur.fetchone():
+                            await cur.execute("SELECT COALESCE(MAX(sequence),0)+1 AS seq FROM aigc_events WHERE task_id=%s",
+                                              (str(task_id),))
+                            sequence = int((await cur.fetchone())["seq"])
+                            audit_id = uuid4()
+                            audit = {"event_id": str(audit_id), "task_id": str(task_id),
+                                     "sequence": sequence, "event_type": "MESSAGE_DEAD_LETTERED",
+                                     "disposition_id": disposition_id, "source_stream": self.stream_name,
+                                     "source_stream_id": stream_id, "failure_type": failure_type,
+                                     "delivery_count": delivery_count}
+                            encoded = canonical_json(audit)
+                            await cur.execute(
+                                """INSERT INTO aigc_events(event_id,task_id,sequence,event_type,payload,payload_sha256)
+                                   VALUES(%s,%s,%s,%s,%s::jsonb,%s)
+                                   ON CONFLICT (task_id,sequence) DO NOTHING""",
+                                (str(audit_id), str(task_id), sequence, "MESSAGE_DEAD_LETTERED",
+                                 encoded, sha256_text(encoded)))
+        return disposition_id
+
+    async def _publish_dead_letter(self, disposition_id: str) -> None:
+        """Project a ledger row to Redis exactly-once per surviving Redis keyspace."""
+        async with self.pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    """SELECT source_stream,source_stream_id,event_id,payload,payload_sha256,
+                              failure_type,delivery_count
+                       FROM aigc_dead_letters WHERE disposition_id=%s""", (disposition_id,))
+                row = await cur.fetchone()
+        if not row:
+            raise OrchestrationError("dead_letter_ledger_record_missing")
+        # Redis Lua makes the dedupe marker and XADD atomic. PostgreSQL remains the
+        # authority if Redis data is restored or lost and the projection must be rebuilt.
+        script = """
+        local prior = redis.call('GET', KEYS[1])
+        if prior then return prior end
+        local entry = redis.call('XADD', KEYS[2], '*',
+          'disposition_id', ARGV[1], 'source_stream', ARGV[2],
+          'source_stream_id', ARGV[3], 'event_id', ARGV[4],
+          'payload', ARGV[5], 'payload_sha256', ARGV[6],
+          'failure_type', ARGV[7], 'delivery_count', ARGV[8],
+          'disposition', 'MANUAL_REVIEW_REQUIRED')
+        redis.call('SET', KEYS[1], entry)
+        return entry
+        """
+        redis_key = "aigc:dlq-published:v1:" + disposition_id
+        await self.redis.eval(script, 2, redis_key, self.dead_letter_stream,
+            disposition_id, row["source_stream"], row["source_stream_id"],
+            row["event_id"] or "", row["payload"], row["payload_sha256"],
+            row["failure_type"], str(row["delivery_count"]))
+        async with self.pool.connection() as conn:
+            async with conn.transaction():
+                async with conn.cursor() as cur:
+                    await cur.execute(
+                        "UPDATE aigc_dead_letters SET published_at=COALESCE(published_at,now()) WHERE disposition_id=%s",
+                        (disposition_id,))
+                    if cur.rowcount != 1:
+                        raise OrchestrationError("dead_letter_projection_receipt_missing")
+
     async def run_saga(self, contract: TaskContract, steps: list[SagaStep], *,
                        dry_run: bool | None = None, permit_ref: str | None = None) -> dict[str, Any]:
         """Run an explicitly registered saga; default dry-run, compensate completed steps in reverse order."""
