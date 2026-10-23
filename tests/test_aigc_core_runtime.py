@@ -8,7 +8,7 @@ from pydantic import ValidationError
 
 from core.contracts import MutationPayload, TaskContract, ToolPermit
 from core.arbiter import audit_python_source
-from core.orchestrator import OrchestrationError, SagaCoordinator, SagaStep, validate_hop_count
+from core.orchestrator import (OrchestrationError, SagaCoordinator, SagaStep,\n                               dead_letter_disposition_id, validate_hop_count)
 
 
 def contract(**overrides):
@@ -90,6 +90,15 @@ class ArbiterTests(unittest.TestCase):
 
 
 class OrchestratorSafetyTests(unittest.TestCase):
+    def test_dead_letter_disposition_key_is_stable_and_stream_scoped(self):
+        first = dead_letter_disposition_id("aigc:tasks:v1", "1700000000000-0")
+        self.assertEqual(first, dead_letter_disposition_id("aigc:tasks:v1", "1700000000000-0"))
+        self.assertNotEqual(first, dead_letter_disposition_id("aigc:tasks:v2", "1700000000000-0"))
+        self.assertNotEqual(first, dead_letter_disposition_id("aigc:tasks:v1", "1700000000000-1"))
+        for stream, stream_id in (("", "1-0"), ("tasks", ""), (None, "1-0")):
+            with self.subTest(stream=stream, stream_id=stream_id), self.assertRaises(ValueError):
+                dead_letter_disposition_id(stream, stream_id)
+
     def test_rejects_non_finite_operation_timeout(self):
         for value in (float("nan"), float("inf"), float("-inf")):
             with self.subTest(value=value), self.assertRaisesRegex(ValueError, "operation_timeout_seconds"):
