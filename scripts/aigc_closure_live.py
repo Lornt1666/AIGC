@@ -193,6 +193,32 @@ def run_live_closure(repository: str, pr_number: int, *, trusted_keys_path: str,
     result["pr_merged"] = snapshot["pr_merged"]
     return result
 
+def _failure_report(error: Exception, *, repository: str, pr_number: int) -> dict[str, Any]:
+    """Return a full fail-closed gate matrix even when live acquisition or trust input fails."""
+    definitions = [
+        ("G0_LIVE_RECONCILIATION", "closure-orchestrator", "Fetch authenticated PR metadata twice and confirm the head/base stayed stable."),
+        ("G1_EXACT_HEAD_CI", "engineering/CI owner", "Acquire complete run/attempt/job pagination and prove all policy-required jobs passed together."),
+        ("G2_ARTIFACT_INTEGRITY", "engineering/evidence owner", "Download the exact-run artifact and independently verify ZIP bytes and embedded manifest."),
+        ("G3_EFFECTIVE_PROTECTION", "authorized repository administrator", "Supply authenticated effective branch/ruleset protection readback; API denial is not PASS."),
+        ("G4_INDEPENDENT_REVIEW", "authorized administrator and qualified independent reviewer", "Bind independent review, review-thread reconciliation, findings and retests to the exact SHA."),
+        ("G5_TRUSTED_PROVENANCE", "build/security owner", "Verify signed provenance, trusted builder identity, source SHA and artifact digest."),
+        ("G6_HUMAN_ACCEPTANCE", "authorized human approver", "Sign acceptance for the final SHA, policy version and canonical evidence digest."),
+        ("G7_RX19_HANDOFF", "release engineering / RX-144 coordinator", "Use the verified RX-19 interface and retain an authenticated exact-packet receipt."),
+        ("G8_RX19_DECISION", "RX-19 sole release decision authority", "Obtain an authenticated RX-19 decision bound to the final SHA and evidence digest."),
+    ]
+    gates = [{"gate_id": gate_id, "status": "UNVERIFIABLE", "accountable_role": role,
+              "reason": "live_acquisition_or_trust_input_failed:" + type(error).__name__,
+              "required_action": action, "depends_on": [], "dependency_blocked": True} for gate_id, role, action in definitions]
+    return {"schema_version": "rx148.closure.v1", "repository": repository, "pr_number": pr_number,
+            "candidate_sha": None, "observed_head_sha": None, "gate_results": gates,
+            "blockers": [{"gate_id": g["gate_id"], "status": g["status"],
+                "accountable_role": g["accountable_role"], "required_action": g["required_action"],
+                "reason": g["reason"]} for g in gates],
+            "acquisition": {"complete": False, "error_type": type(error).__name__, "error": str(error)},
+            "release_authority": "RX-19", "coordinator_authority": "RX-144_COORDINATION_ONLY",
+            "merge_authorization": False, "deployment_authorization": False, "release_authorization": False,
+            "disposition": "BLOCK"}
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Acquire live GitHub evidence and evaluate RX-148 closure without side effects.")
     parser.add_argument("--repository", required=True)
@@ -225,7 +251,11 @@ def main() -> int:
             return 0 if preparation_passed else 2
         return 0 if result["disposition"] == "RX19_APPROVED_EVIDENCE_ONLY_NO_ACTION" else 2
     except (OSError, UnicodeError, json.JSONDecodeError, ValueError, GitHubEvidenceError, ReceiptVerificationError) as exc:
-        print(json.dumps({"disposition": "BLOCK", "error": str(exc), "side_effects_performed": False}, sort_keys=True), file=sys.stderr)
+        report = _failure_report(exc, repository=args.repository, pr_number=args.pr)
+        rendered = json.dumps(report, ensure_ascii=False, sort_keys=True, indent=2) + "\\n"
+        if args.output:
+            Path(args.output).write_text(rendered, encoding="utf-8")
+        sys.stderr.write(rendered)
         return 2
 
 
