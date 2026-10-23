@@ -91,7 +91,7 @@ async def ready(request: Request) -> dict[str, Any]:
     except Exception:
         raise HTTPException(status_code=503, detail="dependency_unavailable") from None
     return {"status": "ready", "persistence": "postgresql", "transport": "redis_streams",
-            "execution_mode": "dry_run_default", "release_authority": "RX-19",
+            "execution_mode": "dry_run_default", "telemetry": getattr(request.app.state, "telemetry_status", {"configured": False}), "release_authority": "RX-19",
             "side_effects_performed": False}
 
 
