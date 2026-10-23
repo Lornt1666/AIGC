@@ -116,20 +116,20 @@ def _safe_diagnostics(stage_id: str, output: str) -> dict[str, object] | None:
                 continue
             detail = line[4:].strip()
             exception_match = re.match(
-                r"^(?:[A-Za-z_][\\w.]*\\.)?([A-Za-z_][\\w]*(?:Error|Exception|Warning))(?::\\s*(.*))?$",
+                r"^(?:[A-Za-z_][\w.]*\.)?([A-Za-z_][\w]*(?:Error|Exception|Warning))(?::\s*(.*))?$",
                 detail,
             )
             if not exception_match:
                 continue
             kind, message = exception_match.group(1), exception_match.group(2) or ""
             signature = {"kind": kind, "module": "", "symbol": ""}
-            missing_module = re.search(r"No module named ['\\\"]([A-Za-z0-9_.-]{1,160})['\\\"]", message)
+            missing_module = re.search(r"No module named ['\\"]([A-Za-z0-9_.-]{1,160})['\\"]", message)
             cannot_import = re.search(
-                r"cannot import name ['\\\"]([A-Za-z0-9_]{1,120})['\\\"] from ['\\\"]([A-Za-z0-9_.]{1,160})['\\\"]",
+                r"cannot import name ['\\"]([A-Za-z0-9_]{1,120})['\\"] from ['\\"]([A-Za-z0-9_.]{1,160})['\\"]",
                 message,
             )
             missing_attribute = re.search(
-                r"module ['\\\"]([A-Za-z0-9_.]{1,160})['\\\"] has no attribute ['\\\"]([A-Za-z0-9_]{1,120})['\\\"]",
+                r"module ['\\"]([A-Za-z0-9_.]{1,160})['\\"] has no attribute ['\\"]([A-Za-z0-9_]{1,120})['\\"]",
                 message,
             )
             if missing_module:
