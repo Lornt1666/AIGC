@@ -250,7 +250,11 @@ class PostgresTaskLifecycleStore:
             raise TaskStoreUnavailable("Outbox retry state could not be persisted") from exc
 
     def claim_task_for_execution(self, *, task_id: str) -> dict[str, Any] | None:
-        """Atomically claim queued work; duplicate deliveries receive None."""
+        """Atomically claim queued work or reclaim a task whose worker lease expired.
+
+        Redis delivery is at-least-once. PostgreSQL's lease is the execution
+        authority, so duplicate deliveries cannot steal a live worker's claim.
+        """
         try:
             with self._pool.connection(timeout=5) as conn:
                 with conn.transaction():
@@ -258,7 +262,10 @@ class PostgresTaskLifecycleStore:
                         """UPDATE aigc_tasks
                            SET status='running',attempt=attempt+1,version=version+1,
                                lease_until=now()+interval '45 minutes',updated_at=now()
-                           WHERE task_id=%s AND status='queued'
+                           WHERE task_id=%s AND (
+                               status='queued'
+                               OR (status='running' AND lease_until < now())
+                           )
                            RETURNING task_id,owner_id,contract_json,attempt,version""",
                         (task_id,),
                     ).fetchone()

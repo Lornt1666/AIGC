@@ -63,3 +63,21 @@ def test_dispatch_failure_releases_outbox_for_retry(durable_runtime):
         asyncio.run(dispatcher.dispatch_once())
     claimed = store.claim_outbox(dispatcher_id="retry-dispatcher-2")
     assert claimed is not None and claimed["task_id"] == task.task_id
+
+
+def test_expired_worker_lease_can_be_reclaimed(durable_runtime):
+    store, _redis, _coordinator = durable_runtime
+    key = f"expired-lease-{uuid.uuid4()}"
+    task = TaskContract(idempotency_key=key, task_type="test.echo", payload={"message": "recover"})
+    store.submit_task(owner_id="lease-owner", idempotency_key=key, task=task)
+    first = store.claim_task_for_execution(task_id=task.task_id)
+    assert first is not None and first["attempt"] == 1
+    # Simulate a process crash after claim by expiring the database lease.
+    with store._pool.connection() as conn:
+        conn.execute(
+            "UPDATE aigc_tasks SET lease_until=now()-interval '1 second' WHERE task_id=%s",
+            (task.task_id,),
+        )
+    recovered = store.claim_task_for_execution(task_id=task.task_id)
+    assert recovered is not None and recovered["attempt"] == 2
+    assert store.claim_task_for_execution(task_id=task.task_id) is None
