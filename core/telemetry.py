@@ -11,6 +11,7 @@ import os
 from typing import Any, Iterator, Mapping
 
 from opentelemetry import metrics, trace
+from opentelemetry.trace import Status, StatusCode
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
@@ -66,6 +67,5 @@ def traced_operation(name: str, attributes: Mapping[str, str | int | bool] | Non
             yield span
         except Exception as exc:
             span.set_attribute("error.type", type(exc).__name__)
-            span.set_status(__import__("opentelemetry.trace", fromlist=["Status"]).Status(
-                __import__("opentelemetry.trace", fromlist=["StatusCode"]).StatusCode.ERROR))
+            span.set_status(Status(StatusCode.ERROR))
             raise
