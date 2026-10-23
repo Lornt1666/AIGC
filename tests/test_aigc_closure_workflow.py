@@ -14,6 +14,9 @@ def valid_snapshot():
         "pr_number": 330,
         "candidate_sha": SHA,
         "observed_head_sha": SHA,
+        "live_observation_authenticated": True,
+        "observed_at": "2026-10-22T22:00:00Z",
+        "observation_source": "github_api",
         "base_branch": "feat/runtime-governance-harness-v1",
         "base_sha": "c" * 40,
         "required_ci_jobs": ["validate", "locked-release-1", "locked-release-2"],
@@ -26,7 +29,7 @@ def valid_snapshot():
             ],
         }],
         "artifact": {
-            "head_sha": SHA, "sha256": DIGEST, "run_id": 1001, "run_attempt": 1,
+            "head_sha": SHA, "sha256": DIGEST, "run_id": 1001, "run_attempt": 1, "bytes_verified": True, "manifest_verified": True,
             "files": [{"path": "receipt.json", "sha256": DIGEST, "size": 10}],
         },
         "protection": {
@@ -44,9 +47,10 @@ def valid_snapshot():
             "workflow_identity": "trusted-workflow", "issuer": "trusted-issuer",
         },
         "evidence_digest": DIGEST,
+        "policy_version": "rx148-policy-v1",
         "acceptance": {
             "authenticated": True, "approver_role": "authorized_human_approver",
-            "candidate_sha": SHA, "evidence_digest": DIGEST, "receipt_id": "ACCEPT-1",
+            "candidate_sha": SHA, "evidence_digest": DIGEST, "policy_version": "rx148-policy-v1", "receipt_id": "ACCEPT-1",
         },
         "rx19_handoff": {
             "authenticated": True, "recipient": "RX-19", "candidate_sha": SHA,
