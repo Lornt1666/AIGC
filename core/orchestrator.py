@@ -138,6 +138,7 @@ class SagaCoordinator:
             raise ValueError("pending_idle_ms must be in [1000,3600000]")
         self.max_deliveries = max_deliveries
         self.pending_idle_ms = pending_idle_ms
+        self._pending_cursor = "0-0"
         self.dry_run = dry_run
         self.max_hops = max_hops
         self.operation_timeout_seconds = operation_timeout_seconds
@@ -326,7 +327,11 @@ class SagaCoordinator:
         consumer = "aigc-worker-" + str(id(self))
         entries: list[tuple[str, Mapping[str, str]]] = []
         claimed = await self.redis.xautoclaim(self.stream_name, self.consumer_group, consumer,
-                                               min_idle_time=self.pending_idle_ms, start_id="0-0", count=16)
+                                               min_idle_time=self.pending_idle_ms, start_id=self._pending_cursor, count=16)
+        if claimed:
+            # XAUTOCLAIM returns a scan cursor; advancing it prevents repeatedly
+            # rescanning only the first page of a large pending-entry list.
+            self._pending_cursor = claimed[0] or "0-0"
         if len(claimed) >= 2 and claimed[1]:
             entries.extend((stream_id, fields) for stream_id, fields in claimed[1])
         if not entries:
