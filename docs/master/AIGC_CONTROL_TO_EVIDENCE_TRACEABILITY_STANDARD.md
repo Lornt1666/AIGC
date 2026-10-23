@@ -223,3 +223,24 @@ This document adapts recognized guidance; it does not claim formal certification
 ## 14. Current disposition
 
 This is a requirements and verification framework, not an attestation that AIGC currently satisfies it. The candidate remains blocked until repository inspection, executable tests, operational exercises, independent review, human acceptance, and RX-19's exact-candidate release decision provide the required evidence.
+
+
+## 15. Documentation gate and operator-accountability controls
+
+The master-document set is subject to deterministic structural validation by DOC-GATE-01, implemented as a candidate validator in `scripts/enforce_master_docs.py`. The AIGC CI workflow invokes the validator and its unit tests. This gate MUST fail closed for missing required documents, missing or duplicate W-001–W-045 identifiers, broken local Markdown links, absent audit-status safeguards, or missing legal/enforcement safeguard language.
+
+The validator is intentionally not an LLM judge and does not execute content from documents. It cannot prove that a control is implemented in runtime code, that a legal term is enforceable, or that AIGC is production-ready. A successful run is structural evidence only and must be accompanied by source review, functional/security tests, operational evidence, independent review, human acceptance, and RX-19's release decision.
+
+Operator accountability must be expressed as task-specific authorization and responsibility for the operator's own decisions, instructions, approvals, and conduct to the extent permitted by applicable law. It must not be written as a universal transfer of all liability or as a waiver of non-waivable rights. The draft acknowledgment in `AIGC_OPERATOR_RESPONSIBILITY_AND_AUTHORIZED_USE_ACKNOWLEDGMENT.md` requires qualified legal review and valid assent before adoption.
+
+Evidence chain for the documentation gate:
+
+1. Requirement/control ID and policy version.
+2. Exact candidate SHA and workflow run/attempt.
+3. Validator version and source digest.
+4. Machine-readable validator output and exit code.
+5. Focused test output bound to the same candidate.
+6. Findings, remediation commits, and rerun evidence.
+7. Independent acceptance of the full release evidence packet.
+
+A subsequent commit invalidates the prior candidate's result for release acceptance. DOC-GATE-01 has no authority to waive findings, alter policies, approve a contract, enable an agent, merge a pull request, or release AIGC.
