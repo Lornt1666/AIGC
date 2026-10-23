@@ -88,10 +88,12 @@ def evaluate_closure(snapshot: Mapping[str, Any]) -> dict[str, Any]:
         g0_status, g0_reason = "UNVERIFIABLE", "authenticated_live_observation_missing_or_invalid"
     elif freshness_state == "STALE":
         g0_status, g0_reason = "STALE", "live_observation_outside_120_second_freshness_window"
+    elif snapshot.get("pr_state") != "open" or snapshot.get("pr_merged") is not False:
+        g0_status, g0_reason = "STALE", "candidate_PR_is_not_open_and_unmerged"
     elif snapshot.get("head_changed_during_acquisition") is True or observed != candidate:
         g0_status, g0_reason = "STALE", "live_head_or_base_changed_during_acquisition; reacquire_and_revalidate"
     else:
-        g0_status, g0_reason = "PASS", "fresh_live_head_matches_candidate"
+        g0_status, g0_reason = "PASS", "fresh_open_unmerged_PR_head_matches_candidate"
 
     gates: list[dict[str, str]] = []
     gates.append(_gate("G0_LIVE_RECONCILIATION", "closure-orchestrator", g0_status,
