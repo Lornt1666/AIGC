@@ -306,31 +306,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python - <<PY
-          import hashlib
-          import json
-          import os
-          from pathlib import Path
-
-          root = Path(os.environ["RUNNER_TEMP"]) / "aigc-ci-stage-results"
-          manifest_path = root / "manifest.json"
-          files = []
-          for path in sorted(root.rglob("*")):
-              if not path.is_file() or path == manifest_path:
-                  continue
-              data = path.read_bytes()
-              files.append({"path": path.relative_to(root).as_posix(),
-                            "sha256": hashlib.sha256(data).hexdigest(), "size": len(data)})
-          manifest = {
-              "schema_version": "aigc.artifact-manifest.v1",
-              "repository": os.environ["GITHUB_REPOSITORY"],
-              "candidate_sha": os.environ["OBSERVED_HEAD_SHA"],
-              "run_id": int(os.environ["GITHUB_RUN_ID"]),
-              "run_attempt": int(os.environ["GITHUB_RUN_ATTEMPT"]),
-              "files": files,
-          }
-          manifest_path.write_text(json.dumps(manifest, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
-          PY
+          python scripts/create_aigc_artifact_manifest.py \
+            --root "$RUNNER_TEMP/aigc-ci-stage-results" \
+            --repository "$GITHUB_REPOSITORY" \
+            --candidate-sha "$OBSERVED_HEAD_SHA" \
+            --run-id "$GITHUB_RUN_ID" \
+            --run-attempt "$GITHUB_RUN_ATTEMPT"
         env:
           OBSERVED_HEAD_SHA: ${{ steps.identity.outputs.observed_head_sha }}
       - name: Upload canonical validation evidence
