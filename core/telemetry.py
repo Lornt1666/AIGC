@@ -80,7 +80,11 @@ def record_http_request(method: str, status_code: int, duration_seconds: float, 
     """Record low-cardinality HTTP metrics; never label metrics with raw paths or task IDs."""
     attributes = {"http.request.method": method[:16], "http.response.status_code": int(status_code),
                   "aigc.route_class": route_class if route_class in {"health", "api"} else "other"}
-    if _request_counter is not None:
-        _request_counter.add(1, attributes)
-    if _request_duration is not None:
-        _request_duration.record(max(0.0, float(duration_seconds)), attributes)
+    try:
+        if _request_counter is not None:
+            _request_counter.add(1, attributes)
+        if _request_duration is not None:
+            _request_duration.record(max(0.0, float(duration_seconds)), attributes)
+    except Exception as exc:
+        # Telemetry must not break request handling; health/status surfaces the gap.
+        _logger.error("telemetry_metric_record_failed", extra={"error_type": type(exc).__name__})
