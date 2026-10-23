@@ -34,6 +34,15 @@ def sha256_text(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
 
+def dead_letter_disposition_id(source_stream: str, source_stream_id: str) -> str:
+    """Stable key for one source-stream entry; JSON framing avoids delimiter collisions."""
+    if not isinstance(source_stream, str) or not source_stream:
+        raise ValueError("source_stream must be non-empty text")
+    if not isinstance(source_stream_id, str) or not source_stream_id:
+        raise ValueError("source_stream_id must be non-empty text")
+    return sha256_text(canonical_json([source_stream, source_stream_id]))
+
+
 def validate_hop_count(value: Any, max_hops: int) -> int:
     """Reject malformed, negative, boolean, and over-limit hop counts."""
     if not isinstance(max_hops, int) or isinstance(max_hops, bool) or not 1 <= max_hops <= 10:
@@ -368,7 +377,7 @@ class SagaCoordinator:
                                    payload: str, failure_type: str,
                                    delivery_count: int) -> str:
         """Persist a stable DLQ disposition before acknowledging its source entry."""
-        disposition_id = sha256_text(self.stream_name + "\\0" + stream_id)
+        disposition_id = dead_letter_disposition_id(self.stream_name, stream_id)
         async with self.pool.connection() as conn:
             async with conn.transaction():
                 async with conn.cursor() as cur:
