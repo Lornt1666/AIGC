@@ -1,4 +1,5 @@
 import ast
+import asyncio
 import unittest
 from datetime import datetime, timedelta, timezone
 from uuid import uuid4
@@ -7,7 +8,7 @@ from pydantic import ValidationError
 
 from core.contracts import MutationPayload, TaskContract, ToolPermit
 from core.arbiter import audit_python_source
-from core.orchestrator import SagaCoordinator, SagaStep
+from core.orchestrator import OrchestrationError, SagaCoordinator, SagaStep
 
 
 def contract(**overrides):
@@ -80,6 +81,55 @@ class OrchestratorSafetyTests(unittest.TestCase):
         coordinator = SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost",
                                       dry_run=False, adapters={"write": lambda *a, **k: None})
         self.assertIsNone(coordinator.permit_verifier)
+
+    def test_ambiguous_adapter_failure_is_not_retried_without_reconciliation(self):
+        calls = {"adapter": 0}
+        async def adapter(payload, *, idempotency_key):
+            calls["adapter"] += 1
+            raise TimeoutError("response lost after possible remote commit")
+        coordinator = SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost",
+                                      dry_run=False, adapters={"write": adapter}, max_attempts=3)
+        async def run():
+            with self.assertRaisesRegex(OrchestrationError, "retry_prohibited_without_trusted_outcome_reconciliation"):
+                await coordinator._invoke_with_retry("write", adapter, {"resource": "x"}, "key-1", timeout=1)
+        asyncio.run(run())
+        self.assertEqual(calls["adapter"], 1)
+
+    def test_unknown_outcome_is_not_retried(self):
+        calls = {"adapter": 0, "reconcile": 0}
+        async def adapter(payload, *, idempotency_key):
+            calls["adapter"] += 1
+            raise TimeoutError("response lost")
+        async def reconcile(operation, payload, idempotency_key):
+            calls["reconcile"] += 1
+            return "UNKNOWN"
+        coordinator = SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost",
+                                      dry_run=False, adapters={"write": adapter},
+                                      outcome_reconciler=reconcile, max_attempts=3)
+        async def run():
+            with self.assertRaisesRegex(OrchestrationError, "retry_prohibited_side_effect_outcome:UNKNOWN"):
+                await coordinator._invoke_with_retry("write", adapter, {"resource": "x"}, "key-2", timeout=1)
+        asyncio.run(run())
+        self.assertEqual(calls, {"adapter": 1, "reconcile": 1})
+
+    def test_retry_requires_reconciler_to_prove_not_applied(self):
+        calls = {"adapter": 0, "reconcile": 0}
+        async def adapter(payload, *, idempotency_key):
+            calls["adapter"] += 1
+            if calls["adapter"] == 1:
+                raise TimeoutError("first attempt not applied")
+            return {"status": "ok"}
+        async def reconcile(operation, payload, idempotency_key):
+            calls["reconcile"] += 1
+            return "NOT_APPLIED"
+        coordinator = SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost",
+                                      dry_run=False, adapters={"write": adapter},
+                                      outcome_reconciler=reconcile, max_attempts=2,
+                                      base_retry_seconds=0, max_retry_seconds=0)
+        async def run():
+            return await coordinator._invoke_with_retry("write", adapter, {"resource": "x"}, "key-3", timeout=1)
+        self.assertEqual(asyncio.run(run()), {"status": "ok"})
+        self.assertEqual(calls, {"adapter": 2, "reconcile": 1})
 
 
 if __name__ == "__main__":
