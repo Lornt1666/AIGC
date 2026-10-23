@@ -38,6 +38,11 @@ class _Cursor:
             return self.row
         raise AssertionError("unexpected fetchone query: " + self.query)
 
+    async def fetchall(self):
+        if "WHERE published_at IS NULL" in self.query:
+            return [{"disposition_id": "a" * 64}]
+        raise AssertionError("unexpected fetchall query: " + self.query)
+
 
 class _Connection:
     def __init__(self, row):
@@ -71,6 +76,26 @@ class _Redis:
 
 
 class DeadLetterProjectionTests(unittest.TestCase):
+    def test_pending_ledger_rows_are_retried_for_projection(self):
+        disposition_id = "a" * 64
+        row = {
+            "source_stream": "aigc:events:v1", "source_stream_id": "17-0",
+            "event_id": "event-17", "payload": "", "payload_sha256": "b" * 64,
+            "failure_type": "RedisStreamEntryMissingAfterTrim", "delivery_count": 0,
+        }
+        coordinator = SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost")
+        coordinator.pool = _Pool(row)
+        coordinator.redis = _Redis()
+        coordinator.dead_letter_stream = "aigc:dead-letter:v1"
+
+        async def run():
+            return await coordinator._publish_pending_dead_letters(limit=10)
+
+        self.assertEqual(asyncio.run(run()), 1)
+        self.assertEqual(len(coordinator.redis.calls), 1)
+        self.assertIn("UPDATE aigc_dead_letters SET published_at",
+                      coordinator.pool.connections[-1].cursor_instance.query)
+
     def test_projection_uses_atomic_redis_dedupe_and_persists_publish_receipt(self):
         disposition_id = "a" * 64
         row = {
