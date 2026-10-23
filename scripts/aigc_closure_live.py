@@ -38,7 +38,7 @@ def _read_json(path: str) -> Any:
 
 def run_live_closure(repository: str, pr_number: int, *, trusted_keys_path: str,
                      receipts_path: str, required_ci_jobs: list[str],
-                     token_env: str = "GITHUB_TOKEN", release_branch: str = "main") -> dict[str, Any]:
+                     token_env: str = "GITHUB_TOKEN", release_branch: str = "main", prepare: bool = False) -> dict[str, Any]:
     """Acquire current GitHub state, verify signed receipts, and fail closed on digest drift."""
     snapshot = acquire_live_snapshot(repository, pr_number, token_env=token_env,
                                      required_ci_jobs=required_ci_jobs, release_branch=release_branch)
@@ -90,7 +90,8 @@ def run_live_closure(repository: str, pr_number: int, *, trusted_keys_path: str,
         "candidate_sha": snapshot.get("candidate_sha"), "observed_head_sha": snapshot.get("observed_head_sha"),
         "base_branch": snapshot.get("base_branch"), "base_sha": snapshot.get("base_sha"),
         "pr_state": snapshot.get("pr_state"), "pr_draft": snapshot.get("pr_draft"),
-        "pr_merged": snapshot.get("pr_merged"), "observed_at": snapshot.get("observed_at"),
+        "pr_merged": snapshot.get("pr_merged"), "head_changed_during_acquisition": snapshot.get("head_changed_during_acquisition"),
+        "policy_version": receipt_doc.get("policy_version"),
         "ci_runs": snapshot.get("ci_runs"), "commit_status": snapshot.get("commit_status"),
         "commit_statuses": snapshot.get("commit_statuses"), "check_runs": snapshot.get("check_runs"),
         "reviews": snapshot.get("reviews"), "review_comments": snapshot.get("review_comments"),
@@ -101,14 +102,17 @@ def run_live_closure(repository: str, pr_number: int, *, trusted_keys_path: str,
     computed_digest = "sha256:" + hashlib.sha256(canonical_bytes(core_evidence)).hexdigest()
     claimed_digest = receipt_doc.get("evidence_digest")
     claimed_normalized = claimed_digest if isinstance(claimed_digest, str) and claimed_digest.startswith("sha256:") else ("sha256:" + claimed_digest if isinstance(claimed_digest, str) else None)
-    digest_matches = claimed_normalized == computed_digest
+    digest_claim_matches = claimed_normalized == computed_digest
+    digest_matches = digest_claim_matches or prepare
     policy_version = receipt_doc.get("policy_version")
     snapshot["computed_evidence_digest"] = computed_digest
     snapshot["evidence_digest"] = computed_digest if digest_matches else None
     snapshot["policy_version"] = policy_version if isinstance(policy_version, str) else None
-    if not digest_matches:
+    if not digest_claim_matches and not prepare:
         errors["evidence_digest"] = "claimed_packet_digest_does_not_match_canonical_live_evidence"
     for target in ("acceptance", "rx19_handoff", "rx19_decision"):
+        if prepare:
+            continue
         envelope = receipt_doc.get(target)
         if not isinstance(envelope, dict) or target in errors:
             continue
@@ -148,11 +152,11 @@ def run_live_closure(repository: str, pr_number: int, *, trusted_keys_path: str,
     snapshot["acquisition"]["signed_receipts_verified"] = sorted(verified)
     snapshot["acquisition"]["receipt_errors"] = dict(sorted(errors.items()))
     snapshot["acquisition"]["trust_store_id"] = key_doc.get("trust_store_id", "UNNAMED_TRUST_STORE")
-    snapshot["acquisition"]["evidence_digest_matches"] = digest_matches
+    snapshot["acquisition"]["evidence_digest_matches"] = "PREPARATION_ONLY" if prepare else digest_claim_matches
     result = evaluate_closure(snapshot)
     result["acquisition"] = snapshot["acquisition"]
     result["computed_evidence_digest"] = computed_digest
-    result["evidence_digest_claim_matches"] = digest_matches
+    result["evidence_digest_claim_matches"] = "PREPARATION_ONLY" if prepare else digest_claim_matches
     result["observed_at"] = snapshot["observed_at"]
     result["pr_state"] = snapshot["pr_state"]
     result["pr_draft"] = snapshot["pr_draft"]
@@ -169,11 +173,12 @@ def main() -> int:
     parser.add_argument("--token-env", default="GITHUB_TOKEN")
     parser.add_argument("--release-branch", default="main")
     parser.add_argument("--output")
+    parser.add_argument("--prepare", action="store_true", help="Compute core evidence digest only; downstream gates remain blocked.")
     args = parser.parse_args()
     try:
         result = run_live_closure(args.repository, args.pr, trusted_keys_path=args.trusted_keys,
             receipts_path=args.receipts, required_ci_jobs=args.required_ci_job,
-            token_env=args.token_env, release_branch=args.release_branch)
+            token_env=args.token_env, release_branch=args.release_branch, prepare=args.prepare)
         rendered = json.dumps(result, ensure_ascii=False, sort_keys=True, indent=2) + "\n"
         if args.output:
             Path(args.output).write_text(rendered, encoding="utf-8")
