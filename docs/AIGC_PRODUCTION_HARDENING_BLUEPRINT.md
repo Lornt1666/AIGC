@@ -164,7 +164,7 @@ cp .env.example .env
 openssl rand -hex 32
 ```
 
-Put one generated value in `POSTGRES_PASSWORD`, a different value in `AIGC_APP_DB_PASSWORD`, and a third value in `AIGC_API_BEARER_TOKEN`. Keep `.env` out of version control. The app database URL uses a separate limited runtime role; the bootstrap role must not be passed to the app.
+Put separate generated values in `POSTGRES_PASSWORD`, `AIGC_APP_DB_PASSWORD`, `AIGC_RECEIPT_DB_PASSWORD`, and `AIGC_API_BEARER_TOKEN`. The closure runner uses a dedicated `aigc_receipt_verifier` database identity through `AIGC_REPLAY_DATABASE_URL`; it must not fall back to the API role. Keep `.env` out of version control. The app database URL uses a separate limited runtime role; the bootstrap role must not be passed to the app.
 
 2. Validate configuration and start the stack:
 
@@ -206,7 +206,7 @@ Also run the complete existing CI workflow, dependency and secret scans, image s
 
 ### Live closure packet preparation and evaluation
 
-Run this from a controlled host with outbound access to `api.github.com` and the allowlisted GitHub artifact-storage domains. Load `GITHUB_TOKEN` from the secret manager into the process environment; do not put the token on the command line or in a file committed to Git. The token needs only read access to the repository, pull requests, Actions runs/jobs/artifacts, and whatever readback endpoints its policy permits. If protection readback returns 403/404, the gate remains UNVERIFIABLE.
+Run this from a controlled host with outbound access to `api.github.com` and the allowlisted GitHub artifact-storage domains. Load `GITHUB_TOKEN` and `AIGC_REPLAY_DATABASE_URL` from the secret manager into the process environment; the latter must use the dedicated `aigc_receipt_verifier` database role, not the application or bootstrap role. Do not put credentials on the command line or in a file committed to Git. The token needs only read access to the repository, pull requests, Actions runs/jobs/artifacts, and whatever readback endpoints its policy permits. If protection readback returns 403/404, the gate remains UNVERIFIABLE.
 
 Set the exact required job names from the signed release policy and current workflow configuration; do not guess them:
 
