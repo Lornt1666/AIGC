@@ -8,7 +8,12 @@ from pydantic import ValidationError
 
 from src.core.arbiter import audit_source
 from src.core.contracts import MutationPayload, TaskContract
-from src.core.orchestrator import SagaAction, SagaExecutionError, RedisStreamsCoordinator
+from src.core.orchestrator import (
+    IdempotencyConflict,
+    SagaAction,
+    SagaExecutionError,
+    RedisStreamsCoordinator,
+)
 from src.core.contracts import SagaStepContract
 
 
@@ -106,6 +111,8 @@ class FakeRedis:
     def __init__(self, *, fail_result_publish: bool = False, eval_results: list[int] | None = None):
         self.fail_result_publish = fail_result_publish
         self.eval_results = list(eval_results or [])
+        self.eval_calls: list[tuple[str, int, tuple]] = []
+        self.idempotency: dict[str, str] = {}
         self.entries: list[tuple[str, dict]] = []
         self.acks: list[tuple[str, str, str]] = []
         self.read_entries: list[tuple[str, dict]] = []
@@ -115,7 +122,15 @@ class FakeRedis:
         self.group_created = True
 
     async def eval(self, script, numkeys, *args):
-        return self.eval_results.pop(0) if self.eval_results else 1
+        self.eval_calls.append((script, numkeys, args))
+        if self.eval_results:
+            return self.eval_results.pop(0)
+        key, digest = str(args[0]), str(args[-1])
+        existing = self.idempotency.get(key)
+        if existing is not None:
+            return 0 if existing == digest else -1
+        self.idempotency[key] = digest
+        return 1
 
     async def xreadgroup(self, **kwargs):
         if not self.read_entries:
@@ -135,19 +150,47 @@ class FakeRedis:
 
 
 def test_enqueue_atomically_reserves_idempotency_key() -> None:
-    redis = FakeRedis(eval_results=[1, 0])
+    redis = FakeRedis()
     coordinator = RedisStreamsCoordinator(redis)
 
     async def scenario() -> tuple[bool, bool]:
-        task = TaskContract(
+        first_task = TaskContract(
             idempotency_key="stable-idempotency-key",
             task_type="research",
+            payload={"query": "same request"},
         )
-        return await coordinator.enqueue(task), await coordinator.enqueue(task)
+        retry_task = TaskContract(
+            idempotency_key="stable-idempotency-key",
+            task_type="research",
+            payload={"query": "same request"},
+        )
+        return await coordinator.enqueue(first_task), await coordinator.enqueue(retry_task)
 
     first, duplicate = asyncio.run(scenario())
     assert first is True
     assert duplicate is False
+    assert redis.eval_calls[0][2][-1] == redis.eval_calls[1][2][-1]
+
+
+def test_enqueue_rejects_idempotency_key_reuse_with_changed_payload() -> None:
+    redis = FakeRedis()
+    coordinator = RedisStreamsCoordinator(redis)
+
+    async def scenario() -> None:
+        await coordinator.enqueue(TaskContract(
+            idempotency_key="stable-idempotency-key",
+            task_type="research",
+            payload={"query": "original request"},
+        ))
+        with pytest.raises(IdempotencyConflict, match="different task payload"):
+            await coordinator.enqueue(TaskContract(
+                idempotency_key="stable-idempotency-key",
+                task_type="research",
+                payload={"query": "altered request"},
+            ))
+
+    asyncio.run(scenario())
+    assert redis.eval_calls[0][2][-1] != redis.eval_calls[1][2][-1]
 
 
 def test_result_stream_failure_leaves_task_pending_for_retry() -> None:
