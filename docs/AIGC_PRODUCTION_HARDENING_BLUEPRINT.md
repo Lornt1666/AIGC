@@ -264,7 +264,7 @@ All must be true before production activation; any missing item is BLOCK:
 1. Full CI passes on the exact candidate commit, including all required jobs; artifact bytes and manifest are independently verified.
 2. Dependency lockfile with hashes, SBOM, vulnerability scan, image scan, pinned image digests and signed provenance are present.
 3. Separate runtime/migration/admin identities and secret-manager-backed credential rotation are tested.
-4. Cryptographic permit verification is integrated with an independently governed trust store, key rotation/revocation and replay protection. Tool permits bind subject, operation, resource, candidate, policy version, idempotency key, expiry and approval receipt.
+4. The closure runner verifies Ed25519 receipts against a separately managed trusted-key policy and uses the PostgreSQL receipt-claims ledger for cross-process collision/single-use checks. The runtime permit-verifier callback still requires a production trusted-key service integration. Tool permits must bind subject, operation, resource, candidate, policy version, idempotency key, expiry and approval receipt.
 5. Every write adapter has explicit schema, idempotency, read-after-write reconciliation, timeout behavior, compensation contract and a staging test.
 6. Poison-pill, duplicate delivery, process crash, network partition, Redis loss, PostgreSQL failover, compensation failure, kill-switch, budget exhaustion and recovery drills pass.
 7. OpenTelemetry traces, metrics, structured logs, alerts, SLO dashboards, retention and on-call escalation are verified end to end.
