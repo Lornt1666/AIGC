@@ -391,7 +391,7 @@ class OrchestratorSafetyTests(unittest.TestCase):
         coordinator.record_event = record_event
         item = contract(candidate_sha="a" * 40)
         step = SagaStep("point-of-effect", "write", {}, idempotent=True, side_effecting=False)
-        with self.assertRaisesRegex(OrchestrationError, "saga_step_failed"):
+        with self.assertRaisesRegex(OrchestrationError, "saga_step_blocked"):
             asyncio.run(coordinator.run_saga(item, [step], dry_run=False, permit_ref="permit"))
         self.assertEqual(calls, {"permit": 2, "adapter": 0})
 
@@ -416,7 +416,7 @@ class OrchestratorSafetyTests(unittest.TestCase):
         coordinator.record_event = record_event
         item = contract(candidate_sha="a" * 40)
         step = SagaStep("retry-auth", "write", {}, idempotent=True, side_effecting=False)
-        with self.assertRaisesRegex(OrchestrationError, "saga_step_failed"):
+        with self.assertRaisesRegex(OrchestrationError, "saga_step_blocked"):
             asyncio.run(coordinator.run_saga(item, [step], dry_run=False, permit_ref="permit"))
         self.assertEqual(calls["permit"], 3)
         self.assertEqual(calls["adapter"], 1)
