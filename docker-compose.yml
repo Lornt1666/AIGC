@@ -25,7 +25,37 @@ services:
       AIGC_MAX_CONCURRENCY: "16"
       PYTHONPATH: /app:/app/src
     depends_on:
+      worker:
+    image: regenexcalibur/aigc-runtime:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["python", "-m", "core.worker"]
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,noexec,nosuid,nodev
+    cap_drop: ["ALL"]
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 96
+    mem_limit: 512m
+    cpus: 1.0
+    environment:
+      DATABASE_URL: postgresql://aigc_app:${AIGC_APP_DB_PASSWORD:?set AIGC_APP_DB_PASSWORD}@postgres:5432/aigc?sslmode=disable
+      REDIS_URL: redis://redis:6379/0
+      AIGC_DRY_RUN: "true"
+      AIGC_MAX_HOPS: "10"
+      AIGC_MAX_CONCURRENCY: "8"
+      AIGC_REGISTRY_PATH: /app/config/regenexcalibur_aigc_agent_registry.json
+      PYTHONPATH: /app:/app/src
+    depends_on:
       postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks: [backend, runtime]
+  postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
