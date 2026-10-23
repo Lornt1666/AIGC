@@ -214,10 +214,11 @@ class OrchestratorSafetyTests(unittest.TestCase):
                 self.query, self.params = query, params
             async def fetchone(self):
                 if "aigc_schema_migrations" in self.query:
-                    return {"version": self.params[0]} if self.params and self.params[0] in {"001_runtime", "002_receipt_claims"} else None
+                    return {"version": self.params[0]} if self.params and self.params[0] in {"001_runtime", "002_receipt_claims", "003_dead_letters"} else None
                 if "to_regclass" in self.query:
                     return {"tasks": "aigc_tasks", "events": "aigc_events",
-                            "outbox": "aigc_outbox", "consumed": "aigc_consumed_events"}
+                            "outbox": "aigc_outbox", "consumed": "aigc_consumed_events",
+                            "dead_letters": "aigc_dead_letters"}
                 if "pg_trigger" in self.query:
                     return {"present": True}
                 raise AssertionError("unexpected schema verification query")
