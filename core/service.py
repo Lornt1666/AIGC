@@ -18,6 +18,7 @@ from pydantic import ValidationError
 from core.arbiter import audit_python_source
 from core.contracts import TaskContract
 from core.orchestrator import SagaCoordinator, OrchestrationError
+from core.telemetry import configure_telemetry
 
 
 def _api_key() -> str:
@@ -36,6 +37,8 @@ async def require_api_key(authorization: str | None = Header(default=None)) -> N
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    telemetry_status = configure_telemetry()
+    app.state.telemetry_status = telemetry_status
     coordinator = SagaCoordinator(
         database_url=os.environ["DATABASE_URL"],
         redis_url=os.environ["REDIS_URL"],
