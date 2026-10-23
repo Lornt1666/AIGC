@@ -209,6 +209,28 @@ class OrchestratorSafetyTests(unittest.TestCase):
         asyncio.run(run())
         self.assertEqual(calls, {"adapter": 1, "reconcile": 1})
 
+    def test_retry_budget_is_one_wall_clock_deadline(self):
+        calls = {"adapter": 0, "reconcile": 0}
+        async def adapter(payload, *, idempotency_key):
+            calls["adapter"] += 1
+            await asyncio.sleep(0.05)
+            return {"status": "ok"}
+        async def reconcile(operation, payload, idempotency_key):
+            calls["reconcile"] += 1
+            return "NOT_APPLIED"
+        coordinator = SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost",
+                                      dry_run=False, adapters={"write": adapter},
+                                      outcome_reconciler=reconcile, max_attempts=4,
+                                      base_retry_seconds=0, max_retry_seconds=0)
+        async def run():
+            started = asyncio.get_running_loop().time()
+            with self.assertRaisesRegex(OrchestrationError, "operation_deadline_exceeded"):
+                await coordinator._invoke_with_retry("write", adapter, {"resource": "x"}, "key-deadline", timeout=0.08)
+            return asyncio.get_running_loop().time() - started
+        elapsed = asyncio.run(run())
+        self.assertLess(elapsed, 0.15)
+        self.assertLessEqual(calls["adapter"], 2)
+
     def test_retry_requires_reconciler_to_prove_not_applied(self):
         calls = {"adapter": 0, "reconcile": 0}
         async def adapter(payload, *, idempotency_key):
