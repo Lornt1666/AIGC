@@ -257,6 +257,22 @@ Postgres is the durable source. After Redis loss, restore Redis and republish ev
 - Preserve logs and receipts, rotate exposed credentials, and isolate affected worker identities.
 - Re-enable only after independent retest, an authorized operator decision, and a documented rollback/recovery test. RX-19 retains sole release decision authority.
 
+## 7A. Dead-letter durability and migration procedure
+
+The canonical dead-letter disposition is stored in PostgreSQL under a stable key derived from the source stream and source entry ID. Redis DLQ publication uses an atomic Lua deduplication marker plus XADD. The source entry is acknowledged only after the ledger row is committed, Redis projection succeeds, and the projection receipt is committed. A failed PostgreSQL write, Redis write, or receipt update leaves the source entry pending for retry. Malformed payloads remain available in the dead-letter ledger even when they cannot be correlated to a task event.
+
+For an existing database volume, Docker's /docker-entrypoint-initdb.d scripts do **not** rerun automatically. Back up first, then apply migration 003 explicitly before restarting application or worker services:
+
+```sh
+docker compose exec -T postgres pg_dump -U aigc -d aigc --format=custom > "aigc-pre-003-$(date -u +%Y%m%dT%H%M%SZ).dump"
+docker compose exec -T postgres psql -v ON_ERROR_STOP=1 -U aigc -d aigc -f /docker-entrypoint-initdb.d/04-dead-letter-ledger.sql
+docker compose exec -T postgres psql -v ON_ERROR_STOP=1 -U aigc -d aigc -c "SELECT version FROM aigc_schema_migrations ORDER BY version;"
+docker compose up -d --build app worker
+docker compose logs --tail=200 app worker
+```
+
+Confirm 003_dead_letters is present and both services become healthy. Do not drop or recreate persistent volumes to apply a migration. Redis is a projection/transport; PostgreSQL's dead-letter ledger is the forensic record. Redis loss after acknowledgement still requires an explicit projection-rebuild drill before production: verify backup/restore, rebuild from the ledger, and prove deduplication and ordering behavior under the intended recovery point objective.
+
 ## 8. Production exit criteria
 
 All must be true before production activation; any missing item is BLOCK:
