@@ -324,6 +324,7 @@ class SagaCoordinator:
         """Process pending retries before new entries; poison messages are dead-lettered at a fixed ceiling."""
         if block_ms < 1 or block_ms > 30_000:
             raise ValueError("block_ms must be in [1,30000]")
+        await self._publish_pending_dead_letters(limit=100)
         consumer = "aigc-worker-" + str(id(self))
         entries: list[tuple[str, Mapping[str, str]]] = []
         claimed = await self.redis.xautoclaim(self.stream_name, self.consumer_group, consumer,
@@ -332,6 +333,16 @@ class SagaCoordinator:
             # XAUTOCLAIM returns a scan cursor; advancing it prevents repeatedly
             # rescanning only the first page of a large pending-entry list.
             self._pending_cursor = claimed[0] or "0-0"
+        if len(claimed) >= 3 and claimed[2]:
+            # Redis 7+ removes trimmed/deleted entries from the PEL during XAUTOCLAIM.
+            # Preserve the lost-entry IDs in PostgreSQL because their original payload
+            # is no longer recoverable from Redis.
+            for missing_stream_id in claimed[2]:
+                disposition_id = await self._persist_dead_letter(
+                    stream_id=str(missing_stream_id), event_id="missing",
+                    payload="", failure_type="RedisStreamEntryMissingAfterTrim",
+                    delivery_count=0)
+                await self._publish_dead_letter(disposition_id)
         if len(claimed) >= 2 and claimed[1]:
             entries.extend((stream_id, fields) for stream_id, fields in claimed[1])
         if not entries:
@@ -430,6 +441,23 @@ class SagaCoordinator:
                                 (str(audit_id), str(task_id), sequence, "MESSAGE_DEAD_LETTERED",
                                  encoded, sha256_text(encoded)))
         return disposition_id
+
+    async def _publish_pending_dead_letters(self, *, limit: int = 100) -> int:
+        """Retry ledger rows whose Redis DLQ projection did not receive a receipt."""
+        if not isinstance(limit, int) or isinstance(limit, bool) or not 1 <= limit <= 1000:
+            raise ValueError("limit must be an integer in [1,1000]")
+        async with self.pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    """SELECT disposition_id FROM aigc_dead_letters
+                       WHERE published_at IS NULL ORDER BY created_at, disposition_id LIMIT %s""",
+                    (limit,))
+                rows = await cur.fetchall()
+        published = 0
+        for row in rows:
+            await self._publish_dead_letter(row["disposition_id"])
+            published += 1
+        return published
 
     async def _publish_dead_letter(self, disposition_id: str) -> None:
         """Project a ledger row to Redis exactly-once per surviving Redis keyspace."""
