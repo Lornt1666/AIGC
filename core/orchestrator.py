@@ -41,6 +41,7 @@ class SagaStep:
     compensation_operation: str | None = None
     compensation_payload: Mapping[str, Any] | None = None
     irreversible: bool = False
+    idempotent: bool = False
 
 
 @dataclass(frozen=True)
@@ -253,7 +254,10 @@ class SagaCoordinator:
         async with self.pool.connection() as conn:
             async with conn.transaction():
                 async with conn.cursor() as cur:
-                    await cur.execute("SELECT COALESCE(MAX(sequence),0)+1 AS seq FROM aigc_events WHERE task_id=%s FOR UPDATE",
+                    await cur.execute("SELECT task_id FROM aigc_tasks WHERE task_id=%s FOR UPDATE", (str(task_id),))
+                    if not await cur.fetchone():
+                        raise OrchestrationError("task_not_found_for_event")
+                    await cur.execute("SELECT COALESCE(MAX(sequence),0)+1 AS seq FROM aigc_events WHERE task_id=%s",
                                       (str(task_id),))
                     row = await cur.fetchone()
                     seq = int(row["seq"])
@@ -324,6 +328,8 @@ class SagaCoordinator:
                     raise OrchestrationError("operation_not_allowlisted:" + step.operation)
                 if step.irreversible and (dry or not permit_ref):
                     raise OrchestrationError("irreversible_step_requires_verified_human_approval")
+                if not dry and step.idempotent is not True:
+                    raise OrchestrationError("live_operation_must_declare_idempotency")
                 key = hashlib.sha256(f"{contract.idempotency_key}:{step.step_id}".encode()).hexdigest()
                 started = time.monotonic()
                 if dry:
