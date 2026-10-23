@@ -347,5 +347,98 @@ class OrchestratorSafetyTests(unittest.TestCase):
 
 
 
+    def test_saga_payload_is_snapshotted_before_awaited_permit_verification(self):
+        original = {"resource": {"value": "approved"}}
+        observed = {"payload": None, "preflight_digest": None}
+        async def adapter(payload, *, idempotency_key):
+            observed["payload"] = payload
+            return {"ok": True}
+        async def permit(ref, claims, key):
+            observed["preflight_digest"] = claims["input_digest"]
+            original["resource"]["value"] = "changed-after-authorization-start"
+            return True
+        coordinator = SagaCoordinator(
+            database_url="postgresql://unused", redis_url="redis://localhost",
+            dry_run=False, adapters={"write": adapter}, permit_verifier=permit)
+        async def record_event(*args, **kwargs):
+            return None
+        coordinator.record_event = record_event
+        item = contract(candidate_sha="a" * 40)
+        step = SagaStep("snapshot", "write", original, idempotent=True, side_effecting=False)
+        result = asyncio.run(coordinator.run_saga(item, [step], dry_run=False, permit_ref="permit"))
+        self.assertEqual(result["status"], "SUCCEEDED")
+        self.assertEqual(observed["payload"]["resource"]["value"], "approved")
+        self.assertEqual(
+            observed["preflight_digest"],
+            sha256_text(canonical_json({"resource": {"value": "approved"}})),
+        )
+        self.assertEqual(original["resource"]["value"], "changed-after-authorization-start")
+
+    def test_live_saga_rechecks_permit_immediately_before_effect(self):
+        calls = {"permit": 0, "adapter": 0}
+        async def adapter(payload, *, idempotency_key):
+            calls["adapter"] += 1
+            return {"ok": True}
+        async def permit(ref, claims, key):
+            calls["permit"] += 1
+            return calls["permit"] == 1
+        coordinator = SagaCoordinator(
+            database_url="postgresql://unused", redis_url="redis://localhost",
+            dry_run=False, adapters={"write": adapter}, permit_verifier=permit)
+        async def record_event(*args, **kwargs):
+            return None
+        coordinator.record_event = record_event
+        item = contract(candidate_sha="a" * 40)
+        step = SagaStep("point-of-effect", "write", {}, idempotent=True, side_effecting=False)
+        with self.assertRaisesRegex(OrchestrationError, "saga_step_failed"):
+            asyncio.run(coordinator.run_saga(item, [step], dry_run=False, permit_ref="permit"))
+        self.assertEqual(calls, {"permit": 2, "adapter": 0})
+
+    def test_saga_reauthorizes_each_retry_attempt(self):
+        calls = {"permit": 0, "adapter": 0, "reconcile": 0}
+        async def adapter(payload, *, idempotency_key):
+            calls["adapter"] += 1
+            raise TimeoutError("synthetic transient failure")
+        async def permit(ref, claims, key):
+            calls["permit"] += 1
+            return calls["permit"] < 4
+        async def reconcile(operation, payload, key):
+            calls["reconcile"] += 1
+            return "NOT_APPLIED"
+        coordinator = SagaCoordinator(
+            database_url="postgresql://unused", redis_url="redis://localhost",
+            dry_run=False, adapters={"write": adapter}, permit_verifier=permit,
+            outcome_reconciler=reconcile, max_attempts=3,
+            base_retry_seconds=0, max_retry_seconds=0)
+        async def record_event(*args, **kwargs):
+            return None
+        coordinator.record_event = record_event
+        item = contract(candidate_sha="a" * 40)
+        step = SagaStep("retry-auth", "write", {}, idempotent=True, side_effecting=False)
+        with self.assertRaisesRegex(OrchestrationError, "saga_step_failed"):
+            asyncio.run(coordinator.run_saga(item, [step], dry_run=False, permit_ref="permit"))
+        self.assertEqual(calls["permit"], 4)
+        self.assertEqual(calls["adapter"], 1)
+        self.assertEqual(calls["reconcile"], 1)
+
+    def test_saga_rejects_oversized_payload_before_permit_or_adapter(self):
+        calls = {"permit": 0, "adapter": 0}
+        async def adapter(payload, *, idempotency_key):
+            calls["adapter"] += 1
+            return {"ok": True}
+        async def permit(ref, claims, key):
+            calls["permit"] += 1
+            return True
+        coordinator = SagaCoordinator(
+            database_url="postgresql://unused", redis_url="redis://localhost",
+            dry_run=False, adapters={"write": adapter}, permit_verifier=permit)
+        item = contract(candidate_sha="a" * 40)
+        step = SagaStep("oversize", "write", {"data": "x" * 1_000_001},
+                        idempotent=True, side_effecting=False)
+        with self.assertRaisesRegex(OrchestrationError, "saga_payload_size_limit_exceeded"):
+            asyncio.run(coordinator.run_saga(item, [step], dry_run=False, permit_ref="permit"))
+        self.assertEqual(calls, {"permit": 0, "adapter": 0})
+
+
 if __name__ == "__main__":
     unittest.main()
