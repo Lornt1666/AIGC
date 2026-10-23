@@ -108,8 +108,15 @@ def test_saga_compensates_completed_steps_in_reverse_order() -> None:
     assert calls == ["execute-1", "execute-2", "compensate-2", "compensate-1"]
 
 class FakeRedis:
-    def __init__(self, *, fail_result_publish: bool = False, eval_results: list[int] | None = None):
+    def __init__(
+        self,
+        *,
+        fail_result_publish: bool = False,
+        fail_enqueue_publish: bool = False,
+        eval_results: list[int] | None = None,
+    ):
         self.fail_result_publish = fail_result_publish
+        self.fail_enqueue_publish = fail_enqueue_publish
         self.eval_results = list(eval_results or [])
         self.eval_calls: list[tuple[str, int, tuple]] = []
         self.idempotency: dict[str, str] = {}
@@ -129,6 +136,10 @@ class FakeRedis:
         existing = self.idempotency.get(key)
         if existing is not None:
             return 0 if existing == digest else -1
+        if self.fail_enqueue_publish:
+            self.fail_enqueue_publish = False
+            # Model the Lua pcall/XADD failure path: its reservation is rolled back.
+            raise OSError("simulated task stream outage")
         self.idempotency[key] = digest
         return 1
 
@@ -170,6 +181,26 @@ def test_enqueue_atomically_reserves_idempotency_key() -> None:
     assert first is True
     assert duplicate is False
     assert redis.eval_calls[0][2][-1] == redis.eval_calls[1][2][-1]
+
+
+def test_enqueue_publish_failure_does_not_poison_idempotency_key() -> None:
+    redis = FakeRedis(fail_enqueue_publish=True)
+    coordinator = RedisStreamsCoordinator(redis)
+    task = TaskContract(
+        idempotency_key="retry-after-publish-failure",
+        task_type="research",
+        payload={"query": "retry safely"},
+    )
+
+    async def scenario() -> bool:
+        with pytest.raises(OSError, match="task stream outage"):
+            await coordinator.enqueue(task)
+        assert "aigc:idem:task:retry-after-publish-failure" not in redis.idempotency
+        return await coordinator.enqueue(task)
+
+    assert asyncio.run(scenario()) is True
+    assert "redis.pcall('XADD'" in redis.eval_calls[0][0]
+    assert "redis.call('DEL', KEYS[1])" in redis.eval_calls[0][0]
 
 
 def test_enqueue_rejects_idempotency_key_reuse_with_changed_payload() -> None:
