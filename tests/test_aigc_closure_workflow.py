@@ -16,6 +16,8 @@ def valid_snapshot():
         "observed_head_sha": SHA,
         "live_observation_authenticated": True,
         "observed_at": "2026-10-22T22:00:00Z",
+        "evaluation_time": "2026-10-22T22:00:00Z",
+        "head_changed_during_acquisition": False,
         "observation_source": "github_api",
         "base_branch": "feat/runtime-governance-harness-v1",
         "base_sha": "c" * 40,
@@ -39,7 +41,7 @@ def valid_snapshot():
         },
         "review": {
             "authenticated": True, "qualified_independent": True,
-            "reviewed_sha": SHA, "findings_closed_with_retest": True, "review_id": "PRREV-1",
+            "reviewed_sha": SHA, "findings_closed_with_retest": True, "review_threads_verified": True, "review_id": "PRREV-1",
         },
         "provenance": {
             "verified": True, "authenticated": True, "repository": "Lornt1666/AIGC",
@@ -83,6 +85,19 @@ class ClosureWorkflowTests(unittest.TestCase):
         self.assertEqual(gates["G1_EXACT_HEAD_CI"]["status"], "STALE")
         self.assertEqual(result["disposition"], "BLOCK")
 
+    def test_old_live_observation_is_stale(self):
+        snapshot = valid_snapshot()
+        snapshot["evaluation_time"] = "2026-10-22T22:05:00Z"
+        result = evaluate_closure(snapshot)
+        gate = next(g for g in result["gate_results"] if g["gate_id"] == "G0_LIVE_RECONCILIATION")
+        self.assertEqual(gate["status"], "STALE")
+        self.assertEqual(result["disposition"], "BLOCK")
+
+    def test_missing_evaluation_time_is_unverifiable(self):
+        snapshot = valid_snapshot()
+        snapshot.pop("evaluation_time")
+        gate = next(g for g in evaluate_closure(snapshot)["gate_results"] if g["gate_id"] == "G0_LIVE_RECONCILIATION")
+        self.assertEqual(gate["status"], "UNVERIFIABLE")
     def test_missing_ci_job_blocks(self):
         snapshot = valid_snapshot()
         snapshot["ci_runs"][0]["jobs"] = snapshot["ci_runs"][0]["jobs"][:1]
