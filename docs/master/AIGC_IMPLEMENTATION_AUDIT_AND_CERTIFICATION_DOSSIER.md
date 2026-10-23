@@ -223,3 +223,20 @@ DOC-GATE-01 is a deterministic structural validator invoked by the AIGC CI workf
 The operator acknowledgment is a draft and must not be described as a binding blanket liability waiver. It assigns accountability for an operator's own decisions and approvals only to the extent permitted by applicable law, preserves non-waivable rights and duties, and requires qualified counsel to review it before adoption.
 
 Any future audit must record the exact candidate SHA, workflow run and attempt, the DOC-GATE-01 output, test output, and evidence digest. Do not hard-code a self-referential candidate SHA into the document that changes that SHA.
+
+
+## 12. Follow-up runtime authorization audit — candidate implementation
+
+### Finding: mutable payload TOCTOU across asynchronous permit verification
+
+**Risk:** A frozen `SagaStep` dataclass can still hold mutable dictionaries. If a caller changes a nested payload while the permit verifier is awaited, the coordinator could authorize a digest of one payload and pass a different payload to an adapter. A permit checked only during preflight may also expire or be revoked before the actual effect or a retry.
+
+**Corrective candidate changes:** `core/orchestrator.py` now snapshots payloads through canonical JSON before the first awaited authorization check, rejects invalid canonical JSON/Unicode and payloads larger than 1,000,000 UTF-8 bytes, rechecks permits before each forward adapter attempt, binds compensation authorization to both the original and compensation payload digests, and rechecks compensation permits before each compensation attempt. Point-of-effect denial is represented as a blocked step rather than falsely asserting that the denied step's effect may have occurred. Regression tests were added to `tests/test_aigc_core_runtime.py`.
+
+**Evidence status:** `IMPLEMENTED_UNVERIFIED`. These changes require successful exact-head CI, review of the complete authorization-verifier implementation and its cryptographic trust roots, and integration tests proving that denial prevents adapter invocation. The test design is present in source; it is not yet a passing test result.
+
+**Residual risks:** Static code inspection is not runtime isolation. A trusted adapter can still be defective or compromised; it must validate target/resource scope and must not leak credentials. A timeout after an adapter call remains an ambiguous external outcome and requires trusted read-after-write reconciliation. Compensation is another external effect and can fail; the system must preserve a manual-reconciliation state rather than claim rollback success.
+
+### Current candidate and CI claim policy
+
+The branch advances as follow-up commits are made; therefore a workflow run against an earlier SHA is not evidence for the current branch head. The candidate must be re-read from GitHub immediately before reporting status. No production certification or release decision may be inferred from the presence of these changes.
