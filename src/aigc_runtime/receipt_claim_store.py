@@ -22,7 +22,7 @@ _SINGLE_USE_PURPOSES = {"tool-permit", "irreversible-action-approval", "transact
 
 class PostgresReceiptClaimStore:
     def __init__(self, database_url: str | None = None, *, timeout_seconds: float = 5.0):
-        self.database_url = database_url or os.environ.get("AIGC_REPLAY_DATABASE_URL") or os.environ.get("DATABASE_URL", "")
+        self.database_url = database_url or os.environ.get("AIGC_REPLAY_DATABASE_URL", "")
         if not self.database_url:
             raise ReceiptClaimError("persistent_receipt_store_required")
         self.timeout_seconds = timeout_seconds
