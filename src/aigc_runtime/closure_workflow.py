@@ -109,15 +109,34 @@ def evaluate_closure(snapshot: Mapping[str, Any]) -> dict[str, Any]:
     elif observed != candidate:
         ci_status, ci_reason = "STALE", "live_head_mismatch_invalidates_ci"
     else:
-        valid_runs = [
+        # A successful earlier attempt must never mask a newer failed, cancelled,
+        # or still-running attempt for the same workflow run. Select the newest
+        # observed attempt first, then evaluate its conclusion and jobs.
+        candidate_runs = [
             run for run in runs
             if isinstance(run, Mapping)
             and run.get("head_sha") == candidate
+            and isinstance(run.get("run_id"), int)
+            and not isinstance(run.get("run_id"), bool)
+            and run.get("run_id", 0) >= 1
+            and isinstance(run.get("run_attempt"), int)
+            and not isinstance(run.get("run_attempt"), bool)
+            and run.get("run_attempt", 0) >= 1
+        ]
+        latest_by_id: dict[int, Mapping[str, Any]] = {}
+        for run in candidate_runs:
+            run_id = run["run_id"]
+            prior = latest_by_id.get(run_id)
+            if prior is None or run["run_attempt"] > prior["run_attempt"]:
+                latest_by_id[run_id] = run
+            elif run["run_attempt"] == prior["run_attempt"] and run != prior:
+                # Conflicting records for the same attempt are ambiguous evidence.
+                latest_by_id[run_id] = {}
+        valid_runs = [
+            run for run in latest_by_id.values()
+            if run
             and run.get("status") == "completed"
             and run.get("conclusion") == "success"
-            and isinstance(run.get("run_id"), int)
-            and isinstance(run.get("run_attempt"), int)
-            and run.get("run_attempt", 0) >= 1
             and isinstance(run.get("jobs"), list)
         ]
         failures_by_run = []
@@ -164,8 +183,25 @@ def evaluate_closure(snapshot: Mapping[str, Any]) -> dict[str, Any]:
         artifact_status, artifact_reason = "BLOCK", "artifact_file_manifest_malformed"
     elif len({f["path"] for f in artifact["files"]}) != len(artifact["files"]):
         artifact_status, artifact_reason = "BLOCK", "artifact_file_manifest_duplicate_paths"
-    elif not any(isinstance(run, Mapping) and run.get("run_id") == artifact.get("run_id") and run.get("run_attempt") == artifact.get("run_attempt") and run.get("head_sha") == candidate and run.get("status") == "completed" and run.get("conclusion") == "success" for run in (runs if isinstance(runs, list) else [])):
-        artifact_status, artifact_reason = "BLOCK", "artifact_run_attempt_does_not_match_successful_exact_head_ci"
+    elif not any(
+        isinstance(run, Mapping)
+        and run.get("run_id") == artifact.get("run_id")
+        and run.get("run_attempt") == artifact.get("run_attempt")
+        and run.get("head_sha") == candidate
+        and run.get("status") == "completed"
+        and run.get("conclusion") == "success"
+        and not any(
+            isinstance(newer, Mapping)
+            and newer.get("run_id") == run.get("run_id")
+            and newer.get("head_sha") == candidate
+            and isinstance(newer.get("run_attempt"), int)
+            and not isinstance(newer.get("run_attempt"), bool)
+            and newer.get("run_attempt", 0) > run.get("run_attempt", 0)
+            for newer in (runs if isinstance(runs, list) else [])
+        )
+        for run in (runs if isinstance(runs, list) else [])
+    ):
+        artifact_status, artifact_reason = "BLOCK", "artifact_run_attempt_does_not_match_latest_successful_exact_head_ci"
     else:
         artifact_status, artifact_reason = "PASS", "artifact_manifest_well_formed_and_bound_to_candidate_and_ci_attempt"
     gates.append(_gate("G2_ARTIFACT_INTEGRITY", "engineering/evidence owner", artifact_status,
