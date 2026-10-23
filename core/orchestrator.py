@@ -165,11 +165,16 @@ class SagaCoordinator:
                     )
                     inserted = await cur.fetchone()
                     if not inserted:
-                        await cur.execute("SELECT task_id,status FROM aigc_tasks WHERE idempotency_key=%s",
+                        await cur.execute("SELECT task_id,status,payload FROM aigc_tasks WHERE idempotency_key=%s",
                                           (contract.idempotency_key,))
                         existing = await cur.fetchone()
                         if not existing:
                             raise OrchestrationError("idempotency_conflict_without_existing_task")
+                        existing_payload = existing["payload"]
+                        if isinstance(existing_payload, str):
+                            existing_payload = json.loads(existing_payload)
+                        if canonical_json(existing_payload) != canonical_json(payload):
+                            raise OrchestrationError("idempotency_key_reused_with_different_payload")
                         return {"status": "IDEMPOTENT_REPLAY", "task_id": str(existing["task_id"]),
                                 "task_status": existing["status"], "side_effects_performed": False}
                     await cur.execute(
