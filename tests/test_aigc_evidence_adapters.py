@@ -1,11 +1,15 @@
 import base64
 import json
+import hashlib
+import io
+import zipfile
 import unittest
 from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 
 from aigc_runtime.github_evidence import GitHubEvidenceError, GitHubReadOnlyClient, _safe_repo
 from aigc_runtime.receipt_verifier import Ed25519ReceiptVerifier, ReceiptVerificationError, TrustedReceiptKey, canonical_bytes
+from aigc_runtime.artifact_verifier import ArtifactVerificationError, verify_artifact_zip
 
 try:
     from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
@@ -84,6 +88,65 @@ class ReceiptVerifierTests(unittest.TestCase):
         verifier=Ed25519ReceiptVerifier(list(self.verifier.keys.values()), revoked_receipt_ids={"R-1"})
         with self.assertRaisesRegex(ReceiptVerificationError,"revoked"):
             verifier.verify(self.envelope(), expected_purpose="human-acceptance", expected_bindings={})
+
+
+
+class ArtifactVerifierTests(unittest.TestCase):
+    candidate_sha = "a" * 40
+
+    def make_archive(self, *, candidate_sha=None, unsafe_path=None):
+        evidence = b"test evidence bytes"
+        member_path = unsafe_path or "evidence.txt"
+        manifest = {
+            "schema_version": "aigc.artifact-manifest.v1",
+            "repository": "Lornt1666/AIGC",
+            "candidate_sha": candidate_sha or self.candidate_sha,
+            "run_id": 12345,
+            "run_attempt": 1,
+            "files": [{
+                "path": member_path,
+                "sha256": hashlib.sha256(evidence).hexdigest(),
+                "size": len(evidence),
+            }],
+        }
+        stream = io.BytesIO()
+        with zipfile.ZipFile(stream, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            archive.writestr("manifest.json", json.dumps(manifest))
+            archive.writestr(member_path, evidence)
+        return stream.getvalue()
+
+    def verify(self, archive_bytes, *, expected_sha=None):
+        return verify_artifact_zip(
+            archive_bytes,
+            expected_sha256=expected_sha or hashlib.sha256(archive_bytes).hexdigest(),
+            manifest_path="manifest.json",
+            repository="Lornt1666/AIGC",
+            candidate_sha=self.candidate_sha,
+            run_id=12345,
+            run_attempt=1,
+        )
+
+    def test_valid_archive_recomputes_zip_and_member_digests(self):
+        archive_bytes = self.make_archive()
+        result = self.verify(archive_bytes)
+        self.assertEqual(result["status"], "VERIFIED")
+        self.assertTrue(result["bytes_verified"])
+        self.assertEqual(result["files"][0]["sha256"], "sha256:" + hashlib.sha256(b"test evidence bytes").hexdigest())
+
+    def test_archive_digest_mismatch_is_rejected(self):
+        archive_bytes = self.make_archive()
+        with self.assertRaisesRegex(ArtifactVerificationError, "artifact_zip_sha256_mismatch"):
+            self.verify(archive_bytes, expected_sha="0" * 64)
+
+    def test_candidate_sha_mismatch_is_rejected(self):
+        archive_bytes = self.make_archive(candidate_sha="b" * 40)
+        with self.assertRaisesRegex(ArtifactVerificationError, "artifact_manifest_binding_mismatch:candidate_sha"):
+            self.verify(archive_bytes)
+
+    def test_path_traversal_member_is_rejected(self):
+        archive_bytes = self.make_archive(unsafe_path="../escape.txt")
+        with self.assertRaisesRegex(ArtifactVerificationError, "unsafe_or_duplicate_archive_path"):
+            self.verify(archive_bytes)
 
 
 if __name__ == "__main__":
