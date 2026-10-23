@@ -40,11 +40,13 @@ class ReceiptVerificationError(ValueError):
 
 
 class Ed25519ReceiptVerifier:
-    def __init__(self, trusted_keys: list[TrustedReceiptKey], *, revoked_receipt_ids: set[str] | None = None):
+    def __init__(self, trusted_keys: list[TrustedReceiptKey], *, revoked_receipt_ids: set[str] | None = None,
+                 claim_store: Any | None = None):
         self.keys = {key.key_id: key for key in trusted_keys}
         if len(self.keys) != len(trusted_keys):
             raise ReceiptVerificationError("duplicate_trusted_key_id")
         self.revoked = set(revoked_receipt_ids or ())
+        self.claim_store = claim_store
         self.seen_receipt_ids: set[str] = set()
         self._replay_lock = threading.Lock()
 
@@ -103,11 +105,17 @@ class Ed25519ReceiptVerifier:
         except (ValueError, InvalidSignature) as exc:
             raise ReceiptVerificationError("receipt_signature_invalid") from exc
         digest = "sha256:" + hashlib.sha256(canonical_bytes(payload)).hexdigest()
-        with self._replay_lock:
-            if receipt_id in self.seen_receipt_ids:
-                raise ReceiptVerificationError("receipt_replayed_in_process")
-            self.seen_receipt_ids.add(receipt_id)
-        return {"verified": True, "receipt_id": receipt_id, "issuer": key.issuer,
+        verification = {"verified": True, "receipt_id": receipt_id, "issuer": key.issuer,
                 "key_id": key_id, "purpose": expected_purpose, "payload_digest": digest,
                 "bindings": dict(expected_bindings), "verification_method": "Ed25519",
                 "authorization_note": "signature valid under caller-supplied trusted-key policy; key authorization is external policy input"}
+        with self._replay_lock:
+            if receipt_id in self.seen_receipt_ids:
+                raise ReceiptVerificationError("receipt_replayed_in_process")
+            if self.claim_store is not None:
+                try:
+                    self.claim_store.claim(payload, verification)
+                except Exception as exc:
+                    raise ReceiptVerificationError("persistent_receipt_claim_failed:" + type(exc).__name__) from exc
+            self.seen_receipt_ids.add(receipt_id)
+        return verification
