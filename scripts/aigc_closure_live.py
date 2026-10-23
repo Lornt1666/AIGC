@@ -199,7 +199,28 @@ def run_live_closure(repository: str, pr_number: int, *, trusted_keys_path: str,
             protection["authenticated"] = False
             protection["status"] = "UNVERIFIABLE"
             errors["protection"] = "signed_protection_receipt_branch_binding_mismatch"
-    snapshot["acquisition"]["signed_receipts_verified"] = sorted(verified)
+    # Final freshness barrier after signature checks and persistent receipt claims.
+    last_check = recheck_live_pr(repository, pr_number, token_env=token_env)
+    changed_after_digest = (last_check["head_sha"] != snapshot.get("observed_head_sha")
+        or last_check["base_sha"] != snapshot.get("base_sha")
+        or last_check["base_branch"] != snapshot.get("base_branch")
+        or last_check["pr_state"] != snapshot.get("pr_state")
+        or last_check["pr_draft"] != snapshot.get("pr_draft")
+        or last_check["pr_merged"] != snapshot.get("pr_merged"))
+    snapshot["evaluation_time"] = last_check["rechecked_at"]
+    snapshot["acquisition"]["final_pr_recheck"] = last_check
+    if changed_after_digest:
+        snapshot["head_changed_during_acquisition"] = True
+        snapshot["observed_head_sha"] = last_check["head_sha"]
+        snapshot["base_sha"] = last_check["base_sha"]
+        snapshot["base_branch"] = last_check["base_branch"]
+        snapshot["pr_state"] = last_check["pr_state"]
+        snapshot["pr_draft"] = last_check["pr_draft"]
+        snapshot["pr_merged"] = last_check["pr_merged"]
+        snapshot["evidence_digest"] = None
+        digest_claim_matches = False
+        errors["evidence_digest"] = "live_pr_state_changed_after_digest_computation"
+        snapshot["acquisition"]["signed_receipts_verified"] = sorted(verified)
     snapshot["acquisition"]["receipt_errors"] = dict(sorted(errors.items()))
     snapshot["acquisition"]["trust_store_id"] = key_doc.get("trust_store_id", "UNNAMED_TRUST_STORE")
     snapshot["acquisition"]["persistent_receipt_store"] = "AVAILABLE"
