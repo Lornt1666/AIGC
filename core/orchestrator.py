@@ -134,61 +134,17 @@ class SagaCoordinator:
             await self.redis.aclose()
 
     async def _ensure_schema(self) -> None:
-        schema = """
-        CREATE TABLE IF NOT EXISTS aigc_tasks (
-            task_id UUID PRIMARY KEY,
-            idempotency_key TEXT NOT NULL UNIQUE,
-            contract_version TEXT NOT NULL,
-            project_id TEXT NOT NULL,
-            policy_version TEXT NOT NULL,
-            status TEXT NOT NULL,
-            hop_count INTEGER NOT NULL DEFAULT 0 CHECK (hop_count BETWEEN 0 AND 10),
-            payload JSONB NOT NULL,
-            created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-            updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
-        );
-        CREATE TABLE IF NOT EXISTS aigc_events (
-            event_id UUID PRIMARY KEY,
-            task_id UUID NOT NULL REFERENCES aigc_tasks(task_id),
-            sequence BIGINT NOT NULL,
-            event_type TEXT NOT NULL,
-            payload JSONB NOT NULL,
-            payload_sha256 CHAR(64) NOT NULL,
-            created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-            UNIQUE(task_id, sequence)
-        );
-        CREATE TABLE IF NOT EXISTS aigc_outbox (
-            event_id UUID PRIMARY KEY REFERENCES aigc_events(event_id),
-            stream_id TEXT,
-            published_at TIMESTAMPTZ,
-            attempts INTEGER NOT NULL DEFAULT 0,
-            created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-        );
-        CREATE TABLE IF NOT EXISTS aigc_consumed_events (
-            consumer_name TEXT NOT NULL,
-            event_id UUID NOT NULL,
-            consumed_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-            PRIMARY KEY(consumer_name, event_id)
-        );
-        CREATE TABLE IF NOT EXISTS aigc_saga_steps (
-            task_id UUID NOT NULL REFERENCES aigc_tasks(task_id),
-            step_id TEXT NOT NULL,
-            ordinal INTEGER NOT NULL,
-            status TEXT NOT NULL,
-            idempotency_key TEXT NOT NULL UNIQUE,
-            receipt JSONB,
-            updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-            PRIMARY KEY(task_id, step_id),
-            UNIQUE(task_id, ordinal)
-        );
-        CREATE INDEX IF NOT EXISTS aigc_outbox_pending_idx ON aigc_outbox(created_at) WHERE published_at IS NULL;
-        CREATE INDEX IF NOT EXISTS aigc_events_task_idx ON aigc_events(task_id, sequence);
-        """
+        """Verify a separately applied migration; the runtime identity has no DDL privilege."""
         async with self.pool.connection() as conn:
-            async with conn.transaction():
-                async with conn.cursor() as cur:
-                    await cur.execute(schema)
-
+            async with conn.cursor() as cur:
+                await cur.execute("SELECT version FROM aigc_schema_migrations WHERE version = %s", ("001_runtime",))
+                migration = await cur.fetchone()
+                if not migration:
+                    raise OrchestrationError("required_migration_missing:001_runtime")
+                await cur.execute("SELECT to_regclass(%s) AS table_name", ("public.aigc_events",))
+                table = await cur.fetchone()
+                if not table or not table["table_name"]:
+                    raise OrchestrationError("required_runtime_schema_missing")
     async def submit(self, contract: TaskContract) -> dict[str, Any]:
         """Persist a task and its initial event atomically; duplicate keys are idempotent."""
         payload = contract.model_dump(mode="json")
