@@ -9,7 +9,7 @@ from pydantic import ValidationError
 from core.contracts import MutationPayload, TaskContract, ToolPermit
 from core.arbiter import audit_python_source
 from core.orchestrator import (OrchestrationError, SagaCoordinator, SagaStep,
-                               dead_letter_disposition_id, validate_hop_count)
+                               dead_letter_disposition_id, validate_hop_count, canonical_json, sha256_text)
 
 
 def contract(**overrides):
