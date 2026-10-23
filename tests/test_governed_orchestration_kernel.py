@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 
 import pytest
 from pydantic import ValidationError
@@ -183,3 +184,45 @@ def test_handler_failure_is_dead_lettered_before_acknowledgement() -> None:
     assert asyncio.run(coordinator.consume_once(consumer_name="worker-1", handler=handler)) is True
     assert redis.entries[0][0] == "aigc:tasks:dead-letter:v1"
     assert redis.acks == [("aigc:tasks:v1", "aigc-workers-v1", "1-0")]
+
+def test_result_events_redact_secret_fields_and_values() -> None:
+    redis = FakeRedis()
+    task = TaskContract(
+        idempotency_key="stable-idempotency-key",
+        task_type="research",
+    )
+    redis.read_entries.append(("1-0", {"task_json": task.model_dump_json()}))
+    coordinator = RedisStreamsCoordinator(redis)
+
+    async def handler(_task: TaskContract) -> dict:
+        return {
+            "api_key": "sensitive-value",
+            "message": "Authorization: Bearer sensitive-bearer",
+            "summary": "safe result",
+        }
+
+    asyncio.run(coordinator.consume_once(consumer_name="worker-1", handler=handler))
+    event_json = redis.entries[0][1]["event_json"]
+    assert "sensitive-value" not in event_json
+    assert "sensitive-bearer" not in event_json
+    event = json.loads(event_json)
+    assert event["data"]["result"]["api_key"] == "[REDACTED]"
+    assert "[REDACTED]" in event["data"]["result"]["message"]
+
+
+def test_dead_letter_does_not_duplicate_raw_task_payload() -> None:
+    redis = FakeRedis()
+    task = TaskContract(
+        idempotency_key="stable-idempotency-key",
+        task_type="research",
+    )
+    redis.read_entries.append(("1-0", {"task_json": task.model_dump_json()}))
+    coordinator = RedisStreamsCoordinator(redis)
+
+    async def handler(_task: TaskContract) -> dict:
+        raise RuntimeError("failure")
+
+    asyncio.run(coordinator.consume_once(consumer_name="worker-1", handler=handler))
+    dead_letter = redis.entries[0][1]
+    assert "task_json" not in dead_letter
+    assert len(dead_letter["payload_sha256"]) == 64
