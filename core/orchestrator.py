@@ -555,43 +555,43 @@ class SagaCoordinator:
             raise OrchestrationError("saga_deadline_exceeded_waiting_for_concurrency_slot") from exc
         try:
             for index, step in enumerate(steps):
-                    if index >= min(self.max_hops, contract.max_hops):
-                        raise OrchestrationError("saga_hop_limit_exceeded")
-                    if step.operation not in self.adapters:
-                        raise OrchestrationError("operation_not_allowlisted:" + step.operation)
-                    if step.irreversible and not dry and not step.approval_receipt_ref:
-                        raise OrchestrationError("irreversible_step_requires_verified_human_approval")
-                    if not dry and step.idempotent is not True:
-                        raise OrchestrationError("live_operation_must_declare_idempotency")
-                    key = hashlib.sha256(f"{contract.idempotency_key}:{step.step_id}".encode()).hexdigest()
-                    started = time.monotonic()
-                    if dry:
-                        result = {"mode": "DRY_RUN", "operation": step.operation, "input_digest": sha256_text(canonical_json(dict(step.input_payload))),
-                                  "side_effects_performed": False}
-                        status = "SIMULATED"
-                    else:
-                        try:
-                            remaining = deadline - time.monotonic()
-                            if remaining <= 0:
-                                raise OrchestrationError("saga_deadline_exceeded")
-                            result = await self._invoke_with_retry(step.operation, self.adapters[step.operation], step.input_payload, key,
-                                                                   timeout=min(self.operation_timeout_seconds, remaining))
-                            status = "SUCCEEDED"
-                            completed.append(step)
-                        except Exception as exc:
-                            compensation = await self._compensate(contract, completed, failed_step=step, failed_key=key,
-                                                                  permit_ref=permit_ref, deadline=deadline)
-                            await self.record_event(contract.task_id, "SAGA_FAILED", {
-                                "failed_step_id": step.step_id, "error_type": type(exc).__name__,
-                                "compensation": compensation, "side_effects_may_have_occurred": True})
-                            raise OrchestrationError("saga_step_failed; compensation_status:" + compensation["status"]) from exc
-                    receipt_body = {"step_id": step.step_id, "operation": step.operation, "status": status,
-                                    "result": result, "idempotency_key": key, "task_id": str(contract.task_id)}
-                    receipts.append(StepReceipt(step.step_id, status, result, key, sha256_text(canonical_json(receipt_body)),
-                                                started, time.monotonic() - started))
-                    await self.record_event(contract.task_id, "SAGA_STEP_" + status,
-                        {"step_id": step.step_id, "operation": step.operation, "idempotency_key": key,
-                         "result_digest": receipts[-1].evidence_digest, "dry_run": dry})
+                if index >= min(self.max_hops, contract.max_hops):
+                    raise OrchestrationError("saga_hop_limit_exceeded")
+                if step.operation not in self.adapters:
+                    raise OrchestrationError("operation_not_allowlisted:" + step.operation)
+                if step.irreversible and not dry and not step.approval_receipt_ref:
+                    raise OrchestrationError("irreversible_step_requires_verified_human_approval")
+                if not dry and step.idempotent is not True:
+                    raise OrchestrationError("live_operation_must_declare_idempotency")
+                key = hashlib.sha256(f"{contract.idempotency_key}:{step.step_id}".encode()).hexdigest()
+                started = time.monotonic()
+                if dry:
+                    result = {"mode": "DRY_RUN", "operation": step.operation, "input_digest": sha256_text(canonical_json(dict(step.input_payload))),
+                              "side_effects_performed": False}
+                    status = "SIMULATED"
+                else:
+                    try:
+                        remaining = deadline - time.monotonic()
+                        if remaining <= 0:
+                            raise OrchestrationError("saga_deadline_exceeded")
+                        result = await self._invoke_with_retry(step.operation, self.adapters[step.operation], step.input_payload, key,
+                                                               timeout=min(self.operation_timeout_seconds, remaining))
+                        status = "SUCCEEDED"
+                        completed.append(step)
+                    except Exception as exc:
+                        compensation = await self._compensate(contract, completed, failed_step=step, failed_key=key,
+                                                              permit_ref=permit_ref, deadline=deadline)
+                        await self.record_event(contract.task_id, "SAGA_FAILED", {
+                            "failed_step_id": step.step_id, "error_type": type(exc).__name__,
+                            "compensation": compensation, "side_effects_may_have_occurred": True})
+                        raise OrchestrationError("saga_step_failed; compensation_status:" + compensation["status"]) from exc
+                receipt_body = {"step_id": step.step_id, "operation": step.operation, "status": status,
+                                "result": result, "idempotency_key": key, "task_id": str(contract.task_id)}
+                receipts.append(StepReceipt(step.step_id, status, result, key, sha256_text(canonical_json(receipt_body)),
+                                            started, time.monotonic() - started))
+                await self.record_event(contract.task_id, "SAGA_STEP_" + status,
+                    {"step_id": step.step_id, "operation": step.operation, "idempotency_key": key,
+                     "result_digest": receipts[-1].evidence_digest, "dry_run": dry})
         finally:
             self.semaphore.release()
         return {"task_id": str(contract.task_id), "status": "DRY_RUN_PLAN" if dry else "SUCCEEDED",
