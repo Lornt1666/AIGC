@@ -1,6 +1,7 @@
 import ast
 import asyncio
 import unittest
+import time
 from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
@@ -438,6 +439,46 @@ class OrchestratorSafetyTests(unittest.TestCase):
         with self.assertRaisesRegex(OrchestrationError, "saga_payload_size_limit_exceeded"):
             asyncio.run(coordinator.run_saga(item, [step], dry_run=False, permit_ref="permit"))
         self.assertEqual(calls, {"permit": 0, "adapter": 0})
+
+
+    def test_compensation_permit_binds_original_and_compensation_payload_digests(self):
+        observed = {"claims": None, "payload": None}
+        async def adapter(payload, *, idempotency_key):
+            observed["payload"] = payload
+            return {"restored": True}
+        async def permit(ref, claims, key):
+            observed["claims"] = claims
+            return True
+        async def reconcile(operation, payload, key):
+            return "NOT_APPLIED"
+        coordinator = SagaCoordinator(
+            database_url="postgresql://unused", redis_url="redis://localhost",
+            dry_run=False, adapters={"undo": adapter}, permit_verifier=permit,
+            outcome_reconciler=reconcile)
+        item = contract(candidate_sha="a" * 40)
+        completed_step = SagaStep(
+            "completed", "write", {"resource": "original"},
+            compensation_operation="undo", compensation_payload={"restore": "previous"},
+            side_effecting=True, idempotent=True, compensation_idempotent=True)
+        failed_step = SagaStep("failed", "write", {"resource": "failed"}, idempotent=True, side_effecting=False)
+        async def run():
+            return await coordinator._compensate(
+                item, [completed_step], failed_step=failed_step, failed_key="failed-key",
+                permit_ref="permit", deadline=time.monotonic() + 2)
+        result = asyncio.run(run())
+        self.assertEqual(result["status"], "COMPENSATION_REQUESTS_SUCCEEDED")
+        self.assertEqual(observed["payload"], {"restore": "previous"})
+        self.assertEqual(observed["claims"]["input_digest"],
+                         sha256_text(canonical_json({"restore": "previous"})))
+        self.assertEqual(observed["claims"]["original_input_digest"],
+                         sha256_text(canonical_json({"resource": "original"})))
+
+    def test_saga_payload_with_unpaired_surrogate_fails_closed(self):
+        coordinator = SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost")
+        item = contract()
+        step = SagaStep("surrogate", "read", {"value": "\ud800"})
+        with self.assertRaisesRegex(OrchestrationError, "saga_payload_not_canonical_json"):
+            asyncio.run(coordinator.run_saga(item, [step], dry_run=True))
 
 
 if __name__ == "__main__":
