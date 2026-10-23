@@ -35,7 +35,9 @@ services:
       timeout: 4s
       retries: 5
       start_period: 30s
-    networks: [backend, egress]
+    # No general outbound network is attached by default. Add a separately
+    # controlled egress proxy/network only when a reviewed adapter requires it.
+    networks: [backend, runtime]
 
   postgres:
     image: postgres:16.4-alpine
@@ -85,8 +87,9 @@ networks:
   backend:
     driver: bridge
     internal: true
-  egress:
+  runtime:
     driver: bridge
+    internal: true
 
 volumes:
   postgres_data:
