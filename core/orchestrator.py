@@ -502,6 +502,8 @@ class SagaCoordinator:
                        dry_run: bool | None = None, permit_ref: str | None = None) -> dict[str, Any]:
         """Run an explicitly registered saga; default dry-run, compensate completed steps in reverse order."""
         dry = self.dry_run if dry_run is None else dry_run
+        started_all = time.monotonic()
+        deadline = started_all + contract.timeout_seconds
         if len(steps) > self.max_hops or len(steps) > contract.max_hops:
             raise OrchestrationError("saga_hop_limit_exceeded")
         if len({step.step_id for step in steps}) != len(steps):
@@ -532,11 +534,18 @@ class SagaCoordinator:
                     "input_digest": sha256_text(canonical_json(dict(planned.input_payload))),
                     "compensation_operation": planned.compensation_operation, "irreversible": planned.irreversible,
                     "side_effecting": planned.side_effecting, "approval_receipt_ref": planned.approval_receipt_ref}
-                if not await self.permit_verifier(permit_ref, claims, planned_key):
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    raise OrchestrationError("saga_deadline_exceeded_during_preflight")
+                try:
+                    async with asyncio.timeout(remaining):
+                        permitted = await self.permit_verifier(permit_ref, claims, planned_key)
+                except TimeoutError as exc:
+                    raise OrchestrationError("saga_deadline_exceeded_during_preflight") from exc
+                if not permitted:
                     raise OrchestrationError("permit_verification_denied:" + planned.step_id)
         receipts: list[StepReceipt] = []
         completed: list[SagaStep] = []
-        started_all = time.monotonic()
         async with self.semaphore:
             for index, step in enumerate(steps):
                 if index >= min(self.max_hops, contract.max_hops):
@@ -555,12 +564,16 @@ class SagaCoordinator:
                     status = "SIMULATED"
                 else:
                     try:
+                        remaining = deadline - time.monotonic()
+                        if remaining <= 0:
+                            raise OrchestrationError("saga_deadline_exceeded")
                         result = await self._invoke_with_retry(step.operation, self.adapters[step.operation], step.input_payload, key,
-                                                               timeout=min(self.operation_timeout_seconds, contract.timeout_seconds))
+                                                               timeout=min(self.operation_timeout_seconds, remaining))
                         status = "SUCCEEDED"
                         completed.append(step)
                     except Exception as exc:
-                        compensation = await self._compensate(contract, completed, failed_step=step, failed_key=key, permit_ref=permit_ref)
+                        compensation = await self._compensate(contract, completed, failed_step=step, failed_key=key,
+                                                              permit_ref=permit_ref, deadline=deadline)
                         await self.record_event(contract.task_id, "SAGA_FAILED", {
                             "failed_step_id": step.step_id, "error_type": type(exc).__name__,
                             "compensation": compensation, "side_effects_may_have_occurred": True})
@@ -578,14 +591,21 @@ class SagaCoordinator:
                 "release_authorization": False, "merge_authorization": False}
 
     async def _compensate(self, contract: TaskContract, completed: list[SagaStep], *,
-                          failed_step: SagaStep, failed_key: str, permit_ref: str | None) -> dict[str, Any]:
-        """Reconcile the failed action first; only then attempt reverse-order compensation."""
+                          failed_step: SagaStep, failed_key: str, permit_ref: str | None,
+                          deadline: float) -> dict[str, Any]:
+        """Reconcile and compensate only within the original task deadline."""
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            return {"status": "RECONCILIATION_REQUIRED", "steps": [],
+                    "reason": "task_deadline_exceeded_before_outcome_reconciliation",
+                    "failed_step_id": failed_step.step_id, "release_authorization": False}
         if self.outcome_reconciler is None:
             return {"status": "RECONCILIATION_REQUIRED", "steps": [],
                     "reason": "no trusted read-after-write outcome reconciler; compensation was not attempted",
                     "failed_step_id": failed_step.step_id, "release_authorization": False}
         try:
-            outcome = await self.outcome_reconciler(failed_step.operation, failed_step.input_payload, failed_key)
+            async with asyncio.timeout(remaining):
+                outcome = await self.outcome_reconciler(failed_step.operation, failed_step.input_payload, failed_key)
         except Exception as exc:
             return {"status": "RECONCILIATION_REQUIRED", "steps": [],
                     "reason": "outcome_reconciliation_failed:" + type(exc).__name__,
@@ -601,6 +621,11 @@ class SagaCoordinator:
                     "reason": "invalid_reconciliation_result", "release_authorization": False}
         results: list[dict[str, Any]] = []
         for step in reversed(completed):
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                results.append({"step_id": step.step_id, "status": "MANUAL_RECONCILIATION_REQUIRED",
+                                "reason": "task_deadline_exceeded_before_compensation"})
+                break
             operation = step.compensation_operation
             if not operation:
                 results.append({"step_id": step.step_id, "status": "MANUAL_RECONCILIATION_REQUIRED",
@@ -616,15 +641,26 @@ class SagaCoordinator:
                 results.append({"step_id": step.step_id, "status": "BLOCK", "reason": "compensation_permit_missing"})
                 continue
             key = hashlib.sha256(f"{contract.idempotency_key}:compensate:{step.step_id}".encode()).hexdigest()
-            permitted = await self.permit_verifier(permit_ref, {"task_id": str(contract.task_id), "candidate_sha": contract.candidate_sha,
-                "operation": operation, "policy_version": contract.policy_version,
-                "compensation_for": step.step_id}, key)
+            try:
+                async with asyncio.timeout(remaining):
+                    permitted = await self.permit_verifier(permit_ref, {"task_id": str(contract.task_id), "candidate_sha": contract.candidate_sha,
+                        "operation": operation, "policy_version": contract.policy_version,
+                        "compensation_for": step.step_id}, key)
+            except Exception as exc:
+                results.append({"step_id": step.step_id, "status": "MANUAL_RECONCILIATION_REQUIRED",
+                                "reason": "compensation_permit_check_failed:" + type(exc).__name__})
+                break
             if not permitted:
                 results.append({"step_id": step.step_id, "status": "BLOCK", "reason": "compensation_permit_denied"})
                 continue
             try:
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    results.append({"step_id": step.step_id, "status": "MANUAL_RECONCILIATION_REQUIRED",
+                                    "reason": "task_deadline_exceeded_before_compensation"})
+                    break
                 result = await self._invoke_with_retry(operation, self.adapters[operation], step.compensation_payload or {},
-                    key, timeout=min(self.operation_timeout_seconds, contract.timeout_seconds))
+                    key, timeout=min(self.operation_timeout_seconds, remaining))
                 results.append({"step_id": step.step_id, "status": "COMPENSATION_REQUEST_SUCCEEDED",
                                 "result": dict(result)})
             except Exception as exc:
