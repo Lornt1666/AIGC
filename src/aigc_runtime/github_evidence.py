@@ -236,3 +236,22 @@ def acquire_live_snapshot(repository: str, pr_number: int, *,
                                         "GitHub REST JSON does not cryptographically authenticate reviewer identity or human acceptance",
                                         "protection readback needs authorized evidence and independent verification"]},
     }
+def recheck_live_pr(repository: str, pr_number: int, *, token_env: str = "GITHUB_TOKEN",
+                    client: GitHubReadOnlyClient | None = None) -> dict[str, Any]:
+    """Re-read the PR head/base immediately before closure evaluation."""
+    repo = _safe_repo(repository)
+    if not isinstance(pr_number, int) or isinstance(pr_number, bool) or pr_number < 1:
+        raise GitHubEvidenceError("pr_number_invalid")
+    api = client or GitHubReadOnlyClient(os.environ.get(token_env, ""))
+    payload, _ = api.get(API + "/repos/" + repo + "/pulls/" + str(pr_number))
+    if not isinstance(payload, Mapping) or not isinstance(payload.get("head"), Mapping) or not isinstance(payload.get("base"), Mapping):
+        raise GitHubEvidenceError("final_pr_recheck_malformed")
+    head = payload["head"].get("sha")
+    base = payload["base"].get("sha")
+    base_branch = payload["base"].get("ref")
+    if not isinstance(head, str) or len(head) != 40 or not isinstance(base, str) or len(base) != 40:
+        raise GitHubEvidenceError("final_pr_recheck_sha_missing_or_invalid")
+    return {"head_sha": head, "base_sha": base, "base_branch": base_branch,
+            "pr_state": payload.get("state"), "pr_draft": payload.get("draft"),
+            "pr_merged": payload.get("merged"), "rechecked_at": _iso_now(),
+            "authenticated": True, "source": "github_api"}
