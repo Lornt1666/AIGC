@@ -19,10 +19,9 @@ permissions:
   contents: read
 
 concurrency:
-  group: aigc-ci-${{ github.workflow }}-${{ github.ref }}
-  # Preserve exact-head evidence and retain queued validations instead of replacing pending runs.
-  cancel-in-progress: false
-  queue: max
+  group: aigc-ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  # Superseded PR commits are stale; validate the newest PR head instead of building a long queue.
+  cancel-in-progress: true
 
 jobs:
   validate:
