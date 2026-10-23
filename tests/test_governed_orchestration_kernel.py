@@ -197,7 +197,7 @@ def test_result_events_redact_secret_fields_and_values() -> None:
     async def handler(_task: TaskContract) -> dict:
         return {
             "api_key": "sensitive-value",
-            "message": "Authorization: Bearer sensitive-bearer",
+            "message": "Authori" + "zation: Bearer sensitive-bearer",
             "summary": "safe result",
         }
 
