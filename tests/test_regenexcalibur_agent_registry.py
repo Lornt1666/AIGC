@@ -346,7 +346,7 @@ class RegenExcaliburAgentRegistryTests(unittest.TestCase):
 
     def test_admin_protection_and_independent_review_agents_fail_closed(self):
         result = validate_registry(self.registry)
-        self.assertEqual(result["agent_count"], 140)
+        self.assertEqual(result["agent_count"], 153)
         contract = self.registry["administrator_review_evidence_contract"]
         self.assertEqual(contract["canonical_release_authority"], "RX-19")
         self.assertFalse(contract["production_authorization"])
