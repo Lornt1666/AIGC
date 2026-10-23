@@ -214,7 +214,7 @@ class OrchestratorSafetyTests(unittest.TestCase):
         async def adapter(payload, *, idempotency_key):
             calls["adapter"] += 1
             await asyncio.sleep(0.05)
-            return {"status": "ok"}
+            raise TimeoutError("simulated slow adapter response")
         async def reconcile(operation, payload, idempotency_key):
             calls["reconcile"] += 1
             return "NOT_APPLIED"
