@@ -42,6 +42,7 @@ class SagaStep:
     compensation_payload: Mapping[str, Any] | None = None
     irreversible: bool = False
     idempotent: bool = False
+    compensation_idempotent: bool = False
 
 
 @dataclass(frozen=True)
@@ -60,6 +61,7 @@ class ActionAdapter(Protocol):
 
 
 PermitVerifier = Callable[[str, Mapping[str, Any], str], Awaitable[bool]]
+OutcomeReconciler = Callable[[str, Mapping[str, Any], str], Awaitable[str]]
 
 
 class OrchestrationError(RuntimeError):
@@ -85,6 +87,7 @@ class SagaCoordinator:
         pool_max_size: int = 10,
         adapters: Mapping[str, ActionAdapter] | None = None,
         permit_verifier: PermitVerifier | None = None,
+        outcome_reconciler: OutcomeReconciler | None = None,
         redis_client: Redis | None = None,
     ):
         if max_hops < 1 or max_hops > 10:
@@ -108,6 +111,7 @@ class SagaCoordinator:
         self.max_retry_seconds = max_retry_seconds
         self.adapters = dict(adapters or {})
         self.permit_verifier = permit_verifier
+        self.outcome_reconciler = outcome_reconciler
         self.redis: Redis = redis_client or Redis.from_url(redis_url, decode_responses=True, socket_connect_timeout=5, socket_timeout=10)
         self._owns_redis = redis_client is None
         self.pool = AsyncConnectionPool(conninfo=database_url, min_size=pool_min_size, max_size=pool_max_size,
@@ -304,7 +308,7 @@ class SagaCoordinator:
                         status = "SUCCEEDED"
                         completed.append(step)
                     except Exception as exc:
-                        compensation = await self._compensate(contract, completed, permit_ref=permit_ref)
+                        compensation = await self._compensate(contract, completed, failed_step=step, failed_key=key, permit_ref=permit_ref)
                         await self.record_event(contract.task_id, "SAGA_FAILED", {
                             "failed_step_id": step.step_id, "error_type": type(exc).__name__,
                             "compensation": compensation, "side_effects_may_have_occurred": True})
@@ -322,8 +326,27 @@ class SagaCoordinator:
                 "release_authorization": False, "merge_authorization": False}
 
     async def _compensate(self, contract: TaskContract, completed: list[SagaStep], *,
-                          permit_ref: str | None) -> dict[str, Any]:
-        """Attempt explicit compensations in reverse order; unresolved steps require reconciliation."""
+                          failed_step: SagaStep, failed_key: str, permit_ref: str | None) -> dict[str, Any]:
+        """Reconcile the failed action first; only then attempt reverse-order compensation."""
+        if self.outcome_reconciler is None:
+            return {"status": "RECONCILIATION_REQUIRED", "steps": [],
+                    "reason": "no trusted read-after-write outcome reconciler; compensation was not attempted",
+                    "failed_step_id": failed_step.step_id, "release_authorization": False}
+        try:
+            outcome = await self.outcome_reconciler(failed_step.operation, failed_step.input_payload, failed_key)
+        except Exception as exc:
+            return {"status": "RECONCILIATION_REQUIRED", "steps": [],
+                    "reason": "outcome_reconciliation_failed:" + type(exc).__name__,
+                    "failed_step_id": failed_step.step_id, "release_authorization": False}
+        if outcome == "UNKNOWN":
+            return {"status": "RECONCILIATION_REQUIRED", "steps": [],
+                    "reason": "side_effect_outcome_unknown; fail_stopped_without_compensation",
+                    "failed_step_id": failed_step.step_id, "release_authorization": False}
+        if outcome == "APPLIED":
+            completed = [*completed, failed_step]
+        elif outcome != "NOT_APPLIED":
+            return {"status": "RECONCILIATION_REQUIRED", "steps": [],
+                    "reason": "invalid_reconciliation_result", "release_authorization": False}
         results: list[dict[str, Any]] = []
         for step in reversed(completed):
             operation = step.compensation_operation
@@ -333,6 +356,9 @@ class SagaCoordinator:
                 continue
             if operation not in self.adapters:
                 results.append({"step_id": step.step_id, "status": "BLOCK", "reason": "compensation_not_allowlisted"})
+                continue
+            if step.compensation_idempotent is not True:
+                results.append({"step_id": step.step_id, "status": "BLOCK", "reason": "compensation_idempotency_not_declared"})
                 continue
             if not permit_ref or self.permit_verifier is None:
                 results.append({"step_id": step.step_id, "status": "BLOCK", "reason": "compensation_permit_missing"})
