@@ -56,7 +56,7 @@ The implementation status vocabulary is: `IMPLEMENTED_AND_TESTED`, `IMPLEMENTED_
 | Artifact upload | CI log reports artifact upload succeeded, SHA-256 `d7b435c289debf0806787cca81fff35aa81adbf9baa6dbeaf36bfbcd917413a3` | Upload/integrity metadata only; does not make failed validation pass |
 | Locked-target revalidation jobs | Two jobs completed successfully for historical fixed SHAs | Not evidence for the current candidate's full validation |
 
-The specific redaction failure must be diagnosed from the canonical runner's detailed stage report and resolved at its source. The retrieved log establishes the failing stage name but does not expose enough detail to responsibly assert the precise cause. Do not disable or weaken the redaction control merely to obtain a green run.
+The downloaded sanitized artifact for run #4591 narrowed the failure to one scanner finding: `docs/master/AIGC_CONTROL_TO_EVIDENCE_TRACEABILITY_STANDARD.md`, line 96, pattern `(?i)(authorization\\s*:\\s*)[^\\n]+`. The scanner treated a prose label (`Authorization: ...`) as secret-like content. The label was changed to `Authorization requirements — ...` in commit `bf5849a9b73788e1f5fb9c1ecb176b0a2b672b14`; this changes documentation wording only and does not weaken or bypass the scanner. Run #4594 on that candidate was still in progress at the follow-up observation; the correction is therefore **not yet verified by a completed CI run**. Do not disable or weaken redaction to obtain a green result.
 
 ## 4. Requirement-by-requirement logical wiring audit
 
@@ -127,7 +127,7 @@ The registry diagnostic in run #4591 reported `153` agents, all disabled by defa
 | Secret management | DISABLED | Default disabled; no production credential retrieval authorized or evidenced. |
 | Memory/vector retrieval | BLOCKED | Optional Qdrant service is not proof of authorization-aware retrieval integration. |
 | Observability | PARTIAL | Code/configuration exists; production coverage and alert/recovery drills absent from evidence packet. |
-| Supply-chain integrity | PARTIAL | CI pins several actions and runs dependency checks; current canonical validation fails and no accepted release artifact/provenance bundle for this candidate is established. |
+| Supply-chain integrity | BLOCKED | CI pins several workflow actions and runs dependency checks, but `requirements.txt` uses version ranges without hashes; Dockerfile uses `python:3.12-slim-bookworm` without an immutable digest, and Compose uses tagged PostgreSQL/Redis/Qdrant images rather than digest-pinned images. The Dockerfile itself states these are pre-production hardening tasks. No accepted release artifact/provenance bundle for this candidate is established. |
 | Reliability/recovery | BLOCKED | No witnessed production-like chaos, restore, RPO/RTO, or rollback drill. |
 | Performance/SLO | BLOCKED | Queue <500 ms and worker 30 s are proposed targets; no benchmark with workload profile, p95/p99, sample size, or capacity model was established. |
 | Independent security assurance | BLOCKED | No independent security review bound to the exact candidate and closed findings ledger was established. |
@@ -138,15 +138,16 @@ The registry diagnostic in run #4591 reported `153` agents, all disabled by defa
 Do not enable more agents or protected effects before these prerequisites are met.
 
 1. **R-001 — Diagnose canonical CI redaction failure.** Retrieve the runner's complete redaction-stage report and identify the exact offending path/rule/input. Fix the underlying defect or correct a demonstrably false-positive rule with regression coverage. Do not bypass the check. Re-run all required jobs on the new exact SHA.
-2. **R-002 — Complete exact-head CI.** Require all mandatory steps/jobs to finish successfully; inspect skipped jobs, warnings, artifact generation and step conclusions. Any new commit resets candidate-specific evidence.
-3. **R-003 — Prove contract-to-runtime wiring.** Add integration tests for ingress, registry, durable state/outbox, Redis delivery, worker validation, durable terminal state and ACK order.
-4. **R-004 — Keep reference worker fail-closed until execution isolation is real.** Choose and implement an OS/container/VM isolation profile with no inherited secrets, restricted egress, filesystem, process, syscall and resource boundaries. AST screening is supplemental.
-5. **R-005 — Prove point-of-effect authorization.** Wire cryptographic permit validation and human approval receipt checks into every protected adapter call. Test expiry, revocation, replay, wrong candidate/action/resource, concurrent claims, and policy outage.
-6. **R-006 — Exercise crash consistency and external ambiguity.** Fault-inject every critical point from the outbox through effect, receipt and ACK; prove dedupe/reconciliation and Saga compensation without duplicate or unauthorized effects.
-7. **R-007 — Validate operations.** Run isolated restore and rollback drills; measure approved RPO/RTO, alert delivery, telemetry loss, queue latency, p95/p99 and resource/cost ceilings.
-8. **R-008 — Obtain independent review.** A qualified reviewer not responsible for implementing the reviewed control must inspect the exact SHA, execute agreed adversarial tests, and track findings to verified remediation.
-9. **R-009 — Assemble certification evidence packet.** Bind code SHA/tree, workflow IDs and latest attempts, test outputs, artifact/provenance digests, environment/configuration, security review, operational drills, exceptions and human acceptance into a canonical evidence digest.
-10. **R-010 — Obtain release decision.** RX-19 reviews the complete packet and records approve/reject/defer for the same candidate and digest. No release before this decision.
+2. **R-002 — Complete exact-head CI.** The documentation-only scanner false-positive correction is in candidate `bf5849a9b73788e1f5fb9c1ecb176b0a2b672b14`; run #4594 was still in progress at the latest observation. Require all mandatory steps/jobs to finish successfully; inspect skipped jobs, warnings, artifact generation and step conclusions. Any new commit resets candidate-specific evidence.
+3. **R-003 — Close supply-chain reproducibility gaps.** Generate and review a hash-locked dependency file for the supported runtime, pin all production base images by immutable digest, and verify the actual built artifact's provenance and subject digest. Keep version-range requirements for development only if the production build consumes the approved lockfile.
+4. **R-004 — Prove contract-to-runtime wiring.** Add integration tests for ingress, registry, durable state/outbox, Redis delivery, worker validation, durable terminal state and ACK order.
+5. **R-005 — Keep reference worker fail-closed until execution isolation is real.** Choose and implement an OS/container/VM isolation profile with no inherited secrets, restricted egress, filesystem, process, syscall and resource boundaries. AST screening is supplemental.
+6. **R-006 — Prove point-of-effect authorization.** Wire cryptographic permit validation and human approval receipt checks into every protected adapter call. Test expiry, revocation, replay, wrong candidate/action/resource, concurrent claims, and policy outage.
+7. **R-007 — Exercise crash consistency and external ambiguity.** Fault-inject every critical point from the outbox through effect, receipt and ACK; prove dedupe/reconciliation and Saga compensation without duplicate or unauthorized effects.
+8. **R-008 — Validate operations.** Run isolated restore and rollback drills; measure approved RPO/RTO, alert delivery, telemetry loss, queue latency, p95/p99 and resource/cost ceilings.
+9. **R-009 — Obtain independent review.** A qualified reviewer not responsible for implementing the reviewed control must inspect the exact SHA, execute agreed adversarial tests, and track findings to verified remediation.
+10. **R-010 — Assemble certification evidence packet.** Bind code SHA/tree, workflow IDs and latest attempts, test outputs, artifact/provenance digests, environment/configuration, security review, operational drills, exceptions and human acceptance into a canonical evidence digest.
+11. **R-011 — Obtain release decision.** RX-19 reviews the complete packet and records approve/reject/defer for the same candidate and digest. No release before this decision.
 
 ## 7. Certification dossier requirements
 
