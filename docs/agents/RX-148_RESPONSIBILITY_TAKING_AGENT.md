@@ -1,6 +1,6 @@
 # AIGC Responsibility Taking Agent (RX-148) — Executable Closure Workflow Specification
 
-**Status:** SPECIFIED; implementation and tests not yet established by this document.  
+**Status:** REFERENCE IMPLEMENTATION COMMITTED; exact-head CI pending; live GitHub adapter, independent verification, and production authorization are not established.  
 **Release disposition:** BLOCK unless every required evidence gate passes and RX-19 issues the sole authorized release decision.  
 **Coordinator:** RX-144 (coordination only).  
 **Authority:** RX-19 remains the sole release decision authority. This agent cannot approve itself, assign a human reviewer, alter repository protections, merge, deploy, or release.
@@ -89,3 +89,11 @@ SPECIFIED -> IMPLEMENTED -> TESTED -> INDEPENDENTLY_VERIFIED -> PRODUCTION_AUTHO
 
 ## 10. Next external action
 An authorized repository administrator must supply authenticated effective-protection readback for the PR base and release branches and assign a qualified independent reviewer. RX-148 can validate those records when provided; it cannot create them.
+
+## 11. Reference implementation checkpoint
+- Evaluator: `src/aigc_runtime/closure_workflow.py` (pure snapshot validator; deterministic output; no external side effects).
+- CLI: `scripts/aigc_closure_check.py <snapshot.json> [--output result.json]`; exits 0 only when all evidence gates including authenticated RX-19 decision pass, and 2 for BLOCK or invalid input.
+- Tests: `tests/test_aigc_closure_workflow.py`; CI explicitly invokes this test module and compiles the evaluator/CLI.
+- Required snapshot fields include an authenticated live GitHub observation, exact-head CI run attempts, artifact byte/manifest verification from a trusted adapter, authenticated protection readback, independent review/retest, verified provenance, policy-bound human acceptance, RX-19 handoff receipt, and RX-19 decision.
+- This evaluator validates the supplied snapshot's claims and cross-bindings; it does not itself call GitHub or cryptographically verify administrator, reviewer, provenance, acceptance, or RX-19 receipts. A trusted acquisition/verification adapter and independent review are required before treating its output as release evidence.
+- The evaluator never merges, deploys, activates agents, or performs a release action. An all-PASS result is a report only, not an execution command.
