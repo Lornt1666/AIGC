@@ -254,6 +254,39 @@ class SagaCoordinator:
                     await cur.execute("UPDATE aigc_tasks SET updated_at=now() WHERE task_id=%s", (str(task_id),))
         return str(event_id)
 
+    async def transition_task(self, task_id: UUID, next_status: TaskStatus, *, reason: str, evidence: Mapping[str, Any] | None = None) -> bool:
+        """Apply a validated task state transition and append its event atomically."""
+        allowed = {
+            TaskStatus.ACCEPTED: {TaskStatus.READY, TaskStatus.BLOCKED, TaskStatus.FAILED},
+            TaskStatus.READY: {TaskStatus.RUNNING, TaskStatus.BLOCKED, TaskStatus.FAILED},
+            TaskStatus.RUNNING: {TaskStatus.SUCCEEDED, TaskStatus.PARTIAL, TaskStatus.BLOCKED, TaskStatus.FAILED, TaskStatus.COMPENSATING},
+            TaskStatus.COMPENSATING: {TaskStatus.COMPENSATED, TaskStatus.BLOCKED, TaskStatus.FAILED},
+        }
+        if not isinstance(next_status, TaskStatus) or not isinstance(reason, str) or not reason.strip():
+            raise OrchestrationError("task_transition_contract_invalid")
+        async with self.pool.connection() as conn:
+            async with conn.transaction():
+                async with conn.cursor() as cur:
+                    await cur.execute("SELECT status FROM aigc_tasks WHERE task_id=%s FOR UPDATE", (str(task_id),))
+                    row = await cur.fetchone()
+                    if not row:
+                        raise OrchestrationError("task_not_found_for_transition")
+                    current = TaskStatus(row["status"])
+                    if current == next_status:
+                        return False
+                    if next_status not in allowed.get(current, set()):
+                        raise OrchestrationError("task_state_transition_not_allowed:" + current.value + "->" + next_status.value)
+                    await cur.execute("SELECT COALESCE(MAX(sequence),0)+1 AS seq FROM aigc_events WHERE task_id=%s", (str(task_id),))
+                    sequence = int((await cur.fetchone())["seq"])
+                    event_id = uuid4()
+                    payload = {"event_id": str(event_id), "task_id": str(task_id), "sequence": sequence,
+                               "event_type": "TASK_STATE_TRANSITION", "previous_status": current.value,
+                               "next_status": next_status.value, "reason": reason, "evidence": dict(evidence or {})}
+                    encoded = canonical_json(payload)
+                    await cur.execute("INSERT INTO aigc_events(event_id,task_id,sequence,event_type,payload,payload_sha256) VALUES(%s,%s,%s,%s,%s::jsonb,%s)",
+                        (str(event_id), str(task_id), sequence, "TASK_STATE_TRANSITION", encoded, sha256_text(encoded)))
+                    await cur.execute("UPDATE aigc_tasks SET status=%s,updated_at=now() WHERE task_id=%s", (next_status.value, str(task_id)))
+        return True
     async def consume_once(self, handler: Callable[[Mapping[str, Any]], Awaitable[None]], *, block_ms: int = 1000) -> int:
         """Process pending retries before new entries; poison messages are dead-lettered at a fixed ceiling."""
         if block_ms < 1 or block_ms > 30_000:
