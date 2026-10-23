@@ -214,6 +214,15 @@ def main() -> int:
             Path(args.output).write_text(rendered, encoding="utf-8")
         else:
             sys.stdout.write(rendered)
+        if args.prepare:
+            required_core = {"G0_LIVE_RECONCILIATION", "G1_EXACT_HEAD_CI", "G2_ARTIFACT_INTEGRITY",
+                             "G3_EFFECTIVE_PROTECTION", "G4_INDEPENDENT_REVIEW", "G5_TRUSTED_PROVENANCE"}
+            gate_status = {item["gate_id"]: item["status"] for item in result.get("gate_results", [])}
+            preparation_passed = (result.get("evidence_digest_claim_matches") == "PREPARATION_ONLY"
+                and required_core.issubset(gate_status)
+                and all(gate_status[name] == "PASS" for name in required_core)
+                and result.get("acquisition", {}).get("complete") is True)
+            return 0 if preparation_passed else 2
         return 0 if result["disposition"] == "RX19_APPROVED_EVIDENCE_ONLY_NO_ACTION" else 2
     except (OSError, UnicodeError, json.JSONDecodeError, ValueError, GitHubEvidenceError, ReceiptVerificationError) as exc:
         print(json.dumps({"disposition": "BLOCK", "error": str(exc), "side_effects_performed": False}, sort_keys=True), file=sys.stderr)
