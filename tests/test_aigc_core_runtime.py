@@ -1,6 +1,7 @@
 import ast
 import asyncio
 import unittest
+import time
 from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
@@ -9,7 +10,7 @@ from pydantic import ValidationError
 from core.contracts import MutationPayload, TaskContract, ToolPermit
 from core.arbiter import audit_python_source
 from core.orchestrator import (OrchestrationError, SagaCoordinator, SagaStep,
-                               dead_letter_disposition_id, validate_hop_count)
+                               dead_letter_disposition_id, validate_hop_count, canonical_json, sha256_text)
 
 
 def contract(**overrides):
@@ -345,6 +346,139 @@ class OrchestratorSafetyTests(unittest.TestCase):
         self.assertIn("tgrelid=to_regclass(%s)", cursor.query)
         self.assertEqual(cursor.params, ("aigc_events_no_update", "public.aigc_events"))
 
+
+
+    def test_saga_payload_is_snapshotted_before_awaited_permit_verification(self):
+        original = {"resource": {"value": "approved"}}
+        observed = {"payload": None, "preflight_digest": None}
+        async def adapter(payload, *, idempotency_key):
+            observed["payload"] = payload
+            return {"ok": True}
+        async def permit(ref, claims, key):
+            observed["preflight_digest"] = claims["input_digest"]
+            original["resource"]["value"] = "changed-after-authorization-start"
+            return True
+        coordinator = SagaCoordinator(
+            database_url="postgresql://unused", redis_url="redis://localhost",
+            dry_run=False, adapters={"write": adapter}, permit_verifier=permit)
+        async def record_event(*args, **kwargs):
+            return None
+        coordinator.record_event = record_event
+        item = contract(candidate_sha="a" * 40)
+        step = SagaStep("snapshot", "write", original, idempotent=True, side_effecting=False)
+        result = asyncio.run(coordinator.run_saga(item, [step], dry_run=False, permit_ref="permit"))
+        self.assertEqual(result["status"], "SUCCEEDED")
+        self.assertEqual(observed["payload"]["resource"]["value"], "approved")
+        self.assertEqual(
+            observed["preflight_digest"],
+            sha256_text(canonical_json({"resource": {"value": "approved"}})),
+        )
+        self.assertEqual(original["resource"]["value"], "changed-after-authorization-start")
+
+    def test_live_saga_rechecks_permit_immediately_before_effect(self):
+        calls = {"permit": 0, "adapter": 0}
+        async def adapter(payload, *, idempotency_key):
+            calls["adapter"] += 1
+            return {"ok": True}
+        async def permit(ref, claims, key):
+            calls["permit"] += 1
+            return calls["permit"] == 1
+        coordinator = SagaCoordinator(
+            database_url="postgresql://unused", redis_url="redis://localhost",
+            dry_run=False, adapters={"write": adapter}, permit_verifier=permit)
+        async def record_event(*args, **kwargs):
+            return None
+        coordinator.record_event = record_event
+        item = contract(candidate_sha="a" * 40)
+        step = SagaStep("point-of-effect", "write", {}, idempotent=True, side_effecting=False)
+        with self.assertRaisesRegex(OrchestrationError, "saga_step_blocked"):
+            asyncio.run(coordinator.run_saga(item, [step], dry_run=False, permit_ref="permit"))
+        self.assertEqual(calls, {"permit": 2, "adapter": 0})
+
+    def test_saga_reauthorizes_each_retry_attempt(self):
+        calls = {"permit": 0, "adapter": 0, "reconcile": 0}
+        async def adapter(payload, *, idempotency_key):
+            calls["adapter"] += 1
+            raise TimeoutError("synthetic transient failure")
+        async def permit(ref, claims, key):
+            calls["permit"] += 1
+            return calls["permit"] < 3
+        async def reconcile(operation, payload, key):
+            calls["reconcile"] += 1
+            return "NOT_APPLIED"
+        coordinator = SagaCoordinator(
+            database_url="postgresql://unused", redis_url="redis://localhost",
+            dry_run=False, adapters={"write": adapter}, permit_verifier=permit,
+            outcome_reconciler=reconcile, max_attempts=3,
+            base_retry_seconds=0, max_retry_seconds=0)
+        async def record_event(*args, **kwargs):
+            return None
+        coordinator.record_event = record_event
+        item = contract(candidate_sha="a" * 40)
+        step = SagaStep("retry-auth", "write", {}, idempotent=True, side_effecting=False)
+        with self.assertRaisesRegex(OrchestrationError, "saga_step_blocked"):
+            asyncio.run(coordinator.run_saga(item, [step], dry_run=False, permit_ref="permit"))
+        self.assertEqual(calls["permit"], 3)
+        self.assertEqual(calls["adapter"], 1)
+        self.assertEqual(calls["reconcile"], 1)
+
+    def test_saga_rejects_oversized_payload_before_permit_or_adapter(self):
+        calls = {"permit": 0, "adapter": 0}
+        async def adapter(payload, *, idempotency_key):
+            calls["adapter"] += 1
+            return {"ok": True}
+        async def permit(ref, claims, key):
+            calls["permit"] += 1
+            return True
+        coordinator = SagaCoordinator(
+            database_url="postgresql://unused", redis_url="redis://localhost",
+            dry_run=False, adapters={"write": adapter}, permit_verifier=permit)
+        item = contract(candidate_sha="a" * 40)
+        step = SagaStep("oversize", "write", {"data": "x" * 1_000_001},
+                        idempotent=True, side_effecting=False)
+        with self.assertRaisesRegex(OrchestrationError, "saga_payload_size_limit_exceeded"):
+            asyncio.run(coordinator.run_saga(item, [step], dry_run=False, permit_ref="permit"))
+        self.assertEqual(calls, {"permit": 0, "adapter": 0})
+
+
+    def test_compensation_permit_binds_original_and_compensation_payload_digests(self):
+        observed = {"claims": None, "payload": None}
+        async def adapter(payload, *, idempotency_key):
+            observed["payload"] = payload
+            return {"restored": True}
+        async def permit(ref, claims, key):
+            observed["claims"] = claims
+            return True
+        async def reconcile(operation, payload, key):
+            return "NOT_APPLIED"
+        coordinator = SagaCoordinator(
+            database_url="postgresql://unused", redis_url="redis://localhost",
+            dry_run=False, adapters={"undo": adapter}, permit_verifier=permit,
+            outcome_reconciler=reconcile)
+        item = contract(candidate_sha="a" * 40)
+        completed_step = SagaStep(
+            "completed", "write", {"resource": "original"},
+            compensation_operation="undo", compensation_payload={"restore": "previous"},
+            side_effecting=True, idempotent=True, compensation_idempotent=True)
+        failed_step = SagaStep("failed", "write", {"resource": "failed"}, idempotent=True, side_effecting=False)
+        async def run():
+            return await coordinator._compensate(
+                item, [completed_step], failed_step=failed_step, failed_key="failed-key",
+                permit_ref="permit", deadline=time.monotonic() + 2)
+        result = asyncio.run(run())
+        self.assertEqual(result["status"], "COMPENSATION_REQUESTS_SUCCEEDED")
+        self.assertEqual(observed["payload"], {"restore": "previous"})
+        self.assertEqual(observed["claims"]["input_digest"],
+                         sha256_text(canonical_json({"restore": "previous"})))
+        self.assertEqual(observed["claims"]["original_input_digest"],
+                         sha256_text(canonical_json({"resource": "original"})))
+
+    def test_saga_payload_with_unpaired_surrogate_fails_closed(self):
+        coordinator = SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost")
+        item = contract()
+        step = SagaStep("surrogate", "read", {"value": "\ud800"})
+        with self.assertRaisesRegex(OrchestrationError, "saga_payload_not_canonical_json"):
+            asyncio.run(coordinator.run_saga(item, [step], dry_run=True))
 
 
 if __name__ == "__main__":

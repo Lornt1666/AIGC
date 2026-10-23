@@ -89,6 +89,10 @@ class OrchestrationError(RuntimeError):
     pass
 
 
+class PointOfEffectAuthorizationError(OrchestrationError):
+    """The next external effect was blocked before the adapter was invoked."""
+
+
 class SagaCoordinator:
     def __init__(
         self,
@@ -500,12 +504,53 @@ class SagaCoordinator:
 
     async def run_saga(self, contract: TaskContract, steps: list[SagaStep], *,
                        dry_run: bool | None = None, permit_ref: str | None = None) -> dict[str, Any]:
-        """Run an explicitly registered saga; default dry-run, compensate completed steps in reverse order."""
+        """Run an explicitly registered saga; snapshot inputs before authorization and default to dry-run."""
         dry = self.dry_run if dry_run is None else dry_run
         started_all = time.monotonic()
         deadline = started_all + contract.timeout_seconds
         if len(steps) > self.max_hops or len(steps) > contract.max_hops:
             raise OrchestrationError("saga_hop_limit_exceeded")
+
+        # Frozen dataclasses do not freeze nested Mapping values. Snapshot canonical
+        # JSON before the first await so the verified bytes and executed payload match.
+        # Bound each payload to prevent unbounded memory use at the authorization boundary.
+        def snapshot_payload(payload: Mapping[str, Any] | None) -> dict[str, Any] | None:
+            if payload is None:
+                return None
+            if not isinstance(payload, Mapping):
+                raise OrchestrationError("saga_payload_must_be_mapping")
+            try:
+                encoded = canonical_json(dict(payload))
+                encoded_bytes = encoded.encode("utf-8")
+            except (TypeError, ValueError, RecursionError, UnicodeEncodeError) as exc:
+                raise OrchestrationError("saga_payload_not_canonical_json") from exc
+            if len(encoded_bytes) > 1_000_000:
+                raise OrchestrationError("saga_payload_size_limit_exceeded")
+            try:
+                snapshot = json.loads(encoded)
+            except (json.JSONDecodeError, RecursionError) as exc:
+                raise OrchestrationError("saga_payload_snapshot_failed") from exc
+            if not isinstance(snapshot, dict):
+                raise OrchestrationError("saga_payload_must_be_object")
+            return snapshot
+
+        snapshotted_steps: list[SagaStep] = []
+        for supplied in steps:
+            if not isinstance(supplied, SagaStep):
+                raise OrchestrationError("saga_step_type_invalid")
+            snapshotted_steps.append(SagaStep(
+                step_id=supplied.step_id,
+                operation=supplied.operation,
+                input_payload=snapshot_payload(supplied.input_payload) or {},
+                compensation_operation=supplied.compensation_operation,
+                compensation_payload=snapshot_payload(supplied.compensation_payload),
+                irreversible=supplied.irreversible,
+                side_effecting=supplied.side_effecting,
+                approval_receipt_ref=supplied.approval_receipt_ref,
+                idempotent=supplied.idempotent,
+                compensation_idempotent=supplied.compensation_idempotent,
+            ))
+        steps = snapshotted_steps
         if len({step.step_id for step in steps}) != len(steps):
             raise OrchestrationError("duplicate_saga_step_id")
         if any(not step.step_id or not step.operation for step in steps):
@@ -574,10 +619,41 @@ class SagaCoordinator:
                         remaining = deadline - time.monotonic()
                         if remaining <= 0:
                             raise OrchestrationError("saga_deadline_exceeded")
-                        result = await self._invoke_with_retry(step.operation, self.adapters[step.operation], step.input_payload, key,
-                                                               timeout=min(self.operation_timeout_seconds, remaining))
+                        async def verify_permit_at_effect_boundary() -> bool:
+                            if self.permit_verifier is None or not permit_ref or not contract.candidate_sha:
+                                return False
+                            claims = {"task_id": str(contract.task_id), "candidate_sha": contract.candidate_sha,
+                                "policy_version": contract.policy_version, "operation": step.operation,
+                                "input_digest": sha256_text(canonical_json(dict(step.input_payload))),
+                                "compensation_operation": step.compensation_operation, "irreversible": step.irreversible,
+                                "side_effecting": step.side_effecting, "approval_receipt_ref": step.approval_receipt_ref}
+                            try:
+                                permit_remaining = deadline - time.monotonic()
+                                if permit_remaining <= 0:
+                                    return False
+                                async with asyncio.timeout(permit_remaining):
+                                    return bool(await self.permit_verifier(permit_ref, claims, key))
+                            except asyncio.CancelledError:
+                                raise
+                            except Exception:
+                                return False
+                        result = await self._invoke_with_retry(
+                            step.operation, self.adapters[step.operation], step.input_payload, key,
+                            timeout=min(self.operation_timeout_seconds, remaining),
+                            before_attempt=verify_permit_at_effect_boundary if not dry else None)
                         status = "SUCCEEDED"
                         completed.append(step)
+                    except PointOfEffectAuthorizationError as exc:
+                        compensation = await self._compensate(
+                            contract, completed, failed_step=step, failed_key=key,
+                            permit_ref=permit_ref, deadline=deadline, failed_step_attempted=False)
+                        await self.record_event(contract.task_id, "SAGA_BLOCKED", {
+                            "failed_step_id": step.step_id, "error_type": type(exc).__name__,
+                            "compensation": compensation,
+                            "failed_step_effect_attempted": False,
+                            "side_effects_may_have_occurred": bool(completed)})
+                        raise OrchestrationError(
+                            "saga_step_blocked; compensation_status:" + compensation["status"]) from exc
                     except Exception as exc:
                         compensation = await self._compensate(contract, completed, failed_step=step, failed_key=key,
                                                               permit_ref=permit_ref, deadline=deadline)
@@ -601,33 +677,38 @@ class SagaCoordinator:
 
     async def _compensate(self, contract: TaskContract, completed: list[SagaStep], *,
                           failed_step: SagaStep, failed_key: str, permit_ref: str | None,
-                          deadline: float) -> dict[str, Any]:
+                          deadline: float, failed_step_attempted: bool = True) -> dict[str, Any]:
         """Reconcile and compensate only within the original task deadline."""
-        remaining = deadline - time.monotonic()
-        if remaining <= 0:
-            return {"status": "RECONCILIATION_REQUIRED", "steps": [],
-                    "reason": "task_deadline_exceeded_before_outcome_reconciliation",
+        if not completed and not failed_step_attempted:
+            return {"status": "NOT_REQUIRED", "steps": [],
+                    "reason": "authorization_blocked_before_any_effect",
                     "failed_step_id": failed_step.step_id, "release_authorization": False}
-        if self.outcome_reconciler is None:
-            return {"status": "RECONCILIATION_REQUIRED", "steps": [],
-                    "reason": "no trusted read-after-write outcome reconciler; compensation was not attempted",
-                    "failed_step_id": failed_step.step_id, "release_authorization": False}
-        try:
-            async with asyncio.timeout(remaining):
-                outcome = await self.outcome_reconciler(failed_step.operation, failed_step.input_payload, failed_key)
-        except Exception as exc:
-            return {"status": "RECONCILIATION_REQUIRED", "steps": [],
-                    "reason": "outcome_reconciliation_failed:" + type(exc).__name__,
-                    "failed_step_id": failed_step.step_id, "release_authorization": False}
-        if outcome == "UNKNOWN":
-            return {"status": "RECONCILIATION_REQUIRED", "steps": [],
-                    "reason": "side_effect_outcome_unknown; fail_stopped_without_compensation",
-                    "failed_step_id": failed_step.step_id, "release_authorization": False}
-        if outcome == "APPLIED":
-            completed = [*completed, failed_step]
-        elif outcome != "NOT_APPLIED":
-            return {"status": "RECONCILIATION_REQUIRED", "steps": [],
-                    "reason": "invalid_reconciliation_result", "release_authorization": False}
+        if failed_step_attempted:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                return {"status": "RECONCILIATION_REQUIRED", "steps": [],
+                        "reason": "task_deadline_exceeded_before_outcome_reconciliation",
+                        "failed_step_id": failed_step.step_id, "release_authorization": False}
+            if self.outcome_reconciler is None:
+                return {"status": "RECONCILIATION_REQUIRED", "steps": [],
+                        "reason": "no trusted read-after-write outcome reconciler; compensation was not attempted",
+                        "failed_step_id": failed_step.step_id, "release_authorization": False}
+            try:
+                async with asyncio.timeout(remaining):
+                    outcome = await self.outcome_reconciler(failed_step.operation, failed_step.input_payload, failed_key)
+            except Exception as exc:
+                return {"status": "RECONCILIATION_REQUIRED", "steps": [],
+                        "reason": "outcome_reconciliation_failed:" + type(exc).__name__,
+                        "failed_step_id": failed_step.step_id, "release_authorization": False}
+            if outcome == "UNKNOWN":
+                return {"status": "RECONCILIATION_REQUIRED", "steps": [],
+                        "reason": "side_effect_outcome_unknown; fail_stopped_without_compensation",
+                        "failed_step_id": failed_step.step_id, "release_authorization": False}
+            if outcome == "APPLIED":
+                completed = [*completed, failed_step]
+            elif outcome != "NOT_APPLIED":
+                return {"status": "RECONCILIATION_REQUIRED", "steps": [],
+                        "reason": "invalid_reconciliation_result", "release_authorization": False}
         results: list[dict[str, Any]] = []
         for step in reversed(completed):
             remaining = deadline - time.monotonic()
@@ -650,26 +731,38 @@ class SagaCoordinator:
                 results.append({"step_id": step.step_id, "status": "BLOCK", "reason": "compensation_permit_missing"})
                 continue
             key = hashlib.sha256(f"{contract.idempotency_key}:compensate:{step.step_id}".encode()).hexdigest()
-            try:
-                async with asyncio.timeout(remaining):
-                    permitted = await self.permit_verifier(permit_ref, {"task_id": str(contract.task_id), "candidate_sha": contract.candidate_sha,
-                        "operation": operation, "policy_version": contract.policy_version,
-                        "compensation_for": step.step_id}, key)
-            except Exception as exc:
-                results.append({"step_id": step.step_id, "status": "MANUAL_RECONCILIATION_REQUIRED",
-                                "reason": "compensation_permit_check_failed:" + type(exc).__name__})
-                break
-            if not permitted:
-                results.append({"step_id": step.step_id, "status": "BLOCK", "reason": "compensation_permit_denied"})
-                continue
+            compensation_payload = step.compensation_payload or {}
+            compensation_claims = {
+                "task_id": str(contract.task_id),
+                "candidate_sha": contract.candidate_sha,
+                "operation": operation,
+                "policy_version": contract.policy_version,
+                "compensation_for": step.step_id,
+                "original_operation": step.operation,
+                "original_input_digest": sha256_text(canonical_json(dict(step.input_payload))),
+                "input_digest": sha256_text(canonical_json(dict(compensation_payload))),
+            }
+            async def verify_compensation_permit_at_effect_boundary() -> bool:
+                try:
+                    permit_remaining = deadline - time.monotonic()
+                    if permit_remaining <= 0:
+                        return False
+                    async with asyncio.timeout(permit_remaining):
+                        return bool(await self.permit_verifier(permit_ref, compensation_claims, key))
+                except asyncio.CancelledError:
+                    raise
+                except Exception:
+                    return False
             try:
                 remaining = deadline - time.monotonic()
                 if remaining <= 0:
                     results.append({"step_id": step.step_id, "status": "MANUAL_RECONCILIATION_REQUIRED",
                                     "reason": "task_deadline_exceeded_before_compensation"})
                     break
-                result = await self._invoke_with_retry(operation, self.adapters[operation], step.compensation_payload or {},
-                    key, timeout=min(self.operation_timeout_seconds, remaining))
+                result = await self._invoke_with_retry(
+                    operation, self.adapters[operation], compensation_payload, key,
+                    timeout=min(self.operation_timeout_seconds, remaining),
+                    before_attempt=verify_compensation_permit_at_effect_boundary)
                 results.append({"step_id": step.step_id, "status": "COMPENSATION_REQUEST_SUCCEEDED",
                                 "result": dict(result)})
             except Exception as exc:
@@ -680,7 +773,8 @@ class SagaCoordinator:
                 "steps": results, "release_authorization": False}
     async def _invoke_with_retry(self, operation: str, adapter: ActionAdapter,
                                  payload: Mapping[str, Any], key: str,
-                                 *, timeout: float) -> Mapping[str, Any]:
+                                 *, timeout: float,
+                                 before_attempt: Callable[[], Awaitable[bool]] | None = None) -> Mapping[str, Any]:
         """Retry only after a trusted read-after-write reconciler proves no effect occurred.
 
         A timeout or transport exception is ambiguous: the remote side may have committed
@@ -695,6 +789,19 @@ class SagaCoordinator:
             remaining = deadline - time.monotonic()
             if remaining <= 0:
                 raise OrchestrationError("operation_deadline_exceeded") from last_error
+            if before_attempt is not None:
+                try:
+                    remaining = deadline - time.monotonic()
+                    if remaining <= 0:
+                        raise PointOfEffectAuthorizationError("operation_deadline_exceeded_before_authorization")
+                    async with asyncio.timeout(remaining):
+                        permitted = await before_attempt()
+                except asyncio.CancelledError:
+                    raise
+                except Exception as exc:
+                    raise PointOfEffectAuthorizationError("point_of_effect_authorization_check_failed:" + type(exc).__name__) from exc
+                if not permitted:
+                    raise PointOfEffectAuthorizationError("point_of_effect_authorization_denied")
             try:
                 async with asyncio.timeout(remaining):
                     result = await adapter(payload, idempotency_key=key)
