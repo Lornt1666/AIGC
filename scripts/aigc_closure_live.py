@@ -206,6 +206,7 @@ def _failure_report(error: Exception, *, repository: str, pr_number: int) -> dic
         ("G7_RX19_HANDOFF", "release engineering / RX-144 coordinator", "Use the verified RX-19 interface and retain an authenticated exact-packet receipt."),
         ("G8_RX19_DECISION", "RX-19 sole release decision authority", "Obtain an authenticated RX-19 decision bound to the final SHA and evidence digest."),
     ]
+    safe_detail = str(error) if isinstance(error, (GitHubEvidenceError, ArtifactVerificationError, ReceiptVerificationError)) else "details_redacted"
     gates = [{"gate_id": gate_id, "status": "UNVERIFIABLE", "accountable_role": role,
               "reason": "live_acquisition_or_trust_input_failed:" + type(error).__name__,
               "required_action": action, "depends_on": [], "dependency_blocked": True} for gate_id, role, action in definitions]
@@ -214,7 +215,7 @@ def _failure_report(error: Exception, *, repository: str, pr_number: int) -> dic
             "blockers": [{"gate_id": g["gate_id"], "status": g["status"],
                 "accountable_role": g["accountable_role"], "required_action": g["required_action"],
                 "reason": g["reason"]} for g in gates],
-            "acquisition": {"complete": False, "error_type": type(error).__name__, "error": str(error)},
+            "acquisition": {"complete": False, "error_type": type(error).__name__, "error": safe_detail},
             "release_authority": "RX-19", "coordinator_authority": "RX-144_COORDINATION_ONLY",
             "merge_authorization": False, "deployment_authorization": False, "release_authorization": False,
             "disposition": "BLOCK"}
@@ -250,7 +251,7 @@ def main() -> int:
                 and result.get("acquisition", {}).get("complete") is True)
             return 0 if preparation_passed else 2
         return 0 if result["disposition"] == "RX19_APPROVED_EVIDENCE_ONLY_NO_ACTION" else 2
-    except (OSError, UnicodeError, json.JSONDecodeError, ValueError, GitHubEvidenceError, ReceiptVerificationError) as exc:
+    except Exception as exc:
         report = _failure_report(exc, repository=args.repository, pr_number=args.pr)
         rendered = json.dumps(report, ensure_ascii=False, sort_keys=True, indent=2) + "\n"
         if args.output:
