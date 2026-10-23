@@ -229,7 +229,7 @@ The job names above are examples of the invocation shape, not a claim that they 
 After authorized acceptance, RX-19 handoff and decision receipts have been signed against that digest, run the same command without `--prepare` and with the complete receipt bundle. The final evaluation re-fetches the PR head and evidence. Any changed candidate, run/job result, protection state, review evidence, artifact bytes or policy causes a digest/gate mismatch. Exit code 2 means BLOCK; inspect the JSON gate matrix and blocker report. Never use a nonzero exit as a reason to bypass the gate.
 ### Database migration notes
 
-On a **new** Compose volume, the Postgres initialization scripts create the limited runtime role and apply `core/migrations/001_runtime.sql`. The application verifies migration presence and does not create schema at startup.
+On a **new** Compose volume, the Postgres initialization scripts create the limited runtime role and apply `core/migrations/001_runtime.sql`. The application verifies migrations `001_runtime` and `002_receipt_claims` and does not create schema at startup.
 
 For an **existing** database, do not run `docker compose down -v` and do not blindly re-run role creation. Take and verify a backup, inspect `pg_roles` and `aigc_schema_migrations`, then apply the migration under an authorized migration identity after a reviewed maintenance plan. Production migrations should be run by a separate, short-lived migration identity; the API role must not receive DDL or superuser privileges.
 
