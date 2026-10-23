@@ -156,6 +156,10 @@ class SagaCoordinator:
                 migration = await cur.fetchone()
                 if not migration:
                     raise OrchestrationError("required_migration_missing:001_runtime")
+                await cur.execute("SELECT version FROM aigc_schema_migrations WHERE version = %s", ("002_receipt_claims",))
+                receipt_migration = await cur.fetchone()
+                if not receipt_migration:
+                    raise OrchestrationError("required_migration_missing:002_receipt_claims")
                 await cur.execute("SELECT to_regclass(%s) AS tasks, to_regclass(%s) AS events, to_regclass(%s) AS outbox, to_regclass(%s) AS consumed",
                     ("public.aigc_tasks", "public.aigc_events", "public.aigc_outbox", "public.aigc_consumed_events"))
                 tables = await cur.fetchone()
