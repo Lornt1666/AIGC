@@ -287,7 +287,7 @@ class SagaCoordinator:
                         (str(event_id), str(task_id), sequence, "TASK_STATE_TRANSITION", encoded, sha256_text(encoded)))
                     await cur.execute("UPDATE aigc_tasks SET status=%s,updated_at=now() WHERE task_id=%s", (next_status.value, str(task_id)))
         return True
-    async def consume_once(self, handler: Callable[[Mapping[str, Any]], Awaitable[None]], *, block_ms: int = 1000) -> int:
+    async def consume_once(self, handler: Callable[[Mapping[str, Any], Any], Awaitable[None]], *, block_ms: int = 1000) -> int:
         """Process pending retries before new entries; poison messages are dead-lettered at a fixed ceiling."""
         if block_ms < 1 or block_ms > 30_000:
             raise ValueError("block_ms must be in [1,30000]")
@@ -321,7 +321,9 @@ class SagaCoordinator:
                                 (self.consumer_group, str(parsed_id)))
                             claimed_event = await cur.fetchone()
                             if claimed_event:
-                                await handler(event)
+                                # Handler must perform only DB-local work using this
+                                # transaction; external effects belong in a new outbox.
+                                await handler(event, conn)
                 await self.redis.xack(self.stream_name, self.consumer_group, stream_id)
                 processed += 1
             except asyncio.CancelledError:
