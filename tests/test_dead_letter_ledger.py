@@ -1,7 +1,7 @@
 import asyncio
 import unittest
 
-from core.orchestrator import SagaCoordinator
+from core.orchestrator import SagaCoordinator, canonical_json, sha256_text
 
 
 class _AsyncContext:
@@ -94,7 +94,7 @@ class DeadLetterProjectionTests(unittest.TestCase):
         self.assertEqual(len(coordinator.redis.calls), 1)
         call = coordinator.redis.calls[0]
         self.assertEqual(call[1], 2)
-        self.assertEqual(call[2], "aigc:dlq-published:v1:" + disposition_id)
+        self.assertEqual(call[2], "aigc:dlq-published:v1:" + sha256_text(canonical_json(["aigc:dead-letter:v1", disposition_id])))
         self.assertEqual(call[3], "aigc:dead-letter:v1")
         self.assertIn("XADD", call[0])
         self.assertIn("SET", call[0])
