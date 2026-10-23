@@ -20,6 +20,7 @@ from aigc_runtime.closure_workflow import evaluate_closure
 from aigc_runtime.artifact_verifier import ArtifactVerificationError, download_and_verify_artifact
 from aigc_runtime.github_evidence import GitHubEvidenceError, acquire_live_snapshot
 from aigc_runtime.receipt_verifier import Ed25519ReceiptVerifier, ReceiptVerificationError, TrustedReceiptKey
+from aigc_runtime.receipt_claim_store import PostgresReceiptClaimStore
 from aigc_runtime.receipt_claim_store import PostgresReceiptClaimStore, ReceiptClaimError
 
 
@@ -57,7 +58,11 @@ def run_live_closure(repository: str, pr_number: int, *, trusted_keys_path: str,
         keys.append(TrustedReceiptKey(key_id=item.get("key_id"), public_key_b64=item.get("public_key_b64"),
             issuer=item.get("issuer"), allowed_purposes=tuple(item.get("allowed_purposes", [])),
             status=item.get("status", "ACTIVE")))
-    verifier = Ed25519ReceiptVerifier(keys, revoked_receipt_ids=set(key_doc.get("revoked_receipt_ids", [])))
+    # Release evidence verification requires cross-process replay protection; never silently
+    # downgrade to the verifier's in-memory replay set when the durable ledger is unavailable.
+    claim_store = PostgresReceiptClaimStore()
+    verifier = Ed25519ReceiptVerifier(keys, revoked_receipt_ids=set(key_doc.get("revoked_receipt_ids", [])),
+                                      claim_store=claim_store)
     verified: dict[str, Any] = {}
     errors: dict[str, str] = {}
     try:
