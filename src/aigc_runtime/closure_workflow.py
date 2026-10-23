@@ -93,26 +93,44 @@ def evaluate_closure(snapshot: Mapping[str, Any]) -> dict[str, Any]:
     elif observed != candidate:
         ci_status, ci_reason = "STALE", "live_head_mismatch_invalidates_ci"
     else:
-        matching = [r for r in runs if isinstance(r, Mapping) and r.get("head_sha") == candidate]
-        by_job: dict[str, list[Mapping[str, Any]]] = {}
-        for run in matching:
-            jobs = run.get("jobs")
-            if not isinstance(run.get("run_id"), int) or not isinstance(run.get("run_attempt"), int) or run.get("run_attempt", 0) < 1 or not isinstance(jobs, list):
-                continue
-            for job in jobs:
+        # All required jobs must pass together in one completed run attempt bound to
+        # this exact candidate. Never combine jobs across runs or attempts.
+        valid_runs = [
+            run for run in runs
+            if isinstance(run, Mapping)
+            and run.get("head_sha") == candidate
+            and run.get("status") == "completed"
+            and run.get("conclusion") == "success"
+            and isinstance(run.get("run_id"), int)
+            and isinstance(run.get("run_attempt"), int)
+            and run.get("run_attempt", 0) >= 1
+            and isinstance(run.get("jobs"), list)
+        ]
+        failures_by_run = []
+        for run in valid_runs:
+            by_job: dict[str, list[Mapping[str, Any]]] = {}
+            for job in run["jobs"]:
                 if isinstance(job, Mapping) and isinstance(job.get("name"), str):
                     by_job.setdefault(job["name"], []).append(job)
-        failures = []
-        for name in sorted(set(required_jobs)):
-            candidates = by_job.get(name, [])
-            if not candidates:
-                failures.append(name + ":missing")
-            elif not any(j.get("conclusion") == "success" and j.get("head_sha", candidate) == candidate for j in candidates):
-                failures.append(name + ":not_success")
-        if failures:
-            ci_status, ci_reason = "BLOCK", "required_jobs_missing_skipped_failed_or_not_successful:" + ",".join(failures)
+            failures = []
+            for name in sorted(set(required_jobs)):
+                candidates = by_job.get(name, [])
+                if not candidates:
+                    failures.append(name + ":missing")
+                elif not any(j.get("conclusion") == "success" and j.get("head_sha", candidate) == candidate for j in candidates):
+                    failures.append(name + ":not_success")
+            if not failures:
+                failures_by_run.append(run)
+            else:
+                failures_by_run.append({**run, "_required_job_failures": failures})
+        passing_runs = [r for r in failures_by_run if "_required_job_failures" not in r]
+        if passing_runs:
+            ci_status, ci_reason = "PASS", "all_required_jobs_success_for_exact_head_in_one_completed_run_attempt"
+        elif not valid_runs:
+            ci_status, ci_reason = "BLOCK", "no_completed_successful_run_attempt_for_exact_head"
         else:
-            ci_status, ci_reason = "PASS", "all_required_jobs_success_for_exact_head"
+            failures = sorted({f for run in failures_by_run for f in run.get("_required_job_failures", [])})
+            ci_status, ci_reason = "BLOCK", "required_jobs_missing_skipped_failed_or_not_successful:" + ",".join(failures)
     gates.append(_gate("G1_EXACT_HEAD_CI", "engineering/CI owner", ci_status,
         "complete workflow/run-attempt/job inventory with run IDs, attempts, exact head SHA and required job names",
         "every policy-required job has a successful completed result for the current candidate; no missing or skipped required job",
@@ -130,8 +148,10 @@ def evaluate_closure(snapshot: Mapping[str, Any]) -> dict[str, Any]:
         artifact_status, artifact_reason = "BLOCK", "artifact_file_manifest_malformed"
     elif len({f["path"] for f in artifact["files"]}) != len(artifact["files"]):
         artifact_status, artifact_reason = "BLOCK", "artifact_file_manifest_duplicate_paths"
+    elif not any(isinstance(run, Mapping) and run.get("run_id") == artifact.get("run_id") and run.get("run_attempt") == artifact.get("run_attempt") and run.get("head_sha") == candidate and run.get("status") == "completed" and run.get("conclusion") == "success" for run in (runs if isinstance(runs, list) else [])):
+        artifact_status, artifact_reason = "BLOCK", "artifact_run_attempt_does_not_match_successful_exact_head_ci"
     else:
-        artifact_status, artifact_reason = "PASS", "artifact_manifest_well_formed_and_bound_to_candidate"
+        artifact_status, artifact_reason = "PASS", "artifact_manifest_well_formed_and_bound_to_candidate_and_ci_attempt"
     gates.append(_gate("G2_ARTIFACT_INTEGRITY", "engineering/evidence owner", artifact_status,
         "artifact SHA-256, file manifest, sizes, source SHA, workflow run ID and attempt",
         "recomputed digest and file inventory match trusted downloaded bytes and exact-head run",
