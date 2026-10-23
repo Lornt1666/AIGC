@@ -110,12 +110,12 @@ These are configured defaults or target SLOs, not claims of measured production 
 | Retry delay | Full jitter: U(0, min(cap, base × 2^k)) | Bounded exponential backoff; do not retry non-idempotent writes |
 | Queue latency target | p95 below 500 ms | **Unvalidated target**; measure enqueue-to-start by workload class |
 | Task-processing target | p95 below 30 seconds for bounded tasks | **Unvalidated target**; long research/code tasks need separate classes |
-| Source size for AST screening | 128 KiB | Reject oversize input before parsing |
+| Authenticated API rate limit | 120 requests per 60-second sliding window per shared API credential | Redis atomic sorted-set window; all holders of one token share the quota |\n| Unauthenticated API rate limit | 30 requests per 60-second sliding window | Shared anonymous bucket; reverse-proxy limits are still required for distributed abuse |\n| Source size for AST screening | 128 KiB | Reject oversize input before parsing |
 | AST nodes | 10,000 | Reject over-limit trees |
 | AST nesting | 64 | Reject excessive nesting; this is not runtime isolation |
 | Receipt validity | At most 15 minutes for ToolPermit contract | Verify issuer, key status, purpose, target, candidate, policy and replay state independently |
 
-No LLM output may increase its own timeout, budget, hop count, permissions or retry count.
+No LLM output may increase its own timeout, budget, hop count, permissions or retry count. The current API has shared-credential request-rate limits; it does not yet meter actual provider tokens/cost or implement a provider spend circuit breaker because no model-execution adapter is enabled.
 
 ## 5. Persistence, delivery and Saga semantics
 
@@ -135,7 +135,7 @@ No LLM output may increase its own timeout, budget, hop count, permissions or re
 | Adapter timeout after remote success | Duplicate write / inconsistent Saga | Read-after-write reconciliation; UNKNOWN blocks compensation/retry | Simulate applied-but-timeout; reconcile APPLIED then compensate or continue safely |
 | Compensation itself fails | Partial mutation persists | Reverse-order receipts, permit for compensation, manual reconciliation state | Fail second compensation; earlier receipts retained; final status INCOMPLETE |
 | Untrusted code injection | Arbitrary execution / data theft | AST screening plus isolated runtime with no secrets, seccomp, resource limits and network egress policy | Test eval/exec/import/dunder/oversize/deep AST; all blocked; source never executes |
-| Recursive task/cost exhaustion | Budget burn / queue starvation | Max hops, deadlines, concurrency quota, token/spend limits, circuit breaker | Simulate recursive plan and budget overrun; coordinator blocks before dispatch |
+| Recursive task/cost exhaustion | Budget burn / queue starvation | Max hops, deadlines, concurrency bounds and API sliding-window rate limits are implemented; per-tenant LLM token/spend ledger and provider circuit breaker are still required before any model-provider adapter is enabled | Simulate recursive plan and budget overrun; coordinator blocks before dispatch |
 | PostgreSQL unavailable | Cannot durably accept tasks | Readiness failure; no volatile-only acceptance | Kill DB; API returns 503 and accepts no task |
 | Redis unavailable after DB commit | Outbox backlog, API may time out | Durable outbox; repeated idempotent submit drains pending rows | Kill Redis after DB commit; restore Redis; pending event is published |
 | API token missing/invalid | Unauthorized task admission | Constant-time bearer comparison, secret manager, rotation | Missing, wrong and expired credential rejected |
@@ -265,7 +265,7 @@ All must be true before production activation; any missing item is BLOCK:
 2. Dependency lockfile with hashes, SBOM, vulnerability scan, image scan, pinned image digests and signed provenance are present.
 3. Separate runtime/migration/admin identities and secret-manager-backed credential rotation are tested.
 4. The closure runner verifies Ed25519 receipts against a separately managed trusted-key policy and uses the PostgreSQL receipt-claims ledger for cross-process collision/single-use checks. The runtime permit-verifier callback still requires a production trusted-key service integration. Tool permits must bind subject, operation, resource, candidate, policy version, idempotency key, expiry and approval receipt.
-5. Every write adapter has explicit schema, idempotency, read-after-write reconciliation, timeout behavior, compensation contract and a staging test.
+5. Every write adapter has explicit schema, idempotency, read-after-write reconciliation, timeout behavior, compensation contract and a staging test. A per-project/per-tenant token-and-cost ledger, sliding-window spend circuit breaker and provider quota enforcement must be implemented before any LLM provider is enabled.
 6. Poison-pill, duplicate delivery, process crash, network partition, Redis loss, PostgreSQL failover, compensation failure, kill-switch, budget exhaustion and recovery drills pass.
 7. OpenTelemetry traces, metrics, structured logs, alerts, SLO dashboards, retention and on-call escalation are verified end to end.
 8. Red-team and independent QA findings are remediated and independently retested against the exact candidate.
