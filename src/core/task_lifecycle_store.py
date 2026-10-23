@@ -249,6 +249,31 @@ class PostgresTaskLifecycleStore:
         except Exception as exc:
             raise TaskStoreUnavailable("Outbox retry state could not be persisted") from exc
 
+    def claim_task_for_execution(self, *, task_id: str) -> dict[str, Any] | None:
+        """Atomically claim queued work; duplicate deliveries receive None."""
+        try:
+            with self._pool.connection(timeout=5) as conn:
+                with conn.transaction():
+                    row = conn.execute(
+                        """UPDATE aigc_tasks
+                           SET status='running',attempt=attempt+1,version=version+1,
+                               lease_until=now()+interval '45 minutes',updated_at=now()
+                           WHERE task_id=%s AND status='queued'
+                           RETURNING task_id,owner_id,contract_json,attempt,version""",
+                        (task_id,),
+                    ).fetchone()
+                    if not row:
+                        return None
+                    return {
+                        "task_id": str(row["task_id"]),
+                        "owner_id": str(row["owner_id"]),
+                        "contract": row["contract_json"],
+                        "attempt": int(row["attempt"]),
+                        "version": int(row["version"]),
+                    }
+        except Exception as exc:
+            raise TaskStoreUnavailable("Task execution claim failed") from exc
+
     def mark_running(self, *, owner_id: str, task_id: str) -> dict[str, Any]:
         try:
             with self._pool.connection(timeout=5) as conn:
