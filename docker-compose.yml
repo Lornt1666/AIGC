@@ -17,7 +17,7 @@ services:
     ports:
       - "127.0.0.1:${AIGC_HOST_PORT:-8080}:8080"
     environment:
-      DATABASE_URL: postgresql://aigc:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@postgres:5432/aigc?sslmode=disable
+      DATABASE_URL: postgresql://aigc_app:${AIGC_APP_DB_PASSWORD:?set AIGC_APP_DB_PASSWORD}@postgres:5432/aigc?sslmode=disable
       REDIS_URL: redis://redis:6379/0
       AIGC_API_BEARER_TOKEN: ${AIGC_API_BEARER_TOKEN:?set AIGC_API_BEARER_TOKEN}
       AIGC_DRY_RUN: "true"
@@ -35,7 +35,7 @@ services:
       timeout: 4s
       retries: 5
       start_period: 30s
-    networks: [runtime]
+    networks: [backend, egress]
 
   postgres:
     image: postgres:16.4-alpine
@@ -44,15 +44,18 @@ services:
       POSTGRES_USER: aigc
       POSTGRES_DB: aigc
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      AIGC_APP_DB_PASSWORD: ${AIGC_APP_DB_PASSWORD:?set AIGC_APP_DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./core/init/01-create-runtime-roles.sh:/docker-entrypoint-initdb.d/01-create-runtime-roles.sh:ro
+      - ./core/migrations/001_runtime.sql:/docker-entrypoint-initdb.d/02-runtime.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U aigc -d aigc"]
       interval: 5s
       timeout: 3s
       retries: 20
     shm_size: 256mb
-    networks: [runtime]
+    networks: [backend]
     # No host port is published. Use authenticated backup/restore tooling.
 
   redis:
@@ -79,9 +82,11 @@ services:
     # Optional semantic retrieval only; no unauthenticated host port is published.
 
 networks:
-  runtime:
+  backend:
     driver: bridge
     internal: true
+  egress:
+    driver: bridge
 
 volumes:
   postgres_data:
