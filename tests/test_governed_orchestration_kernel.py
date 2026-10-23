@@ -99,4 +99,4 @@ def test_saga_compensates_completed_steps_in_reverse_order() -> None:
     with pytest.raises(SagaExecutionError):
         asyncio.run(RedisStreamsCoordinator.run_saga(actions))
 
-    assert calls == ["execute-1", "execute-2", "compensate-1"]
+    assert calls == ["execute-1", "execute-2", "compensate-2", "compensate-1"]
