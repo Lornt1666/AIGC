@@ -23,7 +23,7 @@ Every receipt is an Ed25519-signed envelope:
 }
 ```
 
-Signature bytes cover the payload canonicalized as UTF-8 JSON with sorted keys, separators `(",", ":")`, `ensure_ascii=False`, and `allow_nan=False`. The `key_id` selects a key from a separate trusted-key document; it does not make the key trusted. Keys need status, issuer, purpose allowlists, expiry/rotation and revocation policy. The verifier currently rejects duplicate receipt IDs within a verifier process, but persistent cross-process replay storage is **not yet integrated**. Treat one-time permits as blocked until that store exists.
+Signature bytes cover the payload canonicalized as UTF-8 JSON with sorted keys, separators `(",", ":")`, `ensure_ascii=False`, and `allow_nan=False`. The `key_id` selects a key from a separate trusted-key document; it does not make the key trusted. Keys need status, issuer, purpose allowlists, expiry/rotation and revocation policy. The verifier rejects duplicate receipt IDs within a process and claims verified receipts in the dedicated PostgreSQL `aigc_receipt_claims` ledger. Reusing a receipt ID with different claims is blocked across processes; configured single-use purposes (including `tool-permit`) are rejected on repeat. The live closure runner uses this store. However, the runtime's injected `permit_verifier` is not yet wired to a production key service and persistent permit claims, so live tool execution remains blocked.
 
 All receipt payloads must have:
 - `issuer`, `purpose`, unique `receipt_id`, strict UTC `issued_at` and `expires_at`;
@@ -101,7 +101,7 @@ Use distinct keys or tightly scoped purpose allowlists for administrators, revie
 
 - The live GitHub adapter uses read-only REST; review-thread resolution is not obtained by that adapter. The independent reviewer receipt must attest the exact candidate and thread/finding reconciliation until a separately authorized read-only GraphQL adapter is implemented.
 - GitHub REST protection JSON is not itself an administrator's signed receipt; the authenticated administrator must sign a readback receipt.
-- Receipt replay rejection is process-local only. Cross-process persistent anti-replay for one-time permits remains a production blocker.
+- Cross-process receipt claim storage is implemented for the closure runner. The production runtime permit-verifier adapter still needs to be integrated with the trusted key service and persistent single-use permit claims before live tool execution.
 - Provenance verification validates a signed claim under trusted keys; a full Sigstore/in-toto verifier and independent builder identity policy still require integration.
 - The closure runner returns BLOCK if artifact ZIP, signed manifest, exact run/attempt binding, or file digests cannot be verified.
 - The trust store and receipt bundle are inputs; protect their paths and access control. Never accept an untrusted path as the trust-store source.
