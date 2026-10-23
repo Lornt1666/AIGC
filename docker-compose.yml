@@ -25,7 +25,19 @@ services:
       AIGC_MAX_CONCURRENCY: "16"
       PYTHONPATH: /app:/app/src
     depends_on:
-      worker:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health/ready', timeout=2)"]
+      interval: 20s
+      timeout: 4s
+      retries: 5
+      start_period: 30s
+    networks: [backend, runtime]
+
+  worker:
     image: regenexcalibur/aigc-runtime:local
     build:
       context: .
@@ -54,19 +66,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    networks: [backend, runtime]
-  postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health/ready', timeout=2)"]
-      interval: 20s
-      timeout: 4s
-      retries: 5
-      start_period: 30s
-    # No general outbound network is attached by default. Add a separately
-    # controlled egress proxy/network only when a reviewed adapter requires it.
     networks: [backend, runtime]
 
   postgres:
