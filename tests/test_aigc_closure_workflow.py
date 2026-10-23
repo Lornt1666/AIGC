@@ -85,6 +85,11 @@ class ClosureWorkflowTests(unittest.TestCase):
         self.assertEqual(gates["G1_EXACT_HEAD_CI"]["status"], "STALE")
         self.assertEqual(result["disposition"], "BLOCK")
 
+    def test_closed_or_merged_candidate_pr_blocks(self):
+        snapshot = valid_snapshot()
+        snapshot["pr_merged"] = True
+        gate = next(g for g in evaluate_closure(snapshot)["gate_results"] if g["gate_id"] == "G0_LIVE_RECONCILIATION")
+        self.assertEqual(gate["status"], "STALE")
     def test_old_live_observation_is_stale(self):
         snapshot = valid_snapshot()
         snapshot["evaluation_time"] = "2026-10-22T22:05:00Z"
