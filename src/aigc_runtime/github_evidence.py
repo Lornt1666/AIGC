@@ -209,6 +209,7 @@ def acquire_live_snapshot(repository: str, pr_number: int, *,
     final_pr, _ = api.get(root + "/pulls/" + str(pr_number))
     final_head = final_pr.get("head", {}).get("sha") if isinstance(final_pr, Mapping) else None
     final_base_sha = final_pr.get("base", {}).get("sha") if isinstance(final_pr, Mapping) else None
+    final_base_branch = final_pr.get("base", {}).get("ref") if isinstance(final_pr, Mapping) else None
     if not isinstance(final_head, str) or len(final_head) != 40:
         raise GitHubEvidenceError("final_live_head_missing_or_invalid")
     return {
@@ -217,7 +218,7 @@ def acquire_live_snapshot(repository: str, pr_number: int, *,
         "candidate_sha": head, "observed_head_sha": final_head,
         "base_branch": base_branch, "base_sha": final_base_sha,
         "acquisition_head_sha": head, "acquisition_base_sha": base_sha,
-        "head_changed_during_acquisition": final_head != head or final_base_sha != base_sha,
+        "head_changed_during_acquisition": final_head != head or final_base_sha != base_sha or final_base_branch != base_branch,
         "evaluation_time": _iso_now(),
         "pr_state": pr.get("state"), "pr_draft": pr.get("draft"), "pr_merged": pr.get("merged"),
         "live_observation_authenticated": True, "observation_source": "github_api",
