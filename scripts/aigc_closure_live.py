@@ -12,11 +12,12 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 from aigc_runtime.receipt_verifier import canonical_bytes
 
 from aigc_runtime.closure_workflow import evaluate_closure
+from aigc_runtime.artifact_verifier import ArtifactVerificationError, download_and_verify_artifact
 from aigc_runtime.github_evidence import GitHubEvidenceError, acquire_live_snapshot
 from aigc_runtime.receipt_verifier import Ed25519ReceiptVerifier, ReceiptVerificationError, TrustedReceiptKey
 
@@ -85,7 +86,45 @@ def run_live_closure(repository: str, pr_number: int, *, trusted_keys_path: str,
                                 "receipt_id": payload["receipt_id"], "verification_receipt": receipt}
         except (ReceiptVerificationError, ValueError, TypeError) as exc:
             errors[target] = str(exc)
-    core_evidence = {
+    artifact_verification: dict[str, Any] = {"status": "UNVERIFIABLE", "bytes_verified": False, "manifest_verified": False}
+    artifact_claim = verified.get("artifact")
+    if artifact_claim:
+        try:
+            artifact_id = artifact_claim.get("artifact_id")
+            run_id = artifact_claim.get("run_id")
+            run_attempt = artifact_claim.get("run_attempt")
+            manifest_path = artifact_claim.get("manifest_path")
+            archive_sha = artifact_claim.get("sha256")
+            if not isinstance(artifact_id, int) or not isinstance(run_id, int) or not isinstance(run_attempt, int):
+                raise ArtifactVerificationError("signed_artifact_receipt_missing_artifact_run_attempt_binding")
+            if not isinstance(manifest_path, str) or not isinstance(archive_sha, str):
+                raise ArtifactVerificationError("signed_artifact_receipt_missing_archive_digest_or_manifest_path")
+            run = next((item for item in snapshot.get("ci_runs", []) if isinstance(item, dict)
+                and item.get("run_id") == run_id and item.get("run_attempt") == run_attempt
+                and item.get("head_sha") == snapshot.get("candidate_sha") and item.get("status") == "completed"
+                and item.get("conclusion") == "success"), None)
+            if run is None:
+                raise ArtifactVerificationError("artifact_run_attempt_not_successful_for_live_candidate")
+            metadata = next((item for item in run.get("artifacts", []) if isinstance(item, dict)
+                and item.get("id") == artifact_id and item.get("workflow_run_id") == run_id
+                and item.get("workflow_run_head_sha") == snapshot.get("candidate_sha") and item.get("expired") is False), None)
+            if metadata is None:
+                raise ArtifactVerificationError("artifact_id_not_found_on_verified_exact_head_run")
+            artifact_verification = download_and_verify_artifact(repository, artifact_id,
+                expected_sha256=archive_sha, manifest_path=manifest_path,
+                candidate_sha=snapshot["candidate_sha"], run_id=run_id, run_attempt=run_attempt,
+                token_env=token_env, api_digest=metadata.get("digest"))
+            snapshot["artifact"] = {**artifact_claim, **artifact_verification}
+        except (ArtifactVerificationError, ValueError, TypeError, KeyError) as exc:
+            errors["artifact_bytes"] = str(exc)
+            artifact_verification = {"status": "UNVERIFIABLE", "reason": str(exc),
+                "bytes_verified": False, "manifest_verified": False}
+            snapshot["artifact"] = {**artifact_claim, "bytes_verified": False,
+                "manifest_verified": False, "verification_error": str(exc)}
+    else:
+        snapshot["artifact"] = {"status": "UNVERIFIABLE", "bytes_verified": False,
+            "manifest_verified": False, "verification_error": errors.get("artifact", "signed_artifact_receipt_missing")}
+        core_evidence = {
         "schema_version": snapshot.get("schema_version"), "repository": repository, "pr_number": pr_number,
         "candidate_sha": snapshot.get("candidate_sha"), "observed_head_sha": snapshot.get("observed_head_sha"),
         "base_branch": snapshot.get("base_branch"), "base_sha": snapshot.get("base_sha"),
@@ -96,6 +135,7 @@ def run_live_closure(repository: str, pr_number: int, *, trusted_keys_path: str,
         "commit_statuses": snapshot.get("commit_statuses"), "check_runs": snapshot.get("check_runs"),
         "reviews": snapshot.get("reviews"), "review_comments": snapshot.get("review_comments"),
         "protection_readbacks": snapshot.get("protection_readbacks"),
+        "artifact_verification": artifact_verification,
         "signed_core_receipts": {name: {"payload": {k: v for k, v in value.items() if k != "verification_receipt"},
             "verification_receipt_digest": value["verification_receipt"]["payload_digest"]} for name, value in sorted(verified.items())},
     }
@@ -132,17 +172,7 @@ def run_live_closure(repository: str, pr_number: int, *, trusted_keys_path: str,
         elif name in errors:
             snapshot[name] = {"authenticated": False, "verified": False, "status": "UNVERIFIABLE",
                               "verification_error": errors[name]}
-    # A signed manifest claim is not independent byte verification. This adapter does
-    # not download artifact bytes, so the artifact gate is forcibly UNVERIFIABLE.
-    if "artifact" in verified:
-        artifact = dict(verified["artifact"])
-        artifact["bytes_verified"] = False
-        artifact["manifest_verified"] = False
-        artifact["independent_byte_verification"] = False
-        snapshot["artifact"] = artifact
-    elif "artifact" in errors:
-        snapshot["artifact"] = {"status": "UNVERIFIABLE", "bytes_verified": False,
-                                "manifest_verified": False, "verification_error": errors["artifact"]}
+    # Artifact byte and manifest claims are replaced by the independent ZIP verifier result above.
     if "protection" in verified:
         protection = snapshot["protection"]
         if protection.get("base_branch") != snapshot.get("base_branch") or protection.get("release_branch") != release_branch:
