@@ -1,0 +1,87 @@
+# AIGC AI Failure-Mode Control Register
+
+**Status:** Engineering control baseline; not a production-readiness attestation.  
+**Applies to:** AI-authored code, model-generated plans, agent-to-agent messages, tool outputs, orchestration decisions, evidence, and release decisions.  
+**Rule:** Model output is untrusted input until independently validated. No model may grant itself authority or prove its own success.
+
+## 1. Evidence-grounded failure taxonomy
+
+| Failure mode | Example | Required preventive/detective control | Verification evidence |
+|---|---|---|---|
+| Confabulation / fabricated support | Invented API, fabricated citation, claim that CI passed when it did not | Verify external claims against authoritative source; bind assertions to run IDs, commit SHAs, and source artifacts | Source URL, exact run metadata, evidence digest |
+| Invalid generated code | Missing imports, incorrect signatures, incompatible dependency assumptions | Lint/type checks, locked dependency install, unit and integration tests in the canonical environment | Exact-head CI results and test artifacts |
+| Prompt injection | Retrieved content asks an agent to reveal secrets or ignore policy | Treat user/retrieved/tool text as data; keep policy and authorization outside the model; delimit and label trust zones | Injection regression tests; authorization-denial evidence |
+| Unsafe output handling | Model text passed into shell, SQL, template, or code execution | Typed schema validation, parameterized database access, output encoding, no direct model-to-shell path | Negative tests and code review |
+| Excessive agency / privilege escalation | Agent calls an unneeded tool or mutates a resource without authority | Capability allowlists, least-privilege identities, exact-resource and exact-action permits, independent approval for consequential effects | Permit verification logs and denied-action tests |
+| Indirect code execution | Import-time side effects, dynamic imports, eval/exec, AST bypass attempts | No dynamic import during discovery; static AST screening only as defense in depth; isolated runtime sandbox with OS-level restrictions | Arbiter regression suite plus sandbox escape tests |
+| Duplicate delivery / replay | Redis message redelivered after worker crash | Idempotency key and event identity; durable dedupe in the same database transaction as state transition; idempotent external adapters | Duplicate/replay fault-injection tests |
+| Lost work / acknowledgement race | Message acknowledged before durable state is committed | Commit durable outcome before acknowledging; recover pending entries; transactional outbox and reconciliation | Crash-at-each-boundary integration tests |
+| Retry storm / cascading failure | Multiple agents retry simultaneously against a degraded dependency | Bounded exponential backoff with jitter, total deadline, retry budget, circuit breaker, load shedding | Load/failure tests and retry-count metrics |
+| Poison message / recursive loop | Invalid task is repeatedly retried or forwarded between agents | Schema validation at ingress, hop count capped at 10, bounded delivery count, durable dead-letter disposition | Poison payload and hop-limit tests |
+| Saga compensation failure | A later step fails after earlier mutation succeeded | Persist step receipts; define compensation per operation; classify irreversible operations; reconcile unknown outcomes instead of blindly retrying | Partial-failure and compensation-replay tests |
+| Budget / time exhaustion | Recursive agent calls consume excessive tokens or time | Hard task deadline, hop/attempt ceilings, concurrency limit, token/cost budget, cancellation propagation | Budget exhaustion tests and spend metrics |
+| Evidence substitution / stale CI | A previous successful run is presented as evidence for a newer commit | Bind every gate to exact commit SHA, workflow/run identity, artifact digest, and policy version; later commit invalidates prior exact-head evidence | Verifier negative tests for stale/mismatched evidence |
+| Supply-chain compromise | Dependency, action, base image, or build artifact is substituted | Pin dependencies/actions/images, generate SBOM, verify signed build provenance, restrict workflow token permissions | Lockfile/audit output, provenance verification |
+| Recovery illusion | Backup exists but cannot be restored | Define RPO/RTO, retain base backup plus WAL, perform isolated restore drills, verify application-level invariants | Timestamped restore report and reconciliation results |
+| Misleading observability | Logs omit correlation IDs or leak secrets | Structured redacted logs, trace context propagation, metrics for queue age/retries/dead letters, secret scanning | Telemetry tests and redaction regression suite |
+
+## 2. Static arbiter hardening in this change
+
+The AST arbiter is not a security boundary by itself. The current implementation was hardened to:
+
+- Validate caller-supplied max_bytes, max_nodes, and max_nesting limits instead of trusting arbitrary bounds.
+- Reject strings that cannot be UTF-8 encoded as a blocked input, without propagating an encoding exception.
+- Enforce the AST node cap while traversing, rather than first materializing the entire walk and checking the count afterward.
+- Preserve the explicit non-execution contract: static screening never executes the submitted source.
+- Add regression tests for allowed expressions, blocked imports/calls/dunder access, unbounded loops, node limits, invalid Unicode, and invalid limit parameters.
+
+A PASS_STATIC_SCREEN_ONLY result means only that this narrow syntactic policy found no issue. It does **not** mean the code is safe or authorized to execute. Runtime execution still requires a disposable, unprivileged sandbox, restricted network and syscalls, resource quotas, no secrets by default, and independent capability authorization.
+
+## 3. Distributed-runtime invariants
+
+1. PostgreSQL is the durable source of truth; Redis Streams is transport.
+2. Delivery is treated as at-least-once. Exactly-once side effects must not be assumed.
+3. Durable state/event writes must commit before message acknowledgement.
+4. External effects require an independently verifiable permit and a registered adapter; dry-run remains the default.
+5. Every operation has an idempotency key, deadline, bounded attempts, and explicit outcome state.
+6. Unknown outcomes after timeouts are reconciled before retrying potentially non-idempotent effects.
+7. Compensation is a new, durable operation; it is not assumed to reverse reality automatically.
+8. Dead-letter records retain a stable source identity, reason code, attempt count, and evidence reference.
+9. Hop count must remain within the contract maximum (10); malformed counts fail closed.
+10. Release gates are bound to the exact candidate SHA. Any subsequent commit invalidates prior exact-head evidence.
+
+## 4. Evidence classification
+
+- **Fact:** directly supported by repository source, an authoritative specification, or a completed tool result.
+- **Measured result:** a test/load/restore run with environment, version, timestamp, and artifact recorded.
+- **Assumption:** an explicit design premise that still requires validation.
+- **Unknown:** a missing fact that must not be replaced by model confidence.
+
+Never label an assumption as a measured result. Never infer successful tests from code inspection. Never infer production readiness from unit tests alone.
+
+## 5. Recommended release gates
+
+- [ ] Canonical tests pass on the exact candidate SHA.
+- [ ] Static analysis, type checks, dependency audit, and container checks pass.
+- [ ] Adversarial tests cover prompt injection, unsafe output, malformed contracts, replay, poison messages, retry storms, budget exhaustion, and authorization bypass.
+- [ ] Crash injection proves durable ordering and pending-message recovery.
+- [ ] Saga compensation and unknown-outcome reconciliation are tested.
+- [ ] Sandbox isolation is verified with negative tests, not inferred from AST screening.
+- [ ] SBOM and artifact provenance are generated and cryptographically verified against the expected repository/workflow identity.
+- [ ] Backup restoration and RPO/RTO objectives are demonstrated.
+- [ ] Independent security review is tied to the exact SHA; findings are fixed and retested.
+- [ ] Authorized human acceptance and the RX-19 release decision are bound to the candidate SHA and evidence digest.
+
+## 6. Primary references
+
+- NIST, Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile (NIST AI 600-1): https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf
+- OWASP GenAI Security Project, Top 10 Risks for LLM Applications (2025): https://genai.owasp.org/llm-top-10/
+- Google SRE Book, Addressing Cascading Failures: https://sre.google/sre-book/addressing-cascading-failures/
+- Redis Streams documentation: https://redis.io/docs/latest/develop/data-types/stream/
+- GitHub, Artifact attestations: https://docs.github.com/en/actions/concepts/security/artifact-attestations
+- PostgreSQL, Continuous Archiving and Point-in-Time Recovery: https://www.postgresql.org/docs/current/continuous-archiving.html
+- NIST, Secure Software Development Framework (SP 800-218): https://csrc.nist.gov/pubs/sp/800/218/final
+
+## 7. Scope and limitation
+
+This register and the associated arbiter changes improve defense in depth. They do not certify the whole repository as production-ready. Full closure requires exact-head CI, integration and fault-injection results, independent review, verified provenance, recovery evidence, and authorized release approval.
