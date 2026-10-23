@@ -42,6 +42,7 @@ class SagaStep:
     compensation_operation: str | None = None
     compensation_payload: Mapping[str, Any] | None = None
     irreversible: bool = False
+    side_effecting: bool = True
     approval_receipt_ref: str | None = None
     idempotent: bool = False
     compensation_idempotent: bool = False
@@ -383,11 +384,17 @@ class SagaCoordinator:
                     raise OrchestrationError("live_operation_must_declare_idempotency")
                 if planned.irreversible and not planned.approval_receipt_ref:
                     raise OrchestrationError("irreversible_operation_requires_human_approval_receipt")
+                if planned.side_effecting and not planned.irreversible:
+                    if not planned.compensation_operation or not planned.compensation_idempotent:
+                        raise OrchestrationError("reversible_side_effect_requires_idempotent_compensation")
+                    if planned.compensation_operation not in self.adapters:
+                        raise OrchestrationError("compensation_operation_not_allowlisted")
                 planned_key = hashlib.sha256(f"{contract.idempotency_key}:{planned.step_id}".encode()).hexdigest()
                 claims = {"task_id": str(contract.task_id), "candidate_sha": contract.candidate_sha,
                     "policy_version": contract.policy_version, "operation": planned.operation,
                     "input_digest": sha256_text(canonical_json(dict(planned.input_payload))),
-                    "compensation_operation": planned.compensation_operation, "irreversible": planned.irreversible, "approval_receipt_ref": planned.approval_receipt_ref}
+                    "compensation_operation": planned.compensation_operation, "irreversible": planned.irreversible,
+                    "side_effecting": planned.side_effecting, "approval_receipt_ref": planned.approval_receipt_ref}
                 if not await self.permit_verifier(permit_ref, claims, planned_key):
                     raise OrchestrationError("permit_verification_denied:" + planned.step_id)
         receipts: list[StepReceipt] = []
