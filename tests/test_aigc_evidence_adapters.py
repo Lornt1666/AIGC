@@ -45,6 +45,8 @@ class GitHubEvidenceTests(unittest.TestCase):
         with self.assertRaisesRegex(GitHubEvidenceError, "pagination_limit_exceeded"):
             client.get_all("https://api.github.com/repos/o/r?page=1")
 
+
+class LiveAcquisitionTests(unittest.TestCase):
     def test_live_acquisition_rechecks_head_and_marks_protection_403_unverifiable(self):
         head = "a" * 40
         base = "b" * 40
