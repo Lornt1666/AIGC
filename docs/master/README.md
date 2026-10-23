@@ -14,9 +14,11 @@
 4. [Implementation Audit and Certification Dossier](AIGC_IMPLEMENTATION_AUDIT_AND_CERTIFICATION_DOSSIER.md) — candidate-specific source/CI findings, status for each of the 45 wires, blocking defects, remediation order, and the evidence required before a conformity certificate can be issued. Current disposition: NOT CERTIFIED / BLOCKED.
 5. [Verification and Production Acceptance Plan](AIGC_VERIFICATION_AND_PRODUCTION_ACCEPTANCE_PLAN.md) — test layers, negative tests, fault-injection matrix, evidence model, release gates, and candidate-freshness rules.
 6. [Operations, Security, and Recovery Runbook](AIGC_OPERATIONS_SECURITY_AND_RECOVERY_RUNBOOK.md) — safe local validation, staging deployment, emergency stop, queue handling, incident response, backup/recovery, and release closure operations.
-7. [Governance and System Charter](../AIGC_GOVERNANCE_AND_SYSTEM_CHARTER.md) — identity, authority hierarchy, agent role boundaries, governance, and change control.
-8. [Production Closure Acceptance Matrix](../PRODUCTION_CLOSURE_ACCEPTANCE_MATRIX.md) — current closure gate matrix and evidence invariants.
-9. [Repository README](../../README.md) — current command surface and documented phase behavior.
+7. [Operator Responsibility and Authorized Use Acknowledgment](AIGC_OPERATOR_RESPONSIBILITY_AND_AUTHORIZED_USE_ACKNOWLEDGMENT.md) — a draft operator-accountability and task-authorization record; not a blanket liability waiver and not legally adopted until reviewed by qualified counsel.
+8. [Documentation Governance and Enforcement Agents](AIGC_DOCUMENTATION_GOVERNANCE_AND_ENFORCEMENT_AGENTS.md) — DOC-GATE-01, traceability, authorization, and evidence-gate roles, boundaries, and acceptance tests.
+9. [Governance and System Charter](../AIGC_GOVERNANCE_AND_SYSTEM_CHARTER.md) — identity, authority hierarchy, agent role boundaries, governance, and change control.
+10. [Production Closure Acceptance Matrix](../PRODUCTION_CLOSURE_ACCEPTANCE_MATRIX.md) — current closure gate matrix and evidence invariants.
+11. [Repository README](../../README.md) — current command surface and documented phase behavior.
 
 ## How to use the master documents
 
@@ -28,6 +30,8 @@
 - Do not enable a spec-only agent or adapter because its role is documented.
 - Record each discrepancy between intended behavior and observed implementation with exact file/line, candidate SHA, severity, owner, test, and disposition.
 - Update these documents alongside behavior-changing code and contracts.
+- CI invokes `scripts/enforce_master_docs.py` as DOC-GATE-01. Its structural checks are a documentation quality gate, not legal review, source-code conformity proof, or production certification; its current-head workflow must pass before this CI integration is considered verified.
+- The operator acknowledgment is a draft. Do not represent it as an executed contract or blanket transfer of all legal responsibility; obtain qualified legal review and valid, task-specific assent.
 - Any release evidence must refer to the exact candidate SHA and canonical evidence digest. A newer commit invalidates evidence that is not explicitly rebound to it.
 
 ## Current known boundaries
