@@ -316,7 +316,7 @@ jobs:
               "run_attempt": int(os.environ["GITHUB_RUN_ATTEMPT"]),
               "files": files,
           }
-          manifest_path.write_text(json.dumps(manifest, sort_keys=True, separators=(",", ":")) + "\\n", encoding="utf-8")
+          manifest_path.write_text(json.dumps(manifest, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
           PY
         env:
           OBSERVED_HEAD_SHA: ${{ steps.identity.outputs.observed_head_sha }}
