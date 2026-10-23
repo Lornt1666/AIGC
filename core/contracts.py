@@ -77,6 +77,7 @@ class TaskContract(StrictModel):
     dependencies: list[UUID] = Field(default_factory=list, max_length=500)
     risk_tier: RiskTier
     policy_version: str = Field(min_length=1, max_length=128)
+    candidate_sha: str | None = None
     allowed_agent_ids: list[str] = Field(min_length=1, max_length=100)
     allowed_tools: list[str] = Field(default_factory=list, max_length=100)
     permitted_side_effects: list[str] = Field(default_factory=list, max_length=100)
@@ -88,6 +89,12 @@ class TaskContract(StrictModel):
     input_refs: list[EvidenceRef] = Field(default_factory=list, max_length=100)
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+    @field_validator("candidate_sha")
+    @classmethod
+    def validate_candidate_sha(cls, value: str | None) -> str | None:
+        if value is not None and not re.fullmatch(r"[0-9a-f]{40}", value):
+            raise ValueError("candidate_sha must be a full 40-character Git commit SHA")
+        return value
     @field_validator("idempotency_key")
     @classmethod
     def reject_placeholder_key(cls, value: str) -> str:
