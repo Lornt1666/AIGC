@@ -77,6 +77,35 @@ class OrchestratorSafetyTests(unittest.TestCase):
                                       adapters={"read": lambda *a, **k: None})
         self.assertTrue(coordinator.dry_run)
 
+    def test_live_mutation_requires_candidate_sha_before_any_adapter_call(self):
+        calls = []
+        async def adapter(payload, *, idempotency_key):
+            calls.append(idempotency_key)
+            return {"ok": True}
+        async def permit(ref, claims, key):
+            return True
+        coordinator = SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost",
+            dry_run=False, adapters={"write": adapter}, permit_verifier=permit)
+        item = contract()
+        with self.assertRaisesRegex(Exception, "exact_candidate_sha"):
+            asyncio.run(coordinator.run_saga(item, [SagaStep("s1", "write", {}, idempotent=True)],
+                dry_run=False, permit_ref="signed-permit-ref"))
+        self.assertEqual(calls, [])
+
+    def test_all_step_permits_are_preflighted_before_first_side_effect(self):
+        calls = []
+        async def adapter(payload, *, idempotency_key):
+            calls.append(idempotency_key)
+            return {"ok": True}
+        async def permit(ref, claims, key):
+            return claims.get("operation") != "second"
+        coordinator = SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost",
+            dry_run=False, adapters={"first": adapter, "second": adapter}, permit_verifier=permit)
+        item = contract(candidate_sha="a"*40)
+        steps = [SagaStep("s1", "first", {}, idempotent=True), SagaStep("s2", "second", {}, idempotent=True)]
+        with self.assertRaisesRegex(Exception, "permit_verification_denied"):
+            asyncio.run(coordinator.run_saga(item, steps, dry_run=False, permit_ref="signed-permit-ref"))
+        self.assertEqual(calls, [])
     def test_no_permit_means_no_live_side_effect(self):
         coordinator = SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost",
                                       dry_run=False, adapters={"write": lambda *a, **k: None})
