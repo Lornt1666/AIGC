@@ -257,12 +257,16 @@ class Phase6Validator:
             return "Invalid expiration timestamp."
         if datetime.now(timezone.utc) > expires_at:
             return "Authorization expired."
-        if not packet.safety.platform_policy_checked:
-            return "Platform policy check was not confirmed by evidence."
-        if not packet.safety.ai_disclosure_preserved:
-            return "AI disclosure preservation was not confirmed by evidence."
-        if not packet.safety.privacy_checked:
-            return "Privacy check was not confirmed by evidence."
+        # A dry run is an inert internal simulation: it must not trigger external
+        # actuation or handoff. Require evidence-backed safety controls for every
+        # execution mode that can create an external-facing handoff or action.
+        if packet.execution_mode != ExecutionMode.DRY_RUN.value:
+            if not packet.safety.platform_policy_checked:
+                return "Platform policy check was not confirmed by evidence."
+            if not packet.safety.ai_disclosure_preserved:
+                return "AI disclosure preservation was not confirmed by evidence."
+            if not packet.safety.privacy_checked:
+                return "Privacy check was not confirmed by evidence."
         if packet.execution_mode == ExecutionMode.APPROVED_API.value and not packet.safety.credential_use_approved:
             return "API execution requested without approved credential use."
         return None
