@@ -65,6 +65,18 @@ jobs:
           echo "requested_head_sha=$observed_head_sha" >> "$GITHUB_OUTPUT"
           echo "observed_head_sha=$observed_head_sha" >> "$GITHUB_OUTPUT"
 
+      - name: Validate Compose manifest and build runtime images
+        shell: bash
+        env:
+          POSTGRES_PASSWORD: ci-postgres-password-not-for-production
+          AIGC_APP_DB_PASSWORD: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+          AIGC_API_BEARER_TOKEN: ci-only-token-0123456789abcdef0123456789abcdef0123456789
+          AIGC_HOST_PORT: "18080"
+        run: |
+          set -euo pipefail
+          docker compose config --quiet
+          docker compose build app worker
+
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
