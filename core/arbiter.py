@@ -56,7 +56,7 @@ _ALLOWED_NODES = (
     ast.Name, ast.Load, ast.Store, ast.Constant, ast.List, ast.Tuple, ast.Set,
     ast.Dict, ast.BinOp, ast.UnaryOp, ast.BoolOp, ast.Compare, ast.If,
     ast.IfExp, ast.For, ast.While, ast.Break, ast.Continue, ast.Pass,
-    ast.FunctionDef, ast.arguments, ast.arg, ast.Return, ast.Call, ast.Import, ast.ImportFrom,
+    ast.FunctionDef, ast.arguments, ast.arg, ast.Return, ast.Call, ast.Import, ast.ImportFrom, ast.alias,
     ast.keyword, ast.Subscript, ast.Slice, ast.Attribute, ast.Add, ast.Sub,
     ast.Mult, ast.Div, ast.FloorDiv, ast.Mod, ast.Pow, ast.USub, ast.UAdd,
     ast.Not, ast.And, ast.Or, ast.Eq, ast.NotEq, ast.Lt, ast.LtE, ast.Gt,
