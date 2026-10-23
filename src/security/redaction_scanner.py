@@ -80,7 +80,13 @@ class RedactionScanner:
         return [asdict(finding) for finding in findings]
 
     def _is_explicit_test_fixture(self, match_text: str, path: str) -> bool:
-        normalized_path = path.replace("\\", "/").lstrip("./")
+        normalized_path = path.replace("\\", "/").removeprefix("./")
+        if normalized_path == ".github/workflows/aigc-ci.yml":
+            # CI-only credentials are explicit non-secret fixtures, not deployable credentials.
+            # Restrict this exception to the canonical workflow and a whole-value test_only marker.
+            right = match_text.split(":", 1)[1].strip().strip("\"' ,)") if ":" in match_text else ""
+            if re.fullmatch(r"test_only_[A-Za-z0-9_-]+", right, flags=re.IGNORECASE):
+                return True
         if not (
             normalized_path.startswith("tests/")
             or "/tests/" in f"/{normalized_path}"
