@@ -15,7 +15,7 @@ from typing import Any, Mapping
 
 from aigc_runtime.closure_workflow import evaluate_closure
 from aigc_runtime.artifact_verifier import ArtifactVerificationError, download_and_verify_artifact
-from aigc_runtime.github_evidence import GitHubEvidenceError, acquire_live_snapshot
+from aigc_runtime.github_evidence import GitHubEvidenceError, acquire_live_snapshot, recheck_live_pr
 from aigc_runtime.receipt_verifier import Ed25519ReceiptVerifier, ReceiptVerificationError, TrustedReceiptKey
 from aigc_runtime.receipt_claim_store import PostgresReceiptClaimStore
 
@@ -128,7 +128,22 @@ def run_live_closure(repository: str, pr_number: int, *, trusted_keys_path: str,
     else:
         snapshot["artifact"] = {"status": "UNVERIFIABLE", "bytes_verified": False,
             "manifest_verified": False, "verification_error": errors.get("artifact", "signed_artifact_receipt_missing")}
-    core_evidence = {
+    # The artifact download can take time; re-read live PR head/base immediately before evaluation.
+    final_check = recheck_live_pr(repository, pr_number, token_env=token_env)
+    snapshot["head_changed_during_acquisition"] = (
+        snapshot.get("head_changed_during_acquisition") is True
+        or final_check["head_sha"] != snapshot.get("candidate_sha")
+        or final_check["base_sha"] != snapshot.get("base_sha")
+        or final_check["base_branch"] != snapshot.get("base_branch"))
+    snapshot["observed_head_sha"] = final_check["head_sha"]
+    snapshot["base_sha"] = final_check["base_sha"]
+    snapshot["base_branch"] = final_check["base_branch"]
+    snapshot["pr_state"] = final_check["pr_state"]
+    snapshot["pr_draft"] = final_check["pr_draft"]
+    snapshot["pr_merged"] = final_check["pr_merged"]
+    snapshot["evaluation_time"] = final_check["rechecked_at"]
+    snapshot["acquisition"]["final_pr_recheck"] = final_check
+        core_evidence = {
         "schema_version": snapshot.get("schema_version"), "repository": repository, "pr_number": pr_number,
         "candidate_sha": snapshot.get("candidate_sha"), "observed_head_sha": snapshot.get("observed_head_sha"),
         "base_branch": snapshot.get("base_branch"), "base_sha": snapshot.get("base_sha"),
