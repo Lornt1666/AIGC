@@ -150,7 +150,11 @@ class RedisStreamsCoordinator:
           return -1
         end
         redis.call('SET', KEYS[1], ARGV[4], 'EX', ARGV[3])
-        redis.call('XADD', KEYS[2], '*', 'task_json', ARGV[2], 'task_id', ARGV[1])
+        local appended = redis.pcall('XADD', KEYS[2], '*', 'task_json', ARGV[2], 'task_id', ARGV[1])
+        if type(appended) == 'table' and appended.err then
+          redis.call('DEL', KEYS[1])
+          return redis.error_reply(appended.err)
+        end
         return 1
         """
         accepted = await self.redis.eval(
