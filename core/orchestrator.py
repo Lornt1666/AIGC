@@ -500,12 +500,52 @@ class SagaCoordinator:
 
     async def run_saga(self, contract: TaskContract, steps: list[SagaStep], *,
                        dry_run: bool | None = None, permit_ref: str | None = None) -> dict[str, Any]:
-        """Run an explicitly registered saga; default dry-run, compensate completed steps in reverse order."""
+        """Run an explicitly registered saga; snapshot inputs before authorization and default to dry-run."""
         dry = self.dry_run if dry_run is None else dry_run
         started_all = time.monotonic()
         deadline = started_all + contract.timeout_seconds
         if len(steps) > self.max_hops or len(steps) > contract.max_hops:
             raise OrchestrationError("saga_hop_limit_exceeded")
+
+        # Frozen dataclasses do not freeze nested Mapping values. Snapshot canonical
+        # JSON before the first await so the verified bytes and executed payload match.
+        # Bound each payload to prevent unbounded memory use at the authorization boundary.
+        def snapshot_payload(payload: Mapping[str, Any] | None) -> dict[str, Any] | None:
+            if payload is None:
+                return None
+            if not isinstance(payload, Mapping):
+                raise OrchestrationError("saga_payload_must_be_mapping")
+            try:
+                encoded = canonical_json(dict(payload))
+            except (TypeError, ValueError, RecursionError) as exc:
+                raise OrchestrationError("saga_payload_not_canonical_json") from exc
+            if len(encoded.encode("utf-8")) > 1_000_000:
+                raise OrchestrationError("saga_payload_size_limit_exceeded")
+            try:
+                snapshot = json.loads(encoded)
+            except (json.JSONDecodeError, RecursionError) as exc:
+                raise OrchestrationError("saga_payload_snapshot_failed") from exc
+            if not isinstance(snapshot, dict):
+                raise OrchestrationError("saga_payload_must_be_object")
+            return snapshot
+
+        snapshotted_steps: list[SagaStep] = []
+        for supplied in steps:
+            if not isinstance(supplied, SagaStep):
+                raise OrchestrationError("saga_step_type_invalid")
+            snapshotted_steps.append(SagaStep(
+                step_id=supplied.step_id,
+                operation=supplied.operation,
+                input_payload=snapshot_payload(supplied.input_payload) or {},
+                compensation_operation=supplied.compensation_operation,
+                compensation_payload=snapshot_payload(supplied.compensation_payload),
+                irreversible=supplied.irreversible,
+                side_effecting=supplied.side_effecting,
+                approval_receipt_ref=supplied.approval_receipt_ref,
+                idempotent=supplied.idempotent,
+                compensation_idempotent=supplied.compensation_idempotent,
+            ))
+        steps = snapshotted_steps
         if len({step.step_id for step in steps}) != len(steps):
             raise OrchestrationError("duplicate_saga_step_id")
         if any(not step.step_id or not step.operation for step in steps):
@@ -574,8 +614,28 @@ class SagaCoordinator:
                         remaining = deadline - time.monotonic()
                         if remaining <= 0:
                             raise OrchestrationError("saga_deadline_exceeded")
-                        result = await self._invoke_with_retry(step.operation, self.adapters[step.operation], step.input_payload, key,
-                                                               timeout=min(self.operation_timeout_seconds, remaining))
+                        async def verify_permit_at_effect_boundary() -> bool:
+                            if self.permit_verifier is None or not permit_ref or not contract.candidate_sha:
+                                return False
+                            claims = {"task_id": str(contract.task_id), "candidate_sha": contract.candidate_sha,
+                                "policy_version": contract.policy_version, "operation": step.operation,
+                                "input_digest": sha256_text(canonical_json(dict(step.input_payload))),
+                                "compensation_operation": step.compensation_operation, "irreversible": step.irreversible,
+                                "side_effecting": step.side_effecting, "approval_receipt_ref": step.approval_receipt_ref}
+                            try:
+                                permit_remaining = deadline - time.monotonic()
+                                if permit_remaining <= 0:
+                                    return False
+                                async with asyncio.timeout(permit_remaining):
+                                    return bool(await self.permit_verifier(permit_ref, claims, key))
+                            except asyncio.CancelledError:
+                                raise
+                            except Exception:
+                                return False
+                        result = await self._invoke_with_retry(
+                            step.operation, self.adapters[step.operation], step.input_payload, key,
+                            timeout=min(self.operation_timeout_seconds, remaining),
+                            before_attempt=verify_permit_at_effect_boundary if not dry else None)
                         status = "SUCCEEDED"
                         completed.append(step)
                     except Exception as exc:
@@ -680,7 +740,8 @@ class SagaCoordinator:
                 "steps": results, "release_authorization": False}
     async def _invoke_with_retry(self, operation: str, adapter: ActionAdapter,
                                  payload: Mapping[str, Any], key: str,
-                                 *, timeout: float) -> Mapping[str, Any]:
+                                 *, timeout: float,
+                                 before_attempt: Callable[[], Awaitable[bool]] | None = None) -> Mapping[str, Any]:
         """Retry only after a trusted read-after-write reconciler proves no effect occurred.
 
         A timeout or transport exception is ambiguous: the remote side may have committed
@@ -695,6 +756,19 @@ class SagaCoordinator:
             remaining = deadline - time.monotonic()
             if remaining <= 0:
                 raise OrchestrationError("operation_deadline_exceeded") from last_error
+            if before_attempt is not None:
+                try:
+                    remaining = deadline - time.monotonic()
+                    if remaining <= 0:
+                        raise OrchestrationError("operation_deadline_exceeded_before_authorization")
+                    async with asyncio.timeout(remaining):
+                        permitted = await before_attempt()
+                except asyncio.CancelledError:
+                    raise
+                except Exception as exc:
+                    raise OrchestrationError("point_of_effect_authorization_check_failed:" + type(exc).__name__) from exc
+                if not permitted:
+                    raise OrchestrationError("point_of_effect_authorization_denied")
             try:
                 async with asyncio.timeout(remaining):
                     result = await adapter(payload, idempotency_key=key)
