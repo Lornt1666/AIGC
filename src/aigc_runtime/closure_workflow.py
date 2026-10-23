@@ -71,8 +71,8 @@ def evaluate_closure(snapshot: Mapping[str, Any]) -> dict[str, Any]:
         raise ValueError("candidate_sha_invalid")
 
     # Missing or malformed live observation is not permission to use cached state.
-    if not _is_sha(observed):
-        g0_status, g0_reason = "UNVERIFIABLE", "live_head_observation_missing_or_invalid"
+    if not _is_sha(observed) or snapshot.get("live_observation_authenticated") is not True or not isinstance(snapshot.get("observed_at"), str) or not snapshot.get("observed_at") or snapshot.get("observation_source") != "github_api":
+        g0_status, g0_reason = "UNVERIFIABLE", "authenticated_fresh_live_head_observation_missing_or_invalid"
     elif observed != candidate:
         g0_status, g0_reason = "STALE", "live_head_differs_from_candidate; reacquire_and_revalidate"
     else:
@@ -80,7 +80,7 @@ def evaluate_closure(snapshot: Mapping[str, Any]) -> dict[str, Any]:
 
     gates: list[dict[str, str]] = []
     gates.append(_gate("G0_LIVE_RECONCILIATION", "closure-orchestrator", g0_status,
-        "authenticated live PR metadata with repository, PR number, head SHA, base SHA and observation time",
+        "authenticated live PR metadata with repository, PR number, head/base SHAs, timestamp and GitHub API source",
         "freshly fetched head SHA equals candidate SHA; observation is complete", g0_reason, blockers))
 
     required_jobs = snapshot.get("required_ci_jobs")
@@ -144,6 +144,8 @@ def evaluate_closure(snapshot: Mapping[str, Any]) -> dict[str, Any]:
         artifact_status, artifact_reason = "STALE", "live_head_mismatch_invalidates_artifact_binding"
     elif artifact.get("head_sha") != candidate or not _is_digest(artifact.get("sha256")) or not isinstance(artifact.get("run_id"), int) or not isinstance(artifact.get("run_attempt"), int) or not isinstance(artifact.get("files"), list) or not artifact.get("files"):
         artifact_status, artifact_reason = "BLOCK", "artifact_sha_digest_run_attempt_or_file_manifest_mismatch"
+    elif artifact.get("bytes_verified") is not True or artifact.get("manifest_verified") is not True:
+        artifact_status, artifact_reason = "UNVERIFIABLE", "trusted_adapter_has_not_verified_downloaded_bytes_and_file_manifest"
     elif not all(isinstance(f, Mapping) and isinstance(f.get("path"), str) and _is_digest(f.get("sha256")) and isinstance(f.get("size"), int) and f.get("size", -1) >= 0 for f in artifact["files"]):
         artifact_status, artifact_reason = "BLOCK", "artifact_file_manifest_malformed"
     elif len({f["path"] for f in artifact["files"]}) != len(artifact["files"]):
@@ -185,7 +187,7 @@ def evaluate_closure(snapshot: Mapping[str, Any]) -> dict[str, Any]:
     prstatus, prreason = "BLOCK", "trusted_provenance_missing"
     if not isinstance(provenance, Mapping):
         prstatus, prreason = "UNVERIFIABLE", "provenance_receipt_missing"
-    elif provenance.get("verified") is not True or provenance.get("authenticated") is not True or provenance.get("repository") != repository or provenance.get("source_sha") != candidate or not _is_digest(provenance.get("subject_digest")) or not isinstance(provenance.get("workflow_identity"), str) or not provenance.get("workflow_identity") or not isinstance(provenance.get("issuer"), str) or not provenance.get("issuer"):
+    elif provenance.get("verified") is not True or provenance.get("authenticated") is not True or provenance.get("repository") != repository or provenance.get("source_sha") != candidate or not _is_digest(provenance.get("subject_digest")) or not isinstance(provenance.get("workflow_identity"), str) or not provenance.get("workflow_identity") or not isinstance(provenance.get("issuer"), str) or not provenance.get("issuer") or not isinstance(artifact, Mapping) or provenance.get("subject_digest") not in {artifact.get("sha256"), "sha256:" + str(artifact.get("sha256", "")).removeprefix("sha256:")}:
         prstatus, prreason = "BLOCK", "provenance_signature_or_repository_workflow_source_subject_claims_invalid"
     else:
         prstatus, prreason = "PASS", "trusted_provenance_claims_verified"
@@ -196,12 +198,13 @@ def evaluate_closure(snapshot: Mapping[str, Any]) -> dict[str, Any]:
 
     acceptance = snapshot.get("acceptance")
     evidence_digest = snapshot.get("evidence_digest")
+    policy_version = snapshot.get("policy_version")
     astatus, areason = "BLOCK", "authenticated_human_acceptance_missing"
-    if not _is_digest(evidence_digest):
-        astatus, areason = "UNVERIFIABLE", "canonical_evidence_digest_missing_or_invalid"
+    if not _is_digest(evidence_digest) or not isinstance(policy_version, str) or not policy_version.strip():
+        astatus, areason = "UNVERIFIABLE", "canonical_evidence_digest_or_policy_version_missing_or_invalid"
     elif not isinstance(acceptance, Mapping):
         astatus, areason = "UNVERIFIABLE", "acceptance_receipt_missing"
-    elif acceptance.get("authenticated") is not True or acceptance.get("approver_role") != "authorized_human_approver" or acceptance.get("candidate_sha") != candidate or acceptance.get("evidence_digest") != evidence_digest or not isinstance(acceptance.get("receipt_id"), str) or not acceptance.get("receipt_id"):
+    elif acceptance.get("authenticated") is not True or acceptance.get("approver_role") != "authorized_human_approver" or acceptance.get("candidate_sha") != candidate or acceptance.get("evidence_digest") != evidence_digest or acceptance.get("policy_version") != policy_version or not isinstance(acceptance.get("receipt_id"), str) or not acceptance.get("receipt_id"):
         astatus, areason = "BLOCK", "acceptance_unauthenticated_or_sha_digest_role_mismatch"
     else:
         astatus, areason = "PASS", "authenticated_human_acceptance_matches_candidate_and_packet"
@@ -236,6 +239,30 @@ def evaluate_closure(snapshot: Mapping[str, Any]) -> dict[str, Any]:
         "only RX-19 issued an authenticated APPROVE decision for this exact candidate and packet",
         dreason, blockers))
 
+    dependencies = {
+        "G0_LIVE_RECONCILIATION": [],
+        "G1_EXACT_HEAD_CI": ["G0_LIVE_RECONCILIATION"],
+        "G2_ARTIFACT_INTEGRITY": ["G0_LIVE_RECONCILIATION", "G1_EXACT_HEAD_CI"],
+        "G3_EFFECTIVE_PROTECTION": [],
+        "G4_INDEPENDENT_REVIEW": ["G0_LIVE_RECONCILIATION"],
+        "G5_TRUSTED_PROVENANCE": ["G1_EXACT_HEAD_CI", "G2_ARTIFACT_INTEGRITY"],
+        "G6_HUMAN_ACCEPTANCE": ["G0_LIVE_RECONCILIATION", "G2_ARTIFACT_INTEGRITY", "G4_INDEPENDENT_REVIEW", "G5_TRUSTED_PROVENANCE"],
+        "G7_RX19_HANDOFF": ["G6_HUMAN_ACCEPTANCE"],
+        "G8_RX19_DECISION": ["G7_RX19_HANDOFF"],
+    }
+    by_gate = {g["gate_id"]: g for g in gates}
+    for gate in gates:
+        gate["depends_on"] = dependencies[gate["gate_id"]]
+        blocked_dependencies = [dep for dep in dependencies[gate["gate_id"]] if by_gate[dep]["status"] != "PASS"]
+        gate["dependency_blocked"] = bool(blocked_dependencies)
+        if blocked_dependencies and gate["status"] == "PASS":
+            gate["status"] = "STALE"
+            gate["reason"] = "dependency_not_passed:" + ",".join(blocked_dependencies)
+    blockers = [{
+        "gate_id": g["gate_id"], "status": g["status"], "accountable_role": g["accountable_role"],
+        "required_action": g["reason"], "evidence_contract": g["evidence_contract"],
+        "acceptance_test": g["acceptance_test"],
+    } for g in gates if g["status"] != "PASS"]
     gates.sort(key=lambda g: g["gate_id"])
     blockers.sort(key=lambda b: (b["gate_id"], b["required_action"]))
     body = {
