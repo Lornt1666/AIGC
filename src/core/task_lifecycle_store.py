@@ -194,8 +194,8 @@ class PostgresTaskLifecycleStore:
                              WHERE status='pending'
                                 OR (status='publishing' AND lease_until < now())
                              ORDER BY outbox_id
-                             FOR UPDATE SKIP LOCKED
                              LIMIT 1
+                             FOR UPDATE SKIP LOCKED
                            )
                            UPDATE aigc_task_outbox AS o
                            SET status='publishing', dispatcher_id=%s,
