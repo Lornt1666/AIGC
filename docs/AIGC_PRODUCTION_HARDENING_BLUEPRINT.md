@@ -277,6 +277,10 @@ Confirm 003_dead_letters is present and both services become healthy. Do not dro
 
 The adapter retry loop now uses one monotonic wall-clock deadline for the entire attempt/reconciliation/backoff sequence, rather than resetting the full timeout on every retry. Every adapter call and outcome-reconciliation call receives only the remaining budget; backoff is clipped to the remaining budget. If a timed-out call may have applied a side effect and there is no time left to reconcile, the coordinator fails closed with an explicit unresolved-outcome error and does not retry. This is a bounded waiting guarantee, not proof that a remote side effect stopped when the local coroutine timed out; adapter contracts must still support idempotency and trusted read-after-write reconciliation.
 
+## 7C. Whole-saga deadline enforcement
+
+`TaskContract.timeout_seconds` is enforced as one monotonic deadline across live permit preflight, forward saga steps, outcome reconciliation, and compensation. Individual adapter timeouts are clipped to the remaining task budget. If the deadline expires after a side effect may have occurred, the coordinator stops new side effects and returns an explicit reconciliation-required status; it must not imply compensation completed. This bounds coordinator waiting, but does not prove a remote system stopped work when a local timeout fired.
+
 ## 8. Production exit criteria
 
 All must be true before production activation; any missing item is BLOCK:
