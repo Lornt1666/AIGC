@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+from datetime import datetime, timedelta, timezone
 
 import pytest
 from pydantic import ValidationError
@@ -103,8 +104,15 @@ def test_saga_compensates_completed_steps_in_reverse_order() -> None:
     assert calls == ["execute-1", "execute-2", "compensate-2", "compensate-1"]
 
 class FakeRedis:
-    def __init__(self, *, fail_result_publish: bool = False, eval_results: list[int] | None = None):
+    def __init__(
+        self,
+        *,
+        fail_result_publish: bool = False,
+        fail_dead_letter: bool = False,
+        eval_results: list[int] | None = None,
+    ):
         self.fail_result_publish = fail_result_publish
+        self.fail_dead_letter = fail_dead_letter
         self.eval_results = list(eval_results or [])
         self.entries: list[tuple[str, dict]] = []
         self.acks: list[tuple[str, str, str]] = []
@@ -126,6 +134,8 @@ class FakeRedis:
     async def xadd(self, stream, fields):
         if stream == "aigc:task-results:v1" and self.fail_result_publish:
             raise OSError("simulated result stream outage")
+        if stream == "aigc:tasks:dead-letter:v1" and self.fail_dead_letter:
+            raise OSError("simulated dead-letter stream outage")
         self.entries.append((stream, fields))
         return b"2-0"
 
@@ -167,6 +177,49 @@ def test_result_stream_failure_leaves_task_pending_for_retry() -> None:
 
     assert redis.acks == []
     assert not any(stream == "aigc:tasks:dead-letter:v1" for stream, _ in redis.entries)
+
+
+def test_expired_task_deadline_prevents_handler_execution() -> None:
+    redis = FakeRedis()
+    task = TaskContract(
+        idempotency_key="expired-deadline-key",
+        task_type="research",
+        deadline_at=datetime.now(timezone.utc) - timedelta(seconds=1),
+    )
+    redis.read_entries.append(("1-0", {"task_json": task.model_dump_json()}))
+    coordinator = RedisStreamsCoordinator(redis)
+    handler_called = False
+
+    async def handler(_task: TaskContract) -> dict:
+        nonlocal handler_called
+        handler_called = True
+        return {"ok": True}
+
+    assert asyncio.run(coordinator.consume_once(consumer_name="worker-1", handler=handler)) is True
+    assert handler_called is False
+    assert redis.entries[0][0] == "aigc:tasks:dead-letter:v1"
+    assert redis.acks == [("aigc:tasks:v1", "aigc-workers-v1", "1-0")]
+
+
+def test_task_deadline_bounds_handler_execution() -> None:
+    redis = FakeRedis()
+    task = TaskContract(
+        idempotency_key="short-deadline-key",
+        task_type="research",
+        deadline_at=datetime.now(timezone.utc) + timedelta(milliseconds=50),
+        timeout_seconds=2,
+    )
+    redis.read_entries.append(("1-0", {"task_json": task.model_dump_json()}))
+    coordinator = RedisStreamsCoordinator(redis)
+
+    async def handler(_task: TaskContract) -> dict:
+        await asyncio.sleep(0.2)
+        return {"ok": True}
+
+    assert asyncio.run(coordinator.consume_once(consumer_name="worker-1", handler=handler)) is True
+    assert redis.entries[0][0] == "aigc:tasks:dead-letter:v1"
+    assert redis.entries[0][1]["error_type"] == "TimeoutError"
+    assert redis.acks == [("aigc:tasks:v1", "aigc-workers-v1", "1-0")]
 
 
 def test_handler_failure_is_dead_lettered_before_acknowledgement() -> None:
@@ -226,3 +279,56 @@ def test_dead_letter_does_not_duplicate_raw_task_payload() -> None:
     dead_letter = redis.entries[0][1]
     assert "task_json" not in dead_letter
     assert len(dead_letter["payload_sha256"]) == 64
+
+def test_handler_cancellation_propagates_and_leaves_message_unacknowledged() -> None:
+    redis = FakeRedis()
+    task = TaskContract(
+        idempotency_key="cancelled-task-key",
+        task_type="research",
+    )
+    redis.read_entries.append(("1-0", {"task_json": task.model_dump_json()}))
+    coordinator = RedisStreamsCoordinator(redis)
+    handler_started = asyncio.Event()
+    handler_cleaned_up = asyncio.Event()
+
+    async def handler(_task: TaskContract) -> dict:
+        handler_started.set()
+        try:
+            await asyncio.Event().wait()
+        finally:
+            handler_cleaned_up.set()
+
+    async def scenario() -> None:
+        worker = asyncio.create_task(
+            coordinator.consume_once(consumer_name="worker-1", handler=handler)
+        )
+        await asyncio.wait_for(handler_started.wait(), timeout=2)
+        worker.cancel()
+        with pytest.raises(asyncio.CancelledError):
+            await worker
+        assert handler_cleaned_up.is_set()
+        assert redis.acks == []
+        assert not any(stream == "aigc:tasks:dead-letter:v1" for stream, _ in redis.entries)
+
+    asyncio.run(scenario())
+
+
+def test_dead_letter_write_failure_leaves_source_message_unacknowledged() -> None:
+    redis = FakeRedis(fail_dead_letter=True)
+    task = TaskContract(
+        idempotency_key="dead-letter-outage-key",
+        task_type="research",
+    )
+    redis.read_entries.append(("1-0", {"task_json": task.model_dump_json()}))
+    coordinator = RedisStreamsCoordinator(redis)
+
+    async def handler(_task: TaskContract) -> dict:
+        raise RuntimeError("original handler failure")
+
+    with pytest.raises(OSError, match="dead-letter stream outage") as captured:
+        asyncio.run(coordinator.consume_once(consumer_name="worker-1", handler=handler))
+
+    assert isinstance(captured.value.__context__, RuntimeError)
+    assert "original handler failure" in str(captured.value.__context__)
+    assert redis.acks == []
+    assert not any(stream == "aigc:tasks:dead-letter:v1" for stream, _ in redis.entries)
