@@ -29,7 +29,7 @@ class ArtifactManifestTests(unittest.TestCase):
     def test_manifest_rejects_symlinks(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
-            outside = root.parent / "aigc-outside-test.txt"
+            outside = root.parent / ("aigc-outside-" + root.name + ".txt")
             outside.write_text("x", encoding="utf-8")
             try:
                 (root / "link.txt").symlink_to(outside)
