@@ -257,10 +257,16 @@ class Phase6Validator:
             return "Invalid expiration timestamp."
         if datetime.now(timezone.utc) > expires_at:
             return "Authorization expired."
-        if not packet.safety.ai_disclosure_preserved:
-            return "AI disclosure preservation was not confirmed."
-        if not packet.safety.privacy_checked:
-            return "Privacy check was not confirmed."
+        # A dry run is an inert internal simulation: it must not trigger external
+        # actuation or handoff. Require evidence-backed safety controls for every
+        # execution mode that can create an external-facing handoff or action.
+        if packet.execution_mode != ExecutionMode.DRY_RUN.value:
+            if not packet.safety.platform_policy_checked:
+                return "Platform policy check was not confirmed by evidence."
+            if not packet.safety.ai_disclosure_preserved:
+                return "AI disclosure preservation was not confirmed by evidence."
+            if not packet.safety.privacy_checked:
+                return "Privacy check was not confirmed by evidence."
         if packet.execution_mode == ExecutionMode.APPROVED_API.value and not packet.safety.credential_use_approved:
             return "API execution requested without approved credential use."
         return None
@@ -423,14 +429,18 @@ def build_packet_from_phase5_authorization(
         action_type=infer_action_type(authorization_packet.get("proposed_external_action", "")),
         execution_mode=execution_mode,
         safety=ExecutionSafety(
-            platform_policy_checked=True,
-            ai_disclosure_preserved=True,
-            privacy_checked=True,
+            # Packet construction is not proof that a safety control was performed.
+            # Until evidence-bearing control records are verified at the execution
+            # boundary, every control remains unverified and validation fails closed.
+            platform_policy_checked=False,
+            ai_disclosure_preserved=False,
+            privacy_checked=False,
             credential_use_approved=False,
             batch_action=False,
             forbidden_action_detected=False,
             notes=[
-                "Manual handoff and dry-run default.",
+                "Safety controls are unverified: packet construction does not execute or prove them.",
+                "Manual handoff and dry-run remain non-live modes; this packet is blocked until evidence is supplied.",
                 "Live API execution requires platform-specific approval and connector implementation.",
             ],
         ),
