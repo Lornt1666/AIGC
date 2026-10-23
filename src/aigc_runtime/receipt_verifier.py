@@ -11,6 +11,7 @@ from dataclasses import dataclass
 import base64
 import hashlib
 import json
+import threading
 from typing import Any, Mapping
 
 try:
@@ -44,6 +45,8 @@ class Ed25519ReceiptVerifier:
         if len(self.keys) != len(trusted_keys):
             raise ReceiptVerificationError("duplicate_trusted_key_id")
         self.revoked = set(revoked_receipt_ids or ())
+        self.seen_receipt_ids: set[str] = set()
+        self._replay_lock = threading.Lock()
 
     def verify(self, envelope: Mapping[str, Any], *, expected_purpose: str,
                expected_bindings: Mapping[str, Any]) -> dict[str, Any]:
@@ -67,7 +70,10 @@ class Ed25519ReceiptVerifier:
         if not isinstance(receipt_id, str) or not receipt_id:
             raise ReceiptVerificationError("receipt_id_missing")
         if receipt_id in self.revoked:
-            raise ReceiptVerificationError("receipt_revoked_or_replayed")
+            raise ReceiptVerificationError("receipt_revoked")
+        with self._replay_lock:
+            if receipt_id in self.seen_receipt_ids:
+                raise ReceiptVerificationError("receipt_replayed_in_process")
         for name, expected in expected_bindings.items():
             if payload.get(name) != expected:
                 raise ReceiptVerificationError("receipt_binding_mismatch:" + str(name))
@@ -81,8 +87,11 @@ class Ed25519ReceiptVerifier:
         except ValueError as exc:
             raise ReceiptVerificationError("receipt_validity_window_malformed") from exc
         now = datetime.now(timezone.utc)
-        if issued.tzinfo is None or expires.tzinfo is None or issued > now or expires <= now or expires <= issued:
-            raise ReceiptVerificationError("receipt_outside_validity_window")
+        if (issued.tzinfo is None or expires.tzinfo is None
+                or issued.utcoffset() is None or expires.utcoffset() is None
+                or issued.utcoffset().total_seconds() != 0 or expires.utcoffset().total_seconds() != 0
+                or issued > now or expires <= now or expires <= issued):
+            raise ReceiptVerificationError("receipt_outside_validity_window_or_not_utc")
         try:
             public_raw = base64.b64decode(key.public_key_b64, validate=True)
             signature = base64.b64decode(signature_b64, validate=True)
@@ -94,6 +103,10 @@ class Ed25519ReceiptVerifier:
         except (ValueError, InvalidSignature) as exc:
             raise ReceiptVerificationError("receipt_signature_invalid") from exc
         digest = "sha256:" + hashlib.sha256(canonical_bytes(payload)).hexdigest()
+        with self._replay_lock:
+            if receipt_id in self.seen_receipt_ids:
+                raise ReceiptVerificationError("receipt_replayed_in_process")
+            self.seen_receipt_ids.add(receipt_id)
         return {"verified": True, "receipt_id": receipt_id, "issuer": key.issuer,
                 "key_id": key_id, "purpose": expected_purpose, "payload_digest": digest,
                 "bindings": dict(expected_bindings), "verification_method": "Ed25519",
