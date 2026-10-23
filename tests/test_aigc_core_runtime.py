@@ -57,6 +57,10 @@ class ArbiterTests(unittest.TestCase):
         self.assertEqual(result.status, "BLOCK")  # print is not in the restricted AST allowlist policy
         self.assertFalse(result.execution_performed)
 
+    def test_allowlisted_pure_math_import_can_be_screened(self):
+        result = audit_python_source("import math\\nx = math.sqrt(4)\\n")
+        self.assertEqual(result.status, "PASS_STATIC_SCREEN_ONLY")
+        self.assertFalse(result.execution_performed)
     def test_exec_eval_and_import_os_block(self):
         for source in ("exec('print(1)')", "eval('1+1')", "import os\nos.system('id')", "from subprocess import run"):
             with self.subTest(source=source):
