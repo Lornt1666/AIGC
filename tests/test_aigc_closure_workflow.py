@@ -186,6 +186,40 @@ class ClosureWorkflowTests(unittest.TestCase):
         gate = next(g for g in evaluate_closure(snapshot)["gate_results"] if g["gate_id"] == "G1_EXACT_HEAD_CI")
         self.assertEqual(gate["status"], "BLOCK")
 
+    def test_newer_failed_attempt_invalidates_older_success(self):
+        snapshot = valid_snapshot()
+        first = copy.deepcopy(snapshot["ci_runs"][0])
+        newer = copy.deepcopy(first)
+        newer["run_attempt"] = 2
+        newer["conclusion"] = "failure"
+        newer["jobs"][0]["conclusion"] = "failure"
+        snapshot["ci_runs"] = [first, newer]
+        result = evaluate_closure(snapshot)
+        gates = {g["gate_id"]: g for g in result["gate_results"]}
+        self.assertEqual(gates["G1_EXACT_HEAD_CI"]["status"], "BLOCK")
+        self.assertIn("no_completed_successful_run_attempt", gates["G1_EXACT_HEAD_CI"]["reason"])
+        self.assertEqual(gates["G2_ARTIFACT_INTEGRITY"]["status"], "BLOCK")
+        self.assertEqual(result["disposition"], "BLOCK")
+
+    def test_newer_in_progress_attempt_invalidates_older_success(self):
+        snapshot = valid_snapshot()
+        first = copy.deepcopy(snapshot["ci_runs"][0])
+        newer = copy.deepcopy(first)
+        newer["run_attempt"] = 2
+        newer["status"] = "in_progress"
+        newer["conclusion"] = None
+        snapshot["ci_runs"] = [first, newer]
+        gate = next(g for g in evaluate_closure(snapshot)["gate_results"] if g["gate_id"] == "G1_EXACT_HEAD_CI")
+        self.assertEqual(gate["status"], "BLOCK")
+
+    def test_conflicting_records_for_same_attempt_fail_closed(self):
+        snapshot = valid_snapshot()
+        conflicting = copy.deepcopy(snapshot["ci_runs"][0])
+        conflicting["conclusion"] = "failure"
+        snapshot["ci_runs"].append(conflicting)
+        gate = next(g for g in evaluate_closure(snapshot)["gate_results"] if g["gate_id"] == "G1_EXACT_HEAD_CI")
+        self.assertEqual(gate["status"], "BLOCK")
+
     def test_invalid_snapshot_identity_rejected(self):
         snapshot = valid_snapshot()
         snapshot["candidate_sha"] = "not-a-sha"
