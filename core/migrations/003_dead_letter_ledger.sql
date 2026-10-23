@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS aigc_dead_letters (
   payload TEXT NOT NULL,
   payload_sha256 CHAR(64) NOT NULL,
   failure_type TEXT NOT NULL,
-  delivery_count INTEGER NOT NULL CHECK (delivery_count >= 1),
+  delivery_count INTEGER NOT NULL CHECK (delivery_count >= 0),
   published_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   UNIQUE (source_stream, source_stream_id)
