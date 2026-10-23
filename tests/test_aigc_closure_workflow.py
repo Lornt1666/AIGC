@@ -18,7 +18,7 @@ def valid_snapshot():
         "base_sha": "c" * 40,
         "required_ci_jobs": ["validate", "locked-release-1", "locked-release-2"],
         "ci_runs": [{
-            "run_id": 1001, "run_attempt": 1, "head_sha": SHA,
+            "run_id": 1001, "run_attempt": 1, "head_sha": SHA, "status": "completed", "conclusion": "success",
             "jobs": [
                 {"name": "validate", "conclusion": "success", "head_sha": SHA},
                 {"name": "locked-release-1", "conclusion": "success", "head_sha": SHA},
@@ -141,6 +141,24 @@ class ClosureWorkflowTests(unittest.TestCase):
         gate = next(g for g in result["gate_results"] if g["gate_id"] == "G0_LIVE_RECONCILIATION")
         self.assertEqual(gate["status"], "UNVERIFIABLE")
         self.assertEqual(result["disposition"], "BLOCK")
+
+
+    def test_artifact_must_bind_to_successful_ci_run_attempt(self):
+        snapshot = valid_snapshot()
+        snapshot["artifact"]["run_attempt"] = 2
+        gate = next(g for g in evaluate_closure(snapshot)["gate_results"] if g["gate_id"] == "G2_ARTIFACT_INTEGRITY")
+        self.assertEqual(gate["status"], "BLOCK")
+        self.assertIn("run_attempt", gate["reason"])
+
+    def test_required_jobs_cannot_be_combined_across_runs(self):
+        snapshot = valid_snapshot()
+        original = snapshot["ci_runs"][0]
+        snapshot["ci_runs"] = [
+            {**original, "jobs": original["jobs"][:1]},
+            {**original, "run_id": 1002, "jobs": original["jobs"][1:]},
+        ]
+        gate = next(g for g in evaluate_closure(snapshot)["gate_results"] if g["gate_id"] == "G1_EXACT_HEAD_CI")
+        self.assertEqual(gate["status"], "BLOCK")
 
     def test_invalid_snapshot_identity_rejected(self):
         snapshot = valid_snapshot()
