@@ -204,6 +204,29 @@ PYTHONPATH=src python -m unittest discover -s tests -p 'test_aigc_evidence_adapt
 
 Also run the complete existing CI workflow, dependency and secret scans, image scan, SBOM generation, and independent review. A partial local test subset is not a release gate.
 
+### Live closure packet preparation and evaluation
+
+Run this from a controlled host with outbound access to `api.github.com` and the allowlisted GitHub artifact-storage domains. Load `GITHUB_TOKEN` from the secret manager into the process environment; do not put the token on the command line or in a file committed to Git. The token needs only read access to the repository, pull requests, Actions runs/jobs/artifacts, and whatever readback endpoints its policy permits. If protection readback returns 403/404, the gate remains UNVERIFIABLE.
+
+Set the exact required job names from the signed release policy and current workflow configuration; do not guess them:
+
+```bash
+export REQUIRED_CI_JOB_1='validate'
+export REQUIRED_CI_JOB_2='revalidate_locked_releases (v0-12, <policy-defined locked SHA>)'
+export REQUIRED_CI_JOB_3='revalidate_locked_releases (v0-13, <policy-defined locked SHA>)'
+PYTHONPATH=src python scripts/aigc_closure_live.py \
+  --repository Lornt1666/AIGC --pr 330 \
+  --trusted-keys /secure/policy/trusted-keys.json \
+  --receipts /secure/evidence/core-receipts.json \
+  --required-ci-job "$REQUIRED_CI_JOB_1" \
+  --required-ci-job "$REQUIRED_CI_JOB_2" \
+  --required-ci-job "$REQUIRED_CI_JOB_3" \
+  --prepare --output /secure/evidence/preparation-report.json
+```
+
+The job names above are examples of the invocation shape, not a claim that they match the current workflow. Use the exact job names returned by the live run and required by the authenticated policy. Preparation exits 0 only when G0–G5 pass and the canonical digest is reproducible; it still does not authorize release. It prints `computed_evidence_digest` for authorized human/RX-19 receipt creation. See [RX-148 Evidence Receipt Schema](RX148_EVIDENCE_RECEIPT_SCHEMA.md) for signed claim contracts.
+
+After authorized acceptance, RX-19 handoff and decision receipts have been signed against that digest, run the same command without `--prepare` and with the complete receipt bundle. The final evaluation re-fetches the PR head and evidence. Any changed candidate, run/job result, protection state, review evidence, artifact bytes or policy causes a digest/gate mismatch. Exit code 2 means BLOCK; inspect the JSON gate matrix and blocker report. Never use a nonzero exit as a reason to bypass the gate.
 ### Database migration notes
 
 On a **new** Compose volume, the Postgres initialization scripts create the limited runtime role and apply `core/migrations/001_runtime.sql`. The application verifies migration presence and does not create schema at startup.
