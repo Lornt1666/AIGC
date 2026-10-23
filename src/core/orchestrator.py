@@ -11,6 +11,7 @@ import hashlib
 import json
 import re
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from typing import Any, Awaitable, Callable, Sequence
 
 from src.core.contracts import (
@@ -200,7 +201,13 @@ class RedisStreamsCoordinator:
             task = TaskContract.model_validate_json(raw)
             if task.hop_count >= min(task.max_hops, self.max_hops):
                 raise HopLimitExceeded("Task exceeded the configured hop limit.")
+            now = datetime.now(timezone.utc)
             timeout = min(task.timeout_seconds, self.max_timeout_seconds)
+            if task.deadline_at is not None:
+                remaining = (task.deadline_at - now).total_seconds()
+                if remaining <= 0:
+                    raise TimeoutError("Task deadline expired before execution.")
+                timeout = min(timeout, remaining)
             result = await asyncio.wait_for(handler(task), timeout=timeout)
             safe_result = _sanitize_result(result)
             encoded_result = json.dumps(safe_result, ensure_ascii=False, allow_nan=False, separators=(",", ":"))
