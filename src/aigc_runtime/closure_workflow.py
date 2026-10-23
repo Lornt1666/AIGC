@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from datetime import datetime
 from collections.abc import Mapping
 from typing import Any
 
@@ -71,12 +72,23 @@ def evaluate_closure(snapshot: Mapping[str, Any]) -> dict[str, Any]:
         raise ValueError("candidate_sha_invalid")
 
     # Missing or malformed live observation is not permission to use cached state.
-    if not _is_sha(observed) or snapshot.get("live_observation_authenticated") is not True or not isinstance(snapshot.get("observed_at"), str) or not snapshot.get("observed_at") or snapshot.get("observation_source") != "github_api":
-        g0_status, g0_reason = "UNVERIFIABLE", "authenticated_fresh_live_head_observation_missing_or_invalid"
-    elif observed != candidate:
-        g0_status, g0_reason = "STALE", "live_head_differs_from_candidate; reacquire_and_revalidate"
+    observed_at = snapshot.get("observed_at")
+    evaluation_time = snapshot.get("evaluation_time")
+    freshness_valid = False
+    if isinstance(observed_at, str) and isinstance(evaluation_time, str):
+        try:
+            observed_dt = datetime.fromisoformat(observed_at.replace("Z", "+00:00"))
+            evaluated_dt = datetime.fromisoformat(evaluation_time.replace("Z", "+00:00"))
+            freshness_seconds = (evaluated_dt - observed_dt).total_seconds()
+            freshness_valid = observed_dt.tzinfo is not None and evaluated_dt.tzinfo is not None and 0 <= freshness_seconds <= 120
+        except ValueError:
+            freshness_valid = False
+    if not _is_sha(observed) or snapshot.get("live_observation_authenticated") is not True or not freshness_valid or snapshot.get("observation_source") != "github_api":
+        g0_status, g0_reason = "UNVERIFIABLE", "authenticated_live_observation_missing_invalid_or_older_than_120_seconds"
+    elif snapshot.get("head_changed_during_acquisition") is True or observed != candidate:
+        g0_status, g0_reason = "STALE", "live_head_or_base_changed_during_acquisition; reacquire_and_revalidate"
     else:
-        g0_status, g0_reason = "PASS", "live_head_matches_candidate"
+        g0_status, g0_reason = "PASS", "fresh_live_head_matches_candidate"
 
     gates: list[dict[str, str]] = []
     gates.append(_gate("G0_LIVE_RECONCILIATION", "closure-orchestrator", g0_status,
@@ -174,7 +186,7 @@ def evaluate_closure(snapshot: Mapping[str, Any]) -> dict[str, Any]:
     rstatus, rreason = "BLOCK", "qualified_independent_review_missing"
     if not isinstance(review, Mapping):
         rstatus, rreason = "UNVERIFIABLE", "review_evidence_missing"
-    elif review.get("authenticated") is not True or review.get("qualified_independent") is not True or review.get("reviewed_sha") != candidate or review.get("findings_closed_with_retest") is not True or not isinstance(review.get("review_id"), str) or not review.get("review_id"):
+    elif review.get("authenticated") is not True or review.get("qualified_independent") is not True or review.get("reviewed_sha") != candidate or review.get("findings_closed_with_retest") is not True or review.get("review_threads_verified") is not True or not isinstance(review.get("review_id"), str) or not review.get("review_id"):
         rstatus, rreason = "BLOCK", "review_unauthenticated_nonindependent_stale_or_findings_not_retested"
     else:
         rstatus, rreason = "PASS", "independent_review_and_retest_bound_to_candidate"
