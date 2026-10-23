@@ -1,21 +1,31 @@
-FROM python:3.12-slim
+FROM python:3.12-slim AS dependency-builder
 
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-ENV PORT=8000
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PYTHONDONTWRITEBYTECODE=1
+
+WORKDIR /build
+COPY requirements.txt /build/requirements.txt
+RUN python -m pip install --prefix=/install -r /build/requirements.txt
+
+FROM python:3.12-slim AS runtime
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PORT=8000
 
 WORKDIR /app
 
-RUN python -m pip install --upgrade pip
-COPY requirements.txt /app/requirements.txt
-RUN python -m pip install --no-cache-dir -r /app/requirements.txt
-
+COPY --from=dependency-builder /install /usr/local
 COPY . /app
 
-RUN groupadd --system aigc && useradd --system --gid aigc --home-dir /app --no-create-home aigc \
+RUN groupadd --system aigc \
+    && useradd --system --gid aigc --home-dir /app --no-create-home aigc \
     && chown -R aigc:aigc /app
+
 USER aigc
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "uvicorn src.webapp.app:app --host 0.0.0.0 --port ${PORT}"]
+CMD ["sh", "-c", "exec uvicorn src.webapp.app:app --host 0.0.0.0 --port ${PORT}"]
