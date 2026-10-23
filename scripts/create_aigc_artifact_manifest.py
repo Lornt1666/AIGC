@@ -22,6 +22,8 @@ def create_manifest(root: Path, *, repository: str, candidate_sha: str, run_id: 
     if run_id < 1 or run_attempt < 1:
         raise ValueError("run_id_or_attempt_invalid")
     manifest_path = root / "manifest.json"
+    if manifest_path.is_symlink():
+        raise ValueError("manifest_path_symlink_rejected")
     files = []
     total = 0
     for path in sorted(root.rglob("*")):
