@@ -10,7 +10,6 @@ import hashlib
 import json
 from datetime import datetime, timezone
 from typing import Any
-from uuid import uuid4
 
 from psycopg.errors import UniqueViolation
 from psycopg.rows import dict_row
@@ -108,7 +107,7 @@ class PostgresTaskLifecycleStore:
         request_hash = _sha256(_json({
             "schema_version": task.schema_version,
             "task_type": task.task_type,
-            "payload": task.payload,
+            "payload": contract_json["payload"],
             "deadline_at": task.deadline_at.isoformat() if task.deadline_at else None,
             "timeout_seconds": task.timeout_seconds,
             "hop_count": task.hop_count,
@@ -146,7 +145,28 @@ class PostgresTaskLifecycleStore:
         except (TaskIdempotencyConflict, ValueError):
             raise
         except UniqueViolation as exc:
-            raise TaskIdempotencyConflict("Task identity or idempotency constraint rejected submission") from exc
+            # A concurrent request may have won the same owner-scoped idempotency key.
+            # Re-read after the failed transaction so identical submissions replay safely.
+            try:
+                with self._pool.connection(timeout=5) as conn:
+                    prior = conn.execute(
+                        """SELECT * FROM aigc_tasks
+                           WHERE owner_id=%s AND idempotency_key_sha256=%s""",
+                        (owner_id, key_hash),
+                    ).fetchone()
+                if prior:
+                    if prior["request_sha256"] != request_hash:
+                        raise TaskIdempotencyConflict(
+                            "Idempotency key is bound to different task content"
+                        ) from exc
+                    return _task_public(prior, replayed=True)
+                raise TaskStoreUnavailable("Task uniqueness conflict could not be reconciled") from exc
+            except TaskIdempotencyConflict:
+                raise
+            except TaskStoreUnavailable:
+                raise
+            except Exception as read_exc:
+                raise TaskStoreUnavailable("Task uniqueness conflict could not be reconciled") from read_exc
         except Exception as exc:
             raise TaskStoreUnavailable("Durable task submission failed") from exc
 
@@ -254,6 +274,8 @@ class PostgresTaskLifecycleStore:
     ) -> dict[str, Any]:
         if not isinstance(artifact_bytes, bytes):
             raise ValueError("artifact_bytes must be bytes")
+        if len(artifact_bytes) > 1_000_000:
+            raise ValueError("artifact_bytes exceeds the 1 MB task artifact limit")
         artifact_digest = _sha256(artifact_bytes)
         safe_result = json.loads(_json(result))
         evidence = {
