@@ -21,6 +21,11 @@ USER_AGENT = "AIGC-RX148-EvidenceCollector/1.0"
 READ_ONLY_PERMISSIONS = ("contents:read", "pull_requests:read", "actions:read")
 
 
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
 class GitHubEvidenceError(RuntimeError):
     """Raised when live evidence cannot be acquired completely and safely."""
 
@@ -39,7 +44,7 @@ class GitHubReadOnlyClient:
         self._token = token.strip()
         self.timeout = timeout
         self.max_pages = max_pages
-        self._opener = opener or urllib.request.urlopen
+        self._opener = opener or urllib.request.build_opener(_NoRedirect()).open
 
     def get(self, url: str) -> tuple[Any, Mapping[str, str]]:
         parsed = urllib.parse.urlparse(url)
