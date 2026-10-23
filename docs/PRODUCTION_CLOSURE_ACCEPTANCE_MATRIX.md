@@ -15,6 +15,26 @@ Every closure attempt MUST bind evidence to all of:
 
 Acquire these values from live sources. Never substitute a prior commit's successful CI result. Re-read the PR head and base after artifact and receipt verification; if either changed, discard the closure digest and restart.
 
+## Evidence trust and CI-attempt freshness invariants
+
+Evidence has distinct layers; do not collapse them into a single "verified" boolean:
+
+1. **Observed:** obtained from a named source at a recorded time. This alone is not authenticated or sufficient for release.
+2. **Integrity-checked:** bytes or canonical payload digest match the declared digest. A digest does not identify who produced the data.
+3. **Authenticated:** signature/token-backed source identity validates against a policy-managed trust root. Authentication does not prove the claim is true or the signer is authorized for every purpose.
+4. **Authorized:** the authenticated issuer has the required role, purpose, scope, status, and policy version.
+5. **Bound:** evidence explicitly identifies repository, PR, candidate SHA, base SHA, workflow identity, run ID, run attempt, artifact subject digest, and evidence policy version where applicable.
+6. **Fresh and complete:** current live state is re-read; required collections are paginated to completion; missing, inaccessible, conflicting, expired, revoked, or stale records are not treated as success.
+7. **Independently evaluated:** the acceptance predicate checks the claim against policy rather than trusting a producer-supplied `verified: true` flag alone.
+
+### CI run-attempt rule
+
+For each workflow run ID, evaluate only the highest observed `run_attempt` for the candidate SHA. A previous successful attempt MUST NOT override a later failed, cancelled, queued, or in-progress attempt. Conflicting records for the same run ID and attempt are UNVERIFIABLE/BLOCK. Artifact evidence must bind to the latest successful attempt and its exact candidate SHA; an artifact from an earlier attempt is stale even if its bytes and signature are valid.
+
+The evaluator must fail closed when the attempt inventory is incomplete. It must not infer a missing attempt from cached evidence. Re-read the current PR head/base after all checks and discard the closure digest if either changed.
+
+This follows the SLSA verification model: validate signer/builder identity, signature, expected build parameters and artifact subject—not merely the presence of provenance. GitHub also explicitly cautions that attestations do not guarantee an artifact is secure; consumers must define and enforce policy. See the primary references at the end of this document.
+
 ## Gate matrix
 
 | Gate | Required evidence | Acceptance test | Fail-closed condition |
