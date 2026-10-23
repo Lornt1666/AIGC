@@ -13,7 +13,10 @@ from pathlib import Path
 MAX_SOURCE_BYTES = 256 * 1024
 
 _BLOCKED_IMPORT_ROOTS = {
+    "aiohttp",
     "ctypes",
+    "ftplib",
+    "httpx",
     "importlib",
     "marshal",
     "multiprocessing",
@@ -24,8 +27,11 @@ _BLOCKED_IMPORT_ROOTS = {
     "shutil",
     "socket",
     "subprocess",
+    "smtplib",
     "telnetlib",
     "urllib",
+    "websocket",
+    "websockets",
     "webbrowser",
 }
 _BLOCKED_CALL_NAMES = {
@@ -38,6 +44,7 @@ _BLOCKED_CALL_NAMES = {
     "getattr",
     "globals",
     "input",
+    "open",
     "locals",
     "setattr",
     "delattr",
