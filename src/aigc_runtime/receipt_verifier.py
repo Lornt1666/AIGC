@@ -116,6 +116,6 @@ class Ed25519ReceiptVerifier:
                 try:
                     self.claim_store.claim(payload, verification)
                 except Exception as exc:
-                    raise ReceiptVerificationError("persistent_receipt_claim_failed:" + type(exc).__name__) from exc
+                    raise ReceiptVerificationError("persistent_receipt_claim_failed:" + str(exc)) from exc
             self.seen_receipt_ids.add(receipt_id)
         return verification
