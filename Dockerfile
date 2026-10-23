@@ -5,6 +5,7 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=1 PIP_NO_CACHE_DIR=1 PYTHONDONTWRITEBYTECODE=1
 WORKDIR /build
 COPY requirements.txt .
 RUN python -m venv /opt/venv && /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
+RUN /opt/venv/bin/python -m pip check
 COPY core ./core
 COPY src ./src
 RUN /opt/venv/bin/python -m compileall -q core src/aigc_runtime
