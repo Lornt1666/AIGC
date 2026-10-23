@@ -90,8 +90,9 @@ async def submit_task(task: TaskContract, request: Request) -> dict[str, Any]:
     coordinator: SagaCoordinator = request.app.state.coordinator
     try:
         result = await coordinator.submit(task)
-        if result.get("status") == "ACCEPTED":
-            await coordinator.publish_outbox(batch_size=1)
+        # A prior request may have committed the DB transaction but lost the
+        # response before Redis publication. Always drain pending outbox rows.
+        result["outbox_published_count"] = await coordinator.publish_outbox(batch_size=100)
         return result
     except (OrchestrationError, ValidationError) as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from None
