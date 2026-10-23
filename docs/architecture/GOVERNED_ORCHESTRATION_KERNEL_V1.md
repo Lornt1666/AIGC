@@ -93,3 +93,35 @@ docker compose down --volumes
 ```
 
 Before any production deployment, require a reviewed secret-management design, TLS/network policy, authenticated Redis, Qdrant access control, backup restore drills, database migration strategy, alerting, incident response, multi-replica authorization tests, exact-head CI, independent security review, and authorized human release acceptance.
+
+## Architecture decision matrix
+
+Scores are engineering judgments for this repository's current governance requirements, not measured benchmarks. Scale: 1 = weak, 5 = strong.
+
+| Criterion | A. Central orchestrator | B. Pure event choreography | C. Hybrid Saga + directed graph |
+|---|---:|---:|---:|
+| Throughput / horizontal scale | 3 | 5 | 4 |
+| Consistency / invariant enforcement | 5 | 2 | 4 |
+| Rollback / compensation traceability | 4 | 1 | 4 |
+| Observability / causal reconstruction | 5 | 2 | 5 |
+| Operational simplicity | 3 | 2 | 2 |
+| Fit for AIGC | 3 | 2 | **5 (recommended target)** |
+
+### Decision
+
+Adopt **C: hybrid Saga-driven directed graph** as the target. Use a durable coordinator for task contracts, budgets, approvals, state transitions, and Saga state; use Redis Streams for bounded asynchronous work distribution; use transactional persistence/outbox semantics for authoritative state changes; use local worker handlers for execution and compensation.
+
+This is a target architecture, not a claim that the current code already implements a durable distributed Saga. The current Redis adapter is a first slice; the in-process Saga runner must not coordinate irreversible external effects until its state and compensation progress are persisted and reconciled.
+
+### Failure-mode and effects analysis (FMEA)
+
+| Failure mode | Impact | Current control | Required next control |
+|---|---|---|---|
+| Poison message / repeated hop | Queue churn and worker starvation | Schema validation, hop ceiling, dead-letter stream | Monitor DLQ age/count, replay approval, bounded redrive policy |
+| Partial multi-step mutation | Cross-system state divergence | Reverse-order best-effort compensation in process | Durable Saga ledger, idempotent compensations, reconciliation worker |
+| Malicious actuation source | Unauthorized code execution | AST deny rules only; source is not executed by the arbiter | Disposable OS/container sandbox, syscall/network policy, no ambient secrets |
+| Recursive token/cost exhaustion | Budget depletion and cascading retries | Per-task timeout and hop ceiling | Persistent budget ledger, token/cost caps, sliding-window circuit breaker |
+| Worker crash after side effect | Duplicate mutation on replay | At-least-once delivery explicitly documented | Mutation idempotency at target, durable execution receipt, pending-entry recovery |
+| Redis unavailable during result/DLQ write | Pending work / delayed completion | Acknowledge only after successful result/DLQ write | Alerts, persistence/failover tests, operator recovery runbook |
+
+Latency targets such as sub-500 ms queue delay are acceptance objectives only; they are not established until load tests measure p50/p95/p99 under a declared workload and infrastructure profile.
