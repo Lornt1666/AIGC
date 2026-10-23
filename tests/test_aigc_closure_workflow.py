@@ -12,6 +12,8 @@ def valid_snapshot():
     return {
         "repository": "Lornt1666/AIGC",
         "pr_number": 330,
+        "pr_state": "open",
+        "pr_merged": False,
         "candidate_sha": SHA,
         "observed_head_sha": SHA,
         "live_observation_authenticated": True,
