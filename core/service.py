@@ -10,10 +10,13 @@ import hmac
 import json
 import os
 import time
+import hashlib
 from contextlib import asynccontextmanager
 from typing import Any
+from uuid import uuid4
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request, status
+from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 
 from core.arbiter import audit_python_source
@@ -55,13 +58,47 @@ async def lifespan(app: FastAPI):
         await coordinator.close()
 
 
-app = FastAPI(title="RegenExcalibur AIGC Runtime", version="1.0.0", lifespan=lifespan)
+app = FastAPI(title="RegenExcalibur AIGC Runtime", version="1.0.0", lifespan=lifespan, docs_url=None, redoc_url=None, openapi_url=None)
+
+_RATE_LIMIT_SCRIPT = """
+local now = tonumber(ARGV[1])
+local window_ms = tonumber(ARGV[2])
+local limit = tonumber(ARGV[3])
+local member = ARGV[4]
+redis.call("ZREMRANGEBYSCORE", KEYS[1], "-inf", now - window_ms)
+local count = redis.call("ZCARD", KEYS[1])
+if count >= limit then return 0 end
+redis.call("ZADD", KEYS[1], now, member)
+redis.call("PEXPIRE", KEYS[1], window_ms)
+return count + 1
+"""
 
 @app.middleware("http")
 async def telemetry_middleware(request: Request, call_next):
     started = time.monotonic()
     route_class = "health" if request.url.path.startswith("/health/") else "api"
     status_code = 500
+    if route_class != "health":
+        expected = os.environ.get("AIGC_API_BEARER_TOKEN", "")
+        authorization = request.headers.get("authorization", "")
+        provided = authorization.removeprefix("Bearer ").strip() if authorization.startswith("Bearer ") else ""
+        authenticated = len(expected) >= 32 and hmac.compare_digest(provided.encode(), expected.encode())
+        identity = hashlib.sha256(expected.encode()).hexdigest() if authenticated else "unauthenticated"
+        limit = int(os.environ.get("AIGC_RATE_LIMIT_AUTHENTICATED_PER_MINUTE", "120")) if authenticated else int(os.environ.get("AIGC_RATE_LIMIT_UNAUTHENTICATED_PER_MINUTE", "30"))
+        limit = max(1, min(limit, 10_000))
+        coordinator = getattr(request.app.state, "coordinator", None)
+        if coordinator is None:
+            status_code = 503
+            return JSONResponse(status_code=503, content={"detail": "rate_limit_dependency_unavailable"})
+        try:
+            allowed = await coordinator.redis.eval(_RATE_LIMIT_SCRIPT, 1,
+                "aigc:rate-limit:v1:" + identity, int(time.time() * 1000), 60_000, limit, uuid4().hex)
+        except Exception:
+            status_code = 503
+            return JSONResponse(status_code=503, content={"detail": "rate_limit_dependency_unavailable"})
+        if int(allowed) == 0:
+            status_code = 429
+            return JSONResponse(status_code=429, headers={"Retry-After": "60"}, content={"detail": "rate_limit_exceeded"})
     try:
         with traced_operation("aigc.http.request", {"http.request.method": request.method, "aigc.route_class": route_class}):
             response = await call_next(request)
@@ -69,7 +106,6 @@ async def telemetry_middleware(request: Request, call_next):
             return response
     finally:
         record_http_request(request.method, status_code, time.monotonic() - started, route_class)
-
 
 
 @app.get("/health/live")
