@@ -252,7 +252,7 @@ def main() -> int:
         return 0 if result["disposition"] == "RX19_APPROVED_EVIDENCE_ONLY_NO_ACTION" else 2
     except (OSError, UnicodeError, json.JSONDecodeError, ValueError, GitHubEvidenceError, ReceiptVerificationError) as exc:
         report = _failure_report(exc, repository=args.repository, pr_number=args.pr)
-        rendered = json.dumps(report, ensure_ascii=False, sort_keys=True, indent=2) + "\\n"
+        rendered = json.dumps(report, ensure_ascii=False, sort_keys=True, indent=2) + "\n"
         if args.output:
             Path(args.output).write_text(rendered, encoding="utf-8")
         sys.stderr.write(rendered)
