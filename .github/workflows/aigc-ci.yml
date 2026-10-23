@@ -140,6 +140,11 @@ jobs:
           echo "Registry diagnostic exit code: $status"
           exit 0
 
+      - name: Enforce AIGC master documentation conformance
+        run: |
+          python scripts/enforce_master_docs.py --json
+          python -m unittest tests.test_enforce_master_docs -v
+
       - name: Execute shared canonical validation runner
         run: |
           mkdir -p "$RUNNER_TEMP/aigc-ci-stage-results"
