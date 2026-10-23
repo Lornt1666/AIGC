@@ -174,8 +174,8 @@ A certificate must identify issuer, scope, candidate SHA/tree, environment, stan
 |---|---|
 | Certification status | **NOT ISSUED** |
 | Conformity claim | None |
-| Candidate | `925f9028b151c14485ebff999d3d3a0853e44005` |
-| CI | Canonical validation stage failed at redaction; workflow conclusion not yet final at last observation |
+| Historical audit candidate | `925f9028b151c14485ebff999d3d3a0853e44005` (not the current documentation branch head) |
+| CI | Historical candidate's canonical validation stage failed at redaction. The current documentation branch has a separate documentation-conformance gate; its latest exact-head result must be checked independently. |
 | Runtime execution | Reference worker blocks dispatch; agents disabled by default |
 | Independent review | Not evidenced for this candidate |
 | Operational drills | Not evidenced |
@@ -200,3 +200,26 @@ This audit is a snapshot, not a permanent guarantee. Reassess after any change t
 - OpenTelemetry signals: <https://opentelemetry.io/docs/concepts/signals/>
 
 These references guide assessment design; they do not certify AIGC.
+
+
+## 11. Documentation governance and operator-accountability controls
+
+The following controls were added after the historical candidate snapshot above. Their presence in source is not evidence that the current candidate's CI completed successfully.
+
+| Control | Requirement | Implementation/evidence status | Acceptance condition |
+|---|---|---|---|
+| DOC-001 | Required master documents are present and readable | Implemented candidate: `scripts/enforce_master_docs.py`; exact-head workflow verification pending | Required-document check passes on exact candidate; missing or unreadable files fail closed |
+| DOC-002 | Wiring registry contains the expected 45 unique IDs W-001–W-045 | Implemented candidate: deterministic registry parser | All expected IDs present exactly once; any missing, duplicate, or unexpected ID fails |
+| DOC-003 | Audit keeps explicit NOT CERTIFIED / BLOCKED status until evidence gates pass | Implemented candidate: structural invariant in DOC-GATE-01 | A status downgrade or unsupported certification claim fails the documentation gate |
+| DOC-004 | Local Markdown links in required documents resolve within the repository | Implemented candidate: local-link checker | All checked local links resolve and none escape repository root |
+| OPS-001 | Operator responsibility is task-specific, informed, and auditable | Draft policy: `AIGC_OPERATOR_RESPONSIBILITY_AND_AUTHORIZED_USE_ACKNOWLEDGMENT.md` | Qualified legal review, appropriate notice, valid assent workflow, and tested linkage to actual authorization records |
+| GOV-001 | Documentation and evidence gates are not permitted to self-approve or release | Role specification: `AIGC_DOCUMENTATION_GOVERNANCE_AND_ENFORCEMENT_AGENTS.md` | Workflow permissions, code, tests, and branch rules demonstrate the stated authority boundary |
+| AUTH-001 | Consequential actions require authenticated, scoped, unexpired human authorization bound to the exact payload | Specification only until point-of-effect enforcement is proven | Negative tests demonstrate denial on missing identity, expired permit, changed payload, wrong target, and missing approval |
+
+### Documentation gate current disposition
+
+DOC-GATE-01 is a deterministic structural validator invoked by the AIGC CI workflow and covered by focused unit tests in the current branch. It is **IMPLEMENTED_UNVERIFIED** until the latest candidate's workflow completes successfully and its step output confirms both the validator and tests passed. A green documentation gate only establishes the checked structural invariants; it does not establish legal enforceability, runtime conformance, security, or production readiness.
+
+The operator acknowledgment is a draft and must not be described as a binding blanket liability waiver. It assigns accountability for an operator's own decisions and approvals only to the extent permitted by applicable law, preserves non-waivable rights and duties, and requires qualified counsel to review it before adoption.
+
+Any future audit must record the exact candidate SHA, workflow run and attempt, the DOC-GATE-01 output, test output, and evidence digest. Do not hard-code a self-referential candidate SHA into the document that changes that SHA.
