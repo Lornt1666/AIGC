@@ -16,6 +16,7 @@ from typing import Mapping
 REQUIRED_DOCS = (
     "docs/master/README.md",
     "docs/master/AIGC_MVP_MASTER_SPECIFICATION.md",
+    "docs/master/AIGC_ARCHITECTURE_DECISION_AND_FAILURE_ANALYSIS.md",
     "docs/master/AIGC_CONTROL_TO_EVIDENCE_TRACEABILITY_STANDARD.md",
     "docs/master/AIGC_WIRING_AND_INTERFACE_REGISTRY.md",
     "docs/master/AIGC_IMPLEMENTATION_AUDIT_AND_CERTIFICATION_DOSSIER.md",
@@ -75,6 +76,7 @@ def validate_documents(documents: Mapping[str, str]) -> list[str]:
     index_path = "docs/master/README.md"
     index = documents.get(index_path, "")
     for required_name in (
+        "AIGC_ARCHITECTURE_DECISION_AND_FAILURE_ANALYSIS.md",
         "AIGC_OPERATOR_RESPONSIBILITY_AND_AUTHORIZED_USE_ACKNOWLEDGMENT.md",
         "AIGC_DOCUMENTATION_GOVERNANCE_AND_ENFORCEMENT_AGENTS.md",
     ):
