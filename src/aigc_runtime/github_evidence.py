@@ -173,6 +173,7 @@ def acquire_live_snapshot(repository: str, pr_number: int, *,
         if not isinstance(run_id, int) or not isinstance(attempt, int):
             continue
         jobs = api.get_collection(root + "/actions/runs/" + str(run_id) + "/attempts/" + str(attempt) + "/jobs?per_page=100", "jobs")
+        artifact_rows = api.get_collection(root + "/actions/runs/" + str(run_id) + "/artifacts?per_page=100", "artifacts") if run.get("status") == "completed" and run.get("conclusion") == "success" else []
         ci_runs.append({
             "run_id": run_id, "run_attempt": attempt, "head_sha": run.get("head_sha"),
             "status": run.get("status"), "conclusion": run.get("conclusion"),
@@ -180,6 +181,11 @@ def acquire_live_snapshot(repository: str, pr_number: int, *,
             "jobs": [{"id": j.get("id"), "name": j.get("name"), "status": j.get("status"),
                       "conclusion": j.get("conclusion"), "head_sha": head}
                      for j in jobs if isinstance(j, Mapping)],
+            "artifacts": [{"id": a.get("id"), "name": a.get("name"), "digest": a.get("digest"),
+                           "size_in_bytes": a.get("size_in_bytes"), "expired": a.get("expired"),
+                           "workflow_run_id": (a.get("workflow_run") or {}).get("id") if isinstance(a.get("workflow_run"), Mapping) else run_id,
+                           "workflow_run_head_sha": (a.get("workflow_run") or {}).get("head_sha") if isinstance(a.get("workflow_run"), Mapping) else head}
+                          for a in artifact_rows if isinstance(a, Mapping)],
         })
     reviews = api.get_collection(root + "/pulls/" + str(pr_number) + "/reviews?per_page=100")
     review_comments = api.get_collection(root + "/pulls/" + str(pr_number) + "/comments?per_page=100")
