@@ -517,7 +517,7 @@ class SagaCoordinator:
                 raise OrchestrationError("saga_payload_must_be_mapping")
             try:
                 encoded = canonical_json(dict(payload))
-            except (TypeError, ValueError, RecursionError) as exc:
+            except (TypeError, ValueError, RecursionError, UnicodeEncodeError) as exc:
                 raise OrchestrationError("saga_payload_not_canonical_json") from exc
             if len(encoded.encode("utf-8")) > 1_000_000:
                 raise OrchestrationError("saga_payload_size_limit_exceeded")
@@ -710,26 +710,38 @@ class SagaCoordinator:
                 results.append({"step_id": step.step_id, "status": "BLOCK", "reason": "compensation_permit_missing"})
                 continue
             key = hashlib.sha256(f"{contract.idempotency_key}:compensate:{step.step_id}".encode()).hexdigest()
-            try:
-                async with asyncio.timeout(remaining):
-                    permitted = await self.permit_verifier(permit_ref, {"task_id": str(contract.task_id), "candidate_sha": contract.candidate_sha,
-                        "operation": operation, "policy_version": contract.policy_version,
-                        "compensation_for": step.step_id}, key)
-            except Exception as exc:
-                results.append({"step_id": step.step_id, "status": "MANUAL_RECONCILIATION_REQUIRED",
-                                "reason": "compensation_permit_check_failed:" + type(exc).__name__})
-                break
-            if not permitted:
-                results.append({"step_id": step.step_id, "status": "BLOCK", "reason": "compensation_permit_denied"})
-                continue
+            compensation_payload = step.compensation_payload or {}
+            compensation_claims = {
+                "task_id": str(contract.task_id),
+                "candidate_sha": contract.candidate_sha,
+                "operation": operation,
+                "policy_version": contract.policy_version,
+                "compensation_for": step.step_id,
+                "original_operation": step.operation,
+                "original_input_digest": sha256_text(canonical_json(dict(step.input_payload))),
+                "input_digest": sha256_text(canonical_json(dict(compensation_payload))),
+            }
+            async def verify_compensation_permit_at_effect_boundary() -> bool:
+                try:
+                    permit_remaining = deadline - time.monotonic()
+                    if permit_remaining <= 0:
+                        return False
+                    async with asyncio.timeout(permit_remaining):
+                        return bool(await self.permit_verifier(permit_ref, compensation_claims, key))
+                except asyncio.CancelledError:
+                    raise
+                except Exception:
+                    return False
             try:
                 remaining = deadline - time.monotonic()
                 if remaining <= 0:
                     results.append({"step_id": step.step_id, "status": "MANUAL_RECONCILIATION_REQUIRED",
                                     "reason": "task_deadline_exceeded_before_compensation"})
                     break
-                result = await self._invoke_with_retry(operation, self.adapters[operation], step.compensation_payload or {},
-                    key, timeout=min(self.operation_timeout_seconds, remaining))
+                result = await self._invoke_with_retry(
+                    operation, self.adapters[operation], compensation_payload, key,
+                    timeout=min(self.operation_timeout_seconds, remaining),
+                    before_attempt=verify_compensation_permit_at_effect_boundary)
                 results.append({"step_id": step.step_id, "status": "COMPENSATION_REQUEST_SUCCEEDED",
                                 "result": dict(result)})
             except Exception as exc:
