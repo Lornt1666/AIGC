@@ -401,7 +401,7 @@ class OrchestratorSafetyTests(unittest.TestCase):
             raise TimeoutError("synthetic transient failure")
         async def permit(ref, claims, key):
             calls["permit"] += 1
-            return calls["permit"] < 4
+            return calls["permit"] < 3
         async def reconcile(operation, payload, key):
             calls["reconcile"] += 1
             return "NOT_APPLIED"
@@ -417,7 +417,7 @@ class OrchestratorSafetyTests(unittest.TestCase):
         step = SagaStep("retry-auth", "write", {}, idempotent=True, side_effecting=False)
         with self.assertRaisesRegex(OrchestrationError, "saga_step_failed"):
             asyncio.run(coordinator.run_saga(item, [step], dry_run=False, permit_ref="permit"))
-        self.assertEqual(calls["permit"], 4)
+        self.assertEqual(calls["permit"], 3)
         self.assertEqual(calls["adapter"], 1)
         self.assertEqual(calls["reconcile"], 1)
 
