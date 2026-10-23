@@ -41,6 +41,7 @@ class SagaStep:
     compensation_operation: str | None = None
     compensation_payload: Mapping[str, Any] | None = None
     irreversible: bool = False
+    approval_receipt_ref: str | None = None
     idempotent: bool = False
     compensation_idempotent: bool = False
 
@@ -328,13 +329,13 @@ class SagaCoordinator:
                     raise OrchestrationError("operation_not_allowlisted:" + planned.operation)
                 if not planned.idempotent:
                     raise OrchestrationError("live_operation_must_declare_idempotency")
-                if planned.irreversible:
-                    raise OrchestrationError("irreversible_operation_requires_separate_human_approval_adapter")
+                if planned.irreversible and not planned.approval_receipt_ref:
+                    raise OrchestrationError("irreversible_operation_requires_human_approval_receipt")
                 planned_key = hashlib.sha256(f"{contract.idempotency_key}:{planned.step_id}".encode()).hexdigest()
                 claims = {"task_id": str(contract.task_id), "candidate_sha": contract.candidate_sha,
                     "policy_version": contract.policy_version, "operation": planned.operation,
                     "input_digest": sha256_text(canonical_json(dict(planned.input_payload))),
-                    "compensation_operation": planned.compensation_operation, "irreversible": planned.irreversible}
+                    "compensation_operation": planned.compensation_operation, "irreversible": planned.irreversible, "approval_receipt_ref": planned.approval_receipt_ref}
                 if not await self.permit_verifier(permit_ref, claims, planned_key):
                     raise OrchestrationError("permit_verification_denied:" + planned.step_id)
         receipts: list[StepReceipt] = []
@@ -346,7 +347,7 @@ class SagaCoordinator:
                     raise OrchestrationError("saga_hop_limit_exceeded")
                 if step.operation not in self.adapters:
                     raise OrchestrationError("operation_not_allowlisted:" + step.operation)
-                if step.irreversible and (dry or not permit_ref):
+                if step.irreversible and not dry and not step.approval_receipt_ref:
                     raise OrchestrationError("irreversible_step_requires_verified_human_approval")
                 if not dry and step.idempotent is not True:
                     raise OrchestrationError("live_operation_must_declare_idempotency")
