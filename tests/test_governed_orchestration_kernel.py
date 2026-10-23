@@ -183,6 +183,46 @@ def test_enqueue_atomically_reserves_idempotency_key() -> None:
     assert redis.eval_calls[0][2][-1] == redis.eval_calls[1][2][-1]
 
 
+def test_real_redis_enqueue_failure_releases_idempotency_reservation(monkeypatch) -> None:
+    import os
+    redis_url = os.environ.get("AIGC_REDIS_TEST_URL", "").strip()
+    if not redis_url:
+        pytest.skip("AIGC_REDIS_TEST_URL is not configured for real Redis integration testing")
+
+    import redis.asyncio as redis_async
+    from redis.exceptions import ResponseError
+
+    async def scenario() -> None:
+        client = redis_async.from_url(redis_url, decode_responses=True)
+        suffix = __import__("uuid").uuid4().hex
+        idem = f"aigc:idem:task:real-redis-retry-{suffix}"
+        stream = f"aigc:test:tasks:{suffix}"
+        coordinator = RedisStreamsCoordinator(client, stream=stream)
+        task = TaskContract(
+            idempotency_key=f"real-redis-retry-{suffix}",
+            task_type="research",
+            payload={"query": "verify reservation rollback"},
+        )
+        try:
+            # A string at the stream key makes XADD fail with WRONGTYPE after SET.
+            await client.set(stream, "wrong-type")
+            with pytest.raises(ResponseError, match="WRONGTYPE"):
+                await coordinator.enqueue(task)
+            assert await client.get(idem) is None
+
+            await client.delete(stream)
+            assert await coordinator.enqueue(task) is True
+            assert await client.get(idem) is not None
+            entries = await client.xrange(stream, min="-", max="+")
+            assert len(entries) == 1
+            assert entries[0][1]["task_id"] == task.task_id
+        finally:
+            await client.delete(idem, stream)
+            await client.aclose()
+
+    asyncio.run(scenario())
+
+
 def test_enqueue_publish_failure_does_not_poison_idempotency_key() -> None:
     redis = FakeRedis(fail_enqueue_publish=True)
     coordinator = RedisStreamsCoordinator(redis)
