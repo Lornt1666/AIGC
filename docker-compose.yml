@@ -1,0 +1,92 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      PORT: "8000"
+      AIGC_ENV: "${AIGC_ENV:-development}"
+      AIGC_COMMAND_CENTER_TOKEN: "${AIGC_COMMAND_CENTER_TOKEN:?Set AIGC_COMMAND_CENTER_TOKEN in .env}"
+      AIGC_COMMAND_CENTER_DATABASE_URL: "postgresql://${AIGC_POSTGRES_USER:-aigc}:${AIGC_POSTGRES_PASSWORD:?Set AIGC_POSTGRES_PASSWORD in .env}@postgres:5432/${AIGC_POSTGRES_DB:-aigc}"
+      AIGC_REDIS_URL: "redis://redis:6379/0"
+      QDRANT_URL: "http://qdrant:6333"
+    ports:
+      - "127.0.0.1:${AIGC_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+    restart: unless-stopped
+    tmpfs:
+      - /tmp:size=64m,noexec,nosuid
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    pids_limit: 256
+    mem_limit: 1g
+    cpus: 2.0
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3).read()"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    networks:
+      - aigc-internal
+
+  redis:
+    image: redis:7.4.2-alpine
+    command: ["redis-server", "--appendonly", "yes", "--appendfsync", "everysec", "--maxmemory", "256mb", "--maxmemory-policy", "noeviction"]
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    networks:
+      - aigc-internal
+
+  postgres:
+    image: postgres:16.6-alpine
+    environment:
+      POSTGRES_DB: "${AIGC_POSTGRES_DB:-aigc}"
+      POSTGRES_USER: "${AIGC_POSTGRES_USER:-aigc}"
+      POSTGRES_PASSWORD: "${AIGC_POSTGRES_PASSWORD:?Set AIGC_POSTGRES_PASSWORD in .env}"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - aigc-internal
+
+  qdrant:
+    image: qdrant/qdrant:v1.13.4
+    volumes:
+      - qdrant-data:/qdrant/storage
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "bash", "-ec", "exec 3<>/dev/tcp/127.0.0.1/6333"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    networks:
+      - aigc-internal
+
+networks:
+  aigc-internal:
+    driver: bridge
+
+volumes:
+  redis-data:
+  postgres-data:
+  qdrant-data:

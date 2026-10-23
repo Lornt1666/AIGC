@@ -1,0 +1,316 @@
+"""Redis Streams coordinator with bounded execution and best-effort Saga compensation.
+
+Delivery semantics are at-least-once, not exactly-once. Handlers must be idempotent.
+Redis pending entries require an operational reclaim policy; this module exposes a
+reclaim method rather than pretending consumer crashes cannot happen.
+"""
+from __future__ import annotations
+
+import asyncio
+import hashlib
+import json
+import re
+from dataclasses import dataclass
+from typing import Any, Awaitable, Callable, Sequence
+
+from src.core.contracts import (
+    EventKind,
+    OrchestrationEvent,
+    SagaStepContract,
+    TaskContract,
+    TaskStatus,
+)
+
+TaskHandler = Callable[[TaskContract], Awaitable[dict[str, Any]]]
+SagaCallable = Callable[[], Awaitable[Any]]
+
+
+MAX_RESULT_BYTES = 1_000_000
+_SECRET_KEY_PATTERN = re.compile(r"(secret|token|password|api[_-]?key|authorization|credential|private[_-]?key)", re.I)
+
+
+def _sanitize_result(value: Any) -> Any:
+    """Redact secret-shaped fields and strings before persisting result events."""
+    if isinstance(value, dict):
+        return {
+            str(key): "[REDACTED]" if _SECRET_KEY_PATTERN.search(str(key)) else _sanitize_result(item)
+            for key, item in value.items()
+        }
+    if isinstance(value, (list, tuple)):
+        return [_sanitize_result(item) for item in value]
+    if isinstance(value, str):
+        value = re.sub(
+            r"(?i)(authorization\s*[:=]\s*(?:bearer\s+)?)[^\s,;]+",
+            r"\1[REDACTED]",
+            value,
+        )
+        value = re.sub(
+            r"(?i)((?:api[_-]?key|access[_-]?token|refresh[_-]?token|client[_-]?secret|password|secret)\s*[:=]\s*)[^\s,;]+",
+            r"\1[REDACTED]",
+            value,
+        )
+        value = re.sub(r"\b(?:AKIA|ASIA)[A-Z0-9]{16}\b", "[REDACTED_AWS_KEY]", value)
+        return value[:100_000]
+    if value is None or isinstance(value, (bool, int, float)):
+        return value
+    raise TypeError(f"Unsupported result value type: {type(value).__name__}")
+
+
+
+
+class OrchestrationError(RuntimeError):
+    pass
+
+
+class HopLimitExceeded(OrchestrationError):
+    pass
+
+
+class IdempotencyConflict(OrchestrationError):
+    """An idempotency key was reused for a different task payload."""
+
+
+class SagaExecutionError(OrchestrationError):
+    def __init__(self, message: str, *, compensation_errors: Sequence[str] = ()):
+        super().__init__(message)
+        self.compensation_errors = tuple(compensation_errors)
+
+
+@dataclass(frozen=True)
+class SagaAction:
+    contract: SagaStepContract
+    execute: SagaCallable
+    compensate: SagaCallable
+
+
+@dataclass(frozen=True)
+class EnqueueReceipt:
+    accepted: bool
+    task_id: str
+
+
+@dataclass(frozen=True)
+class SagaResult:
+    status: str
+    completed_steps: tuple[str, ...]
+    compensation_errors: tuple[str, ...] = ()
+
+
+class RedisStreamsCoordinator:
+    """Small coordination adapter; pass an async redis.Redis client explicitly."""
+
+    def __init__(
+        self,
+        redis_client: Any,
+        *,
+        stream: str = "aigc:tasks:v1",
+        consumer_group: str = "aigc-workers-v1",
+        dead_letter_stream: str = "aigc:tasks:dead-letter:v1",
+        result_stream: str = "aigc:task-results:v1",
+        max_hops: int = 10,
+        max_timeout_seconds: float = 30.0,
+    ) -> None:
+        if not 1 <= max_hops <= 10:
+            raise ValueError("max_hops must be between 1 and 10")
+        if not 0 < max_timeout_seconds <= 30:
+            raise ValueError("max_timeout_seconds must be in (0, 30]")
+        self.redis = redis_client
+        self.stream = stream
+        self.consumer_group = consumer_group
+        self.dead_letter_stream = dead_letter_stream
+        self.result_stream = result_stream
+        self.max_hops = max_hops
+        self.max_timeout_seconds = max_timeout_seconds
+
+    async def ensure_group(self) -> None:
+        from redis.exceptions import ResponseError
+
+        try:
+            await self.redis.xgroup_create(
+                name=self.stream, groupname=self.consumer_group, id="0", mkstream=True
+            )
+        except ResponseError as exc:
+            if "BUSYGROUP" not in str(exc):
+                raise
+
+    async def enqueue(self, task: TaskContract) -> bool:
+        """Atomically enqueue a task; retained as a bool-returning compatibility API."""
+        receipt = await self.enqueue_with_receipt(task)
+        return receipt.accepted
+
+    async def enqueue_with_receipt(self, task: TaskContract) -> "EnqueueReceipt":
+        """Enqueue idempotently and return the original task ID on safe replay."""
+        if task.hop_count >= min(task.max_hops, self.max_hops):
+            raise HopLimitExceeded("Task is at its hop limit and cannot be enqueued again.")
+        # Hash the caller's semantic request, not generated task/timestamp/trace IDs.
+        semantic_request = json.loads(
+            task.model_dump_json(exclude={"task_id", "created_at", "telemetry"})
+        )
+        canonical_request = json.dumps(
+            semantic_request, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+        )
+        payload_digest = hashlib.sha256(canonical_request.encode("utf-8")).hexdigest()
+        payload = task.model_dump_json()
+        idempotency_key = f"aigc:idem:task:{task.idempotency_key}"
+        script = """
+        local existing = redis.call('GET', KEYS[1])
+        if existing then
+          local separator = string.find(existing, '|', 1, true)
+          if not separator then
+            return redis.error_reply('Invalid idempotency reservation format')
+          end
+          local existing_digest = string.sub(existing, 1, separator - 1)
+          local existing_task_id = string.sub(existing, separator + 1)
+          if existing_digest == ARGV[4] then return {0, existing_task_id} end
+          return {-1, existing_task_id}
+        end
+        redis.call('SET', KEYS[1], ARGV[4] .. '|' .. ARGV[1], 'EX', ARGV[3])
+        local appended = redis.pcall('XADD', KEYS[2], '*', 'task_json', ARGV[2], 'task_id', ARGV[1])
+        if type(appended) == 'table' and appended.err then
+          redis.call('DEL', KEYS[1])
+          return redis.error_reply(appended.err)
+        end
+        return {1, ARGV[1]}
+        """
+        result = await self.redis.eval(
+            script, 2, idempotency_key, self.stream, task.task_id, payload, 604800, payload_digest
+        )
+        # The integer branch preserves compatibility with minimal third-party fakes.
+        if isinstance(result, int):
+            status, task_id = result, task.task_id
+        else:
+            status, task_id = int(result[0]), result[1]
+            if isinstance(task_id, bytes):
+                task_id = task_id.decode("utf-8")
+        if status == -1:
+            raise IdempotencyConflict("Idempotency key is already bound to a different task payload.")
+        if status not in {0, 1} or not task_id:
+            raise OrchestrationError("Redis returned an invalid enqueue receipt.")
+        return EnqueueReceipt(accepted=status == 1, task_id=str(task_id))
+
+    async def consume_once(
+        self,
+        *,
+        consumer_name: str,
+        handler: TaskHandler,
+        block_ms: int = 1000,
+    ) -> bool:
+        """Process one new message. Returns False when no message was available."""
+        await self.ensure_group()
+        batches = await self.redis.xreadgroup(
+            groupname=self.consumer_group,
+            consumername=consumer_name,
+            streams={self.stream: ">"},
+            count=1,
+            block=max(1, min(block_ms, 5000)),
+        )
+        if not batches:
+            return False
+
+        for _stream_name, entries in batches:
+            for message_id, fields in entries:
+                await self._process_message(message_id, fields, handler)
+                return True
+        return False
+
+    async def reclaim_pending(
+        self,
+        *,
+        consumer_name: str,
+        handler: TaskHandler,
+        min_idle_ms: int = 60_000,
+        start_id: str = "0-0",
+        count: int = 10,
+    ) -> int:
+        """Claim and process one bounded page of abandoned pending messages."""
+        await self.ensure_group()
+        result = await self.redis.xautoclaim(
+            name=self.stream,
+            groupname=self.consumer_group,
+            consumername=consumer_name,
+            min_idle_time=max(1000, min_idle_ms),
+            start_id=start_id,
+            count=max(1, min(count, 100)),
+        )
+        claimed = result[1] if len(result) > 1 else []
+        for message_id, fields in claimed:
+            await self._process_message(message_id, fields, handler)
+        return len(claimed)
+
+    async def _process_message(
+        self, message_id: Any, fields: dict[Any, Any], handler: TaskHandler
+    ) -> None:
+        raw = fields.get("task_json") or fields.get(b"task_json")
+        try:
+            if raw is None:
+                raise ValueError("Message has no task_json field.")
+            task = TaskContract.model_validate_json(raw)
+            if task.hop_count >= min(task.max_hops, self.max_hops):
+                raise HopLimitExceeded("Task exceeded the configured hop limit.")
+            timeout = min(task.timeout_seconds, self.max_timeout_seconds)
+            result = await asyncio.wait_for(handler(task), timeout=timeout)
+            safe_result = _sanitize_result(result)
+            encoded_result = json.dumps(safe_result, ensure_ascii=False, allow_nan=False, separators=(",", ":"))
+            if len(encoded_result.encode("utf-8")) > MAX_RESULT_BYTES:
+                raise ValueError("Handler result exceeds the 1 MB persistence limit.")
+            event = OrchestrationEvent(
+                event_kind=EventKind.TASK_SUCCEEDED,
+                task_id=task.task_id,
+                idempotency_key=task.idempotency_key,
+                hop_count=task.hop_count,
+                data={"status": TaskStatus.SUCCEEDED.value, "result": safe_result},
+                telemetry=task.telemetry,
+            )
+        except Exception as exc:
+            # Only task validation/execution failures are dead-lettered. Redis
+            # publication/ack failures below leave the message pending for retry.
+            await self._dead_letter(message_id, fields, exc)
+            return
+
+        await self.redis.xadd(
+            self.result_stream,
+            {"event_json": event.model_dump_json(), "task_id": task.task_id},
+        )
+        await self.redis.xack(self.stream, self.consumer_group, message_id)
+
+    async def _dead_letter(self, message_id: Any, fields: dict[Any, Any], exc: Exception) -> None:
+        raw = fields.get("task_json") or fields.get(b"task_json") or ""
+        raw_bytes = raw if isinstance(raw, bytes) else str(raw).encode("utf-8")
+        dead_letter = {
+            "source_message_id": str(message_id),
+            "payload_sha256": hashlib.sha256(raw_bytes).hexdigest(),
+            "error_type": type(exc).__name__,
+            "reason": "Task validation, policy, timeout, or handler failure; inspect source stream entry under access controls.",
+        }
+        await self.redis.xadd(self.dead_letter_stream, dead_letter)
+        await self.redis.xack(self.stream, self.consumer_group, message_id)
+
+    @staticmethod
+    async def run_saga(actions: Sequence[SagaAction]) -> SagaResult:
+        """Execute steps in order and compensate completed steps in reverse on failure.
+
+        Compensation is best-effort and bounded. Durable crash recovery must be
+        supplied by a persistent Saga ledger; this in-process method is not one.
+        """
+        attempted: list[SagaAction] = []
+        try:
+            for action in actions:
+                # Register before invocation because an action may mutate state and
+                # then raise. Compensation must therefore be idempotent.
+                attempted.append(action)
+                timeout = min(action.contract.timeout_seconds, 30.0)
+                await asyncio.wait_for(action.execute(), timeout=timeout)
+            return SagaResult("succeeded", tuple(a.contract.step_id for a in attempted))
+        except Exception as exc:
+            compensation_errors: list[str] = []
+            for action in reversed(attempted):
+                try:
+                    await asyncio.wait_for(action.compensate(), timeout=min(action.contract.timeout_seconds, 30.0))
+                except Exception as compensation_exc:
+                    compensation_errors.append(
+                        f"{action.contract.step_id}: {type(compensation_exc).__name__}: {str(compensation_exc)[:500]}"
+                    )
+            raise SagaExecutionError(
+                f"Saga failed after {len(attempted)} attempted step(s): {type(exc).__name__}: {str(exc)[:500]}",
+                compensation_errors=compensation_errors,
+            ) from exc

@@ -40,8 +40,18 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      redis:
+        image: redis:7.4.2-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 3s
+          --health-retries 5
     env:
       AIGC_COMMAND_CENTER_TEST_DATABASE_URL: postgresql://aigc@localhost:5432/aigc_test?sslmode=disable
+      AIGC_REDIS_TEST_URL: redis://localhost:6379/15
       REQUESTED_REVISION: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.event_name == 'workflow_dispatch' && inputs.requested_revision || github.sha }}
     steps:
       - name: Checkout exact requested revision
