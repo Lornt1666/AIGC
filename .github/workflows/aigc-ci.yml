@@ -71,10 +71,10 @@ jobs:
       - name: Validate Compose manifest and build runtime images
         shell: bash
         env:
-          POSTGRES_PASSWORD: ci-postgres-password-not-for-production
-          AIGC_APP_DB_PASSWORD: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
-          AIGC_RECEIPT_DB_PASSWORD: abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789
-          AIGC_API_BEARER_TOKEN: ci-only-token-0123456789abcdef0123456789abcdef0123456789
+          POSTGRES_PASSWORD: test_only_ci_postgres_password_not_for_production
+          AIGC_APP_DB_PASSWORD: test_only_ci_app_db_password_0123456789abcdef
+          AIGC_RECEIPT_DB_PASSWORD: test_only_ci_receipt_db_password_abcdef0123456789abcdef0123456789
+          AIGC_API_BEARER_TOKEN: test_only_ci_api_bearer_token_0123456789abcdef
           AIGC_HOST_PORT: "18080"
         run: |
           set -euo pipefail
