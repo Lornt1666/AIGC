@@ -163,7 +163,7 @@ def acquire_live_snapshot(repository: str, pr_number: int, *,
     if not isinstance(head, str) or len(head) != 40 or not isinstance(base_sha, str) or len(base_sha) != 40:
         raise GitHubEvidenceError("pull_request_sha_missing_or_invalid")
     # GitHub returns workflow runs in an object-wrapped collection; paginate the named array.
-    all_runs = api.get_collection(root + "/actions/runs?head=" + head + "&per_page=100", "workflow_runs")
+    all_runs = api.get_collection(root + "/actions/runs?head_sha=" + head + "&per_page=100", "workflow_runs")
     ci_runs: list[dict[str, Any]] = []
     for run in all_runs:
         if not isinstance(run, Mapping) or run.get("head_sha") != head:
@@ -184,7 +184,8 @@ def acquire_live_snapshot(repository: str, pr_number: int, *,
     reviews = api.get_collection(root + "/pulls/" + str(pr_number) + "/reviews?per_page=100")
     review_comments = api.get_collection(root + "/pulls/" + str(pr_number) + "/comments?per_page=100")
     commit_status, _ = api.get(root + "/commits/" + head + "/status")
-    check_runs, _ = api.get(root + "/commits/" + head + "/check-runs?per_page=100")
+    commit_statuses = api.get_collection(root + "/commits/" + head + "/statuses?per_page=100")
+    check_runs = api.get_collection(root + "/commits/" + head + "/check-runs?per_page=100", "check_runs")
     protections = {}
     for branch_name in sorted({str(base_branch), release_branch}):
         encoded = urllib.parse.quote(branch_name, safe="")
@@ -193,18 +194,28 @@ def acquire_live_snapshot(repository: str, pr_number: int, *,
             protections[branch_name] = {"status": "READ_BACK", "payload": protection}
         except GitHubEvidenceError as exc:
             protections[branch_name] = {"status": "UNVERIFIABLE", "reason": str(exc)}
+    # Re-read PR metadata after collecting evidence to detect concurrent head/base changes.
+    final_pr, _ = api.get(root + "/pulls/" + str(pr_number))
+    final_head = final_pr.get("head", {}).get("sha") if isinstance(final_pr, Mapping) else None
+    final_base_sha = final_pr.get("base", {}).get("sha") if isinstance(final_pr, Mapping) else None
+    if not isinstance(final_head, str) or len(final_head) != 40:
+        raise GitHubEvidenceError("final_live_head_missing_or_invalid")
     return {
         "schema_version": "rx148.github-snapshot.v1",
         "repository": repository, "pr_number": pr_number,
-        "candidate_sha": head, "observed_head_sha": head,
-        "base_branch": base_branch, "base_sha": base_sha,
+        "candidate_sha": head, "observed_head_sha": final_head,
+        "base_branch": base_branch, "base_sha": final_base_sha,
+        "acquisition_head_sha": head, "acquisition_base_sha": base_sha,
+        "head_changed_during_acquisition": final_head != head or final_base_sha != base_sha,
+        "evaluation_time": _iso_now(),
         "pr_state": pr.get("state"), "pr_draft": pr.get("draft"), "pr_merged": pr.get("merged"),
         "live_observation_authenticated": True, "observation_source": "github_api",
         "observed_at": observed_at, "acquisition_completed_at": _iso_now(),
         "required_ci_jobs": required_ci_jobs or [],
         "ci_runs": ci_runs,
-        "commit_status": commit_status, "check_runs": check_runs,
+        "commit_status": commit_status, "commit_statuses": commit_statuses, "check_runs": check_runs,
         "reviews": reviews, "review_comments": review_comments,
+        "review_threads": {"status": "UNVERIFIABLE", "reason": "review-thread resolution requires a separately authorized GraphQL acquisition adapter; REST comments are not equivalent"},
         "protection_readbacks": protections,
         "protection": {"status": "UNVERIFIABLE", "authenticated": False,
                        "reason": "GitHub API readback is not itself an authenticated administrator receipt; verify a signed admin receipt separately"},
