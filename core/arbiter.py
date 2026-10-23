@@ -69,7 +69,19 @@ def audit_python_source(source: str, *, max_bytes: int = 128_000,
                         max_nodes: int = 10_000, max_nesting: int = 64) -> AuditReport:
     if not isinstance(source, str):
         raise TypeError("source_must_be_text")
-    encoded = source.encode("utf-8")
+    for name, value, upper_bound in (
+        ("max_bytes", max_bytes, 1_000_000),
+        ("max_nodes", max_nodes, 100_000),
+        ("max_nesting", max_nesting, 256),
+    ):
+        if not isinstance(value, int) or isinstance(value, bool) or not 1 <= value <= upper_bound:
+            raise ValueError(f"{name}_out_of_bounds")
+    try:
+        encoded = source.encode("utf-8")
+    except UnicodeEncodeError:
+        encoded = source.encode("utf-8", errors="surrogatepass")
+        digest = hashlib.sha256(encoded).hexdigest()
+        return AuditReport("BLOCK", digest, (Finding("AST-012", "HIGH", 1, 0, "source_utf8_encoding_failed"),))
     digest = hashlib.sha256(encoded).hexdigest()
     findings: list[Finding] = []
     if len(encoded) > max_bytes:
@@ -79,9 +91,16 @@ def audit_python_source(source: str, *, max_bytes: int = 128_000,
     except (SyntaxError, ValueError, RecursionError) as exc:
         return AuditReport("BLOCK", digest, (Finding("AST-002", "HIGH", getattr(exc, "lineno", 1) or 1,
             getattr(exc, "offset", 0) or 0, "source_parse_failed"),))
-    nodes = list(ast.walk(tree))
+    # Bound traversal itself, rather than materializing an arbitrarily large AST
+    # before enforcing max_nodes. The source-size limit is a second independent cap.
+    nodes: list[ast.AST] = []
+    pending: list[ast.AST] = [tree]
+    while pending and len(nodes) <= max_nodes:
+        node = pending.pop()
+        nodes.append(node)
+        pending.extend(ast.iter_child_nodes(node))
     if len(nodes) > max_nodes:
-        findings.append(Finding("AST-003", "CRITICAL", 1, 0, "ast_node_limit_exceeded"))
+        return AuditReport("BLOCK", digest, (Finding("AST-003", "CRITICAL", 1, 0, "ast_node_limit_exceeded"),))
     def depth(node: ast.AST, current: int = 0) -> int:
         if current > max_nesting:
             return current
