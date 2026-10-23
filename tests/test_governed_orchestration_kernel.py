@@ -100,3 +100,86 @@ def test_saga_compensates_completed_steps_in_reverse_order() -> None:
         asyncio.run(RedisStreamsCoordinator.run_saga(actions))
 
     assert calls == ["execute-1", "execute-2", "compensate-2", "compensate-1"]
+
+class FakeRedis:
+    def __init__(self, *, fail_result_publish: bool = False, eval_results: list[int] | None = None):
+        self.fail_result_publish = fail_result_publish
+        self.eval_results = list(eval_results or [])
+        self.entries: list[tuple[str, dict]] = []
+        self.acks: list[tuple[str, str, str]] = []
+        self.read_entries: list[tuple[str, dict]] = []
+        self.group_created = False
+
+    async def xgroup_create(self, **kwargs):
+        self.group_created = True
+
+    async def eval(self, script, numkeys, *args):
+        return self.eval_results.pop(0) if self.eval_results else 1
+
+    async def xreadgroup(self, **kwargs):
+        if not self.read_entries:
+            return []
+        entry = self.read_entries.pop(0)
+        return [("aigc:tasks:v1", [entry])]
+
+    async def xadd(self, stream, fields):
+        if stream == "aigc:task-results:v1" and self.fail_result_publish:
+            raise OSError("simulated result stream outage")
+        self.entries.append((stream, fields))
+        return b"2-0"
+
+    async def xack(self, stream, group, message_id):
+        self.acks.append((stream, group, str(message_id)))
+        return 1
+
+
+def test_enqueue_atomically_reserves_idempotency_key() -> None:
+    redis = FakeRedis(eval_results=[1, 0])
+    coordinator = RedisStreamsCoordinator(redis)
+
+    async def scenario() -> tuple[bool, bool]:
+        task = TaskContract(
+            idempotency_key="stable-idempotency-key",
+            task_type="research",
+        )
+        return await coordinator.enqueue(task), await coordinator.enqueue(task)
+
+    first, duplicate = asyncio.run(scenario())
+    assert first is True
+    assert duplicate is False
+
+
+def test_result_stream_failure_leaves_task_pending_for_retry() -> None:
+    redis = FakeRedis(fail_result_publish=True)
+    task = TaskContract(
+        idempotency_key="stable-idempotency-key",
+        task_type="research",
+    )
+    redis.read_entries.append(("1-0", {"task_json": task.model_dump_json()}))
+    coordinator = RedisStreamsCoordinator(redis)
+
+    async def handler(_task: TaskContract) -> dict:
+        return {"ok": True}
+
+    with pytest.raises(OSError, match="result stream outage"):
+        asyncio.run(coordinator.consume_once(consumer_name="worker-1", handler=handler))
+
+    assert redis.acks == []
+    assert not any(stream == "aigc:tasks:dead-letter:v1" for stream, _ in redis.entries)
+
+
+def test_handler_failure_is_dead_lettered_before_acknowledgement() -> None:
+    redis = FakeRedis()
+    task = TaskContract(
+        idempotency_key="stable-idempotency-key",
+        task_type="research",
+    )
+    redis.read_entries.append(("1-0", {"task_json": task.model_dump_json()}))
+    coordinator = RedisStreamsCoordinator(redis)
+
+    async def handler(_task: TaskContract) -> dict:
+        raise RuntimeError("poison payload")
+
+    assert asyncio.run(coordinator.consume_once(consumer_name="worker-1", handler=handler)) is True
+    assert redis.entries[0][0] == "aigc:tasks:dead-letter:v1"
+    assert redis.acks == [("aigc:tasks:v1", "aigc-workers-v1", "1-0")]
