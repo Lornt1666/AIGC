@@ -143,7 +143,7 @@ def run_live_closure(repository: str, pr_number: int, *, trusted_keys_path: str,
     snapshot["pr_merged"] = final_check["pr_merged"]
     snapshot["evaluation_time"] = final_check["rechecked_at"]
     snapshot["acquisition"]["final_pr_recheck"] = final_check
-        core_evidence = {
+    core_evidence = {
         "schema_version": snapshot.get("schema_version"), "repository": repository, "pr_number": pr_number,
         "candidate_sha": snapshot.get("candidate_sha"), "observed_head_sha": snapshot.get("observed_head_sha"),
         "base_branch": snapshot.get("base_branch"), "base_sha": snapshot.get("base_sha"),
