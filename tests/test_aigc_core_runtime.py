@@ -161,5 +161,49 @@ class OrchestratorSafetyTests(unittest.TestCase):
         self.assertEqual(calls, {"adapter": 2, "reconcile": 1})
 
 
+    def test_append_only_trigger_check_is_bound_to_events_table(self):
+        class FakeCursor:
+            def __init__(self):
+                self.query = ""
+                self.params = ()
+            async def __aenter__(self):
+                return self
+            async def __aexit__(self, *args):
+                return False
+            async def execute(self, query, params=()):
+                self.query, self.params = query, params
+            async def fetchone(self):
+                if "aigc_schema_migrations" in self.query:
+                    return {"version": "001_runtime"}
+                if "to_regclass" in self.query:
+                    return {"tasks": "aigc_tasks", "events": "aigc_events",
+                            "outbox": "aigc_outbox", "consumed": "aigc_consumed_events"}
+                if "pg_trigger" in self.query:
+                    return {"present": True}
+                raise AssertionError("unexpected schema verification query")
+        class FakeConnection:
+            def __init__(self):
+                self.cursor_instance = FakeCursor()
+            async def __aenter__(self):
+                return self
+            async def __aexit__(self, *args):
+                return False
+            def cursor(self):
+                return self.cursor_instance
+        class FakePool:
+            def __init__(self):
+                self.connection_instance = FakeConnection()
+            def connection(self):
+                return self.connection_instance
+        coordinator = SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost")
+        pool = FakePool()
+        coordinator.pool = pool
+        asyncio.run(coordinator._ensure_schema())
+        cursor = pool.connection_instance.cursor_instance
+        self.assertIn("tgrelid=to_regclass(%s)", cursor.query)
+        self.assertEqual(cursor.params, ("aigc_events_no_update", "public.aigc_events"))
+
+
+
 if __name__ == "__main__":
     unittest.main()
