@@ -10,6 +10,7 @@ import hashlib
 import io
 import json
 import os
+import re
 from pathlib import PurePosixPath
 import stat
 import urllib.parse
@@ -30,10 +31,12 @@ _ALLOWED_REDIRECT_HOSTS = {
     "objects.githubusercontent.com",
     "release-assets.githubusercontent.com",
 }
-_ALLOWED_REDIRECT_SUFFIXES = (".blob.core.windows.net", ".amazonaws.com")
+_ALLOWED_REDIRECT_SUFFIXES = (".blob.core.windows.net",)
 
 
 def _digest(value: str) -> str:
+    if not isinstance(value, str):
+        raise ArtifactVerificationError("expected_sha256_not_string")
     value = value.removeprefix("sha256:")
     if len(value) != 64 or any(ch not in "0123456789abcdef" for ch in value):
         raise ArtifactVerificationError("expected_sha256_invalid")
@@ -91,8 +94,9 @@ def verify_artifact_zip(data: bytes, *, expected_sha256: str, manifest_path: str
     if manifest_path not in names:
         raise ArtifactVerificationError("signed_manifest_missing_from_archive")
     try:
-        manifest = json.loads(archive.read(manifest_path).decode("utf-8"))
-    except (UnicodeError, json.JSONDecodeError, KeyError) as exc:
+        manifest_bytes = archive.read(manifest_path)
+        manifest = json.loads(manifest_bytes.decode("utf-8"))
+    except (UnicodeError, json.JSONDecodeError, KeyError, RuntimeError, zipfile.BadZipFile) as exc:
         raise ArtifactVerificationError("artifact_manifest_invalid_json") from exc
     if not isinstance(manifest, Mapping) or manifest.get("schema_version") != "aigc.artifact-manifest.v1":
         raise ArtifactVerificationError("artifact_manifest_schema_invalid")
@@ -141,7 +145,7 @@ def verify_artifact_zip(data: bytes, *, expected_sha256: str, manifest_path: str
         "run_id": run_id,
         "run_attempt": run_attempt,
         "manifest_path": manifest_path,
-        "manifest_sha256": "sha256:" + hashlib.sha256(archive.read(manifest_path)).hexdigest(),
+        "manifest_sha256": "sha256:" + hashlib.sha256(manifest_bytes).hexdigest(),
         "files": verified_files,
         "bytes_verified": True,
         "manifest_verified": True,
@@ -170,7 +174,7 @@ def download_and_verify_artifact(repository: str, artifact_id: int, *, expected_
             location = response.headers.get("location", "")
             parsed = urllib.parse.urlparse(location)
             host = (parsed.hostname or "").lower()
-            allowed = host in _ALLOWED_REDIRECT_HOSTS or any(host.endswith(suffix) for suffix in _ALLOWED_REDIRECT_SUFFIXES)
+            allowed = (host in _ALLOWED_REDIRECT_HOSTS or any(host.endswith(suffix) for suffix in _ALLOWED_REDIRECT_SUFFIXES) or re.fullmatch(r"github-production-[a-z0-9-]+\.s3\.amazonaws\.com", host) is not None)
             if parsed.scheme != "https" or not allowed:
                 raise ArtifactVerificationError("artifact_redirect_host_not_allowlisted")
             # Never forward the GitHub bearer token to the signed object-storage URL.
