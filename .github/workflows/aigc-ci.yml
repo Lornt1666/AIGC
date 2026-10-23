@@ -97,6 +97,8 @@ jobs:
           python scripts/validate_regenexcalibur_agent_registry.py
           PYTHONPATH=. python -m unittest discover -s tests -p 'test_regenexcalibur_agent_registry.py' -v
           PYTHONPATH=src python -m unittest discover -s tests -p 'test_aigc_agent_operations.py' -v
+          PYTHONPATH=src python -m unittest discover -s tests -p 'test_aigc_closure_workflow.py' -v
+          PYTHONPATH=src python -m compileall -q src/aigc_runtime/closure_workflow.py scripts/aigc_closure_check.py
 
       - name: Diagnose registry validation failure (non-authoritative)
         if: always()
