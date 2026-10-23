@@ -45,7 +45,7 @@ class PostgresReceiptClaimStore:
         if candidate is not None and (not isinstance(candidate, str) or not re.fullmatch(r"[0-9a-f]{40}", candidate)):
             raise ReceiptClaimError("receipt_candidate_sha_invalid")
         try:
-            with psycopg.connect(self.database_url, connect_timeout=self.timeout_seconds) as conn:
+            with psycopg.connect(self.database_url, connect_timeout=max(1, int(self.timeout_seconds))) as conn:
                 with conn.transaction():
                     with conn.cursor() as cur:
                         cur.execute(
