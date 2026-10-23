@@ -75,6 +75,11 @@ class ReceiptVerifierTests(unittest.TestCase):
     def test_wrong_binding_rejected(self):
         with self.assertRaisesRegex(ReceiptVerificationError,"binding_mismatch"):
             self.verifier.verify(self.envelope(), expected_purpose="human-acceptance", expected_bindings={"candidate_sha":"c"*40})
+    def test_same_receipt_cannot_be_replayed_in_one_process(self):
+        envelope = self.envelope()
+        self.verifier.verify(envelope, expected_purpose="human-acceptance", expected_bindings={"candidate_sha":"a"*40})
+        with self.assertRaisesRegex(ReceiptVerificationError, "replayed"):
+            self.verifier.verify(envelope, expected_purpose="human-acceptance", expected_bindings={"candidate_sha":"a"*40})
     def test_revoked_receipt_rejected(self):
         verifier=Ed25519ReceiptVerifier(list(self.verifier.keys.values()), revoked_receipt_ids={"R-1"})
         with self.assertRaisesRegex(ReceiptVerificationError,"revoked"):
