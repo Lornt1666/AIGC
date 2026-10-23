@@ -8,21 +8,23 @@
 
 ## Read in this order
 
-1. [MVP Master Specification](AIGC_MVP_MASTER_SPECIFICATION.md) — what AIGC is supposed to do, system boundaries, phased lifecycle, target architecture, data contracts, persistence, security, observability, and acceptance rules.
-2. [Wiring and Interface Registry](AIGC_WIRING_AND_INTERFACE_REGISTRY.md) — 45 defined logical wires with producer/consumer, purpose, failure behavior, contract expectations, component responsibilities, agent roles, and unknowns requiring verification.
-3. [Verification and Production Acceptance Plan](AIGC_VERIFICATION_AND_PRODUCTION_ACCEPTANCE_PLAN.md) — test layers, negative tests, fault-injection matrix, evidence model, release gates, and candidate-freshness rules.
-4. [Operations, Security, and Recovery Runbook](AIGC_OPERATIONS_SECURITY_AND_RECOVERY_RUNBOOK.md) — safe local validation, staging deployment, emergency stop, queue handling, incident response, backup/recovery, and release closure operations.
-5. [Governance and System Charter](../AIGC_GOVERNANCE_AND_SYSTEM_CHARTER.md) — identity, authority hierarchy, agent role boundaries, governance, and change control.
-6. [Production Closure Acceptance Matrix](../PRODUCTION_CLOSURE_ACCEPTANCE_MATRIX.md) — current closure gate matrix and evidence invariants.
-7. [Repository README](../../README.md) — current command surface and documented phase behavior.
+1. [MVP Master Specification](AIGC_MVP_MASTER_SPECIFICATION.md) — what AIGC is supposed to do, system boundaries, phases, target architecture, data flows, persistence, security, observability, and acceptance rules.
+2. [Control-to-Evidence Traceability Standard](AIGC_CONTROL_TO_EVIDENCE_TRACEABILITY_STANDARD.md) — the normative chain from requirements to controls, implementation, tests, operational evidence, and authorized acceptance; includes system ordering, architecture trade-offs, required controls, failure modes, and release gates.
+3. [Wiring and Interface Registry](AIGC_WIRING_AND_INTERFACE_REGISTRY.md) — 45 defined logical wires with producer/consumer, purpose, failure behavior, contract expectations, component responsibilities, agent roles, and unknowns requiring verification.
+4. [Verification and Production Acceptance Plan](AIGC_VERIFICATION_AND_PRODUCTION_ACCEPTANCE_PLAN.md) — test layers, negative tests, fault-injection matrix, evidence model, release gates, and candidate-freshness rules.
+5. [Operations, Security, and Recovery Runbook](AIGC_OPERATIONS_SECURITY_AND_RECOVERY_RUNBOOK.md) — safe local validation, staging deployment, emergency stop, queue handling, incident response, backup/recovery, and release closure operations.
+6. [Governance and System Charter](../AIGC_GOVERNANCE_AND_SYSTEM_CHARTER.md) — identity, authority hierarchy, agent role boundaries, governance, and change control.
+7. [Production Closure Acceptance Matrix](../PRODUCTION_CLOSURE_ACCEPTANCE_MATRIX.md) — current closure gate matrix and evidence invariants.
+8. [Repository README](../../README.md) — current command surface and documented phase behavior.
 
 ## How to use the master documents
 
-- Treat the master specification as the design baseline and the repository code/configuration as the current implementation source of truth.
+- Treat the master specification as the design baseline and repository code/configuration as the current implementation source of truth.
 - Treat the wiring registry as a checklist of interfaces to inspect and test, not as evidence every wire exists.
-- For every wire, assign an implementation status: `IMPLEMENTED_AND_TESTED`, `IMPLEMENTED_UNVERIFIED`, `PARTIAL`, `SPEC_ONLY`, `DISABLED`, or `BLOCKED`.
+- Treat the traceability standard as the required chain from each normative requirement to an enforced control, implementation reference, verification, retained evidence, and acceptance criterion.
+- For every wire and control, assign an implementation status: `IMPLEMENTED_AND_TESTED`, `IMPLEMENTED_UNVERIFIED`, `PARTIAL`, `SPEC_ONLY`, `DISABLED`, or `BLOCKED`.
 - Do not enable a spec-only agent or adapter because its role is documented.
-- Record each discrepancy between intended behavior and observed implementation with the exact file/line, candidate SHA, severity, owner, test, and disposition.
+- Record each discrepancy between intended behavior and observed implementation with exact file/line, candidate SHA, severity, owner, test, and disposition.
 - Update these documents alongside behavior-changing code and contracts.
 - Any release evidence must refer to the exact candidate SHA and canonical evidence digest. A newer commit invalidates evidence that is not explicitly rebound to it.
 
