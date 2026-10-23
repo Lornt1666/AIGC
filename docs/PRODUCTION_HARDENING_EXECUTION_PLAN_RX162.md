@@ -17,7 +17,7 @@
 - The app defaults to `AIGC_DRY_RUN=true`, drops Linux capabilities, uses a read-only root filesystem and runs as an unprivileged UID.
 - The current Dockerfile uses mutable `python:3.12-slim-bookworm` tags and installs range-based `requirements.txt` entries without a hash-locked dependency file. These are known supply-chain reproducibility gaps.
 - Compose uses `sslmode=disable` for its internal PostgreSQL connection. This is acceptable only for the isolated local Compose topology; it is not an approved setting for remote or production database endpoints.
-- The latest observed PR #334 head was `ea707e1d86191172003095ec0616c9140e3b5fc8`. A subsequent commit invalidates any exact-head CI claim; always re-read the live PR head before interpreting results.
+- PR head SHAs and workflow run states are volatile evidence. Do not embed a presumed current head in this plan; retrieve the live PR head and exact-head workflow run immediately before any release-gate decision.
 
 ### Design assumptions (must be tested)
 
