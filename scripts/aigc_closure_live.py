@@ -20,6 +20,7 @@ from aigc_runtime.closure_workflow import evaluate_closure
 from aigc_runtime.artifact_verifier import ArtifactVerificationError, download_and_verify_artifact
 from aigc_runtime.github_evidence import GitHubEvidenceError, acquire_live_snapshot
 from aigc_runtime.receipt_verifier import Ed25519ReceiptVerifier, ReceiptVerificationError, TrustedReceiptKey
+from aigc_runtime.receipt_claim_store import PostgresReceiptClaimStore, ReceiptClaimError
 
 
 PURPOSES = {
@@ -59,6 +60,11 @@ def run_live_closure(repository: str, pr_number: int, *, trusted_keys_path: str,
     verifier = Ed25519ReceiptVerifier(keys, revoked_receipt_ids=set(key_doc.get("revoked_receipt_ids", [])))
     verified: dict[str, Any] = {}
     errors: dict[str, str] = {}
+    try:
+        claim_store = PostgresReceiptClaimStore()
+    except ReceiptClaimError as exc:
+        claim_store = None
+        errors["persistent_receipt_store"] = str(exc)
     receipt_ids: dict[str, str] = {}
     for target in PURPOSES:
         envelope = receipt_doc.get(target)
@@ -73,6 +79,9 @@ def run_live_closure(repository: str, pr_number: int, *, trusted_keys_path: str,
     # the digest computed from the exact live observation plus these signed evidence claims.
     core_targets = ("protection", "review", "provenance", "artifact")
     for target in core_targets:
+        if claim_store is None:
+            errors[target] = errors.get("persistent_receipt_store", "persistent_receipt_store_required")
+            continue
         envelope = receipt_doc.get(target)
         if not isinstance(envelope, dict) or target in errors:
             continue
@@ -81,6 +90,7 @@ def run_live_closure(repository: str, pr_number: int, *, trusted_keys_path: str,
             expected["repository"] = repository
         try:
             receipt = verifier.verify(envelope, expected_purpose=PURPOSES[target], expected_bindings=expected)
+            claim_store.claim(envelope["payload"], receipt)
             payload = dict(envelope["payload"])
             verified[target] = {**payload, "authenticated": True, "verified": True,
                                 "receipt_id": payload["receipt_id"], "verification_receipt": receipt}
@@ -153,6 +163,9 @@ def run_live_closure(repository: str, pr_number: int, *, trusted_keys_path: str,
     for target in ("acceptance", "rx19_handoff", "rx19_decision"):
         if prepare:
             continue
+        if claim_store is None:
+            errors[target] = errors.get("persistent_receipt_store", "persistent_receipt_store_required")
+            continue
         envelope = receipt_doc.get(target)
         if not isinstance(envelope, dict) or target in errors:
             continue
@@ -161,6 +174,7 @@ def run_live_closure(repository: str, pr_number: int, *, trusted_keys_path: str,
             expected["policy_version"] = policy_version
         try:
             receipt = verifier.verify(envelope, expected_purpose=PURPOSES[target], expected_bindings=expected)
+            claim_store.claim(envelope["payload"], receipt)
             payload = dict(envelope["payload"])
             verified[target] = {**payload, "authenticated": True, "verified": True,
                                 "receipt_id": payload["receipt_id"], "verification_receipt": receipt}
@@ -182,6 +196,7 @@ def run_live_closure(repository: str, pr_number: int, *, trusted_keys_path: str,
     snapshot["acquisition"]["signed_receipts_verified"] = sorted(verified)
     snapshot["acquisition"]["receipt_errors"] = dict(sorted(errors.items()))
     snapshot["acquisition"]["trust_store_id"] = key_doc.get("trust_store_id", "UNNAMED_TRUST_STORE")
+    snapshot["acquisition"]["persistent_receipt_store"] = "AVAILABLE" if claim_store is not None else "UNAVAILABLE"
     snapshot["acquisition"]["evidence_digest_matches"] = "PREPARATION_ONLY" if prepare else digest_claim_matches
     result = evaluate_closure(snapshot)
     result["acquisition"] = snapshot["acquisition"]
