@@ -156,10 +156,16 @@ class SagaCoordinator:
                 migration = await cur.fetchone()
                 if not migration:
                     raise OrchestrationError("required_migration_missing:001_runtime")
-                await cur.execute("SELECT to_regclass(%s) AS table_name", ("public.aigc_events",))
-                table = await cur.fetchone()
-                if not table or not table["table_name"]:
-                    raise OrchestrationError("required_runtime_schema_missing")
+                await cur.execute("SELECT to_regclass(%s) AS tasks, to_regclass(%s) AS events, to_regclass(%s) AS outbox, to_regclass(%s) AS consumed",
+                    ("public.aigc_tasks", "public.aigc_events", "public.aigc_outbox", "public.aigc_consumed_events"))
+                tables = await cur.fetchone()
+                if not tables or any(not tables[name] for name in ("tasks", "events", "outbox", "consumed")):
+                    raise OrchestrationError("required_runtime_schema_missing_or_incomplete")
+                await cur.execute("SELECT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname=%s AND NOT tgisinternal) AS present",
+                    ("aigc_events_no_update",))
+                trigger = await cur.fetchone()
+                if not trigger or trigger["present"] is not True:
+                    raise OrchestrationError("append_only_event_trigger_missing")
     async def submit(self, contract: TaskContract) -> dict[str, Any]:
         """Persist a task and its initial event atomically; duplicate keys are idempotent."""
         payload = contract.model_dump(mode="json")
