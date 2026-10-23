@@ -337,10 +337,17 @@ class SagaCoordinator:
                               "side_effects_performed": False}
                     status = "SIMULATED"
                 else:
-                    result = await self._invoke_with_retry(self.adapters[step.operation], step.input_payload, key,
-                                                           timeout=min(self.operation_timeout_seconds, contract.timeout_seconds))
-                    status = "SUCCEEDED"
-                    completed.append(step)
+                    try:
+                        result = await self._invoke_with_retry(self.adapters[step.operation], step.input_payload, key,
+                                                               timeout=min(self.operation_timeout_seconds, contract.timeout_seconds))
+                        status = "SUCCEEDED"
+                        completed.append(step)
+                    except Exception as exc:
+                        compensation = await self._compensate(contract, completed, permit_ref=permit_ref)
+                        await self.record_event(contract.task_id, "SAGA_FAILED", {
+                            "failed_step_id": step.step_id, "error_type": type(exc).__name__,
+                            "compensation": compensation, "side_effects_may_have_occurred": True})
+                        raise OrchestrationError("saga_step_failed; compensation_status:" + compensation["status"]) from exc
                 receipt_body = {"step_id": step.step_id, "operation": step.operation, "status": status,
                                 "result": result, "idempotency_key": key, "task_id": str(contract.task_id)}
                 receipts.append(StepReceipt(step.step_id, status, result, key, sha256_text(canonical_json(receipt_body)),
@@ -353,6 +360,40 @@ class SagaCoordinator:
                 "side_effects_performed": bool(completed), "compensation": "NOT_REQUIRED",
                 "release_authorization": False, "merge_authorization": False}
 
+    async def _compensate(self, contract: TaskContract, completed: list[SagaStep], *,
+                          permit_ref: str | None) -> dict[str, Any]:
+        """Attempt explicit compensations in reverse order; unresolved steps require reconciliation."""
+        results: list[dict[str, Any]] = []
+        for step in reversed(completed):
+            operation = step.compensation_operation
+            if not operation:
+                results.append({"step_id": step.step_id, "status": "MANUAL_RECONCILIATION_REQUIRED",
+                                "reason": "compensation_not_defined"})
+                continue
+            if operation not in self.adapters:
+                results.append({"step_id": step.step_id, "status": "BLOCK", "reason": "compensation_not_allowlisted"})
+                continue
+            if not permit_ref or self.permit_verifier is None:
+                results.append({"step_id": step.step_id, "status": "BLOCK", "reason": "compensation_permit_missing"})
+                continue
+            key = hashlib.sha256(f"{contract.idempotency_key}:compensate:{step.step_id}".encode()).hexdigest()
+            permitted = await self.permit_verifier(permit_ref, {"task_id": str(contract.task_id),
+                "operation": operation, "policy_version": contract.policy_version,
+                "compensation_for": step.step_id}, key)
+            if not permitted:
+                results.append({"step_id": step.step_id, "status": "BLOCK", "reason": "compensation_permit_denied"})
+                continue
+            try:
+                result = await self._invoke_with_retry(self.adapters[operation], step.compensation_payload or {},
+                    key, timeout=min(self.operation_timeout_seconds, contract.timeout_seconds))
+                results.append({"step_id": step.step_id, "status": "COMPENSATION_REQUEST_SUCCEEDED",
+                                "result": dict(result)})
+            except Exception as exc:
+                results.append({"step_id": step.step_id, "status": "MANUAL_RECONCILIATION_REQUIRED",
+                                "error_type": type(exc).__name__})
+        clean = bool(results) and all(item["status"] == "COMPENSATION_REQUEST_SUCCEEDED" for item in results)
+        return {"status": "COMPENSATION_REQUESTS_SUCCEEDED" if clean else "INCOMPLETE",
+                "steps": results, "release_authorization": False}
     async def _invoke_with_retry(self, adapter: ActionAdapter, payload: Mapping[str, Any], key: str,
                                  *, timeout: float) -> Mapping[str, Any]:
         last_error: Exception | None = None
