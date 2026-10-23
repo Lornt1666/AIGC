@@ -9,6 +9,7 @@ import hashlib
 import hmac
 import json
 import os
+import time
 from contextlib import asynccontextmanager
 from typing import Any
 
@@ -18,7 +19,7 @@ from pydantic import ValidationError
 from core.arbiter import audit_python_source
 from core.contracts import TaskContract
 from core.orchestrator import SagaCoordinator, OrchestrationError
-from core.telemetry import configure_telemetry
+from core.telemetry import configure_telemetry, record_http_request, traced_operation
 
 
 def _api_key() -> str:
@@ -55,6 +56,20 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="RegenExcalibur AIGC Runtime", version="1.0.0", lifespan=lifespan)
+
+@app.middleware("http")
+async def telemetry_middleware(request: Request, call_next):
+    started = time.monotonic()
+    route_class = "health" if request.url.path.startswith("/health/") else "api"
+    status_code = 500
+    try:
+        with traced_operation("aigc.http.request", {"http.request.method": request.method, "aigc.route_class": route_class}):
+            response = await call_next(request)
+            status_code = response.status_code
+            return response
+    finally:
+        record_http_request(request.method, status_code, time.monotonic() - started, route_class)
+
 
 
 @app.get("/health/live")
