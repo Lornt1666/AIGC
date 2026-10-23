@@ -93,7 +93,7 @@ Every wire in the Wiring and Interface Registry MUST declare:
 - **Purpose:** exact state transition or information transfer supported.
 - **Envelope:** schema/version, message ID, task ID, correlation/trace context, timestamp, expiry, principal where relevant, and payload reference.
 - **Payload contract:** types, required fields, size limits, allowed values, data classification, and validation rules.
-- **Authorization:** required identity, capability, permit scope, and point-of-effect revalidation.
+- **Authorization requirements —** required identity, capability, permit scope, and point-of-effect revalidation.
 - **Delivery semantics:** at-most-once, at-least-once, or another justified model. Do not claim exactly-once effects merely because a broker deduplicates messages.
 - **Idempotency:** stable key, uniqueness scope, persistence duration, conflict behavior, and replay tests.
 - **Ordering:** whether ordering matters and what key/partition establishes it.
