@@ -18,8 +18,9 @@ permissions:
 
 concurrency:
   group: aigc-ci-${{ github.workflow }}-${{ github.ref }}
-  # Preserve exact-head evidence while a run is active; do not cancel it on newer pushes.
+  # Preserve exact-head evidence and retain queued validations instead of replacing pending runs.
   cancel-in-progress: false
+  queue: max
 
 jobs:
   validate:
