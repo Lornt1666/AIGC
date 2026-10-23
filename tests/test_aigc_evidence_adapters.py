@@ -129,6 +129,29 @@ class ReceiptVerifierTests(unittest.TestCase):
         result=self.verifier.verify(self.envelope(), expected_purpose="human-acceptance",
             expected_bindings={"candidate_sha":"a"*40,"evidence_digest":"sha256:"+"b"*64})
         self.assertTrue(result["verified"])
+    def test_persistent_claim_store_is_called_after_signature_verification(self):
+        class FakeClaimStore:
+            def __init__(self): self.claims = []
+            def claim(self, payload, verification):
+                self.claims.append((dict(payload), dict(verification)))
+                return {"status": "FIRST_OBSERVATION", "receipt_id": verification["receipt_id"]}
+        store = FakeClaimStore()
+        verifier = Ed25519ReceiptVerifier(list(self.verifier.keys.values()), claim_store=store)
+        result = verifier.verify(self.envelope(), expected_purpose="human-acceptance",
+            expected_bindings={"candidate_sha":"a"*40,"evidence_digest":"sha256:"+"b"*64})
+        self.assertTrue(result["verified"])
+        self.assertEqual(len(store.claims), 1)
+        self.assertEqual(store.claims[0][0]["receipt_id"], "R-1")
+        self.assertEqual(store.claims[0][1]["payload_digest"], result["payload_digest"])
+    def test_persistent_claim_store_failure_fails_closed_without_consuming_in_process_id(self):
+        class UnavailableClaimStore:
+            def claim(self, payload, verification):
+                raise RuntimeError("database_unavailable")
+        verifier = Ed25519ReceiptVerifier(list(self.verifier.keys.values()), claim_store=UnavailableClaimStore())
+        with self.assertRaisesRegex(ReceiptVerificationError, "persistent_receipt_claim_failed"):
+            verifier.verify(self.envelope(), expected_purpose="human-acceptance",
+                expected_bindings={"candidate_sha":"a"*40,"evidence_digest":"sha256:"+"b"*64})
+        self.assertNotIn("R-1", verifier.seen_receipt_ids)
     def test_tampered_payload_rejected(self):
         envelope=self.envelope()
         envelope["payload"]={**envelope["payload"],"candidate_sha":"c"*40}
