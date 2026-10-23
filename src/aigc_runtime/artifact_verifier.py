@@ -130,7 +130,10 @@ def verify_artifact_zip(data: bytes, *, expected_sha256: str, manifest_path: str
         raise ArtifactVerificationError("archive_manifest_file_set_mismatch")
     verified_files = []
     for path in sorted(expected_files):
-        content = archive.read(path)
+        try:
+            content = archive.read(path)
+        except (RuntimeError, zipfile.BadZipFile, KeyError) as exc:
+            raise ArtifactVerificationError("artifact_file_read_failed:" + path) from exc
         expected_file = expected_files[path]
         if len(content) != expected_file["size"]:
             raise ArtifactVerificationError("artifact_file_size_mismatch:" + path)
