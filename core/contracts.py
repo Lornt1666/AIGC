@@ -110,6 +110,12 @@ class TaskContract(StrictModel):
             raise ValueError("duplicate task dependencies")
         if len(set(self.allowed_agent_ids)) != len(self.allowed_agent_ids):
             raise ValueError("duplicate allowed agent IDs")
+        if len(set(self.scope)) != len(self.scope) or len(set(self.acceptance_criteria)) != len(self.acceptance_criteria):
+            raise ValueError("duplicate scope entries or acceptance criteria")
+        if len(set(self.allowed_tools)) != len(self.allowed_tools):
+            raise ValueError("duplicate allowed tools")
+        if (self.risk_tier in {RiskTier.R3, RiskTier.R4} or self.permitted_side_effects) and not self.candidate_sha:
+            raise ValueError("mutating or high-risk task requires an exact candidate SHA")
         return self
 
 
