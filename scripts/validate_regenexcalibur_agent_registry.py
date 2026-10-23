@@ -54,8 +54,13 @@ def validate_registry(data: Any) -> dict[str, Any]:
             raise RegistryError("implementation_status_overclaims_readiness")
         ids.append(agent["id"])
         by_id[agent["id"]] = agent
-    if len(by_id) != 140:
-        raise RegistryError("unexpected_agent_count")
+    required_workforce_ids = {f"RX-{number}" for number in range(149, 162)}
+    if not required_workforce_ids.issubset(by_id):
+        raise RegistryError("required_workforce_agent_missing")
+    if any(by_id[agent_id]["enabled"] is not False or by_id[agent_id]["authority_tier"] != "R0" or by_id[agent_id]["implementation_status"] != "SPECIFIED_NOT_PRODUCTION_INTEGRATED" for agent_id in required_workforce_ids):
+        raise RegistryError("required_workforce_agent_must_remain_disabled_r0_specified")
+    if len(by_id) != len(data["agents"]):
+        raise RegistryError("agent_count_reconciliation_failed")
     for agent in data["agents"]:
         if agent["id"] in agent["dependencies"]:
             raise RegistryError("self_dependency")

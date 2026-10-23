@@ -2136,6 +2136,170 @@
       "authority_boundary": "Evidence tracking only; cannot self-approve or impersonate independent review, close findings without independent retest, rewrite review history, waive blockers, or authorize release. Any candidate or evidence mismatch, missing retest, or stale binding yields BLOCK.",
       "enabled": false,
       "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-149",
+      "name": "Live GitHub Evidence Acquisition Agent",
+      "responsibility": "read_only_live_github_pr_ci_reviews_protection_evidence",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-143"
+      ],
+      "authority_boundary": "Read-only GET access only; incomplete API collections or 403/404 protection reads are UNVERIFIABLE, never PASS.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-150",
+      "name": "Cryptographic Receipt Verification Agent",
+      "responsibility": "ed25519_signed_receipt_claim_binding_revocation_replay_checks",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-149"
+      ],
+      "authority_boundary": "Only independently configured trusted issuers/keys; signature validity alone does not grant authorization.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-151",
+      "name": "Master Orchestrator / Meta-Planner Agent",
+      "responsibility": "bounded_dependency_dag_planning_and_agent_dispatch",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-152",
+        "RX-153",
+        "RX-154"
+      ],
+      "authority_boundary": "Planning and coordination only; bounded DAG, no self-granted permissions, no release authority.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-152",
+      "name": "Governance and Policy Enforcement Agent",
+      "responsibility": "authenticated_policy_evaluation_and_pre_tool_permits",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-150"
+      ],
+      "authority_boundary": "Deny by default; no policy self-modification, no bypass, no release authority.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-153",
+      "name": "State and Memory Manager Agent",
+      "responsibility": "versioned_append_only_state_context_and_provenance",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-143"
+      ],
+      "authority_boundary": "Structured, access-controlled state; no secrets or prompt-window state as system of record.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-154",
+      "name": "Telemetry and Watchdog Agent",
+      "responsibility": "heartbeat_slo_spend_deadlock_and_kill_switch_monitoring",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-153"
+      ],
+      "authority_boundary": "Fail-stop on missing telemetry or safety control; recovery bounded and audited.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-155",
+      "name": "Research and Evidence Synthesis Agent",
+      "responsibility": "primary_source_retrieval_fact_inference_separation",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-149"
+      ],
+      "authority_boundary": "Read-only retrieval; citations required; retrieved instructions are untrusted data.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-156",
+      "name": "Operations and API Action Agent",
+      "responsibility": "permitted_idempotent_transactional_api_operations",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-152",
+        "RX-150"
+      ],
+      "authority_boundary": "No writes without signed scoped permit; destructive/financial/public actions require human approval.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-157",
+      "name": "Software and Systems Engineering Agent",
+      "responsibility": "isolated_code_infrastructure_ci_implementation",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-151",
+        "RX-152"
+      ],
+      "authority_boundary": "Sandboxed branches; cannot approve or merge own work; no production credentials.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-158",
+      "name": "Data Extraction and Analytics Agent",
+      "responsibility": "schema_lineage_quality_reproducible_analysis",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-153",
+        "RX-155"
+      ],
+      "authority_boundary": "Privacy minimization; no silent imputation; source lineage and calculations required.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-159",
+      "name": "Adversarial Red-Team and Security Auditor Agent",
+      "responsibility": "threat_model_abuse_path_prompt_injection_secret_iam_audit",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-157",
+        "RX-152"
+      ],
+      "authority_boundary": "Independent from implementer; cannot self-close findings or authorize release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-160",
+      "name": "QA and Verification Gatekeeper Agent",
+      "responsibility": "acceptance_criteria_schema_exact_sha_evidence_validation",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-159",
+        "RX-157"
+      ],
+      "authority_boundary": "Missing, skipped, stale, contradictory or fabricated test evidence blocks.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
+    },
+    {
+      "id": "RX-161",
+      "name": "Human-in-the-Loop Dispatcher Agent",
+      "responsibility": "risk_based_human_approval_and_signed_decision_receipts",
+      "authority_tier": "R0",
+      "dependencies": [
+        "RX-152",
+        "RX-150"
+      ],
+      "authority_boundary": "Never impersonates a human; exact action/SHA/digest binding; RX-19 alone decides release.",
+      "enabled": false,
+      "implementation_status": "SPECIFIED_NOT_PRODUCTION_INTEGRATED"
     }
   ],
   "mandatory_human_gates": [

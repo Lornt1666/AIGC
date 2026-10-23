@@ -1,0 +1,130 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: regenexcalibur/aigc-runtime:local
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,noexec,nosuid,nodev
+    cap_drop: ["ALL"]
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 128
+    mem_limit: 768m
+    cpus: 1.5
+    ports:
+      - "127.0.0.1:${AIGC_HOST_PORT:-8080}:8080"
+    environment:
+      DATABASE_URL: postgresql://aigc_app:${AIGC_APP_DB_PASSWORD:?set AIGC_APP_DB_PASSWORD}@postgres:5432/aigc?sslmode=disable
+      AIGC_REPLAY_DATABASE_URL: postgresql://aigc_receipt_verifier:${AIGC_RECEIPT_DB_PASSWORD:?set AIGC_RECEIPT_DB_PASSWORD}@postgres:5432/aigc?sslmode=disable
+      REDIS_URL: redis://redis:6379/0
+      AIGC_API_BEARER_TOKEN: ${AIGC_API_BEARER_TOKEN:?set AIGC_API_BEARER_TOKEN}
+      AIGC_DRY_RUN: "true"
+      AIGC_MAX_HOPS: "10"
+      AIGC_MAX_CONCURRENCY: "16"
+      PYTHONPATH: /app:/app/src
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health/ready', timeout=2)"]
+      interval: 20s
+      timeout: 4s
+      retries: 5
+      start_period: 30s
+    networks: [backend, runtime]
+
+  worker:
+    image: regenexcalibur/aigc-runtime:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["python", "-m", "core.worker"]
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,noexec,nosuid,nodev
+    cap_drop: ["ALL"]
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 96
+    mem_limit: 512m
+    cpus: 1.0
+    environment:
+      DATABASE_URL: postgresql://aigc_app:${AIGC_APP_DB_PASSWORD:?set AIGC_APP_DB_PASSWORD}@postgres:5432/aigc?sslmode=disable
+      REDIS_URL: redis://redis:6379/0
+      AIGC_DRY_RUN: "true"
+      AIGC_MAX_HOPS: "10"
+      AIGC_MAX_CONCURRENCY: "8"
+      AIGC_REGISTRY_PATH: /app/config/regenexcalibur_aigc_agent_registry.json
+      PYTHONPATH: /app:/app/src
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks: [backend, runtime]
+
+  postgres:
+    image: postgres:16.4-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: aigc
+      POSTGRES_DB: aigc
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      AIGC_APP_DB_PASSWORD: ${AIGC_APP_DB_PASSWORD:?set AIGC_APP_DB_PASSWORD}
+      AIGC_RECEIPT_DB_PASSWORD: ${AIGC_RECEIPT_DB_PASSWORD:?set AIGC_RECEIPT_DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./core/init/01-create-runtime-roles.sh:/docker-entrypoint-initdb.d/01-create-runtime-roles.sh:ro
+      - ./core/migrations/001_runtime.sql:/docker-entrypoint-initdb.d/02-runtime.sql:ro
+      - ./core/migrations/002_receipt_claims.sql:/docker-entrypoint-initdb.d/03-receipt-claims.sql:ro
+      - ./core/migrations/003_dead_letter_ledger.sql:/docker-entrypoint-initdb.d/04-dead-letter-ledger.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aigc -d aigc"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    shm_size: 256mb
+    networks: [backend]
+    # No host port is published. Use authenticated backup/restore tooling.
+
+  redis:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--appendfsync", "everysec", "--maxmemory", "256mb", "--maxmemory-policy", "noeviction", "--protected-mode", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks: [runtime]
+    # Redis is transport, not the durable source of truth. No host port is published.
+
+  qdrant:
+    image: qdrant/qdrant:v1.13.4
+    profiles: ["vector"]
+    restart: unless-stopped
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks: [runtime]
+    # Optional semantic retrieval only; no unauthenticated host port is published.
+
+networks:
+  backend:
+    driver: bridge
+    internal: true
+  runtime:
+    driver: bridge
+    internal: true
+
+volumes:
+  postgres_data:
+  redis_data:
+  qdrant_data:
