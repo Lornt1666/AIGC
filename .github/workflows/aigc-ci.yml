@@ -101,6 +101,13 @@ jobs:
           python -m pip install -r requirements.txt -r requirements-gemini.txt
           python -m pip check | tee "$RUNNER_TEMP/aigc-ci-stage-results/pip-check.log"
 
+      - name: Audit resolved Python dependencies for known vulnerabilities
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install pip-audit
+          pip-audit -r requirements.txt -r requirements-gemini.txt --strict
+
       - name: Resolve tested tree
         id: tested
         shell: bash
