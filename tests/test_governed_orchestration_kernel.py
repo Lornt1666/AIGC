@@ -132,16 +132,17 @@ class FakeRedis:
         self.eval_calls.append((script, numkeys, args))
         if self.eval_results:
             return self.eval_results.pop(0)
-        key, digest = str(args[0]), str(args[-1])
+        key, task_id, digest = str(args[0]), str(args[2]), str(args[-1])
         existing = self.idempotency.get(key)
         if existing is not None:
-            return 0 if existing == digest else -1
+            existing_digest, existing_task_id = existing.split("|", 1)
+            return [0, existing_task_id] if existing_digest == digest else [-1, existing_task_id]
         if self.fail_enqueue_publish:
             self.fail_enqueue_publish = False
             # Model the Lua pcall/XADD failure path: its reservation is rolled back.
             raise OSError("simulated task stream outage")
-        self.idempotency[key] = digest
-        return 1
+        self.idempotency[key] = f"{digest}|{task_id}"
+        return [1, task_id]
 
     async def xreadgroup(self, **kwargs):
         if not self.read_entries:
@@ -164,7 +165,7 @@ def test_enqueue_atomically_reserves_idempotency_key() -> None:
     redis = FakeRedis()
     coordinator = RedisStreamsCoordinator(redis)
 
-    async def scenario() -> tuple[bool, bool]:
+    async def scenario():
         first_task = TaskContract(
             idempotency_key="stable-idempotency-key",
             task_type="research",
@@ -175,11 +176,14 @@ def test_enqueue_atomically_reserves_idempotency_key() -> None:
             task_type="research",
             payload={"query": "same request"},
         )
-        return await coordinator.enqueue(first_task), await coordinator.enqueue(retry_task)
+        first = await coordinator.enqueue_with_receipt(first_task)
+        replay = await coordinator.enqueue_with_receipt(retry_task)
+        return first, replay
 
-    first, duplicate = asyncio.run(scenario())
-    assert first is True
-    assert duplicate is False
+    first, replay = asyncio.run(scenario())
+    assert first.accepted is True
+    assert replay.accepted is False
+    assert first.task_id == replay.task_id
     assert redis.eval_calls[0][2][-1] == redis.eval_calls[1][2][-1]
 
 
@@ -211,8 +215,18 @@ def test_real_redis_enqueue_failure_releases_idempotency_reservation(monkeypatch
             assert await client.get(idem) is None
 
             await client.delete(stream)
-            assert await coordinator.enqueue(task) is True
+            first_receipt = await coordinator.enqueue_with_receipt(task)
+            assert first_receipt.accepted is True
+            assert first_receipt.task_id == task.task_id
             assert await client.get(idem) is not None
+            replay_task = TaskContract(
+                idempotency_key=task.idempotency_key,
+                task_type=task.task_type,
+                payload={"query": "verify reservation rollback"},
+            )
+            replay_receipt = await coordinator.enqueue_with_receipt(replay_task)
+            assert replay_receipt.accepted is False
+            assert replay_receipt.task_id == task.task_id
             entries = await client.xrange(stream, min="-", max="+")
             assert len(entries) == 1
             assert entries[0][1]["task_id"] == task.task_id

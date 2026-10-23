@@ -84,6 +84,12 @@ class SagaAction:
 
 
 @dataclass(frozen=True)
+class EnqueueReceipt:
+    accepted: bool
+    task_id: str
+
+
+@dataclass(frozen=True)
 class SagaResult:
     status: str
     completed_steps: tuple[str, ...]
@@ -128,12 +134,15 @@ class RedisStreamsCoordinator:
                 raise
 
     async def enqueue(self, task: TaskContract) -> bool:
-        """Atomically reserve an idempotency key and append a task to the stream."""
+        """Atomically enqueue a task; retained as a bool-returning compatibility API."""
+        receipt = await self.enqueue_with_receipt(task)
+        return receipt.accepted
+
+    async def enqueue_with_receipt(self, task: TaskContract) -> "EnqueueReceipt":
+        """Enqueue idempotently and return the original task ID on safe replay."""
         if task.hop_count >= min(task.max_hops, self.max_hops):
             raise HopLimitExceeded("Task is at its hop limit and cannot be enqueued again.")
         # Hash the caller's semantic request, not generated task/timestamp/trace IDs.
-        # This lets a safe retry replay the same request while rejecting key reuse
-        # for a different payload. The Lua script makes compare/reserve/enqueue atomic.
         semantic_request = json.loads(
             task.model_dump_json(exclude={"task_id", "created_at", "telemetry"})
         )
@@ -146,23 +155,38 @@ class RedisStreamsCoordinator:
         script = """
         local existing = redis.call('GET', KEYS[1])
         if existing then
-          if existing == ARGV[4] then return 0 end
-          return -1
+          local separator = string.find(existing, '|', 1, true)
+          if not separator then
+            return redis.error_reply('Invalid idempotency reservation format')
+          end
+          local existing_digest = string.sub(existing, 1, separator - 1)
+          local existing_task_id = string.sub(existing, separator + 1)
+          if existing_digest == ARGV[4] then return {0, existing_task_id} end
+          return {-1, existing_task_id}
         end
-        redis.call('SET', KEYS[1], ARGV[4], 'EX', ARGV[3])
+        redis.call('SET', KEYS[1], ARGV[4] .. '|' .. ARGV[1], 'EX', ARGV[3])
         local appended = redis.pcall('XADD', KEYS[2], '*', 'task_json', ARGV[2], 'task_id', ARGV[1])
         if type(appended) == 'table' and appended.err then
           redis.call('DEL', KEYS[1])
           return redis.error_reply(appended.err)
         end
-        return 1
+        return {1, ARGV[1]}
         """
-        accepted = await self.redis.eval(
+        result = await self.redis.eval(
             script, 2, idempotency_key, self.stream, task.task_id, payload, 604800, payload_digest
         )
-        if accepted == -1:
+        # The integer branch preserves compatibility with minimal third-party fakes.
+        if isinstance(result, int):
+            status, task_id = result, task.task_id
+        else:
+            status, task_id = int(result[0]), result[1]
+            if isinstance(task_id, bytes):
+                task_id = task_id.decode("utf-8")
+        if status == -1:
             raise IdempotencyConflict("Idempotency key is already bound to a different task payload.")
-        return accepted == 1
+        if status not in {0, 1} or not task_id:
+            raise OrchestrationError("Redis returned an invalid enqueue receipt.")
+        return EnqueueReceipt(accepted=status == 1, task_id=str(task_id))
 
     async def consume_once(
         self,
