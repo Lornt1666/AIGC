@@ -93,11 +93,11 @@ class DeadLetterProjectionTests(unittest.TestCase):
         asyncio.run(run())
         self.assertEqual(len(coordinator.redis.calls), 1)
         call = coordinator.redis.calls[0]
-        self.assertEqual(call[0], 2)
-        self.assertEqual(call[1], "aigc:dlq-published:v1:" + disposition_id)
-        self.assertEqual(call[2], "aigc:dead-letter:v1")
-        self.assertIn("XADD", call[3])
-        self.assertIn("SET", call[3])
+        self.assertEqual(call[1], 2)
+        self.assertEqual(call[2], "aigc:dlq-published:v1:" + disposition_id)
+        self.assertEqual(call[3], "aigc:dead-letter:v1")
+        self.assertIn("XADD", call[0])
+        self.assertIn("SET", call[0])
         self.assertEqual(call[-1], "5")
         update_cursor = coordinator.pool.connections[-1].cursor_instance
         self.assertIn("UPDATE aigc_dead_letters SET published_at", update_cursor.query)
