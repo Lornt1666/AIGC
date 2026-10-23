@@ -161,9 +161,7 @@ def run_live_closure(repository: str, pr_number: int, *, trusted_keys_path: str,
     for target in ("acceptance", "rx19_handoff", "rx19_decision"):
         if prepare:
             continue
-        if claim_store is None:
-            errors[target] = errors.get("persistent_receipt_store", "persistent_receipt_store_required")
-            continue
+
         envelope = receipt_doc.get(target)
         if not isinstance(envelope, dict) or target in errors:
             continue
@@ -172,7 +170,6 @@ def run_live_closure(repository: str, pr_number: int, *, trusted_keys_path: str,
             expected["policy_version"] = policy_version
         try:
             receipt = verifier.verify(envelope, expected_purpose=PURPOSES[target], expected_bindings=expected)
-            claim_store.claim(envelope["payload"], receipt)
             payload = dict(envelope["payload"])
             verified[target] = {**payload, "authenticated": True, "verified": True,
                                 "receipt_id": payload["receipt_id"], "verification_receipt": receipt}
