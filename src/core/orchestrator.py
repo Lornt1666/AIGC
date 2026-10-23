@@ -135,14 +135,13 @@ class RedisStreamsCoordinator:
         self,
         *,
         consumer_name: str,
+        handler: TaskHandler,
         min_idle_ms: int = 60_000,
         start_id: str = "0-0",
         count: int = 10,
-    ) -> tuple[str, ...]:
-        """Claim abandoned pending messages; caller should process claimed IDs explicitly.
-
-        This method intentionally does not auto-ack or discard claimed entries.
-        """
+    ) -> int:
+        """Claim and process one bounded page of abandoned pending messages."""
+        await self.ensure_group()
         result = await self.redis.xautoclaim(
             name=self.stream,
             groupname=self.consumer_group,
@@ -152,7 +151,9 @@ class RedisStreamsCoordinator:
             count=max(1, min(count, 100)),
         )
         claimed = result[1] if len(result) > 1 else []
-        return tuple(str(message_id) for message_id, _fields in claimed)
+        for message_id, fields in claimed:
+            await self._process_message(message_id, fields, handler)
+        return len(claimed)
 
     async def _process_message(
         self, message_id: Any, fields: dict[Any, Any], handler: TaskHandler
@@ -174,13 +175,17 @@ class RedisStreamsCoordinator:
                 data={"status": TaskStatus.SUCCEEDED.value, "result": result},
                 telemetry=task.telemetry,
             )
-            await self.redis.xadd(
-                self.result_stream,
-                {"event_json": event.model_dump_json(), "task_id": task.task_id},
-            )
-            await self.redis.xack(self.stream, self.consumer_group, message_id)
         except Exception as exc:
+            # Only task validation/execution failures are dead-lettered. Redis
+            # publication/ack failures below leave the message pending for retry.
             await self._dead_letter(message_id, fields, exc)
+            return
+
+        await self.redis.xadd(
+            self.result_stream,
+            {"event_json": event.model_dump_json(), "task_id": task.task_id},
+        )
+        await self.redis.xack(self.stream, self.consumer_group, message_id)
 
     async def _dead_letter(self, message_id: Any, fields: dict[Any, Any], exc: Exception) -> None:
         raw = fields.get("task_json") or fields.get(b"task_json") or ""
@@ -199,16 +204,18 @@ class RedisStreamsCoordinator:
         Compensation is best-effort and bounded. Durable crash recovery must be
         supplied by a persistent Saga ledger; this in-process method is not one.
         """
-        completed: list[SagaAction] = []
+        attempted: list[SagaAction] = []
         try:
             for action in actions:
+                # Register before invocation because an action may mutate state and
+                # then raise. Compensation must therefore be idempotent.
+                attempted.append(action)
                 timeout = min(action.contract.timeout_seconds, 30.0)
                 await asyncio.wait_for(action.execute(), timeout=timeout)
-                completed.append(action)
-            return SagaResult("succeeded", tuple(a.contract.step_id for a in completed))
+            return SagaResult("succeeded", tuple(a.contract.step_id for a in attempted))
         except Exception as exc:
             compensation_errors: list[str] = []
-            for action in reversed(completed):
+            for action in reversed(attempted):
                 try:
                     await asyncio.wait_for(action.compensate(), timeout=min(action.contract.timeout_seconds, 30.0))
                 except Exception as compensation_exc:
@@ -216,6 +223,6 @@ class RedisStreamsCoordinator:
                         f"{action.contract.step_id}: {type(compensation_exc).__name__}: {str(compensation_exc)[:500]}"
                     )
             raise SagaExecutionError(
-                f"Saga failed after {len(completed)} completed step(s): {type(exc).__name__}: {str(exc)[:500]}",
+                f"Saga failed after {len(attempted)} attempted step(s): {type(exc).__name__}: {str(exc)[:500]}",
                 compensation_errors=compensation_errors,
             ) from exc
