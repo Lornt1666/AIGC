@@ -124,7 +124,7 @@ def run_live_closure(repository: str, pr_number: int, *, trusted_keys_path: str,
     else:
         snapshot["artifact"] = {"status": "UNVERIFIABLE", "bytes_verified": False,
             "manifest_verified": False, "verification_error": errors.get("artifact", "signed_artifact_receipt_missing")}
-        core_evidence = {
+    core_evidence = {
         "schema_version": snapshot.get("schema_version"), "repository": repository, "pr_number": pr_number,
         "candidate_sha": snapshot.get("candidate_sha"), "observed_head_sha": snapshot.get("observed_head_sha"),
         "base_branch": snapshot.get("base_branch"), "base_sha": snapshot.get("base_sha"),
