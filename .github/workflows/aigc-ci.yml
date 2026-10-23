@@ -72,6 +72,7 @@ jobs:
         env:
           POSTGRES_PASSWORD: ci-postgres-password-not-for-production
           AIGC_APP_DB_PASSWORD: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+          AIGC_RECEIPT_DB_PASSWORD: abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789
           AIGC_API_BEARER_TOKEN: ci-only-token-0123456789abcdef0123456789abcdef0123456789
           AIGC_HOST_PORT: "18080"
         run: |
