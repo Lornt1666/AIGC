@@ -220,7 +220,7 @@ def run_live_closure(repository: str, pr_number: int, *, trusted_keys_path: str,
         snapshot["evidence_digest"] = None
         digest_claim_matches = False
         errors["evidence_digest"] = "live_pr_state_changed_after_digest_computation"
-        snapshot["acquisition"]["signed_receipts_verified"] = sorted(verified)
+    snapshot["acquisition"]["signed_receipts_verified"] = sorted(verified)
     snapshot["acquisition"]["receipt_errors"] = dict(sorted(errors.items()))
     snapshot["acquisition"]["trust_store_id"] = key_doc.get("trust_store_id", "UNNAMED_TRUST_STORE")
     snapshot["acquisition"]["persistent_receipt_store"] = "AVAILABLE"
