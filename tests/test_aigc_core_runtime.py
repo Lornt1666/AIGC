@@ -58,7 +58,7 @@ class ArbiterTests(unittest.TestCase):
         self.assertFalse(result.execution_performed)
 
     def test_allowlisted_pure_math_import_can_be_screened(self):
-        result = audit_python_source("import math\\nx = math.sqrt(4)\\n")
+        result = audit_python_source("import math\nx = math.sqrt(4)\n")
         self.assertEqual(result.status, "PASS_STATIC_SCREEN_ONLY")
         self.assertFalse(result.execution_performed)
     def test_exec_eval_and_import_os_block(self):
