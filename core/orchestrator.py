@@ -451,7 +451,7 @@ class SagaCoordinator:
         redis.call('SET', KEYS[1], entry)
         return entry
         """
-        redis_key = "aigc:dlq-published:v1:" + disposition_id
+        redis_key = "aigc:dlq-published:v1:" + sha256_text(canonical_json([self.dead_letter_stream, disposition_id]))
         await self.redis.eval(script, 2, redis_key, self.dead_letter_stream,
             disposition_id, row["source_stream"], row["source_stream_id"],
             row["event_id"] or "", row["payload"], row["payload_sha256"],
