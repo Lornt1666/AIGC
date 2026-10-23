@@ -16,6 +16,7 @@ WORKDIR /app
 COPY --from=builder /opt/venv /opt/venv
 COPY --chown=10001:10001 core ./core
 COPY --chown=10001:10001 scripts ./scripts
+COPY --chown=10001:10001 config ./config
 COPY --chown=10001:10001 src ./src
 USER 10001:10001
 EXPOSE 8080
