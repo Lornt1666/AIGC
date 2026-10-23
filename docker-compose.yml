@@ -20,7 +20,6 @@ services:
       qdrant:
         condition: service_healthy
     restart: unless-stopped
-    read_only: true
     tmpfs:
       - /tmp:size=64m,noexec,nosuid
     security_opt:
