@@ -161,8 +161,10 @@ class SagaCoordinator:
                 tables = await cur.fetchone()
                 if not tables or any(not tables[name] for name in ("tasks", "events", "outbox", "consumed")):
                     raise OrchestrationError("required_runtime_schema_missing_or_incomplete")
-                await cur.execute("SELECT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname=%s AND NOT tgisinternal) AS present",
-                    ("aigc_events_no_update",))
+                await cur.execute(
+                    "SELECT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname=%s AND tgrelid=to_regclass(%s) AND NOT tgisinternal) AS present",
+                    ("aigc_events_no_update", "public.aigc_events"),
+                )
                 trigger = await cur.fetchone()
                 if not trigger or trigger["present"] is not True:
                     raise OrchestrationError("append_only_event_trigger_missing")
