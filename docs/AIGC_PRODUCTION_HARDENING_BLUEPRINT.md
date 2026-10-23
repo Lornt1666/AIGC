@@ -273,6 +273,10 @@ docker compose logs --tail=200 app worker
 
 Confirm 003_dead_letters is present and both services become healthy. Do not drop or recreate persistent volumes to apply a migration. Redis is a projection/transport; PostgreSQL's dead-letter ledger is the forensic record. Redis loss after acknowledgement still requires an explicit projection-rebuild drill before production: verify backup/restore, rebuild from the ledger, and prove deduplication and ordering behavior under the intended recovery point objective.
 
+## 7B. Adapter retry deadline semantics
+
+The adapter retry loop now uses one monotonic wall-clock deadline for the entire attempt/reconciliation/backoff sequence, rather than resetting the full timeout on every retry. Every adapter call and outcome-reconciliation call receives only the remaining budget; backoff is clipped to the remaining budget. If a timed-out call may have applied a side effect and there is no time left to reconcile, the coordinator fails closed with an explicit unresolved-outcome error and does not retry. This is a bounded waiting guarantee, not proof that a remote side effect stopped when the local coroutine timed out; adapter contracts must still support idempotency and trusted read-after-write reconciliation.
+
 ## 8. Production exit criteria
 
 All must be true before production activation; any missing item is BLOCK:
