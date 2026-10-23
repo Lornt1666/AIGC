@@ -112,6 +112,9 @@ class OrchestratorSafetyTests(unittest.TestCase):
         coordinator = SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost")
         fake = FakeRedis()
         coordinator.redis = fake
+        async def no_pending_dead_letters(limit=100):
+            return 0
+        coordinator._publish_pending_dead_letters = no_pending_dead_letters
         async def run():
             await coordinator.consume_once(lambda event, conn: None, block_ms=1)
             await coordinator.consume_once(lambda event, conn: None, block_ms=1)
@@ -313,12 +316,12 @@ class OrchestratorSafetyTests(unittest.TestCase):
             async def fetchone(self):
                 if "aigc_schema_migrations" in self.query:
                     return {"version": self.params[0]} if self.params and self.params[0] in {"001_runtime", "002_receipt_claims", "003_dead_letters"} else None
+                if "pg_trigger" in self.query:
+                    return {"present": True}
                 if "to_regclass" in self.query:
                     return {"tasks": "aigc_tasks", "events": "aigc_events",
                             "outbox": "aigc_outbox", "consumed": "aigc_consumed_events",
                             "dead_letters": "aigc_dead_letters"}
-                if "pg_trigger" in self.query:
-                    return {"present": True}
                 raise AssertionError("unexpected schema verification query")
         class FakeConnection:
             def __init__(self):
