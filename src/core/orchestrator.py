@@ -7,7 +7,9 @@ reclaim method rather than pretending consumer crashes cannot happen.
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
+import re
 from dataclasses import dataclass
 from typing import Any, Awaitable, Callable, Sequence
 
@@ -21,6 +23,39 @@ from src.core.contracts import (
 
 TaskHandler = Callable[[TaskContract], Awaitable[dict[str, Any]]]
 SagaCallable = Callable[[], Awaitable[Any]]
+
+
+MAX_RESULT_BYTES = 1_000_000
+_SECRET_KEY_PATTERN = re.compile(r"(secret|token|password|api[_-]?key|authorization|credential|private[_-]?key)", re.I)
+
+
+def _sanitize_result(value: Any) -> Any:
+    """Redact secret-shaped fields and strings before persisting result events."""
+    if isinstance(value, dict):
+        return {
+            str(key): "[REDACTED]" if _SECRET_KEY_PATTERN.search(str(key)) else _sanitize_result(item)
+            for key, item in value.items()
+        }
+    if isinstance(value, (list, tuple)):
+        return [_sanitize_result(item) for item in value]
+    if isinstance(value, str):
+        value = re.sub(
+            r"(?i)(authorization\s*[:=]\s*(?:bearer\s+)?)[^\s,;]+",
+            r"\1[REDACTED]",
+            value,
+        )
+        value = re.sub(
+            r"(?i)((?:api[_-]?key|access[_-]?token|refresh[_-]?token|client[_-]?secret|password|secret)\s*[:=]\s*)[^\s,;]+",
+            r"\1[REDACTED]",
+            value,
+        )
+        value = re.sub(r"\b(?:AKIA|ASIA)[A-Z0-9]{16}\b", "[REDACTED_AWS_KEY]", value)
+        return value[:100_000]
+    if value is None or isinstance(value, (bool, int, float)):
+        return value
+    raise TypeError(f"Unsupported result value type: {type(value).__name__}")
+
+
 
 
 class OrchestrationError(RuntimeError):
@@ -167,12 +202,16 @@ class RedisStreamsCoordinator:
                 raise HopLimitExceeded("Task exceeded the configured hop limit.")
             timeout = min(task.timeout_seconds, self.max_timeout_seconds)
             result = await asyncio.wait_for(handler(task), timeout=timeout)
+            safe_result = _sanitize_result(result)
+            encoded_result = json.dumps(safe_result, ensure_ascii=False, allow_nan=False, separators=(",", ":"))
+            if len(encoded_result.encode("utf-8")) > MAX_RESULT_BYTES:
+                raise ValueError("Handler result exceeds the 1 MB persistence limit.")
             event = OrchestrationEvent(
                 event_kind=EventKind.TASK_SUCCEEDED,
                 task_id=task.task_id,
                 idempotency_key=task.idempotency_key,
                 hop_count=task.hop_count,
-                data={"status": TaskStatus.SUCCEEDED.value, "result": result},
+                data={"status": TaskStatus.SUCCEEDED.value, "result": safe_result},
                 telemetry=task.telemetry,
             )
         except Exception as exc:
@@ -189,10 +228,12 @@ class RedisStreamsCoordinator:
 
     async def _dead_letter(self, message_id: Any, fields: dict[Any, Any], exc: Exception) -> None:
         raw = fields.get("task_json") or fields.get(b"task_json") or ""
+        raw_bytes = raw if isinstance(raw, bytes) else str(raw).encode("utf-8")
         dead_letter = {
             "source_message_id": str(message_id),
-            "reason": f"{type(exc).__name__}: {str(exc)[:1000]}",
-            "task_json": raw.decode("utf-8", errors="replace") if isinstance(raw, bytes) else str(raw),
+            "payload_sha256": hashlib.sha256(raw_bytes).hexdigest(),
+            "error_type": type(exc).__name__,
+            "reason": "Task validation, policy, timeout, or handler failure; inspect source stream entry under access controls.",
         }
         await self.redis.xadd(self.dead_letter_stream, dead_letter)
         await self.redis.xack(self.stream, self.consumer_group, message_id)
