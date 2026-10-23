@@ -12,6 +12,7 @@ import asyncio
 from dataclasses import dataclass
 import hashlib
 import json
+import math
 import random
 import time
 from typing import Any, Awaitable, Callable, Mapping, Protocol
@@ -98,12 +99,16 @@ class SagaCoordinator:
             raise ValueError("max_hops must be between 1 and 10")
         if max_concurrency < 1 or max_concurrency > 256:
             raise ValueError("max_concurrency must be between 1 and 256")
-        if operation_timeout_seconds <= 0 or operation_timeout_seconds > 300:
-            raise ValueError("operation_timeout_seconds must be in (0, 300]")
+        if not math.isfinite(operation_timeout_seconds) or operation_timeout_seconds <= 0 or operation_timeout_seconds > 300:
+            raise ValueError("operation_timeout_seconds must be finite and in (0, 300]")
         if max_attempts < 1 or max_attempts > 8:
             raise ValueError("max_attempts must be in [1, 8]")
-        if pool_min_size < 1 or pool_max_size < pool_min_size:
-            raise ValueError("invalid database pool bounds")
+        if not math.isfinite(base_retry_seconds) or not math.isfinite(max_retry_seconds):
+            raise ValueError("retry delays must be finite")
+        if base_retry_seconds < 0 or max_retry_seconds < base_retry_seconds or max_retry_seconds > 60:
+            raise ValueError("retry delays must satisfy 0 <= base <= max <= 60 seconds")
+        if pool_min_size < 1 or pool_max_size < pool_min_size or pool_max_size > 256:
+            raise ValueError("database pool bounds must satisfy 1 <= min <= max <= 256")
         self.database_url = database_url
         self.stream_name = stream_name
         self.consumer_group = consumer_group
