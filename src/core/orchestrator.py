@@ -66,6 +66,10 @@ class HopLimitExceeded(OrchestrationError):
     pass
 
 
+class IdempotencyConflict(OrchestrationError):
+    """An idempotency key was reused for a different task payload."""
+
+
 class SagaExecutionError(OrchestrationError):
     def __init__(self, message: str, *, compensation_errors: Sequence[str] = ()):
         super().__init__(message)
@@ -127,19 +131,34 @@ class RedisStreamsCoordinator:
         """Atomically reserve an idempotency key and append a task to the stream."""
         if task.hop_count >= min(task.max_hops, self.max_hops):
             raise HopLimitExceeded("Task is at its hop limit and cannot be enqueued again.")
+        # Hash the caller's semantic request, not generated task/timestamp/trace IDs.
+        # This lets a safe retry replay the same request while rejecting key reuse
+        # for a different payload. The Lua script makes compare/reserve/enqueue atomic.
+        semantic_request = json.loads(
+            task.model_dump_json(exclude={"task_id", "created_at", "telemetry"})
+        )
+        canonical_request = json.dumps(
+            semantic_request, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+        )
+        payload_digest = hashlib.sha256(canonical_request.encode("utf-8")).hexdigest()
         payload = task.model_dump_json()
         idempotency_key = f"aigc:idem:task:{task.idempotency_key}"
         script = """
-        if redis.call('SET', KEYS[1], ARGV[1], 'NX', 'EX', ARGV[3]) then
-          redis.call('XADD', KEYS[2], '*', 'task_json', ARGV[2], 'task_id', ARGV[1])
-          return 1
+        local existing = redis.call('GET', KEYS[1])
+        if existing then
+          if existing == ARGV[4] then return 0 end
+          return -1
         end
-        return 0
+        redis.call('SET', KEYS[1], ARGV[4], 'EX', ARGV[3])
+        redis.call('XADD', KEYS[2], '*', 'task_json', ARGV[2], 'task_id', ARGV[1])
+        return 1
         """
         accepted = await self.redis.eval(
-            script, 2, idempotency_key, self.stream, task.task_id, payload, 604800
+            script, 2, idempotency_key, self.stream, task.task_id, payload, 604800, payload_digest
         )
-        return bool(accepted)
+        if accepted == -1:
+            raise IdempotencyConflict("Idempotency key is already bound to a different task payload.")
+        return accepted == 1
 
     async def consume_once(
         self,
