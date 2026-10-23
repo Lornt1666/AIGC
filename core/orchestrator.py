@@ -34,6 +34,15 @@ def sha256_text(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
 
+def validate_hop_count(value: Any, max_hops: int) -> int:
+    """Reject malformed, negative, boolean, and over-limit hop counts."""
+    if not isinstance(max_hops, int) or isinstance(max_hops, bool) or not 1 <= max_hops <= 10:
+        raise ValueError("max_hops must be an integer in [1, 10]")
+    if not isinstance(value, int) or isinstance(value, bool) or not 0 <= value <= max_hops:
+        raise OrchestrationError("message_hop_limit_exceeded")
+    return value
+
+
 @dataclass(frozen=True)
 class SagaStep:
     step_id: str
@@ -320,9 +329,7 @@ class SagaCoordinator:
                 parsed_id = UUID(event_id)
                 if not isinstance(event, Mapping) or event.get("event_id") != str(parsed_id):
                     raise OrchestrationError("stream_event_id_payload_mismatch")
-                hop_count = event.get("hop_count", 0)
-                if not isinstance(hop_count, int) or isinstance(hop_count, bool) or hop_count > self.max_hops:
-                    raise OrchestrationError("message_hop_limit_exceeded")
+                hop_count = validate_hop_count(event.get("hop_count", 0), self.max_hops)
                 async with self.pool.connection() as conn:
                     async with conn.transaction():
                         async with conn.cursor() as cur:
