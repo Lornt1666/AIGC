@@ -140,6 +140,38 @@ class OrchestratorSafetyTests(unittest.TestCase):
             SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost",
                             pool_min_size=1, pool_max_size=257)
 
+    def test_saga_deadline_covers_multiple_steps_and_fails_closed_before_late_compensation(self):
+        calls = {"adapter": 0}
+        async def adapter(payload, *, idempotency_key):
+            calls["adapter"] += 1
+            await asyncio.sleep(0.05)
+            return {"status": "applied"}
+        async def permit(permit_ref, claims, key):
+            return True
+        async def reconcile(operation, payload, key):
+            return "NOT_APPLIED"
+        coordinator = SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost",
+            dry_run=False, adapters={"write": adapter, "undo": adapter},
+            permit_verifier=permit, outcome_reconciler=reconcile, operation_timeout_seconds=1)
+        async def record_event(*args, **kwargs):
+            return None
+        coordinator.record_event = record_event
+        item = contract(candidate_sha="a" * 40, timeout_seconds=0.08)
+        steps = [
+            SagaStep(step_id="first", operation="write", input_payload={}, compensation_operation="undo",
+                     compensation_payload={}, side_effecting=True, idempotent=True, compensation_idempotent=True),
+            SagaStep(step_id="second", operation="write", input_payload={}, compensation_operation="undo",
+                     compensation_payload={}, side_effecting=True, idempotent=True, compensation_idempotent=True),
+        ]
+        async def run():
+            started = asyncio.get_running_loop().time()
+            with self.assertRaisesRegex(OrchestrationError, "compensation_status:RECONCILIATION_REQUIRED"):
+                await coordinator.run_saga(item, steps, dry_run=False, permit_ref="permit-1")
+            return asyncio.get_running_loop().time() - started
+        elapsed = asyncio.run(run())
+        self.assertLess(elapsed, 0.2)
+        self.assertEqual(calls["adapter"], 2)
+
     def test_defaults_to_dry_run(self):
         coordinator = SagaCoordinator(database_url="postgresql://unused", redis_url="redis://localhost",
                                       adapters={"read": lambda *a, **k: None})
