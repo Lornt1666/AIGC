@@ -377,9 +377,11 @@ class SagaCoordinator:
                            (disposition_id, source_stream, source_stream_id, event_id,
                             payload, payload_sha256, failure_type, delivery_count)
                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
-                           ON CONFLICT (source_stream, source_stream_id) DO NOTHING""",
+                           ON CONFLICT (source_stream, source_stream_id) DO NOTHING
+                           RETURNING disposition_id""",
                         (disposition_id, self.stream_name, stream_id, event_id,
                          payload, sha256_text(payload), failure_type, delivery_count))
+                    inserted = await cur.fetchone()
                     await cur.execute(
                         "SELECT disposition_id FROM aigc_dead_letters WHERE source_stream=%s AND source_stream_id=%s",
                         (self.stream_name, stream_id))
@@ -394,7 +396,7 @@ class SagaCoordinator:
                         task_id = UUID(parsed.get("task_id"))
                     except (ValueError, TypeError, AttributeError, json.JSONDecodeError):
                         task_id = None
-                    if task_id is not None:
+                    if inserted and task_id is not None:
                         await cur.execute("SELECT task_id FROM aigc_tasks WHERE task_id=%s FOR UPDATE", (str(task_id),))
                         if await cur.fetchone():
                             await cur.execute("SELECT COALESCE(MAX(sequence),0)+1 AS seq FROM aigc_events WHERE task_id=%s",
