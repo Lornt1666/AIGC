@@ -12,5 +12,5 @@ CREATE TABLE IF NOT EXISTS aigc_receipt_claims (
 );
 CREATE INDEX IF NOT EXISTS aigc_receipt_claims_candidate_idx ON aigc_receipt_claims(candidate_sha, purpose);
 RESET ROLE;
-GRANT SELECT, INSERT, UPDATE ON aigc_receipt_claims TO aigc_app;
+GRANT SELECT, INSERT, UPDATE ON aigc_receipt_claims TO aigc_receipt_verifier;
 INSERT INTO aigc_schema_migrations(version) VALUES ('002_receipt_claims') ON CONFLICT DO NOTHING;
