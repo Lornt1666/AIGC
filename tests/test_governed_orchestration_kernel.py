@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+from datetime import datetime, timedelta, timezone
 
 import pytest
 from pydantic import ValidationError
@@ -167,6 +168,49 @@ def test_result_stream_failure_leaves_task_pending_for_retry() -> None:
 
     assert redis.acks == []
     assert not any(stream == "aigc:tasks:dead-letter:v1" for stream, _ in redis.entries)
+
+
+def test_expired_task_deadline_prevents_handler_execution() -> None:
+    redis = FakeRedis()
+    task = TaskContract(
+        idempotency_key="expired-deadline-key",
+        task_type="research",
+        deadline_at=datetime.now(timezone.utc) - timedelta(seconds=1),
+    )
+    redis.read_entries.append(("1-0", {"task_json": task.model_dump_json()}))
+    coordinator = RedisStreamsCoordinator(redis)
+    handler_called = False
+
+    async def handler(_task: TaskContract) -> dict:
+        nonlocal handler_called
+        handler_called = True
+        return {"ok": True}
+
+    assert asyncio.run(coordinator.consume_once(consumer_name="worker-1", handler=handler)) is True
+    assert handler_called is False
+    assert redis.entries[0][0] == "aigc:tasks:dead-letter:v1"
+    assert redis.acks == [("aigc:tasks:v1", "aigc-workers-v1", "1-0")]
+
+
+def test_task_deadline_bounds_handler_execution() -> None:
+    redis = FakeRedis()
+    task = TaskContract(
+        idempotency_key="short-deadline-key",
+        task_type="research",
+        deadline_at=datetime.now(timezone.utc) + timedelta(milliseconds=50),
+        timeout_seconds=2,
+    )
+    redis.read_entries.append(("1-0", {"task_json": task.model_dump_json()}))
+    coordinator = RedisStreamsCoordinator(redis)
+
+    async def handler(_task: TaskContract) -> dict:
+        await asyncio.sleep(0.2)
+        return {"ok": True}
+
+    assert asyncio.run(coordinator.consume_once(consumer_name="worker-1", handler=handler)) is True
+    assert redis.entries[0][0] == "aigc:tasks:dead-letter:v1"
+    assert redis.entries[0][1]["error_type"] == "TimeoutError"
+    assert redis.acks == [("aigc:tasks:v1", "aigc-workers-v1", "1-0")]
 
 
 def test_handler_failure_is_dead_lettered_before_acknowledgement() -> None:
