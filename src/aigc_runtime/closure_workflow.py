@@ -74,17 +74,20 @@ def evaluate_closure(snapshot: Mapping[str, Any]) -> dict[str, Any]:
     # Missing or malformed live observation is not permission to use cached state.
     observed_at = snapshot.get("observed_at")
     evaluation_time = snapshot.get("evaluation_time")
-    freshness_valid = False
+    freshness_state = "UNVERIFIABLE"
     if isinstance(observed_at, str) and isinstance(evaluation_time, str):
         try:
             observed_dt = datetime.fromisoformat(observed_at.replace("Z", "+00:00"))
             evaluated_dt = datetime.fromisoformat(evaluation_time.replace("Z", "+00:00"))
-            freshness_seconds = (evaluated_dt - observed_dt).total_seconds()
-            freshness_valid = observed_dt.tzinfo is not None and evaluated_dt.tzinfo is not None and 0 <= freshness_seconds <= 120
+            if observed_dt.tzinfo is not None and evaluated_dt.tzinfo is not None:
+                age_seconds = (evaluated_dt - observed_dt).total_seconds()
+                freshness_state = "PASS" if 0 <= age_seconds <= 120 else "STALE"
         except ValueError:
-            freshness_valid = False
-    if not _is_sha(observed) or snapshot.get("live_observation_authenticated") is not True or not freshness_valid or snapshot.get("observation_source") != "github_api":
-        g0_status, g0_reason = "UNVERIFIABLE", "authenticated_live_observation_missing_invalid_or_older_than_120_seconds"
+            freshness_state = "UNVERIFIABLE"
+    if not _is_sha(observed) or snapshot.get("live_observation_authenticated") is not True or freshness_state == "UNVERIFIABLE" or snapshot.get("observation_source") != "github_api":
+        g0_status, g0_reason = "UNVERIFIABLE", "authenticated_live_observation_missing_or_invalid"
+    elif freshness_state == "STALE":
+        g0_status, g0_reason = "STALE", "live_observation_outside_120_second_freshness_window"
     elif snapshot.get("head_changed_during_acquisition") is True or observed != candidate:
         g0_status, g0_reason = "STALE", "live_head_or_base_changed_during_acquisition; reacquire_and_revalidate"
     else:
