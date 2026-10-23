@@ -7,14 +7,11 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import base64
 import json
 import os
 import sys
 from pathlib import Path
 from typing import Any, Mapping
-
-from aigc_runtime.receipt_verifier import canonical_bytes
 
 from aigc_runtime.closure_workflow import evaluate_closure
 from aigc_runtime.artifact_verifier import ArtifactVerificationError, download_and_verify_artifact
