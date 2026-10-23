@@ -517,9 +517,10 @@ class SagaCoordinator:
                 raise OrchestrationError("saga_payload_must_be_mapping")
             try:
                 encoded = canonical_json(dict(payload))
+                encoded_bytes = encoded.encode("utf-8")
             except (TypeError, ValueError, RecursionError, UnicodeEncodeError) as exc:
                 raise OrchestrationError("saga_payload_not_canonical_json") from exc
-            if len(encoded.encode("utf-8")) > 1_000_000:
+            if len(encoded_bytes) > 1_000_000:
                 raise OrchestrationError("saga_payload_size_limit_exceeded")
             try:
                 snapshot = json.loads(encoded)
