@@ -102,6 +102,7 @@ jobs:
           PYTHONPATH=src python -m unittest discover -s tests -p 'test_aigc_evidence_adapters.py' -v
           PYTHONPATH=src python -m unittest discover -s tests -p 'test_aigc_artifact_verifier.py' -v
           PYTHONPATH=. python -m unittest discover -s tests -p 'test_aigc_core_runtime.py' -v
+          PYTHONPATH=. python -m unittest discover -s tests -p 'test_aigc_worker.py' -v
           PYTHONPATH=src python -m compileall -q src/aigc_runtime/github_evidence.py src/aigc_runtime/receipt_verifier.py src/aigc_runtime/artifact_verifier.py src/aigc_runtime/closure_workflow.py scripts/aigc_closure_check.py scripts/aigc_closure_live.py core
 
       - name: Diagnose registry validation failure (non-authoritative)
