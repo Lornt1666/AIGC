@@ -29,6 +29,8 @@ This increment adds versioned Pydantic contracts, a non-executing Python AST pol
 - Enqueue uses one Redis Lua script to reserve an idempotency key and append the task atomically. The idempotency reservation expires after seven days; tune retention only with an explicit replay policy.
 - Delivery is **at least once**. A crash after handler completion but before result publication/acknowledgement can cause handler replay. Handlers must use idempotency keys at every mutation boundary.
 - A pending-entry reclaim method is provided, but operators must schedule and monitor it. Consumer crash recovery is not automatic unless that method is called.
+- Result events apply key-based and common token-shaped redaction and enforce a 1 MB serialized-result ceiling; redaction is defense in depth, not a guarantee that arbitrary secrets are detected.
+- A dead-letter record stores the source message ID, payload digest, and failure class rather than copying the raw task payload. Inspect the original stream entry only under access controls.
 - A dead-letter record is appended before acknowledgement. If Redis cannot write the dead-letter record, the original message remains pending.
 
 ## Saga semantics and limits
