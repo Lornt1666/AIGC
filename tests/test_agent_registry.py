@@ -162,3 +162,21 @@ def test_workflow_plan_output_is_atomic_and_audited(tmp_path) -> None:
     event_data = json.loads(row[0])
     assert event_data["output_written"] is True
     assert event_data["output_path"] == str(output)
+
+
+
+def test_workflow_plan_refuses_to_overwrite_existing_artifact(tmp_path, capsys) -> None:
+    root = tmp_path / "project"
+    root.mkdir()
+    output = root / "artifacts" / "plan.json"
+    output.parent.mkdir()
+    output.write_text("preserve-me", encoding="utf-8")
+
+    assert agent_main([
+        "--root", str(root), "run", "root_cause",
+        "--task", "Diagnose duplicate task delivery",
+        "--output", "artifacts/plan.json",
+    ]) == 2
+
+    assert "refusing to overwrite an existing artifact" in capsys.readouterr().out
+    assert output.read_text(encoding="utf-8") == "preserve-me"
