@@ -39,9 +39,10 @@ def test_strategy_flows_into_existing_coliseum_without_owner_bypass():
     assert result.owner_gate_required is True
 
 
-def test_owner_gate_is_explicit():
+def test_boolean_owner_gate_cannot_claim_verified_approval():
     result = StrategyColiseumAdapter().run(strategy(), metrics(), owner_gate=True)
-    assert result.selection_status == "OWNER_ACCEPTED_SELECTION"
+    assert result.selection_status == "AWAITING_VERIFIED_OWNER_APPROVAL"
+    assert result.owner_gate_required is True
 
 
 def test_unready_strategy_is_blocked_before_coliseum():
