@@ -120,6 +120,7 @@ class VerifiedOwnerApprovalVerifier:
         *,
         expected_proposal_sha256: str,
         expected_commit_sha: str,
+        expected_actor_id: str | None = None,
     ) -> VerifiedOwnerApproval:
         if not isinstance(artifact, Mapping):
             raise OwnerApprovalError("A signed owner approval artifact is required.")
@@ -149,6 +150,8 @@ class VerifiedOwnerApprovalVerifier:
             raise OwnerApprovalError("Approval commit must be a full lowercase Git SHA.")
         if proposal_sha256 != expected_proposal_sha256 or commit_sha != expected_commit_sha:
             raise OwnerApprovalError("Approval is not bound to the exact expected proposal and commit.")
+        if expected_actor_id is not None and actor_id != expected_actor_id:
+            raise OwnerApprovalError("Approval actor does not match the authenticated operator.")
 
         signed_bytes = canonical_approval_payload(artifact)
         expected_signature = hmac.new(self._signing_key, signed_bytes, hashlib.sha256).hexdigest()
