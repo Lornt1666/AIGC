@@ -6,10 +6,12 @@ from src.core.agent_registry import build_agent_registry, build_workflow_plan, g
 from src.aigc_agents import main as agent_main
 
 
-def test_registry_contains_phase_adapters_and_all_seven_engineering_workflows() -> None:
+def test_registry_inventory_matches_documented_agent_counts() -> None:
     registry = build_agent_registry()
 
-    assert len(registry) >= 40
+    assert sum(agent.kind == "phase_adapter" for agent in registry.values()) == 24
+    assert sum(agent.kind == "workflow_planner" for agent in registry.values()) == 21
+    assert len(registry) == 45
     assert {"opportunity_radar", "controlled_execution", "runtime_preflight", "subagent_forge", "regenexcalibur_envelope", "cloud_orchestration", "protocol_governance", "ci_diagnostics"}.issubset(registry)
     assert {
         "root_cause",
