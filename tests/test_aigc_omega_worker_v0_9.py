@@ -26,11 +26,12 @@ def test_coliseum_ranks_and_waits_for_owner():
     assert result.owner_gate_required is True
 
 
-def test_owner_gate_accepts_selection_without_execution():
+def test_boolean_owner_gate_cannot_claim_verified_approval():
     result = ColiseumOrchestrator().run("opp-1", [p("g1")], owner_gate=True)
 
-    assert result.selection_status == "OWNER_ACCEPTED_SELECTION"
+    assert result.selection_status == "AWAITING_VERIFIED_OWNER_APPROVAL"
     assert result.winner_gladiator_id == "g1"
+    assert result.owner_gate_required is True
 
 
 def test_all_escalated_proposals_have_no_winner():
