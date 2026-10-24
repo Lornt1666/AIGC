@@ -133,3 +133,15 @@ Observed code candidate before this checkpoint update: `59d2ffec7df12020403f80de
 ### Next action
 
 Refresh the checks for the new exact head after this checkpoint commit. Diagnose the Workers build from its actual logs when available; in parallel, review any new CI failures against their exact job output. Do not promote the PR while the required Workers build remains failed or unexplained.
+
+
+## Follow-up checkpoint — registry inventory reconciliation
+
+- Registry source of truth at candidate `3484f08550eb153e7fb69d3a816cf1ba9c32ba69` contains 24 phase adapters, 14 project-domain workflow planners, and 7 engineering workflow planners (45 definitions total).
+- Found a documentation precision gap: the operational registry document listed the seven engineering planners but did not enumerate the 14 project-domain planners or clearly state the full count. Updated `docs/engineering/OPERATIONAL_AGENT_REGISTRY.md` to distinguish all three groups.
+- Added a regression assertion in `tests/test_agent_registry.py` requiring 24 phase adapters, 21 workflow planners, and 45 definitions total, so future inventory drift is caught by CI.
+- Exact-head canonical AIGC CI on parent candidate `0b60d7a79a764a192cc1db3dd335cbc057710c84` completed successfully. Focused test output in job 120940722062 reports **161 passed in 1.26s**, including the new read-only CLI tests. The two locked-release revalidation jobs also passed.
+- Cloudflare Workers build for that parent candidate failed (build ID `388e02b5-15e6-409b-acda-adf33f302bd5`). The check summary exposes only the build ID and script name; the authenticated dashboard log cannot be retrieved from the current environment. Root cause remains unknown.
+- Latest code/docs/test candidate: `3484f08550eb153e7fb69d3a816cf1ba9c32ba69`. Its exact-head CI run is queued: https://github.com/Lornt1666/AIGC/actions/runs/40117413127
+- PR #345 remains open/draft/unmerged. No production deployment or merge occurred.
+- Next action: await exact-head CI for `3484f08550eb153e7fb69d3a816cf1ba9c32ba69`; then inspect the latest Cloudflare build outcome. If it fails again, obtain the actual authenticated build log before making any deployment-specific code changes.
