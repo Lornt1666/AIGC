@@ -73,7 +73,7 @@ while time.monotonic() < deadline:
     if last.get('status') in {'completed', 'failed', 'timed_out', 'unknown'}: break
     time.sleep(1)
 assert last is not None and last.get('run_id') == run_id, last
-assert last.get('status') in {'completed', 'failed', 'timed_out', 'unknown'}, last
+assert last.get('status') == 'completed', {'run_failed_or_unverified': last}
 readback = request('/api/run/' + run_id)
 assert readback.get('run_id') == run_id and readback.get('status') == last.get('status'), (last, readback)
 print(json.dumps({'ready': health, 'run_id': run_id, 'terminal_status': last['status'], 'readback_consistent': True}))
