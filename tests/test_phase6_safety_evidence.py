@@ -56,7 +56,7 @@ def test_phase6_packet_does_not_claim_safety_checks_without_evidence():
     assert Phase6Validator().validate(packet) == "Platform policy compliance was not confirmed."
 
 
-def test_phase6_packet_accepts_only_explicit_true_safety_evidence():
+def test_phase6_packet_accepts_only_attributable_safety_evidence():
     packet = _build_packet(
         safety_evidence={
             name: {
@@ -79,7 +79,7 @@ def test_phase6_packet_accepts_only_explicit_true_safety_evidence():
     assert Phase6Validator().validate(packet) is None
 
 
-def test_phase6_safety_evidence_fails_closed_for_truthy_non_boolean_values():
+def test_phase6_safety_evidence_fails_closed_when_fields_are_invalid():
     packet = _build_packet(
         safety_evidence={
             "platform_policy_checked": True,
