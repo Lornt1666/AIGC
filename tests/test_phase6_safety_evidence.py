@@ -59,9 +59,17 @@ def test_phase6_packet_does_not_claim_safety_checks_without_evidence():
 def test_phase6_packet_accepts_only_explicit_true_safety_evidence():
     packet = _build_packet(
         safety_evidence={
-            "platform_policy_checked": True,
-            "ai_disclosure_preserved": True,
-            "privacy_checked": True,
+            name: {
+                "status": "passed",
+                "evidence_ref": f"evidence://phase6/{name}",
+                "reviewed_at": "2026-10-24T00:00:00+00:00",
+                "reviewer": "test-reviewer",
+            }
+            for name in (
+                "platform_policy_checked",
+                "ai_disclosure_preserved",
+                "privacy_checked",
+            )
         }
     )
 
@@ -74,9 +82,43 @@ def test_phase6_packet_accepts_only_explicit_true_safety_evidence():
 def test_phase6_safety_evidence_fails_closed_for_truthy_non_boolean_values():
     packet = _build_packet(
         safety_evidence={
-            "platform_policy_checked": "yes",
-            "ai_disclosure_preserved": 1,
-            "privacy_checked": ["reviewed"],
+            "platform_policy_checked": True,
+            "ai_disclosure_preserved": {
+                "status": "passed",
+                "evidence_ref": "evidence://phase6/disclosure",
+                "reviewed_at": "2099-01-01T00:00:00+00:00",
+                "reviewer": "test-reviewer",
+            },
+            "privacy_checked": {
+                "status": "passed",
+                "evidence_ref": "",
+                "reviewed_at": "2026-10-24T00:00:00+00:00",
+                "reviewer": "test-reviewer",
+            },
+        }
+    )
+
+    assert packet.safety.platform_policy_checked is False
+    assert packet.safety.ai_disclosure_preserved is False
+    assert packet.safety.privacy_checked is False
+    assert Phase6Validator().validate(packet) == "Platform policy compliance was not confirmed."
+
+
+
+def test_phase6_safety_evidence_requires_a_past_review_timestamp():
+    packet = _build_packet(
+        safety_evidence={
+            name: {
+                "status": "passed",
+                "evidence_ref": f"evidence://phase6/{name}",
+                "reviewed_at": "2099-01-01T00:00:00+00:00",
+                "reviewer": "test-reviewer",
+            }
+            for name in (
+                "platform_policy_checked",
+                "ai_disclosure_preserved",
+                "privacy_checked",
+            )
         }
     )
 
