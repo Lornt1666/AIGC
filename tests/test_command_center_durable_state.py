@@ -9,6 +9,7 @@ import uuid
 
 import pytest
 
+from src.core.verified_owner_approval import PostgresApprovalReplayLedger
 from src.webapp.command_center_store import (
     IdempotencyConflict,
     MemoryCommandCenterStore,
@@ -56,10 +57,13 @@ def postgres_stores():
     if not dsn:
         pytest.skip("PostgreSQL integration service is not configured")
     import psycopg
-    migration = (Path(__file__).resolve().parents[1] / "migrations" /
-        "command_center_postgresql" / "0001_durable_command_center.sql").read_text(encoding="utf-8")
+    migrations = Path(__file__).resolve().parents[1] / "migrations" / "command_center_postgresql"
+    core_migration = (migrations / "0001_durable_command_center.sql").read_text(encoding="utf-8")
+    approval_migration = (migrations / "0002_owner_approval_replay_ledger.sql").read_text(encoding="utf-8")
     with psycopg.connect(dsn) as conn:
-        conn.execute(migration, prepare=False)
+        conn.execute(core_migration, prepare=False)
+        conn.execute(approval_migration, prepare=False)
+        conn.execute("DELETE FROM aigc_owner_approval_replay")
         conn.execute("DELETE FROM command_center_review_decisions")
         conn.execute("DELETE FROM command_center_runs")
     first = PostgresCommandCenterStore(dsn, sslmode="disable")
@@ -69,6 +73,29 @@ def postgres_stores():
     finally:
         first.close()
         second.close()
+
+
+def test_postgres_owner_approval_replay_ledger_is_atomic_and_durable(postgres_stores) -> None:
+    first, second, _dsn = postgres_stores
+    ledger_one = PostgresApprovalReplayLedger(first._pool)
+    ledger_two = PostgresApprovalReplayLedger(second._pool)
+    approval_id = f"approval-{uuid.uuid4()}"
+    nonce = f"nonce-{uuid.uuid4()}"
+    payload_digest = digest("signed-owner-approval-payload")
+
+    assert ledger_one.consume_once(
+        approval_id=approval_id, nonce=nonce, payload_sha256=payload_digest,
+    ) is True
+    # A second pool/instance sees the same single-use record.
+    assert ledger_two.consume_once(
+        approval_id=approval_id, nonce=nonce, payload_sha256=payload_digest,
+    ) is False
+    # Nonce uniqueness also blocks a different approval ID from reusing the nonce.
+    assert ledger_two.consume_once(
+        approval_id=f"approval-{uuid.uuid4()}",
+        nonce=nonce,
+        payload_sha256=digest("different-payload"),
+    ) is False
 
 
 def test_postgres_state_and_evidence_are_shared_across_instances(postgres_stores) -> None:
