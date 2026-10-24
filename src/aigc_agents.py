@@ -20,6 +20,10 @@ def main(argv: List[str] | None = None) -> int:
     args = parse_args(argv)
     root = args.root.resolve()
 
+    if args.command == "run" and args.timeout_seconds <= 0:
+        print("--timeout-seconds must be greater than zero.", file=sys.stderr)
+        return 2
+
     if args.command == "list":
         registry = build_agent_registry()
         print(json.dumps({
@@ -103,7 +107,49 @@ def main(argv: List[str] | None = None) -> int:
         command.extend(["--registry", str(args.registry)])
     if args.profile:
         command.extend(["--profile", str(args.profile)])
-    completed = subprocess.run(command, cwd=root, check=False)
+    try:
+        completed = subprocess.run(
+            command,
+            cwd=root,
+            check=False,
+            timeout=args.timeout_seconds,
+        )
+    except subprocess.TimeoutExpired:
+        store.insert_event(
+            event_type="agent_run_timed_out",
+            phase="agent_registry",
+            status="timed_out",
+            summary=f"Governed phase adapter {agent.agent_id} exceeded its execution timeout.",
+            data={
+                "agent_id": agent.agent_id,
+                "phase": agent.phase,
+                "timeout_seconds": args.timeout_seconds,
+                "external_action_performed": False,
+            },
+            external_action_performed=False,
+        )
+        print(
+            f"Agent {agent.agent_id} exceeded timeout of {args.timeout_seconds:g} seconds.",
+            file=sys.stderr,
+        )
+        return 124
+    except OSError as exc:
+        store.insert_event(
+            event_type="agent_run_failed_to_start",
+            phase="agent_registry",
+            status="failed",
+            summary=f"Governed phase adapter {agent.agent_id} could not be started.",
+            data={
+                "agent_id": agent.agent_id,
+                "phase": agent.phase,
+                "error_type": type(exc).__name__,
+                "external_action_performed": False,
+            },
+            external_action_performed=False,
+        )
+        print(f"Could not start agent {agent.agent_id}: {exc}", file=sys.stderr)
+        return 127
+
     store.insert_event(
         event_type="agent_run_completed" if completed.returncode == 0 else "agent_run_failed",
         phase="agent_registry",
@@ -131,6 +177,12 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     run_parser.add_argument("--mode", choices=["synthetic", "real", "real_data_read_only"], default="synthetic")
     run_parser.add_argument("--source", choices=["remoteok", "remotive", "weworkremotely", "github_issues"], default="remoteok")
     run_parser.add_argument("--limit", type=int, default=10)
+    run_parser.add_argument(
+        "--timeout-seconds",
+        type=float,
+        default=900.0,
+        help="Maximum phase-adapter runtime in seconds (default: 900).",
+    )
     run_parser.add_argument("--input", type=Path, default=None)
     run_parser.add_argument("--artifact-root", type=Path, default=None)
     run_parser.add_argument("--registry", type=Path, default=None)
