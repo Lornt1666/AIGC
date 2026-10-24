@@ -108,3 +108,28 @@ Observed candidate before this checkpoint update: `62df0d683999161cb13fd64e1a0fb
 - PR state: **OPEN / DRAFT / UNMERGED**.
 - Production deployment or merge: **NOT AUTHORIZED** by this checkpoint.
 - Next action: retrieve the failed `Workers Builds: aigc` check details and Cloudflare build logs, identify the failing command and root cause, make only a minimal evidence-backed fix, then re-run checks against the resulting exact SHA.
+
+
+## Follow-up checkpoint — read-only dispatcher fix
+
+Observed code candidate before this checkpoint update: `59d2ffec7df12020403f80de307b46648ef80999`.
+
+### Action completed
+
+- Updated `src/aigc_agents.py` so `list` and `inspect` return before constructing `AIGCStateStore`. These informational commands no longer create or initialize `memory/aigc_state.sqlite` as an incidental side effect.
+- Added regression tests in `tests/test_agent_registry.py` asserting that both commands leave the runtime database absent under a temporary project root.
+- Code/test commits: `ea0bb4c507b814bb62601fb60f10b1855d233311` and `59d2ffec7df12020403f80de307b46648ef80999`.
+- This is a narrowly scoped behavior correction. Local execution was not available through the current connector; automated validation is pending.
+
+### Verification status at checkpoint
+
+- AIGC CI validation for the latest code candidate: **IN PROGRESS**.
+- Locked-release revalidation jobs: **IN PROGRESS / QUEUED**.
+- Cloudflare Workers build: **IN PROGRESS** for build `f07a24eb-63d6-4287-9167-536202be971c`.
+- Prior observed candidate `62df0d683999161cb13fd64e1a0fbeff8d72288f` had a successful GitHub CI validation and a failed `Workers Builds: aigc` check.
+- Root cause of the prior Workers build failure remains **UNKNOWN** because the authenticated Cloudflare build-log page is inaccessible to this execution environment. Do not infer the cause from the Python-only change set.
+- PR #345 remains draft and unmerged. No production deployment or merge was performed.
+
+### Next action
+
+Refresh the checks for the new exact head after this checkpoint commit. Diagnose the Workers build from its actual logs when available; in parallel, review any new CI failures against their exact job output. Do not promote the PR while the required Workers build remains failed or unexplained.
