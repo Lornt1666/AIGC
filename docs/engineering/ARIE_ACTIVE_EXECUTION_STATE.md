@@ -217,3 +217,29 @@ Priority order:
 6. Verify the resulting exact SHA through the canonical CI runner, inspect artifacts, and re-check Cloudflare. Keep the PR draft and unmerged until the release gates are actually satisfied.
 
 Disposition: **CI PASS / CLOUDFLARE FAIL / WORKFORCE EXECUTION INCOMPLETE / RELEASE BLOCKED**. This checkpoint records evidence and prioritizes the next slice; it does not claim that the architecture findings above have been fixed.
+
+
+
+## FINISHER-Ω checkpoint — dispatcher boundedness and plan-artifact consistency
+
+Observed at 2026-10-24 UTC:
+
+- Current PR #345 head at checkpoint authoring: `01e47df8a4dce4d2440a7f948c23ded7ae59cdcc`; PR remains **OPEN / DRAFT / UNMERGED**: https://github.com/Lornt1666/AIGC/pull/345
+- Exact-head AIGC CI run `40119815690` was still running at last inspection: https://github.com/Lornt1666/AIGC/actions/runs/40119815690. Do not call the new tests passed until this run completes.
+- Cloudflare Workers build for this candidate was still in progress at last inspection, build ID `600cb657-5ca2-4431-b1d0-38cf13242949`: https://dash.cloudflare.com/0be4eb38572f3a6d7a2c980d0282c203/workers/services/view/aigc/production/builds/600cb657-5ca2-4431-b1d0-38cf13242949. Earlier candidate builds have failed repeatedly; root cause remains unknown until the authenticated build log is provided.
+- Commit `f8688e078eefd4e80573d1226ec77a62344f5116` adds a 900-second default timeout for phase-adapter subprocess execution, rejects non-positive timeout values, and records timeout/start failures as runtime events. Timeout returns 124; failure to start returns 127.
+- Commit `3fa6cb6127d81bc2e934c58eba4e8ca56a87b64d` adds regression tests for timeout validation and timeout-event recording.
+- Commit `0627595fb192ced219d28662ad455fb6537f23d1` writes workflow-plan output via a same-directory temporary file, flushes/fsyncs it, and atomically renames it. If audit-event persistence fails, the newly created output is removed rather than left unaudited.
+- Commit `70c9459465bccd17cf4a783da181a7b5a1b019d2` refuses to overwrite an existing plan artifact and improves temporary-file cleanup.
+- Commit `5d01c72805cc2364690ade3082e5d4642abe5c64` adds tests for atomic plan output, audit failure cleanup, and successful audit linkage. Commit `01e47df8a4dce4d2440a7f948c23ded7ae59cdcc` adds a test proving existing artifacts are preserved.
+- These are source/test changes, not yet verified outcomes. The canonical CI run is the source of truth. The current cleanup protocol protects the newly created output against ordinary audit-write failures, but a crash or forced termination between filesystem publication and audit commit can still leave a consistency gap; a durable outbox/reconciliation protocol remains required before model-backed/write-enabled workers.
+
+### Next actions
+
+1. Read exact-head CI result and inspect any failure logs before adding more code.
+2. Confirm whether the Cloudflare build passes; if it fails, obtain the exact failing step and redacted error text from the authenticated dashboard. No speculative configuration changes.
+3. Once tests pass, add dispatcher-level tests proving approval-required/sensitive phases cannot bypass the existing authorization controls.
+4. Then define and implement the typed workforce task/run contract and one low-risk end-to-end internal vertical slice using an offline/fake provider in CI.
+5. Keep PR draft and unmerged; no production deployment, live provider call, spending, or external business action is authorized by this checkpoint.
+
+Disposition: **SAFETY HARDENING COMMITTED / CI PENDING / CLOUDFLARE PENDING / WORKFORCE EXECUTION INCOMPLETE / RELEASE BLOCKED**.
