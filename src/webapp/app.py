@@ -565,21 +565,24 @@ loadReviews();
 
 
 def _task_lifecycle_store() -> PostgresTaskLifecycleStore:
-    """Return the PostgreSQL-owned task store; never apply migrations at startup."""
+    """Return the configured store; never apply migrations at startup."""
     global _TASK_LIFECYCLE_STORE
-    dsn = os.environ.get(
-        "AIGC_TASK_DATABASE_URL",
-        os.environ.get("AIGC_COMMAND_CENTER_DATABASE_URL", ""),
-    ).strip()
-    if not dsn:
-        raise TaskStoreUnavailable("Durable task database configuration is missing")
     with _TASK_LIFECYCLE_STORE_LOCK:
-        if _TASK_LIFECYCLE_STORE is None:
-            _TASK_LIFECYCLE_STORE = PostgresTaskLifecycleStore(
-                dsn,
-                sslmode=os.environ.get("AIGC_TASK_DATABASE_SSLMODE", "verify-full").strip(),
-                sslrootcert=os.environ.get("AIGC_TASK_DATABASE_SSLROOTCERT", "").strip() or None,
-            )
+        # Honor an explicitly injected or already initialized store before
+        # requiring connection configuration. This also supports isolated tests.
+        if _TASK_LIFECYCLE_STORE is not None:
+            return _TASK_LIFECYCLE_STORE
+        dsn = os.environ.get(
+            "AIGC_TASK_DATABASE_URL",
+            os.environ.get("AIGC_COMMAND_CENTER_DATABASE_URL", ""),
+        ).strip()
+        if not dsn:
+            raise TaskStoreUnavailable("Durable task database configuration is missing")
+        _TASK_LIFECYCLE_STORE = PostgresTaskLifecycleStore(
+            dsn,
+            sslmode=os.environ.get("AIGC_TASK_DATABASE_SSLMODE", "verify-full").strip(),
+            sslrootcert=os.environ.get("AIGC_TASK_DATABASE_SSLROOTCERT", "").strip() or None,
+        )
         return _TASK_LIFECYCLE_STORE
 
 
