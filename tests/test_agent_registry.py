@@ -180,3 +180,31 @@ def test_workflow_plan_refuses_to_overwrite_existing_artifact(tmp_path, capsys) 
 
     assert "refusing to overwrite an existing artifact" in capsys.readouterr().out
     assert output.read_text(encoding="utf-8") == "preserve-me"
+
+
+
+def test_sensitive_phase_adapter_respects_emergency_stop_before_dispatch(tmp_path, monkeypatch, capsys) -> None:
+    root = tmp_path / "project"
+    root.mkdir()
+    database = root / "memory" / "aigc_state.sqlite"
+    store = aigc_agents.AIGCStateStore(database)
+    store.set_flag("emergency_stop", "true")
+
+    def unexpected_dispatch(*args, **kwargs):
+        raise AssertionError("phase subprocess must not be called while emergency stop is active")
+
+    monkeypatch.setattr(aigc_agents.subprocess, "run", unexpected_dispatch)
+
+    assert agent_main([
+        "--root", str(root), "--state-db", str(database),
+        "run", "controlled_execution",
+    ]) == 2
+    assert "Emergency stop is active" in capsys.readouterr().out
+
+    with sqlite3.connect(database) as connection:
+        row = connection.execute(
+            "SELECT event_type, status FROM runtime_events "
+            "WHERE event_type = 'agent_run_blocked_by_emergency_stop'"
+        ).fetchone()
+
+    assert row == ("agent_run_blocked_by_emergency_stop", "blocked")
