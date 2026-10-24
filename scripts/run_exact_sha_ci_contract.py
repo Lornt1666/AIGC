@@ -136,16 +136,32 @@ def _safe_diagnostics(stage_id: str, output: str) -> dict[str, object] | None:
             end = min(later) if later else len(lines)
             section = lines[start:end]
             exception_class = None
+            error_category = None
             frames: list[dict[str, object]] = []
             for line in section:
+                stripped = line.strip()
                 error_match = re.match(
                     r"^E\s+([A-Za-z_][A-Za-z0-9_.]*(?:Error|Exception|Failure))(?::.*)?$",
-                    line.strip(),
+                    stripped,
                 )
                 if error_match and exception_class is None:
                     exception_class = error_match.group(1).split(".")[-1][:80]
+                lowered = stripped.lower()
+                safe_categories = (
+                    ("event loop is closed", "event_loop_closed"),
+                    ("attached to a different loop", "cross_event_loop_resource"),
+                    ("no running event loop", "no_running_event_loop"),
+                    ("connection refused", "dependency_connection_refused"),
+                    ("connection timed out", "dependency_connection_timeout"),
+                    ("database configuration is missing", "missing_database_configuration"),
+                )
+                if error_category is None:
+                    error_category = next(
+                        (category for phrase, category in safe_categories if phrase in lowered),
+                        None,
+                    )
                 frame_match = re.search(
-                    r"(?:^|\s)([^\s]*?/(?:src|tests)/[A-Za-z0-9_./-]+\.py):(\d+): in ([A-Za-z0-9_<>]+)",
+                    r"(?:^|[\s>])([^\s]*?(?:src|tests)/[A-Za-z0-9_./-]+\.py):(\d+)(?:: in ([A-Za-z0-9_<>]+))?",
                     line,
                 )
                 if frame_match:
@@ -155,15 +171,16 @@ def _safe_diagnostics(stage_id: str, output: str) -> dict[str, object] | None:
                         frame = {
                             "path": relative.group(1),
                             "line": int(line_number),
-                            "function": function[:100],
+                            "function": (function or "unknown")[:100],
                         }
                         if frame not in frames:
                             frames.append(frame)
             failures.append({
                 "node_id": node_id,
                 "exception_class": exception_class,
+                "error_category": error_category,
                 "frames": frames[:8],
-                "diagnostic_available": bool(exception_class or frames),
+                "diagnostic_available": bool(exception_class or error_category or frames),
             })
         return {
             "failed_or_error_test_count": len(node_ids),
