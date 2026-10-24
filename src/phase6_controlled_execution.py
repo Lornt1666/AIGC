@@ -257,6 +257,8 @@ class Phase6Validator:
             return "Invalid expiration timestamp."
         if datetime.now(timezone.utc) > expires_at:
             return "Authorization expired."
+        if not packet.safety.platform_policy_checked:
+            return "Platform policy compliance was not confirmed."
         if not packet.safety.ai_disclosure_preserved:
             return "AI disclosure preservation was not confirmed."
         if not packet.safety.privacy_checked:
@@ -397,6 +399,9 @@ def build_packet_from_phase5_authorization(
     if not artifact_content:
         artifact_content = artifact_record.get("artifact_preview", "")
     artifact_hash = HashTools.hash_text(artifact_content)
+    # Safety checks must be backed by explicit input evidence; packet construction
+    # alone must never assert that a policy/privacy/disclosure review occurred.
+    safety_evidence = authorization_packet.get("safety_evidence", {}) or {}
     auth = ExecutionAuthorization(
         approved_for_phase6=bool(phase6_status.get("authorized_for_phase6", False)),
         authorization_id=authorization_packet.get("authorization_id", ""),
@@ -423,9 +428,9 @@ def build_packet_from_phase5_authorization(
         action_type=infer_action_type(authorization_packet.get("proposed_external_action", "")),
         execution_mode=execution_mode,
         safety=ExecutionSafety(
-            platform_policy_checked=True,
-            ai_disclosure_preserved=True,
-            privacy_checked=True,
+            platform_policy_checked=safety_evidence.get("platform_policy_checked") is True,
+            ai_disclosure_preserved=safety_evidence.get("ai_disclosure_preserved") is True,
+            privacy_checked=safety_evidence.get("privacy_checked") is True,
             credential_use_approved=False,
             batch_action=False,
             forbidden_action_detected=False,
