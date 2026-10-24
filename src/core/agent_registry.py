@@ -49,6 +49,23 @@ _PHASE_AGENTS = [
     ("constellation_refactor_planner", "Constellation Refactor Planner", "Prepare refactor plans; does not edit or move files.", "phase26", "proposal_only"),
 ]
 
+_PROJECT_WORKFLOWS = [
+    ("aigc_architecture", "AIGC Architecture Agent", "Map AIGC contracts, task lifecycle, orchestration, evidence, and governance gaps.", "AIGC architecture and governed runtime"),
+    ("job_enquiry_application", "Job Enquiry and Application Agent", "Prepare job research and application drafts while preserving consent and human approval.", "Job enquiry and application workflow"),
+    ("mobile_gateway", "Mobile Gateway Agent", "Plan mobile-to-cloud request routing, authentication, idempotency, and observability.", "Mobile gateway and execution adapters"),
+    ("cloud_orchestration", "Cloud Orchestration Agent", "Compare durable orchestration, queues, workers, MCP, telemetry, and cloud deployment options.", "Clouded Tech Stack and Archi-Engine"),
+    ("google_execution_adapter", "Google Execution Adapter Agent", "Plan Google Cloud execution integration without accessing credentials or triggering live operations.", "Google Cloud execution adapter"),
+    ("regenexcalibur_envelope", "Regenerative Envelope Research Agent", "Assess façade, BIPV, grid-aware envelope, materials, embodied carbon, and evidence requirements.", "RegenExcalibur regenerative building envelope"),
+    ("carbon_capture_mrv", "Carbon Capture MRV Agent", "Define measurement, reporting, verification, baseline, leakage, permanence, and uncertainty requirements.", "Carbon capture and MRV"),
+    ("fabrication_safety", "Fabrication Safety Review Agent", "Check design maturity, validation evidence, hazards, tolerances, QA, and human sign-off before fabrication.", "ASTRAFABRION and fabrication safety"),
+    ("protocol_governance", "1JGM Protocol Governance Agent", "Map protocol responsibilities, interfaces, ownership, evidence ledger, and authorization boundaries.", "1JGM protocol and orchestration governance"),
+    ("security_privacy", "Security and Privacy Agent", "Review identity, least privilege, secrets, redaction, tenant isolation, threat models, and recovery.", "Security and privacy engineering"),
+    ("release_assurance", "Release Assurance Agent", "Plan exact-SHA CI, dependency reconciliation, staging evidence, rollback, and release gates.", "Release assurance and production hardening"),
+    ("gemini_xprize", "Gemini XPRIZE Integration Agent", "Map competition requirements to product scope, evidence, deliverables, and review gates.", "Gemini XPRIZE and AIGC product integration"),
+    ("data_analytics", "Data Analytics Agent", "Define metric grain, data quality checks, drivers, uncertainty, and decision-ready reporting.", "Data analytics and KPI reporting"),
+    ("ci_diagnostics", "CI Diagnostics Agent", "Trace workflow failures to exact jobs, steps, logs, SHA, and minimal reproducible causes.", "CI diagnosis and adversarial debugging"),
+]
+
 _ENGINEERING_WORKFLOWS = [
     ("root_cause", "Root-Cause Debugging Agent", "Diagnose failures, rank evidence-backed hypotheses, and specify regression proof.", "1. Root-cause analysis / adversarial debugging"),
     ("zero_regression_refactor", "Zero-Regression Refactoring Agent", "Characterize contracts and plan a minimal behavior-preserving refactor.", "2. Zero-regression refactoring and optimization"),
@@ -74,7 +91,7 @@ def build_agent_registry() -> Dict[str, AgentDefinition]:
             external_actions=False,
             approval_required=phase in {"phase5", "phase6", "phase7", "phase8", "phase18"},
         )
-    for agent_id, display_name, purpose, workflow_path in _ENGINEERING_WORKFLOWS:
+    for agent_id, display_name, purpose, workflow_path in _ENGINEERING_WORKFLOWS + _PROJECT_WORKFLOWS:
         agents[agent_id] = AgentDefinition(
             agent_id=agent_id,
             display_name=display_name,
