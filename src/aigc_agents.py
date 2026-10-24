@@ -60,6 +60,9 @@ def main(argv: List[str] | None = None) -> int:
             if root not in output_path.parents:
                 print("Agent output path must remain inside the configured project root.")
                 return 2
+            if output_path.exists():
+                print("Agent output path already exists; refusing to overwrite an existing artifact.")
+                return 2
             output_path.parent.mkdir(parents=True, exist_ok=True)
             encoded_plan = json.dumps(plan, ensure_ascii=False, indent=2)
             temporary_path = None
@@ -72,10 +75,10 @@ def main(argv: List[str] | None = None) -> int:
                     suffix=".tmp",
                     delete=False,
                 ) as temporary_file:
+                    temporary_path = Path(temporary_file.name)
                     temporary_file.write(encoded_plan)
                     temporary_file.flush()
                     os.fsync(temporary_file.fileno())
-                    temporary_path = Path(temporary_file.name)
                 os.replace(temporary_path, output_path)
                 temporary_path = None
                 plan["output_path"] = str(output_path)
