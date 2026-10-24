@@ -45,3 +45,7 @@ Definition of done:
 - The operator can inspect the artifact, audit trail, and next required approval gate.
 - Quality-state uncertainty is explicit, audited, and reduced before action instead of hidden behind confident language.
 - Every work-order governance record keeps blocked actions visible until scoped approval and compliance gates resolve.
+
+## Engineering Execution Method
+
+Use the repository's [Governed LLM Engineering Prompt Playbook](docs/engineering/LLM_ENGINEERING_PROMPT_PLAYBOOK.md) for the seven workflows: root-cause debugging, zero-regression refactoring, adversarial/property-based tests, schema/API synthesis, architecture trade-off analysis, legacy/AST reverse engineering, and senior red-team PR review. Apply the workflows relevant to the task rather than mechanically forcing every workflow into every change. Diagnose before patching; preserve public contracts and governance; verify the exact commit; distinguish observed facts from hypotheses; never claim skipped gates passed; and report unresolved blockers. This method supplements, and never relaxes, the permanent laws and Phase 5/6 authorization boundaries above.

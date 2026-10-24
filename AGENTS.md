@@ -61,3 +61,7 @@ Main phases:
 8. Evolution Loop
 9. Omega-X Memory Core
 11. Security, Privacy, and Secrets Vault
+
+## Governed Engineering Prompt Workflows
+
+For substantive debugging, refactoring, test design, schema/API changes, architecture choices, legacy analysis, or PR review, use the matching workflow from [docs/engineering/LLM_ENGINEERING_PROMPT_PLAYBOOK.md](docs/engineering/LLM_ENGINEERING_PROMPT_PLAYBOOK.md). Select the smallest relevant set; state observed facts separately from hypotheses; test invariants; review the exact diff; and report exact-SHA evidence and unresolved gates. The playbook does not grant authorization or override the rules above.
