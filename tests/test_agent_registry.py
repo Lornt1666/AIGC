@@ -111,3 +111,54 @@ def test_phase_adapter_timeout_is_recorded_as_terminal_failure(tmp_path, monkeyp
     assert row[0] == "agent_run_timed_out"
     assert row[1] == "timed_out"
     assert '"timeout_seconds": 0.01' in row[2]
+
+
+
+def test_workflow_plan_output_is_removed_if_audit_event_fails(tmp_path, monkeypatch) -> None:
+    root = tmp_path / "project"
+    root.mkdir()
+    output = root / "artifacts" / "plan.json"
+
+    def fail_audit(*args, **kwargs):
+        raise sqlite3.OperationalError("simulated audit database failure")
+
+    monkeypatch.setattr(aigc_agents.AIGCStateStore, "insert_event", fail_audit)
+
+    with pytest.raises(sqlite3.OperationalError, match="simulated audit database failure"):
+        agent_main([
+            "--root", str(root), "run", "root_cause",
+            "--task", "Diagnose duplicate task delivery",
+            "--output", "artifacts/plan.json",
+        ])
+
+    assert not output.exists()
+    assert not list(output.parent.glob(".plan.json.*.tmp"))
+
+
+def test_workflow_plan_output_is_atomic_and_audited(tmp_path) -> None:
+    root = tmp_path / "project"
+    root.mkdir()
+    output = root / "artifacts" / "plan.json"
+
+    assert agent_main([
+        "--root", str(root), "run", "root_cause",
+        "--task", "Diagnose duplicate task delivery",
+        "--output", "artifacts/plan.json",
+    ]) == 0
+
+    import json
+
+    persisted = json.loads(output.read_text(encoding="utf-8"))
+    assert persisted["status"] == "plan_created"
+
+    database = root / "memory" / "aigc_state.sqlite"
+    with sqlite3.connect(database) as connection:
+        row = connection.execute(
+            "SELECT data_json FROM runtime_events "
+            "WHERE event_type = 'workflow_agent_plan_created'"
+        ).fetchone()
+
+    assert row is not None
+    event_data = json.loads(row[0])
+    assert event_data["output_written"] is True
+    assert event_data["output_path"] == str(output)
