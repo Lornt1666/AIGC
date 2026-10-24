@@ -145,3 +145,13 @@ Refresh the checks for the new exact head after this checkpoint commit. Diagnose
 - Latest code/docs/test candidate: `3484f08550eb153e7fb69d3a816cf1ba9c32ba69`. Its exact-head CI run is queued: https://github.com/Lornt1666/AIGC/actions/runs/40117413127
 - PR #345 remains open/draft/unmerged. No production deployment or merge occurred.
 - Next action: await exact-head CI for `3484f08550eb153e7fb69d3a816cf1ba9c32ba69`; then inspect the latest Cloudflare build outcome. If it fails again, obtain the actual authenticated build log before making any deployment-specific code changes.
+
+
+## Follow-up checkpoint — CI coverage for registry tests
+
+- Adversarial audit found that the successful focused run `python scripts/run_focused_gemini_ci.py` executes a fixed list of Gemini-specific test files and does **not** include `tests/test_agent_registry.py`. Therefore, the earlier `161 passed` result did not verify the new registry regression tests.
+- Corrective action: added a dedicated `Run agent registry regression tests` step to `.github/workflows/aigc-ci.yml`, executing `python -m pytest -q -W error tests/test_agent_registry.py`. This avoids misrepresenting the Gemini-focused suite as full-project or registry validation.
+- The inventory documentation and exact-count regression assertion are also included on the branch. The test inventory expects 24 phase adapters, 21 workflow planners, and 45 total definitions.
+- This is an important test-coverage improvement; the new workflow step must pass on the exact current candidate before the registry tests can be marked verified.
+- Cloudflare Workers builds have failed on multiple branch commits, including `62df0d683999161cb13fd64e1a0fbeff8d72288f` and `0b60d7a79a764a192cc1db3dd335cbc057710c84`. The check summary does not expose the build error. Repository tree inspection found no root `package.json`, `wrangler.toml`, or `wrangler.jsonc`; the project is primarily Python. This is a **diagnostic hypothesis**, not a proven root cause, because Cloudflare Workers Builds settings are configured in the authenticated dashboard and the actual build log remains inaccessible.
+- Next action: verify the exact latest SHA's CI including the dedicated registry test step. For the Cloudflare gate, obtain the actual failed build log or inspect Workers > Settings > Build (root directory, build command, deploy/preview command, and configured entry point) before making any deployment-specific change.
