@@ -24,4 +24,4 @@ jobs:
           sed -i 's/replace-this-local-operator-token/ci-only-token/' .env
           docker compose --env-file .env config --quiet
       - name: Build and execute end-to-end container bootstrap
-        run: ./bootstrap.sh
+        run: bash bootstrap.sh
