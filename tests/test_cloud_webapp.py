@@ -107,6 +107,7 @@ def test_review_route_denies_without_durable_verified_approval_before_command(mo
 
     monkeypatch.setenv("AIGC_ENV", "development")
     monkeypatch.setenv("AIGC_REVIEW_STORAGE_MODE", "local")
+    monkeypatch.setenv("AIGC_APPROVAL_COMMIT_SHA", "a" * 40)
     monkeypatch.setenv("AIGC_COMMAND_CENTER_TOKEN", "test-operator-token")
     monkeypatch.setattr(webapp, "_command_center_store", lambda: NonDurableStore())
     monkeypatch.setattr(
