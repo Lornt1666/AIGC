@@ -22,7 +22,7 @@ def test_coliseum_ranks_and_waits_for_owner():
     ])
 
     assert result.winner_gladiator_id == "g2"
-    assert result.selection_status == "AWAITING_OWNER_GATE"
+    assert result.selection_status == "AWAITING_VERIFIED_OWNER_APPROVAL"
     assert result.owner_gate_required is True
 
 
