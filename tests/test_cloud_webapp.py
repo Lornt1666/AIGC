@@ -98,6 +98,58 @@ def test_output_redaction_and_bounds() -> None:
     assert len(result) <= 2000
 
 
+def test_review_route_denies_without_durable_verified_approval_before_command(monkeypatch) -> None:
+    from types import SimpleNamespace
+    import src.webapp.app as webapp
+
+    class NonDurableStore:
+        durable = False
+
+    monkeypatch.setenv("AIGC_ENV", "development")
+    monkeypatch.setenv("AIGC_REVIEW_STORAGE_MODE", "local")
+    monkeypatch.setenv("AIGC_APPROVAL_COMMIT_SHA", "a" * 40)
+    monkeypatch.setenv("AIGC_COMMAND_CENTER_TOKEN", "test-operator-token")
+    monkeypatch.setattr(webapp, "_command_center_store", lambda: NonDurableStore())
+    monkeypatch.setattr(
+        webapp,
+        "_find_review",
+        lambda _action_id: SimpleNamespace(
+            action_id="test-action", expired=False,
+            external_action_performed=False, decision="pending",
+        ),
+    )
+
+    def unexpected_command(*args, **kwargs):
+        raise AssertionError("Decision command must not run without verified approval.")
+
+    monkeypatch.setattr(webapp, "run_command", unexpected_command)
+    client = TestClient(app)
+    response = client.post(
+        "/api/reviews/test-action/accept",
+        json={"phrase": "ACCEPT"},
+        headers={"Authorization": "Bearer test-operator-token"},
+    )
+
+    assert response.status_code == 503
+    assert "durable replay protection" in response.json()["detail"]
+
+
+def test_owner_approval_route_requires_trusted_deployment_commit(monkeypatch) -> None:
+    from fastapi import HTTPException
+    import src.webapp.app as webapp
+
+    monkeypatch.delenv("AIGC_APPROVAL_COMMIT_SHA", raising=False)
+    with pytest.raises(HTTPException) as exc:
+        webapp._verify_owner_approval(
+            artifact=None,
+            expected_proposal_sha256="a" * 64,
+            expected_actor_id="token-sha256:operator",
+            store=type("DurableStore", (), {"durable": True, "_pool": object()})(),
+        )
+    assert exc.value.status_code == 503
+    assert "deployment commit binding" in exc.value.detail
+
+
 def test_review_mutations_reject_stale_or_non_pending_packets() -> None:
     from types import SimpleNamespace
     import pytest

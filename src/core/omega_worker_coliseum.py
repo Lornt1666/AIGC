@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Iterable, Mapping
+from typing import Iterable
 
 from .omega_worker_elite_orchestrator import (
     EliteJudgement,
@@ -24,9 +24,11 @@ class ColiseumResult:
 
 
 class ColiseumOrchestrator:
-    """Runs a bounded multi-Gladiator contest after RGB+/AER+ review.
+    """Runs a bounded contest after RGB+/AER+ review.
 
-    Ranking is advisory. Winning never grants execution authority.
+    Selection is advisory. A boolean flag is not authenticated approval and
+    must never be treated as execution authority. A separate, verified
+    approval service must authorize any downstream external action.
     """
 
     def __init__(self, referee: EliteOrchestrator | None = None):
@@ -38,6 +40,10 @@ class ColiseumOrchestrator:
         proposals: Iterable[GladiatorProposal],
         owner_gate: bool = False,
     ) -> ColiseumResult:
+        # Retain the legacy parameter for call compatibility, but deliberately
+        # do not trust it. A caller-controlled bool is not proof of owner identity,
+        # proposal/commit binding, freshness, or replay protection.
+        _ = owner_gate
         if not opportunity_id:
             raise ColiseumError("opportunity_id is required.")
 
@@ -66,19 +72,10 @@ class ColiseumOrchestrator:
             )
 
         winner = eligible[0]
-        if not owner_gate:
-            return ColiseumResult(
-                opportunity_id=opportunity_id,
-                ranked=ranked,
-                winner_gladiator_id=winner.gladiator_id,
-                owner_gate_required=True,
-                selection_status="AWAITING_OWNER_GATE",
-            )
-
         return ColiseumResult(
             opportunity_id=opportunity_id,
             ranked=ranked,
             winner_gladiator_id=winner.gladiator_id,
             owner_gate_required=True,
-            selection_status="OWNER_ACCEPTED_SELECTION",
+            selection_status="AWAITING_VERIFIED_OWNER_APPROVAL",
         )

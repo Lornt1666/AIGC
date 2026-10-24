@@ -1,0 +1,86 @@
+name: aigc-local
+services:
+  postgres:
+    image: postgres:16.4-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-aigc}
+      POSTGRES_USER: ${POSTGRES_USER:-aigc}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - aigc-postgres-data:/var/lib/postgresql/data
+    networks: [data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 5s
+    restart: unless-stopped
+    security_opt: [no-new-privileges:true]
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      PORT: "8000"
+      AIGC_ENV: development
+      AIGC_COMMAND_CENTER_TOKEN: ${AIGC_COMMAND_CENTER_TOKEN:?Set AIGC_COMMAND_CENTER_TOKEN in .env}
+      AIGC_COMMAND_CENTER_DATABASE_URL: postgresql://${POSTGRES_USER:-aigc}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-aigc}
+      AIGC_COMMAND_CENTER_DB_SSLMODE: disable
+      AIGC_REVIEW_STORAGE_MODE: local
+      AIGC_MAX_CONCURRENT_RUNS: ${AIGC_MAX_CONCURRENT_RUNS:-1}
+      AIGC_STEP_TIMEOUT_SECONDS: ${AIGC_STEP_TIMEOUT_SECONDS:-120}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${AIGC_PORT:-8000}:8000"
+    networks: [edge, data]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2).read()"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+    read_only: true
+    # The legacy CLI acceptance flow writes ephemeral SQLite, report, and audit
+    # files. Keep those explicit writable paths bounded and non-persistent.
+    # Production/shared state must use separately provisioned durable services.
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+      - /app/memory:size=64m,uid=999,gid=999,mode=0750
+      - /app/reports:size=128m,uid=999,gid=999,mode=0750
+      - /app/data/audit:size=64m,uid=999,gid=999,mode=0750
+      - /app/data/phase2_processed:size=64m,uid=999,gid=999,mode=0750
+      - /app/data/reports:size=128m,uid=999,gid=999,mode=0750
+      - /app/data/phase2_raw:size=64m,uid=999,gid=999,mode=0750
+      - /app/data/phase3_processed:size=128m,uid=999,gid=999,mode=0750
+      - /app/data/phase4_proposals:size=128m,uid=999,gid=999,mode=0750
+      - /app/data/phase8_evolution:size=64m,uid=999,gid=999,mode=0750
+      - /app/data/phase26_constellation_refactor:size=64m,uid=999,gid=999,mode=0750
+      - /app/data/phase25_constellation:size=64m,uid=999,gid=999,mode=0750
+      - /app/data/phase24_business_pipeline:size=64m,uid=999,gid=999,mode=0750
+      - /app/data/phase23_work_orders:size=64m,uid=999,gid=999,mode=0750
+      - /app/data/phase22_quality:size=64m,uid=999,gid=999,mode=0750
+      - /app/data/phase21_customer_satisfaction:size=64m,uid=999,gid=999,mode=0750
+      - /app/data/phase20_fidelity:size=64m,uid=999,gid=999,mode=0750
+      - /app/data/phase19_subagents:size=64m,uid=999,gid=999,mode=0750
+      - /app/data/phase18_productization:size=64m,uid=999,gid=999,mode=0750
+      - /app/data/phase17_incidents:size=64m,uid=999,gid=999,mode=0750
+      - /app/data/phase16_compliance:size=64m,uid=999,gid=999,mode=0750
+      - /app/data/phase15_finance:size=64m,uid=999,gid=999,mode=0750
+      - /app/data/phase12_observability:size=64m,uid=999,gid=999,mode=0750
+      - /app/data/phase7_audit_packets:size=64m,uid=999,gid=999,mode=0750
+      - /app/data/phase6_execution:size=64m,uid=999,gid=999,mode=0750
+      - /app/data/phase5_authorizations:size=64m,uid=999,gid=999,mode=0750
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+    restart: unless-stopped
+networks:
+  edge:
+    driver: bridge
+  data:
+    driver: bridge
+    internal: true
+volumes:
+  aigc-postgres-data:

@@ -27,6 +27,11 @@ from src.core.program_health import run_program_health, write_health_report  # n
 from src.core.production_readiness_ledger import run_production_readiness_ledger  # noqa: E402
 from src.core.state_store import AIGCStateStore, DEFAULT_DB_PATH  # noqa: E402
 from src.core.work_acquisition import run_work_acquisition  # noqa: E402
+from src.core.writable_output_contract import (  # noqa: E402
+    OutputContractError,
+    OutputPath,
+    validate_output_contract,
+)
 from src.core.work_order import run_cockpit_smoke, run_governance_smoke, run_work_order  # noqa: E402
 from src.phase17_incident_response import Phase17IncidentResponse  # noqa: E402
 from src.security.approval_tokens import ApprovalTokenStore  # noqa: E402
@@ -600,17 +605,41 @@ def command_authorization_decision(
 def run_phase14_preflight(root: Path, store: AIGCStateStore) -> int:
     registry = build_phase_registry(root)
     validation_failures: List[str] = []
+    output_checks: List[Dict[str, Any]] = []
     try:
         validate_file("secret_manifest", root / "config" / "secret_manifest.json")
     except (ContractValidationError, FileNotFoundError) as exc:
         validation_failures.append(str(exc))
+    # Preflight every registered phase output directory before any phase executes.
+    # The phase registry records files; the output contract validates their parent directories.
+    output_directories: Dict[str, str] = {}
+    for phase_name, phase_definition in registry.items():
+        output_parent = Path(phase_definition.output_path).parent.as_posix()
+        output_directories.setdefault(output_parent, phase_name)
+    try:
+        checks = validate_output_contract(
+            root,
+            [
+                OutputPath(
+                    name=f"{phase_name}:{relative_dir}",
+                    path=relative_dir,
+                    storage="ephemeral",
+                )
+                for relative_dir, phase_name in sorted(output_directories.items())
+            ],
+        )
+        output_checks = [asdict(check) for check in checks]
+    except OutputContractError as exc:
+        validation_failures.append(f"writable_output_contract: {exc}")
     event = store.insert_event(
         event_type="phase14_runtime_preflight",
         phase="phase14_runtime_engine",
         status="failed" if validation_failures else "completed",
-        summary="Runtime preflight checked state DB, registry, secret manifest, emergency stop, and external-action block.",
+        summary="Runtime preflight checked state DB, registry, secret manifest, writable phase output contracts, emergency stop, and external-action block.",
         data={
             "registry_phases": sorted(registry),
+            "output_directory_checks": output_checks,
+            "output_directory_check_count": len(output_checks),
             "emergency_stop": store.emergency_stop_active(),
             "validation_failures": validation_failures,
             "external_actions_allowed": False,

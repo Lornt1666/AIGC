@@ -28,6 +28,9 @@ def test_concurrent_accept_requests_allow_only_one_pending_transition(monkeypatc
         review.decision = "accepted"
         return SimpleNamespace(ok=True)
 
+    # This test isolates process-local serialization; approval verification has
+    # dedicated fail-closed route tests and is stubbed here to avoid conflating gates.
+    monkeypatch.setattr(webapp, "_verify_owner_approval", lambda **_kwargs: None)
     monkeypatch.setattr(webapp, "_find_review", find_review)
     monkeypatch.setattr(webapp, "_require_pending_review", require_pending)
     monkeypatch.setattr(webapp, "build_accept_command", lambda *_args, **_kwargs: ["fake-accept"])

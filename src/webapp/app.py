@@ -6,6 +6,7 @@ import hashlib
 import hmac
 import json
 import os
+import re
 import subprocess
 import sys
 import threading
@@ -45,6 +46,11 @@ from src.core.operator_cockpit import (  # noqa: E402
     summarize_authorizations,
 )
 from src.core.durable_review_repository import DurableReviewRepository  # noqa: E402
+from src.core.verified_owner_approval import (  # noqa: E402
+    OwnerApprovalError,
+    PostgresApprovalReplayLedger,
+    VerifiedOwnerApprovalVerifier,
+)
 
 app = FastAPI(
     title="AIGC Governed Worker Command Center",
@@ -152,6 +158,49 @@ def _idempotency_key(request: Request | None) -> str:
     return value
 
 
+def _verify_owner_approval(
+    *,
+    artifact: dict[str, Any] | None,
+    expected_proposal_sha256: str,
+    expected_actor_id: str,
+    store: Any,
+) -> None:
+    """Require a signed, one-time approval before any review-decision side effect.
+
+    The deployment commit SHA and signing key must be provisioned by trusted
+    deployment/identity infrastructure. Memory storage is never accepted for
+    replay protection. Any missing dependency denies the decision.
+    """
+    commit_sha = os.environ.get("AIGC_APPROVAL_COMMIT_SHA", "").strip()
+    if not re.fullmatch(r"[a-f0-9]{40}", commit_sha):
+        raise HTTPException(
+            status_code=503,
+            detail="Verified owner approval is unavailable: trusted deployment commit binding is not configured.",
+        )
+    pool = getattr(store, "_pool", None)
+    if not getattr(store, "durable", False) or pool is None:
+        raise HTTPException(
+            status_code=503,
+            detail="Verified owner approval is unavailable: durable replay protection is required.",
+        )
+    try:
+        verifier = VerifiedOwnerApprovalVerifier.from_env(
+            replay_ledger=PostgresApprovalReplayLedger(pool),
+        )
+        verifier.verify_and_consume(
+            artifact,
+            expected_proposal_sha256=expected_proposal_sha256,
+            expected_commit_sha=commit_sha,
+            expected_actor_id=expected_actor_id,
+        )
+    except OwnerApprovalError as exc:
+        # Do not expose signature, secret, or internal verification detail to clients.
+        raise HTTPException(
+            status_code=403,
+            detail="A valid, current, single-use owner approval bound to this operator, proposal, and deployment is required.",
+        ) from exc
+
+
 def _durable_store_error(exc: CommandCenterStoreError) -> HTTPException:
     if isinstance(exc, RunAlreadyActive):
         return HTTPException(status_code=429, detail=str(exc))
@@ -178,6 +227,7 @@ def _safe_output(value: str, limit: int = MAX_OUTPUT_CHARS) -> str:
 class DecisionRequest(BaseModel):
     phrase: str = ""
     revision_instructions: str = ""
+    owner_approval: dict[str, Any] | None = None
 
 
 class RunReconciliationRequest(BaseModel):
@@ -377,6 +427,14 @@ def _apply_review_decision(action_id: str, decision_type: str,
         with REVIEW_DECISION_LOCK:
             review = _find_review(action_id)
             _require_pending_review(review)
+            # Consume a trusted, proposal-bound approval before claiming or invoking
+            # any decision command. A failed approval must have zero action side effects.
+            _verify_owner_approval(
+                artifact=request.owner_approval,
+                expected_proposal_sha256=request_digest,
+                expected_actor_id=actor_id,
+                store=store,
+            )
             claim = store.claim_review(action_id=action_id, decision_type=decision_type,
                 actor_id=actor_id, idempotency_key=key, request_digest=request_digest)
             if claim.get("replayed") and claim.get("state") == "completed":
