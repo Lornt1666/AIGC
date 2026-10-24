@@ -3,6 +3,7 @@ from __future__ import annotations
 import pytest
 
 from src.core.agent_registry import build_agent_registry, build_workflow_plan, get_agent
+from src.aigc_agents import main as agent_main
 
 
 def test_registry_contains_phase_adapters_and_all_seven_engineering_workflows() -> None:
@@ -47,3 +48,23 @@ def test_workflow_planner_rejects_empty_task() -> None:
 def test_phase_adapter_cannot_be_used_as_workflow_planner() -> None:
     with pytest.raises(ValueError, match="not a workflow planner"):
         build_workflow_plan(get_agent("assessment"), "test")
+
+
+def test_list_command_does_not_initialize_runtime_database(tmp_path, capsys) -> None:
+    root = tmp_path / "project"
+    root.mkdir()
+
+    assert agent_main(["--root", str(root), "list"]) == 0
+    capsys.readouterr()
+
+    assert not (root / "memory" / "aigc_state.sqlite").exists()
+
+
+def test_inspect_command_does_not_initialize_runtime_database(tmp_path, capsys) -> None:
+    root = tmp_path / "project"
+    root.mkdir()
+
+    assert agent_main(["--root", str(root), "inspect", "root_cause"]) == 0
+    capsys.readouterr()
+
+    assert not (root / "memory" / "aigc_state.sqlite").exists()
