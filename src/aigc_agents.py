@@ -19,7 +19,6 @@ from src.core.state_store import AIGCStateStore
 def main(argv: List[str] | None = None) -> int:
     args = parse_args(argv)
     root = args.root.resolve()
-    store = AIGCStateStore(args.state_db or root / "memory" / "aigc_state.sqlite")
 
     if args.command == "list":
         registry = build_agent_registry()
@@ -39,6 +38,9 @@ def main(argv: List[str] | None = None) -> int:
     if args.command == "inspect":
         print(json.dumps(agent.to_dict(), indent=2))
         return 0
+
+    # Read-only list/inspect commands must not create or initialize the runtime database.
+    store = AIGCStateStore(args.state_db or root / "memory" / "aigc_state.sqlite")
 
     if agent.kind == "workflow_planner":
         try:
