@@ -102,8 +102,9 @@ def _safe_diagnostics(stage_id: str, output: str) -> dict[str, object] | None:
             "truncated": isinstance(count, int) and count > len(safe_findings),
         }
     if stage_id == "tests":
+        lines = output.splitlines()
         node_ids: list[str] = []
-        for raw_line in output.splitlines():
+        for raw_line in lines:
             line = raw_line.strip()
             if not line.startswith(("FAILED ", "ERROR ")):
                 continue
@@ -111,9 +112,63 @@ def _safe_diagnostics(stage_id: str, output: str) -> dict[str, object] | None:
             node_id = remainder.split(" - ", 1)[0].strip()
             if node_id and node_id not in node_ids:
                 node_ids.append(node_id)
+
+        # Extract only allowlisted metadata from each pytest failure section.
+        # Never persist assertion values, exception messages, payloads, or raw tracebacks.
+        failures: list[dict[str, object]] = []
+        section_starts: list[tuple[int, str]] = []
+        for index, line in enumerate(lines):
+            match = re.match(r"^_{3,}\\s+(.+?)\\s+_{3,}\\s*$", line.strip())
+            if match:
+                section_starts.append((index, match.group(1).strip()))
+        for node_id in node_ids[:100]:
+            test_name = node_id.split("::")[-1].split("[")[0]
+            start = next((i for i, name in section_starts if test_name in name), None)
+            if start is None:
+                failures.append({
+                    "node_id": node_id,
+                    "exception_class": None,
+                    "frames": [],
+                    "diagnostic_available": False,
+                })
+                continue
+            later = [i for i, _ in section_starts if i > start]
+            end = min(later) if later else len(lines)
+            section = lines[start:end]
+            exception_class = None
+            frames: list[dict[str, object]] = []
+            for line in section:
+                error_match = re.match(
+                    r"^E\\s+([A-Za-z_][A-Za-z0-9_.]*(?:Error|Exception|Failure))(?::.*)?$",
+                    line.strip(),
+                )
+                if error_match and exception_class is None:
+                    exception_class = error_match.group(1).split(".")[-1][:80]
+                frame_match = re.search(
+                    r"(?:^|\\s)([^\\s]*?/(?:src|tests)/[A-Za-z0-9_./-]+\\.py):(\\d+): in ([A-Za-z0-9_<>]+)",
+                    line,
+                )
+                if frame_match:
+                    path, line_number, function = frame_match.groups()
+                    relative = re.search(r"((?:src|tests)/[A-Za-z0-9_./-]+\\.py)$", path)
+                    if relative:
+                        frame = {
+                            "path": relative.group(1),
+                            "line": int(line_number),
+                            "function": function[:100],
+                        }
+                        if frame not in frames:
+                            frames.append(frame)
+            failures.append({
+                "node_id": node_id,
+                "exception_class": exception_class,
+                "frames": frames[:8],
+                "diagnostic_available": bool(exception_class or frames),
+            })
         return {
             "failed_or_error_test_count": len(node_ids),
             "failed_or_error_tests": node_ids[:100],
+            "failure_diagnostics": failures,
             "truncated": len(node_ids) > 100,
         }
     return None
