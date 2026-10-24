@@ -55,6 +55,7 @@ services:
       - /app/data/reports:size=128m,uid=999,gid=999,mode=0750
       - /app/data/phase2_raw:size=64m,uid=999,gid=999,mode=0750
       - /app/data/phase3_processed:size=128m,uid=999,gid=999,mode=0750
+      - /app/data/phase4_proposals:size=128m,uid=999,gid=999,mode=0750
     security_opt: [no-new-privileges:true]
     cap_drop: [ALL]
     restart: unless-stopped
