@@ -145,6 +145,7 @@ jobs:
           set -euo pipefail
           python scripts/run_focused_gemini_ci.py | tee "$RUNNER_TEMP/aigc-ci-stage-results/focused-gemini-pytest.log"
 
+
       - name: Run governed Gemini workflow offline smoke
         shell: bash
         run: |

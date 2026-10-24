@@ -257,6 +257,8 @@ class Phase6Validator:
             return "Invalid expiration timestamp."
         if datetime.now(timezone.utc) > expires_at:
             return "Authorization expired."
+        if not packet.safety.platform_policy_checked:
+            return "Platform policy compliance was not confirmed."
         if not packet.safety.ai_disclosure_preserved:
             return "AI disclosure preservation was not confirmed."
         if not packet.safety.privacy_checked:
@@ -385,6 +387,20 @@ class ControlledExecutionEngine:
         ]).strip() + "\n"
 
 
+def _safety_check_has_evidence(safety_evidence: Dict[str, Any], check_name: str) -> bool:
+    """Require a structured, attributable safety-check record; bare booleans are insufficient."""
+    record = safety_evidence.get(check_name)
+    if not isinstance(record, dict) or record.get("status") != "passed":
+        return False
+    if not all(
+        isinstance(record.get(field), str) and record[field].strip()
+        for field in ("evidence_ref", "reviewed_at", "reviewer")
+    ):
+        return False
+    reviewed_at = parse_datetime(record["reviewed_at"])
+    return reviewed_at is not None and reviewed_at <= datetime.now(timezone.utc)
+
+
 def build_packet_from_phase5_authorization(
     authorization_packet: Dict[str, Any],
     phase4_proposal: Dict[str, Any],
@@ -397,6 +413,9 @@ def build_packet_from_phase5_authorization(
     if not artifact_content:
         artifact_content = artifact_record.get("artifact_preview", "")
     artifact_hash = HashTools.hash_text(artifact_content)
+    # Safety checks must be backed by explicit input evidence; packet construction
+    # alone must never assert that a policy/privacy/disclosure review occurred.
+    safety_evidence = authorization_packet.get("safety_evidence", {}) or {}
     auth = ExecutionAuthorization(
         approved_for_phase6=bool(phase6_status.get("authorized_for_phase6", False)),
         authorization_id=authorization_packet.get("authorization_id", ""),
@@ -423,9 +442,9 @@ def build_packet_from_phase5_authorization(
         action_type=infer_action_type(authorization_packet.get("proposed_external_action", "")),
         execution_mode=execution_mode,
         safety=ExecutionSafety(
-            platform_policy_checked=True,
-            ai_disclosure_preserved=True,
-            privacy_checked=True,
+            platform_policy_checked=_safety_check_has_evidence(safety_evidence, "platform_policy_checked"),
+            ai_disclosure_preserved=_safety_check_has_evidence(safety_evidence, "ai_disclosure_preserved"),
+            privacy_checked=_safety_check_has_evidence(safety_evidence, "privacy_checked"),
             credential_use_approved=False,
             batch_action=False,
             forbidden_action_detected=False,
