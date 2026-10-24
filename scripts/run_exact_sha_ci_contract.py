@@ -118,7 +118,7 @@ def _safe_diagnostics(stage_id: str, output: str) -> dict[str, object] | None:
         failures: list[dict[str, object]] = []
         section_starts: list[tuple[int, str]] = []
         for index, line in enumerate(lines):
-            match = re.match(r"^_{3,}\\s+(.+?)\\s+_{3,}\\s*$", line.strip())
+            match = re.match(r"^_{3,}\s+(.+?)\s+_{3,}\s*$", line.strip())
             if match:
                 section_starts.append((index, match.group(1).strip()))
         for node_id in node_ids[:100]:
@@ -139,18 +139,18 @@ def _safe_diagnostics(stage_id: str, output: str) -> dict[str, object] | None:
             frames: list[dict[str, object]] = []
             for line in section:
                 error_match = re.match(
-                    r"^E\\s+([A-Za-z_][A-Za-z0-9_.]*(?:Error|Exception|Failure))(?::.*)?$",
+                    r"^E\s+([A-Za-z_][A-Za-z0-9_.]*(?:Error|Exception|Failure))(?::.*)?$",
                     line.strip(),
                 )
                 if error_match and exception_class is None:
                     exception_class = error_match.group(1).split(".")[-1][:80]
                 frame_match = re.search(
-                    r"(?:^|\\s)([^\\s]*?/(?:src|tests)/[A-Za-z0-9_./-]+\\.py):(\\d+): in ([A-Za-z0-9_<>]+)",
+                    r"(?:^|\s)([^\s]*?/(?:src|tests)/[A-Za-z0-9_./-]+\.py):(\d+): in ([A-Za-z0-9_<>]+)",
                     line,
                 )
                 if frame_match:
                     path, line_number, function = frame_match.groups()
-                    relative = re.search(r"((?:src|tests)/[A-Za-z0-9_./-]+\\.py)$", path)
+                    relative = re.search(r"((?:src|tests)/[A-Za-z0-9_./-]+\.py)$", path)
                     if relative:
                         frame = {
                             "path": relative.group(1),
