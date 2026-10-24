@@ -44,6 +44,7 @@ from src.core.operator_cockpit import (  # noqa: E402
     run_command,
     summarize_authorizations,
 )
+from src.core.durable_review_repository import DurableReviewRepository  # noqa: E402
 
 app = FastAPI(
     title="AIGC Governed Worker Command Center",
@@ -67,6 +68,43 @@ _COMMAND_CENTER_STORE_LOCK = threading.Lock()
 
 def _production_mode() -> bool:
     return os.environ.get("AIGC_ENV", os.environ.get("ENVIRONMENT", "development")).strip().lower() in {"production", "prod"}
+
+
+def _load_review_collections() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Load review inputs from shared artifacts when explicitly configured.
+
+    The default remains local-only for development compatibility. Production workflows
+    remain blocked by _require_shared_artifact_authority until mutation and phase-evidence
+    paths are also durable.
+    """
+    mode = os.environ.get("AIGC_REVIEW_STORAGE_MODE", "local").strip().lower()
+    if mode == "shared":
+        try:
+            snapshot = DurableReviewRepository.from_env().load_review_collections()
+        except Exception as exc:
+            # Never fall back to local files after shared authority was requested.
+            raise HTTPException(
+                status_code=503,
+                detail="Shared review artifact authority is unavailable.",
+            ) from exc
+        return snapshot.authorization_packets.items, snapshot.work_order_governance.items
+    if mode != "local":
+        raise HTTPException(status_code=503, detail="Unsupported review storage mode.")
+    if _production_mode():
+        raise HTTPException(status_code=503, detail="Local review storage is disabled in production.")
+    return (
+        load_authorization_packets(PROJECT_ROOT),
+        load_work_order_governance_records(PROJECT_ROOT),
+    )
+
+
+def _require_local_review_mutation_authority() -> None:
+    """Prevent shared reads from being followed by mutations against task-local files."""
+    if os.environ.get("AIGC_REVIEW_STORAGE_MODE", "local").strip().lower() == "shared":
+        raise HTTPException(
+            status_code=503,
+            detail="Review mutations remain disabled until decision writes and phase evidence use shared durable storage.",
+        )
 
 
 def _require_shared_artifact_authority() -> None:
@@ -302,8 +340,7 @@ def reconcile_run(run_id: str, request: RunReconciliationRequest) -> Dict[str, A
 @app.get("/api/reviews", dependencies=[Depends(require_operator_auth)])
 def reviews() -> Dict[str, Any]:
     _require_shared_artifact_authority()
-    packets = load_authorization_packets(PROJECT_ROOT)
-    work_orders = load_work_order_governance_records(PROJECT_ROOT)
+    packets, work_orders = _load_review_collections()
     review_items = summarize_authorizations(packets, work_orders)
     try:
         store = _command_center_store()
@@ -323,6 +360,7 @@ def reviews() -> Dict[str, Any]:
 def _apply_review_decision(action_id: str, decision_type: str,
                            request: DecisionRequest, http_request: Request) -> Dict[str, Any]:
     _require_shared_artifact_authority()
+    _require_local_review_mutation_authority()
     if decision_type == "revise" and not request.revision_instructions.strip():
         raise HTTPException(status_code=400, detail="revision_instructions is required")
     try:
@@ -451,8 +489,7 @@ def _require_pending_review(review) -> None:
 
 
 def _find_review(action_id: str):
-    packets = load_authorization_packets(PROJECT_ROOT)
-    work_orders = load_work_order_governance_records(PROJECT_ROOT)
+    packets, work_orders = _load_review_collections()
     for item in summarize_authorizations(packets, work_orders):
         if item.action_id == action_id:
             return item
