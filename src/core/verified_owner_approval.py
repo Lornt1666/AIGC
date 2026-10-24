@@ -62,6 +62,31 @@ def sign_approval_payload(artifact: Mapping[str, Any], signing_key: bytes) -> st
     return hmac.new(signing_key, canonical_approval_payload(artifact), hashlib.sha256).hexdigest()
 
 
+class PostgresApprovalReplayLedger:
+    """Atomic PostgreSQL replay guard; migration 0002 must be applied before use."""
+
+    def __init__(self, pool: Any) -> None:
+        self._pool = pool
+
+    def consume_once(self, *, approval_id: str, nonce: str, payload_sha256: str) -> bool:
+        if not approval_id or not nonce or not _SHA256.fullmatch(payload_sha256 or ""):
+            raise OwnerApprovalError("Replay ledger input is invalid.")
+        # A single INSERT with uniqueness constraints makes consume-once atomic
+        # across processes/replicas. Database errors deliberately propagate so
+        # the verifier can deny authorization when durable replay protection fails.
+        with self._pool.connection() as conn:
+            with conn.transaction():
+                row = conn.execute(
+                    """INSERT INTO aigc_owner_approval_replay
+                           (approval_id, nonce, payload_sha256)
+                       VALUES (%s, %s, %s)
+                       ON CONFLICT DO NOTHING
+                       RETURNING approval_id""",
+                    (approval_id, nonce, payload_sha256),
+                ).fetchone()
+        return row is not None
+
+
 class VerifiedOwnerApprovalVerifier:
     def __init__(
         self,
