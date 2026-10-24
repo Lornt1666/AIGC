@@ -3,8 +3,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 from typing import List
 
@@ -52,23 +54,59 @@ def main(argv: List[str] | None = None) -> int:
         except ValueError as exc:
             print(str(exc))
             return 2
+        output_path = None
         if args.output:
             output_path = (root / args.output).resolve()
             if root not in output_path.parents:
                 print("Agent output path must remain inside the configured project root.")
                 return 2
             output_path.parent.mkdir(parents=True, exist_ok=True)
-            output_path.write_text(json.dumps(plan, ensure_ascii=False, indent=2), encoding="utf-8")
-            plan["output_path"] = str(output_path)
+            encoded_plan = json.dumps(plan, ensure_ascii=False, indent=2)
+            temporary_path = None
+            try:
+                with tempfile.NamedTemporaryFile(
+                    mode="w",
+                    encoding="utf-8",
+                    dir=output_path.parent,
+                    prefix=f".{output_path.name}.",
+                    suffix=".tmp",
+                    delete=False,
+                ) as temporary_file:
+                    temporary_file.write(encoded_plan)
+                    temporary_file.flush()
+                    os.fsync(temporary_file.fileno())
+                    temporary_path = Path(temporary_file.name)
+                os.replace(temporary_path, output_path)
+                temporary_path = None
+                plan["output_path"] = str(output_path)
+            except OSError as exc:
+                if temporary_path is not None:
+                    temporary_path.unlink(missing_ok=True)
+                print(f"Could not persist workflow plan output: {exc}", file=sys.stderr)
+                return 1
+
         task_digest = hashlib.sha256((args.task or "").encode("utf-8")).hexdigest()
-        store.insert_event(
-            event_type="workflow_agent_plan_created",
-            phase="agent_registry",
-            status="plan_created",
-            summary=f"Created a deterministic workflow plan with {agent.agent_id}.",
-            data={"agent_id": agent.agent_id, "workflow": agent.workflow_path, "task_sha256": task_digest, "output_written": bool(args.output)},
-            external_action_performed=False,
-        )
+        try:
+            store.insert_event(
+                event_type="workflow_agent_plan_created",
+                phase="agent_registry",
+                status="plan_created",
+                summary=f"Created a deterministic workflow plan with {agent.agent_id}.",
+                data={
+                    "agent_id": agent.agent_id,
+                    "workflow": agent.workflow_path,
+                    "task_sha256": task_digest,
+                    "output_written": output_path is not None,
+                    "output_path": str(output_path) if output_path is not None else None,
+                },
+                external_action_performed=False,
+            )
+        except Exception:
+            # Keep the filesystem and audit trail consistent: remove the newly written
+            # output if its required audit event could not be committed.
+            if output_path is not None:
+                output_path.unlink(missing_ok=True)
+            raise
         print(json.dumps(plan, ensure_ascii=False, indent=2))
         return 0
 
