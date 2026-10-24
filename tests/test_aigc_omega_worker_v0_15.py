@@ -72,7 +72,7 @@ def run(orchestrator, **kwargs):
     )
 
 
-def test_end_to_end_owner_accepted_selection_executes_and_verifies():
+def test_boolean_owner_gate_never_executes_even_with_permit_and_executor():
     seen = []
     result = GovernedExecutionOrchestrator(
         autonomous_executor=executor()
@@ -86,11 +86,10 @@ def test_end_to_end_owner_accepted_selection_executes_and_verifies():
         action_fn=lambda: seen.append("ran"),
         **verification(),
     )
-    assert seen == ["ran"]
-    assert result.selection_status == "OWNER_ACCEPTED_SELECTION"
-    assert result.execution_status == "VERIFIED"
-    assert result.execution is not None
-    assert result.execution.verified is True
+    assert seen == []
+    assert result.selection_status == "AWAITING_VERIFIED_OWNER_APPROVAL"
+    assert result.execution_status == "NOT_EXECUTED"
+    assert result.execution is None
 
 
 def test_without_owner_gate_selection_does_not_execute():
@@ -108,73 +107,61 @@ def test_without_owner_gate_selection_does_not_execute():
         **verification(),
     )
     assert seen == []
-    assert result.selection_status == "AWAITING_OWNER_GATE"
+    assert result.selection_status == "AWAITING_VERIFIED_OWNER_APPROVAL"
     assert result.execution_status == "NOT_EXECUTED"
     assert result.execution is None
 
 
-def test_owner_accepted_selection_still_requires_permit():
-    with pytest.raises(ExecutionOrchestrationDenied, match="execution permit"):
-        GovernedExecutionOrchestrator(
-            autonomous_executor=executor()
-        ).run(
-            strategy(),
-            metrics(),
-            owner_gate=True,
-            contract_id="contract-1",
-            permit=None,
-            action="deliver",
-            action_fn=lambda: None,
-            **verification(),
-        )
-
-
-def test_contract_binding_is_preserved():
-    with pytest.raises(ExecutionOrchestrationDenied):
-        GovernedExecutionOrchestrator(
-            autonomous_executor=executor()
-        ).run(
-            strategy(),
-            metrics(),
-            owner_gate=True,
-            contract_id="contract-1",
-            permit=permit("wrong-contract"),
-            action="deliver",
-            action_fn=lambda: None,
-            **verification(),
-        )
-
-
-def test_failed_postcondition_blocks_completion():
+def test_boolean_owner_gate_does_not_reach_permit_check_or_execute():
     seen = []
-    with pytest.raises(ExecutionOrchestrationDenied, match="verification"):
-        GovernedExecutionOrchestrator(
-            autonomous_executor=executor()
-        ).run(
-            strategy(),
-            metrics(),
-            owner_gate=True,
-            contract_id="contract-1",
-            permit=permit(),
-            action="deliver",
-            action_fn=lambda: seen.append("ran"),
-            **verification(lambda: False),
-        )
-    assert seen == ["ran"]
+    result = GovernedExecutionOrchestrator(autonomous_executor=executor()).run(
+        strategy(), metrics(), owner_gate=True, contract_id="contract-1",
+        permit=None, action="deliver", action_fn=lambda: seen.append("ran"),
+        **verification(),
+    )
+    assert seen == []
+    assert result.selection_status == "AWAITING_VERIFIED_OWNER_APPROVAL"
+    assert result.execution_status == "NOT_EXECUTED"
+    assert result.execution is None
 
 
-def test_no_autonomous_executor_means_no_execution_authority():
-    with pytest.raises(ExecutionOrchestrationDenied, match="autonomous executor"):
-        GovernedExecutionOrchestrator().run(
-            strategy(),
-            metrics(),
-            owner_gate=True,
-            contract_id="contract-1",
-            permit=permit(),
-            action="deliver",
-            action_fn=lambda: None,
-            **verification(),
-        )
+def test_boolean_owner_gate_cannot_bypass_contract_permit_binding():
+    seen = []
+    result = GovernedExecutionOrchestrator(autonomous_executor=executor()).run(
+        strategy(), metrics(), owner_gate=True, contract_id="contract-1",
+        permit=permit("wrong-contract"), action="deliver",
+        action_fn=lambda: seen.append("ran"), **verification(),
+    )
+    assert seen == []
+    assert result.selection_status == "AWAITING_VERIFIED_OWNER_APPROVAL"
+    assert result.execution_status == "NOT_EXECUTED"
+    assert result.execution is None
+
+
+def test_boolean_owner_gate_does_not_execute_even_when_postcondition_would_fail():
+    seen = []
+    result = GovernedExecutionOrchestrator(autonomous_executor=executor()).run(
+        strategy(), metrics(), owner_gate=True, contract_id="contract-1",
+        permit=permit(), action="deliver", action_fn=lambda: seen.append("ran"),
+        **verification(lambda: False),
+    )
+    assert seen == []
+    assert result.selection_status == "AWAITING_VERIFIED_OWNER_APPROVAL"
+    assert result.execution_status == "NOT_EXECUTED"
+    assert result.execution is None
+
+
+def test_boolean_owner_gate_does_not_require_or_grant_executor_authority():
+    seen = []
+    result = GovernedExecutionOrchestrator().run(
+        strategy(), metrics(), owner_gate=True, contract_id="contract-1",
+        permit=permit(), action="deliver", action_fn=lambda: seen.append("ran"),
+        **verification(),
+    )
+    assert seen == []
+    assert result.selection_status == "AWAITING_VERIFIED_OWNER_APPROVAL"
+    assert result.execution_status == "NOT_EXECUTED"
+    assert result.execution is None
 
 
 def test_missing_contract_id_is_denied_before_selection():
