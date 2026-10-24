@@ -424,17 +424,17 @@ def _apply_review_decision(action_id: str, decision_type: str,
             "revision_instructions": request.revision_instructions if decision_type == "revise" else "",
         }, sort_keys=True, separators=(",", ":"))
         request_digest = hashlib.sha256(request_material.encode("utf-8")).hexdigest()
-        # Consume a trusted, proposal-bound approval before claiming or invoking
-        # any decision command. A failed approval must have zero action side effects.
-        _verify_owner_approval(
-            artifact=request.owner_approval,
-            expected_proposal_sha256=request_digest,
-            expected_actor_id=actor_id,
-            store=store,
-        )
         with REVIEW_DECISION_LOCK:
             review = _find_review(action_id)
             _require_pending_review(review)
+            # Consume a trusted, proposal-bound approval before claiming or invoking
+            # any decision command. A failed approval must have zero action side effects.
+            _verify_owner_approval(
+                artifact=request.owner_approval,
+                expected_proposal_sha256=request_digest,
+                expected_actor_id=actor_id,
+                store=store,
+            )
             claim = store.claim_review(action_id=action_id, decision_type=decision_type,
                 actor_id=actor_id, idempotency_key=key, request_digest=request_digest)
             if claim.get("replayed") and claim.get("state") == "completed":
