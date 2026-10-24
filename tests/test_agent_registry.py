@@ -8,8 +8,8 @@ from src.core.agent_registry import build_agent_registry, build_workflow_plan, g
 def test_registry_contains_phase_adapters_and_all_seven_engineering_workflows() -> None:
     registry = build_agent_registry()
 
-    assert len(registry) >= 30
-    assert {"opportunity_radar", "controlled_execution", "runtime_preflight", "subagent_forge"}.issubset(registry)
+    assert len(registry) >= 40
+    assert {"opportunity_radar", "controlled_execution", "runtime_preflight", "subagent_forge", "regenexcalibur_envelope", "cloud_orchestration", "protocol_governance", "ci_diagnostics"}.issubset(registry)
     assert {
         "root_cause",
         "zero_regression_refactor",
