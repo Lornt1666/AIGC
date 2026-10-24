@@ -43,13 +43,14 @@ services:
       retries: 12
       start_period: 10s
     read_only: true
-    # AIGC current CLI preflight writes a SQLite state DB and generated reports.
-    # Keep these writable paths ephemeral in this local-only topology; durable
-    # multi-instance state requires a separately provisioned shared backend.
+    # The legacy CLI acceptance flow writes ephemeral SQLite, report, and audit
+    # files. Keep those explicit writable paths bounded and non-persistent.
+    # Production/shared state must use separately provisioned durable services.
     tmpfs:
       - /tmp:size=64m,mode=1777
       - /app/memory:size=64m,uid=999,gid=999,mode=0750
       - /app/reports:size=128m,uid=999,gid=999,mode=0750
+      - /app/data/audit:size=64m,uid=999,gid=999,mode=0750
     security_opt: [no-new-privileges:true]
     cap_drop: [ALL]
     restart: unless-stopped
