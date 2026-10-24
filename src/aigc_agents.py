@@ -86,9 +86,12 @@ def main(argv: List[str] | None = None) -> int:
         data={"agent_id": agent.agent_id, "phase": agent.phase, "autonomy": agent.autonomy},
         external_action_performed=False,
     )
+    phase_mode = args.mode
+    if agent.phase == "phase13" and phase_mode == "real_data_read_only":
+        phase_mode = "real"
     command = [
         sys.executable, str(root / "src" / "aigc.py"), "--root", str(root),
-        "run", agent.phase, "--mode", args.mode, "--source", args.source, "--limit", str(args.limit),
+        "run", agent.phase, "--mode", phase_mode, "--source", args.source, "--limit", str(args.limit),
     ]
     if args.input:
         command.extend(["--input", str(args.input)])
