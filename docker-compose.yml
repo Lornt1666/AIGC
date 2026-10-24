@@ -69,6 +69,7 @@ services:
       - /app/data/phase17_incidents:size=64m,uid=999,gid=999,mode=0750
       - /app/data/phase16_compliance:size=64m,uid=999,gid=999,mode=0750
       - /app/data/phase15_finance:size=64m,uid=999,gid=999,mode=0750
+      - /app/data/phase12_observability:size=64m,uid=999,gid=999,mode=0750
       - /app/data/phase7_audit_packets:size=64m,uid=999,gid=999,mode=0750
       - /app/data/phase6_execution:size=64m,uid=999,gid=999,mode=0750
       - /app/data/phase5_authorizations:size=64m,uid=999,gid=999,mode=0750
