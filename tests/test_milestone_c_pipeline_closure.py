@@ -165,6 +165,19 @@ def create_closure_fixture(root: Path) -> None:
             "execution_scope": "Dry-run this approved fixture only.",
             "external_action_performed": False,
         },
+        "safety_evidence": {
+            name: {
+                "status": "passed",
+                "evidence_ref": f"test-evidence://phase6/{name}",
+                "reviewed_at": datetime.now(timezone.utc).isoformat(),
+                "reviewer": "test-fixture-reviewer",
+            }
+            for name in (
+                "platform_policy_checked",
+                "ai_disclosure_preserved",
+                "privacy_checked",
+            )
+        },
         "decision": "approved_for_phase_6",
     })
 
