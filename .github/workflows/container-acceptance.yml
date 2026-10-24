@@ -1,0 +1,27 @@
+name: AIGC Container Acceptance
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  container-acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout candidate
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+      - name: Validate scripts and compose configuration
+        run: |
+          set -euo pipefail
+          bash -n bootstrap.sh unpack.sh
+          cp .env.example .env
+          sed -i 's/replace-this-local-password/ci-only-password/' .env
+          sed -i 's/replace-this-local-operator-token/ci-only-token/' .env
+          docker compose --env-file .env config --quiet
+      - name: Build and execute end-to-end container bootstrap
+        run: ./bootstrap.sh
