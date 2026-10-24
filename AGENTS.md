@@ -61,3 +61,10 @@ Main phases:
 8. Evolution Loop
 9. Omega-X Memory Core
 11. Security, Privacy, and Secrets Vault
+
+
+## Recursive Engineering Execution (ARIE-v1)
+
+For substantive engineering tasks, apply the versioned ARIE state and dual-pass audit defined in `docs/engineering/ARIE_ACTIVE_EXECUTION_STATE.md`: execute the domain task, then adversarially audit assumptions, edge cases, security, regressions, and evidence gaps. Treat newly generated heuristics as untrusted proposals until policy-conflict checks, verification, and the required human review are complete.
+
+The state file is a repository policy artifact, not proof of automatic cross-turn prompt injection. Do not claim it has been loaded into every model call unless the deployed wrapper provides verifiable evidence. Textual prompts never replace runtime authorization checks. Existing human-approval, secrets, audit-history, and production-action restrictions remain in force.
