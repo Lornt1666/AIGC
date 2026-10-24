@@ -86,6 +86,16 @@ def test_mismatched_proposal_or_commit_is_rejected(kwargs):
         verifier().verify_and_consume(make_artifact(), **expected)
 
 
+def test_approval_actor_must_match_authenticated_operator():
+    with pytest.raises(OwnerApprovalError, match="actor does not match"):
+        verifier().verify_and_consume(
+            make_artifact(),
+            expected_proposal_sha256=PROPOSAL,
+            expected_commit_sha=COMMIT,
+            expected_actor_id="token-sha256:some-other-operator",
+        )
+
+
 def test_tampered_signature_is_rejected():
     artifact = make_artifact()
     artifact["actor_id"] = "owner:attacker"
