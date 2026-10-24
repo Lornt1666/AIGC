@@ -85,3 +85,26 @@ pending_mutation_queue:
 - **Authority:** Textual constraints do not enforce permissions. Enforcement must remain in the runtime, tools, and human approval gates.
 - **Drift:** Every run must resolve the current repository state and applicable constraints rather than blindly trusting a stale pasted block.
 - **Failure handling:** If state parsing, provenance, policy checks, tests, or exact-head verification fail, do not promote the proposed delta to active state.
+
+
+## Live execution checkpoint — 2026-10-24
+
+Observed candidate before this checkpoint update: `62df0d683999161cb13fd64e1a0fbeff8d72288f`.
+
+- PR #345 remains open, draft, and unmerged: https://github.com/Lornt1666/AIGC/pull/345
+- GitHub Actions AIGC CI run 40116074548 completed successfully on the observed candidate: https://github.com/Lornt1666/AIGC/actions/runs/40116074548
+- A second exact-head check run 40116071382 also reports the `validate` job successful: https://github.com/Lornt1666/AIGC/actions/runs/40116071382
+- The separate `Workers Builds: aigc` check reports failure on the same SHA: https://github.com/Lornt1666/AIGC/runs/120937609838
+- The PR's Cloudflare deployment comment also reports a failed build for commit `62df0d6`: https://github.com/Lornt1666/AIGC/pull/345
+- The Cloudflare dashboard build-log URL is present in the deployment comment, but this execution environment could not access the authenticated dashboard. Therefore, the root cause is **unknown**, not diagnosed.
+- The GitHub CI pass does not override the failed Workers build. Do not call this candidate release-ready.
+- No code fix is justified until the failing Workers build step and error output are available. Continue independent, non-destructive repository review while the deployment-log access gap remains open.
+
+### Current disposition
+
+- GitHub CI validation: **PASS** for the observed parent candidate SHA above.
+- Cloudflare Workers build: **FAIL** for the observed parent candidate SHA above.
+- Root-cause diagnosis: **BLOCKED** pending accessible build logs or equivalent exact error output.
+- PR state: **OPEN / DRAFT / UNMERGED**.
+- Production deployment or merge: **NOT AUTHORIZED** by this checkpoint.
+- Next action: retrieve the failed `Workers Builds: aigc` check details and Cloudflare build logs, identify the failing command and root cause, make only a minimal evidence-backed fix, then re-run checks against the resulting exact SHA.
