@@ -179,3 +179,41 @@ Refresh the checks for the new exact head after this checkpoint commit. Diagnose
 - Cloudflare check `Workers Builds: aigc` remains **FAIL** for this same candidate, build ID `3d0bb493-eac4-4783-9b48-3ede21cc6525`: https://dash.cloudflare.com/0be4eb38572f3a6d7a2c980d0282c203/workers/services/view/aigc/production/builds/3d0bb493-eac4-4783-9b48-3ede21cc6525. The connected GitHub check/comment exposes the build URL but not the underlying error; this environment has no authenticated Cloudflare log/settings connector. Root cause is still unknown. Do not invent or apply a deployment configuration fix without the build log.
 - Next action: have an authorized operator open the Cloudflare build URL and provide the failed step plus error output (redact secrets). Then make the smallest evidence-backed fix and verify it on a new exact SHA. Meanwhile, continue safe repository review; do not merge or promote while Workers Builds remains failed.
 - Disposition: **IN PROGRESS / RELEASE BLOCKED**. GitHub exact-head CI is green; Cloudflare is a separate mandatory failed gate.
+
+
+## FINISHER-Ω checkpoint — current candidate reconciled and next engineering slice locked
+
+Observed at 2026-10-24 UTC after live GitHub inspection:
+
+- Current PR #345 head: `2dd28fd35189030d427217642982c3a148a0ce34`.
+- PR #345 remains **OPEN / DRAFT / UNMERGED**: https://github.com/Lornt1666/AIGC/pull/345
+- Exact-head AIGC CI run `40118296270` completed **SUCCESS** on this SHA: https://github.com/Lornt1666/AIGC/actions/runs/40118296270
+- Both locked-release revalidation jobs passed for v0-12 and v0-13. The canonical validation job passed and uploaded exact-head artifact `12570203106`; the receipt records requested and observed SHA as `2dd28fd35189030d427217642982c3a148a0ce34` and tested tree SHA `8172ae5d23f21912487e3794ef8bfba9a1ab3bfe`.
+- Cloudflare `Workers Builds: aigc` completed **FAILURE** for the same SHA; build ID `9ec46e74-a1e2-498d-9503-14018930fbc9`: https://dash.cloudflare.com/0be4eb38572f3a6d7a2c980d0282c203/workers/services/view/aigc/production/builds/9ec46e74-a1e2-498d-9503-14018930fbc9
+- The GitHub check summary exposes the Cloudflare build link and script name only. The authenticated Cloudflare error log remains inaccessible in this session. **Root cause is unknown.** No build/deploy configuration change is justified without the actual failed step and error.
+- No merge, production deployment, external action, live model invocation, or spending was performed.
+
+### Mission lock — do not realign product scope
+
+The project remains the **Autonomous Workforce Agentic Pipeline**. The registry is infrastructure for that product, not the product's completion. Current inventory is 24 governed phase adapters plus 21 deterministic workflow planners (45 definitions). The planners are not model-backed agents and do not independently inspect, code, test, or complete tasks. Do not inflate the agent count as a substitute for a working end-to-end task lifecycle.
+
+### Adversarial architecture findings from current source inspection
+
+1. `src/core/agent_registry.py` explicitly marks workflow planners as `plan_only_no_model_execution`; a real model-backed adapter is still missing.
+2. `src/aigc_agents.py` delegates phase execution to `src/aigc.py`, but its own `approval_required` field is registry metadata, not an independent authorization enforcement mechanism. Existing phase controls remain authoritative; add regression tests that prove sensitive phases cannot bypass those controls through the new dispatcher.
+3. Workflow-plan output is written before the audit event is persisted. If the database write fails after artifact creation, the plan artifact may exist without its corresponding event. Before enabling model-backed or write-enabled workers, define an atomic or recoverable artifact/event protocol with idempotency and reconciliation.
+4. The phase adapter uses `subprocess.run` without an explicit timeout. A hung phase can stall a worker indefinitely unless the underlying phase process or outer runner imposes a bound. Establish cancellation, timeout, process cleanup, and truthful terminal-state recording before treating this as a durable autonomous worker.
+5. Registry metadata and prompt instructions are not an authorization boundary. Enforce capability grants, task-scoped permissions, approval tokens, and external-action denials in runtime code at the point of action.
+
+### Next implementation slice — preserve the pipeline, improve the flow
+
+Priority order:
+
+1. **Resolve Cloudflare build evidence**: obtain the exact failed step and redacted error output from the linked build. Do not guess at the root cause.
+2. **Close dispatcher safety invariants**: test approval-gated phases through the registry entry point; bound subprocess execution; guarantee failure/cancellation events; and prevent artifact/audit divergence or provide deterministic reconciliation. Keep defaults non-external and fail-closed.
+3. **Specify the actual workforce execution contract** before adding more agents: typed task envelope; task/run IDs and idempotency key; input/output schemas; capability manifest; explicit state machine; durable queue/lease; timeout/retry/cancellation; artifact/evidence references; redacted structured telemetry; and human approval checkpoints.
+4. **Implement one vertical slice end to end** using a single low-risk internal task: submit -> validate -> schedule -> execute one configured model-backed worker -> validate structured output -> persist artifact and evidence -> adversarially review -> human accept/reject -> terminal state. No external side effects. Use a fake/offline provider in CI and contract tests; live provider access stays separately gated.
+5. **Then scale the worker pattern** to additional agents using the same contract and policy middleware; do not create bespoke orchestration paths for each agent.
+6. Verify the resulting exact SHA through the canonical CI runner, inspect artifacts, and re-check Cloudflare. Keep the PR draft and unmerged until the release gates are actually satisfied.
+
+Disposition: **CI PASS / CLOUDFLARE FAIL / WORKFORCE EXECUTION INCOMPLETE / RELEASE BLOCKED**. This checkpoint records evidence and prioritizes the next slice; it does not claim that the architecture findings above have been fixed.
