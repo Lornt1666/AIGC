@@ -1,7 +1,11 @@
 from __future__ import annotations
 
+import sqlite3
+import subprocess
+
 import pytest
 
+import src.aigc_agents as aigc_agents
 from src.core.agent_registry import build_agent_registry, build_workflow_plan, get_agent
 from src.aigc_agents import main as agent_main
 
@@ -70,3 +74,40 @@ def test_inspect_command_does_not_initialize_runtime_database(tmp_path, capsys) 
     capsys.readouterr()
 
     assert not (root / "memory" / "aigc_state.sqlite").exists()
+
+
+
+def test_run_rejects_non_positive_timeout_without_initializing_database(tmp_path, capsys) -> None:
+    root = tmp_path / "project"
+    root.mkdir()
+
+    assert agent_main(["--root", str(root), "run", "assessment", "--timeout-seconds", "0"]) == 2
+    assert "--timeout-seconds must be greater than zero." in capsys.readouterr().err
+    assert not (root / "memory" / "aigc_state.sqlite").exists()
+
+
+def test_phase_adapter_timeout_is_recorded_as_terminal_failure(tmp_path, monkeypatch, capsys) -> None:
+    root = tmp_path / "project"
+    root.mkdir()
+
+    def expire(*args, **kwargs):
+        raise subprocess.TimeoutExpired(cmd=args[0], timeout=kwargs["timeout"])
+
+    monkeypatch.setattr(aigc_agents.subprocess, "run", expire)
+
+    assert agent_main([
+        "--root", str(root), "run", "assessment", "--timeout-seconds", "0.01"
+    ]) == 124
+    assert "exceeded timeout of 0.01 seconds" in capsys.readouterr().err
+
+    database = root / "memory" / "aigc_state.sqlite"
+    with sqlite3.connect(database) as connection:
+        row = connection.execute(
+            "SELECT event_type, status, data_json FROM runtime_events "
+            "WHERE event_type = 'agent_run_timed_out'"
+        ).fetchone()
+
+    assert row is not None
+    assert row[0] == "agent_run_timed_out"
+    assert row[1] == "timed_out"
+    assert '"timeout_seconds": 0.01' in row[2]
